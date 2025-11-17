@@ -4,13 +4,35 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+/**
+ * @type {WebAssembly.Instance}
+ */
+let wasm;
+
 const importObject = {
   env: {
     _haltproc: exitcode => console.log("Programme halted with code:", exitcode)
   }
 }
 
+// VGA
+function flush() {
+  const surfacePtr = wasm.exports.getSurface();
+  // console.log("Surface pointer", surfacePtr);
+
+  const imageData = new Uint8ClampedArray(
+    wasm.exports.memory.buffer,
+    surfacePtr,
+    320 * 200 * 4
+  );
+  const imgData = new ImageData(imageData, 320, 200);
+  ctx.putImageData(imgData, 0, 0)
+}
+
 async function loadImage(url) {
+  if (url == null || url == "")
+    throw new Error("loadImage: url is required");
+
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
@@ -19,19 +41,12 @@ async function loadImage(url) {
   })
 }
 
-async function main() {
-  // Init WebAssembly
-  const response = await fetch("game.wasm");
-  const bytes = await response.arrayBuffer();
-  const result = await WebAssembly.instantiate(bytes, importObject);
-  const wasm = result.instance;
+// Bitmaps
+async function loadImageBuffer(url) {
+  if (url == null || url == "")
+    throw new Error("loadImageBuffer: url is required");
 
-  wasm.exports.initBuffer();
-  const surfacePtr = wasm.exports.getSurface();
-  // console.log("Surface pointer", surfacePtr);
-
-  // Load assets
-  const img = await loadImage("assets/images/satono_diamond.png");
+  const img = await loadImage(url);
   console.log(`Loaded image: { w: ${img.width}, h: ${img.height} }`);
 
   // Copy image
@@ -50,14 +65,31 @@ async function main() {
     imgBufferPtr, 
     pixels.length);
 
-  // for (let a=0; a<pixels.length; a++)
-  //   imgBuffer[a] = pixels[a];
-
   // The same as implementation above
   imgBuffer.set(pixels);
 
-  // console.log("First 20 bytes:", Array.from(imgBuffer));
+  console.log("First 20 bytes:", Array.from(imgBuffer));
+}
 
+// Init segment
+async function initWebAssembly() {
+  const response = await fetch("game.wasm");
+  const bytes = await response.arrayBuffer();
+  const result = await WebAssembly.instantiate(bytes, importObject);
+  wasm = result.instance;
+}
+
+async function init() {
+  await initWebAssembly();
+  console.log("wasm.exports", wasm.exports);
+  wasm.exports.initBuffer();
+}
+
+async function main() {
+  await init();
+
+  // Load assets
+  loadImageBuffer("assets/images/satono_diamond.png");
 
   // Begin render logic
   wasm.exports.cls(0xFF6495ED);
@@ -66,16 +98,10 @@ async function main() {
   // const memory = new Uint8Array(wasm.exports.memory.buffer, surfacePtr, 20);
   // console.log("First 20 bytes:", Array.from(memory));
 
-  wasm.exports.spr(10, 10, img.width, img.height);
+  // wasm.exports.spr(10, 10, img.width, img.height);
+  wasm.exports.spr(10, 10, 100, 88);
 
-  // Flush output
-  const imageData = new Uint8ClampedArray(
-    wasm.exports.memory.buffer,
-    surfacePtr,
-    320 * 200 * 4
-  );
-  const imgData = new ImageData(imageData, 320, 200);
-  ctx.putImageData(imgData, 0, 0)
+  flush();
 }
 
 main()
