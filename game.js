@@ -56,7 +56,9 @@ async function main() {
   // The same as implementation above
   imgBuffer.set(pixels);
 
-  
+  // console.log("First 20 bytes:", Array.from(imgBuffer));
+
+
   // Begin render logic
   wasm.exports.cls(0xFF6495ED);
 
@@ -64,7 +66,9 @@ async function main() {
   // const memory = new Uint8Array(wasm.exports.memory.buffer, surfacePtr, 20);
   // console.log("First 20 bytes:", Array.from(memory));
 
-  // Output to the canvas
+  wasm.exports.spr(10, 10, img.width, img.height);
+
+  // Flush output
   const imageData = new Uint8ClampedArray(
     wasm.exports.memory.buffer,
     surfacePtr,
