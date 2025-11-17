@@ -54,7 +54,7 @@ async function loadImage(url) {
     throw new Error("loadImage: url is required");
 
   const img = await loadImageFromURL(url);
-  console.log(`Loaded image: { w: ${img.width}, h: ${img.height} }`);
+  // console.log(`Loaded image: { w: ${img.width}, h: ${img.height} }`);
 
   // Copy image
   const tempCanvas = document.createElement("canvas");
@@ -64,6 +64,7 @@ async function loadImage(url) {
   tempCtx.drawImage(img, 0, 0);
   const pixels = tempCtx.getImageData(0, 0, img.width, img.height).data;
 
+  // Obtain a new handle number
   const imgHandle = wasm.exports.loadImageHandle();
   const bitmapPtr = wasm.exports.getImagePtr(imgHandle);
   
@@ -75,20 +76,9 @@ async function loadImage(url) {
   memory[3] = (img.height >> 8) & 0xff;
   memory.set(pixels, 4);  // TBitmap.data
 
-  console.log("First 20 bytes:", Array.from(memory).slice(0, 20));
+  // console.log("First 20 bytes:", Array.from(memory).slice(0, 20));
 
   return imgHandle
-
-  // Write into the generic image buffer
-  // const imgBufferPtr = wasm.exports.getImageBuffer();
-  // // Create a view into the WASM memory
-  // const imgBuffer = new Uint8Array(
-  //   wasm.exports.memory.buffer,
-  //   imgBufferPtr, 
-  //   pixels.length);
-
-  // imgBuffer.set(pixels);
-  // console.log("First 20 bytes:", Array.from(imgBuffer).slice(0, 20));
 }
 
 function spr(imgHandle, x, y) {

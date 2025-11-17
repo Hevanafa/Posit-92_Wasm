@@ -12,8 +12,6 @@ exports
   cls,
 
   { BITMAP }
-  { allocImageData, }
-  { getImageBuffer, }
   loadImageHandle,
   getImagePtr,
   spr;
