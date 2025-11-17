@@ -47,10 +47,10 @@ begin
 
   for y:=0 to vgaHeight - 1 do
   for x:=0 to vgaWidth - 1 do begin
-    surface[y * vgaWidth * 4 + x * 4] := a;
-    surface[y * vgaWidth * 4 + x * 4 + 1] := r;
-    surface[y * vgaWidth * 4 + x * 4 + 2] := g;
-    surface[y * vgaWidth * 4 + x * 4 + 3] := b;
+    surface[y * vgaWidth * 4 + x * 4] := r;
+    surface[y * vgaWidth * 4 + x * 4 + 1] := g;
+    surface[y * vgaWidth * 4 + x * 4 + 2] := b;
+    surface[y * vgaWidth * 4 + x * 4 + 3] := a;
   end;
 end;
 

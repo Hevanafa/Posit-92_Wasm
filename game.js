@@ -30,22 +30,16 @@ fetch("game.wasm")
 
   wasm.exports.cls(0xFF6495ED);
 
-  const memory = new Uint8Array(wasm.exports.memory.buffer, surfacePtr, 20);
-  console.log("First 20 bytes:", Array.from(memory));
+  // Debug surfacePtr
+  // const memory = new Uint8Array(wasm.exports.memory.buffer, surfacePtr, 20);
+  // console.log("First 20 bytes:", Array.from(memory));
 
-  // Output on the canvas
-  // const imageData = ctx.createImageData(320, 200);
-  // for (let b=0; b<200; b++)
-  //   for (let a=0; a<320; a++) {
-  //     const i = (b * 320 + a) * 4;
-  //     const grey = gradient[a % 256]; // wrap around gradient
-      
-  //     // Order: RGBA
-  //     imageData.data[i] = grey;
-  //     imageData.data[i+1] = grey;
-  //     imageData.data[i+2] = grey;
-  //     imageData.data[i+3] = 255;
-  //   }
-
-  // ctx.putImageData(imageData, 0, 0)
+  // Output to the canvas
+  const imageData = new Uint8ClampedArray(
+    wasm.exports.memory.buffer,
+    surfacePtr,
+    320 * 200 * 4
+  );
+  const imgData = new ImageData(imageData, 320, 200);
+  ctx.putImageData(imgData, 0, 0)
 })
