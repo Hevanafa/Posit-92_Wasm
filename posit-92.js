@@ -61,17 +61,22 @@ async function loadImage(url) {
   tempCanvas.height = img.height;
   const tempCtx = tempCanvas.getContext("2d");
   tempCtx.drawImage(img, 0, 0);
-
   const pixels = tempCtx.getImageData(0, 0, img.width, img.height).data;
 
-  const bitmapPtr = wasm.exports.getLoadedImage();
-  // wasm.exports.allocImageData(pixels.length);
+  const imgHandle = wasm.exports.loadImageHandle();
+  const bitmapPtr = wasm.exports.getImagePtr(imgHandle);
+  
+  // Write to TBitmap
   const memory = new Uint8Array(wasm.exports.memory.buffer, bitmapPtr);
   memory[0] = img.width & 0xff;
   memory[1] = (img.width >> 8) & 0xff;
   memory[2] = img.height & 0xff;
   memory[3] = (img.height >> 8) & 0xff;
   memory.set(pixels, 4);  // TBitmap.data
+
+  console.log("First 20 bytes:", Array.from(memory).slice(0, 20));
+
+  return imgHandle
 
   // Write into the generic image buffer
   // const imgBufferPtr = wasm.exports.getImageBuffer();
@@ -85,8 +90,8 @@ async function loadImage(url) {
   // console.log("First 20 bytes:", Array.from(imgBuffer).slice(0, 20));
 }
 
-function spr(imagePtr, x, y) {
-  wasm.exports.spr(imagePtr, x, y);
+function spr(imgHandle, x, y) {
+  wasm.exports.spr(imgHandle, x, y);
 }
 
 // Init segment

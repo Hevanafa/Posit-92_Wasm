@@ -1,9 +1,6 @@
 async function main() {
   await init();
 
-  // Load assets
-  await loadImage("assets/images/satono_diamond.png");
-
   // Begin render logic
   cls(0xFF6495ED);
 
@@ -13,9 +10,11 @@ async function main() {
 
   // wasm.exports.spr(10, 10, img.width, img.height);
   // spr(10, 10, 100, 88);
-  
-  const loadedImagePtr = wasm.exports.getLoadedImage();
-  spr(loadedImagePtr, 10, 10);
+
+  // Load assets
+  const imgSatono = await loadImage("assets/images/satono_diamond.png");
+  console.log("imgSatono handle:", imgSatono);
+  spr(imgSatono, 10, 10);
 
   flush();
 }

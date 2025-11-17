@@ -6,7 +6,7 @@ type
   PBitmap = ^TBitmap;
   TBitmap = record
     width, height: word;
-    data: array[0..127999] of byte;
+    data: array[0..63999] of byte;
   end;
 
 { Legacy }
