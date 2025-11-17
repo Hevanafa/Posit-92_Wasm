@@ -14,20 +14,20 @@ const
   vgaHeight = 200;
 
 var
-  surface: PByteArray;
+  surface: TByteArray;
   bufferInitialised: boolean;
 
 procedure initBuffer; cdecl;
 begin
   if not bufferInitialised then begin
-    getmem(surface, bufferSize);
+    { getmem(surface, bufferSize); }
     bufferInitialised := true
   end;
 end;
 
 function getSurface: pointer; cdecl;
 begin
-  getSurface := surface
+  getSurface := @surface
 end;
 
 procedure cls(const colour: longword); cdecl;
