@@ -26,12 +26,12 @@ fetch("game.wasm")
 
   wasm.exports.initBuffer();
   const surfacePtr = wasm.exports.getSurface();
-  console.log("Surface pointer", surfacePtr);
+  // console.log("Surface pointer", surfacePtr);
 
-  // const memory = new Uint8Array(wasm.exports.memory.surface);
-  // const gradient = memory.slice(surfacePtr, surfacePtr + 256);
+  wasm.exports.cls(0xFF6495ED);
 
-  // console.log("First few values:", gradient.slice(0, 10))
+  const memory = new Uint8Array(wasm.exports.memory.buffer, surfacePtr, 20);
+  console.log("First 20 bytes:", Array.from(memory));
 
   // Output on the canvas
   // const imageData = ctx.createImageData(320, 200);
