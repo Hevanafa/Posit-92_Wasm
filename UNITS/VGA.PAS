@@ -1,7 +1,5 @@
 unit VGA;
 
-{$Mode ObjFPC}
-
 interface
 
 const
