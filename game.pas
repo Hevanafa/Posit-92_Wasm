@@ -56,10 +56,10 @@ end;
 
 { Bitmap operations }
 const
-  maxImageSize = 100 * 88 * 4;
+  maxImageBufferSize = 128 * 128 * 4;
 
 var
-  imageBuffer: array[0..maxImageSize - 1] of byte;
+  imageBuffer: array[0..maxImageBufferSize - 1] of byte;
 
 function getImageBuffer: pointer;
 begin
