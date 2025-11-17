@@ -6,7 +6,7 @@ uses Classes;
 
 type
   PByteArray = ^TByteArray;
-  TByteArray = array[0..63999] of byte;
+  TByteArray = array[0..255999] of byte;
 
 const
   bufferSize = 256000; { 64000 * 4 }
@@ -19,8 +19,10 @@ var
 
 procedure initBuffer; cdecl;
 begin
-  if not bufferInitialised then
+  if not bufferInitialised then begin
     getmem(surface, bufferSize);
+    bufferInitialised := true
+  end;
 end;
 
 function getSurface: pointer; cdecl;
@@ -33,6 +35,8 @@ var
   a, r, g, b: byte;
   x, y: word;
 begin
+  if not bufferInitialised then exit;
+
   a := colour shr 24 and 256;
   r := colour shr 16 and 256;
   g := colour shr 8 and 256;
@@ -40,16 +44,16 @@ begin
 
   for y:=0 to vgaHeight - 1 do
   for x:=0 to vgaWidth - 1 do begin
-    surface[y * vgaWidth * 4 + x] := a;
-    surface[y * vgaWidth * 4 + x + 1] := r;
-    surface[y * vgaWidth * 4 + x + 2] := g;
-    surface[y * vgaWidth * 4 + x + 3] := b;
+    surface^[y * vgaWidth * 4 + x] := a;
+    surface^[y * vgaWidth * 4 + x + 1] := r;
+    surface^[y * vgaWidth * 4 + x + 2] := g;
+    surface^[y * vgaWidth * 4 + x + 3] := b;
   end;
 end;
 
 exports
-  initBuffer;
-  getSurface;
+  initBuffer,
+  getSurface,
   cls;
 
 begin
