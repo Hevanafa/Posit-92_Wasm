@@ -1,5 +1,7 @@
 unit VGA;
 
+{$Mode ObjFPC}
+
 interface
 
 const
@@ -13,10 +15,10 @@ const
   vgaWidth = 320;
   vgaHeight = 200;
 
-procedure initBuffer;
-function getSurface: pointer;
+procedure initBuffer; public name 'initBuffer';
+function getSurface: pointer; public name 'getSurface';
 { Colour format: $AARRGGBB }
-procedure cls(const colour: longword);
+procedure cls(const colour: longword); public name 'cls';
 
 
 implementation
