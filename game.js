@@ -20,6 +20,16 @@ async function loadImage(url) {
 }
 
 async function main() {
+  // Init WebAssembly
+  const response = await fetch("game.wasm");
+  const bytes = await response.arrayBuffer();
+  const result = await WebAssembly.instantiate(bytes, importObject);
+  const wasm = result.instance;
+
+  wasm.exports.initBuffer();
+  const surfacePtr = wasm.exports.getSurface();
+  // console.log("Surface pointer", surfacePtr);
+
   // Load assets
   const img = await loadImage("assets/images/satono_diamond.png");
   console.log(`Loaded image: { w: ${img.width}, h: ${img.height} }`);
@@ -31,17 +41,9 @@ async function main() {
   const tempCtx = tempCanvas.getContext("2d");
   tempCtx.drawImage(img, 0, 0);
   const pixels = tempCtx.getImageData(0, 0, img.width, img.height).data;
+  wasm.exports.allocImageData(pixels.length);
 
-  // Init engine
-  const response = await fetch("game.wasm");
-  const bytes = await response.arrayBuffer();
-  const result = await WebAssembly.instantiate(bytes, importObject);
-  const wasm = result.instance;
-
-  wasm.exports.initBuffer();
-  const surfacePtr = wasm.exports.getSurface();
-  // console.log("Surface pointer", surfacePtr);
-
+  // Begin render logic
   wasm.exports.cls(0xFF6495ED);
 
   // Debug surfacePtr

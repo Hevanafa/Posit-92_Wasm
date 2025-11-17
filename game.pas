@@ -54,10 +54,27 @@ begin
   end;
 end;
 
+{ Bitmap operations }
+function allocImageData(const size: integer): pointer;
+var
+  ptr: pointer;
+begin
+  getmem(ptr, size);
+  allocImageData := ptr
+end;
+
+procedure spr(const image: pointer; const x, y, width, height: integer);
+begin
+
+end;
+
+
 exports
   initBuffer,
   getSurface,
-  cls;
+  cls,
+  allocImageData,
+  spr;
 
 begin
 { Starting point is intentionally left empty }
