@@ -15,6 +15,7 @@ const
   vgaWidth = 320;
   vgaHeight = 200;
 
+{ Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
 procedure initBuffer; public name 'initBuffer';
 function getSurface: pointer; public name 'getSurface';
 { Colour format: $AARRGGBB }
@@ -33,6 +34,7 @@ begin
     { This throws
       "Uncaught (in promise) RuntimeError: null function or function signature mismatch"
       for some reason }
+    { Issue: https://en.delphipraxis.net/topic/7122-free-pascal-web-assembly-objects/ }
     { getmem(surface, bufferSize); }
     bufferInitialised := true
   end;
