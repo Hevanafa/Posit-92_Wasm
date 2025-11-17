@@ -61,22 +61,32 @@ async function loadImage(url) {
   tempCanvas.height = img.height;
   const tempCtx = tempCanvas.getContext("2d");
   tempCtx.drawImage(img, 0, 0);
+
   const pixels = tempCtx.getImageData(0, 0, img.width, img.height).data;
+
+  const bitmapPtr = wasm.exports.getLoadedImage();
   // wasm.exports.allocImageData(pixels.length);
+  const memory = new Uint8Array(wasm.exports.memory.buffer, bitmapPtr);
+  memory[0] = img.width & 0xff;
+  memory[1] = (img.width >> 8) & 0xff;
+  memory[2] = img.height & 0xff;
+  memory[3] = (img.height >> 8) & 0xff;
+  memory.set(pixels, 4);  // TBitmap.data
 
-  const imgBufferPtr = wasm.exports.getImageBuffer();
-  // Create a view into the WASM memory
-  const imgBuffer = new Uint8Array(
-    wasm.exports.memory.buffer,
-    imgBufferPtr, 
-    pixels.length);
+  // Write into the generic image buffer
+  // const imgBufferPtr = wasm.exports.getImageBuffer();
+  // // Create a view into the WASM memory
+  // const imgBuffer = new Uint8Array(
+  //   wasm.exports.memory.buffer,
+  //   imgBufferPtr, 
+  //   pixels.length);
 
-  imgBuffer.set(pixels);
+  // imgBuffer.set(pixels);
   // console.log("First 20 bytes:", Array.from(imgBuffer).slice(0, 20));
 }
 
-function spr(x, y, width, height) {
-  wasm.exports.spr(x, y, width, height);
+function spr(imagePtr, x, y) {
+  wasm.exports.spr(imagePtr, x, y);
 }
 
 // Init segment

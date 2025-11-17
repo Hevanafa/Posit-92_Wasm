@@ -12,7 +12,10 @@ async function main() {
   // console.log("First 20 bytes:", Array.from(memory));
 
   // wasm.exports.spr(10, 10, img.width, img.height);
-  spr(10, 10, 100, 88);
+  // spr(10, 10, 100, 88);
+  
+  const loadedImagePtr = wasm.exports.getLoadedImage();
+  spr(loadedImagePtr, 10, 10);
 
   flush();
 }
