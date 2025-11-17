@@ -4,14 +4,14 @@ library Game;
 
 { uses Classes; }
 
-type
-  PByteArray = ^TByteArray;
-  TByteArray = array[0..255999] of byte;
-
 const
   bufferSize = 256000; { 64000 * 4 }
   vgaWidth = 320;
   vgaHeight = 200;
+
+type
+  PByteArray = ^TByteArray;
+  TByteArray = array[0..bufferSize - 1] of byte;
 
 var
   surface: TByteArray;
@@ -55,13 +55,27 @@ begin
 end;
 
 { Bitmap operations }
+const
+  maxImageSize = 100 * 88 * 4;
+
+var
+  imageBuffer: array[0..maxImageSize - 1] of byte;
+
+function getImageBuffer: pointer;
+begin
+  getImageBuffer := @imageBuffer
+end;
+
+{
 function allocImageData(const size: integer): pointer;
 var
   ptr: pointer;
 begin
+  Important: This always crashes on WebAssembly
   getmem(ptr, size);
   allocImageData := ptr
 end;
+}
 
 procedure spr(const image: pointer; const x, y, width, height: integer);
 begin
@@ -73,7 +87,8 @@ exports
   initBuffer,
   getSurface,
   cls,
-  allocImageData,
+  { allocImageData, }
+  getImageBuffer,
   spr;
 
 begin
