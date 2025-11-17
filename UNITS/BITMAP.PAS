@@ -31,7 +31,8 @@ var
   images: array[1..10] of TBitmap;
   nextImageHandle: longint = 1;
 
-procedure consoleLog(const value: string); external 'env' name 'consoleLog';
+{ Must be registered in importObject }
+procedure logI32(const value: longint); external 'env' name 'logI32';
 
 
 function getImageBuffer: pointer;
@@ -61,10 +62,10 @@ begin
   image := getImagePtr(imgHandle);
   if image = nil then exit;
 
-  consoleLog('w:' + i32str(image^.width));
-  consoleLog('h:' + i32str(image^.height));
+  logI32(image^.width);
+  logI32(image^.height);
   for a:=0 to 7 do
-    consoleLog(i32str(image^.data[a]));
+    logI32(image^.data[a]);
 end;
 
 
@@ -81,7 +82,8 @@ end;
 
 procedure spr(const imgHandle: longint; const x, y: integer);
 var
-  a, b, srcPos, destPos: integer;
+  a, b: integer;
+  srcPos, destPos: longint;
   image: PBitmap;
 begin
   image := getImagePtr(imgHandle);
@@ -89,8 +91,13 @@ begin
 
   for b:=0 to image^.height - 1 do
   for a:=0 to image^.width - 1 do begin
-    srcPos := (b * image^.width + a) * 4;
-    destPos := ((y + b) * vgaWidth + (x + a)) * 4;
+    srcPos := (a + b * image^.width) * 4;
+    destPos := ((a + x) + (b + y) * vgaWidth) * 4;
+
+    if (a < 3) and (b = 0) then begin
+      logI32(srcPos);
+      logI32(destPos);
+    end;
 
     { Order: RGBA }
     surface[destPos] := image^.data[srcPos];
