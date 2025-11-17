@@ -3,6 +3,13 @@ unit VGA;
 interface
 
 const
+  bufferSize = 256000; { 64000 * 4 }
+
+type
+  PByteArray = ^TByteArray;
+  TByteArray = array[0..bufferSize - 1] of byte;
+
+const
   vgaWidth = 320;
   vgaHeight = 200;
 
@@ -11,24 +18,14 @@ function getSurface: pointer;
 { Colour format: $AARRGGBB }
 procedure cls(const colour: longword);
 
-exports
-  initBuffer, getSurface, cls;
-
 
 implementation
-
-const
-  bufferSize = 256000; { 64000 * 4 }
-
-type
-  PByteArray = ^TByteArray;
-  TByteArray = array[0..bufferSize - 1] of byte;
 
 var
   surface: TByteArray;
   bufferInitialised: boolean;
 
-procedure initBuffer; cdecl;
+procedure initBuffer;
 begin
   if not bufferInitialised then begin
     { This throws
@@ -39,12 +36,12 @@ begin
   end;
 end;
 
-function getSurface: pointer; cdecl;
+function getSurface: pointer;
 begin
   getSurface := @surface
 end;
 
-procedure cls(const colour: longword); cdecl;
+procedure cls(const colour: longword);
 var
   a, r, g, b: byte;
   x, y: word;
