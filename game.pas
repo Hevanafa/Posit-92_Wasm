@@ -37,17 +37,17 @@ var
 begin
   if not bufferInitialised then exit;
 
-  a := colour shr 24 and 256;
-  r := colour shr 16 and 256;
-  g := colour shr 8 and 256;
-  b := colour and 256;
+  a := colour shr 24 and $FF;
+  r := colour shr 16 and $FF;
+  g := colour shr 8 and $FF;
+  b := colour and $FF;
 
   for y:=0 to vgaHeight - 1 do
   for x:=0 to vgaWidth - 1 do begin
-    surface^[y * vgaWidth * 4 + x] := a;
-    surface^[y * vgaWidth * 4 + x + 1] := r;
-    surface^[y * vgaWidth * 4 + x + 2] := g;
-    surface^[y * vgaWidth * 4 + x + 3] := b;
+    surface^[y * vgaWidth * 4 + x * 4] := a;
+    surface^[y * vgaWidth * 4 + x * 4 + 1] := r;
+    surface^[y * vgaWidth * 4 + x * 4 + 2] := g;
+    surface^[y * vgaWidth * 4 + x * 4 + 3] := b;
   end;
 end;
 
