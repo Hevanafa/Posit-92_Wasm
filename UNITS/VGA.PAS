@@ -13,6 +13,9 @@ const
   vgaWidth = 320;
   vgaHeight = 200;
 
+var
+  surface: TByteArray;
+
 { Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
 procedure initBuffer; public name 'initBuffer';
 function getSurface: pointer; public name 'getSurface';
@@ -23,7 +26,6 @@ procedure cls(const colour: longword); public name 'cls';
 implementation
 
 var
-  surface: TByteArray;
   bufferInitialised: boolean;
 
 procedure initBuffer;

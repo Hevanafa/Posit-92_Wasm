@@ -64,13 +64,10 @@ end;
 procedure spr(const imgHandle: longint; const x, y: integer);
 var
   a, b, srcPos, destPos: integer;
-  surface: PByteArray;
   image: PBitmap;
 begin
-  image := PBitmap(getImagePtr(imgHandle));
+  image := getImagePtr(imgHandle);
   if image = nil then exit;
-
-  surface := PByteArray(getSurface);
 
   for b:=0 to image^.height - 1 do
   for a:=0 to image^.width - 1 do begin
@@ -78,10 +75,10 @@ begin
     destPos := ((y + b) * vgaWidth + (x + a)) * 4;
 
     { Order: RGBA }
-    surface^[destPos] := image^.data[srcPos];
-    surface^[destPos + 1] := image^.data[srcPos + 1];
-    surface^[destPos + 2] := image^.data[srcPos + 2];
-    surface^[destPos + 3] := image^.data[srcPos + 3];
+    surface[destPos] := image^.data[srcPos];
+    surface[destPos + 1] := image^.data[srcPos + 1];
+    surface[destPos + 2] := image^.data[srcPos + 2];
+    surface[destPos + 3] := image^.data[srcPos + 3];
   end;
 end;
 
