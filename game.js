@@ -4,25 +4,17 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-async function main() {
-
-}
-
-// TODO: Upgrade this to an async function
 const importObject = {
   env: {
     _haltproc: exitcode => console.log("Programme halted with code:", exitcode)
-  },
-  // js: {
-  //   table: new WebAssembly.Table({ initial: 10, element: "anyfunc" })
-  // }
+  }
 }
 
-fetch("game.wasm")
-.then(res => res.arrayBuffer())
-.then(bytes => WebAssembly.instantiate(bytes, importObject))
-.then(res => {
-  const wasm = res.instance;
+async function main() {
+  const response = await fetch("game.wasm");
+  const bytes = await response.arrayBuffer();
+  const result = await WebAssembly.instantiate(bytes, importObject);
+  const wasm = result.instance;
 
   wasm.exports.initBuffer();
   const surfacePtr = wasm.exports.getSurface();
@@ -42,4 +34,6 @@ fetch("game.wasm")
   );
   const imgData = new ImageData(imageData, 320, 200);
   ctx.putImageData(imgData, 0, 0)
-})
+}
+
+main()
