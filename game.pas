@@ -1,24 +1,56 @@
-library Gradient;
+library Game;
 
 {$Mode ObjFPC}
 
 uses Classes;
 
-var
-  buffer: array[0..255] of byte;
+type
+  PByteArray = ^TByteArray;
+  TByteArray = array[0..63999] of byte;
 
-function FillBuffer: pointer; cdecl; { public name 'FillBuffer'; (use exports instead) }
+const
+  bufferSize = 256000; { 64000 * 4 }
+  vgaWidth = 320;
+  vgaHeight = 200;
+
 var
-  a: integer;
+  surface: PByteArray;
+  bufferInitialised: boolean;
+
+procedure initBuffer; cdecl;
 begin
-  for a:=0 to high(buffer) do
-    buffer[a] := a;
+  if not bufferInitialised then
+    getmem(surface, bufferSize);
+end;
 
-  fillBuffer := @buffer
+function getSurface: pointer; cdecl;
+begin
+  getSurface := @surface
+end;
+
+procedure cls(const colour: longword); cdecl;
+var
+  a, r, g, b: byte;
+  x, y: word;
+begin
+  a := colour shr 24 and 256;
+  r := colour shr 16 and 256;
+  g := colour shr 8 and 256;
+  b := colour and 256;
+
+  for y:=0 to vgaHeight - 1 do
+  for x:=0 to vgaWidth - 1 do begin
+    surface[y * vgaWidth * 4 + x] := a;
+    surface[y * vgaWidth * 4 + x + 1] := r;
+    surface[y * vgaWidth * 4 + x + 2] := g;
+    surface[y * vgaWidth * 4 + x + 3] := b;
+  end;
 end;
 
 exports
-  FillBuffer;
+  initBuffer;
+  getSurface;
+  cls;
 
 begin
 { Starting point is intentionally left empty }
