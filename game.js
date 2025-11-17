@@ -68,7 +68,7 @@ async function loadImageBuffer(url) {
   // The same as implementation above
   imgBuffer.set(pixels);
 
-  console.log("First 20 bytes:", Array.from(imgBuffer));
+  // console.log("First 20 bytes:", Array.from(imgBuffer).slice(0, 20));
 }
 
 // Init segment
@@ -88,11 +88,11 @@ async function init() {
 async function main() {
   await init();
 
-  // Load assets
-  loadImageBuffer("assets/images/satono_diamond.png");
-
   // Begin render logic
   wasm.exports.cls(0xFF6495ED);
+
+  // Load assets
+  await loadImageBuffer("assets/images/satono_diamond.png");
 
   // Debug surfacePtr
   // const memory = new Uint8Array(wasm.exports.memory.buffer, surfacePtr, 20);
