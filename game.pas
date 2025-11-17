@@ -4,6 +4,14 @@ library Game;
 
 uses Bitmap, VGA;
 
+var
+  loadedImage: TBitmap;
+
+function getLoadedImage: pointer; public name 'getLoadedImage';
+begin
+  getLoadedImage := @loadedImage
+end;
+
 exports
   { VGA }
   initBuffer,

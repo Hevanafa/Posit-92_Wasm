@@ -3,13 +3,14 @@ unit Bitmap;
 interface
 
 type
+  PBitmap = ^TBitmap;
   TBitmap = record
     width, height: word;
-    data: array[0..63999] of byte;
+    data: array[0..127999] of byte;
   end;
 
 function getImageBuffer: pointer; public name 'getImageBuffer';
-procedure spr(const image: TBitmap; const x, y: integer); public name 'spr';
+procedure spr(const imagePtr: pointer; const x, y: integer); public name 'spr';
 
 
 implementation
@@ -39,23 +40,27 @@ begin
 end;
 }
 
-procedure spr(const image: TBitmap; const x, y: integer);
+procedure spr(const imagePtr: pointer; const x, y: integer);
 var
   a, b, srcPos, destPos: integer;
   surface: PByteArray;
+  image: PBitmap;
 begin
+  if imagePtr = nil then exit;
+
+  image := PBitmap(imagePtr);
   surface := PByteArray(getSurface);
 
-  for b:=0 to image.height - 1 do
-  for a:=0 to image.width - 1 do begin
-    srcPos := (b * image.width + a) * 4;
+  for b:=0 to image^.height - 1 do
+  for a:=0 to image^.width - 1 do begin
+    srcPos := (b * image^.width + a) * 4;
     destPos := ((y + b) * vgaWidth + (x + a)) * 4;
 
     { Order: RGBA }
-    surface^[destPos] := image.data[srcPos];
-    surface^[destPos + 1] := image.data[srcPos + 1];
-    surface^[destPos + 2] := image.data[srcPos + 2];
-    surface^[destPos + 3] := image.data[srcPos + 3];
+    surface^[destPos] := image^.data[srcPos];
+    surface^[destPos + 1] := image^.data[srcPos + 1];
+    surface^[destPos + 2] := image^.data[srcPos + 2];
+    surface^[destPos + 3] := image^.data[srcPos + 3];
   end;
 end;
 
