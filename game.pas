@@ -13,7 +13,9 @@ exports
 
   { BITMAP }
   { allocImageData, }
-  getImageBuffer,
+  { getImageBuffer, }
+  loadImageHandle,
+  getImagePtr,
   spr;
 
 begin

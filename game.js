@@ -14,7 +14,7 @@ async function main() {
   // Load assets
   const imgSatono = await loadImage("assets/images/satono_diamond.png");
   console.log("imgSatono handle:", imgSatono);
-  spr(imgSatono, 10, 10);
+  spr(imgSatono, 50, 10);
 
   flush();
 }
