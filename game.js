@@ -41,8 +41,22 @@ async function main() {
   const tempCtx = tempCanvas.getContext("2d");
   tempCtx.drawImage(img, 0, 0);
   const pixels = tempCtx.getImageData(0, 0, img.width, img.height).data;
-  wasm.exports.allocImageData(pixels.length);
+  // wasm.exports.allocImageData(pixels.length);
 
+  const imgBufferPtr = wasm.exports.getImageBuffer();
+  // Create a view into the WASM memory
+  const imgBuffer = new Uint8Array(
+    wasm.exports.memory.buffer,
+    imgBufferPtr, 
+    pixels.length);
+
+  // for (let a=0; a<pixels.length; a++)
+  //   imgBuffer[a] = pixels[a];
+
+  // The same as implementation above
+  imgBuffer.set(pixels);
+
+  
   // Begin render logic
   wasm.exports.cls(0xFF6495ED);
 
