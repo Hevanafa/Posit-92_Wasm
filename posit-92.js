@@ -34,9 +34,11 @@ function flush() {
   ctx.putImageData(imgData, 0, 0)
 }
 
-async function loadImage(url) {
+
+// BITMAP
+async function loadImageFromURL(url) {
   if (url == null || url == "")
-    throw new Error("loadImage: url is required");
+    throw new Error("loadImageFromURL: url is required");
 
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -46,13 +48,11 @@ async function loadImage(url) {
   })
 }
 
-
-// BITMAP
-async function loadImageBuffer(url) {
+async function loadImage(url) {
   if (url == null || url == "")
-    throw new Error("loadImageBuffer: url is required");
+    throw new Error("loadImage: url is required");
 
-  const img = await loadImage(url);
+  const img = await loadImageFromURL(url);
   console.log(`Loaded image: { w: ${img.width}, h: ${img.height} }`);
 
   // Copy image
@@ -71,9 +71,7 @@ async function loadImageBuffer(url) {
     imgBufferPtr, 
     pixels.length);
 
-  // The same as implementation above
   imgBuffer.set(pixels);
-
   // console.log("First 20 bytes:", Array.from(imgBuffer).slice(0, 20));
 }
 
@@ -91,6 +89,6 @@ async function initWebAssembly() {
 
 async function init() {
   await initWebAssembly();
-  console.log("wasm.exports", wasm.exports);
+  // console.log("wasm.exports", wasm.exports);
   wasm.exports.initBuffer();
 }

@@ -2,7 +2,7 @@ async function main() {
   await init();
 
   // Load assets
-  await loadImageBuffer("assets/images/satono_diamond.png");
+  await loadImage("assets/images/satono_diamond.png");
 
   // Begin render logic
   cls(0xFF6495ED);
