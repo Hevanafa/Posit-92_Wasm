@@ -19,7 +19,8 @@ procedure spr(const imgHandle: longint; const x, y: integer); public name 'spr';
 
 implementation
 
-uses VGA;
+uses
+  Conv, VGA;
 
 { Bitmap operations }
 const
@@ -30,7 +31,7 @@ var
   images: array[1..10] of TBitmap;
   nextImageHandle: longint = 1;
 
-procedure consoleLog(value: longint); external 'env' name 'consoleLog';
+procedure consoleLog(const value: string); external 'env' name 'consoleLog';
 
 
 function getImageBuffer: pointer;
@@ -60,10 +61,10 @@ begin
   image := getImagePtr(imgHandle);
   if image = nil then exit;
 
-  consoleLog(image^.width);
-  consoleLog(image^.height);
+  consoleLog('w:' + i32str(image^.width));
+  consoleLog('h:' + i32str(image^.height));
   for a:=0 to 7 do
-    consoleLog(image^.data[a]);
+    consoleLog(i32str(image^.data[a]));
 end;
 
 
