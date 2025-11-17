@@ -27,7 +27,7 @@ end;
 
 function getSurface: pointer; cdecl;
 begin
-  getSurface := @surface
+  getSurface := surface
 end;
 
 procedure cls(const colour: longword); cdecl;
