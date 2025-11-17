@@ -82,11 +82,6 @@ begin
     srcPos := (a + b * image^.width) * 4;
     destPos := ((a + x) + (b + y) * vgaWidth) * 4;
 
-    if (a < 3) and (b = 0) then begin
-      logI32(srcPos);
-      logI32(destPos);
-    end;
-
     { Order: RGBA }
     surface[destPos] := image^.data[srcPos];
     surface[destPos + 1] := image^.data[srcPos + 1];
