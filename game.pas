@@ -5,11 +5,15 @@ library Game;
 uses Bitmap, VGA;
 
 var
-  loadedImage: TBitmap;
+  images: array[1..10] of TBitmap;
+  nextImageHandle: longint = 1;
 
-function getLoadedImage: pointer; public name 'getLoadedImage';
+function getImagePtr(const imgHandle: longint): pointer; public name 'getImagePtr';
 begin
-  getLoadedImage := @loadedImage
+  if (1 <= imgHandle) and (imgHandle < nextImageHandle) then
+    getImagePtr := @images[imgHandle]
+  else
+    getImagePtr := nil;
 end;
 
 exports
