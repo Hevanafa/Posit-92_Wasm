@@ -2,7 +2,7 @@ library Game;
 
 {$Mode ObjFPC}
 
-uses Classes;
+{ uses Classes; }
 
 type
   PByteArray = ^TByteArray;
