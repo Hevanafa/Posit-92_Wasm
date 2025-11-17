@@ -11,7 +11,8 @@ let wasm;
 
 const importObject = {
   env: {
-    _haltproc: exitcode => console.log("Programme halted with code:", exitcode)
+    _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
+    consoleLog: value => console.log("Pascal:", value)
   }
 }
 

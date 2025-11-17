@@ -30,6 +30,9 @@ var
   images: array[1..10] of TBitmap;
   nextImageHandle: longint = 1;
 
+procedure consoleLog(value: longint); external 'env' name 'consoleLog';
+
+
 function getImageBuffer: pointer;
 begin
   getImageBuffer := @imageBuffer
@@ -47,6 +50,20 @@ begin
     getImagePtr := @images[imgHandle]
   else
     getImagePtr := nil;
+end;
+
+procedure debugImage(const imgHandle: longint); public name 'debugImage';
+var
+  image: PBitmap;
+  a: integer;
+begin
+  image := getImagePtr(imgHandle);
+  if image = nil then exit;
+
+  consoleLog(image^.width);
+  consoleLog(image^.height);
+  for a:=0 to 7 do
+    consoleLog(image^.data[a]);
 end;
 
 
