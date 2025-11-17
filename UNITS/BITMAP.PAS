@@ -9,8 +9,12 @@ type
     data: array[0..127999] of byte;
   end;
 
+{ Legacy }
 function getImageBuffer: pointer; public name 'getImageBuffer';
-procedure spr(const imagePtr: pointer; const x, y: integer); public name 'spr';
+
+function loadImageHandle: longint; public name 'loadImageHandle';
+function getImagePtr(const imgHandle: longint): pointer; public name 'getImagePtr';
+procedure spr(const imgHandle: longint; const x, y: integer); public name 'spr';
 
 
 implementation
@@ -23,11 +27,28 @@ const
 
 var
   imageBuffer: array[0..maxImageBufferSize - 1] of byte;
+  images: array[1..10] of TBitmap;
+  nextImageHandle: longint = 1;
 
 function getImageBuffer: pointer;
 begin
   getImageBuffer := @imageBuffer
 end;
+
+function loadImageHandle: longint;
+begin
+  loadImageHandle := nextImageHandle;
+  inc(nextImageHandle)
+end;
+
+function getImagePtr(const imgHandle: longint): pointer;
+begin
+  if (1 <= imgHandle) and (imgHandle < nextImageHandle) then
+    getImagePtr := @images[imgHandle]
+  else
+    getImagePtr := nil;
+end;
+
 
 {
 function allocImageData(const size: integer): pointer;
@@ -40,15 +61,15 @@ begin
 end;
 }
 
-procedure spr(const imagePtr: pointer; const x, y: integer);
+procedure spr(const imgHandle: longint; const x, y: integer);
 var
   a, b, srcPos, destPos: integer;
   surface: PByteArray;
   image: PBitmap;
 begin
-  if imagePtr = nil then exit;
+  image := PBitmap(getImagePtr(imgHandle));
+  if image = nil then exit;
 
-  image := PBitmap(imagePtr);
   surface := PByteArray(getSurface);
 
   for b:=0 to image^.height - 1 do
