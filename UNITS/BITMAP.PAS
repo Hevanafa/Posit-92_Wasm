@@ -124,4 +124,31 @@ begin
   end;
 end;
 
+procedure sprBlend(const imgHandle: longint; const x, y: integer);
+var
+  image: PBitmap;
+  px, py: integer;
+  srcPos: longint;
+  colour: longword;
+  a, r, g, b: byte;
+begin
+  image := getImagePtr(imgHandle);
+  if image = nil then exit;
+
+  for py := 0 to image^.height - 1 do
+  for px := 0 to image^.width - 1 do begin
+    if (x + a >= vgaWidth) or (x + a < 0)
+      or (y + b >= vgaHeight) or (y + b < 0) then continue;
+
+    srcPos := (px + py * image^.width) * 4;
+    r := image^.data[srcPos];
+    g := image^.data[srcPos + 1];
+    b := image^.data[srcPos + 2];
+    a := image^.data[srcPos + 3];
+
+    colour := (a shl 24) or (r shl 16) or (g shl 8) or b;
+    psetBlend(x + px, y + py, colour)
+  end;
+end;
+
 end.

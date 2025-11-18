@@ -110,9 +110,9 @@ begin
 
   offset := (y * vgaWidth + x) * 4;
 
-  pget := (surface[offset + 3] shl 24) +
-    (surface[offset] shl 16) +
-    (surface[offset + 1] shl 8) +
+  pget := (surface[offset + 3] shl 24) or
+    (surface[offset] shl 16) or
+    (surface[offset + 1] shl 8) or
     surface[offset + 2]
 end;
 
