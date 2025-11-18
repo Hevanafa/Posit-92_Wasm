@@ -6,9 +6,6 @@ uses Bitmap, Graphics, Logger, VGA;
 
 
 exports
-  { GRAPHICS }
-  rect,
-
   { VGA }
   initBuffer,
   getSurface,
