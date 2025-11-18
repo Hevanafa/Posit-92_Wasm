@@ -1,1 +1,1 @@
-.\compile.ps1; .\start_server.ps1
+.\compile.ps1 && .\start_server.ps1
