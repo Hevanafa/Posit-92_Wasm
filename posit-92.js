@@ -137,4 +137,8 @@ class Posit92 {
     const imgData = new ImageData(imageData, 320, 200);
     this.#ctx.putImageData(imgData, 0, 0)
   }
+
+  pset(x, y, colour) {
+    this.#wasm.exports.pset(x, y, colour)
+  }
 }
