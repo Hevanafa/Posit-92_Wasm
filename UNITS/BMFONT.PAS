@@ -9,7 +9,7 @@ type
     xoffset, yoffset: integer;
     xadvance: integer;
   end;
-  TBMFont = record
+  TBMFont = packed record
     face: string[15];  { 16 bytes }
     filename: string[63];  { 64 bytes }
     lineHeight: word;  { 2 bytes }
