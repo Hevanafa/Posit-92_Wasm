@@ -9,10 +9,13 @@ async function main() {
   P92.cls(0xFF6495ED);
 
   // Load assets
-  const imgSatono = await P92.loadImage("assets/images/satono_diamond.png");
-  console.log("imgSatono handle:", imgSatono);
-  P92.debugImage(imgSatono);
-  P92.spr(imgSatono, 50, 10);
+  // const imgSatono = await P92.loadImage("assets/images/satono_diamond.png");
+  // console.log("imgSatono handle:", imgSatono);
+  // P92.debugImage(imgSatono);
+  // P92.spr(imgSatono, 50, 10);
+
+  P92.circ(10, 10, 5, white);
+  P92.circfill(10, 30, 5, yellow);
 
   P92.rect(50, 10, 150, 98, white);
   P92.rectfill(160, 10, 260, 98, yellow);

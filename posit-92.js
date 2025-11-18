@@ -101,6 +101,14 @@ class Posit92 {
 
 
   // GRAPHICS.PAS
+  circ(cx, cy, radius, colour) {
+    this.#wasm.exports.circ(cx, cy, radius, colour)
+  }
+
+  circfill(cx, cy, radius, colour) {
+    this.#wasm.exports.circfill(cx, cy, radius, colour)
+  }
+
   rect(x0, y0, x1, y1, colour) {
     this.#wasm.exports.rect(x0, y0, x1, y1, colour)
   }
