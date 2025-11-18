@@ -20,8 +20,14 @@ class Posit92 {
     }
   });
 
-  constructor() {
-    this.#canvas = document.getElementById("canvas");
+  constructor(canvasID) {
+    if (canvasID == null || canvasID == "")
+      throw new Error("canvasID is required!");
+
+    this.#canvas = document.getElementById(canvasID);
+    if (this.#canvas == null)
+      throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
+
     this.#ctx = canvas.getContext("2d");
   }
 
