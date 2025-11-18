@@ -57,10 +57,11 @@ begin
 
     if (charcode < low(fontGlyphs)) or (charcode > high(fontGlyphs)) then
       continue;
-    
+    {
     writeLogI32(charcode);
     writeLogI32(fontGlyphs[charcode].x);
     writeLogI32(fontGlyphs[charcode].y);
+    }
 
     sprRegion(
       font.imgHandle,
