@@ -39,11 +39,11 @@ var
 begin
   left := 0;
 
-  for a:=1 to len(text) begin
-    ch = text[a];
-    charcode = ord(text);
+  for a:=1 to length(text) do begin
+    ch := text[a];
+    charcode := ord(ch);
 
-    if (charcode < low(defaultFontGlyphs)) or (charcode > high(defaultFontGlyphs)) then
+    if (charcode < low(fontGlyphs)) or (charcode > high(fontGlyphs)) then
       continue;
     
     sprRegion(

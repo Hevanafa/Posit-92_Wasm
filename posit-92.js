@@ -191,8 +191,8 @@ class Posit92 {
     console.log("loadBMFont imgHandle:", imgHandle);
 
     // Obtain pointers to Pascal structures
-    const fontPtr = this.#wasm.exports.defaultFont();
-    const glyphsPtr = this.#wasm.exports.defaultFontGlyphs();
+    const fontPtr = this.#wasm.exports.defaultFontPtr();
+    const glyphsPtr = this.#wasm.exports.defaultFontGlyphsPtr();
 
     // Write font data
     const fontMem = new DataView(this.#wasm.exports.memory.buffer, fontPtr);
@@ -235,6 +235,10 @@ class Posit92 {
     }
 
     console.log("loadBMFont completed");
+  }
+
+  printBMFont(text) {
+    this.#wasm.exports.printDefault(text)
   }
 
 

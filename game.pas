@@ -8,20 +8,20 @@ var
   _defaultFont: TBMFont;
   _defaultFontGlyphs: array[32..126] of TBMFontGlyph;
 
-function defaultFont: pointer;
+
+function defaultFontPtr: pointer; public name 'defaultFontPtr';
 begin
-  defaultFont := @_defaultFont
+  defaultFontPtr := @_defaultFont
 end;
 
-function defaultFontGlyphs: pointer;
+function defaultFontGlyphsPtr: pointer; public name 'defaultFontGlyphsPtr';
 begin
-  defaultFontGlyphs := @_defaultFontGlyphs
+  defaultFontGlyphsPtr := @_defaultFontGlyphs
 end;
-
 
 procedure printDefault(const text: string; const x, y: integer); public name 'printDefault';
 begin
-  printBMFont(text, x, y, defaultFont, defaultFontGlyphs)
+  printBMFont(text, x, y, _defaultFont, _defaultFontGlyphs)
 end;
 
 exports
