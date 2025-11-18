@@ -199,14 +199,14 @@ class Posit92 {
 
     let offset = 0;
     // Skip face string
-    offset += 256;
+    offset += 16;  // was 256
     // Skip filename string
-    offset += 256;
+    offset += 64;  // was 256
 
     // true makes it little-endian
     fontMem.setUint16(offset, lineHeight, true);
     console.log("imgHandle to write", imgHandle);
-    fontMem.setUint32(offset + 2, imgHandle, true);
+    fontMem.setInt32(offset + 4, imgHandle, true);
 
     // Write glyphs
     const glyphsMem = new DataView(this.#wasm.exports.memory.buffer, glyphsPtr);
@@ -251,7 +251,7 @@ class Posit92 {
   printDefault(text, x, y) {
     const length = this.#loadStringBuffer(text);
     const bufferPtr = this.#wasm.exports.getStringBuffer();
-    this.#wasm.exports.debugStringBuffer();
+    // this.#wasm.exports.debugStringBuffer();
     this.#wasm.exports.printDefault(bufferPtr, length, x, y)
   }
 

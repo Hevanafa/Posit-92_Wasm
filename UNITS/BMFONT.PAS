@@ -10,10 +10,10 @@ type
     xadvance: integer;
   end;
   TBMFont = record
-    face: string;
-    filename: string;
+    face: string[15];  { 16 bytes }
+    filename: string[63];  { 64 bytes }
     lineHeight: word;
-    imgHandle: longword;
+    imgHandle: longint;
   end;
 
 procedure printBMFont(
