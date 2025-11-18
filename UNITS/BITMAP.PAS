@@ -1,5 +1,7 @@
 unit Bitmap;
 
+{$B-}  { Enable boolean short-circuiting }
+
 interface
 
 type
@@ -75,6 +77,9 @@ begin
 
   for b:=0 to image^.height - 1 do
   for a:=0 to image^.width - 1 do begin
+    if (x + a >= vgaWidth) or (x + a < 0)
+      or (y + b >= vgaHeight) or (y + b < 0) then continue;
+
     srcPos := (a + b * image^.width) * 4;
     destPos := ((a + x) + (b + y) * vgaWidth) * 4;
 
