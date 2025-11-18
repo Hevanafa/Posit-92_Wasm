@@ -236,8 +236,7 @@ class Posit92 {
     console.log("loadBMFont completed");
   }
 
-  // printBMFont(text) {
-  printDefault(text, x, y) {
+  #loadStringBuffer(text) {
     const encoder = new TextEncoder();
     const bytes = encoder.encode(text);
 
@@ -245,7 +244,15 @@ class Posit92 {
     const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, bufferPtr, bytes.length);
     buffer.set(bytes);
 
-    this.#wasm.exports.printDefault(bufferPtr, bytes.length, x, y)
+    return bytes.length
+  }
+
+  // printBMFont(text) {
+  printDefault(text, x, y) {
+    const length = this.#loadStringBuffer(text);
+    const bufferPtr = this.#wasm.exports.getStringBuffer();
+    this.#wasm.exports.debugStringBuffer();
+    this.#wasm.exports.printDefault(bufferPtr, length, x, y)
   }
 
 

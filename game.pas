@@ -40,12 +40,22 @@ begin
   strPtrToString := text
 end;
 
-{ TODO: interop text from JS }
+procedure debugStringBuffer; public name 'debugStringBuffer';
+var
+  a: word;
+begin
+  writeLog('First 20 bytes of stringBuffer');
+
+  for a:=0 to 19 do
+    writeLogI32(stringBuffer[a]);
+end;
+
 procedure printDefault(const textPtr: pointer; const textLen: integer; const x, y: integer); public name 'printDefault';
 var
   text: string;
 begin
   text := strPtrToString(textPtr, textLen);
+  writeLog(text);
   printBMFont(text, x, y, _defaultFont, _defaultFontGlyphs)
 end;
 
