@@ -16,10 +16,11 @@ type
     imgHandle: longword;
   end;
 
-uses Bitmap;
-
+{ procedure printBMFont(const text: string; const x, y: integer; const font: TBMFont; const fontGlyphs: array of TBMFontGlyph); public name 'printBMFont'; }
 
 implementation
+
+uses Bitmap;
 
 
 end.
