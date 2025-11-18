@@ -7,7 +7,12 @@ uses Bitmap, BMFont, Graphics, Logger, VGA;
 var
   _defaultFont: TBMFont;
   _defaultFontGlyphs: array[32..126] of TBMFontGlyph;
+  stringBuffer: array[0..255] of byte;
 
+function getStringBuffer: pointer; public name 'getStringBuffer';
+begin
+  getStringBuffer := @stringBuffer
+end;
 
 function defaultFontPtr: pointer; public name 'defaultFontPtr';
 begin
@@ -19,7 +24,7 @@ begin
   defaultFontGlyphsPtr := @_defaultFontGlyphs
 end;
 
-function strPtrToString(const textPtr: pointer; const textLen: word): string; public name 'pascalStringPtr';
+function strPtrToString(const textPtr: pointer; const textLen: word): string;
 var
   text: string;
   a: integer;

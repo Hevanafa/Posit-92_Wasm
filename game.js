@@ -27,7 +27,7 @@ async function main() {
   // P92.sprRegion(imgSatono, 0, 0, 10, 10, 30, 10);
   // P92.sprRegion(imgDefaultFont, 0, 0, 10, 10, 30, 30);
 
-  P92.printBMFont("Hello from POSIT-92!", 10, 10);
+  P92.printDefault("Hello from POSIT-92!", 10, 10);
   // P92.spr(4, 10, 10);
 
   P92.flush();
