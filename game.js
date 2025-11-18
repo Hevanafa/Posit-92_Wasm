@@ -22,8 +22,8 @@ async function main() {
   // P92.debugImage(imgSatono);
   // P92.debugImage(imgDefaultFont);
   
-  // P92.spr(imgGasolineMaid, 0, 0);
-  // P92.spr(imgSatono, 50, 10);
+  P92.spr(imgGasolineMaid, 0, 0);
+  P92.spr(imgSatono, 50, 10);
   // P92.sprRegion(imgSatono, 0, 0, 10, 10, 30, 10);
   // P92.sprRegion(imgDefaultFont, 0, 0, 10, 10, 30, 30);
 

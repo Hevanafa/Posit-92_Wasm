@@ -46,16 +46,29 @@ begin
 end;
 
 function getImagePtr(const imgHandle: longint): pointer;
+var
+  idx: integer;
 begin
-  if (1 <= imgHandle) and (imgHandle < nextImageHandle) then
-    getImagePtr := @images[imgHandle]
+  idx := imgHandle;
+
+  {
+  writeLog('getImagePtr imgHandle: ' + i32str(imgHandle));
+  writeLog('getImagePtr idx: ' + i32str(idx));
+  }
+
+  if (1 <= idx) and (idx < nextImageHandle) then
+    getImagePtr := @images[idx]
   else
     getImagePtr := nil;
 end;
 
 function isImageSet(const imgHandle: longint): boolean;
 begin
-  isImageSet := (imgHandle > 0)
+  { isImageSet := (imgHandle < 0) }
+  isImageSet := false;
+
+  if getImagePtr(imgHandle) <> nil then
+    isImageSet := true;
 end;
 
 
@@ -64,9 +77,9 @@ var
   image: PBitmap;
   a: integer;
 begin
-  image := getImagePtr(imgHandle);
-  if image = nil then exit;
+  if not isImageSet(imgHandle) then exit;
 
+  image := getImagePtr(imgHandle);
   writeLogI32(image^.width);
   writeLogI32(image^.height);
 
@@ -93,8 +106,9 @@ var
   srcPos, destPos: longint;
   image: PBitmap;
 begin
+  if not isImageSet(imgHandle) then exit;
+
   image := getImagePtr(imgHandle);
-  if image = nil then exit;
 
   for b:=0 to image^.height - 1 do
   for a:=0 to image^.width - 1 do begin
@@ -121,8 +135,9 @@ var
   srcPos, destPos: longint;
   image: PBitmap;
 begin
+  if not isImageSet(imgHandle) then exit;
+
   image := getImagePtr(imgHandle);
-  if image = nil then exit;
 
   for b:=0 to srcH - 1 do
   for a:=0 to srcW - 1 do begin
@@ -148,8 +163,9 @@ var
   colour: longword;
   a, r, g, b: byte;
 begin
+  if not isImageSet(imgHandle) then exit;
+
   image := getImagePtr(imgHandle);
-  if image = nil then exit;
 
   for py := 0 to image^.height - 1 do
   for px := 0 to image^.width - 1 do begin
@@ -178,8 +194,9 @@ var
   colour: longword;
   a, r, g, b: byte;
 begin
+  if not isImageSet(imgHandle) then exit;
+
   image := getImagePtr(imgHandle);
-  if image = nil then exit;
 
   for py := 0 to srcH - 1 do
   for px := 0 to srcW - 1 do begin
