@@ -20,10 +20,18 @@ $p.WaitForExit()
 $stdout = $p.StandardOutput.ReadToEnd()
 $stderr = $p.StandardError.ReadToEnd()
 
-write-host "(STDOUT)"
-write-host $stdout
-write-host "(STDERR)"
-write-host $stderr
+write-host "(STDOUT)" -foregroundColor cyan
+if ($stdout.Trim() -eq "") {
+  write-host "(No data)" -foregroundColor gray
+} else {
+  write-host $stdout
+}
+write-host "(STDERR)" -foregroundColor red
+if ($stderr.Trim() -eq "") {
+  write-host "(No data)" -foregroundColor gray
+} else {
+  write-host $stderr
+}
 
 if ($p.ExitCode -ne 0) {
   write-host "Compilation failed with exit code $($p.ExitCode)" -foregroundColor red
