@@ -13,11 +13,15 @@ type
 
 function loadImageHandle: longint; public name 'loadImageHandle';
 function getImagePtr(const imgHandle: longint): pointer; public name 'getImagePtr';
+
 procedure spr(const imgHandle: longint; const x, y: integer); public name 'spr';
 procedure sprRegion(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer); public name 'sprRegion';
+
+procedure sprBlend(const imgHandle: longint; const x, y: integer); public name 'sprBlend';
+
 
 implementation
 
@@ -137,8 +141,8 @@ begin
 
   for py := 0 to image^.height - 1 do
   for px := 0 to image^.width - 1 do begin
-    if (x + a >= vgaWidth) or (x + a < 0)
-      or (y + b >= vgaHeight) or (y + b < 0) then continue;
+    if (x + px >= vgaWidth) or (x + px < 0)
+      or (y + py >= vgaHeight) or (y + py < 0) then continue;
 
     srcPos := (px + py * image^.width) * 4;
     r := image^.data[srcPos];

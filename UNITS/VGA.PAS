@@ -30,6 +30,8 @@ procedure pset(const x, y: integer; const colour: longword); public name 'pset';
 
 { flush is available in JS code }
 
+procedure psetBlend(const x, y: integer; const colour: longword);
+
 implementation
 
 uses Logger;
@@ -67,24 +69,6 @@ begin
   b := colour and $FF;
 
   offset := (y * vgaWidth + x) * 4;
-  surface[offset] := r;
-  surface[offset + 1] := g;
-  surface[offset + 2] := b;
-  surface[offset + 3] := a;
-end;
-
-procedure unsafePsetBlend(const x, y: integer; const colour: longword);
-var
-  a, r, g, b: byte;
-  offset: longword;
-begin
-  a := colour shr 24 and $FF;
-  r := colour shr 16 and $FF;
-  g := colour shr 8 and $FF;
-  b := colour and $FF;
-
-  offset := (y * vgaWidth + x) * 4;
-
   surface[offset] := r;
   surface[offset + 1] := g;
   surface[offset + 2] := b;
