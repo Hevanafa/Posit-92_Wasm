@@ -2,9 +2,16 @@
 <html>
 <head>
   <title>Pascal + WebAssembly</title>
+  <style>
+#game {
+  image-rendering: pixelated;
+  scale: 2;
+  transform-origin: top left;
+}
+  </style>
 </head>
 <body>
-  <canvas id="canvas" width="640" height="400"></canvas>
+  <canvas id="game" width="320" height="200"></canvas>
   <script src="posit-92.js"></script>
   <script src="game.js"></script>
 </body>
