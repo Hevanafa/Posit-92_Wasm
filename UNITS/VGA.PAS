@@ -84,6 +84,7 @@ begin
   b := colour and $FF;
 
   offset := (y * vgaWidth + x) * 4;
+
   surface[offset] := r;
   surface[offset + 1] := g;
   surface[offset + 2] := b;
@@ -95,6 +96,24 @@ procedure pset(const x, y: integer; const colour: longword);
 begin
   if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then exit;
   unsafePset(x, y, colour)
+end;
+
+{ Gets the colour of a pixel }
+function pget(const x, y: integer): longword;
+var
+  offset: longword;
+begin
+  if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then begin
+    pget := 0;
+    exit
+  end;
+
+  offset := (y * vgaWidth + x) * 4;
+
+  pget := (surface[offset + 3] shl 24) +
+    (surface[offset] shl 16) +
+    (surface[offset + 1] shl 8) +
+    surface[offset + 2]
 end;
 
 procedure psetBlend(const x, y: integer; const colour: longword);
