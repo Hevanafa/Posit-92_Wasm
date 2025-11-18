@@ -6,6 +6,12 @@ class Posit92 {
   #ctx;
 
   /**
+   * @type {HTMLCanvasElement}
+   */
+  #flushCanvas;
+  #flushCtx;
+
+  /**
    * @type {WebAssembly.Instance}
    */
   #wasm;
@@ -155,15 +161,22 @@ class Posit92 {
 
   flush() {
     const surfacePtr = this.#wasm.exports.getSurface();
-    // console.log("Surface pointer", surfacePtr);
-
     const imageData = new Uint8ClampedArray(
       this.#wasm.exports.memory.buffer,
       surfacePtr,
       320 * 200 * 4
     );
     const imgData = new ImageData(imageData, 320, 200);
-    this.#ctx.putImageData(imgData, 0, 0)
+
+    if (this.#flushCanvas == null) {
+      this.#flushCanvas = document.createElement("canvas");
+      this.#flushCanvas.width = 320;
+      this.#flushCanvas.height = 200;
+      this.#flushCtx = this.#flushCanvas.getContext("2d");
+    }
+
+    this.#flushCtx.putImageData(imgData, 0, 0);
+    this.#ctx.drawImage(this.#flushCanvas, 0, 0);
   }
 
   pset(x, y, colour) {

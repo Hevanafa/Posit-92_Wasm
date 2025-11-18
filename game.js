@@ -17,7 +17,8 @@ async function main() {
   console.log("imgDefaultFont handle:", imgDefaultFont);
 
   // P92.debugImage(imgSatono);
-  P92.debugImage(imgDefaultFont);
+  // P92.debugImage(imgDefaultFont);
+  P92.debugImage(imgGasolineMaid);
   
   P92.spr(imgGasolineMaid, 0, 0);
 
@@ -25,13 +26,13 @@ async function main() {
   // P92.sprRegion(imgSatono, 0, 0, 10, 10, 30, 10);
   // P92.sprRegion(imgDefaultFont, 0, 0, 10, 10, 30, 30);
 
-  P92.circ(10, 10, 5, white);
-  P92.circfill(10, 30, 5, yellow);
+  // P92.circ(10, 10, 5, white);
+  // P92.circfill(10, 30, 5, yellow);
 
-  P92.rect(50, 10, 150, 98, white);
-  P92.rectfill(160, 10, 260, 98, yellow);
+  // P92.rect(50, 10, 150, 98, white);
+  // P92.rectfill(160, 10, 260, 98, yellow);
 
-  P92.line(50, 10, 150, 98, yellow);
+  // P92.line(50, 10, 150, 98, yellow);
 
   P92.flush();
 }

@@ -53,7 +53,9 @@ begin
 
   writeLogI32(image^.width);
   writeLogI32(image^.height);
-  for a:=0 to 7 do
+
+  { Debug the first 5 pixels }
+  for a:=0 to 19 do
     writeLogI32(image^.data[a]);
 end;
 
