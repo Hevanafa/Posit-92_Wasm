@@ -24,6 +24,8 @@ procedure line(const x0, y0, x1, y1: integer; const colour: byte);
 
 implementation
 
+uses VGA;
+
 procedure rect(x0, y0, x1, y1: integer; const colour: longword);
 var
   a, b, temp: integer;
@@ -35,12 +37,12 @@ begin
     temp := y0; y0 := y1; y1 := temp
   end;
   for b:=y0 to y1 do begin
-    asmPset(x0, b, colour);
-    asmPset(x1, b, colour)
+    pset(x0, b, colour);
+    pset(x1, b, colour)
   end;
   for a:=x0 to x1 do begin
-    asmPset(a, y0, colour);
-    asmPset(a, y1, colour)
+    pset(a, y0, colour);
+    pset(a, y1, colour)
   end;
 end;
 

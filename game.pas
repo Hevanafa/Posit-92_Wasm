@@ -2,7 +2,7 @@ library Game;
 
 {$Mode ObjFPC}
 
-uses Bitmap, Logger, VGA;
+uses Bitmap, Graphics, Logger, VGA;
 
 
 exports
