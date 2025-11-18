@@ -1,8 +1,9 @@
 async function main() {
-  await init();
+  const P92 = new Posit92();
+  await P92.init();
 
   // Begin render logic
-  cls(0xFF6495ED);
+  P92.cls(0xFF6495ED);
 
   // Debug surfacePtr
   // const memory = new Uint8Array(wasm.exports.memory.buffer, surfacePtr, 20);

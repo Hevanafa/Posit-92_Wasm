@@ -9,6 +9,48 @@ const ctx = canvas.getContext("2d");
  */
 let wasm;
 
+class Posit92 {
+  constructor() {
+
+  }
+
+  // Init segment
+  async initWebAssembly() {
+    const response = await fetch("game.wasm");
+    const bytes = await response.arrayBuffer();
+    const result = await WebAssembly.instantiate(bytes, importObject);
+    wasm = result.instance;
+  }
+
+  async init() {
+    await initWebAssembly();
+    // console.log("wasm.exports", wasm.exports);
+    wasm.exports.initBuffer();
+  }
+
+  // VGA
+  cls(colour) {
+    wasm.exports.cls(colour);
+  }
+
+  flush() {
+    const surfacePtr = wasm.exports.getSurface();
+    // console.log("Surface pointer", surfacePtr);
+
+    const imageData = new Uint8ClampedArray(
+      wasm.exports.memory.buffer,
+      surfacePtr,
+      320 * 200 * 4
+    );
+    const imgData = new ImageData(imageData, 320, 200);
+    ctx.putImageData(imgData, 0, 0)
+  }
+}
+
+const P92 = Posit92;
+
+
+
 const importObject = {
   env: {
     _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
@@ -18,26 +60,6 @@ const importObject = {
     flushLog: () => pascalWriteLog()
   }
 }
-
-
-// VGA
-function cls(colour) {
-  wasm.exports.cls(colour);
-}
-
-function flush() {
-  const surfacePtr = wasm.exports.getSurface();
-  // console.log("Surface pointer", surfacePtr);
-
-  const imageData = new Uint8ClampedArray(
-    wasm.exports.memory.buffer,
-    surfacePtr,
-    320 * 200 * 4
-  );
-  const imgData = new ImageData(imageData, 320, 200);
-  ctx.putImageData(imgData, 0, 0)
-}
-
 
 // BITMAP
 async function loadImageFromURL(url) {
@@ -58,7 +80,7 @@ async function loadImage(url) {
 
   const img = await loadImageFromURL(url);
   // console.log(`Loaded image: { w: ${img.width}, h: ${img.height} }`);
-  
+
 
   // Copy image
   const tempCanvas = document.createElement("canvas");
@@ -99,18 +121,4 @@ function pascalWriteLog() {
   const msg = new TextDecoder().decode(msgBytes);
 
   console.log("Pascal:", msg);
-}
-
-// Init segment
-async function initWebAssembly() {
-  const response = await fetch("game.wasm");
-  const bytes = await response.arrayBuffer();
-  const result = await WebAssembly.instantiate(bytes, importObject);
-  wasm = result.instance;
-}
-
-async function init() {
-  await initWebAssembly();
-  // console.log("wasm.exports", wasm.exports);
-  wasm.exports.initBuffer();
 }
