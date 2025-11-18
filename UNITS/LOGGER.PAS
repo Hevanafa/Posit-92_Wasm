@@ -6,7 +6,8 @@ interface
 
 procedure writeLog(const msg: string);
 function getLogBuffer: pointer; public name 'getLogBuffer';
-
+{ Forwards logBuffer to JS }
+procedure flushLog; external 'env' name 'flushLog';
 
 implementation
 
@@ -15,17 +16,20 @@ var
 
 procedure writeLog(const msg: string);
 var
-  a, len: byte;
+  a: byte;
+  len: word;
 begin
   len := length(msg);
+
   { Cap length to 255 }
   if len > 255 then len := 255;
 
   logBuffer[0] := len;
-  if a:=1 to len do
+  for a:=1 to len do
     logBuffer[a] := ord(msg[a]);
 
-  { TODO: JS will read logBuffer }
+  { JS will read logBuffer }
+  flushLog
 end;
 
 function getLogBuffer: pointer;

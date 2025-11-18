@@ -25,11 +25,15 @@ procedure cls(const colour: longword); public name 'cls';
 
 implementation
 
+uses Logger;
+
 var
   bufferInitialised: boolean;
 
 procedure initBuffer;
 begin
+  writeLog('Attempting to call initBuffer');
+
   if not bufferInitialised then begin
     { This throws
       "Uncaught (in promise) RuntimeError: null function or function signature mismatch"

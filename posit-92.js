@@ -12,7 +12,10 @@ let wasm;
 const importObject = {
   env: {
     _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
-    logI32: value => console.log("Pascal:", value)
+
+    // Logger
+    logI32: value => console.log("Pascal:", value),
+    flushLog: () => pascalWriteLog()
   }
 }
 
@@ -83,6 +86,18 @@ async function loadImage(url) {
 
 function spr(imgHandle, x, y) {
   wasm.exports.spr(imgHandle, x, y);
+}
+
+// LOGGER
+function pascalWriteLog() {
+  const bufferPtr = wasm.exports.getLogBuffer();
+  const buffer = new Uint8Array(wasm.exports.memory.buffer, bufferPtr, 256);
+
+  const len = buffer[0];
+  const msgBytes = buffer.slice(1, 1 + len);
+  const msg = new TextDecoder().decode(msgBytes);
+
+  console.log("Pascal:", msg);
 }
 
 // Init segment
