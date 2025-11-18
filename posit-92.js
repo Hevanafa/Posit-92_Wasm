@@ -99,6 +99,10 @@ class Posit92 {
     this.#wasm.exports.spr(imgHandle, x, y)
   }
 
+  sprRegion(imgHandle, srcX, srcY, srcW, srcH, destX, destY) {
+    this.#wasm.exports.sprRegion(imgHandle, srcX, srcY, srcW, srcH, destX, destY)
+  }
+
 
   // GRAPHICS.PAS
   circ(cx, cy, radius, colour) {

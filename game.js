@@ -10,9 +10,17 @@ async function main() {
 
   // Load assets
   const imgSatono = await P92.loadImage("assets/images/satono_diamond.png");
+  const imgDefaultFont = await P92.loadImage("assets/fonts/nokia_cellphone_fc_8_0.png")
+
   console.log("imgSatono handle:", imgSatono);
-  P92.debugImage(imgSatono);
+  console.log("imgDefaultFont handle:", imgDefaultFont);
+
+  // P92.debugImage(imgSatono);
+  P92.debugImage(imgDefaultFont);
+
   P92.spr(imgSatono, 50, 10);
+  P92.sprRegion(imgSatono, 0, 0, 10, 10, 30, 10);
+  P92.sprRegion(imgDefaultFont, 0, 0, 10, 10, 30, 30);
 
   P92.circ(10, 10, 5, white);
   P92.circfill(10, 30, 5, yellow);
