@@ -112,7 +112,23 @@ class Posit92 {
     const res = await fetch(url);
     const text = await res.text();
 
-    console.log(text);
+    const lines = text.split("\r\n");
+    // console.log(lines);
+
+    let txtLine = "";
+    let pairs;
+    let k = "", v = "";
+
+    for (const line of lines) {
+      txtLine = line.replaceAll(/\s+/g, " ");
+      pairs = txtLine.split(" ").map(part => part.split("="));
+
+      if (txtLine.startsWith("info")) {
+        [k, v] = pairs.find(pair => pair[0] == "face");
+        console.log("face", v)
+      }
+
+    }
   }
 
 
