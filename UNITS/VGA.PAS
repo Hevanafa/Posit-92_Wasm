@@ -30,7 +30,7 @@ procedure pset(const x, y: integer; const colour: longword); public name 'pset';
 
 { flush is available in JS code }
 
-procedure psetBlend(const x, y: integer; const colour: longword);
+procedure psetBlend(const x, y: integer; const colour: longword); public name 'psetBlend';
 
 implementation
 
