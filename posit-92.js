@@ -210,8 +210,31 @@ class Posit92 {
     fontMem.setUint32(offset, imgHandle, true);
 
     // Write glyphs
-    
+    const glyphsMem = new DataView(this.#wasm.exports.memory.buffer, glyphsPtr);
 
+    for (const charID in fontGlyphs) {
+      const glyph = fontGlyphs[charID];
+      const id = parseInt(charID);
+
+      // Range check
+      if (id < 32 || id > 126) continue;
+
+      // 16 is from the 8 fields of TBMFontGlyph, all 2 bytes
+      const glyphOffset = (id - 32) * 16;
+
+      glyphsMem.setUint16(glyphOffset + 0, glyph.id, true);
+
+      glyphsMem.setUint16(glyphOffset + 2, glyph.x, true);
+      glyphsMem.setUint16(glyphOffset + 4, glyph.y, true);
+      glyphsMem.setUint16(glyphOffset + 6, glyph.width, true);
+      glyphsMem.setUint16(glyphOffset + 8, glyph.height, true);
+
+      glyphsMem.setInt16(glyphOffset + 10, glyph.xoffset, true);
+      glyphsMem.setInt16(glyphOffset + 12, glyph.yoffset, true);
+      glyphsMem.setInt16(glyphOffset + 14, glyph.xadvance, true);
+    }
+
+    console.log("loadBMFont completed");
   }
 
 
