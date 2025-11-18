@@ -96,11 +96,18 @@ class Posit92 {
   }
 
   spr(imgHandle, x, y) {
-    this.#wasm.exports.spr(imgHandle, x, y);
+    this.#wasm.exports.spr(imgHandle, x, y)
   }
 
 
-  // LOGGER
+  // GRAPHICS.PAS
+  rect(x0, y0, x1, y1, colour) {
+    this.#wasm.exports.rect(x0, y0, x1, y1, colour)
+  }
+
+
+
+  // LOGGER.PAS
   pascalWriteLog() {
     const bufferPtr = this.#wasm.exports.getLogBuffer();
     const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, bufferPtr, 256);

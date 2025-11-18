@@ -18,6 +18,8 @@ async function main() {
   P92.debugImage(imgSatono);
   P92.spr(imgSatono, 50, 10);
 
+  P92.rect(50, 10, 150, 98, 0xFFFFFFFF);
+
   P92.flush();
 }
 
