@@ -73,11 +73,74 @@ begin
   surface[offset + 3] := a;
 end;
 
+procedure unsafePsetBlend(const x, y: integer; const colour: longword);
+var
+  a, r, g, b: byte;
+  offset: longword;
+begin
+  a := colour shr 24 and $FF;
+  r := colour shr 16 and $FF;
+  g := colour shr 8 and $FF;
+  b := colour and $FF;
+
+  offset := (y * vgaWidth + x) * 4;
+  surface[offset] := r;
+  surface[offset + 1] := g;
+  surface[offset + 2] := b;
+  surface[offset + 3] := a;
+end;
+
 { colour: AARRGGBB }
 procedure pset(const x, y: integer; const colour: longword);
 begin
   if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then exit;
   unsafePset(x, y, colour)
+end;
+
+procedure psetBlend(const x, y: integer; const colour: longword);
+var
+  srcA, srcR, srcG, srcB: byte;
+  destA, destR, destG, destB: byte;
+  outA, outR, outG, outB: byte;
+  offset: longword;
+  { inverted alpha }
+  alpha, invAlpha: single;
+begin
+  if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then exit;
+
+  srcA := colour shr 24 and $FF;
+  srcR := colour shr 16 and $FF;
+  srcG := colour shr 8 and $FF;
+  srcB := colour and $FF;
+
+  if srcA = 0 then exit;
+
+  offset := (x + y * vgaWidth) * 4;
+
+  { Handle opaque pixel }
+  if srcA = 255 then begin
+    surface[offset] := srcR;
+    surface[offset + 1] := srcG;
+    surface[offset + 2] := srcB;
+    surface[offset + 3] := srcA;
+    exit
+  end;
+
+  destR := surface[offset];
+  destG := surface[offset + 1];
+  destB := surface[offset + 2];
+  destA := surface[offset + 3];
+  
+  { Handle alpha blending }
+  alpha := srcA / 255.0;
+  invAlpha := 1.0 - alpha;
+
+  { TODO: Expand the outRGBA }
+
+  surface[offset] := outR;
+  surface[offset + 1] := outG;
+  surface[offset + 2] := outB;
+  surface[offset + 3] := outA;
 end;
 
 procedure cls(const colour: longword);
