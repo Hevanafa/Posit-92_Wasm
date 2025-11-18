@@ -24,6 +24,8 @@ function getSurface: pointer; public name 'getSurface';
 
 { Colour format: $AARRGGBB }
 procedure cls(const colour: longword); public name 'cls';
+
+procedure unsafePset(const x, y: integer; const colour: longword);
 procedure pset(const x, y: integer; const colour: longword);
 
 { flush is available in JS code }
@@ -54,25 +56,11 @@ begin
   getSurface := @surface
 end;
 
-procedure cls(const colour: longword);
-var
-  x, y: word;
-begin
-  if not bufferInitialised then exit;
-
-  for y:=0 to vgaHeight - 1 do
-    for x:=0 to vgaWidth - 1 do
-      pset(x, y, colour);
-end;
-
-{ colour: AARRGGBB }
-procedure pset(const x, y: integer; const colour: longword);
+procedure unsafePset(const x, y: integer; const colour: longword);
 var
   a, r, g, b: byte;
   offset: longword;
 begin
-  if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then exit;
-
   a := colour shr 24 and $FF;
   r := colour shr 16 and $FF;
   g := colour shr 8 and $FF;
@@ -83,6 +71,24 @@ begin
   surface[offset + 1] := g;
   surface[offset + 2] := b;
   surface[offset + 3] := a;
+end;
+
+{ colour: AARRGGBB }
+procedure pset(const x, y: integer; const colour: longword);
+begin
+  if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then exit;
+  unsafePset(x, y, colour)
+end;
+
+procedure cls(const colour: longword);
+var
+  x, y: word;
+begin
+  if not bufferInitialised then exit;
+
+  for y:=0 to vgaHeight - 1 do
+    for x:=0 to vgaWidth - 1 do
+      unsafePset(x, y, colour);
 end;
 
 
