@@ -52,6 +52,9 @@ begin
     ch := text[a];
     charcode := ord(ch);
 
+    { Assuming the starting charcode is always 32 }
+    dec(charcode, 32);
+
     if (charcode < low(fontGlyphs)) or (charcode > high(fontGlyphs)) then
       continue;
     
