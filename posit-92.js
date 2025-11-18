@@ -166,6 +166,11 @@ class Posit92 {
       surfacePtr,
       320 * 200 * 4
     );
+
+    console.log("First 5 pixels:");
+    for (let a=0; a < 20; a += 4)
+      console.log(`Pixel ${a / 4}: R=${imageData[a]} G=${imageData[a+1]} B=${imageData[a+2]} A=${imageData[a+3]}`);
+
     const imgData = new ImageData(imageData, 320, 200);
 
     if (this.#flushCanvas == null) {
