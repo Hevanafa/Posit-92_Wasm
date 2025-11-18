@@ -130,14 +130,19 @@ class Posit92 {
     // console.log(lines);
 
     let txtLine = "";
+    /**
+     * @type {Array<[string, string]>}
+     */
     let pairs;
     let k = "", v = "";
 
+    // TODO: Load these to Pascal
     let lineHeight = 0;
     // font bitmap URL
     let filename = "";
     const fontGlyphs = {};
     let glyphCount = 0;
+    let imgHandle = 0;
 
     for (const line of lines) {
       txtLine = line.replaceAll(/\s+/g, " ");
@@ -182,7 +187,7 @@ class Posit92 {
     console.log("Loaded", glyphCount, "glyphs");
 
     // Load font bitmap
-    const imgHandle = await this.loadImage(filename);
+    imgHandle = await this.loadImage(filename);
     console.log("loadBMFont imgHandle:", imgHandle);
   }
 

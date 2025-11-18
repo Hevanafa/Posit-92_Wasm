@@ -12,6 +12,8 @@ type
   end;
 
 function loadImageHandle: longint; public name 'loadImageHandle';
+function isImageSet(const imgHandle: longint); public name 'isImageSet';
+procedure debugImage(const imgHandle: longint); public name 'debugImage';
 function getImagePtr(const imgHandle: longint): pointer; public name 'getImagePtr';
 
 procedure spr(const imgHandle: longint; const x, y: integer); public name 'spr';
@@ -51,7 +53,13 @@ begin
     getImagePtr := nil;
 end;
 
-procedure debugImage(const imgHandle: longint); public name 'debugImage';
+function isImageSet(const imgHandle: longint): boolean;
+begin
+  isImageSet := (imgHandle > 0)
+end;
+
+
+procedure debugImage(const imgHandle: longint);
 var
   image: PBitmap;
   a: integer;
