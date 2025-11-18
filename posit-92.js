@@ -181,7 +181,9 @@ class Posit92 {
 
     console.log("Loaded", glyphCount, "glyphs");
 
-    // TODO: Load font bitmap
+    // Load font bitmap
+    const imgHandle = await this.loadImage(filename);
+    console.log("loadBMFont imgHandle:", imgHandle);
   }
 
 
