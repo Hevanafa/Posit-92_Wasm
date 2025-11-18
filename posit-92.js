@@ -119,14 +119,32 @@ class Posit92 {
     let pairs;
     let k = "", v = "";
 
+    let lineHeight = 0;
+    // font bitmap URL
+    let filename = "";
+
     for (const line of lines) {
       txtLine = line.replaceAll(/\s+/g, " ");
+      
       pairs = txtLine.split(" ").map(part => part.split("="));
 
       if (txtLine.startsWith("info")) {
         [k, v] = pairs.find(pair => pair[0] == "face");
         console.log("face", v)
+
+      } else if (txtLine.startsWith("common")) {
+        [k, v] = pairs.find(pair => pair[0] == "lineHeight");
+        lineHeight = parseInt(v);
+        console.log("lineHeight", lineHeight);
+
+      } else if (txtLine.startsWith("page")) {
+        [k, v] = pairs.find(pair => pair[0] == "file");
+        filename = v.replaceAll(/"/g, "");
+        console.log("filename", filename);
+
       }
+
+      // TODO: Obtain the glyphs
 
     }
   }
