@@ -14,7 +14,7 @@ const importObject = {
     _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
 
     // Logger
-    logI32: value => console.log("Pascal:", value),
+    writeLogI32: value => console.log("Pascal:", value),
     flushLog: () => pascalWriteLog()
   }
 }
@@ -58,6 +58,7 @@ async function loadImage(url) {
 
   const img = await loadImageFromURL(url);
   // console.log(`Loaded image: { w: ${img.width}, h: ${img.height} }`);
+  
 
   // Copy image
   const tempCanvas = document.createElement("canvas");

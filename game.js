@@ -14,7 +14,7 @@ async function main() {
   // Load assets
   const imgSatono = await loadImage("assets/images/satono_diamond.png");
   console.log("imgSatono handle:", imgSatono);
-  // wasm.exports.debugImage(imgSatono);
+  wasm.exports.debugImage(imgSatono);
   spr(imgSatono, 50, 10);
 
   flush();

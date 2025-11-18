@@ -5,9 +5,13 @@ unit Logger;
 interface
 
 procedure writeLog(const msg: string);
+{ Must be registered in importObject }
+procedure writeLogI32(const value: longint); external 'env' name 'writeLogI32';
+
 function getLogBuffer: pointer; public name 'getLogBuffer';
 { Forwards logBuffer to JS }
 procedure flushLog; external 'env' name 'flushLog';
+
 
 implementation
 

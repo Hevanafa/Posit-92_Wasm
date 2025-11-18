@@ -17,16 +17,12 @@ procedure spr(const imgHandle: longint; const x, y: integer); public name 'spr';
 implementation
 
 uses
-  Conv, VGA;
+  Conv, Logger, VGA;
 
 { Bitmap operations }
 var
   images: array[1..10] of TBitmap;
   nextImageHandle: longint = 1;
-
-{ Must be registered in importObject }
-procedure logI32(const value: longint); external 'env' name 'logI32';
-
 
 function loadImageHandle: longint;
 begin
@@ -50,10 +46,10 @@ begin
   image := getImagePtr(imgHandle);
   if image = nil then exit;
 
-  logI32(image^.width);
-  logI32(image^.height);
+  writeLogI32(image^.width);
+  writeLogI32(image^.height);
   for a:=0 to 7 do
-    logI32(image^.data[a]);
+    writeLogI32(image^.data[a]);
 end;
 
 
