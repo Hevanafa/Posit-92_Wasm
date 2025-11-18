@@ -5,7 +5,6 @@ $outputFile = "game"
 # Compile targetting wasm32-embedded
 # E:\lazarus-wasm\fpc\bin\x86_64-win64\fpc.exe -Pwasm32 -Tembedded -FuUNITS $primaryUnit
 
-# This doesn't output to STDOUT
 $pinfo = new-object System.Diagnostics.ProcessStartInfo
 $pinfo.FileName = $compilerPath
 $pinfo.Arguments = "-Pwasm32", "-Tembedded", "-FuUNITS", $primaryUnit
@@ -26,9 +25,9 @@ write-host $stdout
 write-host "(STDERR)"
 write-host $stderr
 
-if ($LastExitCode -ne 0) {
-  write-host "Compilation failed with exit code $LastExitCode" -foregroundColor red
-  exit $LastExitCode
+if ($p.ExitCode -ne 0) {
+  write-host "Compilation failed with exit code $($p.ExitCode)" -foregroundColor red
+  exit $p.ExitCode
 }
 
 if (test-path -path "$outputFile.wasm" -pathType leaf) {
