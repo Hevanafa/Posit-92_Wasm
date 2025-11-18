@@ -105,6 +105,20 @@ class Posit92 {
 
 
   // BMFONT.PAS
+  #newBMFontGlyph() {
+    return {
+      id: 0,
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      xoffset: 0,
+      yoffset: 0,
+      xadvance: 0,
+      lineHeight: 0
+    }
+  }
+
   async loadBMFont(url) {
     if (url == null || url == "")
       throw new Error("loadBMFont: url is required");
@@ -122,6 +136,8 @@ class Posit92 {
     let lineHeight = 0;
     // font bitmap URL
     let filename = "";
+    const fontGlyphs = {};
+    let glyphCount = 0;
 
     for (const line of lines) {
       txtLine = line.replaceAll(/\s+/g, " ");
@@ -142,11 +158,30 @@ class Posit92 {
         filename = v.replaceAll(/"/g, "");
         console.log("filename", filename);
 
+      } else if (txtLine.startsWith("char") && !txtLine.startsWith("chars")) {
+        const tempGlyph = this.#newBMFontGlyph();
+
+        for (const [k, v] of pairs) {
+          switch (k) {
+            case "id": tempGlyph.id = parseInt(v); break;
+            case "x": tempGlyph.x = parseInt(v); break;
+            case "y": tempGlyph.y = parseInt(v); break;
+            case "width": tempGlyph.width = parseInt(v); break;
+            case "height": tempGlyph.height = parseInt(v); break;
+            case "xoffset": tempGlyph.xoffset = parseInt(v); break;
+            case "yoffset": tempGlyph.yoffset = parseInt(v); break;
+            case "xadvance": tempGlyph.xadvance = parseInt(v); break;
+          }
+        }
+
+        fontGlyphs[tempGlyph.id] = tempGlyph;
+        glyphCount++
       }
-
-      // TODO: Obtain the glyphs
-
     }
+
+    console.log("Loaded", glyphCount, "glyphs");
+
+    // TODO: Load font bitmap
   }
 
 
