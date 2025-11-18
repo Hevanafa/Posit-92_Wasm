@@ -6,10 +6,14 @@ uses Bitmap, Logger, VGA;
 
 
 exports
+  { GRAPHICS }
+  rect,
+
   { VGA }
   initBuffer,
   getSurface,
   cls,
+  pset,
 
   { BITMAP }
   loadImageHandle,
