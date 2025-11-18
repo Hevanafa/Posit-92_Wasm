@@ -28,7 +28,7 @@ class Posit92 {
     if (this.#canvas == null)
       throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
 
-    this.#ctx = canvas.getContext("2d");
+    this.#ctx = this.#canvas.getContext("2d");
   }
 
   // Init segment

@@ -1,5 +1,5 @@
 async function main() {
-  const P92 = new Posit92();
+  const P92 = new Posit92("game");
   await P92.init();
 
   // Begin render logic
