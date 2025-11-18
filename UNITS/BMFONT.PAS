@@ -25,7 +25,7 @@ procedure printBMFont(
 
 implementation
 
-uses Bitmap, Logger;
+uses Bitmap, Conv, Logger;
 
 procedure printBMFont(
   const text: string;
@@ -37,16 +37,12 @@ var
   ch: char;
   charcode: byte;
   left: integer;
+  glyph: TBMFontGlyph;
 begin
   left := 0;
 
-{
-  writeLogI32(font.lineHeight);
-  writeLogI32(font.imgHandle); } { 0 ?? }
-
-  writeLog('printBMFont low & high:');
-  writeLogI32(low(fontGlyphs));
-  writeLogI32(high(fontGlyphs));
+  writeLog('lineHeight: ' + i32str(font.lineHeight));
+  writeLog('imgHandle: ' + i32str(font.imgHandle));
 
   for a:=1 to length(text) do begin
     ch := text[a];
@@ -55,21 +51,22 @@ begin
     { Assuming the starting charcode is always 32 }
     dec(charcode, 32);
 
-    if (charcode < low(fontGlyphs)) or (charcode > high(fontGlyphs)) then
+    if (low(fontGlyphs) < charcode) or (charcode > high(fontGlyphs)) then
       continue;
-    {
+    
     writeLogI32(charcode);
     writeLogI32(fontGlyphs[charcode].x);
     writeLogI32(fontGlyphs[charcode].y);
-    }
+
+    glyph := fontGlyphs[charcode];
 
     sprRegion(
       font.imgHandle,
-      fontGlyphs[charcode].x, fontGlyphs[charcode].y,
-      fontGlyphs[charcode].width, fontGlyphs[charcode].height,
-      x + left + fontGlyphs[charcode].xoffset, y + fontGlyphs[charcode].yoffset);
+      glyph.x, glyph.y,
+      glyph.width, glyph.height,
+      x + left + glyph.xoffset, y + glyph.yoffset);
 
-    inc(left, fontGlyphs[charcode].xadvance)
+    inc(left, glyph.xadvance)
   end;
 end;
 
