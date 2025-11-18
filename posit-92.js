@@ -96,7 +96,7 @@ class Posit92 {
   }
 
   spr(imgHandle, x, y) {
-    this.#wasm.exports.spr(imgHandle, x, y)
+    this.#wasm.exports.sprBlend(imgHandle, x, y);
   }
 
   sprRegion(imgHandle, srcX, srcY, srcW, srcH, destX, destY) {
