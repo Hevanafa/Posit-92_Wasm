@@ -18,6 +18,12 @@ begin
   defaultFontGlyphs := @_defaultFontGlyphs
 end;
 
+
+procedure printDefault(const text: string; const x, y: integer); public name 'printDefault';
+begin
+  printBMFont(text, x, y, defaultFont, defaultFontGlyphs)
+end;
+
 exports
   { VGA }
   initBuffer,

@@ -12,7 +12,7 @@ type
   end;
 
 function loadImageHandle: longint; public name 'loadImageHandle';
-function isImageSet(const imgHandle: longint); public name 'isImageSet';
+function isImageSet(const imgHandle: longint): boolean; public name 'isImageSet';
 procedure debugImage(const imgHandle: longint); public name 'debugImage';
 function getImagePtr(const imgHandle: longint): pointer; public name 'getImagePtr';
 
