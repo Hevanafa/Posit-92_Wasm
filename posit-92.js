@@ -46,7 +46,7 @@ class Posit92 {
   }
 
 
-  // BITMAP
+  // BITMAP.PAS
   async loadImageFromURL(url) {
     if (url == null || url == "")
       throw new Error("loadImageFromURL: url is required");
@@ -105,6 +105,14 @@ class Posit92 {
     this.#wasm.exports.rect(x0, y0, x1, y1, colour)
   }
 
+  rectfill(x0, y0, x1, y1, colour) {
+    this.#wasm.exports.rectfill(x0, y0, x1, y1, colour)
+  }
+
+  hline(x0, x1, y, colour) {
+    this.#wasm.exports.hline(x0, x1, y, colour)
+  }
+
 
 
   // LOGGER.PAS
@@ -120,7 +128,7 @@ class Posit92 {
   }
 
 
-  // VGA
+  // VGA.PAS
   cls(colour) {
     this.#wasm.exports.cls(colour);
   }

@@ -1,3 +1,6 @@
+const white = 0xFFFFFFFF;
+const yellow = 0xFFFFFF55;
+
 async function main() {
   const P92 = new Posit92("game");
   await P92.init();
@@ -18,7 +21,8 @@ async function main() {
   P92.debugImage(imgSatono);
   P92.spr(imgSatono, 50, 10);
 
-  P92.rect(50, 10, 150, 98, 0xFFFFFFFF);
+  P92.rect(50, 10, 150, 98, white);
+  P92.rectfill(160, 10, 260, 98, yellow);
 
   P92.flush();
 }
