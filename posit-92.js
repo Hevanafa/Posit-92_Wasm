@@ -1,17 +1,19 @@
-/**
- * @type {HTMLCanvasElement}
- */
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-
-/**
- * @type {WebAssembly.Instance}
- */
-let wasm;
 
 class Posit92 {
-  constructor() {
+  /**
+   * @type {HTMLCanvasElement}
+   */
+  #canvas;
+  #ctx;
 
+  /**
+   * @type {WebAssembly.Instance}
+   */
+  #wasm;
+
+  constructor() {
+    this.#canvas = document.getElementById("canvas");
+    this.#ctx = canvas.getContext("2d");
   }
 
   // Init segment
@@ -19,26 +21,26 @@ class Posit92 {
     const response = await fetch("game.wasm");
     const bytes = await response.arrayBuffer();
     const result = await WebAssembly.instantiate(bytes, importObject);
-    wasm = result.instance;
+    this.#wasm = result.instance;
   }
 
   async init() {
     await initWebAssembly();
     // console.log("wasm.exports", wasm.exports);
-    wasm.exports.initBuffer();
+    this.#wasm.exports.initBuffer();
   }
 
   // VGA
   cls(colour) {
-    wasm.exports.cls(colour);
+    this.#wasm.exports.cls(colour);
   }
 
   flush() {
-    const surfacePtr = wasm.exports.getSurface();
+    const surfacePtr = this.#wasm.exports.getSurface();
     // console.log("Surface pointer", surfacePtr);
 
     const imageData = new Uint8ClampedArray(
-      wasm.exports.memory.buffer,
+      this.#wasm.exports.memory.buffer,
       surfacePtr,
       320 * 200 * 4
     );
@@ -46,9 +48,6 @@ class Posit92 {
     ctx.putImageData(imgData, 0, 0)
   }
 }
-
-const P92 = Posit92;
-
 
 
 const importObject = {
