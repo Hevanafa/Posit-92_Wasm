@@ -19,8 +19,7 @@ begin
   defaultFontGlyphsPtr := @_defaultFontGlyphs
 end;
 
-{ strPtrToPString }
-function pascalStringPtr(const textPtr: pointer; const textLen: word): PString; public name 'pascalStringPtr';
+function strPtrToString(const textPtr: pointer; const textLen: word): string; public name 'pascalStringPtr';
 var
   text: string;
   a: integer;
@@ -33,20 +32,15 @@ begin
     inc(charPtr)
   end;
 
-  pascalStringPtr := @text
-end;
-
-procedure debugPString(const textPtr: PString); public name 'debugPString';
-var
-  a: integer;
-  text: string;
-begin
-  
+  strPtrToString := text
 end;
 
 { TODO: interop text from JS }
-procedure printDefault(const text: PString; const x, y: integer); public name 'printDefault';
+procedure printDefault(const textPtr: pointer; const textLen: integer; const x, y: integer); public name 'printDefault';
+var
+  text: string;
 begin
+  text := strPtrToString(textPtr, textLen);
   printBMFont(text, x, y, _defaultFont, _defaultFontGlyphs)
 end;
 
