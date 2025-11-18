@@ -205,9 +205,7 @@ class Posit92 {
 
     // true makes it little-endian
     fontMem.setUint16(offset, lineHeight, true);
-    offset += 2;
-
-    fontMem.setUint32(offset, imgHandle, true);
+    fontMem.setUint32(offset + 2, imgHandle, true);
 
     // Write glyphs
     const glyphsMem = new DataView(this.#wasm.exports.memory.buffer, glyphsPtr);

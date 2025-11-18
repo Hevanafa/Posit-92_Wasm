@@ -22,9 +22,10 @@ procedure printBMFont(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph);
 
+
 implementation
 
-uses Bitmap;
+uses Bitmap, Logger;
 
 procedure printBMFont(
   const text: string;
@@ -38,6 +39,9 @@ var
   left: integer;
 begin
   left := 0;
+
+  writeLogI32(font.lineHeight);
+  writeLogI32(font.imgHandle);
 
   for a:=1 to length(text) do begin
     ch := text[a];
