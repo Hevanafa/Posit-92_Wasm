@@ -14,7 +14,10 @@ type
 function loadImageHandle: longint; public name 'loadImageHandle';
 function getImagePtr(const imgHandle: longint): pointer; public name 'getImagePtr';
 procedure spr(const imgHandle: longint; const x, y: integer); public name 'spr';
-
+procedure sprRegion(
+  const imgHandle: longint;
+  const srcX, srcY, srcW, srcH: integer;
+  const destX, destY: integer); public name 'sprRegion';
 
 implementation
 
@@ -82,6 +85,34 @@ begin
 
     srcPos := (a + b * image^.width) * 4;
     destPos := ((a + x) + (b + y) * vgaWidth) * 4;
+
+    { Order: RGBA }
+    surface[destPos] := image^.data[srcPos];
+    surface[destPos + 1] := image^.data[srcPos + 1];
+    surface[destPos + 2] := image^.data[srcPos + 2];
+    surface[destPos + 3] := image^.data[srcPos + 3];
+  end;
+end;
+
+procedure sprRegion(
+  const imgHandle: longint;
+  const srcX, srcY, srcW, srcH: integer;
+  const destX, destY: integer);
+var
+  a, b: integer;
+  srcPos, destPos: longint;
+  image: PBitmap;
+begin
+  image := getImagePtr(imgHandle);
+  if image = nil then exit;
+
+  for b:=0 to srcH - 1 do
+  for a:=0 to srcW - 1 do begin
+    if (destX + a >= vgaWidth) or (destX + a < 0)
+      or (destY + b >= vgaHeight) or (destY + b < 0) then continue;
+
+    srcPos := ((srcX + a) + (srcY + b) * image^.width) * 4;
+    destPos := ((destX + a) + (destY + b) * vgaWidth) * 4;
 
     { Order: RGBA }
     surface[destPos] := image^.data[srcPos];
