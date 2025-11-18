@@ -1,4 +1,3 @@
-
 class Posit92 {
   /**
    * @type {HTMLCanvasElement}
@@ -11,24 +10,102 @@ class Posit92 {
    */
   #wasm;
 
+  #importObject = Object.freeze({
+    env: {
+      _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
+
+      // Logger
+      writeLogI32: value => console.log("Pascal:", value),
+      flushLog: () => this.pascalWriteLog()
+    }
+  });
+
   constructor() {
     this.#canvas = document.getElementById("canvas");
     this.#ctx = canvas.getContext("2d");
   }
 
   // Init segment
-  async initWebAssembly() {
+  async #initWebAssembly() {
     const response = await fetch("game.wasm");
     const bytes = await response.arrayBuffer();
-    const result = await WebAssembly.instantiate(bytes, importObject);
+    const result = await WebAssembly.instantiate(bytes, this.#importObject);
     this.#wasm = result.instance;
   }
 
   async init() {
-    await initWebAssembly();
-    // console.log("wasm.exports", wasm.exports);
+    await this.#initWebAssembly();
+    // console.log("wasm.exports", this.#wasm.exports);
     this.#wasm.exports.initBuffer();
   }
+
+
+  // BITMAP
+  async loadImageFromURL(url) {
+    if (url == null || url == "")
+      throw new Error("loadImageFromURL: url is required");
+
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = url
+    })
+  }
+
+  debugImage(imgHandle) {
+    this.#wasm.exports.debugImage(imgHandle)
+  }
+
+  async loadImage(url) {
+    if (url == null || url == "")
+      throw new Error("loadImage: url is required");
+
+    const img = await this.loadImageFromURL(url);
+    // console.log(`Loaded image: { w: ${img.width}, h: ${img.height} }`);
+
+    // Copy image
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = img.width;
+    tempCanvas.height = img.height;
+    const tempCtx = tempCanvas.getContext("2d");
+    tempCtx.drawImage(img, 0, 0);
+    const pixels = tempCtx.getImageData(0, 0, img.width, img.height).data;
+
+    // Obtain a new handle number
+    const imgHandle = this.#wasm.exports.loadImageHandle();
+    const bitmapPtr = this.#wasm.exports.getImagePtr(imgHandle);
+    
+    // Write to TBitmap
+    const memory = new Uint8Array(this.#wasm.exports.memory.buffer, bitmapPtr);
+    memory[0] = img.width & 0xff;
+    memory[1] = (img.width >> 8) & 0xff;
+    memory[2] = img.height & 0xff;
+    memory[3] = (img.height >> 8) & 0xff;
+    memory.set(pixels, 4);  // TBitmap.data
+
+    // console.log("First 20 bytes:", Array.from(memory).slice(0, 20));
+
+    return imgHandle
+  }
+
+  spr(imgHandle, x, y) {
+    this.#wasm.exports.spr(imgHandle, x, y);
+  }
+
+
+  // LOGGER
+  pascalWriteLog() {
+    const bufferPtr = this.#wasm.exports.getLogBuffer();
+    const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, bufferPtr, 256);
+
+    const len = buffer[0];
+    const msgBytes = buffer.slice(1, 1 + len);
+    const msg = new TextDecoder().decode(msgBytes);
+
+    console.log("Pascal:", msg);
+  }
+
 
   // VGA
   cls(colour) {
@@ -45,79 +122,6 @@ class Posit92 {
       320 * 200 * 4
     );
     const imgData = new ImageData(imageData, 320, 200);
-    ctx.putImageData(imgData, 0, 0)
+    this.#ctx.putImageData(imgData, 0, 0)
   }
-}
-
-
-const importObject = {
-  env: {
-    _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
-
-    // Logger
-    writeLogI32: value => console.log("Pascal:", value),
-    flushLog: () => pascalWriteLog()
-  }
-}
-
-// BITMAP
-async function loadImageFromURL(url) {
-  if (url == null || url == "")
-    throw new Error("loadImageFromURL: url is required");
-
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = url
-  })
-}
-
-async function loadImage(url) {
-  if (url == null || url == "")
-    throw new Error("loadImage: url is required");
-
-  const img = await loadImageFromURL(url);
-  // console.log(`Loaded image: { w: ${img.width}, h: ${img.height} }`);
-
-
-  // Copy image
-  const tempCanvas = document.createElement("canvas");
-  tempCanvas.width = img.width;
-  tempCanvas.height = img.height;
-  const tempCtx = tempCanvas.getContext("2d");
-  tempCtx.drawImage(img, 0, 0);
-  const pixels = tempCtx.getImageData(0, 0, img.width, img.height).data;
-
-  // Obtain a new handle number
-  const imgHandle = wasm.exports.loadImageHandle();
-  const bitmapPtr = wasm.exports.getImagePtr(imgHandle);
-  
-  // Write to TBitmap
-  const memory = new Uint8Array(wasm.exports.memory.buffer, bitmapPtr);
-  memory[0] = img.width & 0xff;
-  memory[1] = (img.width >> 8) & 0xff;
-  memory[2] = img.height & 0xff;
-  memory[3] = (img.height >> 8) & 0xff;
-  memory.set(pixels, 4);  // TBitmap.data
-
-  // console.log("First 20 bytes:", Array.from(memory).slice(0, 20));
-
-  return imgHandle
-}
-
-function spr(imgHandle, x, y) {
-  wasm.exports.spr(imgHandle, x, y);
-}
-
-// LOGGER
-function pascalWriteLog() {
-  const bufferPtr = wasm.exports.getLogBuffer();
-  const buffer = new Uint8Array(wasm.exports.memory.buffer, bufferPtr, 256);
-
-  const len = buffer[0];
-  const msgBytes = buffer.slice(1, 1 + len);
-  const msg = new TextDecoder().decode(msgBytes);
-
-  console.log("Pascal:", msg);
 }

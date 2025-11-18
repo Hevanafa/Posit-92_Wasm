@@ -13,12 +13,12 @@ async function main() {
   // spr(10, 10, 100, 88);
 
   // Load assets
-  const imgSatono = await loadImage("assets/images/satono_diamond.png");
+  const imgSatono = await P92.loadImage("assets/images/satono_diamond.png");
   console.log("imgSatono handle:", imgSatono);
-  wasm.exports.debugImage(imgSatono);
-  spr(imgSatono, 50, 10);
+  P92.debugImage(imgSatono);
+  P92.spr(imgSatono, 50, 10);
 
-  flush();
+  P92.flush();
 }
 
 main()
