@@ -13,10 +13,9 @@ procedure circfill(const cx, cy, radius: integer; const colour: longword); publi
 procedure rect(x0, y0, x1, y1: integer; const colour: longword); public name 'rect';
 procedure rectfill(x0, y0, x1, y1: integer; const colour: longword); public name 'rectfill';
 procedure hline(x0, x1, y: integer; const colour: longword); public name 'hline';
+procedure vline(x, y0, y1: integer; const colour: longword); public name 'vline';
 
-procedure line(const x0, y0, x1, y1: integer; const colour: byte); public name 'line';
-
-{ procedure vline(const x, y0, y1: integer; const colour: byte); }
+procedure line(x0, y0, x1, y1: integer; const colour: longword); public name 'line';
 
 
 implementation
@@ -127,7 +126,7 @@ begin
     pset(x, y, colour);
 end;
 
-procedure vline(x, y0, y1: integer; const colour: byte);
+procedure vline(x, y0, y1: integer; const colour: longword);
 var
   temp, a: integer;
 begin
@@ -141,11 +140,11 @@ begin
 
   for a:=y0 to y1 do begin
     if (a < 0) then continue;
-    asmPset(x, a, colour)
+    pset(x, a, colour)
   end;
 end;
 
-procedure line(const x0, y0, x1, y1: integer; const colour: byte);
+procedure line(x0, y0, x1, y1: integer; const colour: longword);
 var
   dx, dy, sx, sy, err, e2: integer;
 begin
@@ -168,7 +167,7 @@ begin
   err := dx - dy;
 
   while (x0 <> x1) or (y0 <> y1) do begin
-    asmPset(x0, y0, colour);
+    pset(x0, y0, colour);
     e2 := 2 * err;
 
     if e2 > -dy then begin
@@ -182,7 +181,7 @@ begin
     end;
   end;
 
-  asmPset(x0, y0, colour)
+  pset(x0, y0, colour)
 end;
 
 end.
