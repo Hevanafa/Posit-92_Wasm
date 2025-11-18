@@ -56,23 +56,13 @@ end;
 
 procedure cls(const colour: longword);
 var
-  a, r, g, b: byte;
   x, y: word;
 begin
   if not bufferInitialised then exit;
 
-  a := colour shr 24 and $FF;
-  r := colour shr 16 and $FF;
-  g := colour shr 8 and $FF;
-  b := colour and $FF;
-
   for y:=0 to vgaHeight - 1 do
-  for x:=0 to vgaWidth - 1 do begin
-    surface[y * vgaWidth * 4 + x * 4] := r;
-    surface[y * vgaWidth * 4 + x * 4 + 1] := g;
-    surface[y * vgaWidth * 4 + x * 4 + 2] := b;
-    surface[y * vgaWidth * 4 + x * 4 + 3] := a;
-  end;
+    for x:=0 to vgaWidth - 1 do
+      pset(x, y, colour);
 end;
 
 { colour: AARRGGBB }
