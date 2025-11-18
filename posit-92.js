@@ -112,7 +112,7 @@ class Posit92 {
     const res = await fetch(url);
     const text = await res.text();
 
-    const lines = text.split("\r\n");
+    const lines = text.endsWith("\r\n") ? text.split("\r\n") : text.split("\n");
     // console.log(lines);
 
     let txtLine = "";
