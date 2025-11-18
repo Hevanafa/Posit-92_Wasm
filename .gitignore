@@ -2,3 +2,5 @@
 *.o
 *.wasm
 *.ppu
+
+*.code-workspace

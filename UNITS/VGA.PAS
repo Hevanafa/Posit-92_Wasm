@@ -135,7 +135,10 @@ begin
   alpha := srcA / 255.0;
   invAlpha := 1.0 - alpha;
 
-  { TODO: Expand the outRGBA }
+  outR := round(srcR * alpha + destR * invAlpha);
+  outG := round(srcG * alpha + destG * invAlpha);
+  outB := round(srcB * alpha + destB * invAlpha);
+  outA := srcA + round(destA * invAlpha);
 
   surface[offset] := outR;
   surface[offset + 1] := outG;
