@@ -12,8 +12,9 @@ type
   TBMFont = record
     face: string[15];  { 16 bytes }
     filename: string[63];  { 64 bytes }
-    lineHeight: word;
-    imgHandle: longint;
+    lineHeight: word;  { 2 bytes }
+    { + automatic 2-byte padding }
+    imgHandle: longint;  { 84th byte }
   end;
 
 procedure printBMFont(
