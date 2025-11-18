@@ -121,6 +121,14 @@ class Posit92 {
     this.#wasm.exports.hline(x0, x1, y, colour)
   }
 
+  vline(x, y0, y1, colour) {
+    this.#wasm.exports.vline(x, y0, y1, colour)
+  }
+
+  line(x0, y0, x1, y1, colour) {
+    this.#wasm.exports.line(x0, y0, x1, y1, colour)
+  }
+
 
 
   // LOGGER.PAS
