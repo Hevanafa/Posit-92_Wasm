@@ -205,6 +205,7 @@ class Posit92 {
 
     // true makes it little-endian
     fontMem.setUint16(offset, lineHeight, true);
+    console.log("imgHandle to write", imgHandle);
     fontMem.setUint32(offset + 2, imgHandle, true);
 
     // Write glyphs

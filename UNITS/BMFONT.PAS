@@ -40,8 +40,13 @@ var
 begin
   left := 0;
 
+{
   writeLogI32(font.lineHeight);
-  writeLogI32(font.imgHandle);
+  writeLogI32(font.imgHandle); } { 0 ?? }
+
+  writeLog('printBMFont low & high:');
+  writeLogI32(low(fontGlyphs));
+  writeLogI32(high(fontGlyphs));
 
   for a:=1 to length(text) do begin
     ch := text[a];
@@ -50,6 +55,10 @@ begin
     if (charcode < low(fontGlyphs)) or (charcode > high(fontGlyphs)) then
       continue;
     
+    writeLogI32(charcode);
+    writeLogI32(fontGlyphs[charcode].x);
+    writeLogI32(fontGlyphs[charcode].y);
+
     sprRegion(
       font.imgHandle,
       fontGlyphs[charcode].x, fontGlyphs[charcode].y,

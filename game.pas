@@ -21,6 +21,10 @@ end;
 
 procedure printDefault(const text: string; const x, y: integer); public name 'printDefault';
 begin
+  writeLog('printDefault low & high:');
+  writeLogI32(low(_defaultFontGlyphs));
+  writeLogI32(high(_defaultFontGlyphs));
+
   printBMFont(text, x, y, _defaultFont, _defaultFontGlyphs)
 end;
 
