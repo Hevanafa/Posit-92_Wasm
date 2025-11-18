@@ -1,5 +1,7 @@
 unit VGA;
 
+{$B-}  { Enable boolean short-circuiting }
+
 interface
 
 const
@@ -19,9 +21,12 @@ var
 { Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
 procedure initBuffer; public name 'initBuffer';
 function getSurface: pointer; public name 'getSurface';
+
 { Colour format: $AARRGGBB }
 procedure cls(const colour: longword); public name 'cls';
+procedure pset(const x, y: integer; const colour: longword);
 
+{ flush is available in JS code }
 
 implementation
 
@@ -68,6 +73,26 @@ begin
     surface[y * vgaWidth * 4 + x * 4 + 2] := b;
     surface[y * vgaWidth * 4 + x * 4 + 3] := a;
   end;
+end;
+
+{ colour: AARRGGBB }
+procedure pset(const x, y: integer; const colour: longword);
+var
+  a, r, g, b: byte;
+  offset: longword;
+begin
+  if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then exit;
+
+  a := colour shr 24 and $FF;
+  r := colour shr 16 and $FF;
+  g := colour shr 8 and $FF;
+  b := colour and $FF;
+
+  offset := (y * vgaWidth + x) * 4;
+  surface[offset] := r;
+  surface[offset + 1] := g;
+  surface[offset + 2] := b;
+  surface[offset + 3] := a;
 end;
 
 
