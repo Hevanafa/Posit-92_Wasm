@@ -104,6 +104,18 @@ class Posit92 {
   }
 
 
+  // BMFONT.PAS
+  async loadBMFont(url) {
+    if (url == null || url == "")
+      throw new Error("loadBMFont: url is required");
+
+    const res = await fetch(url);
+    const text = await res.text();
+
+    console.log(text);
+  }
+
+
   // GRAPHICS.PAS
   circ(cx, cy, radius, colour) {
     this.#wasm.exports.circ(cx, cy, radius, colour)

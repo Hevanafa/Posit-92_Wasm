@@ -10,6 +10,8 @@ async function main() {
   const imgDefaultFont = await P92.loadImage("assets/fonts/nokia_cellphone_fc_8_0.png")
   const imgGasolineMaid = await P92.loadImage("assets/images/gasoline_maid.png")
 
+  await P92.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
+
   // Begin render logic
   P92.cls(0xFF6495ED);
 
