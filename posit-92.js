@@ -189,6 +189,29 @@ class Posit92 {
     // Load font bitmap
     imgHandle = await this.loadImage(filename);
     console.log("loadBMFont imgHandle:", imgHandle);
+
+    // Obtain pointers to Pascal structures
+    const fontPtr = this.#wasm.exports.defaultFont();
+    const glyphsPtr = this.#wasm.exports.defaultFontGlyphs();
+
+    // Write font data
+    const fontMem = new DataView(this.#wasm.exports.memory.buffer, fontPtr);
+
+    let offset = 0;
+    // Skip face string
+    offset += 256;
+    // Skip filename string
+    offset += 256;
+
+    // true makes it little-endian
+    fontMem.setUint16(offset, lineHeight, true);
+    offset += 2;
+
+    fontMem.setUint32(offset, imgHandle, true);
+
+    // Write glyphs
+    
+
   }
 
 
