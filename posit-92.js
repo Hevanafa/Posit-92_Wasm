@@ -6,12 +6,6 @@ class Posit92 {
   #ctx;
 
   /**
-   * @type {HTMLCanvasElement}
-   */
-  #flushCanvas;
-  #flushCtx;
-
-  /**
    * @type {WebAssembly.Instance}
    */
   #wasm;
@@ -167,21 +161,13 @@ class Posit92 {
       320 * 200 * 4
     );
 
-    console.log("First 5 pixels:");
-    for (let a=0; a < 20; a += 4)
-      console.log(`Pixel ${a / 4}: R=${imageData[a]} G=${imageData[a+1]} B=${imageData[a+2]} A=${imageData[a+3]}`);
+    // console.log("First 5 pixels:");
+    // for (let a=0; a < 20; a += 4)
+    //   console.log(`Pixel ${a / 4}: R=${imageData[a]} G=${imageData[a+1]} B=${imageData[a+2]} A=${imageData[a+3]}`);
 
     const imgData = new ImageData(imageData, 320, 200);
 
-    if (this.#flushCanvas == null) {
-      this.#flushCanvas = document.createElement("canvas");
-      this.#flushCanvas.width = 320;
-      this.#flushCanvas.height = 200;
-      this.#flushCtx = this.#flushCanvas.getContext("2d");
-    }
-
-    this.#flushCtx.putImageData(imgData, 0, 0);
-    this.#ctx.drawImage(this.#flushCanvas, 0, 0);
+    this.#ctx.putImageData(imgData, 0, 0);
   }
 
   pset(x, y, colour) {
