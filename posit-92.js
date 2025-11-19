@@ -21,8 +21,10 @@ class Posit92 {
   });
 
   constructor(canvasID) {
-    if (canvasID == null || canvasID == "")
+    if (canvasID == null)
       throw new Error("canvasID is required!");
+
+    this.#assertString(canvasID);
 
     this.#canvas = document.getElementById(canvasID);
     if (this.#canvas == null)
@@ -46,8 +48,14 @@ class Posit92 {
   }
 
   #assertNumber(value) {
+    if (value == null)
+      throw new Error("Expected a number, but received null");
+
     if (typeof value != "number")
       throw new Error(`Expected a number, but received ${typeof value}`);
+
+    if (isNaN(value))
+      throw new Error("Expected a number, but received NaN");
   }
 
   #assertString(value) {
@@ -58,8 +66,10 @@ class Posit92 {
 
   // BITMAP.PAS
   async loadImageFromURL(url) {
-    if (url == null || url == "")
+    if (url == null)
       throw new Error("loadImageFromURL: url is required");
+
+    this.#assertString(url);
 
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -163,7 +173,6 @@ class Posit92 {
     const text = await res.text();
 
     const lines = text.endsWith("\r\n") ? text.split("\r\n") : text.split("\n");
-    // console.log(lines);
 
     let txtLine = "";
     /**
@@ -172,7 +181,6 @@ class Posit92 {
     let pairs;
     let k = "", v = "";
 
-    // TODO: Load these to Pascal
     let lineHeight = 0;
     // font bitmap URL
     let filename = "";
