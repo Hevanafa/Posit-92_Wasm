@@ -2,7 +2,7 @@ library Game;
 
 {$Mode ObjFPC}
 
-uses Bitmap, BMFont, Graphics, Logger, VGA;
+uses Bitmap, BMFont, Conv, Graphics, Logger, VGA;
 
 var
   _defaultFont: TBMFont;
@@ -24,22 +24,6 @@ begin
   defaultFontGlyphsPtr := @_defaultFontGlyphs
 end;
 
-function strPtrToString(const textPtr: pointer; const textLen: word): string;
-var
-  text: string;
-  a: integer;
-  charPtr: ^byte;
-begin
-  setLength(text, textLen);
-  charPtr := textPtr;
-  for a:=1 to textLen do begin
-    text[a] := char(charPtr^);
-    inc(charPtr)
-  end;
-
-  strPtrToString := text
-end;
-
 procedure debugStringBuffer; public name 'debugStringBuffer';
 var
   a: word;
@@ -50,6 +34,7 @@ begin
     writeLogI32(stringBuffer[a]);
 end;
 
+{ Requires BMFont }
 procedure printDefault(const textPtr: pointer; const textLen: integer; const x, y: integer); public name 'printDefault';
 var
   text: string;
