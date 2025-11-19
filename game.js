@@ -12,24 +12,18 @@ async function main() {
 
   await P92.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
 
-  // Begin render logic
-  P92.cls(0xFF6495ED);
+  while (true) {
+    // update
+    P92.updateDeltaTime();
+    
+    // render
+    P92.cls(0xFF6495ED);
 
-  // console.log("imgSatono handle:", imgSatono);
-  // console.log("imgDefaultFont handle:", imgDefaultFont);
+    P92.printDefault("Hello from POSIT-92!", 10, 10);
+    P92.spr(imgGasolineMaid, 10, 30);
 
-  // P92.debugImage(imgGasolineMaid);
-  // P92.debugImage(imgSatono);
-  // P92.debugImage(imgDefaultFont);
-  
-  P92.printDefault("Hello from POSIT-92!", 10, 10);
-
-  P92.spr(imgGasolineMaid, 10, 30);
-  // P92.spr(imgSatono, 50, 10);
-  // P92.sprRegion(imgSatono, 0, 0, 10, 10, 30, 10);
-  // P92.sprRegion(imgDefaultFont, 0, 0, 10, 10, 30, 30);
-
-  P92.flush();
+    P92.flush();
+  }
 }
 
 main()

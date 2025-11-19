@@ -7,8 +7,8 @@ var
 
 function getTimer: double; external 'env' name 'getTimer';
 
-procedure initDeltaTime;
-procedure updateDeltaTime;
+procedure initDeltaTime; public name 'initDeltaTime';
+procedure updateDeltaTime; public name 'updateDeltaTime';
 
 
 implementation

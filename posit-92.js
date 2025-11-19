@@ -45,6 +45,8 @@ class Posit92 {
     await this.#initWebAssembly();
     // console.log("wasm.exports", this.#wasm.exports);
     this.#wasm.exports.initBuffer();
+
+    this.#wasm.exports.initDeltaTime();
   }
 
   #assertNumber(value) {
@@ -347,6 +349,16 @@ class Posit92 {
     const msg = new TextDecoder().decode(msgBytes);
 
     console.log("Pascal:", msg);
+  }
+
+
+  // TIMING.PAS
+  initDeltaTime() {
+    this.#wasm.exports.initDeltaTime()
+  }
+
+  updateDeltaTime() {
+    this.#wasm.exports.updateDeltaTime()
   }
 
 

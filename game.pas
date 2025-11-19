@@ -2,7 +2,7 @@ library Game;
 
 {$Mode ObjFPC}
 
-uses Bitmap, BMFont, Conv, Graphics, Logger, VGA;
+uses Bitmap, BMFont, Conv, Graphics, Logger, Timing, VGA;
 
 var
   _defaultFont: TBMFont;
@@ -44,6 +44,13 @@ begin
   printBMFont(text, x, y, _defaultFont, _defaultFontGlyphs)
 end;
 
+
+procedure update;
+begin
+  
+end;
+
+
 exports
   { VGA }
   initBuffer,
@@ -55,6 +62,9 @@ exports
   loadImageHandle,
   getImagePtr,
   spr;
+
+  update;
+  draw;
 
 begin
 { Starting point is intentionally left empty }
