@@ -43,5 +43,5 @@ if (test-path -path "$outputFile.wasm" -pathType leaf) {
 }
 
 if (test-path -path "$outputFile" -pathType leaf) {
-  ren "$outputFile" "game.wasm"
+  ren "$outputFile" "$outputFile.wasm"
 }
