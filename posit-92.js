@@ -35,6 +35,7 @@ class Posit92 {
    * @type {Map<number, AudioBuffer>}
    */
   #sounds = new Map();
+  #soundVolumes = new Map();
 
   /**
    * @type {AudioBufferSourceNode | null}
@@ -71,6 +72,7 @@ class Posit92 {
       // Sounds
       playSound: this.playSound.bind(this),
       playMusic: this.playMusic.bind(this),
+      setSoundVolume: (key, volume) => this.setSoundVolume(key, volume),
       stopMusic: () => this.stopMusic(),
 
       // Timing
@@ -549,7 +551,8 @@ class Posit92 {
     const arrayBuffer = await response.arrayBuffer();
     const audioBuffer = await this.#audioContext.decodeAudioData(arrayBuffer);
 
-    this.#sounds.set(key, audioBuffer)
+    this.#sounds.set(key, audioBuffer);
+    this.setSoundVolume(key, 0.5)
   }
 
   playSound(key) {
@@ -559,9 +562,17 @@ class Posit92 {
       return
     }
 
+    const volume = this.#soundVolumes.get(key);
+
     const source = this.#audioContext.createBufferSource();
+    const gainNode = this.#audioContext.createGain();
+
     source.buffer = buffer;
-    source.connect(this.#audioContext.destination);
+    gainNode.gain.value = volume;
+
+    // Connect source -> gain -> destination
+    source.connect(gainNode);
+    gainNode.connect(this.#audioContext.destination);
     source.start(0)
     // source automatically disconnects when done
   }
@@ -580,6 +591,11 @@ class Posit92 {
     this.#music.loop = true;
     this.#music.connect(this.#audioContext.destination);
     this.#music.start(0)
+  }
+
+  setSoundVolume(key, volume) {
+    const clamped = Math.max(0.0, Math.min(1.0, volume));
+    this.#soundVolumes.set(key, clamped)
   }
 
   stopMusic() {

@@ -2,8 +2,9 @@ unit Sounds;
 
 interface
 
-procedure playSound(const key: integer); external 'env' name 'playSound';
-procedure playMusic(const key: integer); external 'env' name 'playMusic';
+procedure playSound(const key: longint); external 'env' name 'playSound';
+procedure playMusic(const key: longint); external 'env' name 'playMusic';
+procedure setSoundVolume(const key: longint); external 'env' name 'setSoundVolume';
 procedure stopMusic; external 'env' name 'stopMusic';
 
 
