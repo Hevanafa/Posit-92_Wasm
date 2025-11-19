@@ -1,3 +1,8 @@
+{
+  VGA unit
+  Part of POSIT-92 Framework
+}
+
 unit VGA;
 
 {$B-}  { Enable boolean short-circuiting }

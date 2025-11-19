@@ -1,4 +1,12 @@
+{
+  BMFont unit
+  Part of POSIT-92 Framework
+  This unit contains only a subset of the DOS version
+}
+
 unit BMFont;
+
+{$B-}  { Enable boolean short-circuiting }
 
 interface
 
