@@ -9,6 +9,26 @@ body {
   padding: 0;
 }
 
+#play-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 640px;
+  height: 400px;
+  background: grey;
+}
+
+#play-overlay > button {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  
+  font-size: 32px;
+  background: transparent;
+  border: none;
+
+}
+
 #game {
   image-rendering: pixelated;
   scale: 2;
@@ -19,6 +39,10 @@ body {
 </head>
 <body>
   <canvas id="game" width="320" height="200"></canvas>
+  <div id="play-overlay">
+    <button onclick="play()">Play</button>
+  </div>
+
   <script src="posit-92.js"></script>
   <script src="game.js"></script>
 </body>
