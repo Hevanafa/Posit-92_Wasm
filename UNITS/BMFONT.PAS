@@ -3,6 +3,7 @@ unit BMFont;
 interface
 
 type
+  { PBMFontGlyph = ^TBMFontGlyph; }
   TBMFontGlyph = record
     id: word;
     x, y, width, height: word;
@@ -42,32 +43,37 @@ var
 begin
   left := 0;
 
-  writeLog('lineHeight: ' + i32str(font.lineHeight));
-  writeLog('imgHandle: ' + i32str(font.imgHandle));
+  // writeLog('lineHeight: ' + i32str(font.lineHeight));
+  // writeLog('imgHandle: ' + i32str(font.imgHandle));
+  writelog('low: ' + i32str(low(fontGlyphs)) + ', high: ' + i32str(high(fontGlyphs)));
 
   for a:=1 to length(text) do begin
     ch := text[a];
     charcode := ord(ch);
 
+    { writeLog('charcode: ' + i32str(charcode)); }
+
     { Assuming the starting charcode is always 32 }
     dec(charcode, 32);
 
-    if (low(fontGlyphs) < charcode) or (charcode > high(fontGlyphs)) then
-      continue;
-    
-    writeLogI32(charcode);
-    writeLogI32(fontGlyphs[charcode].x);
-    writeLogI32(fontGlyphs[charcode].y);
+    { writeLog('charcode after dec: ' + i32str(charcode)); }
 
-    glyph := fontGlyphs[charcode];
+    { if (low(fontGlyphs) <= charcode) and (charcode <= high(fontGlyphs)) then begin }
+    if (charcode in [low(fontGlyphs)..high(fontGlyphs)]) then begin
+      writeLogI32(charcode);
+      writeLogI32(fontGlyphs[charcode].x);
+      writeLogI32(fontGlyphs[charcode].y);
 
-    sprRegion(
-      font.imgHandle,
-      glyph.x, glyph.y,
-      glyph.width, glyph.height,
-      x + left + glyph.xoffset, y + glyph.yoffset);
+      glyph := fontGlyphs[charcode];
 
-    inc(left, glyph.xadvance)
+      sprRegion(
+        font.imgHandle,
+        glyph.x, glyph.y,
+        glyph.width, glyph.height,
+        x + left + glyph.xoffset, y + glyph.yoffset);
+
+      inc(left, glyph.xadvance)
+    end;
   end;
 end;
 
