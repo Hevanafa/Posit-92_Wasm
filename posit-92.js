@@ -6,6 +6,8 @@ const ScancodeMap = {
   // Add more scancodes as necessary
 }
 
+const SfxCoin = 1;
+
 class Posit92 {
   #displayScale = Object.freeze(2);
 
@@ -20,6 +22,16 @@ class Posit92 {
    */
   #wasm;
 
+  /**
+   * @type {AudioContext}
+   */
+  #audioContext;
+  #sounds = new Map();
+  #music = null;
+
+  /**
+   * For use with WebAssembly init
+   */
   #importObject = Object.freeze({
     env: {
       _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
@@ -66,6 +78,10 @@ class Posit92 {
     this.#wasm = result.instance;
   }
 
+  #initAudio() {
+    this.#audioContext = new AudioContext();
+  }
+
   async init() {
     await this.#initWebAssembly();
     // console.log("wasm.exports", this.#wasm.exports);
@@ -73,12 +89,13 @@ class Posit92 {
     this.#wasm.exports.init();
     this.#initKeyboard();
     this.#initMouse();
+    this.#initAudio();
   }
 
   async loadAssets() {
     // const imgSatono = await this.loadImage("assets/images/satono_diamond.png");
     // const imgDefaultFont = await this.loadImage("assets/fonts/nokia_cellphone_fc_8_0.png")
-    
+
     const imgCursor = await this.loadImage("assets/images/cursor.png");
     this.#wasm.exports.setImgCursor(imgCursor);
 
@@ -474,6 +491,24 @@ class Posit92 {
 
     done = true;
     throw new Error(`PANIC: ${msg}`)
+  }
+
+
+  // SOUNDS.PAS
+  async loadSound(key, url) {
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    const audioBuffer = await this.#audioContext.decodeAudioData(arrayBuffer);
+
+    this.#sounds.set(key, audioBuffer)
+  }
+
+  playSound(key) {
+    // TODO: Play sound
+  }
+
+  playMusic(key, loop = true) {
+    // TODO: Play music
   }
 
 

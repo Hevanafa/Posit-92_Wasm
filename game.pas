@@ -9,6 +9,9 @@ uses Bitmap, BMFont, Conv, FPS,
 const
   SC_ESC = $01;
 
+  { Must be the same with JS code }
+  SfxCoin = 1;
+
 var
   lastEsc: boolean;
   stringBuffer: array[0..255] of byte;
