@@ -36,10 +36,19 @@ begin
 end;
 
 { Requires BMFont }
+procedure printDefault(const text: string; const x, y: integer);
+begin
+  { writelog('printDefault A'); }
+  printBMFont(text, x, y, _defaultFont, _defaultFontGlyphs)
+end;
+
+{ Requires BMFont
+  for use with JS }
 procedure printDefault(const textPtr: pointer; const textLen: integer; const x, y: integer); public name 'printDefault';
 var
   text: string;
 begin
+  { writeLog('printDefault B'); }
   text := strPtrToString(textPtr, textLen);
   { writeLog(text); }
   printBMFont(text, x, y, _defaultFont, _defaultFontGlyphs)
@@ -47,12 +56,13 @@ end;
 
 procedure drawFPS;
 begin
-  printDefault('FPS:' + i32str(getLastFPS), 240, 0, $00);
+  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
 
 procedure init;
 begin
+  initBuffer;
   initDeltaTime;
   initFPSCounter;
 end;
@@ -71,13 +81,16 @@ var
 begin
   cls($FF6495ED);
 
-  printBMFont('getTimer: ' + f32str(getTimer), 160, 10, _defaultFont, _defaultFontGlyphs);
+  printDefault('getTimer: ' + f32str(getTimer), 160, 10);
 
-  printBMFont('Hello from POSIT-92!', 10, 10, _defaultFont, _defaultFontGlyphs);
+  printDefault('Hello from POSIT-92!', 10, 10);
 
   { gasoline maid }
   image := getImagePtr(1);
   sprBlend(1, (vgaWidth - image^.width) div 2, (vgaHeight - image^.height) div 2);
+
+  drawFPS;
+
   flush
 end;
 
@@ -94,6 +107,8 @@ exports
   getImagePtr,
   spr,
 
+  { Main game loop }
+  init,
   update,
   draw;
 
