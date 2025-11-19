@@ -16,7 +16,9 @@ class Posit92 {
 
       // Logger
       writeLogI32: value => console.log("Pascal (i32):", value),
-      flushLog: () => this.pascalWriteLog()
+      flush: () => this.flush(),
+      flushLog: () => this.pascalWriteLog(),
+      getTimer: () => this.getTimer()
     }
   });
 
@@ -353,6 +355,10 @@ class Posit92 {
 
 
   // TIMING.PAS
+  getTimer() {
+    return Date.now() / 1000
+  }
+
   initDeltaTime() {
     this.#wasm.exports.initDeltaTime()
   }
@@ -391,5 +397,14 @@ class Posit92 {
     this.#assertNumber(colour);
 
     this.#wasm.exports.pset(x, y, colour)
+  }
+
+  // Game loop
+  update() {
+    this.#wasm.exports.update()
+  }
+
+  draw() {
+    this.#wasm.exports.draw()
   }
 }

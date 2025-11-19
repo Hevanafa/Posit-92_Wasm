@@ -27,9 +27,7 @@ procedure cls(const colour: longword); public name 'cls';
 
 procedure unsafePset(const x, y: integer; const colour: longword); public name 'unsafePset';
 procedure pset(const x, y: integer; const colour: longword); public name 'pset';
-
-{ flush is available in JS code }
-
+procedure flush; external 'env' name 'flush';
 procedure psetBlend(const x, y: integer; const colour: longword); public name 'psetBlend';
 
 implementation

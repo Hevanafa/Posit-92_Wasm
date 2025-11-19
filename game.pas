@@ -50,6 +50,17 @@ begin
   
 end;
 
+procedure draw;
+begin
+  cls($FF6495ED);
+
+  printBMFont('Hello from POSIT-92!', 10, 10, _defaultFont, _defaultFontGlyphs);
+
+  { gasoline maid }
+  sprBlend(1, 10, 30);
+  flush
+end;
+
 
 exports
   { VGA }
@@ -61,9 +72,9 @@ exports
   { BITMAP }
   loadImageHandle,
   getImagePtr,
-  spr;
+  spr,
 
-  update;
+  update,
   draw;
 
 begin
