@@ -12,7 +12,7 @@ const
   SC_SPACE = $39;
 
 var
-  lastEsc, lastSpacebar: boolean;
+  lastEsc: boolean;
 
   stringBuffer: array[0..255] of byte;
 
@@ -66,9 +66,6 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
-  
-  playMusic(BgmMain);
-  setMusicVolume(0.5)
 end;
 
 procedure update;
@@ -86,13 +83,6 @@ begin
       writeLog('ESC is pressed!');
       signalDone
     end;
-  end;
-
-  if lastSpacebar <> isKeyDown(SC_SPACE) then begin
-    lastSpacebar := isKeyDown(SC_SPACE);
-
-    if lastSpacebar then
-      playSound(SfxCoin);
   end;
 
   if lastLeftButton <> (0 <> mouseButton and 1) then begin

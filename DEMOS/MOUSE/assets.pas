@@ -6,11 +6,6 @@ interface
 
 uses BMFont;
 
-const
-  { Must be the same with JS code }
-  SfxCoin = 1;
-  BgmMain = 11;
-
 var
   { for use in loadBMFont }
   _defaultFont: TBMFont;

@@ -9,9 +9,6 @@ const ScancodeMap = {
   // Add more scancodes as necessary
 };
 
-const SfxCoin = 1;
-const BgmMain = 11;
-
 class Posit92 {
   #displayScale = Object.freeze(2);
 
@@ -131,20 +128,13 @@ class Posit92 {
   }
 
   async loadAssets() {
-    // const imgSatono = await this.loadImage("assets/images/satono_diamond.png");
-    // const imgDefaultFont = await this.loadImage("assets/fonts/nokia_cellphone_fc_8_0.png")
-
     const imgCursor = await this.loadImage("assets/images/cursor.png");
     this.#wasm.exports.setImgCursor(imgCursor);
 
     const imgGasolineMaid = await this.loadImage("assets/images/gasoline_maid_100px.png")
-    // console.log("imgGasolineMaid handle", imgGasolineMaid);
     this.#wasm.exports.setImgGasolineMaid(imgGasolineMaid);
 
     await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
-
-    await this.loadSound(SfxCoin, "assets/sfx/coins_1.ogg");
-    await this.loadSound(BgmMain, "assets/bgm/music.ogg");
 
     // Add more assets as necessary
   }
