@@ -74,8 +74,10 @@ class Posit92 {
   }
 
   async loadImage(url) {
-    if (!this.#assertString(url))
+    if (url == null)
       throw new Error("loadImage: url is required");
+
+    this.#assertString(url);
 
     const img = await this.loadImageFromURL(url);
     // console.log(`Loaded image: { w: ${img.width}, h: ${img.height} }`);
@@ -116,10 +118,22 @@ class Posit92 {
   }
 
   spr(imgHandle, x, y) {
+    this.#assertNumber(imgHandle);
+    this.#assertNumber(x);
+    this.#assertNumber(y);
+
     this.#wasm.exports.sprBlend(imgHandle, x, y);
   }
 
   sprRegion(imgHandle, srcX, srcY, srcW, srcH, destX, destY) {
+    this.#assertNumber(imgHandle);
+    this.#assertNumber(srcX);
+    this.#assertNumber(srcY);
+    this.#assertNumber(srcW);
+    this.#assertNumber(srcH);
+    this.#assertNumber(destX);
+    this.#assertNumber(destY);
+
     this.#wasm.exports.sprRegionBlend(imgHandle, srcX, srcY, srcW, srcH, destX, destY)
   }
 
@@ -140,8 +154,10 @@ class Posit92 {
   }
 
   async loadBMFont(url) {
-    if (url == null || url == "")
+    if (url == null)
       throw new Error("loadBMFont: url is required");
+
+    this.#assertString(url);
 
     const res = await fetch(url);
     const text = await res.text();
@@ -257,6 +273,8 @@ class Posit92 {
   }
 
   #loadStringBuffer(text) {
+    this.#assertString(text);
+
     const encoder = new TextEncoder();
     const bytes = encoder.encode(text);
 
@@ -269,6 +287,10 @@ class Posit92 {
 
   // printBMFont(text) {
   printDefault(text, x, y) {
+    this.#assertString(text);
+    this.#assertNumber(x);
+    this.#assertNumber(y);
+
     const length = this.#loadStringBuffer(text);
     const bufferPtr = this.#wasm.exports.getStringBuffer();
     // this.#wasm.exports.debugStringBuffer();
@@ -322,6 +344,7 @@ class Posit92 {
 
   // VGA.PAS
   cls(colour) {
+    this.#assertNumber(colour);
     this.#wasm.exports.cls(colour);
   }
 
@@ -343,6 +366,10 @@ class Posit92 {
   }
 
   pset(x, y, colour) {
+    this.#assertNumber(x);
+    this.#assertNumber(y);
+    this.#assertNumber(colour);
+
     this.#wasm.exports.pset(x, y, colour)
   }
 }
