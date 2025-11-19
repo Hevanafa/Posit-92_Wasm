@@ -26,6 +26,7 @@ class Posit92 {
 
       // Keyboard
       isKeyDown: scancode => this.isKeyDown(scancode),
+      signalDone: () => { done = true },
 
       // Logger
       writeLogI32: value => console.log("Pascal (i32):", value),

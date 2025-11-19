@@ -1,6 +1,8 @@
 const white = 0xFFFFFFFF;
 const yellow = 0xFFFFFF55;
 
+var done = false;
+
 async function main() {
   const P92 = new Posit92("game");
   await P92.init();
@@ -17,7 +19,6 @@ async function main() {
   // P92.update();
   // P92.draw();
 
-  let done = false;
   function loop() {
     if (done) return;
 

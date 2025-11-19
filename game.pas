@@ -70,6 +70,8 @@ begin
   printDefault('Button: ' + i32str(integer(mouseButton)), 0, 8);
 end;
 
+procedure signalDone; external 'env' name 'signalDone';
+
 
 procedure init;
 begin
@@ -90,8 +92,10 @@ begin
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
 
-    if lastEsc then
+    if lastEsc then begin
       writeLog('ESC is pressed!');
+      signalDone
+    end;
   end;
 end;
 
