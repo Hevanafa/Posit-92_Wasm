@@ -3,7 +3,7 @@ library Game;
 {$Mode ObjFPC}
 
 uses Bitmap, BMFont, Conv, FPS,
-  Graphics, Logger, Timing, VGA;
+  Graphics, Logger, Mouse, Timing, VGA;
 
 var
   _defaultFont: TBMFont;
@@ -59,6 +59,12 @@ begin
   printDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
+procedure debugMouse;
+begin
+  printDefault('Mouse: {x:' + i32str(mouseX) + ', y:' + i32str(mouseY) + '}', 0, 0);
+  printDefault('Button: ' + i32str(integer(mouseButton)), 0, 8);
+end;
+
 
 procedure init;
 begin
@@ -85,7 +91,8 @@ begin
 
   printDefault('getTimer: ' + f32str(getTimer), 160, 10);
 
-  printDefault('Hello from POSIT-92!', 10, 10);
+  { printDefault('Hello from POSIT-92!', 10, 10); }
+  debugMouse;
 
   { gasoline maid }
   image := getImagePtr(1);

@@ -5,7 +5,10 @@ unit Mouse;
 interface
 
 var
-  mouseX, mouseY: integer;
+  mouseX, mouseY, mouseButton: integer;
+
+procedure updateMouse;
+
 
 implementation
 
@@ -19,3 +22,5 @@ begin
   mouseY := getMouseY;
   mouseButton := getMouseButton;
 end;
+
+end.
