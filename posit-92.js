@@ -20,6 +20,13 @@ class Posit92 {
       writeLogI32: value => console.log("Pascal (i32):", value),
       flush: () => this.flush(),
       flushLog: () => this.pascalWriteLog(),
+
+      // Mouse
+      getMouseX: () => this.getMouseX(),
+      getMouseY: () => this.getMouseY(),
+      getMouseButton: () => this.getMouseButton(),
+
+      // Timing
       getTimer: () => this.getTimer()
     }
   });

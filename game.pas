@@ -72,6 +72,8 @@ begin
   updateDeltaTime;
   incrementFPS;
 
+  updateMouse;
+
   { Your update logic here }
 end;
 
