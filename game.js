@@ -11,6 +11,7 @@ async function main() {
   // const imgSatono = await P92.loadImage("assets/images/satono_diamond.png");
   // const imgDefaultFont = await P92.loadImage("assets/fonts/nokia_cellphone_fc_8_0.png")
   const imgGasolineMaid = await P92.loadImage("assets/images/gasoline_maid_100px.png")
+  console.log("imgGasolineMaid handle", imgGasolineMaid);
 
   await P92.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
 

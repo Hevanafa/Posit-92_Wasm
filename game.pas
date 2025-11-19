@@ -100,10 +100,11 @@ begin
     end;
   end;
 
-  if frames > 100 then
+  { if frames > 100 then
     panicHalt('panicHalt test call');
 
   inc(frames)
+  }
 end;
 
 procedure draw;
@@ -128,17 +129,6 @@ end;
 
 
 exports
-  { VGA }
-  initBuffer,
-  getSurface,
-  cls,
-  pset,
-
-  { BITMAP }
-  loadImageHandle,
-  getImagePtr,
-  spr,
-
   { Main game loop }
   init,
   update,
