@@ -7,6 +7,11 @@ interface
 var
   mouseX, mouseY, mouseButton: integer;
 
+{ Hide system cursor }
+procedure hideCursor; external 'env' name 'hideCursor';
+{ Show system cursor }
+procedure showCursor; external 'env' name 'showCursor';
+
 procedure updateMouse;
 
 

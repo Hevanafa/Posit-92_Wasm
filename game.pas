@@ -28,6 +28,8 @@ var
   lastLeftButton: boolean;
   clicks: word;
 
+procedure signalDone; external 'env' name 'signalDone';
+
 function getStringBuffer: pointer; public name 'getStringBuffer';
 begin
   getStringBuffer := @stringBuffer
@@ -97,10 +99,6 @@ begin
   printDefault('Mouse: {x:' + i32str(mouseX) + ', y:' + i32str(mouseY) + '}', 0, 0);
   printDefault('Button: ' + i32str(integer(mouseButton)), 0, 8);
 end;
-
-procedure hideCursor; external 'env' name 'hideCursor';
-procedure showCursor; external 'env' name 'showCursor';
-procedure signalDone; external 'env' name 'signalDone';
 
 
 procedure init;
