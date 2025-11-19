@@ -4,16 +4,18 @@ library Game;
 
 uses Bitmap, BMFont, Conv, FPS,
   Graphics, Keyboard, Logger, Mouse,
-  Panic, Timing, VGA;
+  Panic, Sounds, Timing, VGA;
 
 const
   SC_ESC = $01;
+  SC_SPACE = $39;
 
   { Must be the same with JS code }
   SfxCoin = 1;
 
 var
-  lastEsc: boolean;
+  lastEsc, lastSpacebar: boolean;
+
   stringBuffer: array[0..255] of byte;
 
   { for use in loadBMFont }
@@ -120,6 +122,13 @@ begin
       writeLog('ESC is pressed!');
       signalDone
     end;
+  end;
+
+  if lastSpacebar <> isKeyDown(SC_SPACE) then begin
+    lastSpacebar := isKeyDown(SC_SPACE);
+
+    if lastSpacebar then
+      playSound(SfxCoin);
   end;
 
   if lastLeftButton <> (0 <> mouseButton and 1) then begin

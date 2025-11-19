@@ -2,9 +2,10 @@
  * KeyboardEvent.code to DOS scancode
  */
 const ScancodeMap = {
-  "Escape": 0x01
+  "Escape": 0x01,
+  "Space": 0x39
   // Add more scancodes as necessary
-}
+};
 
 const SfxCoin = 1;
 
@@ -408,7 +409,7 @@ class Posit92 {
 
   #initKeyboard() {
     window.addEventListener("keydown", e => {
-      // console.log("keydown", e.code);
+      console.log("keydown", e.code);
 
       const scancode = ScancodeMap[e.code];
       if (scancode) {
