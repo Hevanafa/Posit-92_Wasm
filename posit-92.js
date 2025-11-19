@@ -105,6 +105,8 @@ class Posit92 {
 
     await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
 
+    await this.loadSound(SfxCoin, "assets/sfx/coins_1.ogg");
+
     // Add more assets as necessary
   }
 
@@ -504,6 +506,10 @@ class Posit92 {
   }
 
   playSound(key) {
+    const buffer = this.#sounds.get(key);
+
+    if (buffer == null) return;
+    
     // TODO: Play sound
   }
 
