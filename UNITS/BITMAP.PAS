@@ -155,13 +155,34 @@ begin
   end;
 end;
 
+function sprPget(const imgHandle: longint; const x, y: integer): longword;
+var
+  offset: longword;
+  a, r, g, b: byte;
+  image: PBitmap;
+begin
+  sprPget := 0;
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+
+  if (x < 0) or (x >= image^.width)
+    or (y < 0) or (y >= image^.height) then exit;
+
+  offset := (x + y * image^.width) * 4;
+  r := image^.data[offset];
+  g := image^.data[offset + 1];
+  b := image^.data[offset + 2];
+  a := image^.data[offset + 3];
+
+  sprPget := (a shl 24) or (r shl 16) or (g shl 8) or b
+end;
+
 procedure sprBlend(const imgHandle: longint; const x, y: integer);
 var
   image: PBitmap;
   px, py: integer;
-  srcPos: longint;
   colour: longword;
-  a, r, g, b: byte;
 begin
   if not isImageSet(imgHandle) then exit;
 
@@ -172,13 +193,7 @@ begin
     if (x + px >= vgaWidth) or (x + px < 0)
       or (y + py >= vgaHeight) or (y + py < 0) then continue;
 
-    srcPos := (px + py * image^.width) * 4;
-    r := image^.data[srcPos];
-    g := image^.data[srcPos + 1];
-    b := image^.data[srcPos + 2];
-    a := image^.data[srcPos + 3];
-
-    colour := (a shl 24) or (r shl 16) or (g shl 8) or b;
+    colour := sprPget(imgHandle, px, py);
     psetBlend(x + px, y + py, colour)
   end;
 end;
@@ -188,28 +203,17 @@ procedure sprRegionBlend(
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer);
 var
-  image: PBitmap;
   px, py: integer;
-  srcPos: longint;
   colour: longword;
-  a, r, g, b: byte;
 begin
   if not isImageSet(imgHandle) then exit;
-
-  image := getImagePtr(imgHandle);
 
   for py := 0 to srcH - 1 do
   for px := 0 to srcW - 1 do begin
     if (destX + px >= vgaWidth) or (destX + px < 0)
       or (destY + py >= vgaHeight) or (destY + py < 0) then continue;
 
-    srcPos := ((srcX + px) + (srcY + py) * image^.width) * 4;
-    r := image^.data[srcPos];
-    g := image^.data[srcPos + 1];
-    b := image^.data[srcPos + 2];
-    a := image^.data[srcPos + 3];
-
-    colour := (a shl 24) or (r shl 16) or (g shl 8) or b;
+    colour := sprPget(imgHandle, srcX + px, srcY + py);
     psetBlend(destX + px, destY + py, colour)
   end;
 end;
