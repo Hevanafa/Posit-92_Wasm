@@ -9,7 +9,10 @@ async function main() {
   P92.afterInit();
 
   function loop() {
-    if (done) return;
+    if (done) {
+      P92.cleanup();
+      return;
+    }
 
     P92.update();
     P92.draw();

@@ -141,6 +141,10 @@ class Posit92 {
     // Add more assets as necessary
   }
 
+  cleanup() {
+    this.stopMusic();
+  }
+
   #assertNumber(value) {
     if (value == null)
       throw new Error("Expected a number, but received null");
