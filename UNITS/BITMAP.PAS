@@ -103,7 +103,7 @@ begin
 end;
 }
 
-function getImageWidth(const imgHandle: longint): word; public name 'getImageWidth';
+function getImageWidth(const imgHandle: longint): word;
 var
   image: PBitmap;
 begin
@@ -114,7 +114,7 @@ begin
   getImageWidth := image^.width
 end;
 
-function getImageHeight(const imgHandle: longint): word; public name 'getImageHeight';
+function getImageHeight(const imgHandle: longint): word;
 var
   image: PBitmap;
 begin
@@ -203,6 +203,19 @@ begin
   sprPget := (a shl 24) or (r shl 16) or (g shl 8) or b
 end;
 
+{ Assuming image isn't nil }
+function unsafeSprPget(const image: PBitmap; const x, y: integer): longword;
+var
+  offset: longword;
+begin
+  offset := (x + y * image^.width) * 4;
+
+  unsafeSprPget := (image^.data[offset + 3] shl 24)
+    or (image^.data[offset] shl 16)
+    or (image^.data[offset + 1] shl 8)
+    or image^.data[offset + 2]
+end;
+
 procedure sprBlend(const imgHandle: longint; const x, y: integer);
 var
   image: PBitmap;
@@ -218,7 +231,7 @@ begin
     if (x + px >= vgaWidth) or (x + px < 0)
       or (y + py >= vgaHeight) or (y + py < 0) then continue;
 
-    colour := sprPget(imgHandle, px, py);
+    colour := unsafeSprPget(image, px, py);
     psetBlend(x + px, y + py, colour)
   end;
 end;
@@ -230,15 +243,18 @@ procedure sprRegionBlend(
 var
   px, py: integer;
   colour: longword;
+  image: PBitmap;
 begin
   if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
 
   for py := 0 to srcH - 1 do
   for px := 0 to srcW - 1 do begin
     if (destX + px >= vgaWidth) or (destX + px < 0)
       or (destY + py >= vgaHeight) or (destY + py < 0) then continue;
 
-    colour := sprPget(imgHandle, srcX + px, srcY + py);
+    colour := unsafeSprPget(image, srcX + px, srcY + py);
     psetBlend(destX + px, destY + py, colour)
   end;
 end;
