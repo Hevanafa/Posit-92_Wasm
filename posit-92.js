@@ -362,24 +362,25 @@ class Posit92 {
 
 
   // KEYBOARD
-  #keys = new Set();
+  heldScancodes = new Set();
 
   #initKeyboard() {
     window.addEventListener("keydown", e => {
-      console.log("keydown", e.code);
+      // console.log("keydown", e.code);
 
       const scancode = ScancodeMap[e.code];
-      if (scancode) this.#keys.add(e.code)
+      if (scancode) this.heldScancodes.add(scancode)
     })
 
     window.addEventListener("keyup", e => {
       const scancode = ScancodeMap[e.code];
-      if (scancode) this.#keys.delete(e.code)
+      if (scancode) this.heldScancodes.delete(scancode)
     })
   }
 
   isKeyDown(scancode) {
-    return this.#keys.has(scancode)
+    // console.log("isKeyDown call", scancode);
+    return this.heldScancodes.has(scancode)
   }
 
   // MOUSE

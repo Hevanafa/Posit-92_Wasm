@@ -10,6 +10,7 @@ const
   SC_ESC = $01;
 
 var
+  lastEsc: boolean;
   _defaultFont: TBMFont;
   _defaultFontGlyphs: array[32..126] of TBMFontGlyph;
   stringBuffer: array[0..255] of byte;
@@ -86,7 +87,12 @@ begin
 
   { Your update logic here }
 
-  if isKeyDown(SC_ESC) then writeLog('ESC is pressed!');
+  if lastEsc <> isKeyDown(SC_ESC) then begin
+    lastEsc := isKeyDown(SC_ESC);
+
+    if lastEsc then
+      writeLog('ESC is pressed!');
+  end;
 end;
 
 procedure draw;
