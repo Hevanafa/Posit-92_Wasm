@@ -12,19 +12,24 @@ async function main() {
 
   await P92.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
 
-  let done = false;
-  function loop() {
-    if (done) return;
+  // Draw only 1 frame
 
-    P92.update();
-    P92.draw();
-    requestAnimationFrame(loop)
+  P92.update();
+  P92.draw();
 
-    // P92.printDefault("Hello from POSIT-92!", 10, 10);
-    // P92.spr(imgGasolineMaid, 10, 30);
-    // P92.flush();
-  }
-  loop();
+  // let done = false;
+  // function loop() {
+  //   if (done) return;
+
+  //   P92.update();
+  //   P92.draw();
+  //   requestAnimationFrame(loop)
+
+  //   // P92.printDefault("Hello from POSIT-92!", 10, 10);
+  //   // P92.spr(imgGasolineMaid, 10, 30);
+  //   // P92.flush();
+  // }
+  // loop();
 }
 
 main()

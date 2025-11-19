@@ -1,4 +1,6 @@
 class Posit92 {
+  #displayScale = Object.freeze(2);
+
   /**
    * @type {HTMLCanvasElement}
    */
@@ -48,6 +50,8 @@ class Posit92 {
     // console.log("wasm.exports", this.#wasm.exports);
     // this.#wasm.exports.initBuffer();
     this.#wasm.exports.init();
+    this.#initKeyboard();
+    this.#initMouse();
   }
 
   #assertNumber(value) {
@@ -338,6 +342,40 @@ class Posit92 {
     this.#wasm.exports.line(x0, y0, x1, y1, colour)
   }
 
+
+  // KEYBOARD
+  #keys = new Set();
+
+  #initKeyboard() {
+    window.addEventListener("keydown", e => {
+      this.#keys.add(e.code)
+    })
+
+    window.addEventListener("keyup", e => {
+      this.#keys.delete(e.code)
+    })
+  }
+
+  isKeyDown(keycode) {
+    return this.#keys.has(keycode)
+  }
+
+  // MOUSE
+  #mouseX = 0;
+  #mouseY = 0;
+  #mouseButton = 0;
+
+  #initMouse() {
+    this.#canvas.addEventListener("mousemove", e => {
+      const rect = this.#canvas.getBoundingClientRect();
+      this.#mouseX = Math.floor((e.clientX - rect.left) / this.#displayScale);
+      this.#mouseY = Math.floor((e.clientY - rect.top) / this.#displayScale);
+    })
+  }
+
+  getMouseX() { return this.#mouseX }
+  getMouseY() { return this.#mouseY }
+  getMouseButton() { return this.#mouseButton }
 
 
   // LOGGER.PAS
