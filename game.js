@@ -15,7 +15,7 @@ async function main() {
   // Begin render logic
   P92.cls(0xFF6495ED);
 
-  console.log("imgSatono handle:", imgSatono);
+  // console.log("imgSatono handle:", imgSatono);
   // console.log("imgDefaultFont handle:", imgDefaultFont);
 
   // P92.debugImage(imgGasolineMaid);

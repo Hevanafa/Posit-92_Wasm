@@ -43,27 +43,15 @@ var
 begin
   left := 0;
 
-  // writeLog('lineHeight: ' + i32str(font.lineHeight));
-  // writeLog('imgHandle: ' + i32str(font.imgHandle));
-  writelog('low: ' + i32str(low(fontGlyphs)) + ', high: ' + i32str(high(fontGlyphs)));
-
   for a:=1 to length(text) do begin
     ch := text[a];
     charcode := ord(ch);
 
-    { writeLog('charcode: ' + i32str(charcode)); }
-
     { Assuming the starting charcode is always 32 }
     dec(charcode, 32);
 
-    { writeLog('charcode after dec: ' + i32str(charcode)); }
-
     { if (low(fontGlyphs) <= charcode) and (charcode <= high(fontGlyphs)) then begin }
     if (charcode in [low(fontGlyphs)..high(fontGlyphs)]) then begin
-      writeLogI32(charcode);
-      writeLogI32(fontGlyphs[charcode].x);
-      writeLogI32(fontGlyphs[charcode].y);
-
       glyph := fontGlyphs[charcode];
 
       sprRegionBlend(

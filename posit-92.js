@@ -15,7 +15,7 @@ class Posit92 {
       _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
 
       // Logger
-      writeLogI32: value => console.log("Pascal:", value),
+      writeLogI32: value => console.log("Pascal (i32):", value),
       flushLog: () => this.pascalWriteLog()
     }
   });
@@ -195,17 +195,17 @@ class Posit92 {
 
       if (txtLine.startsWith("info")) {
         [k, v] = pairs.find(pair => pair[0] == "face");
-        console.log("face", v)
+        // console.log("face", v)
 
       } else if (txtLine.startsWith("common")) {
         [k, v] = pairs.find(pair => pair[0] == "lineHeight");
         lineHeight = parseInt(v);
-        console.log("lineHeight", lineHeight);
+        // console.log("lineHeight", lineHeight);
 
       } else if (txtLine.startsWith("page")) {
         [k, v] = pairs.find(pair => pair[0] == "file");
         filename = v.replaceAll(/"/g, "");
-        console.log("filename", filename);
+        // console.log("filename", filename);
 
       } else if (txtLine.startsWith("char") && !txtLine.startsWith("chars")) {
         const tempGlyph = this.#newBMFontGlyph();
@@ -249,7 +249,7 @@ class Posit92 {
 
     // true makes it little-endian
     fontMem.setUint16(offset, lineHeight, true);
-    console.log("imgHandle to write", imgHandle);
+    // console.log("imgHandle to write", imgHandle);
     fontMem.setInt32(offset + 2, imgHandle, true);
 
     // Write glyphs

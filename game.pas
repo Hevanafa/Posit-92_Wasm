@@ -40,7 +40,7 @@ var
   text: string;
 begin
   text := strPtrToString(textPtr, textLen);
-  writeLog(text);
+  { writeLog(text); }
   printBMFont(text, x, y, _defaultFont, _defaultFontGlyphs)
 end;
 
