@@ -24,6 +24,8 @@ procedure printBMFont(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph);
 
+function measureBMFont(const text: string; const glyphs: array of TBMFontGlyph): integer;
+
 
 implementation
 
@@ -63,6 +65,26 @@ begin
       inc(left, glyph.xadvance)
     end;
   end;
+end;
+
+function measureBMFont(const text: string; const glyphs: array of TBMFontGlyph): integer;
+var
+  a, result: word;
+  glyphIdx: integer;
+  charcode: byte;
+begin
+  result := 0;
+
+  for a:=1 to length(text) do begin
+    charcode := ord(text[a]);
+    glyphIdx := charcode - 32;
+
+    if (charcode in [low(glyphs)..high(glyphs)]) then begin
+      inc(result, glyphs[glyphIdx].xadvance)
+    end;
+  end;
+
+  measureBMFont := result
 end;
 
 end.

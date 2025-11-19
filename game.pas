@@ -19,6 +19,9 @@ var
 
   imgCursor, imgGasolineMaid: longint;
 
+  lastLeftButton: boolean;
+  clicks: word;
+
 function getStringBuffer: pointer; public name 'getStringBuffer';
 begin
   getStringBuffer := @stringBuffer
@@ -115,17 +118,28 @@ begin
       signalDone
     end;
   end;
+
+  if lastLeftButton <> (0 <> mouseButton and 1) then begin
+    lastLeftButton := (0 <> mouseButton and 1);
+
+    if lastLeftButton then inc(clicks);
+  end;
 end;
 
 procedure draw;
 var
   image: PBitmap;
+  w: integer;
+  s: string;
 begin
   cls($FF6495ED);
 
-  { gasoline maid }
   image := getImagePtr(imgGasolineMaid);
   sprBlend(imgGasolineMaid, (vgaWidth - image^.width) div 2, (vgaHeight - image^.height) div 2);
+
+  s := 'Clicks: ' + i32str(clicks);
+  w := measureBMFont(s, _defaultFontGlyphs);
+  printDefault(s, (vgaWidth - w) div 2, 160);
 
   drawMouse;
 
