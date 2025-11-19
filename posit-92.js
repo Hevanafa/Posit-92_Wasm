@@ -38,6 +38,8 @@ class Posit92 {
       getMouseY: () => this.getMouseY(),
       getMouseButton: () => this.getMouseButton(),
 
+      panicHalt: this.panicHalt.bind(this),
+
       // Timing
       getTimer: () => this.getTimer()
     }
@@ -391,7 +393,7 @@ class Posit92 {
   #mouseX = 0;
   #mouseY = 0;
   #mouseButton = 0;
-  
+
   #leftButtonDown = false;
   #rightButtonDown = false;
 
@@ -446,6 +448,16 @@ class Posit92 {
     const msg = new TextDecoder().decode(msgBytes);
 
     console.log("Pascal:", msg);
+  }
+
+
+  // PANIC.PAS
+  panicHalt(textPtr, textLen) {
+    const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, textPtr, textLen);
+    const msg = new TextDecoder().decode(buffer);
+
+    done = true;
+    throw new Error(`PANIC: ${msg}`)
   }
 
 

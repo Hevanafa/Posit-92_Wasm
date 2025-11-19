@@ -4,16 +4,19 @@ library Game;
 
 uses Bitmap, BMFont, Conv, FPS,
   Graphics, Keyboard, Logger, Mouse,
-  Timing, VGA;
+  Panic, Timing, VGA;
 
 const
   SC_ESC = $01;
 
 var
   lastEsc: boolean;
+
   _defaultFont: TBMFont;
   _defaultFontGlyphs: array[32..126] of TBMFontGlyph;
   stringBuffer: array[0..255] of byte;
+
+  frames: integer;
 
 function getStringBuffer: pointer; public name 'getStringBuffer';
 begin
@@ -96,6 +99,11 @@ begin
       signalDone
     end;
   end;
+
+  if frames > 100 then
+    panicHalt('panicHalt test call');
+
+  inc(frames)
 end;
 
 procedure draw;
