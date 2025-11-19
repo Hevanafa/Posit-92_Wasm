@@ -17,7 +17,7 @@ var
   _defaultFont: TBMFont;
   _defaultFontGlyphs: array[32..126] of TBMFontGlyph;
 
-  imgGasolineMaid: longint;
+  imgCursor, imgGasolineMaid: longint;
 
 function getStringBuffer: pointer; public name 'getStringBuffer';
 begin
@@ -32,6 +32,11 @@ end;
 function defaultFontGlyphsPtr: pointer; public name 'defaultFontGlyphsPtr';
 begin
   defaultFontGlyphsPtr := @_defaultFontGlyphs
+end;
+
+procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
+begin
+  imgCursor := imgHandle
 end;
 
 procedure setImgGasolineMaid(const imgHandle: longint); public name 'setImgGasolineMaid';
@@ -71,6 +76,11 @@ end;
 procedure drawFPS;
 begin
   printDefault('FPS:' + i32str(getLastFPS), 240, 0);
+end;
+
+procedure drawMouse;
+begin
+  sprBlend(imgCursor, mouseX, mouseY)
 end;
 
 procedure debugMouse;
@@ -113,15 +123,13 @@ var
 begin
   cls($FF6495ED);
 
-  printDefault('getTimer: ' + f32str(getTimer), 160, 10);
-
-  { printDefault('Hello from POSIT-92!', 10, 10); }
-  debugMouse;
-
   { gasoline maid }
   image := getImagePtr(imgGasolineMaid);
   sprBlend(imgGasolineMaid, (vgaWidth - image^.width) div 2, (vgaHeight - image^.height) div 2);
 
+  drawMouse;
+
+  debugMouse;
   drawFPS;
 
   flush
