@@ -48,6 +48,9 @@ class Posit92 {
     env: {
       _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
 
+      hideCursor: () => this.hideCursor(),
+      showCursor: () => this.showCursor(),
+
       // Keyboard
       isKeyDown: scancode => this.isKeyDown(scancode),
       signalDone: () => { done = true },
@@ -143,6 +146,15 @@ class Posit92 {
 
   cleanup() {
     this.stopMusic();
+    this.showCursor();
+  }
+
+  hideCursor() {
+    this.#canvas.style.cursor = "none"
+  }
+
+  showCursor() {
+    this.#canvas.style.removeProperty("cursor")
   }
 
   #assertNumber(value) {

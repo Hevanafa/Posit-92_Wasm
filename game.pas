@@ -98,6 +98,8 @@ begin
   printDefault('Button: ' + i32str(integer(mouseButton)), 0, 8);
 end;
 
+procedure hideCursor; external 'env' name 'hideCursor';
+procedure showCursor; external 'env' name 'showCursor';
 procedure signalDone; external 'env' name 'signalDone';
 
 
@@ -111,6 +113,7 @@ end;
 procedure afterInit;
 begin
   { Initialise game state here }
+  hideCursor;
   playMusic(BgmMain)
 end;
 
