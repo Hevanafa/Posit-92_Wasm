@@ -11,13 +11,11 @@ const
 
 var
   lastEsc: boolean;
-
-  _defaultFont: TBMFont;
-  _defaultFontGlyphs: array[32..126] of TBMFontGlyph;
   stringBuffer: array[0..255] of byte;
 
-  frames: integer;
-  localDone: boolean;
+  { for use in loadBMFont }
+  _defaultFont: TBMFont;
+  _defaultFontGlyphs: array[32..126] of TBMFontGlyph;
 
 function getStringBuffer: pointer; public name 'getStringBuffer';
 begin
@@ -82,8 +80,6 @@ begin
   initBuffer;
   initDeltaTime;
   initFPSCounter;
-
-  localDone := false;
 end;
 
 procedure update;
@@ -99,16 +95,9 @@ begin
 
     if lastEsc then begin
       writeLog('ESC is pressed!');
-      localDone := true;
       signalDone
     end;
   end;
-
-  { if frames > 100 then
-    panicHalt('panicHalt test call');
-
-  inc(frames)
-  }
 end;
 
 procedure draw;
@@ -130,15 +119,6 @@ begin
 
   flush
 end;
-
-procedure mainGameLoop; public name 'stressTest';
-begin
-  repeat
-    update;
-    draw;
-  until localDone;
-end;
-
 
 exports
   { Main game loop }
