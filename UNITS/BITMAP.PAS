@@ -204,7 +204,7 @@ begin
 end;
 
 { Assuming image isn't nil }
-function unsafeSprPget(const image: PBitmap; const x, y: integer): longword;
+function unsafeSprPget(const image: PBitmap; const x, y: integer): longword; inline;
 var
   offset: longword;
 begin
