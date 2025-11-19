@@ -74,7 +74,8 @@ class Posit92 {
       // Sounds
       playSound: this.playSound.bind(this),
       playMusic: this.playMusic.bind(this),
-      setSoundVolume: (key, volume) => this.setSoundVolume(key, volume),
+      setSoundVolume: this.setSoundVolume.bind(this),
+      setMusicVolume: this.setMusicVolume.bind(this),
       stopMusic: () => this.stopMusic(),
 
       // Timing

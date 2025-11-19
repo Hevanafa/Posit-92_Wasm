@@ -112,7 +112,9 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
-  playMusic(BgmMain)
+  
+  playMusic(BgmMain);
+  setMusicVolume(0.5)
 end;
 
 procedure update;
