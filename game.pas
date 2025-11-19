@@ -51,13 +51,18 @@ begin
 end;
 
 procedure draw;
+var
+  image: PBitmap;
 begin
   cls($FF6495ED);
+
+  printBMFont('getTimer: ' + f32str(getTimer), 160, 10, _defaultFont, _defaultFontGlyphs);
 
   printBMFont('Hello from POSIT-92!', 10, 10, _defaultFont, _defaultFontGlyphs);
 
   { gasoline maid }
-  sprBlend(1, 10, 30);
+  image := getImagePtr(1);
+  sprBlend(1, (vgaWidth - image^.width) div 2, (vgaHeight - image^.height) div 2);
   flush
 end;
 
