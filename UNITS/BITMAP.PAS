@@ -16,6 +16,9 @@ function isImageSet(const imgHandle: longint): boolean; public name 'isImageSet'
 procedure debugImage(const imgHandle: longint); public name 'debugImage';
 function getImagePtr(const imgHandle: longint): pointer; public name 'getImagePtr';
 
+function getImageWidth(const imgHandle: longint): word; public name 'getImageWidth';
+function getImageHeight(const imgHandle: longint): word; public name 'getImageHeight';
+
 procedure spr(const imgHandle: longint; const x, y: integer); public name 'spr';
 procedure sprRegion(
   const imgHandle: longint;
@@ -99,6 +102,28 @@ begin
   allocImageData := ptr
 end;
 }
+
+function getImageWidth(const imgHandle: longint): word; public name 'getImageWidth';
+var
+  image: PBitmap;
+begin
+  getImageWidth := 0;
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+  getImageWidth := image^.width
+end;
+
+function getImageHeight(const imgHandle: longint): word; public name 'getImageHeight';
+var
+  image: PBitmap;
+begin
+  getImageHeight := 0;
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+  getImageHeight := image^.height
+end;
 
 procedure spr(const imgHandle: longint; const x, y: integer);
 var
