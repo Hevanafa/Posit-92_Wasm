@@ -41,6 +41,8 @@ class Posit92 {
    * @type {AudioBufferSourceNode | null}
    */
   #music = null;
+  #musicVolume = 1.0;
+  #musicGainNode = null;
 
   /**
    * For use with WebAssembly init
@@ -587,21 +589,44 @@ class Posit92 {
     }
 
     this.#music = this.#audioContext.createBufferSource();
+    this.#musicGainNode = this.#audioContext.createGain();
+
     this.#music.buffer = buffer;
     this.#music.loop = true;
-    this.#music.connect(this.#audioContext.destination);
+    this.#musicGainNode.gain.value = this.#musicVolume;
+
+    // Connect source -> gain -> destination
+    this.#music.connect(this.#musicGainNode);
+    this.#musicGainNode.connect(this.#audioContext.destination);
     this.#music.start(0)
   }
 
+  #clamp(value, min, max) {
+    this.#assertNumber(value);
+    this.#assertNumber(min);
+    this.#assertNumber(max);
+
+    return Math.max(min, Math.min(max, value))
+  }
+
   setSoundVolume(key, volume) {
-    const clamped = Math.max(0.0, Math.min(1.0, volume));
+    const clamped = this.#clamp(volume, 0.0, 1.0);
     this.#soundVolumes.set(key, clamped)
+  }
+
+  setMusicVolume(volume) {
+    this.#musicVolume = this.#clamp(volume, 0.0, 1.0);
+
+    if (this.#musicGainNode != null)
+      this.#musicGainNode.gain.value = this.#musicVolume;
   }
 
   stopMusic() {
     if (this.#music == null) return;
+
     this.#music.stop();
-    this.#music = null
+    this.#music = null;
+    this.#musicGainNode = null
   }
 
 
