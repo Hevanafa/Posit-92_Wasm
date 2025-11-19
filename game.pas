@@ -3,7 +3,11 @@ library Game;
 {$Mode ObjFPC}
 
 uses Bitmap, BMFont, Conv, FPS,
-  Graphics, Logger, Mouse, Timing, VGA;
+  Graphics, Keyboard, Logger, Mouse,
+  Timing, VGA;
+
+const
+  SC_ESC = $01;
 
 var
   _defaultFont: TBMFont;
@@ -81,6 +85,8 @@ begin
   updateMouse;
 
   { Your update logic here }
+
+  if isKeyDown(SC_ESC) then writeLog('ESC is pressed!');
 end;
 
 procedure draw;

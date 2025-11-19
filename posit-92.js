@@ -1,3 +1,11 @@
+/**
+ * KeyboardEvent.code to DOS scancode
+ */
+const ScancodeMap = {
+  "Escape": 0x01
+  // Add more scancodes as necessary
+}
+
 class Posit92 {
   #displayScale = Object.freeze(2);
 
@@ -15,6 +23,9 @@ class Posit92 {
   #importObject = Object.freeze({
     env: {
       _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
+
+      // Keyboard
+      isKeyDown: scancode => this.isKeyDown(scancode),
 
       // Logger
       writeLogI32: value => console.log("Pascal (i32):", value),
@@ -355,16 +366,20 @@ class Posit92 {
 
   #initKeyboard() {
     window.addEventListener("keydown", e => {
-      this.#keys.add(e.code)
+      console.log("keydown", e.code);
+
+      const scancode = ScancodeMap[e.code];
+      if (scancode) this.#keys.add(e.code)
     })
 
     window.addEventListener("keyup", e => {
-      this.#keys.delete(e.code)
+      const scancode = ScancodeMap[e.code];
+      if (scancode) this.#keys.delete(e.code)
     })
   }
 
-  isKeyDown(keycode) {
-    return this.#keys.has(keycode)
+  isKeyDown(scancode) {
+    return this.#keys.has(scancode)
   }
 
   // MOUSE
