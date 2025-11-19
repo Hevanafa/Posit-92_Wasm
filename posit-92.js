@@ -514,4 +514,19 @@ class Posit92 {
   draw() {
     this.#wasm.exports.draw()
   }
+
+  stressTest() {
+    this.#wasm.exports.stressTest()
+  }
+
+  startBenchmark() {
+    const start = performance.now();
+    for (let a=0; a<10000; a++) {
+      this.#wasm.exports.update();
+      this.#wasm.exports.draw();
+    }
+
+    const elapsed = performance.now() - start;
+    console.log(`10000 update & draw calls in ${elapsed}ms = ${10000 / (elapsed / 1000)} FPS`);
+  }
 }

@@ -17,6 +17,7 @@ var
   stringBuffer: array[0..255] of byte;
 
   frames: integer;
+  localDone: boolean;
 
 function getStringBuffer: pointer; public name 'getStringBuffer';
 begin
@@ -81,6 +82,8 @@ begin
   initBuffer;
   initDeltaTime;
   initFPSCounter;
+
+  localDone := false;
 end;
 
 procedure update;
@@ -96,6 +99,7 @@ begin
 
     if lastEsc then begin
       writeLog('ESC is pressed!');
+      localDone := true;
       signalDone
     end;
   end;
@@ -125,6 +129,14 @@ begin
   drawFPS;
 
   flush
+end;
+
+procedure mainGameLoop; public name 'stressTest';
+begin
+  repeat
+    update;
+    draw;
+  until localDone;
 end;
 
 
