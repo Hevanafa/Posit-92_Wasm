@@ -38,7 +38,7 @@ function loop(currentTime) {
   const elapsed = currentTime - lastFrameTime;
 
   if (elapsed >= FrameTime) {
-    lastFrameTime = currentTime;
+    lastFrameTime = currentTime - (elapsed % FrameTime);  // Carry over extra time
     P92.update();
     P92.draw();
   }
