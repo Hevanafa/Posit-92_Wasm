@@ -515,10 +515,27 @@ class Posit92 {
     this.#wasm.exports.draw()
   }
 
-  stressTest() {
-    this.#wasm.exports.stressTest()
+  // Stress test 1
+  startStressTest() {
+    // this.#wasm.exports.stressTest()
+
+    const stressTest = () => {
+      const iterations = 100;
+
+      for (let a=0; a<iterations; a++) {
+        this.#wasm.exports.update();
+        this.#wasm.exports.draw();
+      }
+
+      this.flush();
+
+      if (!done) requestAnimationFrame(stressTest)
+    }
+
+    stressTest();
   }
 
+  // Stress test 2
   startBenchmark() {
     const start = performance.now();
     for (let a=0; a<10000; a++) {

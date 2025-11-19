@@ -28,20 +28,25 @@ async function main() {
   //   P92.draw();
   // }
 
-  // function loop() {
-  //   if (done) return;
+  function loop() {
+    if (done) return;
 
-  //   P92.update();
-  //   P92.draw();
-  //   requestAnimationFrame(loop)
+    P92.update();
+    P92.draw();
+    requestAnimationFrame(loop)
 
-  //   // P92.printDefault("Hello from POSIT-92!", 10, 10);
-  //   // P92.spr(imgGasolineMaid, 10, 30);
-  //   // P92.flush();
-  // }
-  // loop();
+    // P92.printDefault("Hello from POSIT-92!", 10, 10);
+    // P92.spr(imgGasolineMaid, 10, 30);
+    // P92.flush();
+  }
+  loop();
 
-  P92.startBenchmark();
+
+  // Stress test 1
+  // P92.startStressTest();
+
+  // Stress test 2
+  // P92.startBenchmark();
 }
 
 main()
