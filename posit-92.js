@@ -46,9 +46,8 @@ class Posit92 {
   async init() {
     await this.#initWebAssembly();
     // console.log("wasm.exports", this.#wasm.exports);
-    this.#wasm.exports.initBuffer();
-
-    this.#wasm.exports.initDeltaTime();
+    // this.#wasm.exports.initBuffer();
+    this.#wasm.exports.init();
   }
 
   #assertNumber(value) {

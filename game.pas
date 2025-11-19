@@ -2,7 +2,8 @@ library Game;
 
 {$Mode ObjFPC}
 
-uses Bitmap, BMFont, Conv, Graphics, Logger, Timing, VGA;
+uses Bitmap, BMFont, Conv, FPS,
+  Graphics, Logger, Timing, VGA;
 
 var
   _defaultFont: TBMFont;
@@ -44,10 +45,24 @@ begin
   printBMFont(text, x, y, _defaultFont, _defaultFontGlyphs)
 end;
 
+procedure drawFPS;
+begin
+  printDefault('FPS:' + i32str(getLastFPS), 240, 0, $00);
+end;
+
+
+procedure init;
+begin
+  initDeltaTime;
+  initFPSCounter;
+end;
 
 procedure update;
 begin
-  
+  updateDeltaTime;
+  incrementFPS;
+
+  { Your update logic here }
 end;
 
 procedure draw;
