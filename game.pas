@@ -88,7 +88,6 @@ begin
   updateMouse;
 
   { Your update logic here }
-
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
 
