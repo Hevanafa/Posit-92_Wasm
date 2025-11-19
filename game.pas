@@ -12,6 +12,7 @@ const
 
   { Must be the same with JS code }
   SfxCoin = 1;
+  BgmMain = 11;
 
 var
   lastEsc, lastSpacebar: boolean;
@@ -107,6 +108,12 @@ begin
   initFPSCounter;
 end;
 
+procedure afterInit;
+begin
+  { Initialise game state here }
+  playMusic(BgmMain)
+end;
+
 procedure update;
 begin
   updateDeltaTime;
@@ -164,6 +171,7 @@ end;
 exports
   { Main game loop }
   init,
+  afterInit,
   update,
   draw;
 

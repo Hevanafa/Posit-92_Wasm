@@ -4,6 +4,7 @@ async function main() {
   const P92 = new Posit92("game");
   await P92.init();
   await P92.loadAssets();
+  P92.afterInit();
 
   function loop() {
     if (done) return;

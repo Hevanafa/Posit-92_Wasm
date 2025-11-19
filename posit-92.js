@@ -8,6 +8,7 @@ const ScancodeMap = {
 };
 
 const SfxCoin = 1;
+const BgmMain = 11;
 
 class Posit92 {
   #displayScale = Object.freeze(2);
@@ -63,8 +64,9 @@ class Posit92 {
       panicHalt: this.panicHalt.bind(this),
 
       // Sounds
-      playSound: key => this.playSound(key),
-      playMusic: (key, loop) => {},
+      playSound: this.playSound.bind(this),
+      playMusic: this.playMusic.bind(this),
+      stopMusic: () => this.stopMusic(),
 
       // Timing
       getTimer: () => this.getTimer()
@@ -106,6 +108,10 @@ class Posit92 {
     this.#initAudio();
   }
 
+  afterInit() {
+    this.#wasm.exports.afterInit()
+  }
+
   async loadAssets() {
     // const imgSatono = await this.loadImage("assets/images/satono_diamond.png");
     // const imgDefaultFont = await this.loadImage("assets/fonts/nokia_cellphone_fc_8_0.png")
@@ -120,6 +126,7 @@ class Posit92 {
     await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
 
     await this.loadSound(SfxCoin, "assets/sfx/coins_1.ogg");
+    await this.loadSound(BgmMain, "assets/bgm/music.ogg");
 
     // Add more assets as necessary
   }
