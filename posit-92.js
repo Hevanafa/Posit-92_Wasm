@@ -370,7 +370,10 @@ class Posit92 {
       // console.log("keydown", e.code);
 
       const scancode = ScancodeMap[e.code];
-      if (scancode) this.heldScancodes.add(scancode)
+      if (scancode) {
+        this.heldScancodes.add(scancode);
+        e.preventDefault();
+      }
     })
 
     window.addEventListener("keyup", e => {
@@ -388,18 +391,49 @@ class Posit92 {
   #mouseX = 0;
   #mouseY = 0;
   #mouseButton = 0;
+  
+  #leftButtonDown = false;
+  #rightButtonDown = false;
 
   #initMouse() {
     this.#canvas.addEventListener("mousemove", e => {
       const rect = this.#canvas.getBoundingClientRect();
       this.#mouseX = Math.floor((e.clientX - rect.left) / this.#displayScale);
       this.#mouseY = Math.floor((e.clientY - rect.top) / this.#displayScale);
-    })
+    });
+
+    this.#canvas.addEventListener("mousedown", e => {
+      if (e.button == 0) this.#leftButtonDown = true;
+      if (e.button == 2) this.#rightButtonDown = true;
+      this.#updateMouseButton();
+      e.preventDefault();  // Prevent context menu on right click
+    });
+
+    this.#canvas.addEventListener("mouseup", e => {
+      if (e.button == 0) this.#leftButtonDown = false;
+      if (e.button == 2) this.#rightButtonDown = false;
+      this.#updateMouseButton();
+    });
+
+    this.#canvas.addEventListener("contextmenu", e => {
+      e.preventDefault()
+    });
   }
 
   getMouseX() { return this.#mouseX }
   getMouseY() { return this.#mouseY }
   getMouseButton() { return this.#mouseButton }
+
+  #updateMouseButton() {
+    if (this.#leftButtonDown && this.#rightButtonDown)
+      this.#mouseButton = 3
+    else if (this.#rightButtonDown)
+      this.#mouseButton = 2
+    else if (this.#leftButtonDown)
+      this.#mouseButton = 1
+    else
+      this.#mouseButton = 0;
+  }
 
 
   // LOGGER.PAS
