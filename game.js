@@ -1,5 +1,12 @@
 "use strict";
 
+const TargetFPS = 60;
+const FrameTime = 1000 / 60.0;
+/**
+ * in milliseconds
+ */
+let lastFrameTime = 0.0;
+
 var done = false;
 
 async function main() {
@@ -8,17 +15,24 @@ async function main() {
   await P92.loadAssets();
   P92.afterInit();
 
-  function loop() {
+  function loop(currentTime) {
     if (done) {
       P92.cleanup();
       return;
     }
 
-    P92.update();
-    P92.draw();
+    const elapsed = currentTime - lastFrameTime;
+
+    if (elapsed >= FrameTime) {
+      lastFrameTime = currentTime;
+      P92.update();
+      P92.draw();
+    }
+
     requestAnimationFrame(loop)
   }
-  loop();
+
+  requestAnimationFrame(loop)
 }
 
 function play() {
