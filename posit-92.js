@@ -45,6 +45,16 @@ class Posit92 {
     this.#wasm.exports.initBuffer();
   }
 
+  #assertNumber(value) {
+    if (typeof value != "number")
+      throw new Error(`Expected a number, but received ${typeof value}`);
+  }
+
+  #assertString(value) {
+    if (typeof value != "string")
+      throw new Error(`Expected a string, but received ${typeof value}`);
+  }
+
 
   // BITMAP.PAS
   async loadImageFromURL(url) {
@@ -64,7 +74,7 @@ class Posit92 {
   }
 
   async loadImage(url) {
-    if (url == null || url == "")
+    if (!this.#assertString(url))
       throw new Error("loadImage: url is required");
 
     const img = await this.loadImageFromURL(url);
@@ -93,6 +103,16 @@ class Posit92 {
     // console.log("First 20 bytes:", Array.from(memory).slice(0, 20));
 
     return imgHandle
+  }
+
+  getImageWidth(imgHandle) {
+    this.#assertNumber(imgHandle);
+    return this.#wasm.exports.getImageWidth(imgHandle)
+  }
+
+  getImageHeight(imgHandle) {
+    this.#assertNumber(imgHandle);
+    return this.#wasm.exports.getImageHeight(imgHandle)
   }
 
   spr(imgHandle, x, y) {
