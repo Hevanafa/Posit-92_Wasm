@@ -27,7 +27,15 @@ class Posit92 {
    * @type {AudioContext}
    */
   #audioContext;
+
+  /**
+   * @type {Map<number, AudioBuffer>}
+   */
   #sounds = new Map();
+
+  /**
+   * @type {AudioBufferSourceNode | null}
+   */
   #music = null;
 
   /**
@@ -56,6 +64,7 @@ class Posit92 {
 
       // Sounds
       playSound: key => this.playSound(key),
+      playMusic: (key, loop) => {},
 
       // Timing
       getTimer: () => this.getTimer()
@@ -524,8 +533,26 @@ class Posit92 {
     // source automatically disconnects when done
   }
 
-  playMusic(key, loop = true) {
-    // TODO: Play music
+  playMusic(key) {
+    this.stopMusic();
+
+    const buffer = this.#sounds.get(key);
+    if (buffer == null) {
+      console.warn("Music " + key + " is not loaded");
+      return
+    }
+
+    this.#music = this.#audioContext.createBufferSource();
+    this.#music.buffer = buffer;
+    this.#music.loop = true;
+    this.#music.connect(this.#audioContext.destination);
+    this.#music.start(0)
+  }
+
+  stopMusic() {
+    if (this.#music == null) return;
+    this.#music.stop();
+    this.#music = null
   }
 
 
