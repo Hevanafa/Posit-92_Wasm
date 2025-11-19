@@ -4,55 +4,28 @@ library Game;
 
 uses Bitmap, BMFont, Conv, FPS,
   Graphics, Keyboard, Logger, Mouse,
-  Panic, Sounds, Timing, VGA;
+  Panic, Sounds, Timing, VGA,
+  Assets;
 
 const
   SC_ESC = $01;
   SC_SPACE = $39;
-
-  { Must be the same with JS code }
-  SfxCoin = 1;
-  BgmMain = 11;
 
 var
   lastEsc, lastSpacebar: boolean;
 
   stringBuffer: array[0..255] of byte;
 
-  { for use in loadBMFont }
-  _defaultFont: TBMFont;
-  _defaultFontGlyphs: array[32..126] of TBMFontGlyph;
-
-  imgCursor, imgGasolineMaid: longint;
-
+  { Game state }
   lastLeftButton: boolean;
   clicks: word;
 
+{ Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
 function getStringBuffer: pointer; public name 'getStringBuffer';
 begin
   getStringBuffer := @stringBuffer
-end;
-
-function defaultFontPtr: pointer; public name 'defaultFontPtr';
-begin
-  defaultFontPtr := @_defaultFont
-end;
-
-function defaultFontGlyphsPtr: pointer; public name 'defaultFontGlyphsPtr';
-begin
-  defaultFontGlyphsPtr := @_defaultFontGlyphs
-end;
-
-procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
-begin
-  imgCursor := imgHandle
-end;
-
-procedure setImgGasolineMaid(const imgHandle: longint); public name 'setImgGasolineMaid';
-begin
-  imgGasolineMaid := imgHandle
 end;
 
 procedure debugStringBuffer; public name 'debugStringBuffer';
@@ -63,25 +36,6 @@ begin
 
   for a:=0 to 19 do
     writeLogI32(stringBuffer[a]);
-end;
-
-{ Requires BMFont }
-procedure printDefault(const text: string; const x, y: integer);
-begin
-  { writelog('printDefault A'); }
-  printBMFont(text, x, y, _defaultFont, _defaultFontGlyphs)
-end;
-
-{ Requires BMFont
-  for use with JS }
-procedure printDefault(const textPtr: pointer; const textLen: integer; const x, y: integer); public name 'printDefault';
-var
-  text: string;
-begin
-  { writeLog('printDefault B'); }
-  text := strPtrToString(textPtr, textLen);
-  { writeLog(text); }
-  printBMFont(text, x, y, _defaultFont, _defaultFontGlyphs)
 end;
 
 procedure drawFPS;
