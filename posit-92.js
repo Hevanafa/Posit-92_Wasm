@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * KeyboardEvent.code to DOS scancode
  */
@@ -109,7 +111,15 @@ class Posit92 {
   }
 
   afterInit() {
-    this.#wasm.exports.afterInit()
+    this.#wasm.exports.afterInit();
+    this.#addOutOfFocusFix()
+  }
+
+  #addOutOfFocusFix() {
+    this.#canvas.addEventListener("click", () => {
+      this.#canvas.tabIndex = 0;
+      this.#canvas.focus()
+    })
   }
 
   async loadAssets() {

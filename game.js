@@ -1,3 +1,5 @@
+"use strict";
+
 var done = false;
 
 async function main() {
