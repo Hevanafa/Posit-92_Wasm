@@ -50,7 +50,11 @@ class Posit92 {
       getMouseY: () => this.getMouseY(),
       getMouseButton: () => this.getMouseButton(),
 
+      // Panic
       panicHalt: this.panicHalt.bind(this),
+
+      // Sounds
+      playSound: key => this.playSound(key),
 
       // Timing
       getTimer: () => this.getTimer()
@@ -507,10 +511,16 @@ class Posit92 {
 
   playSound(key) {
     const buffer = this.#sounds.get(key);
+    if (buffer == null) {
+      console.warn("Sound " + key + " is not loaded");
+      return
+    }
 
-    if (buffer == null) return;
-    
-    // TODO: Play sound
+    const source = this.#audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.connect(this.#audioContext.destination);
+    source.start(0)
+    // source automatically disconnects when done
   }
 
   playMusic(key, loop = true) {
