@@ -7,13 +7,7 @@ async function main() {
   const P92 = new Posit92("game");
   await P92.init();
 
-  // Load assets
-  // const imgSatono = await P92.loadImage("assets/images/satono_diamond.png");
-  // const imgDefaultFont = await P92.loadImage("assets/fonts/nokia_cellphone_fc_8_0.png")
-  const imgGasolineMaid = await P92.loadImage("assets/images/gasoline_maid_100px.png")
-  console.log("imgGasolineMaid handle", imgGasolineMaid);
-
-  await P92.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
+  await P92.loadAssets();
 
   // Draw only 1 frame
 

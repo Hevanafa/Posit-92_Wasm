@@ -17,6 +17,8 @@ var
   _defaultFont: TBMFont;
   _defaultFontGlyphs: array[32..126] of TBMFontGlyph;
 
+  imgGasolineMaid: longint;
+
 function getStringBuffer: pointer; public name 'getStringBuffer';
 begin
   getStringBuffer := @stringBuffer
@@ -30,6 +32,11 @@ end;
 function defaultFontGlyphsPtr: pointer; public name 'defaultFontGlyphsPtr';
 begin
   defaultFontGlyphsPtr := @_defaultFontGlyphs
+end;
+
+procedure setImgGasolineMaid(const imgHandle: longint); public name 'setImgGasolineMaid';
+begin
+  imgGasolineMaid := imgHandle
 end;
 
 procedure debugStringBuffer; public name 'debugStringBuffer';
@@ -112,8 +119,8 @@ begin
   debugMouse;
 
   { gasoline maid }
-  image := getImagePtr(1);
-  sprBlend(1, (vgaWidth - image^.width) div 2, (vgaHeight - image^.height) div 2);
+  image := getImagePtr(imgGasolineMaid);
+  sprBlend(imgGasolineMaid, (vgaWidth - image^.width) div 2, (vgaHeight - image^.height) div 2);
 
   drawFPS;
 
