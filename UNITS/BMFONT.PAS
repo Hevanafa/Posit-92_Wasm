@@ -66,7 +66,7 @@ begin
 
       glyph := fontGlyphs[charcode];
 
-      sprRegion(
+      sprRegionBlend(
         font.imgHandle,
         glyph.x, glyph.y,
         glyph.width, glyph.height,
