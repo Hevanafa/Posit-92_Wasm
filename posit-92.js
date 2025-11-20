@@ -248,10 +248,30 @@ class Posit92 {
     this.#assertNumber(x);
     this.#assertNumber(y);
 
-    this.#wasm.exports.sprBlend(imgHandle, x, y);
+    this.#wasm.exports.spr(imgHandle, x, y);
   }
 
   sprRegion(imgHandle, srcX, srcY, srcW, srcH, destX, destY) {
+    this.#assertNumber(imgHandle);
+    this.#assertNumber(srcX);
+    this.#assertNumber(srcY);
+    this.#assertNumber(srcW);
+    this.#assertNumber(srcH);
+    this.#assertNumber(destX);
+    this.#assertNumber(destY);
+
+    this.#wasm.exports.sprRegion(imgHandle, srcX, srcY, srcW, srcH, destX, destY)
+  }
+
+  sprBlend(imgHandle, x, y) {
+    this.#assertNumber(imgHandle);
+    this.#assertNumber(x);
+    this.#assertNumber(y);
+
+    this.#wasm.exports.sprBlend(imgHandle, x, y);
+  }
+
+  sprRegionBlend(imgHandle, srcX, srcY, srcW, srcH, destX, destY) {
     this.#assertNumber(imgHandle);
     this.#assertNumber(srcX);
     this.#assertNumber(srcY);
