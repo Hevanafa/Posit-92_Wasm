@@ -14,6 +14,7 @@ const BgmMain = 11;
 
 class Posit92 {
   #displayScale = Object.freeze(2);
+  #wasmSource = "game.wasm";
 
   /**
    * @type {HTMLCanvasElement}
@@ -98,7 +99,7 @@ class Posit92 {
 
   // Init segment
   async #initWebAssembly() {
-    const response = await fetch("game.wasm");
+    const response = await fetch(this.#wasmSource);
     const bytes = await response.arrayBuffer();
     const result = await WebAssembly.instantiate(bytes, this.#importObject);
     this.#wasm = result.instance;
