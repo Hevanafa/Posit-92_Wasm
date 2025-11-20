@@ -130,6 +130,7 @@ var
   a, b: integer;
   srcPos, destPos: longint;
   image: PBitmap;
+  alpha: byte;
 begin
   if not isImageSet(imgHandle) then exit;
 
@@ -141,6 +142,9 @@ begin
       or (y + b >= vgaHeight) or (y + b < 0) then continue;
 
     srcPos := (a + b * image^.width) * 4;
+    alpha := image^.data[srcPos + 3];
+    if alpha < 255 then continue;
+
     destPos := ((a + x) + (b + y) * vgaWidth) * 4;
 
     { Order: RGBA }
@@ -156,9 +160,10 @@ procedure sprRegion(
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer);
 var
+  image: PBitmap;
   a, b: integer;
   srcPos, destPos: longint;
-  image: PBitmap;
+  alpha: byte;
 begin
   if not isImageSet(imgHandle) then exit;
 
@@ -170,6 +175,10 @@ begin
       or (destY + b >= vgaHeight) or (destY + b < 0) then continue;
 
     srcPos := ((srcX + a) + (srcY + b) * image^.width) * 4;
+
+    alpha := image^.data[srcPos + 3];
+    if alpha < 255 then continue;
+
     destPos := ((destX + a) + (destY + b) * vgaWidth) * 4;
 
     { Order: RGBA }

@@ -45,7 +45,7 @@ end;
 
 procedure drawMouse;
 begin
-  sprBlend(imgCursor, mouseX, mouseY)
+  spr(imgCursor, mouseX, mouseY)
 end;
 
 procedure debugMouse;
