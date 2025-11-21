@@ -19,3 +19,4 @@ boilerplate/start_server.ps1
 DEMOS/hello_world/*.ps1
 DEMOS/keyboard/*.ps1
 DEMOS/wasm_string/*.ps1
+DEMOS/bigint/*.ps1
