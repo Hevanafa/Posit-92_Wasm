@@ -16,4 +16,6 @@ If there are assets involved, you can take a look into both `assets.pas` and `lo
 - **mouse** -- Simple clicker to demonstrate mouse input
 
 **Interop**
-- **wasm_string** -- Shows how string interop is done
+- **wasm_string** -- Shows how string interop (JS to Pascal) is done
+
+The string interop from Pascal to JS is already demonstrated in `writeLog` mechanism in `LOGGER.PAS` unit
