@@ -664,7 +664,19 @@ class Posit92 {
     const a = BigInt(biStrA);
     let readable = 0;
 
-    if (a >= 1000n) {
+    if (a >= 10n ** 12n) {
+      readable = Number(a / 10n ** 11n) / 10;
+      this.#loadBigIntResult(readable + "T")
+
+    } else if (a >= 1_000_000_000n) {
+      readable = Number(a / 100_000_000n) / 10;
+      this.#loadBigIntResult(readable + "B")
+      
+    } else if (a >= 1_000_000n) {
+      readable = Number(a / 100_000n) / 10;
+      this.#loadBigIntResult(readable + "M")
+
+    } else if (a >= 1000n) {
       readable = Number(a / 100n) / 10;
       this.#loadBigIntResult(readable + "K")
 
