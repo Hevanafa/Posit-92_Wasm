@@ -11,15 +11,22 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+  SC_LEFT = $4B;
+  SC_RIGHT = $4D;
+
+
 var
   lastEsc: boolean;
+  lastLeft, lastRight: boolean;
 
-  { Init your game state here }
-  gameTime: double;
-
+  { Used by BigInt }
   stringBuffer: array[0..255] of byte;
   { BigInt "registers". The result register isn't always a number }
   BigIntA, BigIntB, BigIntResult: string;
+
+  { Init your game state here }
+  gameTime: double;
+  points: string; { BigInt }
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -79,6 +86,8 @@ begin
   { Initialise game state here }
   hideCursor;
 
+  points := '123';
+
   { Addition }
   BigIntA := '12';
   BigIntB := '34';
@@ -131,6 +140,23 @@ begin
       writeLog('ESC is pressed!');
       signalDone
     end;
+  end;
+
+  if lastLeft <> isKeyDown(SC_LEFT) then begin
+    lastLeft := isKeyDown(SC_LEFT);
+
+    if lastLeft then begin
+      BigIntA := points;
+      BigIntB := '1000';
+      compareBigInt;
+
+      { if points < 1000 }
+      { if parseInt(BigIntResult) >= 0 then }
+    end;
+  end;
+
+  if lastRight <> isKeyDown(SC_RIGHT) then begin
+
   end;
 
   gameTime := gameTime + dt
