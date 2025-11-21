@@ -19,6 +19,14 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+{ Immediate GUI default theme
+  https://lospec.com/palette-list/ice-cream-gb }
+  IceCreamWhite = $FFFFF6D3;
+  IceCreamOrange = $FFF9A875;
+  IceCreamRed = $FFEB6B6F;
+  IceCreamMaroon = $FF7C3F58;
+
+
 var
   lastEsc: boolean;
 
@@ -56,6 +64,47 @@ end;
 procedure TextLabel(const text: string; const x, y: integer);
 begin
   printDefault(text, x, y)
+end;
+
+procedure Button(const caption: string; const x, y, width, height: integer);
+var
+  zone: TRect;
+  thisWidgetID: integer;
+  buttonColour: longword;
+begin
+
+  zone.x := x;
+  zone.y := y;
+  zone.width := width;
+  zone.height := height;
+
+  { Update logic }
+  thisWidgetID := nextWidgetID;
+  nextWidgetID := nextWidgetID + 1;
+
+  if rectIntersects(zone, mouseZone) then begin
+    hotWidget := thisWidgetID;
+
+    if mouseJustPressed then activeWidget := thisWidgetID;
+  end;
+
+  { Render logic }
+  if activeWidget = thisWidgetID then
+    buttonColour := IceCreamRed
+  else if hotWidget = thisWidgetID then
+    buttonColour := IceCreamOrange
+  else 
+    buttonColour := IceCreamWhite;
+
+  rectfill(zone.x, zone.y, zone.x + zone.width, zone.y + zone.height, buttonColour);
+  rect(zone.x, zone.y, zone.x + zone.width, zone.y + zone.height, IceCreamWhite);
+  TextLabel(caption, zone.x + 4, zone.y + 4);
+
+  if mouseJustReleased And (hotWidget = thisWidgetID) And (activeWidget = thisWidgetID) then
+    { activeWidget = -1 }  { Index reset is handled at the end of draw }
+    Button := true
+  else
+    Button := false;
 end;
 
 procedure initImmediateGUI;
