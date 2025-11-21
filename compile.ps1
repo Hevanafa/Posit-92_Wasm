@@ -3,11 +3,12 @@ $primaryUnit = ".\game.pas"
 $outputFile = "game"
 
 # Compile targetting wasm32-embedded
-# E:\lazarus-wasm\fpc\bin\x86_64-win64\fpc.exe -Pwasm32 -Tembedded -FuUNITS $primaryUnit
+# E:\lazarus-wasm\fpc\bin\x86_64-win64\fpc.exe -Pwasm32 -Tembedded -FuUNITS .\game.pas
 
 $pinfo = new-object System.Diagnostics.ProcessStartInfo
 $pinfo.FileName = $compilerPath
 $pinfo.Arguments = "-Pwasm32", "-Tembedded", "-FuUNITS", $primaryUnit
+$pinfo.WorkingDirectory = $PSScriptRoot
 $pinfo.RedirectStandardError = $true
 $pinfo.RedirectStandardOutput = $true
 $pinfo.UseShellExecute = $false
