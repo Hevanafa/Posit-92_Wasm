@@ -410,61 +410,6 @@ class Posit92 {
     console.log("loadBMFont completed");
   }
 
-  #loadStringBuffer(text) {
-    this.#assertString(text);
-
-    const encoder = new TextEncoder();
-    const bytes = encoder.encode(text);
-
-    const bufferPtr = this.#wasm.exports.getStringBuffer();
-    const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, bufferPtr, bytes.length);
-    buffer.set(bytes);
-
-    return bytes.length
-  }
-
-  printDefault(text, x, y) {
-    this.#assertString(text);
-    this.#assertNumber(x);
-    this.#assertNumber(y);
-
-    const length = this.#loadStringBuffer(text);
-    const bufferPtr = this.#wasm.exports.getStringBuffer();
-    // this.#wasm.exports.debugStringBuffer();
-    this.#wasm.exports.printDefault(bufferPtr, length, x, y)
-  }
-
-
-  // GRAPHICS.PAS
-  circ(cx, cy, radius, colour) {
-    this.#wasm.exports.circ(cx, cy, radius, colour)
-  }
-
-  circfill(cx, cy, radius, colour) {
-    this.#wasm.exports.circfill(cx, cy, radius, colour)
-  }
-
-  rect(x0, y0, x1, y1, colour) {
-    this.#wasm.exports.rect(x0, y0, x1, y1, colour)
-  }
-
-  rectfill(x0, y0, x1, y1, colour) {
-    this.#wasm.exports.rectfill(x0, y0, x1, y1, colour)
-  }
-
-  hline(x0, x1, y, colour) {
-    this.#wasm.exports.hline(x0, x1, y, colour)
-  }
-
-  vline(x, y0, y1, colour) {
-    this.#wasm.exports.vline(x, y0, y1, colour)
-  }
-
-  line(x0, y0, x1, y1, colour) {
-    this.#wasm.exports.line(x0, y0, x1, y1, colour)
-  }
-
-
   // KEYBOARD
   heldScancodes = new Set();
 
@@ -486,7 +431,6 @@ class Posit92 {
   }
 
   isKeyDown(scancode) {
-    // console.log("isKeyDown call", scancode);
     return this.heldScancodes.has(scancode)
   }
 
