@@ -125,6 +125,16 @@ begin
   writeLog('compare(a, b) = ' + BigIntResult);
 end;
 
+
+
+procedure printCentred(const text: string; const y: integer);
+var
+  w: integer;
+begin
+  w := measureDefault(text);
+  printDefault(text, (vgaWidth - w) div 2, y)
+end;
+
 procedure update;
 begin
   updateDeltaTime;
@@ -151,12 +161,21 @@ begin
       compareBigInt;
 
       { if points < 1000 }
+      { TODO: Handle BigInt division }
       { if parseInt(BigIntResult) >= 0 then }
     end;
   end;
 
   if lastRight <> isKeyDown(SC_RIGHT) then begin
+    lastRight := isKeyDown(SC_RIGHT);
 
+    if lastRight then begin
+      BigIntA := points;
+      BigIntB := '10';
+      multiplyBigInt;
+
+      points := BigIntResult
+    end;
   end;
 
   gameTime := gameTime + dt
@@ -164,8 +183,7 @@ end;
 
 procedure draw;
 var
-  w: integer;
-  s: string;
+  formattedPoints: string;
 begin
   cls($FF6495ED);
 
@@ -174,9 +192,13 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  s := 'Hello world!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  printCentred(points, 140);
+
+  { TODO: formatBigInt }
+  formattedPoints := points;
+  printCentred(formattedPoints, 150);
+
+  printCentred('Left - Decrease | Right - Increase', 180);
 
   drawMouse;
   drawFPS;
