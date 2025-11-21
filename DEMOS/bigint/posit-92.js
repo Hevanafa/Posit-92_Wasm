@@ -184,13 +184,7 @@ class Posit92 {
   }
 
   #assertBigInt(value) {
-    if (value == null)
-      throw new Error("Expected a BigInt, but received null");
-
-    if (isNaN(value))
-      throw new Error("Expected a BigInt, but received NaN");
-
-    if (typeof value != "BigInt")
+    if (typeof value != "bigint")
       throw new Error(`Expected a BigInt, but received ${typeof value}`);
   }
 
@@ -600,7 +594,6 @@ class Posit92 {
     const bufferPtr = this.#wasm.exports.getStringBuffer();
     this.#wasm.exports.loadBigIntResult(bufferPtr, length);
   }
-
 
   #bufferPtrToString(bufferPtr) {
     this.#assertNumber(bufferPtr);

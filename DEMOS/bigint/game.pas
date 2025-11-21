@@ -34,6 +34,7 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
+
 function getStringBuffer: pointer; public name 'getStringBuffer';
 begin
   getStringBuffer := @stringBuffer
