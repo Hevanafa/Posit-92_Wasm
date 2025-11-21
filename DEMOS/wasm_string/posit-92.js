@@ -1,3 +1,9 @@
+/**
+ * String interop demo
+ * Part of Posit-92 framework
+ * Jump to loadHelloText to see how it's done
+ */
+
 "use strict";
 
 /**
@@ -123,7 +129,9 @@ class Posit92 {
 
   afterInit() {
     this.#wasm.exports.afterInit();
-    this.#addOutOfFocusFix()
+    this.#addOutOfFocusFix();
+
+    this.#loadHelloText();
   }
 
   #addOutOfFocusFix() {
@@ -176,6 +184,27 @@ class Posit92 {
   #assertString(value) {
     if (typeof value != "string")
       throw new Error(`Expected a string, but received ${typeof value}`);
+  }
+
+  /**
+   * Pass a JS string to Pascal
+   */
+  #loadStringBuffer(text) {
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(text);
+
+    const bufferPtr = this.#wasm.exports.getStringBuffer();
+    const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, bufferPtr, bytes.length);
+    buffer.set(bytes);
+
+    return bytes.length
+  }
+
+  #loadHelloText() {
+    const length = this.#loadStringBuffer("Hello from JS to WebAssembly!");
+    const bufferPtr = this.#wasm.exports.getStringBuffer();
+    // this.#wasm.exports.debugStringBuffer();
+    this.#wasm.exports.loadHelloText(bufferPtr, length);
   }
 
 

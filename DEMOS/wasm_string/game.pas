@@ -12,19 +12,37 @@ const
   SC_SPACE = $39;
 
 var
+  stringBuffer: array[0..255] of byte;
+  helloText: string;
+
   lastEsc: boolean;
 
   { Init your game state here }
   gameTime: double;
 
-  stringBuffer: array[0..255] of string;
-
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
-function getStringBuffer: pointer;
+
+function getStringBuffer: pointer; public name 'getStringBuffer';
 begin
-  getStringBuffer := stringBuffer
+  getStringBuffer := @stringBuffer
+end;
+
+procedure debugStringBuffer; public name 'debugStringBuffer';
+var
+  a: word;
+begin
+  writeLog('debugStringBuffer');
+
+  for a:=0 to 9 do
+    writeLogI32(stringBuffer[a]);
+end;
+
+procedure loadHelloText(const textPtr: pointer; const textLen: word); public name 'loadHelloText';
+begin
+  { Requires Conv unit }
+  helloText := strPtrToString(textPtr, textLen)
 end;
 
 
@@ -84,7 +102,7 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  s := 'Hello world!';
+  s := helloText;
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
 
