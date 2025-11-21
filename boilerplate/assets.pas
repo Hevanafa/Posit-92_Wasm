@@ -18,8 +18,7 @@ var
 function defaultFontPtr: pointer; public name 'defaultFontPtr';
 function defaultFontGlyphsPtr: pointer; public name 'defaultFontGlyphsPtr';
 procedure printDefault(const text: string; const x, y: integer);
-{ for use with JS }
-procedure printDefault(const textPtr: pointer; const textLen: integer; const x, y: integer); public name 'printDefault';
+function measureDefault(const text: string): word;
 
 { Asset boilerplate }
 procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
@@ -55,6 +54,12 @@ begin
   text := strPtrToString(textPtr, textLen);
   printBMFont(text, x, y, _defaultFont, _defaultFontGlyphs)
 end;
+
+function measureDefault(const text: string): word;
+begin
+  measureDefault := measureBMFont(text, _defaultFontGlyphs)
+end;
+
 
 { Begin asset boilerplate }
 

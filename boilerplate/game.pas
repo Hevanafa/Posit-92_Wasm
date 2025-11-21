@@ -71,7 +71,7 @@ var
 begin
   cls($FF6495ED);
 
-  if trunc(gameTime * 2) div 2 > 0 then
+  if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
   else
     spr(imgDosuEXE[0], 148, 88);
