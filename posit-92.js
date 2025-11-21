@@ -65,7 +65,6 @@ class Posit92 {
 
       // Logger
       writeLogI32: value => console.log("Pascal (i32):", value),
-      flush: () => this.flush(),
       flushLog: () => this.pascalWriteLog(),
 
       // Mouse
@@ -84,7 +83,10 @@ class Posit92 {
       stopMusic: () => this.stopMusic(),
 
       // Timing
-      getTimer: () => this.getTimer()
+      getTimer: () => this.getTimer(),
+
+      // VGA
+      flush: () => this.flush()
     }
   });
 
