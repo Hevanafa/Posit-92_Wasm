@@ -1,3 +1,11 @@
+{
+  Immediate GUI Implementation
+  Part of Posit-92 framework
+  By Hevanafa, 22-11-2025
+
+  Based on my QB64 Immediate GUI implementation
+}
+
 library Game;
 
 {$Mode ObjFPC}
