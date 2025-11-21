@@ -70,6 +70,7 @@ end;
 procedure addBigInt; external 'env' name 'addBigInt';
 procedure subtractBigInt; external 'env' name 'subtractBigInt';
 procedure multiplyBigInt; external 'env' name 'multiplyBigInt';
+procedure divideBigInt; external 'env' name 'divideBigInt';
 
 { Sets the Result register to either -1, 0, or 1 }
 procedure compareBigInt; external 'env' name 'compareBigInt';
@@ -164,9 +165,12 @@ begin
       BigIntB := '1000';
       compareBigInt;
 
-      { if points < 1000 }
-      { TODO: Handle BigInt division }
-      { if parseInt(BigIntResult) >= 0 then }
+      { if points > 1000 }
+      if parseInt(BigIntResult) > 0 then begin
+        BigIntB := '10';
+        divideBigInt;
+        points := BigIntResult
+      end;
     end;
   end;
 
