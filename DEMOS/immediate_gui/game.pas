@@ -207,6 +207,9 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
+  { spr(imgDosuEXE[0], 100, 80); }
+  sprStretch(imgDosuEXE[0], 100, 80, 24, 48);
+
   s := 'Clicks: ' + i32str(clicks);
   w := measureDefault(s);
   TextLabel(s, (vgaWidth - w) div 2, 120);
