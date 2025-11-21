@@ -17,6 +17,9 @@ class Posit92 {
   #displayScale = Object.freeze(2);
   #wasmSource = "game.wasm";
 
+  #vgaWidth = 320;
+  #vgaHeight = 200;
+
   /**
    * @type {HTMLCanvasElement}
    */
@@ -550,10 +553,10 @@ class Posit92 {
     const imageData = new Uint8ClampedArray(
       this.#wasm.exports.memory.buffer,
       surfacePtr,
-      320 * 200 * 4
+      this.#vgaWidth * this.#vgaHeight * 4
     );
 
-    const imgData = new ImageData(imageData, 320, 200);
+    const imgData = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
 
     this.#ctx.putImageData(imgData, 0, 0);
   }
