@@ -11,8 +11,15 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+  SC_1 = $02;
+  SC_2 = $03;
+  SC_3 = $04;
+  SC_4 = $05;
+  SC_5 = $06;
+
 var
   lastEsc, lastSpacebar: boolean;
+  lastD1, lastD2, lastD3, lastD4, lastD5: boolean;
 
   { Init your game state here }
   gameTime: double;
@@ -72,6 +79,31 @@ begin
     if lastSpacebar then playRandomSFX;
   end;
 
+  if lastD1 <> isKeyDown(SC_1) then begin
+    lastD1 := isKeyDown(SC_1);
+    if lastD1 then playSound(1);
+  end;
+
+  if lastD2 <> isKeyDown(SC_2) then begin
+    lastD2 := isKeyDown(SC_2);
+    if lastD2 then playSound(2);
+  end;
+
+  if lastD3 <> isKeyDown(SC_3) then begin
+    lastD3 := isKeyDown(SC_3);
+    if lastD3 then playSound(3);
+  end;
+
+  if lastD4 <> isKeyDown(SC_4) then begin
+    lastD4 := isKeyDown(SC_4);
+    if lastD4 then playSound(4);
+  end;
+
+  if lastD5 <> isKeyDown(SC_5) then begin
+    lastD5 := isKeyDown(SC_5);
+    if lastD5 then playSound(5);
+  end;
+
   gameTime := gameTime + dt
 end;
 
@@ -87,9 +119,13 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  s := 'Hello world!';
+  s := '1, 2, 3, 4, 5 - Play sound';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
+
+  s := 'Spacebar - Play a random sound';
+  w := measureDefault(s);
+  printDefault(s, (vgaWidth - w) div 2, 130);
 
   drawMouse;
   drawFPS;

@@ -9,7 +9,13 @@
  */
 const ScancodeMap = {
   "Escape": 0x01,
-  "Space": 0x39
+  "Space": 0x39,
+
+  "Digit1": 0x02,
+  "Digit2": 0x03,
+  "Digit3": 0x04,
+  "Digit4": 0x05,
+  "Digit5": 0x06
   // Add more scancodes as necessary
 };
 
@@ -155,11 +161,11 @@ class Posit92 {
     handle = await this.loadImage("assets/images/dosu_2.png");
     this.#wasm.exports.setImgDosuEXE(handle, 1);
 
-    this.loadSound(SfxBwonk, "assets/sfx/bwonk.ogg");
-    this.loadSound(SfxBite, "assets/sfx/bite.ogg");
-    this.loadSound(SfxBonk, "assets/sfx/bonk.ogg");
-    this.loadSound(SfxStrum, "assets/sfx/strum.ogg");
-    this.loadSound(SfxSlip, "assets/sfx/slip.ogg");
+    await this.loadSound(SfxBwonk, "assets/sfx/bwonk.ogg");
+    await this.loadSound(SfxBite, "assets/sfx/bite.ogg");
+    await this.loadSound(SfxBonk, "assets/sfx/bonk.ogg");
+    await this.loadSound(SfxStrum, "assets/sfx/strum.ogg");
+    await this.loadSound(SfxSlip, "assets/sfx/slip.ogg");
 
     // Add more assets as necessary
   }
@@ -381,7 +387,7 @@ class Posit92 {
 
   #initKeyboard() {
     window.addEventListener("keydown", e => {
-      // console.log("keydown", e.code);
+      console.log("keydown", e.code);
 
       const scancode = ScancodeMap[e.code];
       if (scancode) {
