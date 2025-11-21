@@ -6,6 +6,14 @@ interface
 
 uses BMFont;
 
+const
+  { Must be the same as JS code }
+  SfxBwonk = 1;
+  SfxBite = 2;
+  SfxBonk = 3;
+  SfxStrum = 4;
+  SfxSlip = 5;
+
 var
   { for use in loadBMFont }
   _defaultFont: TBMFont;

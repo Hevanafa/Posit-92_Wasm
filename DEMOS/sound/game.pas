@@ -12,7 +12,7 @@ const
   SC_SPACE = $39;
 
 var
-  lastEsc: boolean;
+  lastEsc, lastSpacebar: boolean;
 
   { Init your game state here }
   gameTime: double;
@@ -28,6 +28,11 @@ end;
 procedure drawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
+end;
+
+procedure playRandomSFX;
+begin
+  playSound(1 + random(SfxSlip))
 end;
 
 
@@ -59,6 +64,12 @@ begin
       writeLog('ESC is pressed!');
       signalDone
     end;
+  end;
+
+  if lastSpacebar <> isKeyDown(SC_SPACE) then begin
+    lastSpacebar := isKeyDown(SC_SPACE);
+
+    if lastSpacebar then playRandomSFX;
   end;
 
   gameTime := gameTime + dt

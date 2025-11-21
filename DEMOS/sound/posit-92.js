@@ -13,6 +13,13 @@ const ScancodeMap = {
   // Add more scancodes as necessary
 };
 
+const
+  SfxBwonk = 1,
+  SfxBite = 2,
+  SfxBonk = 3,
+  SfxStrum = 4,
+  SfxSlip = 5;
+
 class Posit92 {
   #displayScale = Object.freeze(2);
   #wasmSource = "game.wasm";
@@ -147,6 +154,12 @@ class Posit92 {
     this.#wasm.exports.setImgDosuEXE(handle, 0);
     handle = await this.loadImage("assets/images/dosu_2.png");
     this.#wasm.exports.setImgDosuEXE(handle, 1);
+
+    this.loadSound(SfxBwonk, "assets/sfx/bwonk.ogg");
+    this.loadSound(SfxBite, "assets/sfx/bite.ogg");
+    this.loadSound(SfxBonk, "assets/sfx/bonk.ogg");
+    this.loadSound(SfxStrum, "assets/sfx/strum.ogg");
+    this.loadSound(SfxSlip, "assets/sfx/slip.ogg");
 
     // Add more assets as necessary
   }
