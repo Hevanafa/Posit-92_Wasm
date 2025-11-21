@@ -63,6 +63,8 @@ end;
 procedure addBigInt; external 'env' name 'addBigInt';
 procedure subtractBigInt; external 'env' name 'subtractBigInt';
 procedure multiplyBigInt; external 'env' name 'multiplyBigInt';
+{ Sets Result register to either -1, 0, or 1 }
+procedure compareBigInt; external 'env' name 'compareBigInt';
 
 
 procedure init;
@@ -102,7 +104,16 @@ begin
 
   writeLog('a = ' + BigIntA);
   writeLog('b = ' + BigIntB);
-  writeLog('a * b = ' + BigIntResult)
+  writeLog('a * b = ' + BigIntResult);
+
+  { Comparison }
+  BigIntA := '6';
+  BigIntB := '7';
+  compareBigInt;
+
+  writeLog('a = ' + BigIntA);
+  writeLog('b = ' + BigIntB);
+  writeLog('compare(a, b) = ' + BigIntResult);
 end;
 
 procedure update;
