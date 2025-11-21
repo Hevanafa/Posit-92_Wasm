@@ -17,6 +17,17 @@ var
   { Init your game state here }
   gameTime: double;
 
+  { Immediate GUI variables }
+  { Additional mouse variables }
+  lastMouseButton: integer;
+  mouseJustPressed, mouseJustReleased: boolean;
+
+  {
+  activeWidget is the "memory" of what the user clicked on
+  activeWidget must survive across frames
+  }
+  hotWidget, activeWidget, nextWidgetID;
+
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
@@ -31,9 +42,23 @@ begin
 end;
 
 
+{ Immediate GUI }
+
 procedure TextLabel(const text: string; const x, y: integer);
 begin
   printDefault(text, x, y)
+end;
+
+procedure initImmediateGUI;
+begin
+  hotWidget := -1;
+  activeWidget := -1;
+  nextWidgetID := 0;
+
+  mouseZone.x := 0;
+  mouseZone.y := 0;
+  mouseZone.width := 1;
+  mouseZone.height := 1;
 end;
 
 
