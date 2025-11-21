@@ -61,6 +61,37 @@ begin
   mouseZone.height := 1;
 end;
 
+{ Called before updateMouse }
+procedure updateGUILastMouseButton;
+begin
+  lastMouseButton := mouseButton
+end;
+
+{ Called after updateMouse }
+procedure updateGUIMouseZone;
+begin
+  mouseZone.x := mouseX;
+  mouseZone.y := mouseY;
+
+  mouseJustPressed := (mouseButton <> MouseButtonNone) and (lastMouseButton = MouseButtonNone);
+  mouseJustReleased := (mouseButton = MouseButtonNone) and (lastMouseButton <> MouseButtonNone)
+end;
+
+{ Called at the end of update routine }
+procedure resetWidgetIndices;
+begin
+  hotWidget := -1;
+  { Important: Do not reset activeWidget on each frame }
+  { activeWidget := -1; }
+  nextWidgetID := 0;
+end;
+
+{ Important: Must be placed at the end of the draw routine }
+procedure resetActiveWidget;
+begin
+  If mouseJustReleased and (activeWidget >= 0) Then activeWidget = -1;
+end;
+
 
 procedure init;
 begin
