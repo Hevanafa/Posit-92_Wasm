@@ -77,6 +77,7 @@ procedure compareBigInt; external 'env' name 'compareBigInt';
 
 { Requires only register A, outputs to the Result register }
 procedure formatBigInt; external 'env' name 'formatBigInt';
+procedure formatBigIntScientific; external 'env' name 'formatBigIntScientific';
 
 
 procedure init;
@@ -206,6 +207,11 @@ begin
   formatBigInt;
   formattedPoints := BigIntResult;
   printCentred(formattedPoints, 150);
+
+  BigIntA := points;
+  formatBigIntScientific;
+  formattedPoints := BigIntResult;
+  printCentred(formattedPoints, 160);
 
   printCentred('Left - Decrease | Right - Increase', 180);
 

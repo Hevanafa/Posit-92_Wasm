@@ -98,7 +98,8 @@ class Posit92 {
       divideBigInt: () => this.divideBigInt(),
 
       compareBigInt: () => this.compareBigInt(),
-      formatBigInt: () => this.formatBigInt()
+      formatBigInt: () => this.formatBigInt(),
+      formatBigIntScientific: () => this.formatBigIntScientific()
     }
   });
 
@@ -718,6 +719,19 @@ class Posit92 {
       readable = Number(a / 100n) / 10;
       this.#loadBigIntResult(readable + "K")
 
+    } else
+      this.#loadBigIntResult(a);
+  }
+
+
+  formatBigIntScientific() {
+    const biStrA = this.#bufferPtrToString(this.#wasm.exports.getBigIntAPtr());
+    const a = BigInt(biStrA);
+    const digits = a.toString().length;
+
+    if (a >= 1000n) {
+      const readable = Number(a / 10n ** (BigInt(digits) - 2n)) / 10;
+      this.#loadBigIntResult(readable + " * 10^" + (digits - 1))
     } else
       this.#loadBigIntResult(a);
   }
