@@ -32,6 +32,7 @@ var
 
   { Init your game state here }
   gameTime: double;
+  clicks: word;
 
   { Immediate GUI }
   { Additional mouse variables }
@@ -66,7 +67,7 @@ begin
   printDefault(text, x, y)
 end;
 
-procedure Button(const caption: string; const x, y, width, height: integer);
+function Button(const caption: string; const x, y, width, height: integer): boolean;
 var
   zone: TRect;
   thisWidgetID: integer;
@@ -96,9 +97,9 @@ begin
   else 
     buttonColour := IceCreamWhite;
 
-  rectfill(zone.x, zone.y, zone.x + zone.width, zone.y + zone.height, buttonColour);
-  rect(zone.x, zone.y, zone.x + zone.width, zone.y + zone.height, IceCreamWhite);
-  TextLabel(caption, zone.x + 4, zone.y + 4);
+  rectfill(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), buttonColour);
+  rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), IceCreamWhite);
+  TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
 
   if mouseJustReleased And (hotWidget = thisWidgetID) And (activeWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
@@ -163,6 +164,8 @@ begin
   { Initialise game state here }
   hideCursor;
   initImmediateGUI;
+
+  clicks := 0;
 end;
 
 procedure update;
@@ -196,12 +199,15 @@ var
 begin
   cls($FF6495ED);
 
+  if Button('Click me!', 180, 88, 50, 24) then
+    inc(clicks);
+
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  s := 'Hello world!';
+  s := 'Clicks: ' + i32str(clicks);
   w := measureDefault(s);
   TextLabel(s, (vgaWidth - w) div 2, 120);
 
