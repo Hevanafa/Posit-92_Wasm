@@ -62,6 +62,7 @@ end;
 
 procedure addBigInt; external 'env' name 'addBigInt';
 procedure subtractBigInt; external 'env' name 'subtractBigInt';
+procedure multiplyBigInt; external 'env' name 'multiplyBigInt';
 
 
 procedure init;
@@ -76,6 +77,7 @@ begin
   { Initialise game state here }
   hideCursor;
 
+  { Addition }
   BigIntA := '12';
   BigIntB := '34';
   addBigInt;
@@ -84,13 +86,23 @@ begin
   writeLog('b = ' + BigIntB);
   writeLog('a + b = ' + BigIntResult);
 
+  { Subtraction }
   BigIntA := '56';
   BigIntB := '78';
   subtractBigInt;
 
   writeLog('a = ' + BigIntA);
   writeLog('b = ' + BigIntB);
-  writeLog('a - b = ' + BigIntResult)
+  writeLog('a - b = ' + BigIntResult);
+
+  { Multiplication }
+  BigIntA := '6';
+  BigIntB := '7';
+  multiplyBigInt;
+
+  writeLog('a = ' + BigIntA);
+  writeLog('b = ' + BigIntB);
+  writeLog('a * b = ' + BigIntResult)
 end;
 
 procedure update;
