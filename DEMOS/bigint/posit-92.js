@@ -674,7 +674,35 @@ class Posit92 {
     const a = BigInt(biStrA);
     let readable = 0;
 
-    if (a >= 10n ** 12n) {
+    if (a >= 10n ** 33n) {
+      readable = Number(a / 10n ** 32n) / 10;
+      this.#loadBigIntResult(readable + "Dc")
+
+    } else if (a >= 10n ** 30n) {
+      readable = Number(a / 10n ** 29n) / 10;
+      this.#loadBigIntResult(readable + "No")
+
+    } else if (a >= 10n ** 27n) {
+      readable = Number(a / 10n ** 26n) / 10;
+      this.#loadBigIntResult(readable + "Oc")
+
+    } else if (a >= 10n ** 24n) {
+      readable = Number(a / 10n ** 23n) / 10;
+      this.#loadBigIntResult(readable + "Sp")
+
+    } else if (a >= 10n ** 21n) {
+      readable = Number(a / 10n ** 20n) / 10;
+      this.#loadBigIntResult(readable + "Sx")
+
+    } else if (a >= 10n ** 18n) {
+      readable = Number(a / 10n ** 17n) / 10;
+      this.#loadBigIntResult(readable + "Qi")
+
+    } else if (a >= 10n ** 15n) {
+      readable = Number(a / 10n ** 14n) / 10;
+      this.#loadBigIntResult(readable + "Qa")
+    
+    } else if (a >= 10n ** 12n) {
       readable = Number(a / 10n ** 11n) / 10;
       this.#loadBigIntResult(readable + "T")
 
