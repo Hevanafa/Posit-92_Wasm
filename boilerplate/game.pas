@@ -12,31 +12,13 @@ const
   SC_SPACE = $39;
 
 var
-  lastEsc, lastSpacebar: boolean;
+  lastEsc: boolean;
 
-  stringBuffer: array[0..255] of byte;
-
-  { Game state }
-  lastLeftButton: boolean;
-  clicks: word;
+  { Init your game state here }
+  gameTime: double;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
-
-function getStringBuffer: pointer; public name 'getStringBuffer';
-begin
-  getStringBuffer := @stringBuffer
-end;
-
-procedure debugStringBuffer; public name 'debugStringBuffer';
-var
-  a: word;
-begin
-  writeLog('First 20 bytes of stringBuffer');
-
-  for a:=0 to 19 do
-    writeLogI32(stringBuffer[a]);
-end;
 
 procedure drawFPS;
 begin
@@ -46,12 +28,6 @@ end;
 procedure drawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
-end;
-
-procedure debugMouse;
-begin
-  printDefault('Mouse: {x:' + i32str(mouseX) + ', y:' + i32str(mouseY) + '}', 0, 0);
-  printDefault('Button: ' + i32str(integer(mouseButton)), 0, 8);
 end;
 
 
@@ -66,9 +42,6 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
-  
-  playMusic(BgmMain);
-  setMusicVolume(0.5)
 end;
 
 procedure update;
@@ -88,45 +61,33 @@ begin
     end;
   end;
 
-  if lastSpacebar <> isKeyDown(SC_SPACE) then begin
-    lastSpacebar := isKeyDown(SC_SPACE);
-
-    if lastSpacebar then
-      playSound(SfxCoin);
-  end;
-
-  if lastLeftButton <> (0 <> mouseButton and 1) then begin
-    lastLeftButton := (0 <> mouseButton and 1);
-
-    if lastLeftButton then inc(clicks);
-  end;
+  gameTime := gameTime + dt
 end;
 
 procedure draw;
 var
-  image: PBitmap;
   w: integer;
   s: string;
 begin
   cls($FF6495ED);
 
-  image := getImagePtr(imgGasolineMaid);
-  sprBlend(imgGasolineMaid, (vgaWidth - image^.width) div 2, (vgaHeight - image^.height) div 2);
+  if trunc(gameTime * 2) div 2 > 0 then
+    spr(imgDosuEXE[1], 148, 88)
+  else
+    spr(imgDosuEXE[0], 148, 88);
 
-  s := 'Clicks: ' + i32str(clicks);
-  w := measureBMFont(s, _defaultFontGlyphs);
+  s := 'Hello world!';
+  w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 160);
 
   drawMouse;
-
-  debugMouse;
   drawFPS;
 
   flush
 end;
 
 exports
-  { Main game loop }
+  { Main game procedures }
   init,
   afterInit,
   update,
