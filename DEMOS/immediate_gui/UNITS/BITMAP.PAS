@@ -30,6 +30,10 @@ procedure sprRegion(
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer); public name 'sprRegion';
 
+procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
+{ Alias for sprStretch }
+procedure sprScale(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
+
 procedure sprBlend(const imgHandle: longint; const x, y: integer); public name 'sprBlend';
 procedure sprRegionBlend(
   const imgHandle: longint;
@@ -194,6 +198,17 @@ begin
   end;
 end;
 
+{ Stretch a sprite with nearest neighbour scaling }
+procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
+begin
+
+end;
+
+procedure sprScale(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
+begin
+  sprStretch(imgHandle, destX, destY, destWidth, destHeight)
+end;
+
 function sprPget(const imgHandle: longint; const x, y: integer): longword;
 var
   offset: longword;
@@ -273,10 +288,5 @@ begin
   end;
 end;
 
-{
-initialization
-
-nextImageHandle := 1;
-}
 
 end.
