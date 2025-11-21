@@ -70,8 +70,12 @@ end;
 procedure addBigInt; external 'env' name 'addBigInt';
 procedure subtractBigInt; external 'env' name 'subtractBigInt';
 procedure multiplyBigInt; external 'env' name 'multiplyBigInt';
-{ Sets Result register to either -1, 0, or 1 }
+
+{ Sets the Result register to either -1, 0, or 1 }
 procedure compareBigInt; external 'env' name 'compareBigInt';
+
+{ Requires only register A, outputs to the Result register }
+procedure formatBigInt; external 'env' name 'formatBigInt';
 
 
 procedure init;
@@ -194,8 +198,9 @@ begin
 
   printCentred(points, 140);
 
-  { TODO: formatBigInt }
-  formattedPoints := points;
+  BigIntA := points;
+  formatBigInt;
+  formattedPoints := BigIntResult;
   printCentred(formattedPoints, 150);
 
   printCentred('Left - Decrease | Right - Increase', 180);

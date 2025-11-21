@@ -10,7 +10,7 @@
 const ScancodeMap = {
   "Escape": 0x01,
   "Space": 0x39,
-  
+
   "ArrowLeft": 0x4B,
   "ArrowRight": 0x4D
   // Add more scancodes as necessary
@@ -63,7 +63,7 @@ class Posit92 {
       showCursor: () => this.showCursor(),
 
       // Keyboard
-      isKeyDown: scancode => this.isKeyDown(scancode),
+      isKeyDown: this.isKeyDown.bind(this),
       signalDone: () => { done = true },
 
       // Logger
@@ -95,7 +95,8 @@ class Posit92 {
       addBigInt: () => this.addBigInt(),
       subtractBigInt: () => this.subtractBigInt(),
       multiplyBigInt: () => this.multiplyBigInt(),
-      compareBigInt: () => this.compareBigInt()
+      compareBigInt: () => this.compareBigInt(),
+      formatBigInt: () => this.formatBigInt()
     }
   });
 
@@ -594,7 +595,9 @@ class Posit92 {
   }
 
   #loadBigIntResult(n) {
-    this.#assertBigInt(n);
+    // this.#assertBigInt(n);
+    if ((typeof n != "bigint") && (typeof n != "string"))
+      throw new Error("n should be either of type BigInt or string");
 
     const length = this.#loadStringBuffer(n.toString());
     const bufferPtr = this.#wasm.exports.getStringBuffer();
@@ -654,6 +657,19 @@ class Posit92 {
       this.#loadBigIntResult(-1n)
     else
       this.#loadBigIntResult(0n);
+  }
+
+  formatBigInt() {
+    const biStrA = this.#bufferPtrToString(this.#wasm.exports.getBigIntAPtr());
+    const a = BigInt(biStrA);
+    let readable = 0;
+
+    if (a >= 1000n) {
+      readable = Number(a / 100n) / 10;
+      this.#loadBigIntResult(readable + "K")
+
+    } else
+      this.#loadBigIntResult(a);
   }
 
 
