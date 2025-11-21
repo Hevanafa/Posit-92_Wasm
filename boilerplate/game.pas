@@ -78,7 +78,7 @@ begin
 
   s := 'Hello world!';
   w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 160);
+  printDefault(s, (vgaWidth - w) div 2, 120);
 
   drawMouse;
   drawFPS;
