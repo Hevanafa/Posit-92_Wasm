@@ -17,6 +17,9 @@ var
   { Init your game state here }
   gameTime: double;
 
+  { BigInt "registers". The result register isn't always a number }
+  BigIntA, BigIntB, BigIntResult: string;
+
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
@@ -28,6 +31,23 @@ end;
 procedure drawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
+end;
+
+procedure addBigInt; external 'env' name 'addBigInt';
+
+function getBigIntAPtr: pointer; public name 'getBigIntAPtr';
+begin
+  getBigIntAPtr := @BigIntA
+end;
+
+function getBigIntBPtr: pointer; public name 'getBigIntBPtr';
+begin
+  getBigIntBPtr := @BigIntB
+end;
+
+function getBigIntResultPtr: pointer; public name 'getBigIntResultPtr';
+begin
+  getBigIntResultPtr := @BigIntResult
 end;
 
 
@@ -42,6 +62,12 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  BigIntA := '12';
+  BigIntB := '34';
+  addBigInt;
+
+  { writeLog('Result: ' + BigIntResult) }
 end;
 
 procedure update;

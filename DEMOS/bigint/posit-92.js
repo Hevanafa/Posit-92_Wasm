@@ -86,7 +86,10 @@ class Posit92 {
       getTimer: () => this.getTimer(),
 
       // VGA
-      flush: () => this.flush()
+      flush: () => this.flush(),
+
+      // BigInt
+      addBigInt: () => this.addBigInt()
     }
   });
 
@@ -561,6 +564,31 @@ class Posit92 {
     const imgData = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
 
     this.#ctx.putImageData(imgData, 0, 0);
+  }
+
+
+  // BigInt interop
+  #bufferPtrToString(bufferPtr) {
+    this.#assertNumber(bufferPtr);
+
+    const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, bufferPtr, 256);
+    const len = buffer[0];
+    const bytes = buffer.slice(1, 1 + len);
+
+    return new TextDecoder().decode(bytes)
+  }
+
+  addBigInt() {
+    const biStrA = this.#bufferPtrToString(
+      this.#wasm.exports.getBigIntAPtr());
+    const biStrB = this.#bufferPtrToString(
+      this.#wasm.exports.getBigIntBPtr());
+    
+    const [a, b] = [BigInt(biStrA), BigInt(biStrB)];
+
+    console.log("BigIntA", a)
+    console.log("BigIntB", b)
+    console.log(a + b, (a + b).toString());
   }
 
 
