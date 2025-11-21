@@ -183,6 +183,17 @@ class Posit92 {
       throw new Error(`Expected a string, but received ${typeof value}`);
   }
 
+  #assertBigInt(value) {
+    if (value == null)
+      throw new Error("Expected a BigInt, but received null");
+
+    if (isNaN(value))
+      throw new Error("Expected a BigInt, but received NaN");
+
+    if (typeof value != "BigInt")
+      throw new Error(`Expected a BigInt, but received ${typeof value}`);
+  }
+
 
   // BITMAP.PAS
   async loadImageFromURL(url) {
@@ -583,7 +594,7 @@ class Posit92 {
   }
 
   #loadBigIntResult(n) {
-    // TODO: #assertBigInt(n);
+    this.#assertBigInt(n);
 
     const length = this.#loadStringBuffer(n.toString());
     const bufferPtr = this.#wasm.exports.getStringBuffer();
