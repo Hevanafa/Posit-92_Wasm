@@ -7,7 +7,7 @@ unit Bitmap;
 interface
 
 const
-  MaxBitmapData = 64000;
+  MaxBitmapData = 65536;
 
 type
   PBitmap = ^TBitmap;
