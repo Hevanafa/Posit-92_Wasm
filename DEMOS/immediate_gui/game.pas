@@ -4,7 +4,7 @@ library Game;
 
 uses Bitmap, BMFont, Conv, FPS,
   Graphics, Keyboard, Logger, Mouse,
-  Panic, Sounds, Timing, VGA,
+  Panic, Shapes, Sounds, Timing, VGA,
   Assets;
 
 const
@@ -17,8 +17,9 @@ var
   { Init your game state here }
   gameTime: double;
 
-  { Immediate GUI variables }
+  { Immediate GUI }
   { Additional mouse variables }
+  mouseZone: TRect;
   lastMouseButton: integer;
   mouseJustPressed, mouseJustReleased: boolean;
 
@@ -89,7 +90,7 @@ end;
 { Important: Must be placed at the end of the draw routine }
 procedure resetActiveWidget;
 begin
-  If mouseJustReleased and (activeWidget >= 0) Then activeWidget = -1;
+  if mouseJustReleased and (activeWidget >= 0) then activeWidget := -1;
 end;
 
 
