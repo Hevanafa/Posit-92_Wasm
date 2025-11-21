@@ -21,3 +21,4 @@ DEMOS/keyboard/*.ps1
 DEMOS/wasm_string/*.ps1
 DEMOS/bigint/*.ps1
 DEMOS/sound/*.ps1
+DEMOS/immediate_gui/*.ps1
