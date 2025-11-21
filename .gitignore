@@ -14,3 +14,6 @@ boilerplate/build_run.ps1
 boilerplate/compile.ps1
 boilerplate/run.ps1
 boilerplate/start_server.ps1
+
+# Demos
+DEMOS/hello_world/*.ps1
