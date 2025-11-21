@@ -6,6 +6,11 @@
 
 $source = ".."
 
-copy-item "$source\UNITS\*.pas" ".\"
+if (test-path -path "units" -pathType container) {}
+else {
+  mkdir "units"
+}
+copy-item "$source\units\*.pas" ".\units\"
+
 copy-item "$source\*.ps1" ".\"
 copy-item "$source\posit-92.js" ".\"
