@@ -142,9 +142,9 @@ class Posit92 {
     await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
 
     handle = await this.loadImage("assets/images/dosu_1.png");
-    this.#wasm.exports.setDosuExe(handle, 0);
+    this.#wasm.exports.setImgDosuEXE(handle, 0);
     handle = await this.loadImage("assets/images/dosu_2.png");
-    this.#wasm.exports.setDosuExe(handle, 1);
+    this.#wasm.exports.setImgDosuEXE(handle, 1);
 
     // Add more assets as necessary
   }

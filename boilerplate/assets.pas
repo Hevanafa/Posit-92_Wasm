@@ -6,17 +6,13 @@ interface
 
 uses BMFont;
 
-const
-  { Must be the same with JS code }
-  SfxCoin = 1;
-  BgmMain = 11;
-
 var
   { for use in loadBMFont }
   _defaultFont: TBMFont;
   _defaultFontGlyphs: array[32..126] of TBMFontGlyph;
 
-  imgCursor, imgGasolineMaid: longint;
+  imgCursor: longint;
+  imgDosuEXE: array[0..1] of longint;
 
 { BMFont boilerplate }
 function defaultFontPtr: pointer; public name 'defaultFontPtr';
@@ -27,7 +23,7 @@ procedure printDefault(const textPtr: pointer; const textLen: integer; const x, 
 
 { Asset boilerplate }
 procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
-procedure setImgGasolineMaid(const imgHandle: longint); public name 'setImgGasolineMaid';
+procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
 
 
 implementation
@@ -67,9 +63,9 @@ begin
   imgCursor := imgHandle
 end;
 
-procedure setImgGasolineMaid(const imgHandle: longint);
+procedure setImgDosuEXE(const imgHandle: longint; const idx: integer);
 begin
-  imgGasolineMaid := imgHandle
+  imgDosuEXE[idx] := imgHandle
 end;
 
 end.
