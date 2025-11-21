@@ -45,8 +45,6 @@ begin
   BigIntResult := strPtrToString(textPtr, textLen)
 end;
 
-procedure addBigInt; external 'env' name 'addBigInt';
-
 function getBigIntAPtr: pointer; public name 'getBigIntAPtr';
 begin
   getBigIntAPtr := @BigIntA
@@ -61,6 +59,9 @@ function getBigIntResultPtr: pointer; public name 'getBigIntResultPtr';
 begin
   getBigIntResultPtr := @BigIntResult
 end;
+
+procedure addBigInt; external 'env' name 'addBigInt';
+procedure subtractBigInt; external 'env' name 'subtractBigInt';
 
 
 procedure init;
@@ -81,7 +82,15 @@ begin
 
   writeLog('a = ' + BigIntA);
   writeLog('b = ' + BigIntB);
-  writeLog('Result: ' + BigIntResult)
+  writeLog('a + b = ' + BigIntResult);
+
+  BigIntA := '56';
+  BigIntB := '78';
+  subtractBigInt;
+
+  writeLog('a = ' + BigIntA);
+  writeLog('b = ' + BigIntB);
+  writeLog('a - b = ' + BigIntResult)
 end;
 
 procedure update;

@@ -89,7 +89,8 @@ class Posit92 {
       flush: () => this.flush(),
 
       // BigInt
-      addBigInt: () => this.addBigInt()
+      addBigInt: () => this.addBigInt(),
+      subtractBigInt: () => this.subtractBigInt()
     }
   });
 
@@ -618,6 +619,14 @@ class Posit92 {
     // console.log(a + b, (a + b).toString());
 
     this.#loadBigIntResult(a + b)
+  }
+
+  subtractBigInt() {
+    const biStrA = this.#bufferPtrToString(this.#wasm.exports.getBigIntAPtr());
+    const biStrB = this.#bufferPtrToString(this.#wasm.exports.getBigIntBPtr());
+    
+    const [a, b] = [BigInt(biStrA), BigInt(biStrB)];
+    this.#loadBigIntResult(a - b)
   }
 
 
