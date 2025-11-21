@@ -26,7 +26,7 @@ var
   activeWidget is the "memory" of what the user clicked on
   activeWidget must survive across frames
   }
-  hotWidget, activeWidget, nextWidgetID;
+  hotWidget, activeWidget, nextWidgetID: integer;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -148,7 +148,7 @@ begin
   TextLabel(s, (vgaWidth - w) div 2, 120);
 
   resetActiveWidget;
-  
+
   drawMouse;
   drawFPS;
 

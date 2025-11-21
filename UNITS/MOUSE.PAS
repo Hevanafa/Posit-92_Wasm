@@ -4,6 +4,12 @@ unit Mouse;
 
 interface
 
+const
+  MouseButtonNone = 0;
+  MouseButtonLeft = 1;
+  MouseButtonRight = 2;
+  MouseButtonBoth = 3;
+
 var
   mouseX, mouseY, mouseButton: integer;
 
