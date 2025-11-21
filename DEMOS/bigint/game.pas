@@ -17,6 +17,7 @@ var
   { Init your game state here }
   gameTime: double;
 
+  stringBuffer: array[0..255] of byte;
   { BigInt "registers". The result register isn't always a number }
   BigIntA, BigIntB, BigIntResult: string;
 
@@ -31,6 +32,16 @@ end;
 procedure drawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
+end;
+
+function getStringBuffer: pointer; public name 'getStringBuffer';
+begin
+  getStringBuffer := @stringBuffer
+end;
+
+procedure loadBigIntResult(const textPtr: pointer; const textLen: integer); public name 'loadBigIntResult';
+begin
+  BigIntResult := strPtrToString(textPtr, textLen)
 end;
 
 procedure addBigInt; external 'env' name 'addBigInt';
@@ -67,7 +78,9 @@ begin
   BigIntB := '34';
   addBigInt;
 
-  { writeLog('Result: ' + BigIntResult) }
+  writeLog('a = ' + BigIntA);
+  writeLog('b = ' + BigIntB);
+  writeLog('Result: ' + BigIntResult)
 end;
 
 procedure update;

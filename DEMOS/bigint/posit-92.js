@@ -568,6 +568,29 @@ class Posit92 {
 
 
   // BigInt interop
+  /**
+   * Pass a JS string to Pascal
+   */
+  #loadStringBuffer(text) {
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(text);
+
+    const bufferPtr = this.#wasm.exports.getStringBuffer();
+    const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, bufferPtr, bytes.length);
+    buffer.set(bytes);
+
+    return bytes.length
+  }
+
+  #loadBigIntResult(n) {
+    // TODO: #assertBigInt(n);
+
+    const length = this.#loadStringBuffer(n.toString());
+    const bufferPtr = this.#wasm.exports.getStringBuffer();
+    this.#wasm.exports.loadBigIntResult(bufferPtr, length);
+  }
+
+
   #bufferPtrToString(bufferPtr) {
     this.#assertNumber(bufferPtr);
 
@@ -586,9 +609,11 @@ class Posit92 {
     
     const [a, b] = [BigInt(biStrA), BigInt(biStrB)];
 
-    console.log("BigIntA", a)
-    console.log("BigIntB", b)
-    console.log(a + b, (a + b).toString());
+    // console.log("BigIntA", a)
+    // console.log("BigIntB", b)
+    // console.log(a + b, (a + b).toString());
+
+    this.#loadBigIntResult(a + b)
   }
 
 
