@@ -13,9 +13,6 @@ const ScancodeMap = {
   // Add more scancodes as necessary
 };
 
-const SfxCoin = 1;
-const BgmMain = 11;
-
 class Posit92 {
   #displayScale = Object.freeze(2);
   #wasmSource = "game.wasm";
@@ -229,56 +226,6 @@ class Posit92 {
     return imgHandle
   }
 
-  getImageWidth(imgHandle) {
-    this.#assertNumber(imgHandle);
-    return this.#wasm.exports.getImageWidth(imgHandle)
-  }
-
-  getImageHeight(imgHandle) {
-    this.#assertNumber(imgHandle);
-    return this.#wasm.exports.getImageHeight(imgHandle)
-  }
-
-  spr(imgHandle, x, y) {
-    this.#assertNumber(imgHandle);
-    this.#assertNumber(x);
-    this.#assertNumber(y);
-
-    this.#wasm.exports.spr(imgHandle, x, y);
-  }
-
-  sprRegion(imgHandle, srcX, srcY, srcW, srcH, destX, destY) {
-    this.#assertNumber(imgHandle);
-    this.#assertNumber(srcX);
-    this.#assertNumber(srcY);
-    this.#assertNumber(srcW);
-    this.#assertNumber(srcH);
-    this.#assertNumber(destX);
-    this.#assertNumber(destY);
-
-    this.#wasm.exports.sprRegion(imgHandle, srcX, srcY, srcW, srcH, destX, destY)
-  }
-
-  sprBlend(imgHandle, x, y) {
-    this.#assertNumber(imgHandle);
-    this.#assertNumber(x);
-    this.#assertNumber(y);
-
-    this.#wasm.exports.sprBlend(imgHandle, x, y);
-  }
-
-  sprRegionBlend(imgHandle, srcX, srcY, srcW, srcH, destX, destY) {
-    this.#assertNumber(imgHandle);
-    this.#assertNumber(srcX);
-    this.#assertNumber(srcY);
-    this.#assertNumber(srcW);
-    this.#assertNumber(srcH);
-    this.#assertNumber(destX);
-    this.#assertNumber(destY);
-
-    this.#wasm.exports.sprRegionBlend(imgHandle, srcX, srcY, srcW, srcH, destX, destY)
-  }
-
 
   // BMFONT.PAS
   #newBMFontGlyph() {
@@ -410,7 +357,8 @@ class Posit92 {
     console.log("loadBMFont completed");
   }
 
-  // KEYBOARD
+
+  // KEYBOARD.PAS
   heldScancodes = new Set();
 
   #initKeyboard() {
@@ -434,7 +382,8 @@ class Posit92 {
     return this.heldScancodes.has(scancode)
   }
 
-  // MOUSE
+
+  // MOUSE.PAS
   #mouseX = 0;
   #mouseY = 0;
   #mouseButton = 0;
@@ -594,21 +543,8 @@ class Posit92 {
     return Date.now() / 1000
   }
 
-  initDeltaTime() {
-    this.#wasm.exports.initDeltaTime()
-  }
-
-  updateDeltaTime() {
-    this.#wasm.exports.updateDeltaTime()
-  }
-
 
   // VGA.PAS
-  cls(colour) {
-    this.#assertNumber(colour);
-    this.#wasm.exports.cls(colour);
-  }
-
   flush() {
     const surfacePtr = this.#wasm.exports.getSurface();
     const imageData = new Uint8ClampedArray(
@@ -622,14 +558,7 @@ class Posit92 {
     this.#ctx.putImageData(imgData, 0, 0);
   }
 
-  pset(x, y, colour) {
-    this.#assertNumber(x);
-    this.#assertNumber(y);
-    this.#assertNumber(colour);
-
-    this.#wasm.exports.pset(x, y, colour)
-  }
-
+  
   // Game loop
   update() {
     this.#wasm.exports.update()
