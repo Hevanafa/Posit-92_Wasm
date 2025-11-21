@@ -140,7 +140,7 @@ class Posit92 {
     this.#wasm.exports.setImgCursor(handle);
 
     await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
-    
+
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.#wasm.exports.setDosuExe(handle, 0);
     handle = await this.loadImage("assets/images/dosu_2.png");
@@ -205,7 +205,6 @@ class Posit92 {
     this.#assertString(url);
 
     const img = await this.loadImageFromURL(url);
-    // console.log(`Loaded image: { w: ${img.width}, h: ${img.height} }`);
 
     // Copy image
     const tempCanvas = document.createElement("canvas");
@@ -226,8 +225,6 @@ class Posit92 {
     memory[2] = img.height & 0xff;
     memory[3] = (img.height >> 8) & 0xff;
     memory.set(pixels, 4);  // TBitmap.data
-
-    // console.log("First 20 bytes:", Array.from(memory).slice(0, 20));
 
     return imgHandle
   }
@@ -330,17 +327,14 @@ class Posit92 {
 
       if (txtLine.startsWith("info")) {
         [k, v] = pairs.find(pair => pair[0] == "face");
-        // console.log("face", v)
 
       } else if (txtLine.startsWith("common")) {
         [k, v] = pairs.find(pair => pair[0] == "lineHeight");
         lineHeight = parseInt(v);
-        // console.log("lineHeight", lineHeight);
 
       } else if (txtLine.startsWith("page")) {
         [k, v] = pairs.find(pair => pair[0] == "file");
         filename = v.replaceAll(/"/g, "");
-        // console.log("filename", filename);
 
       } else if (txtLine.startsWith("char") && !txtLine.startsWith("chars")) {
         const tempGlyph = this.#newBMFontGlyph();
@@ -367,7 +361,7 @@ class Posit92 {
 
     // Load font bitmap
     imgHandle = await this.loadImage(filename);
-    console.log("loadBMFont imgHandle:", imgHandle);
+    // console.log("loadBMFont imgHandle:", imgHandle);
 
     // Obtain pointers to Pascal structures
     const fontPtr = this.#wasm.exports.defaultFontPtr();
@@ -384,7 +378,8 @@ class Posit92 {
 
     // true makes it little-endian
     fontMem.setUint16(offset, lineHeight, true);
-    // console.log("imgHandle to write", imgHandle);
+    
+    // +2 requires a packed record because Pascal records are padded by default
     fontMem.setInt32(offset + 2, imgHandle, true);
 
     // Write glyphs
@@ -428,7 +423,6 @@ class Posit92 {
     return bytes.length
   }
 
-  // printBMFont(text) {
   printDefault(text, x, y) {
     this.#assertString(text);
     this.#assertNumber(x);
@@ -476,7 +470,7 @@ class Posit92 {
 
   #initKeyboard() {
     window.addEventListener("keydown", e => {
-      console.log("keydown", e.code);
+      // console.log("keydown", e.code);
 
       const scancode = ScancodeMap[e.code];
       if (scancode) {
@@ -679,10 +673,6 @@ class Posit92 {
       320 * 200 * 4
     );
 
-    // console.log("First 5 pixels:");
-    // for (let a=0; a < 20; a += 4)
-    //   console.log(`Pixel ${a / 4}: R=${imageData[a]} G=${imageData[a+1]} B=${imageData[a+2]} A=${imageData[a+3]}`);
-
     const imgData = new ImageData(imageData, 320, 200);
 
     this.#ctx.putImageData(imgData, 0, 0);
@@ -707,8 +697,6 @@ class Posit92 {
 
   // Stress test 1
   startStressTest() {
-    // this.#wasm.exports.stressTest()
-
     const stressTest = () => {
       const iterations = 100;
 
