@@ -1,0 +1,25 @@
+/* 
+ * Rotating Background Gradient
+ * Part of Posit-92 framework
+ * By Hevanafa, 21-11-2025
+ * 
+ * This snippet demonstrates how the background of a button
+ * can be animated with @property (CSS Houdini)
+ */
+
+@property --gradient-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+#play-overlay > button {
+  /* Warm Flame from https://webgradients.com/ */
+  background: linear-gradient(var(--gradient-angle), #ff9a9e, #fad0c4);
+  animation: rotateGradient 4s linear infinite;
+}
+
+@keyframes rotateGradient {
+  0% { --gradient-angle: 0deg; }
+  100% { --gradient-angle: 360deg; }
+}
