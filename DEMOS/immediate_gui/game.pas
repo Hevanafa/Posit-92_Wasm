@@ -31,6 +31,12 @@ begin
 end;
 
 
+procedure TextLabel(const text: string; const x, y: integer);
+begin
+  printDefault(text, x, y)
+end;
+
+
 procedure init;
 begin
   initBuffer;
@@ -78,7 +84,7 @@ begin
 
   s := 'Hello world!';
   w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  TextLabel(s, (vgaWidth - w) div 2, 120);
 
   drawMouse;
   drawFPS;
