@@ -1,4 +1,10 @@
-// Pick either one of these method, paste as a method inside Posit92
+/**
+ * Pick either one of these method, paste as a method inside Posit92
+ * 
+ * Use the method like this in game.js:
+ * P92.startStressTest()
+ * P92.startBenchmark()
+ */
 
 class StressTest {
   #wasm;
