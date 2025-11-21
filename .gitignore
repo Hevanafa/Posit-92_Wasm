@@ -18,3 +18,4 @@ boilerplate/start_server.ps1
 # Demos
 DEMOS/hello_world/*.ps1
 DEMOS/keyboard/*.ps1
+DEMOS/wasm_string/*.ps1
