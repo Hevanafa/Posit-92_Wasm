@@ -1,5 +1,7 @@
 unit Panic;
 
+{$Mode TP}
+
 interface
 
 procedure panicHalt(const msg: string);

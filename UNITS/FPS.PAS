@@ -1,5 +1,7 @@
 unit FPS;
 
+{$Mode TP}
+
 interface
 
 procedure initFPSCounter;

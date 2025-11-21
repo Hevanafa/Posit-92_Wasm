@@ -5,6 +5,9 @@
 
 unit Graphics;
 
+{$Mode TP}
+{$B-}  { Enable boolean short-circuiting }
+
 interface
 
 procedure circ(const cx, cy, radius: integer; const colour: longword); public name 'circ';

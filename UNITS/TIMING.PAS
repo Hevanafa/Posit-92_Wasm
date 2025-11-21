@@ -1,5 +1,7 @@
 unit Timing;
 
+{$Mode TP}
+
 interface
 
 var

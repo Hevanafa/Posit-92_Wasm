@@ -6,6 +6,7 @@
 
 unit BMFont;
 
+{$Mode TP}
 {$B-}  { Enable boolean short-circuiting }
 
 interface
@@ -49,6 +50,8 @@ var
   ch: char;
   charcode: byte;
   left: integer;
+
+  glyphIdx: integer;
   glyph: TBMFontGlyph;
 begin
   left := 0;
@@ -58,13 +61,12 @@ begin
     charcode := ord(ch);
 
     { Assuming the starting charcode is always 32 }
-    dec(charcode, 32);
+    glyphIdx := charcode - 32;
 
-    { if (low(fontGlyphs) <= charcode) and (charcode <= high(fontGlyphs)) then begin }
-    if (charcode in [low(fontGlyphs)..high(fontGlyphs)]) then begin
-      glyph := fontGlyphs[charcode];
+    if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
+      glyph := fontGlyphs[glyphIdx];
 
-      sprRegionBlend(
+      sprRegion(
         font.imgHandle,
         glyph.x, glyph.y,
         glyph.width, glyph.height,
@@ -85,9 +87,11 @@ begin
 
   for a:=1 to length(text) do begin
     charcode := ord(text[a]);
+
+    { Assuming the starting charcode is always 32 }
     glyphIdx := charcode - 32;
 
-    if (charcode in [low(glyphs)..high(glyphs)]) then begin
+    if (glyphIdx in [low(glyphs)..high(glyphs)]) then begin
       inc(result, glyphs[glyphIdx].xadvance)
     end;
   end;

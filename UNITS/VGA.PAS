@@ -5,6 +5,7 @@
 
 unit VGA;
 
+{$Mode TP}
 {$B-}  { Enable boolean short-circuiting }
 
 interface

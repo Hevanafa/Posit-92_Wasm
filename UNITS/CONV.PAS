@@ -2,6 +2,8 @@
 
 unit Conv;
 
+{$Mode TP}
+
 interface
 
 function i32str(const value: Longint): string;

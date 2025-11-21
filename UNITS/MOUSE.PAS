@@ -1,6 +1,6 @@
 unit Mouse;
 
-{$Mode ObjFPC}
+{$Mode TP}
 
 interface
 

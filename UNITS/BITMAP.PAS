@@ -1,14 +1,19 @@
 unit Bitmap;
 
+{Mode TP}  { "inline" keyword and variable initialisation at declaration don't work }
+{$Mode ObjFPC}
 {$B-}  { Enable boolean short-circuiting }
 
 interface
+
+const
+  MaxBitmapData = 64000;
 
 type
   PBitmap = ^TBitmap;
   TBitmap = record
     width, height: word;
-    data: array[0..63999] of byte;
+    data: array[0..MaxBitmapData-1] of byte;
   end;
 
 function loadImageHandle: longint; public name 'loadImageHandle';
@@ -267,5 +272,11 @@ begin
     psetBlend(destX + px, destY + py, colour)
   end;
 end;
+
+{
+initialization
+
+nextImageHandle := 1;
+}
 
 end.

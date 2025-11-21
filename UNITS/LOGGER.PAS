@@ -2,6 +2,8 @@
 
 unit Logger;
 
+{$Mode TP}
+
 interface
 
 procedure writeLog(const msg: string);

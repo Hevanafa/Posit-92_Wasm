@@ -1,5 +1,7 @@
 unit Sounds;
 
+{$Mode TP}
+
 interface
 
 procedure playSound(const key: longint); external 'env' name 'playSound';
