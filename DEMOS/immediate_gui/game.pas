@@ -104,6 +104,7 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+  initImmediateGUI;
 end;
 
 procedure update;
@@ -111,7 +112,9 @@ begin
   updateDeltaTime;
   incrementFPS;
 
+  updateGUILastMouseButton;
   updateMouse;
+  updateGUIMouseZone;
 
   { Your update logic here }
   if lastEsc <> isKeyDown(SC_ESC) then begin
@@ -123,7 +126,9 @@ begin
     end;
   end;
 
-  gameTime := gameTime + dt
+  gameTime := gameTime + dt;
+
+  resetWidgetIndices
 end;
 
 procedure draw;
@@ -142,6 +147,8 @@ begin
   w := measureDefault(s);
   TextLabel(s, (vgaWidth - w) div 2, 120);
 
+  resetActiveWidget;
+  
   drawMouse;
   drawFPS;
 
