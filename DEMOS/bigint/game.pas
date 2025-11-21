@@ -5,7 +5,7 @@ library Game;
 uses Bitmap, BMFont, Conv, FPS,
   Graphics, Keyboard, Logger, Mouse,
   Panic, Sounds, Timing, VGA,
-  Assets;
+  Assets, BigInt;
 
 const
   SC_ESC = $01;
@@ -21,8 +21,6 @@ var
 
   { Used by BigInt }
   stringBuffer: array[0..255] of byte;
-  { BigInt "registers". The result register isn't always a number }
-  BigIntA, BigIntB, BigIntResult: string;
 
   { Init your game state here }
   gameTime: double;
@@ -41,43 +39,11 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-
+{ Used by BigInt }
 function getStringBuffer: pointer; public name 'getStringBuffer';
 begin
   getStringBuffer := @stringBuffer
 end;
-
-procedure loadBigIntResult(const textPtr: pointer; const textLen: integer); public name 'loadBigIntResult';
-begin
-  BigIntResult := strPtrToString(textPtr, textLen)
-end;
-
-function getBigIntAPtr: pointer; public name 'getBigIntAPtr';
-begin
-  getBigIntAPtr := @BigIntA
-end;
-
-function getBigIntBPtr: pointer; public name 'getBigIntBPtr';
-begin
-  getBigIntBPtr := @BigIntB
-end;
-
-function getBigIntResultPtr: pointer; public name 'getBigIntResultPtr';
-begin
-  getBigIntResultPtr := @BigIntResult
-end;
-
-procedure addBigInt; external 'env' name 'addBigInt';
-procedure subtractBigInt; external 'env' name 'subtractBigInt';
-procedure multiplyBigInt; external 'env' name 'multiplyBigInt';
-procedure divideBigInt; external 'env' name 'divideBigInt';
-
-{ Sets the Result register to either -1, 0, or 1 }
-procedure compareBigInt; external 'env' name 'compareBigInt';
-
-{ Requires only register A, outputs to the Result register }
-procedure formatBigInt; external 'env' name 'formatBigInt';
-procedure formatBigIntScientific; external 'env' name 'formatBigIntScientific';
 
 
 procedure init;
@@ -130,7 +96,6 @@ begin
   writeLog('b = ' + BigIntB);
   writeLog('compare(a, b) = ' + BigIntResult);
 end;
-
 
 
 procedure printCentred(const text: string; const y: integer);
