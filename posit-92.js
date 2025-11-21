@@ -1,6 +1,10 @@
 "use strict";
 
 /**
+ * Game assets are loaded in loadAssets()
+ */
+
+/**
  * KeyboardEvent.code to DOS scancode
  */
 const ScancodeMap = {
@@ -111,8 +115,6 @@ class Posit92 {
 
   async init() {
     await this.#initWebAssembly();
-    // console.log("wasm.exports", this.#wasm.exports);
-    // this.#wasm.exports.initBuffer();
     this.#wasm.exports.init();
     this.#initKeyboard();
     this.#initMouse();
@@ -132,20 +134,17 @@ class Posit92 {
   }
 
   async loadAssets() {
-    // const imgSatono = await this.loadImage("assets/images/satono_diamond.png");
-    // const imgDefaultFont = await this.loadImage("assets/fonts/nokia_cellphone_fc_8_0.png")
+    let handle = 0;
 
-    const imgCursor = await this.loadImage("assets/images/cursor.png");
-    this.#wasm.exports.setImgCursor(imgCursor);
-
-    const imgGasolineMaid = await this.loadImage("assets/images/gasoline_maid_100px.png")
-    // console.log("imgGasolineMaid handle", imgGasolineMaid);
-    this.#wasm.exports.setImgGasolineMaid(imgGasolineMaid);
+    handle = await this.loadImage("assets/images/cursor.png");
+    this.#wasm.exports.setImgCursor(handle);
 
     await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
-
-    await this.loadSound(SfxCoin, "assets/sfx/coins_1.ogg");
-    await this.loadSound(BgmMain, "assets/bgm/music.ogg");
+    
+    handle = await this.loadImage("assets/images/dosu_1.png");
+    this.#wasm.exports.setDosuExe(handle, 0);
+    handle = await this.loadImage("assets/images/dosu_2.png");
+    this.#wasm.exports.setDosuExe(handle, 1);
 
     // Add more assets as necessary
   }

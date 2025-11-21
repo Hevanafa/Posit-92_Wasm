@@ -4,3 +4,5 @@
 *.ppu
 *.code-workspace
 *.exe
+
+dist/
