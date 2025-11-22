@@ -1,6 +1,7 @@
 library Game;
 
 {$Mode ObjFPC}
+{$B-}
 
 uses Bitmap, BMFont, Conv, FPS,
   Graphics, Keyboard, Logger, Mouse,
@@ -62,6 +63,15 @@ begin
   dosuZone.height := 24;
 end;
 
+procedure printCentred(const text: string; const y: integer);
+var
+  w: word;
+begin
+  w := measureDefault(text);
+  printDefault(text, (vgaWidth - w) div 2, y);
+end;
+
+
 procedure update;
 begin
   updateDeltaTime;
@@ -79,13 +89,22 @@ begin
     end;
   end;
 
+  if isKeyDown(SC_W) then dosuZone.y := dosuZone.y - 1;
+  if isKeyDown(SC_S) then dosuZone.y := dosuZone.y + 1;
+
+  if isKeyDown(SC_A) then dosuZone.x := dosuZone.x - 1;
+  if isKeyDown(SC_D) then dosuZone.x := dosuZone.x + 1;
+
+  if isKeyDown(SC_UP) and (dosuZone.height > 1.0) then dosuZone.height := dosuZone.height - 1;
+  if isKeyDown(SC_DOWN) then dosuZone.height := dosuZone.height + 1;
+
+  if isKeyDown(SC_RIGHT) then dosuZone.width := dosuZone.width + 1;
+  if isKeyDown(SC_LEFT) and (dosuZone.width > 1.0) then dosuZone.width := dosuZone.width - 1;
+
   gameTime := gameTime + dt
 end;
 
 procedure draw;
-var
-  w: integer;
-  s: string;
 begin
   cls($FF6495ED);
 
@@ -95,9 +114,8 @@ begin
     else
       sprStretch(imgDosuEXE[0], trunc(x), trunc(y), trunc(width), trunc(height));
 
-  s := 'Hello world!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  printCentred('WASD - Move', 120);
+  printCentred('Arrow keys - Resize', 130);
 
   drawMouse;
   drawFPS;
