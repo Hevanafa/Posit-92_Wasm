@@ -41,8 +41,8 @@ procedure sprRegion(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer); public name 'sprRegion';
-procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
 
+procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
 procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
 procedure sprScale(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
 
@@ -210,6 +210,19 @@ begin
   getImageHeight := image^.height
 end;
 
+{ Assuming image isn't nil & the bounds are known }
+function unsafeSprPget(const image: PBitmap; const x, y: integer): longword;
+var
+  offset: longword;
+begin
+  offset := (x + y * image^.width) * 4;
+
+  unsafeSprPget := (image^.data[offset + 3] shl 24)
+    or (image^.data[offset] shl 16)
+    or (image^.data[offset + 1] shl 8)
+    or image^.data[offset + 2]
+end;
+
 procedure spr(const imgHandle: longint; const x, y: integer);
 var
   a, b: integer;
@@ -334,6 +347,7 @@ var
   image: PBitmap;
   alpha: byte;
   scaleX, scaleY: double;
+  colour: longword;
 begin
   if not isImageSet(imgHandle) then exit;
   image := getImagePtr(imgHandle);
@@ -354,6 +368,8 @@ begin
     if alpha < 255 then continue;
 
     destPos := ((dx + destX) + (dy + destY) * vgaWidth) * 4;
+
+    colour := 
 
     { Order: RGBA }
     surface[destPos] := image^.data[srcPos];
@@ -390,19 +406,6 @@ begin
   a := image^.data[offset + 3];
 
   sprPget := (a shl 24) or (r shl 16) or (g shl 8) or b
-end;
-
-{ Assuming image isn't nil & the bounds are known }
-function unsafeSprPget(const image: PBitmap; const x, y: integer): longword;
-var
-  offset: longword;
-begin
-  offset := (x + y * image^.width) * 4;
-
-  unsafeSprPget := (image^.data[offset + 3] shl 24)
-    or (image^.data[offset] shl 16)
-    or (image^.data[offset + 1] shl 8)
-    or image^.data[offset + 2]
 end;
 
 procedure sprBlend(const imgHandle: longint; const x, y: integer);
