@@ -321,8 +321,11 @@ begin
     end
   end;
 
-  printDefault('TAB - Toggle list of demos', 8, vgaHeight - 28);
-  printDefault('Page up / down - Choose between demos', 8, vgaHeight - 18);
+  if showDemoList then begin
+    printDefault('TAB - Hide the list of demos', 8, vgaHeight - 28);
+    printDefault('Page up / down - Choose between demos', 8, vgaHeight - 18);
+  end else
+    printDefault('TAB - Show the list of demos', 8, vgaHeight - 18);
 
   drawMouse;
   drawFPS;
