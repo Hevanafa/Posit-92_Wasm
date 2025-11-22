@@ -84,7 +84,7 @@ begin
   { Initialise game state here }
   hideCursor;
 
-  changeState(DemoStateSpriteScaling);
+  changeState(DemoStateScaling);
 end;
 
 procedure printCentred(const text: string; const y: integer);
@@ -95,20 +95,7 @@ begin
   printDefault(text, (vgaWidth - w) div 2, y);
 end;
 
-procedure drawDemoList;
-const
-  top = 10;
-  left = 10;
-begin
-  rectfill(left, top, 80, 100, Black);
-
-  rectfill(left, top, 80, 10 + _defaultFont.lineHeight + 2, Red);
-  printDefault('Full sprite', 12, 12);
-
-  rect(left, top, 80, 100, White);
-end;
-
-procedure getDemoStateName(const state: integer): string;
+function getDemoStateName(const state: integer): string;
 var
   result: string;
 begin
@@ -118,7 +105,7 @@ begin
     DemoStateRegion:
       result := 'Sprite region';
     DemoStateBlend:
-      result := 'Sprite alpha blending';
+      result := 'Alpha blending';
     DemoStateScaling:
       result := 'Sprite scaling';
     DemoStateRegionScaling:
@@ -128,6 +115,34 @@ begin
     DemoStateRotation:
       result := 'Sprite rotation';
   end;
+
+  getDemoStateName := result
+end;
+
+procedure drawDemoList;
+const
+  top = 10;
+  left = 10;
+var
+  a: word;
+  lineHeight: word;
+  height: word;
+begin
+  lineHeight := _defaultFont.lineHeight + 2;
+  height := lineHeight * DemoStateRotation;
+
+  rectfill(left, top, 100, top + height, Black);
+
+  rectfill(
+    left, top + lineHeight * (actualDemoState - 1),
+    100, top + lineHeight * actualDemoState, Red);
+
+  for a := 1 to DemoStateRotation do
+    printDefault(
+      getDemoStateName(a),
+      left + 2, top + 2 + lineHeight * (a - 1));
+
+  rect(left, top, 100, top + height, White);
 end;
 
 
