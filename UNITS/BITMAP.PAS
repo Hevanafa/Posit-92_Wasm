@@ -1,13 +1,26 @@
+{
+  Bitmap unit
+  Part of Posit-92 framework
+  By Hevanafa, 22-11-2025
+}
+
 unit Bitmap;
 
-{Mode TP}  { "inline" keyword and variable initialisation at declaration don't work }
-{$Mode ObjFPC}
+{$Mode TP}
 {$B-}  { Enable boolean short-circuiting }
+{$R-}  { Turn off range checks }
+{$Q-}  { Turn off overflow checks }
 
 interface
 
 const
   MaxBitmapData = 65536;
+
+  { SprFlips enum }
+  SprFlipNone = 0;
+  SprFlipHorizontal = 1;
+  SprFlipVertical = 2;
+  SprFlipBoth = SprFlipHorizontal or SprFlipVertical;
 
 type
   PBitmap = ^TBitmap;
@@ -16,10 +29,17 @@ type
     data: array[0..MaxBitmapData-1] of byte;
   end;
 
-function loadImageHandle: longint; public name 'loadImageHandle';
+function getMaxBitmapData: longword; public name 'getMaxBitmapData';
+
+{ function loadImageHandle: longint; public name 'loadImageHandle'; }
+{ function findEmptyImageSlot: longint; public name 'findEmptyImageSlot'; }
+function getEmptyImageSlot: longint; public name 'getEmptyImageSlot';
+function newImage(const width, height: integer): longint; public name 'newImage';
+procedure freeImage(const imgHandle: longint);
+
 function isImageSet(const imgHandle: longint): boolean; public name 'isImageSet';
 procedure debugImage(const imgHandle: longint); public name 'debugImage';
-function getImagePtr(const imgHandle: longint): pointer; public name 'getImagePtr';
+function getImagePtr(const imgHandle: longint): PBitmap; public name 'getImagePtr';
 
 function getImageWidth(const imgHandle: longint): word; public name 'getImageWidth';
 function getImageHeight(const imgHandle: longint): word; public name 'getImageHeight';
@@ -29,6 +49,13 @@ procedure sprRegion(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer); public name 'sprRegion';
+
+procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
+procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
+procedure sprScale(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
+
+{ rotation is in radians }
+procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
 
 procedure sprBlend(const imgHandle: longint; const x, y: integer); public name 'sprBlend';
 procedure sprRegionBlend(
@@ -40,20 +67,82 @@ procedure sprRegionBlend(
 implementation
 
 uses
-  Conv, Logger, VGA;
+  Conv, Logger, Panic, VGA;
 
 { Bitmap operations }
 var
   images: array[1..10] of TBitmap;
-  nextImageHandle: longint = 1;
+  { nextImageHandle: longint = 1; }
 
+function getMaxBitmapData: longword;
+begin
+  getMaxBitmapData := MaxBitmapData
+end;
+
+{
 function loadImageHandle: longint;
 begin
   loadImageHandle := nextImageHandle;
   inc(nextImageHandle)
 end;
+}
 
-function getImagePtr(const imgHandle: longint): pointer;
+function getEmptyImageSlot: longint;
+var
+  a: longint;
+begin
+  for a:=1 to high(images) do
+    if not isImageSet(a) then begin
+      getEmptyImageSlot := a;
+      exit
+    end;
+
+  getEmptyImageSlot := -1
+end;
+
+{
+function getEmptyImageSlot: longint;
+var
+  a: longint;
+begin
+  for a:=1 to high(images) do
+    if images[a] = nil then begin
+      getEmptyImageSlot := a;
+      exit
+    end;
+
+  getEmptyImageSlot := -1
+end;
+}
+
+procedure freeImage(const imgHandle: longint);
+begin
+  if (imgHandle < low(images)) or (imgHandle > high(images)) then exit;
+  { images[imgHandle] := nil }
+  images[imgHandle].width := 0;
+  images[imgHandle].height := 0;
+end;
+
+function newImage(const width, height: integer): longint;
+var
+  slot: longint;
+  bmp: TBitmap;
+begin
+  if width * height * 4 > MaxBitmapData then
+    panicHalt('newImage: Bitmap is too large!');
+
+  slot := getEmptyImageSlot;
+
+  bmp.width := width;
+  bmp.height := height;
+  fillchar(bmp.data, sizeof(bmp.data), 0);
+
+  images[slot] := bmp;
+  newImage := slot
+end;
+
+
+function getImagePtr(const imgHandle: longint): PBitmap;
 var
   idx: integer;
 begin
@@ -64,7 +153,7 @@ begin
   writeLog('getImagePtr idx: ' + i32str(idx));
   }
 
-  if (1 <= idx) and (idx < nextImageHandle) then
+  if (low(images) <= idx) and (idx < high(images)) then
     getImagePtr := @images[idx]
   else
     getImagePtr := nil;
@@ -73,10 +162,12 @@ end;
 function isImageSet(const imgHandle: longint): boolean;
 begin
   { isImageSet := (imgHandle < 0) }
+  {
   isImageSet := false;
-
   if getImagePtr(imgHandle) <> nil then
     isImageSet := true;
+  }
+  isImageSet := (images[imgHandle].width > 0) and (images[imgHandle].height > 0)
 end;
 
 
@@ -130,12 +221,43 @@ begin
   getImageHeight := image^.height
 end;
 
+{ Assuming image isn't nil & the bounds are known }
+function unsafeSprPget(const image: PBitmap; const x, y: integer): longword;
+var
+  offset: longword;
+begin
+  offset := (x + y * image^.width) * 4;
+
+  unsafeSprPget := (image^.data[offset + 3] shl 24)
+    or (image^.data[offset] shl 16)
+    or (image^.data[offset + 1] shl 8)
+    or image^.data[offset + 2]
+end;
+
+function sprPget(const imgHandle: longint; const x, y: integer): longword;
+var
+  image: PBitmap;
+begin
+  sprPget := 0;
+
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+
+  if (x < 0) or (x >= image^.width)
+    or (y < 0) or (y >= image^.height) then exit;
+
+  sprPget := unsafeSprPget(image, x, y)
+end;
+
+
 procedure spr(const imgHandle: longint; const x, y: integer);
 var
   a, b: integer;
-  srcPos, destPos: longint;
+  srcPos: longint;
   image: PBitmap;
   alpha: byte;
+  colour: longword;
 begin
   if not isImageSet(imgHandle) then exit;
 
@@ -150,13 +272,8 @@ begin
     alpha := image^.data[srcPos + 3];
     if alpha < 255 then continue;
 
-    destPos := ((a + x) + (b + y) * vgaWidth) * 4;
-
-    { Order: RGBA }
-    surface[destPos] := image^.data[srcPos];
-    surface[destPos + 1] := image^.data[srcPos + 1];
-    surface[destPos + 2] := image^.data[srcPos + 2];
-    surface[destPos + 3] := image^.data[srcPos + 3];
+    colour := unsafeSprPget(image, a, b);
+    unsafePset(x + a, y + b, colour);
   end;
 end;
 
@@ -167,8 +284,10 @@ procedure sprRegion(
 var
   image: PBitmap;
   a, b: integer;
-  srcPos, destPos: longint;
+  sx, sy: integer;
+  srcPos: longint;
   alpha: byte;
+  colour: longword;
 begin
   if not isImageSet(imgHandle) then exit;
 
@@ -179,56 +298,155 @@ begin
     if (destX + a >= vgaWidth) or (destX + a < 0)
       or (destY + b >= vgaHeight) or (destY + b < 0) then continue;
 
-    srcPos := ((srcX + a) + (srcY + b) * image^.width) * 4;
+    sx := srcX + a;
+    sy := srcY + b;
+    srcPos := (sx + sy * image^.width) * 4;
 
     alpha := image^.data[srcPos + 3];
     if alpha < 255 then continue;
 
-    destPos := ((destX + a) + (destY + b) * vgaWidth) * 4;
-
-    { Order: RGBA }
-    surface[destPos] := image^.data[srcPos];
-    surface[destPos + 1] := image^.data[srcPos + 1];
-    surface[destPos + 2] := image^.data[srcPos + 2];
-    surface[destPos + 3] := image^.data[srcPos + 3];
+    colour := unsafeSprPget(image, sx, sy);
+    unsafePset(destX + a, destY + b, colour);
   end;
 end;
 
-function sprPget(const imgHandle: longint; const x, y: integer): longword;
+{ flip: use SprFlips enum }
+procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
 var
-  offset: longword;
-  a, r, g, b: byte;
+  sx, sy: integer;
+  dx, dy: integer;
+  srcPos: longint;
   image: PBitmap;
+  alpha: byte;
+  colour: longword;
 begin
-  sprPget := 0;
+  if flip = SprFlipNone then begin
+    spr(imgHandle, x, y);
+    exit
+  end;
+
   if not isImageSet(imgHandle) then exit;
 
   image := getImagePtr(imgHandle);
 
-  if (x < 0) or (x >= image^.width)
-    or (y < 0) or (y >= image^.height) then exit;
+  for sy := 0 to image^.height - 1 do
+  for sx := 0 to image^.width - 1 do begin
+    srcPos := (sx + sy * image^.width) * 4;
+    alpha := image^.data[srcPos + 3];
+    if alpha < 255 then continue;
 
-  offset := (x + y * image^.width) * 4;
-  r := image^.data[offset];
-  g := image^.data[offset + 1];
-  b := image^.data[offset + 2];
-  a := image^.data[offset + 3];
+    dx := x + sx;
+    dy := y + sy;
 
-  sprPget := (a shl 24) or (r shl 16) or (g shl 8) or b
+    case flip of
+      SprFlipHorizontal:
+        dx := x + image^.width - sx - 1;
+      SprFlipVertical:
+        dy := y + image^.height - sy - 1;
+      else begin
+        dx := x + image^.width - sx - 1;
+        dy := y + image^.height - sy - 1;
+      end
+    end;
+
+    if (dx >= vgaWidth) or (dx < 0)
+      or (dy >= vgaHeight) or (dy < 0) then continue;
+
+    colour := unsafeSprPget(image, sx, sy);
+    unsafePset(dx, dy, colour);
+  end;
 end;
 
-{ Assuming image isn't nil }
-function unsafeSprPget(const image: PBitmap; const x, y: integer): longword; inline;
+{ Stretch a sprite with nearest neighbour scaling }
+procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
 var
-  offset: longword;
+  sx, sy: integer;
+  dx, dy: integer;
+  srcPos: longint;
+  image: PBitmap;
+  alpha: byte;
+  scaleX, scaleY: double;
+  colour: longword;
 begin
-  offset := (x + y * image^.width) * 4;
+  if not isImageSet(imgHandle) then exit;
+  image := getImagePtr(imgHandle);
 
-  unsafeSprPget := (image^.data[offset + 3] shl 24)
-    or (image^.data[offset] shl 16)
-    or (image^.data[offset + 1] shl 8)
-    or image^.data[offset + 2]
+  scaleX := image^.width / destWidth;
+  scaleY := image^.height / destHeight;
+
+  for dy := 0 to destHeight - 1 do
+  for dx := 0 to destWidth - 1 do begin
+    if (destX + dx >= vgaWidth) or (destX + dx < 0)
+      or (destY + dy >= vgaHeight) or (destY + dy < 0) then continue;
+
+    sx := trunc(dx * scaleX);
+    sy := trunc(dy * scaleY);
+
+    srcPos := (sx + sy * image^.width) * 4;
+    alpha := image^.data[srcPos + 3];
+    if alpha < 255 then continue;
+
+    colour := unsafeSprPget(image, sx, sy);
+    unsafePset(dx + destX, dy + destY, colour);
+  end;
 end;
+
+procedure sprScale(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
+begin
+  sprStretch(imgHandle, destX, destY, destWidth, destHeight)
+end;
+
+
+procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
+var
+  sx, sy: double;
+  dx, dy: integer;
+  srcPos: longint;
+  srcX, srcY: integer;
+  image: PBitmap;
+
+  alpha: byte;
+  colour: longword;
+
+  cosAngle, sinAngle: double;
+  halfW, halfH: integer;
+  maxRadius: integer;
+begin
+  if not isImageSet(imgHandle) then exit;
+  image := getImagePtr(imgHandle);
+
+  { Negative for inverse transform }
+  cosAngle := cos(-rotation);
+  sinAngle := sin(-rotation);
+
+  halfW := image^.width div 2;
+  halfH := image^.height div 2;
+
+  maxRadius := trunc(sqrt(halfW * halfW + halfH * halfH)) + 1;
+  
+  for dy := -maxRadius to maxRadius do
+  for dx := -maxRadius to maxRadius do begin
+    if (cx + dx < 0) or (cx + dx >= vgaWidth)
+      or (cy + dy < 0) or (cy + dy >= vgaHeight) then continue;
+
+    sx := dx * cosAngle - dy * sinAngle;
+    sy := dx * sinAngle + dy * cosAngle;
+
+    srcX := trunc(sx) + halfW;
+    srcY := trunc(sy) + halfH;
+
+    if (srcX < 0) or (srcX >= image^.width)
+      or (srcY < 0) or (srcY >= image^.height) then continue;
+
+    srcPos := (srcX + srcY * image^.width) * 4;
+    alpha := image^.data[srcPos + 3];
+    if alpha < 255 then continue;
+
+    colour := unsafeSprPget(image, srcX, srcY);
+    unsafePset(cx + dx, cy + dy, colour)
+  end;
+end;
+
 
 procedure sprBlend(const imgHandle: longint; const x, y: integer);
 var
@@ -272,11 +490,5 @@ begin
     psetBlend(destX + px, destY + py, colour)
   end;
 end;
-
-{
-initialization
-
-nextImageHandle := 1;
-}
 
 end.

@@ -1,3 +1,9 @@
+{
+  Bitmap unit
+  Part of Posit-92 framework
+  By Hevanafa, 22-11-2025
+}
+
 unit Bitmap;
 
 {$Mode TP}

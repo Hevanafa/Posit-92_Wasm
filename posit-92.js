@@ -64,6 +64,7 @@ class Posit92 {
       signalDone: () => { done = true },
 
       // Logger
+      writeLogF32: value => console.log("Pascal (f32):", value),
       writeLogI32: value => console.log("Pascal (i32):", value),
       flushLog: () => this.pascalWriteLog(),
 
