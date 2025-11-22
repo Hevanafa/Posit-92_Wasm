@@ -74,10 +74,17 @@ begin
 
   gameTime := 0.0;
 
-  dosuZone.x := 148;
-  dosuZone.y := 88;
-  dosuZone.width := 24;
-  dosuZone.height := 24;
+  if actualDemoState = DemoStateBlend then begin
+    dosuZone.x := (vgaWidth - getImageWidth(imgSlimeGirl)) / 2;
+    dosuZone.y := (vgaHeight - getImageHeight(imgSlimeGirl)) / 2;
+    dosuZone.width := getImageWidth(imgSlimeGirl);
+    dosuZone.height := getImageHeight(imgSlimeGirl);
+  end else begin
+    dosuZone.x := 148;
+    dosuZone.y := 88;
+    dosuZone.width := 24;
+    dosuZone.height := 24;
+  end;
 
   selectedFrame := 0;
 end;
@@ -253,6 +260,11 @@ begin
 
       printCentred('WASD - Move', 120);
       printCentred('Spacebar - Change frame', 130);
+    end;
+
+    DemoStateBlend: begin
+      sprBlend(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y));
+      printCentred('WASD - Move', 120);
     end;
 
     DemoStateScaling: begin
