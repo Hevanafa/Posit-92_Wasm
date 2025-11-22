@@ -286,6 +286,13 @@ begin
     end;
   end;
 
+  if actualDemoState = DemoStateRotation then begin
+    if isKeyDown(SC_LEFT) then
+      spriteRotation := spriteRotation - pi / 30.0;
+    if isKeyDown(SC_RIGHT) then
+      spriteRotation := spriteRotation + pi / 30.0;
+  end;
+
   gameTime := gameTime + dt
 end;
 
@@ -333,13 +340,13 @@ begin
       sprFlip(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteFlip);
       printCentred('WASD - Move', 120);
       printCentred('Arrow keys - Flip', 130);
-    end
+    end;
 
     DemoStateRotation: begin
       sprRotate(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteRotation);
       printCentred('WASD - Move', 120);
       printCentred('Left / right - Rotate', 130);
-    end
+    end;
 
     else begin
       if (trunc(gameTime * 4) and 1) > 0 then
