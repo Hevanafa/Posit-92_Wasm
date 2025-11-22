@@ -46,6 +46,9 @@ procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: int
 procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
 procedure sprScale(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
 
+{ rotation is in radians }
+procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
+
 procedure sprBlend(const imgHandle: longint; const x, y: integer); public name 'sprBlend';
 procedure sprRegionBlend(
   const imgHandle: longint;
@@ -223,6 +226,23 @@ begin
     or image^.data[offset + 2]
 end;
 
+function sprPget(const imgHandle: longint; const x, y: integer): longword;
+var
+  image: PBitmap;
+begin
+  sprPget := 0;
+
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+
+  if (x < 0) or (x >= image^.width)
+    or (y < 0) or (y >= image^.height) then exit;
+
+  sprPget := unsafeSprPget(image, x, y)
+end;
+
+
 procedure spr(const imgHandle: longint; const x, y: integer);
 var
   a, b: integer;
@@ -369,28 +389,20 @@ begin
 end;
 
 
-function sprPget(const imgHandle: longint; const x, y: integer): longword;
+procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
 var
-  offset: longword;
-  a, r, g, b: byte;
+  sx, sy: double;
+  dx, dy: integer;
+  srcX, srcY: integer;
   image: PBitmap;
+  colour: longword;
+
+  cosAngle, sinAngle: double;
+  halfW, halfH: integer;
 begin
-  sprPget := 0;
-  if not isImageSet(imgHandle) then exit;
-
-  image := getImagePtr(imgHandle);
-
-  if (x < 0) or (x >= image^.width)
-    or (y < 0) or (y >= image^.height) then exit;
-
-  offset := (x + y * image^.width) * 4;
-  r := image^.data[offset];
-  g := image^.data[offset + 1];
-  b := image^.data[offset + 2];
-  a := image^.data[offset + 3];
-
-  sprPget := (a shl 24) or (r shl 16) or (g shl 8) or b
+{ TODO: Work on this }
 end;
+
 
 procedure sprBlend(const imgHandle: longint; const x, y: integer);
 var
@@ -434,11 +446,5 @@ begin
     psetBlend(destX + px, destY + py, colour)
   end;
 end;
-
-{
-initialization
-
-nextImageHandle := 1;
-}
 
 end.
