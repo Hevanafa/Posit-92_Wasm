@@ -8,6 +8,12 @@ interface
 const
   MaxBitmapData = 65536;
 
+  { SprFlips enum }
+  SprFlipNone = 0;
+  SprFlipHorizontal = 1;
+  SprFlipVertical = 2;
+  SprFlipBoth = SprFlipHorizontal or SprFlipVertical;
+
 type
   PBitmap = ^TBitmap;
   TBitmap = record
