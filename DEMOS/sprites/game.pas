@@ -70,9 +70,26 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
+procedure resetHeldKeys;
+begin
+  lastEsc := false;
+  lastSpacebar := false;
+  
+  lastUp := false;
+  lastRight := false;
+  lastDown := false;
+  lastLeft := false;
+
+  lastTab := false;
+  lastPageUp := false;
+  lastPageDown := false;
+end;
+
 { demoState: use DemoStates }
 procedure changeState(const newState: integer);
 begin
+  resetHeldKeys;
+
   actualDemoState := newState;
 
   gameTime := 0.0;
@@ -90,6 +107,7 @@ begin
   end;
 
   selectedFrame := 0;
+  spriteFlip := SprFlipHorizontal;
 end;
 
 
