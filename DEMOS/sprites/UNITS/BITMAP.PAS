@@ -301,14 +301,18 @@ begin
     alpha := image^.data[srcPos + 3];
     if alpha < 255 then continue;
 
+    dx := x + sx;
+    dy := y + sy;
+
     case flip of
-      SprFlipHorizontal: begin
+      SprFlipHorizontal:
         dx := x + image^.width - sx - 1;
-        dy := y + sy;
-      end;
-      else
-        dx := x + sx;
-        dy := y + sy;
+      SprFlipVertical:
+        dy := y + image^.height - sy - 1;
+      else begin
+        dx := x + image^.width - sx - 1;
+        dy := y + image^.height - sy - 1;
+      end
     end;
 
     destPos := (dx + dy * vgaWidth) * 4;
