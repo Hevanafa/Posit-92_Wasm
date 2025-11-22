@@ -53,7 +53,9 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
   initImmediateGUI;
+  guiSetFont(_defaultFont, _defaultFontGlyphs);
 
   clicks := 0;
 end;

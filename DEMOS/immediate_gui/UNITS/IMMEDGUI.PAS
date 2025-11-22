@@ -5,6 +5,8 @@ unit ImmedGui;
 
 interface
 
+uses BMFont;
+
 procedure initImmediateGUI;
 
 { Called before updateMouse }
@@ -19,6 +21,8 @@ procedure resetWidgetIndices;
 { Important: Must be placed at the end of the draw routine }
 procedure resetActiveWidget;
 
+procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
+
 { Widgets }
 procedure TextLabel(const text: string; const x, y: integer);
 function Button(const caption: string; const x, y, width, height: integer): boolean;
@@ -26,7 +30,7 @@ function Button(const caption: string; const x, y, width, height: integer): bool
 
 implementation
 
-uses Assets, Graphics, Mouse, Shapes;
+uses Graphics, Mouse, Shapes;
 
 const
 { Immediate GUI default theme
@@ -48,6 +52,9 @@ var
   activeWidget must survive across frames
   }
   hotWidget, activeWidget, nextWidgetID: integer;
+
+  activeFont: TBMFont;
+  activeFontGlyphs: array[32..126] of TBMFontGlyph;
 
 
 procedure initImmediateGUI;
@@ -89,12 +96,22 @@ begin
   if mouseJustReleased and (activeWidget >= 0) then activeWidget := -1;
 end;
 
+procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
+var
+  a: word;
+begin
+  activeFont := font;
+
+  for a := 32 to 126 do
+    activeFontGlyphs[a] := glyphs[a - 32];
+end;
+
 
 { Begin widgets }
 
 procedure TextLabel(const text: string; const x, y: integer);
 begin
-  printDefault(text, x, y)
+  printBMFont(text, x, y, activeFont, activeFontGlyphs)
 end;
 
 function Button(const caption: string; const x, y, width, height: integer): boolean;
