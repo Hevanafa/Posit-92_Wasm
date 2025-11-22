@@ -4,7 +4,7 @@ library Game;
 
 uses Bitmap, BMFont, Conv, FPS,
   Graphics, Keyboard, Logger, Mouse,
-  Panic, Sounds, Timing, VGA,
+  Panic, Shapes, Sounds, Timing, VGA,
   Assets;
 
 const
@@ -28,6 +28,7 @@ var
 
   { Init your game state here }
   gameTime: double;
+  dosuZone: TRect;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -54,6 +55,11 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  dosuZone.x := 148;
+  dosuZone.y := 88;
+  dosuZone.width := 24;
+  dosuZone.height := 24;
 end;
 
 procedure update;
@@ -83,10 +89,11 @@ var
 begin
   cls($FF6495ED);
 
-  if (trunc(gameTime * 4) and 1) > 0 then
-    sprStretch(imgDosuEXE[1], 148, 88, 24, 48)
-  else
-    sprStretch(imgDosuEXE[0], 148, 88, 24, 48);
+  with dosuZone do
+    if (trunc(gameTime * 4) and 1) > 0 then
+      sprStretch(imgDosuEXE[1], trunc(x), trunc(y), trunc(width), trunc(height))
+    else
+      sprStretch(imgDosuEXE[0], trunc(x), trunc(y), trunc(width), trunc(height));
 
   s := 'Hello world!';
   w := measureDefault(s);
