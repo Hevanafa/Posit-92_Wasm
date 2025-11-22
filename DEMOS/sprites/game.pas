@@ -176,6 +176,32 @@ begin
     if lastTab then showDemoList := not showDemoList;
   end;
 
+  if lastPageUp <> isKeyDown(SC_PAGEUP) then begin
+    lastPageUp := isKeyDown(SC_PAGEUP);
+
+    if lastPageUp then begin
+      dec(actualDemoState);
+      
+      if actualDemoState < 1 then actualDemoState := DemoStateRotation;
+      changeState(actualDemoState)
+    end;
+  end;
+
+  if lastPageDown <> isKeyDown(SC_PAGEDOWN) then begin
+    lastPageDown := isKeyDown(SC_PAGEDOWN);
+
+    if lastPageDown then begin
+      inc(actualDemoState);
+
+      if actualDemoState > DemoStateRotation then
+        actualDemoState := 1;
+
+      changeState(actualDemoState)
+    end;
+  end;
+
+
+
   if isKeyDown(SC_W) then dosuZone.y := dosuZone.y - 1;
   if isKeyDown(SC_S) then dosuZone.y := dosuZone.y + 1;
 
@@ -198,26 +224,28 @@ begin
 
   { writeLogF32(gameTime * 4); }
 
-  {
-  if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
-  else
-    spr(imgDosuEXE[0], 148, 88);
-  }
-
   if showDemoList then drawDemoList;
 
   case actualDemoState of
-    DemoStateScaling:
+    DemoStateScaling: begin
       with dosuZone do
         if (trunc(gameTime * 4) and 1) > 0 then
           sprStretch(imgDosuEXE[1], trunc(x), trunc(y), trunc(width), trunc(height))
         else
           sprStretch(imgDosuEXE[0], trunc(x), trunc(y), trunc(width), trunc(height));
-  end;
 
-  printCentred('WASD - Move', 120);
-  printCentred('Arrow keys - Resize', 130);
+      printCentred('WASD - Move', 120);
+      printCentred('Arrow keys - Resize', 130);
+    end
+    else begin
+      if (trunc(gameTime * 4) and 1) > 0 then
+        spr(imgDosuEXE[1], trunc(dosuZone.x), trunc(dosuZone.y))
+      else
+        spr(imgDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
+
+      printCentred('(Not implemented)', 130);
+    end
+  end;
 
   drawMouse;
   drawFPS;
