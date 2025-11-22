@@ -16,6 +16,8 @@ type
     data: array[0..MaxBitmapData-1] of byte;
   end;
 
+function getMaxBitmapData: longword; public name 'getMaxBitmapData';
+
 { function loadImageHandle: longint; public name 'loadImageHandle'; }
 { function findEmptyImageSlot: longint; public name 'findEmptyImageSlot'; }
 function getEmptyImageSlot: longint; public name 'getEmptyImageSlot';
@@ -54,6 +56,11 @@ uses
 var
   images: array[1..10] of TBitmap;
   { nextImageHandle: longint = 1; }
+
+function getMaxBitmapData: longword;
+begin
+  getMaxBitmapData := MaxBitmapData
+end;
 
 {
 function loadImageHandle: longint;
