@@ -112,18 +112,18 @@ begin
 
   { writeLogF32(gameTime * 4); }
 
+  {
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
   else
     spr(imgDosuEXE[0], 148, 88);
+  }
   
-  {
   with dosuZone do
     if (trunc(gameTime * 4) and 1) > 0 then
       sprStretch(imgDosuEXE[1], trunc(x), trunc(y), trunc(width), trunc(height))
     else
       sprStretch(imgDosuEXE[0], trunc(x), trunc(y), trunc(width), trunc(height));
-  }
 
   printCentred('WASD - Move', 120);
   printCentred('Arrow keys - Resize', 130);
