@@ -330,9 +330,6 @@ begin
     dx := x + sx;
     dy := y + sy;
 
-    if (dx >= vgaWidth) or (dx < 0)
-      or (dy >= vgaHeight) or (dy < 0) then continue;
-
     case flip of
       SprFlipHorizontal:
         dx := x + image^.width - sx - 1;
@@ -343,6 +340,9 @@ begin
         dy := y + image^.height - sy - 1;
       end
     end;
+
+    if (dx >= vgaWidth) or (dx < 0)
+      or (dy >= vgaHeight) or (dy < 0) then continue;
 
     colour := unsafeSprPget(image, sx, sy);
     unsafePset(dx, dy, colour);
