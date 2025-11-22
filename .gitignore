@@ -22,3 +22,4 @@ DEMOS/wasm_string/*.ps1
 DEMOS/bigint/*.ps1
 DEMOS/sound/*.ps1
 DEMOS/immediate_gui/*.ps1
+DEMOS/sprites/*.ps1
