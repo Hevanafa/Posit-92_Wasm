@@ -418,6 +418,9 @@ begin
   
   for dy := -maxRadius to maxRadius do
   for dx := -maxRadius to maxRadius do begin
+    if (cx + dx < 0) or (cx + dx >= vgaWidth)
+      or (cy + dy < 0) or (cy + dy >= vgaHeight) then continue;
+
     sx := dx * cosAngle - dy * sinAngle;
     sy := dx * sinAngle + dy * cosAngle;
 
