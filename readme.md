@@ -1,4 +1,6 @@
-# POSIT-92 Wasm
+#
+
+![preview](preview.png)
 
 This project is a port of [POSIT-92](https://github.com/Hevanafa/POSIT-92) which targets WebAssembly
 
