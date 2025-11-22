@@ -323,15 +323,15 @@ begin
 
   for sy := 0 to image^.height - 1 do
   for sx := 0 to image^.width - 1 do begin
-    if (x + sx >= vgaWidth) or (x + sx < 0)
-      or (y + sy >= vgaHeight) or (y + sy < 0) then continue;
-
     srcPos := (sx + sy * image^.width) * 4;
     alpha := image^.data[srcPos + 3];
     if alpha < 255 then continue;
 
     dx := x + sx;
     dy := y + sy;
+
+    if (dx >= vgaWidth) or (dx < 0)
+      or (dy >= vgaHeight) or (dy < 0) then continue;
 
     case flip of
       SprFlipHorizontal:
