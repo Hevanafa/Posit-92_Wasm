@@ -89,7 +89,7 @@ end;
 { demoState: use DemoStates }
 procedure changeState(const newState: integer);
 begin
-  resetHeldKeys;
+  { resetHeldKeys; }
 
   actualDemoState := newState;
 
