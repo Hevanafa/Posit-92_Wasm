@@ -1,6 +1,6 @@
 library Game;
 
-{$Mode ObjFPC}
+{$Mode TP}
 {$B-}
 
 uses Bitmap, BMFont, Conv, FPS,
@@ -106,6 +106,28 @@ begin
   printDefault('Full sprite', 12, 12);
 
   rect(left, top, 80, 100, White);
+end;
+
+procedure getDemoStateName(const state: integer): string;
+var
+  result: string;
+begin
+  case state of
+    DemoStateFullSprite:
+      result := 'Full sprite';
+    DemoStateRegion:
+      result := 'Sprite region';
+    DemoStateBlend:
+      result := 'Sprite alpha blending';
+    DemoStateScaling:
+      result := 'Sprite scaling';
+    DemoStateRegionScaling:
+      result := 'Region scaling';
+    DemoStateFlip:
+      result := 'Sprite flipping';
+    DemoStateRotation:
+      result := 'Sprite rotation';
+  end;
 end;
 
 
