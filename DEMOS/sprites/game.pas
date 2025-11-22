@@ -72,9 +72,9 @@ begin
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    sprStretch(imgDosuEXE[1], 148, 88, 24, 48)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    sprStretch(imgDosuEXE[0], 148, 88, 24, 48);
 
   s := 'Hello world!';
   w := measureDefault(s);
