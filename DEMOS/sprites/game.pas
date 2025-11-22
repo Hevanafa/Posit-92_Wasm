@@ -276,7 +276,13 @@ begin
 
       printCentred('WASD - Move', 120);
       printCentred('Arrow keys - Resize', 130);
+    end;
+
+    DemoStateFlip: begin
+      sprFlip(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), SprFlipHorizontal);
+      printCentred('WASD - Move', 120);
     end
+
     else begin
       if (trunc(gameTime * 4) and 1) > 0 then
         spr(imgDosuEXE[1], trunc(dosuZone.x), trunc(dosuZone.y))

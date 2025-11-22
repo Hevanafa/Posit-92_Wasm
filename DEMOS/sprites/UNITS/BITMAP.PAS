@@ -41,6 +41,7 @@ procedure sprRegion(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer); public name 'sprRegion';
+procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
 
 procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
 procedure sprScale(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
@@ -277,6 +278,7 @@ end;
 procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
 var
   sx, sy: integer;
+  dx, dy: integer;
   srcPos, destPos: longint;
   image: PBitmap;
   alpha: byte;
@@ -294,7 +296,17 @@ begin
     alpha := image^.data[srcPos + 3];
     if alpha < 255 then continue;
 
-    destPos := ((sx + x) + (sy + y) * vgaWidth) * 4;
+    case flip of
+      SprFlipHorizontal: begin
+        dx := x + image^.width - sx - 1;
+        dy := y + sy;
+      end;
+      else
+        dx := x + sx;
+        dy := y + sy;
+    end;
+
+    destPos := (dx + dy * vgaWidth) * 4;
 
     { Order: RGBA }
     surface[destPos] := image^.data[srcPos];
