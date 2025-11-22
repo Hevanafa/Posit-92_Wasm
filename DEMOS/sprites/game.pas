@@ -43,6 +43,7 @@ const
 
 var
   lastEsc: boolean;
+  lastSpacebar: boolean;
   lastTab, lastPageUp, lastPageDown: boolean;
 
   { Init your game state here }
@@ -50,6 +51,8 @@ var
   gameTime: double;
   showDemoList: boolean;
   dosuZone: TRect;
+
+  selectedFrame: integer;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -75,6 +78,8 @@ begin
   dosuZone.y := 88;
   dosuZone.width := 24;
   dosuZone.height := 24;
+
+  selectedFrame := 0;
 end;
 
 
@@ -170,6 +175,15 @@ begin
     end;
   end;
 
+  if lastSpacebar <> isKeyDown(SC_SPACE) then begin
+    lastSpacebar := isKeyDown(SC_SPACE);
+
+    if lastSpacebar then begin
+      inc(selectedFrame);
+      if selectedFrame > 3 then selectedFrame := 0;
+    end;
+  end;
+
   if lastTab <> isKeyDown(SC_TAB) then begin
     lastTab := isKeyDown(SC_TAB);
 
@@ -228,7 +242,10 @@ begin
 
   case actualDemoState of
     DemoStateRegion: begin
-      spr(imgBlueEnemy, trunc(dosuZone.x), trunc(dosuZone.y));
+      { spr(imgBlueEnemy, trunc(dosuZone.x), trunc(dosuZone.y)); }
+      sprRegion(imgBlueEnemy,
+        25 * selectedFrame, 0, 25, 25,
+        trunc(dosuZone.x), trunc(dosuZone.y));
 
       printCentred('WASD - Move', 120);
       printCentred('Spacebar - Change frame', 130);
