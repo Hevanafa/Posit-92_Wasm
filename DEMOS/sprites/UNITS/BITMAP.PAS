@@ -402,6 +402,7 @@ var
 
   cosAngle, sinAngle: double;
   halfW, halfH: integer;
+  maxRadius: integer;
 begin
   if not isImageSet(imgHandle) then exit;
   image := getImagePtr(imgHandle);
@@ -412,9 +413,11 @@ begin
 
   halfW := image^.width div 2;
   halfH := image^.height div 2;
+
+  maxRadius := trunc(sqrt(halfW * halfW + halfH * halfH)) + 1;
   
-  for dy := -halfH to halfH do
-  for dx := -halfW to halfW do begin
+  for dy := -maxRadius to maxRadius do
+  for dx := -maxRadius to maxRadius do begin
     sx := dx * cosAngle - dy * sinAngle;
     sy := dx * sinAngle + dy * cosAngle;
 
