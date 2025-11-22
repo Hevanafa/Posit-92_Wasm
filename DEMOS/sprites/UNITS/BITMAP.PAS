@@ -1,7 +1,6 @@
 unit Bitmap;
 
-{Mode TP}  { "inline" keyword and variable initialisation at declaration don't work }
-{$Mode ObjFPC}
+{$Mode TP}
 {$B-}  { Enable boolean short-circuiting }
 
 interface
@@ -335,8 +334,8 @@ begin
   sprPget := (a shl 24) or (r shl 16) or (g shl 8) or b
 end;
 
-{ Assuming image isn't nil }
-function unsafeSprPget(const image: PBitmap; const x, y: integer): longword; inline;
+{ Assuming image isn't nil & the bounds are known }
+function unsafeSprPget(const image: PBitmap; const x, y: integer): longword;
 var
   offset: longword;
 begin

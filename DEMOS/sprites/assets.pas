@@ -1,6 +1,6 @@
 unit Assets;
 
-{$Mode ObjFPC}
+{$Mode TP}
 
 interface
 
@@ -48,15 +48,6 @@ end;
 
 procedure printDefault(const text: string; const x, y: integer);
 begin
-  printBMFont(text, x, y, _defaultFont, _defaultFontGlyphs)
-end;
-
-{ for use with JS }
-procedure printDefault(const textPtr: pointer; const textLen: integer; const x, y: integer);
-var
-  text: string;
-begin
-  text := strPtrToString(textPtr, textLen);
   printBMFont(text, x, y, _defaultFont, _defaultFontGlyphs)
 end;
 
