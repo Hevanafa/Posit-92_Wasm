@@ -395,12 +395,37 @@ var
   dx, dy: integer;
   srcX, srcY: integer;
   image: PBitmap;
+
+  alpha: byte;
   colour: longword;
 
   cosAngle, sinAngle: double;
   halfW, halfH: integer;
 begin
-{ TODO: Work on this }
+  if not isImageSet(imgHandle) then exit;
+  image := getImagePtr(imgHandle);
+
+  { Negative for inverse transform }
+  cosAngle := cos(-rotation);
+  sinAngle := sin(-rotation);
+
+  halfW := image^.width div 2;
+  halfH := image^.height div 2;
+  
+  for dy := -halfH to halfH do
+  for dx := -halfW to halfW do begin
+    sx := dx * cosAngle - dy * sinAngle;
+    sy := dx * sinAngle + dy * cosAngle;
+
+    srcX := trunc(sx) + halfW;
+    srcY := trunc(sy) + halfH;
+
+    { TODO: Bounds check }
+
+    { TODO: Handle alpha check }
+
+    { TODO: call unsafePset }
+  end;
 end;
 
 
