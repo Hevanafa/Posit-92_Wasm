@@ -26,7 +26,7 @@ procedure freeImage(const imgHandle: longint);
 
 function isImageSet(const imgHandle: longint): boolean; public name 'isImageSet';
 procedure debugImage(const imgHandle: longint); public name 'debugImage';
-function getImagePtr(const imgHandle: longint): pointer; public name 'getImagePtr';
+function getImagePtr(const imgHandle: longint): PBitmap; public name 'getImagePtr';
 
 function getImageWidth(const imgHandle: longint): word; public name 'getImageWidth';
 function getImageHeight(const imgHandle: longint): word; public name 'getImageHeight';
@@ -54,7 +54,7 @@ uses
 
 { Bitmap operations }
 var
-  images: array[1..10] of TBitmap;
+  images: array[1..10] of PBitmap;
   { nextImageHandle: longint = 1; }
 
 function getMaxBitmapData: longword;
@@ -70,6 +70,7 @@ begin
 end;
 }
 
+{
 function getEmptyImageSlot: longint;
 var
   a: longint;
@@ -82,8 +83,8 @@ begin
 
   getEmptyImageSlot := -1
 end;
+}
 
-{
 function getEmptyImageSlot: longint;
 var
   a: longint;
@@ -96,14 +97,15 @@ begin
 
   getEmptyImageSlot := -1
 end;
-}
 
 procedure freeImage(const imgHandle: longint);
 begin
   if (imgHandle < low(images)) or (imgHandle > high(images)) then exit;
-  { images[imgHandle] := nil }
+  images[imgHandle] := nil
+  {
   images[imgHandle].width := 0;
   images[imgHandle].height := 0;
+  }
 end;
 
 function newImage(const width, height: integer): longint;
@@ -119,13 +121,13 @@ begin
   bmp.width := width;
   bmp.height := height;
   fillchar(bmp.data, sizeof(bmp.data), 0);
-  images[slot] := bmp;
+  images[slot] := @bmp;
 
   newImage := slot
 end;
 
 
-function getImagePtr(const imgHandle: longint): pointer;
+function getImagePtr(const imgHandle: longint): PBitmap;
 var
   idx: integer;
 begin

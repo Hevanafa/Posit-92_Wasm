@@ -57,6 +57,8 @@ begin
   { Initialise game state here }
   hideCursor;
 
+  gameTime := 0.0;
+
   dosuZone.x := 148;
   dosuZone.y := 88;
   dosuZone.width := 24;
@@ -108,11 +110,20 @@ procedure draw;
 begin
   cls($FF6495ED);
 
+  { writeLogF32(gameTime * 4); }
+
+  if (trunc(gameTime * 4) and 1) > 0 then
+    spr(imgDosuEXE[1], 148, 88)
+  else
+    spr(imgDosuEXE[0], 148, 88);
+  
+  {
   with dosuZone do
     if (trunc(gameTime * 4) and 1) > 0 then
       sprStretch(imgDosuEXE[1], trunc(x), trunc(y), trunc(width), trunc(height))
     else
       sprStretch(imgDosuEXE[0], trunc(x), trunc(y), trunc(width), trunc(height));
+  }
 
   printCentred('WASD - Move', 120);
   printCentred('Arrow keys - Resize', 130);

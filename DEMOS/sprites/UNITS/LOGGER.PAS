@@ -9,6 +9,7 @@ interface
 procedure writeLog(const msg: string);
 { Must be registered in importObject }
 procedure writeLogI32(const value: longint); external 'env' name 'writeLogI32';
+procedure writeLogF32(const value: double); external 'env' name 'writeLogF32';
 
 function getLogBuffer: pointer; public name 'getLogBuffer';
 { Forwards logBuffer to JS }
