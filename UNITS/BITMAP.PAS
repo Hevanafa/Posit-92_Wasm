@@ -40,58 +40,18 @@ procedure sprRegionBlend(
 implementation
 
 uses
-  Conv, Logger, Panic, VGA;
+  Conv, Logger, VGA;
 
 { Bitmap operations }
 var
-  images: array[1..10] of PBitmap;
-  { nextImageHandle: longint = 1; }
+  images: array[1..10] of TBitmap;
+  nextImageHandle: longint = 1;
 
-{
 function loadImageHandle: longint;
 begin
   loadImageHandle := nextImageHandle;
   inc(nextImageHandle)
 end;
-}
-
-function getEmptyBitmapSlot: longint;
-var
-  a: longint;
-begin
-  for a:=1 to high(images) do begin
-    if images[a] = nil then begin
-      getEmptyBitmapSlot := a;
-      exit
-    end;
-
-  getEmptyBitmapSlot := -1
-end;
-
-procedure freeImage(const imgHandle: longint);
-begin
-  if (imgHandle < low(images)) or (imgHandle > high(images)) then exit;
-  images[imgHandle] := nil
-end;
-
-function newImage(const width, height: integer): longint;
-var
-  slot: longint;
-  bmp: TBitmap;
-begin
-  if width * height * 4 > MaxBitmapData then
-    panic('newImage: Bitmap is too large!');
-
-  slot := getEmptyBitmapSlot;
-
-  bmp.width := width;
-  bmp.height := height;
-  fillchar(bmp.data, sizeof(bmp.data), 0);
-  images[slot] := @bmp;
-
-  newImage := slot
-end;
-
 
 function getImagePtr(const imgHandle: longint): pointer;
 var
@@ -105,7 +65,7 @@ begin
   }
 
   if (1 <= idx) and (idx < nextImageHandle) then
-    getImagePtr := images[idx]
+    getImagePtr := @images[idx]
   else
     getImagePtr := nil;
 end;

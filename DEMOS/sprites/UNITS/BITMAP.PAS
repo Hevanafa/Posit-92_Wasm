@@ -16,27 +16,23 @@ type
     data: array[0..MaxBitmapData-1] of byte;
   end;
 
-function loadImageHandle: longint; public name 'loadImageHandle';
-function isImageSet(const imgHandle: longint): boolean; public name 'isImageSet';
-procedure debugImage(const imgHandle: longint); public name 'debugImage';
-function getImagePtr(const imgHandle: longint): pointer; public name 'getImagePtr';
+function loadBitmapHandle: longint; public name 'loadBitmapHandle';
+function isBitmapSet(const bmpHandle: longint): boolean; public name 'isBitmapSet';
+procedure debugBitmap(const bmpHandle: longint); public name 'debugBitmap';
+function getBitmapPtr(const bmpHandle: longint): pointer; public name 'getBitmapPtr';
 
-function getImageWidth(const imgHandle: longint): word; public name 'getImageWidth';
-function getImageHeight(const imgHandle: longint): word; public name 'getImageHeight';
+function getBitmapWidth(const bmpHandle: longint): word; public name 'getBitmapWidth';
+function getBitmapHeight(const bmpHandle: longint): word; public name 'getBitmapHeight';
 
-procedure spr(const imgHandle: longint; const x, y: integer); public name 'spr';
+procedure spr(const bmpHandle: longint; const x, y: integer); public name 'spr';
 procedure sprRegion(
-  const imgHandle: longint;
+  const bmpHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer); public name 'sprRegion';
 
-procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
-{ Alias for sprStretch }
-procedure sprScale(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
-
-procedure sprBlend(const imgHandle: longint; const x, y: integer); public name 'sprBlend';
+procedure sprBlend(const bmpHandle: longint; const x, y: integer); public name 'sprBlend';
 procedure sprRegionBlend(
-  const imgHandle: longint;
+  const bmpHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer); public name 'sprRegionBlend';
 
@@ -44,18 +40,58 @@ procedure sprRegionBlend(
 implementation
 
 uses
-  Conv, Logger, VGA;
+  Conv, Logger, Panic, VGA;
 
 { Bitmap operations }
 var
-  images: array[1..10] of TBitmap;
-  nextImageHandle: longint = 1;
+  images: array[1..10] of PBitmap;
+  { nextImageHandle: longint = 1; }
 
+{
 function loadImageHandle: longint;
 begin
   loadImageHandle := nextImageHandle;
   inc(nextImageHandle)
 end;
+}
+
+function getEmptyBitmapSlot: longint;
+var
+  a: longint;
+begin
+  for a:=1 to high(images) do begin
+    if images[a] = nil then begin
+      getEmptyBitmapSlot := a;
+      exit
+    end;
+
+  getEmptyBitmapSlot := -1
+end;
+
+procedure freeImage(const imgHandle: longint);
+begin
+  if (imgHandle < low(images)) or (imgHandle > high(images)) then exit;
+  images[imgHandle] := nil
+end;
+
+function newImage(const width, height: integer): longint;
+var
+  slot: longint;
+  bmp: TBitmap;
+begin
+  if width * height * 4 > MaxBitmapData then
+    panic('newImage: Bitmap is too large!');
+
+  slot := getEmptyBitmapSlot;
+
+  bmp.width := width;
+  bmp.height := height;
+  fillchar(bmp.data, sizeof(bmp.data), 0);
+  images[slot] := @bmp;
+
+  newImage := slot
+end;
+
 
 function getImagePtr(const imgHandle: longint): pointer;
 var
@@ -69,7 +105,7 @@ begin
   }
 
   if (1 <= idx) and (idx < nextImageHandle) then
-    getImagePtr := @images[idx]
+    getImagePtr := images[idx]
   else
     getImagePtr := nil;
 end;
@@ -197,50 +233,6 @@ begin
     surface[destPos + 3] := image^.data[srcPos + 3];
   end;
 end;
-
-{ Stretch a sprite with nearest neighbour scaling }
-procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
-var
-  sx, sy: integer;
-  dx, dy: integer;
-  srcPos, destPos: longint;
-  image: PBitmap;
-  alpha: byte;
-  scaleX, scaleY: double;
-begin
-  if not isImageSet(imgHandle) then exit;
-  image := getImagePtr(imgHandle);
-
-  scaleX := image^.width / destWidth;
-  scaleY := image^.height / destHeight;
-
-  for dy := 0 to destHeight - 1 do
-  for dx := 0 to destWidth - 1 do begin
-    if (destX + dx >= vgaWidth) or (destX + dx < 0)
-      or (destY + dy >= vgaHeight) or (destY + dy < 0) then continue;
-
-    sx := trunc(dx * scaleX);
-    sy := trunc(dy * scaleY);
-
-    srcPos := (sx + sy * image^.width) * 4;
-    alpha := image^.data[srcPos + 3];
-    if alpha < 255 then continue;
-
-    destPos := ((dx + destX) + (dy + destY) * vgaWidth) * 4;
-
-    { Order: RGBA }
-    surface[destPos] := image^.data[srcPos];
-    surface[destPos + 1] := image^.data[srcPos + 1];
-    surface[destPos + 2] := image^.data[srcPos + 2];
-    surface[destPos + 3] := image^.data[srcPos + 3];
-  end;
-end;
-
-procedure sprScale(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
-begin
-  sprStretch(imgHandle, destX, destY, destWidth, destHeight)
-end;
-
 
 function sprPget(const imgHandle: longint; const x, y: integer): longword;
 var
