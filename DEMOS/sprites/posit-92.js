@@ -227,7 +227,7 @@ class Posit92 {
     const pixels = tempCtx.getImageData(0, 0, img.width, img.height).data;
 
     // Obtain a new handle number
-    const imgHandle = this.#wasm.exports.getEmptyImageSlot();
+    const imgHandle = this.#wasm.exports.newImage(img.width, img.height);
     const bitmapPtr = this.#wasm.exports.getImagePtr(imgHandle);
     
     // Write to TBitmap

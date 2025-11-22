@@ -19,6 +19,8 @@ type
 { function loadImageHandle: longint; public name 'loadImageHandle'; }
 { function findEmptyImageSlot: longint; public name 'findEmptyImageSlot'; }
 function getEmptyImageSlot: longint; public name 'getEmptyImageSlot';
+function newImage(const width, height: integer): longint; public name 'newImage';
+procedure freeImage(const imgHandle: longint);
 
 function isImageSet(const imgHandle: longint): boolean; public name 'isImageSet';
 procedure debugImage(const imgHandle: longint); public name 'debugImage';
