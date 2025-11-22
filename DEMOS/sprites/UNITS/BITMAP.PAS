@@ -283,6 +283,11 @@ var
   image: PBitmap;
   alpha: byte;
 begin
+  if flip = SprFlipNone then begin
+    spr(imgHandle, x, y);
+    exit
+  end;
+
   if not isImageSet(imgHandle) then exit;
 
   image := getImagePtr(imgHandle);
