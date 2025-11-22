@@ -24,6 +24,10 @@ const
   SC_RIGHT = $4D;
   SC_DOWN = $50;
 
+  Black = $FF000000;
+  White = $FFFFFFFF;
+  Red = $FFFF5555;
+
 var
   lastEsc: boolean;
 
@@ -118,6 +122,14 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
   }
+
+  rectfill(10, 10, 80, 100, Black);
+
+  rectfill(10, 10, 80, 10 + _defaultFont.lineHeight + 2, Red);
+  printDefault('Full sprite', 12, 12);
+
+  rect(10, 10, 80, 100, White);
+
   
   with dosuZone do
     if (trunc(gameTime * 4) and 1) > 0 then
