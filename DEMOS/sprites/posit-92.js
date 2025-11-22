@@ -9,7 +9,17 @@
  */
 const ScancodeMap = {
   "Escape": 0x01,
-  "Space": 0x39
+  "Space": 0x39,
+
+  "KeyW": 0x11,
+  "KeyA": 0x1E,
+  "KeyS": 0x1F,
+  "KeyD": 0x20,
+
+  "ArrowUp": 0x48,
+  "ArrowLeft": 0x4B,
+  "ArrowRight": 0x4D,
+  "ArrowDown": 0x50
   // Add more scancodes as necessary
 };
 
@@ -60,7 +70,7 @@ class Posit92 {
       showCursor: () => this.showCursor(),
 
       // Keyboard
-      isKeyDown: scancode => this.isKeyDown(scancode),
+      isKeyDown: this.isKeyDown.bind(this),
       signalDone: () => { done = true },
 
       // Logger
@@ -368,7 +378,7 @@ class Posit92 {
 
   #initKeyboard() {
     window.addEventListener("keydown", e => {
-      // console.log("keydown", e.code);
+      console.log("keydown", e.code);
 
       const scancode = ScancodeMap[e.code];
       if (scancode) {

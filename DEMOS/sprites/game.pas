@@ -11,6 +11,18 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+  { For movement }
+  SC_W = $11;
+  SC_A = $1E;
+  SC_S = $1F;
+  SC_D = $20;
+
+  { For scaling }
+  SC_UP = $48;
+  SC_LEFT = $4B;
+  SC_RIGHT = $4D;
+  SC_DOWN = $50;
+
 var
   lastEsc: boolean;
 
