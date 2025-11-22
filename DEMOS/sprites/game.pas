@@ -28,10 +28,20 @@ const
   White = $FFFFFFFF;
   Red = $FFFF5555;
 
+  { DemoStates enum }
+  DemoStateFullSprite = 1;
+  DemoStateRegion = 2;
+  DemoStateBlend = 3;
+  DemoStateScaling = 4;
+  DemoStateRegionScaling = 5;
+  DemoStateFlip = 6;
+  DemoStateRotation = 7;
+
 var
   lastEsc: boolean;
 
   { Init your game state here }
+  actualDemoState: integer;
   gameTime: double;
   dosuZone: TRect;
 
@@ -48,6 +58,19 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
+{ demoState: use DemoStates }
+procedure changeState(const newState: integer);
+begin
+  actualDemoState := newState;
+
+  gameTime := 0.0;
+
+  dosuZone.x := 148;
+  dosuZone.y := 88;
+  dosuZone.width := 24;
+  dosuZone.height := 24;
+end;
+
 
 procedure init;
 begin
@@ -61,12 +84,7 @@ begin
   { Initialise game state here }
   hideCursor;
 
-  gameTime := 0.0;
-
-  dosuZone.x := 148;
-  dosuZone.y := 88;
-  dosuZone.width := 24;
-  dosuZone.height := 24;
+  changeState(DemoStateSpriteScaling);
 end;
 
 procedure printCentred(const text: string; const y: integer);
@@ -75,6 +93,19 @@ var
 begin
   w := measureDefault(text);
   printDefault(text, (vgaWidth - w) div 2, y);
+end;
+
+procedure drawDemoList;
+const
+  top = 10;
+  left = 10;
+begin
+  rectfill(left, top, 80, 100, Black);
+
+  rectfill(left, top, 80, 10 + _defaultFont.lineHeight + 2, Red);
+  printDefault('Full sprite', 12, 12);
+
+  rect(left, top, 80, 100, White);
 end;
 
 
@@ -123,12 +154,7 @@ begin
     spr(imgDosuEXE[0], 148, 88);
   }
 
-  rectfill(10, 10, 80, 100, Black);
-
-  rectfill(10, 10, 80, 10 + _defaultFont.lineHeight + 2, Red);
-  printDefault('Full sprite', 12, 12);
-
-  rect(10, 10, 80, 100, White);
+  drawDemoList;
 
   
   with dosuZone do
