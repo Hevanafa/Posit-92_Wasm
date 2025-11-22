@@ -273,6 +273,37 @@ begin
   end;
 end;
 
+{ flip: use SprFlips enum }
+procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
+var
+  sx, sy: integer;
+  srcPos, destPos: longint;
+  image: PBitmap;
+  alpha: byte;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+
+  for sy := 0 to image^.height - 1 do
+  for sx := 0 to image^.width - 1 do begin
+    if (x + sx >= vgaWidth) or (x + sx < 0)
+      or (y + sy >= vgaHeight) or (y + sy < 0) then continue;
+
+    srcPos := (sx + sy * image^.width) * 4;
+    alpha := image^.data[srcPos + 3];
+    if alpha < 255 then continue;
+
+    destPos := ((sx + x) + (sy + y) * vgaWidth) * 4;
+
+    { Order: RGBA }
+    surface[destPos] := image^.data[srcPos];
+    surface[destPos + 1] := image^.data[srcPos + 1];
+    surface[destPos + 2] := image^.data[srcPos + 2];
+    surface[destPos + 3] := image^.data[srcPos + 3];
+  end;
+end;
+
 { Stretch a sprite with nearest neighbour scaling }
 procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
 var
