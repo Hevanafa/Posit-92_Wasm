@@ -142,6 +142,7 @@ class Posit92 {
     this.#wasm.exports.setImgCursor(handle);
 
     await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
+    await this.loadBMFont("assets/fonts/picotron_8px.txt");
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.#wasm.exports.setImgDosuEXE(handle, 0);

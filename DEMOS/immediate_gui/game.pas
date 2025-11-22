@@ -55,7 +55,7 @@ begin
   hideCursor;
 
   initImmediateGUI;
-  guiSetFont(_defaultFont, _defaultFontGlyphs);
+  guiSetFont(defaultFont, defaultFontGlyphs);
 
   clicks := 0;
 end;
@@ -102,8 +102,14 @@ begin
   { spr(imgDosuEXE[0], 100, 80); }
   sprStretch(imgDosuEXE[0], 100, 80, 24, 48);
 
+  guiSetFont(defaultFont, defaultFontGlyphs);
   s := 'Clicks: ' + i32str(clicks);
   w := measureDefault(s);
+  TextLabel(s, (vgaWidth - w) div 2, 120);
+
+  guiSetFont(picotronFont, picotronFontGlyphs);
+  s := 'Picotron font';
+  w := measureBMFont(s, picotronFontGlyphs);
   TextLabel(s, (vgaWidth - w) div 2, 120);
 
   resetActiveWidget;
