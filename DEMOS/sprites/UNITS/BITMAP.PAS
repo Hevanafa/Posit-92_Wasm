@@ -16,23 +16,23 @@ type
     data: array[0..MaxBitmapData-1] of byte;
   end;
 
-function loadBitmapHandle: longint; public name 'loadBitmapHandle';
-function isBitmapSet(const bmpHandle: longint): boolean; public name 'isBitmapSet';
-procedure debugBitmap(const bmpHandle: longint); public name 'debugBitmap';
-function getBitmapPtr(const bmpHandle: longint): pointer; public name 'getBitmapPtr';
+{ function loadImageHandle: longint; public name 'loadImageHandle'; }
+function isImageSet(const imgHandle: longint): boolean; public name 'isImageSet';
+procedure debugImage(const imgHandle: longint); public name 'debugImage';
+function getImagePtr(const imgHandle: longint): pointer; public name 'getImagePtr';
 
-function getBitmapWidth(const bmpHandle: longint): word; public name 'getBitmapWidth';
-function getBitmapHeight(const bmpHandle: longint): word; public name 'getBitmapHeight';
+function getImageWidth(const imgHandle: longint): word; public name 'getImageWidth';
+function getImageHeight(const imgHandle: longint): word; public name 'getImageHeight';
 
-procedure spr(const bmpHandle: longint; const x, y: integer); public name 'spr';
+procedure spr(const imgHandle: longint; const x, y: integer); public name 'spr';
 procedure sprRegion(
-  const bmpHandle: longint;
+  const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer); public name 'sprRegion';
 
-procedure sprBlend(const bmpHandle: longint; const x, y: integer); public name 'sprBlend';
+procedure sprBlend(const imgHandle: longint; const x, y: integer); public name 'sprBlend';
 procedure sprRegionBlend(
-  const bmpHandle: longint;
+  const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer); public name 'sprRegionBlend';
 
@@ -59,7 +59,7 @@ function getEmptyBitmapSlot: longint;
 var
   a: longint;
 begin
-  for a:=1 to high(images) do begin
+  for a:=1 to high(images) do
     if images[a] = nil then begin
       getEmptyBitmapSlot := a;
       exit
@@ -80,7 +80,7 @@ var
   bmp: TBitmap;
 begin
   if width * height * 4 > MaxBitmapData then
-    panic('newImage: Bitmap is too large!');
+    panicHalt('newImage: Bitmap is too large!');
 
   slot := getEmptyBitmapSlot;
 
@@ -104,7 +104,7 @@ begin
   writeLog('getImagePtr idx: ' + i32str(idx));
   }
 
-  if (1 <= idx) and (idx < nextImageHandle) then
+  if (low(images) <= idx) and (idx < high(images)) then
     getImagePtr := images[idx]
   else
     getImagePtr := nil;
@@ -233,6 +233,9 @@ begin
     surface[destPos + 3] := image^.data[srcPos + 3];
   end;
 end;
+
+{ TODO: Rewrite sprStretch }
+
 
 function sprPget(const imgHandle: longint; const x, y: integer): longword;
 var
