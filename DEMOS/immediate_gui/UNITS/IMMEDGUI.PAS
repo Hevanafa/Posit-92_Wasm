@@ -1,6 +1,7 @@
 unit ImmedGui;
 
 {$Mode TP}
+{$B-}
 
 interface
 
@@ -18,7 +19,14 @@ procedure resetWidgetIndices;
 { Important: Must be placed at the end of the draw routine }
 procedure resetActiveWidget;
 
+{ Widgets }
+procedure TextLabel(const text: string; const x, y: integer);
+function Button(const caption: string; const x, y, width, height: integer): boolean;
+
+
 implementation
+
+uses Assets, Graphics, Mouse, Shapes;
 
 const
 { Immediate GUI default theme
@@ -123,7 +131,7 @@ begin
   rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), IceCreamWhite);
   TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
 
-  if mouseJustReleased And (hotWidget = thisWidgetID) And (activeWidget = thisWidgetID) then
+  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
     Button := true
   else
