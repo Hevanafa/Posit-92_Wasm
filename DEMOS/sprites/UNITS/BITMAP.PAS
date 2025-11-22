@@ -2,6 +2,8 @@ unit Bitmap;
 
 {$Mode TP}
 {$B-}  { Enable boolean short-circuiting }
+{$R-}  { Turn off range checks }
+{$Q-}  { Turn off overflow checks }
 
 interface
 
