@@ -200,19 +200,19 @@ begin
     end;
   end;
 
-
-
   if isKeyDown(SC_W) then dosuZone.y := dosuZone.y - 1;
   if isKeyDown(SC_S) then dosuZone.y := dosuZone.y + 1;
 
   if isKeyDown(SC_A) then dosuZone.x := dosuZone.x - 1;
   if isKeyDown(SC_D) then dosuZone.x := dosuZone.x + 1;
 
-  if isKeyDown(SC_UP) and (dosuZone.height > 1.0) then dosuZone.height := dosuZone.height - 1;
-  if isKeyDown(SC_DOWN) then dosuZone.height := dosuZone.height + 1;
+  if (actualDemoState = DemoStateScaling) or (actualDemoState = DemoStateRegionScaling) then begin
+    if isKeyDown(SC_UP) and (dosuZone.height > 1.0) then dosuZone.height := dosuZone.height - 1;
+    if isKeyDown(SC_DOWN) then dosuZone.height := dosuZone.height + 1;
 
-  if isKeyDown(SC_RIGHT) then dosuZone.width := dosuZone.width + 1;
-  if isKeyDown(SC_LEFT) and (dosuZone.width > 1.0) then dosuZone.width := dosuZone.width - 1;
+    if isKeyDown(SC_RIGHT) then dosuZone.width := dosuZone.width + 1;
+    if isKeyDown(SC_LEFT) and (dosuZone.width > 1.0) then dosuZone.width := dosuZone.width - 1;
+  end;
 
   gameTime := gameTime + dt
 end;
@@ -227,6 +227,12 @@ begin
   if showDemoList then drawDemoList;
 
   case actualDemoState of
+    DemoStateRegion: begin
+      spr(imgBlueEnemy, trunc(dosuZone.x), trunc(dosuZone.y));
+
+      printCentred('WASD - Move', 120);
+      printCentred('Spacebar - Change frame', 130);
+    end;
     DemoStateScaling: begin
       with dosuZone do
         if (trunc(gameTime * 4) and 1) > 0 then
