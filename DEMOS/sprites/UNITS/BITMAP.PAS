@@ -393,6 +393,7 @@ procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotat
 var
   sx, sy: double;
   dx, dy: integer;
+  srcPos: longint;
   srcX, srcY: integer;
   image: PBitmap;
 
@@ -420,9 +421,12 @@ begin
     srcX := trunc(sx) + halfW;
     srcY := trunc(sy) + halfH;
 
-    { TODO: Bounds check }
+    if (srcX < 0) or (srcX >= image^.width)
+      or (srcY < 0) or (srcY >= image^.height) then continue;
 
-    { TODO: Handle alpha check }
+    srcPos := (srcX + srcY * image^.width) * 4;
+    alpha := image^.data[srcPos + 3];
+    if alpha < 255 then continue;
 
     { TODO: call unsafePset }
   end;
