@@ -428,7 +428,8 @@ begin
     alpha := image^.data[srcPos + 3];
     if alpha < 255 then continue;
 
-    { TODO: call unsafePset }
+    colour := unsafeSprPget(image, srcX, srcY);
+    unsafePset(cx + dx, cy + dy, colour)
   end;
 end;
 

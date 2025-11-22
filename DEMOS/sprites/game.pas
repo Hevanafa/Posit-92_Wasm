@@ -56,6 +56,7 @@ var
   selectedFrame: integer;
   { Use SprFlips enum }
   spriteFlip: integer;
+  spriteRotation: double;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -100,6 +101,9 @@ begin
     dosuZone.y := (vgaHeight - getImageHeight(imgSlimeGirl)) / 2;
     dosuZone.width := getImageWidth(imgSlimeGirl);
     dosuZone.height := getImageHeight(imgSlimeGirl);
+  end else if actualDemoState = DemoStateRotation then begin
+    dosuZone.x := vgaWidth / 2;
+    dosuZone.y := vgaHeight / 2;
   end else begin
     dosuZone.x := 148;
     dosuZone.y := 88;
@@ -109,6 +113,7 @@ begin
 
   selectedFrame := 0;
   spriteFlip := SprFlipHorizontal;
+  spriteRotation := 0.0;
 end;
 
 
@@ -328,6 +333,12 @@ begin
       sprFlip(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteFlip);
       printCentred('WASD - Move', 120);
       printCentred('Arrow keys - Flip', 130);
+    end
+
+    DemoStateRotation: begin
+      sprRotate(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteRotation);
+      printCentred('WASD - Move', 120);
+      printCentred('Left / right - Rotate', 130);
     end
 
     else begin
