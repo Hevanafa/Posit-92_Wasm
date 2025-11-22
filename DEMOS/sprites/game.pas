@@ -96,7 +96,7 @@ begin
 
   gameTime := 0.0;
 
-  if actualDemoState = DemoStateBlend then begin
+  if (actualDemoState = DemoStateBlend) or (actualDemoState = DemoStateFlip) then begin
     dosuZone.x := (vgaWidth - getImageWidth(imgSlimeGirl)) / 2;
     dosuZone.y := (vgaHeight - getImageHeight(imgSlimeGirl)) / 2;
     dosuZone.width := getImageWidth(imgSlimeGirl);
