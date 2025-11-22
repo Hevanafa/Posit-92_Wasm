@@ -67,7 +67,8 @@ end;
 
 procedure drawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  { spr(imgCursor, mouseX, mouseY) }
+  spr(imgHandCursor, mouseX - 5, mouseY - 1)
 end;
 
 procedure resetHeldKeys;
