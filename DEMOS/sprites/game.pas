@@ -44,6 +44,7 @@ const
 var
   lastEsc: boolean;
   lastSpacebar: boolean;
+  lastUp, lastRight, lastDown, lastLeft: boolean;
   lastTab, lastPageUp, lastPageDown: boolean;
 
   { Init your game state here }
@@ -53,6 +54,8 @@ var
   dosuZone: TRect;
 
   selectedFrame: integer;
+  { Use SprFlips enum }
+  spriteFlip: integer;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -235,6 +238,30 @@ begin
     if isKeyDown(SC_LEFT) and (dosuZone.width > 1.0) then dosuZone.width := dosuZone.width - 1;
   end;
 
+  if actualDemoState = DemoStateFlip then begin
+    if lastUp <> isKeyDown(SC_UP) then begin
+      lastUp := isKeyDown(SC_UP);
+
+      if lastUp then spriteFlip := spriteFlip xor SprFlipVertical;
+    end;
+    if lastDown <> isKeyDown(SC_DOWN) then begin
+      lastDown := isKeyDown(SC_DOWN);
+
+      if lastDown then spriteFlip := spriteFlip xor SprFlipVertical;
+    end;
+
+    if lastLeft <> isKeyDown(SC_LEFT) then begin
+      lastLeft := isKeyDown(SC_LEFT);
+
+      if lastLeft then spriteFlip := spriteFlip xor SprFlipHorizontal;
+    end;
+    if lastRight <> isKeyDown(SC_RIGHT) then begin
+      lastRight := isKeyDown(SC_RIGHT);
+
+      if lastRight then spriteFlip := spriteFlip xor SprFlipHorizontal;
+    end;
+  end;
+
   gameTime := gameTime + dt
 end;
 
@@ -279,8 +306,9 @@ begin
     end;
 
     DemoStateFlip: begin
-      sprFlip(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), SprFlipHorizontal);
+      sprFlip(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteFlip);
       printCentred('WASD - Move', 120);
+      printCentred('Arrow keys - Flip', 130);
     end
 
     else begin
