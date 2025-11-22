@@ -344,9 +344,17 @@ begin
 
     DemoStateRotation: begin
       sprRotate(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteRotation);
+
+      rect(
+        trunc(dosuZone.x - getImageWidth(imgSlimeGirl) / 2),
+        trunc(dosuZone.y - getImageHeight(imgSlimeGirl) / 2),
+        trunc(dosuZone.x + getImageWidth(imgSlimeGirl) / 2),
+        trunc(dosuZone.y + getImageHeight(imgSlimeGirl) / 2),
+        white);
+
       printCentred('WASD - Move', 120);
       printCentred('Left / right - Rotate', 130);
-    end;
+    end
 
     else begin
       if (trunc(gameTime * 4) and 1) > 0 then
