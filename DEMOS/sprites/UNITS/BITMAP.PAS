@@ -226,9 +226,10 @@ end;
 procedure spr(const imgHandle: longint; const x, y: integer);
 var
   a, b: integer;
-  srcPos, destPos: longint;
+  srcPos: longint;
   image: PBitmap;
   alpha: byte;
+  colour: longword;
 begin
   if not isImageSet(imgHandle) then exit;
 
@@ -243,13 +244,8 @@ begin
     alpha := image^.data[srcPos + 3];
     if alpha < 255 then continue;
 
-    destPos := ((a + x) + (b + y) * vgaWidth) * 4;
-
-    { Order: RGBA }
-    surface[destPos] := image^.data[srcPos];
-    surface[destPos + 1] := image^.data[srcPos + 1];
-    surface[destPos + 2] := image^.data[srcPos + 2];
-    surface[destPos + 3] := image^.data[srcPos + 3];
+    colour := unsafeSprPget(image, a, b);
+    unsafePset(x + a, y + b, colour);
   end;
 end;
 
@@ -260,8 +256,10 @@ procedure sprRegion(
 var
   image: PBitmap;
   a, b: integer;
-  srcPos, destPos: longint;
+  sx, sy: integer;
+  srcPos: longint;
   alpha: byte;
+  colour: longword;
 begin
   if not isImageSet(imgHandle) then exit;
 
@@ -272,18 +270,15 @@ begin
     if (destX + a >= vgaWidth) or (destX + a < 0)
       or (destY + b >= vgaHeight) or (destY + b < 0) then continue;
 
-    srcPos := ((srcX + a) + (srcY + b) * image^.width) * 4;
+    sx := srcX + a;
+    sy := srcY + b;
+    srcPos := (sx + sy * image^.width) * 4;
 
     alpha := image^.data[srcPos + 3];
     if alpha < 255 then continue;
 
-    destPos := ((destX + a) + (destY + b) * vgaWidth) * 4;
-
-    { Order: RGBA }
-    surface[destPos] := image^.data[srcPos];
-    surface[destPos + 1] := image^.data[srcPos + 1];
-    surface[destPos + 2] := image^.data[srcPos + 2];
-    surface[destPos + 3] := image^.data[srcPos + 3];
+    colour := unsafeSprPget(image, sx, sy);
+    unsafePset(destX + a, destY + b, colour);
   end;
 end;
 
@@ -292,9 +287,10 @@ procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: int
 var
   sx, sy: integer;
   dx, dy: integer;
-  srcPos, destPos: longint;
+  srcPos: longint;
   image: PBitmap;
   alpha: byte;
+  colour: longword;
 begin
   if flip = SprFlipNone then begin
     spr(imgHandle, x, y);
@@ -328,13 +324,8 @@ begin
       end
     end;
 
-    destPos := (dx + dy * vgaWidth) * 4;
-
-    { Order: RGBA }
-    surface[destPos] := image^.data[srcPos];
-    surface[destPos + 1] := image^.data[srcPos + 1];
-    surface[destPos + 2] := image^.data[srcPos + 2];
-    surface[destPos + 3] := image^.data[srcPos + 3];
+    colour := unsafeSprPget(image, sx, sy);
+    unsafePset(dx, dy, colour);
   end;
 end;
 
@@ -343,7 +334,7 @@ procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, de
 var
   sx, sy: integer;
   dx, dy: integer;
-  srcPos, destPos: longint;
+  srcPos: longint;
   image: PBitmap;
   alpha: byte;
   scaleX, scaleY: double;
@@ -367,15 +358,8 @@ begin
     alpha := image^.data[srcPos + 3];
     if alpha < 255 then continue;
 
-    destPos := ((dx + destX) + (dy + destY) * vgaWidth) * 4;
-
-    colour := 
-
-    { Order: RGBA }
-    surface[destPos] := image^.data[srcPos];
-    surface[destPos + 1] := image^.data[srcPos + 1];
-    surface[destPos + 2] := image^.data[srcPos + 2];
-    surface[destPos + 3] := image^.data[srcPos + 3];
+    colour := unsafeSprPget(image, sx, sy);
+    unsafePset(dx + destX, dy + destY, colour);
   end;
 end;
 
