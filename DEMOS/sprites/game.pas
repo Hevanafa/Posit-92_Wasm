@@ -24,6 +24,9 @@ const
   SC_RIGHT = $4D;
   SC_DOWN = $50;
 
+  SC_PAGEUP = $49;
+  SC_PAGEDOWN = $51;
+
   Black = $FF000000;
   White = $FFFFFFFF;
   Red = $FFFF5555;
@@ -39,10 +42,12 @@ const
 
 var
   lastEsc: boolean;
+  lastTab, lastPageUp, lastPageDown: boolean;
 
   { Init your game state here }
   actualDemoState: integer;
   gameTime: double;
+  showDemoList: boolean;
   dosuZone: TRect;
 
 { Use this to set `done` to true }
@@ -84,6 +89,7 @@ begin
   { Initialise game state here }
   hideCursor;
 
+  showDemoList := true;
   changeState(DemoStateScaling);
 end;
 
@@ -191,14 +197,16 @@ begin
     spr(imgDosuEXE[0], 148, 88);
   }
 
-  drawDemoList;
+  if showDemoList then drawDemoList;
 
-  
-  with dosuZone do
-    if (trunc(gameTime * 4) and 1) > 0 then
-      sprStretch(imgDosuEXE[1], trunc(x), trunc(y), trunc(width), trunc(height))
-    else
-      sprStretch(imgDosuEXE[0], trunc(x), trunc(y), trunc(width), trunc(height));
+  case actualDemoState of
+    DemoStateScaling:
+      with dosuZone do
+        if (trunc(gameTime * 4) and 1) > 0 then
+          sprStretch(imgDosuEXE[1], trunc(x), trunc(y), trunc(width), trunc(height))
+        else
+          sprStretch(imgDosuEXE[0], trunc(x), trunc(y), trunc(width), trunc(height));
+  end;
 
   printCentred('WASD - Move', 120);
   printCentred('Arrow keys - Resize', 130);

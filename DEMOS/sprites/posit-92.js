@@ -19,7 +19,10 @@ const ScancodeMap = {
   "ArrowUp": 0x48,
   "ArrowLeft": 0x4B,
   "ArrowRight": 0x4D,
-  "ArrowDown": 0x50
+  "ArrowDown": 0x50,
+
+  "PageUp": 0x49,
+  "PageDown": 0x51
   // Add more scancodes as necessary
 };
 
@@ -379,7 +382,7 @@ class Posit92 {
 
   #initKeyboard() {
     window.addEventListener("keydown", e => {
-      // console.log("keydown", e.code);
+      console.log("keydown", e.code);
 
       const scancode = ScancodeMap[e.code];
       if (scancode) {
