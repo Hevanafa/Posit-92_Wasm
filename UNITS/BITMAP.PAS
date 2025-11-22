@@ -44,14 +44,23 @@ uses
 
 { Bitmap operations }
 var
-  images: array[1..10] of TBitmap;
+  images: array[1..10] of PBitmap;
   nextImageHandle: longint = 1;
 
+{
 function loadImageHandle: longint;
 begin
   loadImageHandle := nextImageHandle;
   inc(nextImageHandle)
 end;
+}
+
+procedure freeImage(const imgHandle: integer);
+begin
+  if (imgHandle < low(images)) or (imgHandle > high(images)) then exit;
+  images[imgHandle] := nil
+end;
+
 
 function getImagePtr(const imgHandle: longint): pointer;
 var
@@ -65,7 +74,7 @@ begin
   }
 
   if (1 <= idx) and (idx < nextImageHandle) then
-    getImagePtr := @images[idx]
+    getImagePtr := images[idx]
   else
     getImagePtr := nil;
 end;
