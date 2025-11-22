@@ -241,8 +241,13 @@ begin
   if showDemoList then drawDemoList;
 
   case actualDemoState of
+    DemoStateFullSprite: begin
+      spr(imgDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
+      printCentred('WASD - Move', 120);
+    end;
+
     DemoStateRegion: begin
-      { spr(imgBlueEnemy, trunc(dosuZone.x), trunc(dosuZone.y)); }
+      
       sprRegion(imgBlueEnemy,
         25 * selectedFrame, 0, 25, 25,
         trunc(dosuZone.x), trunc(dosuZone.y));
@@ -250,6 +255,7 @@ begin
       printCentred('WASD - Move', 120);
       printCentred('Spacebar - Change frame', 130);
     end;
+
     DemoStateScaling: begin
       with dosuZone do
         if (trunc(gameTime * 4) and 1) > 0 then
@@ -269,6 +275,8 @@ begin
       printCentred('(Not implemented)', 130);
     end
   end;
+
+  printDefault('TAB - Toggle list of demos', 8, vgaHeight - 18);
 
   drawMouse;
   drawFPS;
