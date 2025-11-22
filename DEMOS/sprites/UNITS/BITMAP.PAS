@@ -17,6 +17,9 @@ type
   end;
 
 { function loadImageHandle: longint; public name 'loadImageHandle'; }
+{ function findEmptyImageSlot: longint; public name 'findEmptyImageSlot'; }
+function getEmptyImageSlot: longint; public name 'getEmptyImageSlot';
+
 function isImageSet(const imgHandle: longint): boolean; public name 'isImageSet';
 procedure debugImage(const imgHandle: longint); public name 'debugImage';
 function getImagePtr(const imgHandle: longint): pointer; public name 'getImagePtr';
@@ -47,7 +50,7 @@ uses
 
 { Bitmap operations }
 var
-  images: array[1..10] of PBitmap;
+  images: array[1..10] of TBitmap;
   { nextImageHandle: longint = 1; }
 
 {
@@ -58,23 +61,40 @@ begin
 end;
 }
 
-function getEmptyBitmapSlot: longint;
+function getEmptyImageSlot: longint;
+var
+  a: longint;
+begin
+  for a:=1 to high(images) do
+    if (images[a].width = 0) and (images[a].height = 0) then begin
+      getEmptyImageSlot := a;
+      exit
+    end;
+
+  getEmptyImageSlot := -1
+end;
+
+{
+function getEmptyImageSlot: longint;
 var
   a: longint;
 begin
   for a:=1 to high(images) do
     if images[a] = nil then begin
-      getEmptyBitmapSlot := a;
+      getEmptyImageSlot := a;
       exit
     end;
 
-  getEmptyBitmapSlot := -1
+  getEmptyImageSlot := -1
 end;
+}
 
 procedure freeImage(const imgHandle: longint);
 begin
   if (imgHandle < low(images)) or (imgHandle > high(images)) then exit;
-  images[imgHandle] := nil
+  { images[imgHandle] := nil }
+  images[imgHandle].width := 0;
+  images[imgHandle].height := 0;
 end;
 
 function newImage(const width, height: integer): longint;
@@ -85,12 +105,12 @@ begin
   if width * height * 4 > MaxBitmapData then
     panicHalt('newImage: Bitmap is too large!');
 
-  slot := getEmptyBitmapSlot;
+  slot := getEmptyImageSlot;
 
   bmp.width := width;
   bmp.height := height;
   fillchar(bmp.data, sizeof(bmp.data), 0);
-  images[slot] := @bmp;
+  images[slot] := bmp;
 
   newImage := slot
 end;
@@ -108,7 +128,7 @@ begin
   }
 
   if (low(images) <= idx) and (idx < high(images)) then
-    getImagePtr := images[idx]
+    getImagePtr := @images[idx]
   else
     getImagePtr := nil;
 end;
