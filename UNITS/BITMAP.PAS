@@ -40,12 +40,12 @@ procedure sprRegionBlend(
 implementation
 
 uses
-  Conv, Logger, VGA;
+  Conv, Logger, Panic, VGA;
 
 { Bitmap operations }
 var
   images: array[1..10] of PBitmap;
-  nextImageHandle: longint = 1;
+  { nextImageHandle: longint = 1; }
 
 {
 function loadImageHandle: longint;
@@ -54,6 +54,19 @@ begin
   inc(nextImageHandle)
 end;
 }
+
+function getEmptyBitmapSlot: integer;
+var
+  a: integer;
+begin
+  for a:=1 to high(images) do begin
+    if images[a] = nil then begin
+      getEmptyBitmapSlot := a;
+      exit
+    end;
+
+  getEmptyBitmapSlot := -1
+end;
 
 procedure freeImage(const imgHandle: integer);
 begin
