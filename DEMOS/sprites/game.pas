@@ -24,6 +24,7 @@ const
   SC_RIGHT = $4D;
   SC_DOWN = $50;
 
+  SC_TAB = $0F;
   SC_PAGEUP = $49;
   SC_PAGEDOWN = $51;
 
@@ -169,6 +170,12 @@ begin
     end;
   end;
 
+  if lastTab <> isKeyDown(SC_TAB) then begin
+    lastTab := isKeyDown(SC_TAB);
+
+    if lastTab then showDemoList := not showDemoList;
+  end;
+
   if isKeyDown(SC_W) then dosuZone.y := dosuZone.y - 1;
   if isKeyDown(SC_S) then dosuZone.y := dosuZone.y + 1;
 
@@ -183,6 +190,7 @@ begin
 
   gameTime := gameTime + dt
 end;
+
 
 procedure draw;
 begin

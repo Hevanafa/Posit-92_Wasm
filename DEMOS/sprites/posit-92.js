@@ -21,6 +21,7 @@ const ScancodeMap = {
   "ArrowRight": 0x4D,
   "ArrowDown": 0x50,
 
+  "Tab": 0x0F,
   "PageUp": 0x49,
   "PageDown": 0x51
   // Add more scancodes as necessary
