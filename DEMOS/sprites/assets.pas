@@ -13,6 +13,7 @@ var
 
   imgCursor: longint;
   imgDosuEXE: array[0..1] of longint;
+  imgSlimeGirl: longint;
   { https://kenney.nl/assets/desert-shooter-pack }
   imgBlueEnemy: longint;
 
@@ -25,6 +26,7 @@ function measureDefault(const text: string): word;
 { Asset boilerplate }
 procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
+procedure setImgSlimeGirl(const imgHandle: longint); public name 'setImgSlimeGirl';
 procedure setImgBlueEnemy(const imgHandle: longint); public name 'setImgBlueEnemy';
 
 
@@ -74,6 +76,11 @@ end;
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer);
 begin
   imgDosuEXE[idx] := imgHandle
+end;
+
+procedure setImgSlimeGirl(const imgHandle: longint);
+begin
+  imgSlimeGirl := imgHandle
 end;
 
 procedure setImgBlueEnemy(const imgHandle: longint);

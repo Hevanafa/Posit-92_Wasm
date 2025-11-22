@@ -247,7 +247,6 @@ begin
     end;
 
     DemoStateRegion: begin
-      
       sprRegion(imgBlueEnemy,
         25 * selectedFrame, 0, 25, 25,
         trunc(dosuZone.x), trunc(dosuZone.y));
@@ -276,7 +275,8 @@ begin
     end
   end;
 
-  printDefault('TAB - Toggle list of demos', 8, vgaHeight - 18);
+  printDefault('TAB - Toggle list of demos', 8, vgaHeight - 28);
+  printDefault('Page up / down - Choose between demos', 8, vgaHeight - 18);
 
   drawMouse;
   drawFPS;

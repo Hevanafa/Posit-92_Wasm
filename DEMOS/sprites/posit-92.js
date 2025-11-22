@@ -163,6 +163,8 @@ class Posit92 {
     handle = await this.loadImage("assets/images/dosu_2.png");
     this.#wasm.exports.setImgDosuEXE(handle, 1);
 
+    handle = await this.loadImage("assets/images/piyo_0426_slime_girl.png");
+    this.#wasm.exports.setImgSlimeGirl(handle);
     handle = await this.loadImage("assets/images/blue_enemy.png");
     this.#wasm.exports.setImgBlueEnemy(handle);
 
