@@ -71,24 +71,25 @@ begin
   particles[idx].zone.vx := (random - 0.5) * 50;
   particles[idx].zone.vy := -random(100);
 
-  particles[idx].imgHandle := imgParticle;
+  particles[idx].imgHandle := imgParticles[random(high(imgParticles) + 1)];
 end;
 
 procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
 var
   a, b: word;
   image: PBitmap;
-  colour: longword;
 begin
-  if not isImageSet(imgHandle) then exit;
+  if not isImageSet(imgHandle) then begin
+    writeLog('replaceColours: Unset imgHandle: ' + i32str(imgHandle));
+    exit
+  end;
 
   image := getImagePtr(imgHandle);
 
   for b:=0 to image^.height - 1 do
-  for a:=0 to image^.width - 1 do begin
-    colour := unsafeSprPget(image, a, b);
-    unsafeSprPset(image, a, b, colour)
-  end;
+  for a:=0 to image^.width - 1 do
+    if unsafeSprPget(image, a, b) = oldColour then
+      unsafeSprPset(image, a, b, newColour);
 end;
 
 
@@ -100,6 +101,8 @@ begin
 end;
 
 procedure afterInit;
+var
+  a: integer;
 begin
   { Initialise game state here }
   hideCursor;
@@ -175,8 +178,6 @@ begin
     spr(imgDosuEXE[1], 148, 88)
   else
     spr(imgDosuEXE[0], 148, 88);
-
-  spr(imgParticle, 10, 10);
 
   for a:=0 to high(particles) do begin
     if not particles[a].active then continue;
