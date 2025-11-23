@@ -50,6 +50,7 @@ function unsafeSprPget(const image: PBitmap; const x, y: integer): longword;
 function sprPget(const imgHandle: longint; const x, y: integer): longword;
 
 procedure unsafeSprPset(const image: PBitmap; const x, y: integer; const colour: longword);
+procedure sprPset(const imgHandle: longint; const x, y: integer; const colour: longword);
 
 procedure spr(const imgHandle: longint; const x, y: integer); public name 'spr';
 procedure sprRegion(
@@ -286,6 +287,20 @@ begin
   image^.data[offset + 1] := colour shr 8 and $FF;
   image^.data[offset + 2] := colour and $FF;
   image^.data[offset + 3] := colour shr 24 and $FF;
+end;
+
+procedure sprPset(const imgHandle: longint; const x, y: integer; const colour: longword);
+var
+  image: PBitmap;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+
+  if (x < 0) or (x >= image^.width)
+    or (y < 0) or (y >= image^.height) then exit;
+
+  unsafeSprPset(image, x, y, colour)
 end;
 
 
