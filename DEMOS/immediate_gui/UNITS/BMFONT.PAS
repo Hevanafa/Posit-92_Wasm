@@ -19,7 +19,9 @@ type
     xoffset, yoffset: integer;
     xadvance: integer;
   end;
-  
+
+  { TPBMFontGlyphArray = array of PBMFontGlyph; }
+
   PBMFont = ^TBMFont;
   TBMFont = packed record
     face: string[15];  { 16 bytes }

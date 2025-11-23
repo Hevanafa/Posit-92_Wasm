@@ -1,6 +1,6 @@
 unit Assets;
 
-{$Mode ObjFPC}
+{$Mode TP}
 
 interface
 
@@ -10,13 +10,19 @@ var
   { for use in loadBMFont }
   defaultFont: TBMFont;
   defaultFontGlyphs: array[32..126] of TBMFontGlyph;
+  picotronFont: TBMFont;
+  picotronFontGlyphs: array[32..126] of TBMFontGlyph;
 
   imgCursor: longint;
   imgDosuEXE: array[0..1] of longint;
 
 { BMFont boilerplate }
-function defaultFontPtr: pointer; public name 'defaultFontPtr';
+function defaultFontPtr: PBMFont; public name 'defaultFontPtr';
 function defaultFontGlyphsPtr: pointer; public name 'defaultFontGlyphsPtr';
+
+function picotronFontPtr: PBMFont; public name 'picotronFontPtr';
+function picotronFontGlyphsPtr: pointer; public name 'picotronFontGlyphsPtr';
+
 procedure printDefault(const text: string; const x, y: integer);
 function measureDefault(const text: string): word;
 
@@ -31,7 +37,7 @@ uses Conv;
 
 { Begin BMFont boilerplate}
 
-function defaultFontPtr: pointer;
+function defaultFontPtr: PBMFont;
 begin
   defaultFontPtr := @defaultFont
 end;
@@ -41,17 +47,20 @@ begin
   defaultFontGlyphsPtr := @defaultFontGlyphs
 end;
 
-procedure printDefault(const text: string; const x, y: integer);
+function picotronFontPtr: PBMFont;
 begin
-  printBMFont(text, x, y, defaultFont, defaultFontGlyphs)
+  picotronFontPtr := @picotronFont
 end;
 
-{ for use with JS }
-procedure printDefault(const textPtr: pointer; const textLen: integer; const x, y: integer);
-var
-  text: string;
+function picotronFontGlyphsPtr: pointer;
 begin
-  text := strPtrToString(textPtr, textLen);
+  picotronFontGlyphsPtr := @picotronFontGlyphs
+end;
+
+
+
+procedure printDefault(const text: string; const x, y: integer);
+begin
   printBMFont(text, x, y, defaultFont, defaultFontGlyphs)
 end;
 

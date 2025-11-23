@@ -110,7 +110,7 @@ begin
   guiSetFont(picotronFont, picotronFontGlyphs);
   s := 'Picotron font';
   w := measureBMFont(s, picotronFontGlyphs);
-  TextLabel(s, (vgaWidth - w) div 2, 120);
+  TextLabel(s, (vgaWidth - w) div 2, 140);
 
   resetActiveWidget;
 

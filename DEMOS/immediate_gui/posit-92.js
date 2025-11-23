@@ -141,8 +141,15 @@ class Posit92 {
     handle = await this.loadImage("assets/images/cursor.png");
     this.#wasm.exports.setImgCursor(handle);
 
-    await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
-    await this.loadBMFont("assets/fonts/picotron_8px.txt");
+    await this.loadBMFont(
+      "assets/fonts/nokia_cellphone_fc_8.txt",
+      this.#wasm.exports.defaultFontPtr(),
+      this.#wasm.exports.defaultFontGlyphsPtr());
+
+    await this.loadBMFont(
+      "assets/fonts/picotron_8px.txt",
+      this.#wasm.exports.picotronFontPtr(),
+      this.#wasm.exports.picotronFontGlyphsPtr());
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.#wasm.exports.setImgDosuEXE(handle, 0);
@@ -248,7 +255,7 @@ class Posit92 {
     }
   }
 
-  async loadBMFont(url) {
+  async loadBMFont(url, fontPtrRef, fontGlyphsPtrRef) {
     if (url == null)
       throw new Error("loadBMFont: url is required");
 
@@ -317,8 +324,8 @@ class Posit92 {
     // console.log("loadBMFont imgHandle:", imgHandle);
 
     // Obtain pointers to Pascal structures
-    const fontPtr = this.#wasm.exports.defaultFontPtr();
-    const glyphsPtr = this.#wasm.exports.defaultFontGlyphsPtr();
+    const fontPtr = fontPtrRef;
+    const glyphsPtr = fontGlyphsPtrRef;  // this.#wasm.exports.defaultFontGlyphsPtr();
 
     // Write font data
     const fontMem = new DataView(this.#wasm.exports.memory.buffer, fontPtr);
