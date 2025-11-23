@@ -7,12 +7,11 @@ else {
   exit 1
 }
 
-if (test-path -path $distDir -pathType container) {}
-else {
+if (test-path -path $distDir -pathType container) {
+  remove-item "$distDir\*" -recurse -force
+} else {
   mkdir $distDir
 }
-
-
 
 copy-item "game.js" "$distDir\"
 copy-item $wasmFile "$distDir\"
