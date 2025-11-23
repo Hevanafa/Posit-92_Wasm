@@ -22,3 +22,5 @@ copy-item "index.html" "$distDir\"
 if (test-path -path "assets" -pathType container) {
   copy-item "assets" "$distDir\" -recurse -force
 }
+
+write-host "Files copied to $distDir successfully!" -foregroundColor green
