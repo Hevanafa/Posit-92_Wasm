@@ -14,6 +14,9 @@ const
 
   Gravity = 100;  { pixels per second squared }
 
+  CornflowerBlue = $FF6495ED;
+  DarkBlue = $FF0000AA;
+
 type
   TParticle = record
     active: boolean;
@@ -151,7 +154,7 @@ var
   w: integer;
   s: string;
 begin
-  cls($FF6495ED);
+  cls(DarkBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
