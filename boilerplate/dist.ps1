@@ -12,9 +12,14 @@ else {
   mkdir $distDir
 }
 
+
+
 copy-item "game.js" "$distDir\"
 copy-item $wasmFile "$distDir\"
 copy-item "posit-92.js" "$distDir\"
 copy-item "index.html" "$distDir\"
 
-# TODO: Copy assets folder recursively to $distDir
+# Copy assets folder recursively to $distDir
+if (test-path -path "assets" -pathType container) {
+  copy-item "assets" "$distDir\" -recurse -force
+}
