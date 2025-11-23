@@ -12,5 +12,5 @@ else {
 }
 copy-item "$source\UNITS\*.pas" ".\UNITS\"
 
-copy-item "$source\*.ps1" ".\"
+copy-item "$source\scripts\*.ps1" ".\"
 copy-item "$source\posit-92.js" ".\"
