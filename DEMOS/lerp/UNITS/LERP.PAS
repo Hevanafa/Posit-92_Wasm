@@ -105,6 +105,22 @@ begin
   end;
 end;
 
+function easeInSine(const perc: double): double;
+begin
+  easeInSine := 1 - cos(perc * pi / 2.0)
+end;
+
+function easeOutSine(const perc: double): double;
+begin
+  easeOutSine := sin(perc * pi / 2.0)
+end;
+
+function easeInOutSine(const perc: double): double;
+begin
+  easeInOutSine := -(cos(pi * x) - 1.0) / 2.0
+end;
+
+
 function lerpLinear(const a, z: double; perc: double): double;
 begin
   perc := clamp(perc, 0.0, 1.0);
