@@ -111,10 +111,20 @@ end;
 
 procedure draw;
 var
+  a: integer;
   w: integer;
   s: string;
 begin
   cls($FF6495ED);
+
+  for a:=0 to high(particles) do begin
+    if not particles[a].active then continue;
+
+    spr(
+      particles[a].imgHandle,
+      trunc(particles[a].zone.x),
+      trunc(particles[a].zone.y))
+  end;
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
