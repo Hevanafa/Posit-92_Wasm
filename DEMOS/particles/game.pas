@@ -106,7 +106,9 @@ begin
   if lastMouseLeft <> EnumHasFlag(mouseButton, MouseButtonLeft) then begin
     lastMouseLeft := EnumHasFlag(mouseButton, MouseButtonLeft);
 
-    if lastMouseLeft then spawnParticle(mouseX, mouseY);
+    if lastMouseLeft then
+      for a:=1 to 10 do
+        spawnParticle(mouseX, mouseY);
   end;
 
   gameTime := gameTime + dt;
@@ -134,6 +136,13 @@ var
 begin
   cls($FF6495ED);
 
+  if (trunc(gameTime * 4) and 1) > 0 then
+    spr(imgDosuEXE[1], 148, 88)
+  else
+    spr(imgDosuEXE[0], 148, 88);
+
+  spr(imgParticle, 10, 10);
+
   for a:=0 to high(particles) do begin
     if not particles[a].active then continue;
 
@@ -143,14 +152,7 @@ begin
       trunc(particles[a].zone.y))
   end;
 
-  if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
-  else
-    spr(imgDosuEXE[0], 148, 88);
-
-  spr(imgParticle, 10, 10);
-
-  s := 'Hello world!';
+  s := 'Click to spawn particles';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
 
