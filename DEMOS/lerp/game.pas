@@ -15,11 +15,15 @@ const
   CornflowerBlue = $FF6495ED;
   Cyan = $FF55FFFF;
 
+  { DemoStates enum }
+  DemoStateLinear = 1;
+
 var
   lastEsc, lastSpacebar: boolean;
 
   { Init your game state here }
   gameTime: double;
+  actualDemoState: integer;
 
   startX, endX: integer;
   xLerpTimer: TLerpTimer;
@@ -37,6 +41,17 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
+procedure changeState(const state: integer);
+begin
+  actualDemoState := state;
+
+  gameTime := 0.0;
+
+  startX := 70;
+  endX := vgaWidth - 70;
+  initLerp(xLerpTimer, gameTime, 2.0);
+end;
+
 
 procedure init;
 begin
@@ -49,12 +64,7 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
-
-  gameTime := 0.0;
-
-  startX := 70;
-  endX := vgaWidth - 70;
-  initLerp(xLerpTimer, gameTime, 2.0);
+  changeState(DemoStateLinear);
 end;
 
 procedure update;
