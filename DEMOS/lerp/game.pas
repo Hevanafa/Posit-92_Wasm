@@ -322,10 +322,12 @@ begin
   { Begin HUD }
   ListView(10, 10, subDemoNames, actualDemoState - 1);
 
+{
   s := 'Spacebar - Restart easing';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
-
+}
+  printDefault('Spacebar - Restart easing', 8, vgaHeight - 28);
   printDefault('Page up / down - Choose between demos', 8, vgaHeight - 18);
 
   drawMouse;
