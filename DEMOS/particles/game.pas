@@ -160,7 +160,7 @@ begin
     particles[a].zone.x := particles[a].zone.x + particles[a].zone.vx * dt;
     particles[a].zone.y := particles[a].zone.y + particles[a].zone.vy * dt;
 
-    if (particles[a].zone.x < 10) or (particles[a].zone.x > vgaWidth)
+    if (particles[a].zone.x < -10) or (particles[a].zone.x > vgaWidth)
       or (particles[a].zone.y > vgaHeight) then
       particles[a].active := false;
   end;
