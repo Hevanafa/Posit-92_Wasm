@@ -11,6 +11,9 @@ uses Bitmap, BMFont, Conv, FPS,
 const
   SC_ESC = $01;
   SC_SPACE = $39;
+  
+  SC_PAGEUP = $49;
+  SC_PAGEDOWN = $51;
 
   CornflowerBlue = $FF6495ED;
   Cyan = $FF55FFFF;
@@ -26,6 +29,7 @@ const
 
 var
   lastEsc, lastSpacebar: boolean;
+  lastPageUp, lastPageDown: boolean;
 
   { Init your game state here }
   gameTime: double;
@@ -145,6 +149,30 @@ begin
 
     if lastSpacebar then
       initLerp(xLerpTimer, gameTime, 2.0);
+  end;
+
+  if lastPageUp <> isKeyDown(SC_PAGEUP) then begin
+    lastPageUp := isKeyDown(SC_PAGEUP);
+
+    if lastPageUp then begin
+      dec(actualDemoState);
+      
+      if actualDemoState < 1 then actualDemoState := DemoStateInOutQuad;
+      changeState(actualDemoState)
+    end;
+  end;
+
+  if lastPageDown <> isKeyDown(SC_PAGEDOWN) then begin
+    lastPageDown := isKeyDown(SC_PAGEDOWN);
+
+    if lastPageDown then begin
+      inc(actualDemoState);
+
+      if actualDemoState > DemoStateInOutQuad then
+        actualDemoState := 1;
+
+      changeState(actualDemoState)
+    end;
   end;
 
   gameTime := gameTime + dt
