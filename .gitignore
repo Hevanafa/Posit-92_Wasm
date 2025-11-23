@@ -25,3 +25,11 @@ DEMOS/immediate_gui/*.ps1
 DEMOS/sprites/*.ps1
 DEMOS/particles/*.ps1
 DEMOS/lerp/*.ps1
+
+# Snippets
+snippets/wasm_loader/build_dist.ps1
+snippets/wasm_loader/build_run.ps1
+snippets/wasm_loader/compile.ps1
+snippets/wasm_loader/dist.ps1
+snippets/wasm_loader/run.ps1
+snippets/wasm_loader/start_server.ps1
