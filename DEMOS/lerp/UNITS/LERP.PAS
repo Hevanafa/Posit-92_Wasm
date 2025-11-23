@@ -26,9 +26,12 @@ function newLerp(const startTick, duration: double): TLerpTimer;
 function getLerpPerc(const lt: TLerpTimer; const t: double): double;
 function isLerpComplete(const lt: TLerpTimer; const t: double): boolean;
 
-function lerpLinear(const a, z: double; perc: double): double;
 function easeOutQuad(const perc: double): double;
+
+function lerpLinear(const a, z: double; perc: double): double;
+function lerpEaseInQuad(const a, z, perc: double): double;
 function lerpEaseOutQuad(const a, z, perc: double): double;
+{ function lerpEaseInOutQuad(const a, z, perc: double): double; }
 
 
 implementation
@@ -80,15 +83,25 @@ end;
 
 { Begin easing functions }
 
+function easeInQuad(const perc: double): double;
+begin
+  easeInQuad := perc * perc
+end;
+
+function easeOutQuad(const perc: double): double;
+begin
+  easeOutQuad := 1 - (1 - perc) * (1 - perc)
+end;
+
 function lerpLinear(const a, z: double; perc: double): double;
 begin
   perc := clamp(perc, 0.0, 1.0);
   lerpLinear := a + perc * (z - a)
 end;
 
-function easeOutQuad(const perc: double): double;
+function lerpEaseInQuad(const a, z, perc: double): double;
 begin
-  easeOutQuad := 1 - (1 - perc) * (1 - perc)
+  lerpEaseInQuad := a + easeInQuad(perc) * (z - a)
 end;
 
 function lerpEaseOutQuad(const a, z, perc: double): double;

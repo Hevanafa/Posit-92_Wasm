@@ -17,6 +17,9 @@ const
 
   { DemoStates enum }
   DemoStateLinear = 1;
+  DemoStateInQuad = 2;
+  DemoStateOutQuad = 3;
+  DemoStateInOutQuad = 4;
 
 var
   lastEsc, lastSpacebar: boolean;
@@ -64,7 +67,7 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
-  changeState(DemoStateLinear);
+  changeState(DemoStateOutQuad);
 end;
 
 procedure update;
@@ -107,7 +110,20 @@ begin
   line(startX, 100, endX, 100, Cyan);
 
   perc := getLerpPerc(xLerpTimer, gameTime);
-  x := trunc(lerpLinear(startX, endX, perc));
+
+  case actualDemoState of
+    DemoStateLinear:
+      x := trunc(lerpLinear(startX, endX, perc));
+
+    DemoStateInQuad:
+      x := trunc(lerpEaseInQuad(startX, endX, perc));
+
+    DemoStateOutQuad:
+      x := trunc(lerpEaseOutQuad(startX, endX, perc));
+
+    else { Not implemented defaults to Linear }
+      x := trunc(lerpLinear(startX, endX, perc));
+  end;
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], x, 88)
