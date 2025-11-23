@@ -76,6 +76,8 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
+  spr(imgParticle, 10, 10);
+
   s := 'Hello world!';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
