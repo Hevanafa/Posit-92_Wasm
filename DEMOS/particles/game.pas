@@ -1,6 +1,7 @@
 library Game;
 
 {$Mode ObjFPC}
+{$B-}
 
 uses Bitmap, BMFont, Conv, FPS,
   Graphics, Keyboard, Logger, Mouse,
@@ -84,6 +85,8 @@ begin
 end;
 
 procedure update;
+var
+  a: integer;
 begin
   updateDeltaTime;
   incrementFPS;
@@ -106,7 +109,21 @@ begin
     if lastMouseLeft then spawnParticle(mouseX, mouseY);
   end;
 
-  gameTime := gameTime + dt
+  gameTime := gameTime + dt;
+
+  for a:=0 to high(particles) do begin
+    if not particles[a].active then continue;
+
+    { Velocity first, then position }
+    particles[a].zone.vy := particles[a].zone.vy + Gravity * dt;
+
+    particles[a].zone.x := particles[a].zone.x + particles[a].zone.vx * dt;
+    particles[a].zone.y := particles[a].zone.y + particles[a].zone.vy * dt;
+
+    if (particles[a].zone.x < 10) or (particles[a].zone.x > vgaWidth)
+      or (particles[a].zone.y > vgaHeight) then
+      particles[a].active := false;
+  end;
 end;
 
 procedure draw;
