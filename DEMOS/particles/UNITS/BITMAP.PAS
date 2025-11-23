@@ -34,7 +34,9 @@ function getMaxBitmapData: longword; public name 'getMaxBitmapData';
 { function loadImageHandle: longint; public name 'loadImageHandle'; }
 { function findEmptyImageSlot: longint; public name 'findEmptyImageSlot'; }
 function getEmptyImageSlot: longint; public name 'getEmptyImageSlot';
+
 function newImage(const width, height: integer): longint; public name 'newImage';
+function copyImage(const imgHandle: longint): longint;
 procedure freeImage(const imgHandle: longint);
 
 function isImageSet(const imgHandle: longint): boolean; public name 'isImageSet';
@@ -144,6 +146,23 @@ begin
 
   images[slot] := bmp;
   newImage := slot
+end;
+
+function copyImage(const imgHandle: longint): longint;
+var
+  slot: longint;
+  src, dest: PBitmap;
+  a, b: integer;
+begin
+  src := getImagePtr(imgHandle);
+  slot := newImage(src^.width, src^.height);
+  dest := getImagePtr(slot);
+
+  for b:=0 to src^.height - 1 do
+  for a:=0 to src^.width - 1 do
+    unsafeSprPset(dest, a, b, unsafeSprPget(src, a, b));
+
+  copyImage := slot
 end;
 
 
