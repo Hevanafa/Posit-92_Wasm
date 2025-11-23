@@ -3,8 +3,9 @@ library Game;
 {$Mode ObjFPC}
 
 uses Bitmap, BMFont, Conv, FPS,
-  Graphics, Keyboard, Logger, Mouse,
-  Panic, Sounds, Timing, VGA,
+  Graphics, Keyboard, Lerp, Logger,
+  Mouse, Panic, Sounds, Timing,
+  VGA,
   Assets;
 
 const
