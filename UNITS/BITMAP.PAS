@@ -123,14 +123,6 @@ begin
 end;
 }
 
-procedure freeImage(const imgHandle: longint);
-begin
-  if (imgHandle < low(images)) or (imgHandle > high(images)) then exit;
-  { images[imgHandle] := nil }
-  images[imgHandle].width := 0;
-  images[imgHandle].height := 0;
-end;
-
 function newImage(const width, height: integer): longint;
 var
   slot: longint;
@@ -147,6 +139,31 @@ begin
 
   images[slot] := bmp;
   newImage := slot
+end;
+
+function copyImage(const imgHandle: longint): longint;
+var
+  slot: longint;
+  src, dest: PBitmap;
+  a, b: integer;
+begin
+  src := getImagePtr(imgHandle);
+  slot := newImage(src^.width, src^.height);
+  dest := getImagePtr(slot);
+
+  for b:=0 to src^.height - 1 do
+  for a:=0 to src^.width - 1 do
+    unsafeSprPset(dest, a, b, unsafeSprPget(src, a, b));
+
+  copyImage := slot
+end;
+
+procedure freeImage(const imgHandle: longint);
+begin
+  if (imgHandle < low(images)) or (imgHandle > high(images)) then exit;
+  { images[imgHandle] := nil }
+  images[imgHandle].width := 0;
+  images[imgHandle].height := 0;
 end;
 
 
