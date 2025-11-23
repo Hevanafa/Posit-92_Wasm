@@ -9,14 +9,17 @@
 
 library Main;
 
-{$Mode ObjFPC}
+{$Mode TP}
 
 procedure helloWorld; external 'env' name 'helloWorld';
 
-procedure main; public name 'main';
+procedure init;
 begin
   helloWorld
 end;
+
+exports
+  init;
 
 begin
 { Starting point is intentionally left empty }

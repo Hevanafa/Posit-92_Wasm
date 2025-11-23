@@ -21,7 +21,7 @@ async function initWebAssembly() {
 
 async function main() {
   await initWebAssembly();
-  wasm.exports.helloWorld();
+  wasm.exports.init();
 }
 
 main()
