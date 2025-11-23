@@ -171,10 +171,18 @@ begin
     exit
   end;
 
-  { TODO: Convert hue to [0.0, 6.0] }
+  { Convert hue to [0.0, 6.0] }
+  h := h * 6.0;
+  i := trunc(h);
+  f := h - i;
+
+  p := v * (1.0 - s);
+  q := v * (1.0 - s * f);
+  t := v * (1.0 - s * (1.0 - f));
 
   { TODO: Determine RGB }
 
+  HSVtoRGB := $FF000000 or (r shl 16) or (g shl 8) or b
 end;
 
 
