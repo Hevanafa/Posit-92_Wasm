@@ -17,9 +17,11 @@ const
 
   CornflowerBlue = $FF6495ED;
   Cyan = $FF55FFFF;
+  DarkBlue = $FF0000AA;
   Black = $FF000000;
   White = $FFFFFFFF;
   Red = $FFFF5555;
+  Purple = $FFBE00FF;
 
   { DemoStates enum }
   DemoStateLinear = 1;
@@ -137,6 +139,18 @@ begin
   end;
 end;
 
+function lerpColour(const colourA, colourB: longword; const perc: double): longword;
+var
+  a, r, g, b: byte;
+begin
+  a := trunc((colourA shr 24 and $FF) + perc * ((colourB shr 24 and $FF) - (colourA shr 24 and $FF)));
+  r := trunc((colourA shr 16 and $FF) + perc * ((colourB shr 16 and $FF) - (colourA shr 16 and $FF)));
+  g := trunc((colourA shr 8 and $FF) + perc * ((colourB shr 8 and $FF) - (colourA shr 8 and $FF)));
+  b := trunc((colourA and $FF) + perc * ((colourB and $FF) - (colourA and $FF)));
+
+  lerpColour := (a shl 24) or (r shl 16) or (g shl 8) or b
+end;
+
 
 procedure init;
 begin
@@ -216,7 +230,7 @@ var
   perc: double;
   x: integer;
 begin
-  cls(CornflowerBlue);
+  cls(DarkBlue);
 
   line(startX, 100, endX, 100, Cyan);
 
@@ -245,6 +259,7 @@ begin
   else
     spr(imgDosuEXE[0], x, 88);
 
+  circfill(30, 100, 10, lerpColour(Red, Purple, perc));
 
   { Begin HUD }
   ListView(10, 10, subDemoNames, actualDemoState - 1);
