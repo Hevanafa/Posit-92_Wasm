@@ -25,10 +25,14 @@ const
 
   { DemoStates enum }
   DemoStateLinear = 1;
+
   DemoStateInQuad = 2;
   DemoStateOutQuad = 3;
   DemoStateInOutQuad = 4;
-  DemoStateAlpha = 5;
+  DemoStateInSine = 5;
+  DemoStateOutSine = 6;
+  DemoStateInOutSine = 7;
+  
 
 var
   lastEsc, lastSpacebar: boolean;
@@ -37,7 +41,7 @@ var
   { Init your game state here }
   gameTime: double;
   actualDemoState: integer;
-  subDemoNames: array[0..DemoStateInOutQuad - 1] of string;
+  subDemoNames: array[0..DemoStateInOutSine - 1] of string;
 
   startX, endX: integer;
   xLerpTimer: TLerpTimer;
@@ -74,10 +78,14 @@ begin
 
   case state of
     DemoStateLinear: result := 'Linear';
+
     DemoStateInQuad: result := 'Quad In';
     DemoStateOutQuad: result := 'Quad Out';
     DemoStateInOutQuad: result := 'Quad In & Out';
-    DemoStateAlpha: result := 'Sprite Alpha';
+    DemoStateInSine: result := 'Sine In';
+    DemoStateOutSine: result := 'Sine Out';
+    DemoStateInOutSine: result := 'Sine In & Out';
+    { DemoStateAlpha: result := 'Sprite Alpha'; }
   end;
 
   getDemoStateName := result
@@ -288,6 +296,13 @@ begin
       x := trunc(lerpEaseOutQuad(startX, endX, perc));
     DemoStateInOutQuad:
       x := trunc(lerpEaseInOutQuad(startX, endX, perc));
+
+    DemoStateInSine:
+      x := trunc(lerpEaseInSine(startX, endX, perc));
+    DemoStateOutSine:
+      x := trunc(lerpEaseOutSine(startX, endX, perc));
+    DemoStateInOutSine:
+      x := trunc(lerpEaseInOutSine(startX, endX, perc));
 
     else { Not implemented defaults to Linear }
       x := trunc(lerpLinear(startX, endX, perc));
