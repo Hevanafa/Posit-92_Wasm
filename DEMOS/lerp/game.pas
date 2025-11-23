@@ -82,25 +82,25 @@ procedure ListView(
 var
   a: word;
   lineHeight: word;
-  width, height: word;
+  widgetWidth, widgetHeight: word;
 begin
   lineHeight := defaultFont.lineHeight + 2;
 
-  width := 100;
-  height := lineHeight * (high(items) + 1);
+  widgetWidth := 100;
+  widgetHeight := lineHeight * (high(items) + 1);
 
-  rectfill(x, y, x + width, y + height, Black);
+  rectfill(x, y, x + widgetWidth, y + widgetHeight, Black);
 
   rectfill(
-    x, y + lineHeight * (actualDemoState - 1),
-    x + width, y + lineHeight * actualDemoState, Red);
+    x, y + lineHeight * selectedIndex,
+    x + widgetWidth, y + lineHeight * (selectedIndex + 1), Red);
 
   for a := 0 to high(items) do
     printDefault(
       items[a],
-      x + 2, y + 2 + lineHeight * (a - 1));
+      x + 2, y + 2 + lineHeight * a);
 
-  rect(x, y, x + width, y + height, White);
+  rect(x, y, x + widgetWidth, y + widgetHeight, White);
 end;
 
 
@@ -186,7 +186,7 @@ begin
 
 
   { Begin HUD }
-  ListView(10, 10, subDemoNames, 0);
+  ListView(10, 10, subDemoNames, actualDemoState - 1);
 
   s := 'Spacebar - Restart easing';
   w := measureDefault(s);
