@@ -8,22 +8,23 @@
 
 unit Lerp;
 
+{$Mode TP}
+
 interface
+
+{ All the time / tick units are in seconds }
 
 type
   TLerpTimer = record
     active: boolean;
-    { Can use either realTime or gameTime depending on the context }
     startTick, endTick: double;
+    looping: boolean;
   end;
 
-procedure initLerpGame(var lt: TLerpTimer; const duration: double);
-function getLerpPercGame(const lt: TLerpTimer): double;
-function isLerpCompleteGame(const lt: TLerpTimer): boolean;
-
-procedure initLerpReal(var lt: TLerpTimer; const duration: double);
-function getLerpPercReal(const lt: TLerpTimer): double;
-function isLerpCompleteReal(const lt: TLerpTimer): boolean;
+procedure initLerp(var lt: TLerpTimer; const startTick, duration: double);
+function newLerp(const startTick, duration: double): TLerpTimer;
+function getLerpPerc(const lt: TLerpTimer; const t: double): double;
+function isLerpComplete(const lt: TLerpTimer; const t: double): boolean;
 
 function linear(const a, z: double; perc: double): double;
 function easeOutQuad(const perc: double): double;
@@ -34,53 +35,50 @@ implementation
 
 uses Maths, Timing;
 
-procedure initLerpGame(var lt: TLerpTimer; const duration: double);
+procedure initLerp(var lt: TLerpTimer; const startTick, duration: double);
 begin
   lt.active := true;
-  lt.startTick := gameTime;
-  lt.endTick := gameTime + duration;
+  lt.startTick := startTick;
+  lt.endTick := startTick + duration;
+  lt.looping := false;
 end;
 
-procedure initLerpReal(var lt: TLerpTimer; const duration: double);
+function newLerp(const startTick, duration: double): TLerpTimer;
 var
-  now: double;
+  result: TLerpTimer;
 begin
-  now := getTimer;
+  with result do begin
+    result.active := true;
+    result.startTick := startTick;
+    result.endTick := startTick + duration;
+    result.looping := false;
+  end;
 
-  lt.active := true;
-  lt.startTick := now;
-  lt.endTick := now + duration;
+  newLerp := result
 end;
 
-function getLerpPercGame(const lt: TLerpTimer): double;
+function getLerpPerc(const lt: TLerpTimer; const t: double): double;
 begin
   if not lt.active then begin
-    getLerpPercGame := 0.0;
+    getLerpPerc := 0.0;
     exit
   end;
 
-  getLerpPercGame := clamp((gameTime - lt.startTick) / (lt.endTick - lt.startTick), 0.0, 1.0)
+  getLerpPerc := clamp((t - lt.startTick) / (lt.endTick - lt.startTick), 0.0, 1.0)
 end;
 
-function getLerpPercReal(const lt: TLerpTimer): double;
+function isLerpComplete(const lt: TLerpTimer; const t: double): boolean;
 begin
-  if not lt.active then begin
-    getLerpPercReal := 0.0;
+  if lt.looping then begin
+    isLerpComplete := false;
     exit
   end;
 
-  getLerpPercReal := clamp((getTimer - lt.startTick) / (lt.endTick - lt.startTick), 0.0, 1.0)
+  isLerpComplete := t >= lt.endTick
 end;
 
-function isLerpCompleteGame(const lt: TLerpTimer): boolean;
-begin
-  isLerpCompleteGame := gameTime >= lt.endTick
-end;
 
-function isLerpCompleteReal(const lt: TLerpTimer): boolean;
-begin
-  isLerpCompleteReal := getTimer >= lt.endTick
-end;
+{ Begin easing functions }
 
 function linear(const a, z: double; perc: double): double;
 begin
