@@ -246,6 +246,7 @@ begin
   getImageHeight := image^.height
 end;
 
+
 { Assuming image isn't nil & the bounds are known }
 function unsafeSprPget(const image: PBitmap; const x, y: integer): longword;
 var
