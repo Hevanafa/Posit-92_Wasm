@@ -151,6 +151,32 @@ begin
   lerpColour := (a shl 24) or (r shl 16) or (g shl 8) or b
 end;
 
+{ h, s, v: [0.0, 1.0] }
+function HSVtoRGB(h, s, v: double): longword;
+var
+  r, g, b: byte;
+  i: integer;
+  f, p, q, t: double;
+begin
+  h := clamp(h, 0.0, 1.0);
+  s := clamp(s, 0.0, 1.0);
+  v := clamp(v, 0.0, 1.0);
+
+  { Greyscale }
+  if s = 0.0 then begin
+    r := trunc(v * 255);
+    g := r;
+    b := r;
+    HSVtoRGB := $FF000000 or (r shl 16) or (g shl 8) or b;
+    exit
+  end;
+
+  { TODO: Convert hue to [0.0, 6.0] }
+
+  { TODO: Determine RGB }
+
+end;
+
 
 procedure init;
 begin
