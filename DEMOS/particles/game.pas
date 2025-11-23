@@ -31,6 +31,7 @@ var
   { Init your game state here }
   gameTime: double;
   particles: array[0..99] of TParticle;
+  palette: array[0..4] of longword;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -102,6 +103,20 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  { Default: cyan }
+  palette[0] := $FF00BEFF;
+  { red, green, yellow, magenta }
+  palette[1] := $FFFF5555;
+  palette[2] := $FF55FF55;
+  palette[3] := $FFFFFF55;
+  palette[4] := $FFFF55FF;
+
+  imgParticles[0] := imgParticle;
+  for a:=1 to high(palette) do begin
+    imgParticles[a] := copyImage(imgParticle);
+    replaceColours(imgParticles[a], palette[0], palette[a])
+  end;
 end;
 
 procedure update;
