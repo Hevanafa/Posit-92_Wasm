@@ -12,11 +12,17 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+  CornflowerBlue = $FF6495ED;
+  Cyan = $FF55FFFF;
+
 var
-  lastEsc: boolean;
+  lastEsc, lastSpacebar: boolean;
 
   { Init your game state here }
   gameTime: double;
+
+  startX, endX: integer;
+  xLerpTimer: TLerpTimer;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -43,6 +49,12 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  gameTime := 0.0;
+
+  startX := 70;
+  endX := vgaWidth - 70;
+  initLerp(xLerpTimer, gameTime, 2.0);
 end;
 
 procedure update;
@@ -62,6 +74,13 @@ begin
     end;
   end;
 
+  if lastSpacebar <> isKeyDown(SC_SPACE) then begin
+    lastSpacebar := isKeyDown(SC_SPACE);
+
+    if lastSpacebar then
+      initLerp(xLerpTimer, gameTime, 2.0);
+  end;
+
   gameTime := gameTime + dt
 end;
 
@@ -69,15 +88,23 @@ procedure draw;
 var
   w: integer;
   s: string;
+
+  perc: double;
+  x: integer;
 begin
-  cls($FF6495ED);
+  cls(CornflowerBlue);
+
+  line(startX, 100, endX, 100, Cyan);
+
+  perc := getLerpPerc(xLerpTimer, gameTime);
+  x := trunc(lerpLinear(startX, endX, perc));
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    spr(imgDosuEXE[1], x, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    spr(imgDosuEXE[0], x, 88);
 
-  s := 'Hello world!';
+  s := 'Spacebar - Restart easing';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
 
