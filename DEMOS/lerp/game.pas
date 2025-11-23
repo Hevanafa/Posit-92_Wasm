@@ -11,7 +11,7 @@ uses Bitmap, BMFont, Conv, FPS,
 const
   SC_ESC = $01;
   SC_SPACE = $39;
-  
+
   SC_PAGEUP = $49;
   SC_PAGEDOWN = $51;
 
@@ -219,6 +219,8 @@ begin
   s := 'Spacebar - Restart easing';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
+
+  printDefault('Page up / down - Choose between demos', 8, vgaHeight - 18);
 
   drawMouse;
   drawFPS;
