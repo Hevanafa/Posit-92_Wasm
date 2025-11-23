@@ -30,10 +30,12 @@ function getSurface: pointer; public name 'getSurface';
 
 { Colour format: $AARRGGBB }
 procedure cls(const colour: longword); public name 'cls';
+procedure flush; external 'env' name 'flush';
 
 procedure unsafePset(const x, y: integer; const colour: longword); public name 'unsafePset';
 procedure pset(const x, y: integer; const colour: longword); public name 'pset';
-procedure flush; external 'env' name 'flush';
+
+procedure unsafePsetBlend(const x, y: integer; const colour: longword); public name 'unsafePsetBlend';
 procedure psetBlend(const x, y: integer; const colour: longword); public name 'psetBlend';
 
 implementation
@@ -104,7 +106,7 @@ begin
     surface[offset + 2]
 end;
 
-procedure psetBlend(const x, y: integer; const colour: longword);
+procedure unsafePsetBlend(const x, y: integer; const colour: longword);
 var
   srcA, srcR, srcG, srcB: byte;
   destA, destR, destG, destB: byte;
@@ -113,15 +115,14 @@ var
   { inverted alpha }
   alpha, invAlpha: single;
 begin
-  if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then exit;
-
   srcA := colour shr 24 and $FF;
-  srcR := colour shr 16 and $FF;
-  srcG := colour shr 8 and $FF;
-  srcB := colour and $FF;
 
   if srcA = 0 then exit;
 
+  srcR := colour shr 16 and $FF;
+  srcG := colour shr 8 and $FF;
+  srcB := colour and $FF;
+  
   offset := (x + y * vgaWidth) * 4;
 
   { Handle opaque pixel }
@@ -151,6 +152,13 @@ begin
   surface[offset + 1] := outG;
   surface[offset + 2] := outB;
   surface[offset + 3] := outA;
+end;
+
+procedure psetBlend(const x, y: integer; const colour: longword);
+begin
+  if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then exit;
+
+  unsafePsetBlend(x, y, colour)
 end;
 
 procedure cls(const colour: longword);
