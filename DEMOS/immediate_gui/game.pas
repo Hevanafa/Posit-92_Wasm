@@ -104,12 +104,12 @@ begin
 
   guiSetFont(defaultFont, defaultFontGlyphs);
   s := 'Clicks: ' + i32str(clicks);
-  w := measureDefault(s);
+  w := guiMeasureText(s);
   TextLabel(s, (vgaWidth - w) div 2, 120);
 
   guiSetFont(picotronFont, picotronFontGlyphs);
   s := 'Picotron font';
-  w := measureBMFont(s, picotronFontGlyphs);
+  w := guiMeasureText(s);
   TextLabel(s, (vgaWidth - w) div 2, 140);
 
   resetActiveWidget;

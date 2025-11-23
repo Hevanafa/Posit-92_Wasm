@@ -22,6 +22,7 @@ procedure resetWidgetIndices;
 procedure resetActiveWidget;
 
 procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
+function guiMeasureText(const text: string): word;
 
 { Widgets }
 procedure TextLabel(const text: string; const x, y: integer);
@@ -104,6 +105,11 @@ begin
 
   for a := 32 to 126 do
     activeFontGlyphs[a] := glyphs[a - 32];
+end;
+
+function guiMeasureText(const text: string): word;
+begin
+  guiMeasureText := measureBMFont(text, activeFontGlyphs)
 end;
 
 
