@@ -40,9 +40,9 @@ if ($p.ExitCode -ne 0) {
 }
 
 if (test-path -path "$outputFile.wasm" -pathType leaf) {
-  del "$outputFile.wasm"
+  remove-item "$outputFile.wasm"
 }
 
 if (test-path -path "$outputFile" -pathType leaf) {
-  ren "$outputFile" "$outputFile.wasm"
+  rename-item "$outputFile" "$outputFile.wasm"
 }
