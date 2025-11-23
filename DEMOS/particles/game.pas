@@ -11,6 +11,8 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+  Gravity = 100;  { pixels per second squared }
+
 type
   TParticle = record
     active: boolean;
@@ -20,10 +22,11 @@ type
 
 var
   lastEsc: boolean;
+  lastMouseLeft: boolean;
 
   { Init your game state here }
   gameTime: double;
-  particles: array[0..49] of longint;
+  particles: array[0..49] of TParticle;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -36,6 +39,11 @@ end;
 procedure drawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
+end;
+
+function EnumHasFlag(const value, flag: integer): boolean;
+begin
+  EnumHasFlag := 0 <> (value and flag)
 end;
 
 procedure spawnParticle(const cx, cy: integer);
@@ -55,8 +63,8 @@ begin
   particles[idx].active := true;
   
   particles[idx].zone := newRect(cx - 3, cy - 3, 7, 7);
-  particles[idx].zone.vx := random - 0.5;
-  particles[idx].zone.vy := -random;
+  particles[idx].zone.vx := (random - 0.5) * 50;
+  particles[idx].zone.vy := -random(100);
 
   particles[idx].imgHandle := imgParticle;
 end;
@@ -90,6 +98,12 @@ begin
       writeLog('ESC is pressed!');
       signalDone
     end;
+  end;
+
+  if lastMouseLeft <> EnumHasFlag(mouseButton, MouseButtonLeft) then begin
+    lastMouseLeft := EnumHasFlag(mouseButton, MouseButtonLeft);
+
+    if lastMouseLeft then spawnParticle(mouseX, mouseY);
   end;
 
   gameTime := gameTime + dt
