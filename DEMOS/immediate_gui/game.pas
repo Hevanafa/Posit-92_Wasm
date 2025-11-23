@@ -55,7 +55,7 @@ begin
   hideCursor;
 
   initImmediateGUI;
-  guiSetFont(defaultFont, defaultFontGlyphs);
+  { guiSetFont(defaultFont, defaultFontGlyphs); }
 
   clicks := 0;
 end;
@@ -102,7 +102,7 @@ begin
   { spr(imgDosuEXE[0], 100, 80); }
   sprStretch(imgDosuEXE[0], 100, 80, 24, 48);
 
-  guiSetFont(defaultFont, defaultFontGlyphs);
+  { guiSetFont(defaultFont, defaultFontGlyphs); }
   s := 'Clicks: ' + i32str(clicks);
   w := guiMeasureText(s);
   TextLabel(s, (vgaWidth - w) div 2, 120);

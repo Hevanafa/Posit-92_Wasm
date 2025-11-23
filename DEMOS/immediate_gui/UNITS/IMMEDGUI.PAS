@@ -31,7 +31,7 @@ function Button(const caption: string; const x, y, width, height: integer): bool
 
 implementation
 
-uses Graphics, Mouse, Shapes;
+uses Graphics, Mouse, Panic, Shapes;
 
 const
 { Immediate GUI default theme
@@ -54,6 +54,7 @@ var
   }
   hotWidget, activeWidget, nextWidgetID: integer;
 
+  isFontSet: boolean;
   activeFont: TBMFont;
   activeFontGlyphs: array[32..126] of TBMFontGlyph;
 
@@ -101,6 +102,7 @@ procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 var
   a: word;
 begin
+  isFontSet := true;
   activeFont := font;
 
   for a := 32 to 126 do
@@ -109,6 +111,8 @@ end;
 
 function guiMeasureText(const text: string): word;
 begin
+  if not isFontSet then panicHalt('activeFont is unset!');
+
   guiMeasureText := measureBMFont(text, activeFontGlyphs)
 end;
 
@@ -117,6 +121,8 @@ end;
 
 procedure TextLabel(const text: string; const x, y: integer);
 begin
+  if not isFontSet then panicHalt('activeFont is unset!');
+
   printBMFont(text, x, y, activeFont, activeFontGlyphs)
 end;
 
@@ -126,6 +132,7 @@ var
   thisWidgetID: integer;
   buttonColour: longword;
 begin
+  if not isFontSet then panicHalt('activeFont is unset!');
 
   zone.x := x;
   zone.y := y;
