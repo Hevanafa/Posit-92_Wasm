@@ -1,6 +1,6 @@
 library Game;
 
-{$Mode ObjFPC}
+{$Mode TP}
 
 uses Bitmap, BMFont, Conv, FPS,
   Graphics, Keyboard, Lerp, Logger,
@@ -14,6 +14,9 @@ const
 
   CornflowerBlue = $FF6495ED;
   Cyan = $FF55FFFF;
+  Black = $FF000000;
+  White = $FFFFFFFF;
+  Red = $FFFF5555;
 
   { DemoStates enum }
   DemoStateLinear = 1;
@@ -59,12 +62,44 @@ function getDemoStateName(const state: integer): string;
 var
   result: string;
 begin
+  result := '';
+
   case state of
     DemoStateLinear: result := 'Linear';
     DemoStateInQuad: result := 'Quad In';
     DemoStateOutQuad: result := 'Quad Out';
     DemoStateInOutQuad: result := 'Quad In & Out';
   end;
+
+  getDemoStateName := result
+end;
+
+procedure ListView(
+  const x, y: integer;
+  const items: array of string;
+  const selectedIndex: integer);
+var
+  a: word;
+  lineHeight: word;
+  width, height: word;
+begin
+  lineHeight := defaultFont.lineHeight + 2;
+
+  width := 100;
+  height := lineHeight * (high(items) + 1);
+
+  rectfill(x, y, x + width, y + height, Black);
+
+  rectfill(
+    x, y + lineHeight * (actualDemoState - 1),
+    x + width, y + lineHeight * actualDemoState, Red);
+
+  for a := 0 to high(items) do
+    printDefault(
+      items[a],
+      x + 2, y + 2 + lineHeight * (a - 1));
+
+  rect(x, y, x + width, y + height, White);
 end;
 
 
