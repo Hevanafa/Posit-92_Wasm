@@ -1,9 +1,10 @@
+// Add your Pascal external procedures & functions here:
 const importObject = Object.freeze({
   env: {
     _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
 
     helloWorld: () => console.log("Hello from snippets!")
-    // More of your Pascal externals here
+    // Add more externals below
   }
 });
 
