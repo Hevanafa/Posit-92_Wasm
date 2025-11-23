@@ -67,7 +67,7 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
-  changeState(DemoStateOutQuad);
+  changeState(DemoStateInOutQuad);
 end;
 
 procedure update;
@@ -117,9 +117,10 @@ begin
 
     DemoStateInQuad:
       x := trunc(lerpEaseInQuad(startX, endX, perc));
-
     DemoStateOutQuad:
       x := trunc(lerpEaseOutQuad(startX, endX, perc));
+    DemoStateInOutQuad:
+      x := trunc(lerpEaseInOutQuad(startX, endX, perc));
 
     else { Not implemented defaults to Linear }
       x := trunc(lerpLinear(startX, endX, perc));

@@ -31,7 +31,7 @@ function easeOutQuad(const perc: double): double;
 function lerpLinear(const a, z: double; perc: double): double;
 function lerpEaseInQuad(const a, z, perc: double): double;
 function lerpEaseOutQuad(const a, z, perc: double): double;
-{ function lerpEaseInOutQuad(const a, z, perc: double): double; }
+function lerpEaseInOutQuad(const a, z, perc: double): double;
 
 
 implementation
@@ -93,6 +93,18 @@ begin
   easeOutQuad := 1 - (1 - perc) * (1 - perc)
 end;
 
+function easeInOutQuad(const perc: double): double;
+var
+  n: double;
+begin
+  if perc < 0.5 then
+    easeInOutQuad := 2 * perc * perc
+  else begin
+    n := -2 * perc + 2;
+    easeInOutQuad := 1 - n * n / 2;
+  end;
+end;
+
 function lerpLinear(const a, z: double; perc: double): double;
 begin
   perc := clamp(perc, 0.0, 1.0);
@@ -108,5 +120,11 @@ function lerpEaseOutQuad(const a, z, perc: double): double;
 begin
   lerpEaseOutQuad := a + easeOutQuad(perc) * (z - a)
 end;
+
+function lerpEaseInOutQuad(const a, z, perc: double): double;
+begin
+  lerpEaseInOutQuad := a + easeInOutQuad(perc) * (z - a)
+end;
+
 
 end.
