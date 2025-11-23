@@ -10,7 +10,7 @@ if (test-path -path "UNITS" -pathType container) {}
 else {
   mkdir "UNITS"
 }
-copy-item "$source\UNITS\*.pas" ".\UNITS\"
 
+copy-item "$source\UNITS\*.pas" ".\UNITS\"
 copy-item "$source\scripts\*.ps1" ".\"
 copy-item "$source\posit-92.js" ".\"
