@@ -24,3 +24,4 @@ DEMOS/sound/*.ps1
 DEMOS/immediate_gui/*.ps1
 DEMOS/sprites/*.ps1
 DEMOS/particles/*.ps1
+DEMOS/lerp/*.ps1
