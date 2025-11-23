@@ -27,7 +27,7 @@ var
 
   { Init your game state here }
   gameTime: double;
-  particles: array[0..49] of TParticle;
+  particles: array[0..99] of TParticle;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -68,6 +68,23 @@ begin
   particles[idx].zone.vy := -random(100);
 
   particles[idx].imgHandle := imgParticle;
+end;
+
+procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
+var
+  a, b: word;
+  image: PBitmap;
+  colour: longword;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+
+  for b:=0 to image^.height - 1 do
+  for a:=0 to image^.width - 1 do begin
+    colour := unsafeSprPget(image, a, b);
+    unsafeSprPset(image, a, b, colour)
+  end;
 end;
 
 
