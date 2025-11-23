@@ -55,6 +55,18 @@ begin
   initLerp(xLerpTimer, gameTime, 2.0);
 end;
 
+function getDemoStateName(const state: integer): string;
+var
+  result: string;
+begin
+  case state of
+    DemoStateLinear: result := 'Linear';
+    DemoStateInQuad: result := 'Quad In';
+    DemoStateOutQuad: result := 'Quad Out';
+    DemoStateInOutQuad: result := 'Quad In & Out';
+  end;
+end;
+
 
 procedure init;
 begin
