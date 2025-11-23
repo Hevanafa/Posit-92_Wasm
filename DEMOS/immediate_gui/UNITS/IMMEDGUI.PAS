@@ -116,10 +116,14 @@ begin
     activeFontGlyphs[a] := glyphs[a - 32];
 end;
 
-function guiMeasureText(const text: string): word;
+procedure assertFontSet;
 begin
   if not isFontSet then panicHalt('activeFont is unset!');
+end;
 
+function guiMeasureText(const text: string): word;
+begin
+  assertFontSet;
   guiMeasureText := measureBMFont(text, activeFontGlyphs)
 end;
 
@@ -128,8 +132,7 @@ end;
 
 procedure TextLabel(const text: string; const x, y: integer);
 begin
-  if not isFontSet then panicHalt('activeFont is unset!');
-
+  assertFontSet;
   printBMFont(text, x, y, activeFont, activeFontGlyphs)
 end;
 
@@ -139,7 +142,7 @@ var
   thisWidgetID: integer;
   buttonColour: longword;
 begin
-  if not isFontSet then panicHalt('activeFont is unset!');
+  assertFontSet;
 
   zone.x := x;
   zone.y := y;
