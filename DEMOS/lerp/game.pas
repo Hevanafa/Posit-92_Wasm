@@ -4,8 +4,8 @@ library Game;
 
 uses Bitmap, BMFont, Conv, FPS,
   Graphics, Keyboard, Lerp, Logger,
-  Mouse, Panic, Sounds, Timing,
-  VGA,
+  Maths, Mouse, Panic, Sounds,
+  Timing, VGA,
   Assets;
 
 const
@@ -26,6 +26,7 @@ const
   DemoStateInQuad = 2;
   DemoStateOutQuad = 3;
   DemoStateInOutQuad = 4;
+  DemoStateAlpha = 5;
 
 var
   lastEsc, lastSpacebar: boolean;
@@ -74,6 +75,7 @@ begin
     DemoStateInQuad: result := 'Quad In';
     DemoStateOutQuad: result := 'Quad Out';
     DemoStateInOutQuad: result := 'Quad In & Out';
+    DemoStateAlpha: result := 'Sprite Alpha';
   end;
 
   getDemoStateName := result
@@ -105,6 +107,34 @@ begin
       x + 2, y + 2 + lineHeight * a);
 
   rect(x, y, x + widgetWidth, y + widgetHeight, White);
+end;
+
+procedure sprAlpha(const imgHandle: longint; const x, y: integer; opacity: double);
+var
+  image: PBitmap;
+  px, py: integer;
+  colour: longword;
+  alpha: byte;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+  opacity := clamp(opacity, 0.0, 1.0);
+
+  for py := 0 to image^.height - 1 do
+  for px := 0 to image^.width - 1 do begin
+    if (x + px >= vgaWidth) or (x + px < 0)
+      or (y + py >= vgaHeight) or (y + py < 0) then continue;
+
+    colour := unsafeSprPget(image, px, py);
+    alpha := colour shr 24;
+    if alpha = 0 then continue;
+    
+    alpha := trunc(alpha * opacity);
+    colour := (colour and $FFFFFF) or (alpha shl 24);
+
+    unsafePsetBlend(x + px, y + py, colour)
+  end;
 end;
 
 
@@ -211,6 +241,8 @@ begin
     spr(imgDosuEXE[1], x, 88)
   else
     spr(imgDosuEXE[0], x, 88);
+
+  sprAlpha(imgDosuEXE[0], 20, 100, 0.5);
 
 
   { Begin HUD }
