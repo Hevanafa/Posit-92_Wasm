@@ -143,4 +143,19 @@ begin
 end;
 
 
+function lerpEaseInSine(const a, z, perc: double): double;
+begin
+  lerpEaseInSine := a + easeInSine(perc) * (z - a)
+end;
+
+function lerpEaseOutSine(const a, z, perc: double): double;
+begin
+  lerpEaseOutSine := a + easeOutSine(perc) * (z - a)
+end;
+
+function lerpEaseInOutSine(const a, z, perc: double): double;
+begin
+  lerpEaseInOutSine := a + easeInOutSine(perc) * (z - a)
+end;
+
 end.
