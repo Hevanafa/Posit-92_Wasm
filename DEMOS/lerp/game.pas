@@ -180,7 +180,15 @@ begin
   q := v * (1.0 - s * f);
   t := v * (1.0 - s * (1.0 - f));
 
-  { TODO: Determine RGB }
+  { Determine RGB }
+  case i mod 6 of
+    0: begin r := trunc(v * 255); g := trunc(t * 255); b := trunc(p * 255); end;
+    1: begin r := trunc(q * 255); g := trunc(v * 255); b := trunc(p * 255); end;
+    2: begin r := trunc(p * 255); g := trunc(v * 255); b := trunc(t * 255); end;
+    3: begin r := trunc(p * 255); g := trunc(q * 255); b := trunc(v * 255); end;
+    4: begin r := trunc(t * 255); g := trunc(p * 255); b := trunc(v * 255); end;
+    5: begin r := trunc(v * 255); g := trunc(p * 255); b := trunc(q * 255); end;
+  end;
 
   HSVtoRGB := $FF000000 or (r shl 16) or (g shl 8) or b
 end;
@@ -294,6 +302,7 @@ begin
     spr(imgDosuEXE[0], x, 88);
 
   circfill(30, 100, 10, lerpColour(Red, Purple, perc));
+  circfill(30, 130, 10, HSVtoRGB(perc, 0.5, 0.5));
 
   { Begin HUD }
   ListView(10, 10, subDemoNames, actualDemoState - 1);
