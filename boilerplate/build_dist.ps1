@@ -1,0 +1,1 @@
+.\compile.ps1 && .\dist.ps1
