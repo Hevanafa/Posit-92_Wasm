@@ -65,8 +65,8 @@ begin
 
   gameTime := 0.0;
 
-  startX := 70;
-  endX := vgaWidth - 70;
+  startX := 120;
+  endX := vgaWidth - 25;
   initLerp(xLerpTimer, gameTime, 2.0);
 end;
 
@@ -251,7 +251,7 @@ begin
     if lastPageUp then begin
       dec(actualDemoState);
       
-      if actualDemoState < 1 then actualDemoState := DemoStateInOutQuad;
+      if actualDemoState < 1 then actualDemoState := DemoStateInOutSine;
       changeState(actualDemoState)
     end;
   end;
@@ -262,7 +262,7 @@ begin
     if lastPageDown then begin
       inc(actualDemoState);
 
-      if actualDemoState > DemoStateInOutQuad then
+      if actualDemoState > DemoStateInOutSine then
         actualDemoState := 1;
 
       changeState(actualDemoState)
