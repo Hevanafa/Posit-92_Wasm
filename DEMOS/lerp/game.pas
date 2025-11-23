@@ -237,12 +237,13 @@ begin
       x := trunc(lerpLinear(startX, endX, perc));
   end;
 
+  sprAlpha(imgDosuEXE[0], startX, 88, 0.5);
+  sprAlpha(imgDosuEXE[0], endX, 88, 0.5);
+
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], x, 88)
   else
     spr(imgDosuEXE[0], x, 88);
-
-  sprAlpha(imgDosuEXE[0], 20, 100, 0.5);
 
 
   { Begin HUD }
