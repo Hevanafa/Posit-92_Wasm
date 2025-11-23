@@ -30,6 +30,7 @@ var
   { Init your game state here }
   gameTime: double;
   actualDemoState: integer;
+  subDemoNames: array[0..DemoStateInOutQuad - 1] of string;
 
   startX, endX: integer;
   xLerpTimer: TLerpTimer;
@@ -111,10 +112,15 @@ begin
 end;
 
 procedure afterInit;
+var
+  a: integer;
 begin
   { Initialise game state here }
   hideCursor;
   changeState(DemoStateInOutQuad);
+
+  for a:=0 to high(subDemoNames) do
+    subDemoNames[a] := getDemoStateName(a + 1);
 end;
 
 procedure update;
@@ -177,6 +183,10 @@ begin
     spr(imgDosuEXE[1], x, 88)
   else
     spr(imgDosuEXE[0], x, 88);
+
+
+  { Begin HUD }
+  ListView(10, 10, subDemoNames, 0);
 
   s := 'Spacebar - Restart easing';
   w := measureDefault(s);
