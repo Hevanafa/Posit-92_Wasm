@@ -316,8 +316,8 @@ begin
   else
     spr(imgDosuEXE[0], x, 88);
 
-  circfill(30, 100, 10, lerpColour(Red, Purple, perc));
-  circfill(30, 130, 10, HSVtoRGB(perc, 0.5, 0.5));
+  circfill(30, 130, 10, lerpColour(Red, Purple, perc));
+  circfill(60, 130, 10, HSVtoRGB(perc, 1.0, 0.5));
 
   { Begin HUD }
   ListView(10, 10, subDemoNames, actualDemoState - 1);
