@@ -142,7 +142,10 @@ class Posit92 {
     handle = await this.loadImage("assets/images/cursor.png");
     this.#wasm.exports.setImgCursor(handle);
 
-    await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
+    await this.loadBMFont(
+      "assets/fonts/nokia_cellphone_fc_8.txt",
+      this.#wasm.exports.defaultFontPtr(),
+      this.#wasm.exports.defaultFontGlyphsPtr());
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.#wasm.exports.setImgDosuEXE(handle, 0);
@@ -218,7 +221,7 @@ class Posit92 {
     const pixels = tempCtx.getImageData(0, 0, img.width, img.height).data;
 
     // Obtain a new handle number
-    const imgHandle = this.#wasm.exports.loadImageHandle();
+    const imgHandle = this.#wasm.exports.newImage(img.width, img.height);
     const bitmapPtr = this.#wasm.exports.getImagePtr(imgHandle);
     
     // Write to TBitmap
@@ -248,11 +251,13 @@ class Posit92 {
     }
   }
 
-  async loadBMFont(url) {
+  async loadBMFont(url, fontPtrRef, fontGlyphsPtrRef) {
     if (url == null)
       throw new Error("loadBMFont: url is required");
 
     this.#assertString(url);
+    this.#assertNumber(fontPtrRef);
+    this.#assertNumber(fontGlyphsPtrRef);
 
     const res = await fetch(url);
     const text = await res.text();
@@ -316,9 +321,8 @@ class Posit92 {
     imgHandle = await this.loadImage(filename);
     // console.log("loadBMFont imgHandle:", imgHandle);
 
-    // Obtain pointers to Pascal structures
-    const fontPtr = this.#wasm.exports.defaultFontPtr();
-    const glyphsPtr = this.#wasm.exports.defaultFontGlyphsPtr();
+    const fontPtr = fontPtrRef;
+    const glyphsPtr = fontGlyphsPtrRef;
 
     // Write font data
     const fontMem = new DataView(this.#wasm.exports.memory.buffer, fontPtr);

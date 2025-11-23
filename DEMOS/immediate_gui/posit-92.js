@@ -325,9 +325,8 @@ class Posit92 {
     imgHandle = await this.loadImage(filename);
     // console.log("loadBMFont imgHandle:", imgHandle);
 
-    // Obtain pointers to Pascal structures
     const fontPtr = fontPtrRef;
-    const glyphsPtr = fontGlyphsPtrRef;  // this.#wasm.exports.defaultFontGlyphsPtr();
+    const glyphsPtr = fontGlyphsPtrRef;
 
     // Write font data
     const fontMem = new DataView(this.#wasm.exports.memory.buffer, fontPtr);
