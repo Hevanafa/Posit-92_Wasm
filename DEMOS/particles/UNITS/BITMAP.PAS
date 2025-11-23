@@ -44,6 +44,11 @@ function getImagePtr(const imgHandle: longint): PBitmap; public name 'getImagePt
 function getImageWidth(const imgHandle: longint): word; public name 'getImageWidth';
 function getImageHeight(const imgHandle: longint): word; public name 'getImageHeight';
 
+function unsafeSprPget(const image: PBitmap; const x, y: integer): longword;
+function sprPget(const imgHandle: longint; const x, y: integer): longword;
+
+procedure unsafeSprPset(const image: PBitmap; const x, y: integer; const colour: longword);
+
 procedure spr(const imgHandle: longint; const x, y: integer); public name 'spr';
 procedure sprRegion(
   const imgHandle: longint;
@@ -248,6 +253,20 @@ begin
     or (y < 0) or (y >= image^.height) then exit;
 
   sprPget := unsafeSprPget(image, x, y)
+end;
+
+{ Assuming image isn't nil & the bounds are known }
+procedure unsafeSprPset(const image: PBitmap; const x, y: integer; const colour: longword);
+var
+  offset: longword;
+begin
+  offset := (x + y * image^.width) * 4;
+
+  { Order: RGBA }
+  image^.data[offset] := colour shr 16 and $FF;
+  image^.data[offset + 1] := colour shr 8 and $FF;
+  image^.data[offset + 2] := colour and $FF;
+  image^.data[offset + 3] := colour shr 24 and $FF;
 end;
 
 

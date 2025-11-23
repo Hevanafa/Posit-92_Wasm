@@ -14,6 +14,7 @@ var
   imgCursor: longint;
   imgDosuEXE: array[0..1] of longint;
   imgParticle: longint;
+  imgParticles: array[0..4] of longint;
 
 { BMFont boilerplate }
 function defaultFontPtr: pointer; public name 'defaultFontPtr';
