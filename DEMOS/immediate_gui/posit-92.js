@@ -260,6 +260,8 @@ class Posit92 {
       throw new Error("loadBMFont: url is required");
 
     this.#assertString(url);
+    this.#assertNumber(fontPtrRef);
+    this.#assertNumber(fontGlyphsPtrRef);
 
     const res = await fetch(url);
     const text = await res.text();
