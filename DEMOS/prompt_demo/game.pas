@@ -150,14 +150,20 @@ begin
   if showPrompt then begin
     clsBlend(SemitransparentBlack);
 
+    spr(imgPromptBG, 100, 60);
 
+    if Button('Yes', 160 - 15, 100 + 50) then
+      inc(clicks, 100);
   end;
 
   if ImageButton(240, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
     PromptBox('Accept?', PromptTest);
 
-  resetActiveWidget;
+  s := 'Clicks: ' + i32str(clicks);
+  w := measureBMFont(s, defaultFontGlyphs);
+  TextLabel(s, (vgaWidth - w) div 2, 120);
 
+  resetActiveWidget;
   drawMouse;
 
   if showFPS.checked then drawFPS;

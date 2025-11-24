@@ -171,6 +171,15 @@ class Posit92 {
     this.#wasm.exports.setImgWinPressed(
       await this.loadImage("assets/images/btn_pressed.png"));
 
+    this.#wasm.exports.setImgPromptBG(
+      await this.loadImage("assets/images/prompt_bg.png"));
+
+    this.#wasm.exports.setImgPromptNormal(
+      await this.loadImage("assets/images/btn_prompt_normal.png"));
+
+    this.#wasm.exports.setImgPromptPressed(
+      await this.loadImage("assets/images/btn_prompt_pressed.png"));
+
 
     // Add more assets as necessary
   }

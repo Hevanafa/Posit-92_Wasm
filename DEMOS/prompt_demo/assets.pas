@@ -19,6 +19,7 @@ var
   imgCursor, imgHandCursor: longint;
   imgDosuEXE: array[0..1] of longint;
   imgWinNormal, imgWinHovered, imgWinPressed: longint;
+  imgPromptBG, imgPromptButtonNormal, imgPromptButtonPressed: longint;
 
 { BMFont boilerplate }
 function defaultFontPtr: PBMFont; public name 'defaultFontPtr';
@@ -40,6 +41,10 @@ procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public na
 procedure setImgWinNormal(const imgHandle: longint); public name 'setImgWinNormal';
 procedure setImgWinHovered(const imgHandle: longint); public name 'setImgWinHovered';
 procedure setImgWinPressed(const imgHandle: longint); public name 'setImgWinPressed';
+
+procedure setImgPromptBG(const imgHandle: longint); public name 'setImgPromptBG';
+procedure setImgPromptNormal(const imgHandle: longint); public name 'setImgPromptNormal';
+procedure setImgPromptPressed(const imgHandle: longint); public name 'setImgPromptPressed';
 
 
 implementation
@@ -121,6 +126,21 @@ end;
 procedure setImgWinPressed(const imgHandle: longint);
 begin
   imgWinPressed := imgHandle
+end;
+
+procedure setImgPromptBG(const imgHandle: longint);
+begin
+  setImgPromptBG := imgHandle
+end;
+
+procedure setImgPromptNormal(const imgHandle: longint);
+begin
+  setImgPromptNormal := imgHandle
+end;
+
+procedure setImgPromptPressed(const imgHandle: longint);
+begin
+  setImgPromptPressed := imgHandle
 end;
 
 
