@@ -18,6 +18,9 @@ type
   TCheckboxState = record
     checked: boolean;
   end;
+  TSliderState = record
+    value: integer;
+  end;
 
 procedure initImmediateGUI;
 
@@ -46,6 +49,7 @@ procedure ListView(
   const items: array of string;
   const selectedIndex: integer);
 procedure Checkbox(const caption: string; const x, y: integer; var state: TCheckboxState);
+procedure Slider(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer);
 
 
 implementation
@@ -278,5 +282,10 @@ begin
     state.checked := not state.checked;
 end;
 
+
+procedure Slider(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer);
+begin
+
+end;
 
 end.
