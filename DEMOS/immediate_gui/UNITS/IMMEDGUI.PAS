@@ -34,6 +34,11 @@ function guiMeasureText(const text: string): word;
 { Widgets }
 procedure TextLabel(const text: string; const x, y: integer);
 function Button(const caption: string; const x, y, width, height: integer): boolean;
+procedure ListView(
+  const x, y: integer;
+  const items: array of string;
+  const selectedIndex: integer);
+procedure Checkbox(const caption: string; const x, y: integer; var state: TCheckboxState);
 
 
 implementation
@@ -176,6 +181,44 @@ begin
     Button := true
   else
     Button := false;
+end;
+
+procedure ListView(
+  const x, y: integer;
+  const items: array of string;
+  const selectedIndex: integer);
+var
+  a: word;
+  lineHeight: word;
+  widgetWidth, widgetHeight: word;
+begin
+  lineHeight := defaultFont.lineHeight + 2;
+
+  widgetWidth := 100;
+  widgetHeight := lineHeight * (high(items) + 1);
+
+  rectfill(x, y, x + widgetWidth, y + widgetHeight, Black);
+
+  rectfill(
+    x, y + lineHeight * selectedIndex,
+    x + widgetWidth, y + lineHeight * (selectedIndex + 1), Red);
+
+  for a := 0 to high(items) do
+    printDefault(
+      items[a],
+      x + 2, y + 2 + lineHeight * a);
+
+  rect(x, y, x + widgetWidth, y + widgetHeight, White);
+end;
+
+procedure Checkbox(const caption: string; const x, y: integer; var state: TCheckboxState);
+var
+  zone: TRect;
+  w: integer;
+  thisWidgetID: integer;
+  checkboxColour: longword;
+begin
+  
 end;
 
 
