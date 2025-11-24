@@ -35,10 +35,6 @@ var
   showFPS: TCheckboxState;
   listItems: array[0..2] of string;
 
-  showPrompt: boolean;
-  promptKey: integer;  { Use Prompts enum }
-  promptText: string;
-
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
@@ -81,37 +77,6 @@ begin
   for a:=0 to vgaWidth - 1 do
     unsafePsetBlend(a, b, colour);
 end;
-
-procedure PromptBox(const text: string; const key: integer);
-begin
-  showPrompt := true;
-  promptKey := key;
-  promptText := text;
-end;
-
-function PromptButton(const text: string; const x, y: integer): boolean;
-var
-  thisWidgetID: integer;
-  textWidth: word;
-  w, h: word;
-  textX, textY: integer;
-begin
-  thisWidgetID := getNextWidgetID;
-  result := ImageButton(x, y, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
-
-  textWidth := measureDefault(text);
-  w := getImageWidth(imgPromptButtonNormal);
-  h := getImageHeight(imgPromptButtonPressed);
-
-  textX := x + (w - textWidth) div 2;
-  textY := y + (h - defaultFont.lineHeight) div 2;
-
-  if getActiveWidget = thisWidgetID then
-    inc(textY);
-
-  TextLabel(text, textX, textY)
-end;
-
 
 procedure init;
 begin

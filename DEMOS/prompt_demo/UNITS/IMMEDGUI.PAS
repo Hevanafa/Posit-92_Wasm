@@ -63,6 +63,10 @@ procedure Slider(const x, y, width: integer; var state: TSliderState; const minV
 procedure ProgressBar(const x, y, width, height: integer; const perc: double);
 procedure ProgressBarLabelled(const x, y, width, height: integer; const perc: double);
 
+{ Prompt Box }
+procedure PromptBox(const text: string; const key: integer);
+function PromptButton(const text: string; const x, y: integer): boolean;
+
 
 implementation
 
@@ -99,6 +103,11 @@ var
   isFontSet: boolean;
   activeFont: TBMFont;
   activeFontGlyphs: array[32..126] of TBMFontGlyph;
+
+  { Prompt box variables }
+  showPrompt: boolean;
+  promptKey: integer;  { Use Prompts enum }
+  promptText: string;
 
 
 procedure initImmediateGUI;
@@ -435,5 +444,36 @@ begin
   TextLabel(percStr, x + (width - w) div 2, y + (height - activeFont.lineHeight) div 2);
 end;
 
+{ Prompt Box }
+{ Show prompt box }
+procedure PromptBox(const text: string; const key: integer);
+begin
+  showPrompt := true;
+  promptKey := key;
+  promptText := text;
+end;
+
+function PromptButton(const text: string; const x, y: integer): boolean;
+var
+  thisWidgetID: integer;
+  textWidth: word;
+  w, h: word;
+  textX, textY: integer;
+begin
+  thisWidgetID := getNextWidgetID;
+  result := ImageButton(x, y, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
+
+  textWidth := measureDefault(text);
+  w := getImageWidth(imgPromptButtonNormal);
+  h := getImageHeight(imgPromptButtonPressed);
+
+  textX := x + (w - textWidth) div 2;
+  textY := y + (h - defaultFont.lineHeight) div 2;
+
+  if getActiveWidget = thisWidgetID then
+    inc(textY);
+
+  TextLabel(text, textX, textY)
+end;
 
 end.
