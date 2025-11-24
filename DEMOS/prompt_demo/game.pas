@@ -131,7 +131,7 @@ begin
 
   case PromptBox of
     PromptYes:
-      case promptKey of
+      case getPromptKey of
         PromptTest: inc(clicks, 100);
       end;
     PromptNo:;

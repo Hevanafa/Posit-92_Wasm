@@ -23,12 +23,6 @@ type
   end;
   TPromptResult = (PromptWait, PromptYes, PromptNo);
 
-var
-  { Prompt box variables }
-  isPromptShown: boolean;
-  promptKey: integer;  { Use Prompts enum }
-  promptText: string;
-
 procedure initImmediateGUI;
 
 function getHotWidget: integer;
@@ -72,6 +66,8 @@ procedure ProgressBarLabelled(const x, y, width, height: integer; const perc: do
 
 { Prompt Box }
 procedure setPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
+function getPromptKey: integer;
+
 procedure ShowPromptBox(const text: string; const key: integer);
 function PromptButton(const text: string; const x, y: integer): boolean;
 function PromptBox: TPromptResult;
@@ -115,6 +111,11 @@ var
 
   { Prompt box assets }
   imgPromptBG, imgPromptButtonNormal, imgPromptButtonHovered, imgPromptButtonPressed: longint;
+
+  { Prompt box variables }
+  isPromptShown: boolean;
+  promptKey: integer;  { Use Prompts enum }
+  promptText: string;
 
 
 procedure initImmediateGUI;
@@ -466,6 +467,11 @@ begin
   imgPromptButtonPressed := btnPressed;
 end;
 
+function getPromptKey: integer;
+begin
+  getPromptKey := promptKey
+end;
+
 { Show prompt box }
 procedure ShowPromptBox(const text: string; const key: integer);
 begin
@@ -513,7 +519,7 @@ var
   w: word;
 begin
   if not isPromptShown then exit;
-  
+
   assertImageSet('imgPromptBG', imgPromptBG);
 
   clsBlend(SemitransparentBlack);
