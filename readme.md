@@ -9,8 +9,9 @@ This project is a port of [POSIT-92](https://github.com/Hevanafa/POSIT-92) which
 1. **Free Pascal Compiler** which has been configured with `wasm32-embedded` as the target (read **Installation** section to see how)
 2. **VSCode** with **Pascal** extension by Alessandro Fragnani enabled
 3. Any version of **Node.js** to start the `http-server`
+4. **PowerShell 7** installed ([WinGet](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell-on-windows?view=powershell-7.5#winget))
 
-I'm using Windows 10 Home (64-bit, version 22H2, build 19045.6575) to build this project, so PowerShell exists by default
+I'm using Windows 10 Home (64-bit, version 22H2, build 19045.6575) to build this project
 
 ## Building
 
