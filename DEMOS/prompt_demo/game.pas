@@ -20,6 +20,8 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+  CornflowerBlue = $FF6495ED;
+  SemitransparentBlack = $80000000;
 
 var
   lastEsc: boolean;
@@ -63,6 +65,15 @@ begin
   for a:=0 to image^.width - 1 do
     if unsafeSprPget(image, a, b) = oldColour then
       unsafeSprPset(image, a, b, newColour);
+end;
+
+procedure clsBlend(const colour: longword);
+var
+  a, b: integer;
+begin
+  for b:=0 to vgaHeight - 1 do
+  for a:=0 to vgaWidth - 1 do
+    unsafePsetBlend(a, b, colour);
 end;
 
 
@@ -120,7 +131,9 @@ var
   w: integer;
   s: string;
 begin
-  cls($FF6495ED);
+  cls(CornflowerBlue);
+
+  clsBlend(SemitransparentBlack)
 
   guiSetFont(blackFont, blackFontGlyphs);
   if Button('Click me!', 180, 88, 50, 24) then
