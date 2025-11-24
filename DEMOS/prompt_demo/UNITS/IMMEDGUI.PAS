@@ -22,6 +22,12 @@ type
     value: integer;
   end;
 
+var
+  { Prompt box variables }
+  showPrompt: boolean;
+  promptKey: integer;  { Use Prompts enum }
+  promptText: string;
+
 procedure initImmediateGUI;
 
 function getHotWidget: integer;
@@ -105,12 +111,7 @@ var
   activeFontGlyphs: array[32..126] of TBMFontGlyph;
 
   { Prompt box assets }
-  imgPromptBG, imgPromptButtonNormal, imgPromptButtonPressed: longint;
-
-  { Prompt box variables }
-  showPrompt: boolean;
-  promptKey: integer;  { Use Prompts enum }
-  promptText: string;
+  imgPromptBG, imgPromptButtonNormal, imgPromptButtonHovered, imgPromptButtonPressed: longint;
 
 
 procedure initImmediateGUI;
@@ -448,6 +449,14 @@ begin
 end;
 
 { Prompt Box }
+procedure setPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
+begin
+  imgPromptBG := background;
+  imgPromptButtonNormal := btnNormal;
+  imgPromptButtonHovered := btnHovered;
+  imgPromptButtonPressed := btnPressed;
+end;
+
 { Show prompt box }
 procedure PromptBox(const text: string; const key: integer);
 begin
@@ -477,7 +486,10 @@ begin
   if getActiveWidget = thisWidgetID then
     inc(textY);
 
-  TextLabel(text, textX, textY)
+  TextLabel(text, textX, textY);
+
+  PromptButton := result
 end;
+
 
 end.
