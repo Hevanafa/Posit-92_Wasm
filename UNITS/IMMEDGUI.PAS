@@ -41,6 +41,10 @@ implementation
 uses Graphics, Mouse, Panic, Shapes;
 
 const
+  Black = $FF000000;
+  White = $FFFFFFFF;
+  Red = $FFFF5555;
+  
 { Immediate GUI default theme
   https://lospec.com/palette-list/ice-cream-gb }
   IceCreamWhite = $FFFFF6D3;
@@ -178,5 +182,33 @@ begin
     Button := false;
 end;
 
+
+procedure ListView(
+  const x, y: integer;
+  const items: array of string;
+  const selectedIndex: integer);
+var
+  a: word;
+  lineHeight: word;
+  widgetWidth, widgetHeight: word;
+begin
+  lineHeight := defaultFont.lineHeight + 2;
+
+  widgetWidth := 100;
+  widgetHeight := lineHeight * (high(items) + 1);
+
+  rectfill(x, y, x + widgetWidth, y + widgetHeight, Black);
+
+  rectfill(
+    x, y + lineHeight * selectedIndex,
+    x + widgetWidth, y + lineHeight * (selectedIndex + 1), Red);
+
+  for a := 0 to high(items) do
+    printDefault(
+      items[a],
+      x + 2, y + 2 + lineHeight * a);
+
+  rect(x, y, x + widgetWidth, y + widgetHeight, White);
+end;
 
 end.

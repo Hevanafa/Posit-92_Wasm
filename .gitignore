@@ -10,10 +10,14 @@ dist/
 # Boilerplate files
 boilerplate/units/*.pas
 boilerplate/posit-92.js
+
+# The only required script is setup.ps1
 boilerplate/build_run.ps1
 boilerplate/compile.ps1
 boilerplate/run.ps1
 boilerplate/start_server.ps1
+boilerplate/build_dist.ps1
+boilerplate/dist.ps1
 
 # Demos
 DEMOS/hello_world/*.ps1
