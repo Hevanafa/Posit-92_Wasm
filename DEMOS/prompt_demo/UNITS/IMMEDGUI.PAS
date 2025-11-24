@@ -24,7 +24,7 @@ type
 
 var
   { Prompt box variables }
-  showPrompt: boolean;
+  isPromptShown: boolean;
   promptKey: integer;  { Use Prompts enum }
   promptText: string;
 
@@ -467,7 +467,7 @@ end;
 { Show prompt box }
 procedure PromptBox(const text: string; const key: integer);
 begin
-  showPrompt := true;
+  isPromptShown := true;
   promptKey := key;
   promptText := text;
 end;

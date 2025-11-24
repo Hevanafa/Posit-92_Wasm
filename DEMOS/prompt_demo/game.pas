@@ -130,7 +130,7 @@ begin
   w := measureBMFont(s, defaultFontGlyphs);
   TextLabel(s, (vgaWidth - w) div 2, 120);
 
-  if showPrompt then begin
+  if isPromptShown then begin
     clsBlend(SemitransparentBlack);
 
     top := 60;
@@ -145,14 +145,14 @@ begin
       case promptKey of
         PromptTest: inc(clicks, 100);
       end;
-      showPrompt := false
+      isPromptShown := false
     end;
 
     if PromptButton('No', 160 + 10, 110) then begin
       { case promptKey of
       end; }
 
-      showPrompt := false;
+      isPromptShown := false;
     end;
   end;
 
