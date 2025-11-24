@@ -51,7 +51,9 @@ procedure ListView(
 
 procedure Checkbox(const caption: string; const x, y: integer; var state: TCheckboxState);
 procedure Slider(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer);
+
 procedure ProgressBar(const x, y, width, height: integer; const perc: double);
+procedure ProgressBarLabelled(const x, y, width, height: integer; const perc: double);
 
 
 implementation
