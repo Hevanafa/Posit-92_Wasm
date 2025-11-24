@@ -34,6 +34,7 @@ function getMaxBitmapData: longword; public name 'getMaxBitmapData';
 { function loadImageHandle: longint; public name 'loadImageHandle'; }
 { function findEmptyImageSlot: longint; public name 'findEmptyImageSlot'; }
 function getEmptyImageSlot: longint; public name 'getEmptyImageSlot';
+
 function newImage(const width, height: integer): longint; public name 'newImage';
 procedure freeImage(const imgHandle: longint);
 
