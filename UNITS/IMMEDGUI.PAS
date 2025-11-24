@@ -14,6 +14,14 @@ interface
 
 uses BMFont;
 
+type
+  TCheckboxState = record
+    checked: boolean;
+  end;
+  TSliderState = record
+    value: integer;
+  end;
+
 procedure initImmediateGUI;
 
 { Called before updateMouse }
@@ -31,18 +39,32 @@ procedure resetActiveWidget;
 procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 function guiMeasureText(const text: string): word;
 
+{ Can be used with drawMouse }
+function hasHoveredWidget: boolean;
+
 { Widgets }
 procedure TextLabel(const text: string; const x, y: integer);
+
 function Button(const caption: string; const x, y, width, height: integer): boolean;
+function ImageButton(const x, y: integer; const imgNormal, imgHovered, imgPressed: longint): boolean;
+
 procedure ListView(
   const x, y: integer;
   const items: array of string;
   const selectedIndex: integer);
 
+procedure Checkbox(const caption: string; const x, y: integer; var state: TCheckboxState);
+procedure Slider(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer);
+
+procedure ProgressBar(const x, y, width, height: integer; const perc: double);
+procedure ProgressBarLabelled(const x, y, width, height: integer; const perc: double);
+
 
 implementation
 
-uses Graphics, Mouse, Panic, Shapes;
+uses
+  Conv, Bitmap, Graphics, Maths,
+  Mouse, Panic, Shapes;
 
 const
   Black = $FF000000;
@@ -196,7 +218,7 @@ var
   lineHeight: word;
   widgetWidth, widgetHeight: word;
 begin
-  lineHeight := defaultFont.lineHeight + 2;
+  lineHeight := activeFont.lineHeight + 2;
 
   widgetWidth := 100;
   widgetHeight := lineHeight * (high(items) + 1);
@@ -208,7 +230,7 @@ begin
     x + widgetWidth, y + lineHeight * (selectedIndex + 1), Red);
 
   for a := 0 to high(items) do
-    printDefault(
+    TextLabel(
       items[a],
       x + 2, y + 2 + lineHeight * a);
 

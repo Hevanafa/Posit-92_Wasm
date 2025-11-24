@@ -76,7 +76,7 @@ procedure sprRegionBlend(
 implementation
 
 uses
-  Conv, Logger, Panic, VGA;
+  Conv, Logger, Maths, Panic, VGA;
 
 { Bitmap operations }
 var
