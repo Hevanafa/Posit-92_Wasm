@@ -145,7 +145,7 @@ end;
 
 function hasHoveredWidget: boolean;
 begin
-  hasHoveredWidget := hotWidget > 0
+  hasHoveredWidget := hotWidget > -1
 end;
 
 
