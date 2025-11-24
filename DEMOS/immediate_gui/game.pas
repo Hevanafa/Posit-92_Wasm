@@ -126,6 +126,7 @@ begin
   w := guiMeasureText(s);
   TextLabel(s, (vgaWidth - w) div 2, 140);
 
+  ProgressBar(10, 80, 80, 10, 0.75);
   Checkbox('Show FPS', 10, 60, showFPS);
   ListView(10, 10, listItems, 2);
 

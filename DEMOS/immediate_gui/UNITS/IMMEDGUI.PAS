@@ -48,9 +48,10 @@ procedure ListView(
   const x, y: integer;
   const items: array of string;
   const selectedIndex: integer);
+
 procedure Checkbox(const caption: string; const x, y: integer; var state: TCheckboxState);
 procedure Slider(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer);
-
+procedure ProgressBar(const x, y, width, height: integer; const perc: double);
 
 implementation
 
@@ -60,6 +61,7 @@ const
   Black = $FF000000;
   White = $FFFFFFFF;
   Red = $FFFF5555;
+  DarkBlue = $FF0000AA;
   
 { Immediate GUI default theme
   https://lospec.com/palette-list/ice-cream-gb }
@@ -334,6 +336,18 @@ begin
     colour := Black;
 
   rect(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), colour)
+end;
+
+
+procedure ProgressBar(const x, y, width, height: integer; const perc: double);
+var
+  w: integer;
+begin
+  w := trunc(clamp(perc, 0.0, 1.0) * width);
+
+  rectfill(x, y, x + width, y + height, black);
+  rectfill(x, y, trunc(x + w), y + height, red);
+  rect(x, y, x + width, y + height, white);
 end;
 
 end.
