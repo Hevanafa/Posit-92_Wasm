@@ -91,16 +91,25 @@ end;
 
 function PromptButton(const text: string; const x, y: integer): boolean;
 var
+  thisWidgetID: integer;
   textWidth: word;
   w, h: word;
+  textX, textY: integer;
 begin
+  thisWidgetID := getNextWidgetID;
   result := ImageButton(x, y, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
 
   textWidth := measureDefault(text);
   w := getImageWidth(imgPromptButtonNormal);
   h := getImageHeight(imgPromptButtonPressed);
 
-  TextLabel(text, x + (w - textWidth) div 2, y + (h - defaultFont.lineHeight) div 2)
+  textX := x + (w - textWidth) div 2;
+  textY := y + (h - defaultFont.lineHeight) div 2;
+
+  if getActiveWidget = thisWidgetID then
+    inc(textY);
+
+  TextLabel(text, textX, textY)
 end;
 
 
@@ -187,10 +196,7 @@ begin
       showPrompt := false
     end;
 
-
-    if ImageButton(160 + 10, 110,
-      imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed) then begin
-    { if Button('No', 160 + 10, 120, 30, 12) then begin }
+    if PromptButton('No', 160 + 10, 110) then begin
       { case promptKey of
       end; }
 

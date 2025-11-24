@@ -24,7 +24,12 @@ type
 
 procedure initImmediateGUI;
 
+function getHotWidget: integer;
+function getActiveWidget: integer;
 function getNextWidgetID: integer;
+
+{ Can be used with drawMouse }
+function hasHoveredWidget: boolean;
 
 { Called before updateMouse }
 procedure updateGUILastMouseButton;
@@ -40,9 +45,6 @@ procedure resetActiveWidget;
 
 procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 function guiMeasureText(const text: string): word;
-
-{ Can be used with drawMouse }
-function hasHoveredWidget: boolean;
 
 { Widgets }
 procedure TextLabel(const text: string; const x, y: integer);
@@ -111,10 +113,26 @@ begin
   mouseZone.height := 1;
 end;
 
+function getHotWidget: integer;
+begin
+  getHotWidget := hotWidget
+end;
+
+function getActiveWidget: integer;
+begin
+  getActiveWidget := activeWidget
+end;
+
 function getNextWidgetID: integer;
 begin
   getNextWidgetID := nextWidgetID
 end;
+
+function hasHoveredWidget: boolean;
+begin
+  hasHoveredWidget := hotWidget > -1
+end;
+
 
 procedure updateGUILastMouseButton;
 begin
@@ -163,11 +181,6 @@ function guiMeasureText(const text: string): word;
 begin
   assertFontSet;
   guiMeasureText := measureBMFont(text, activeFontGlyphs)
-end;
-
-function hasHoveredWidget: boolean;
-begin
-  hasHoveredWidget := hotWidget > -1
 end;
 
 
