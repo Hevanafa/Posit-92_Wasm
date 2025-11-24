@@ -144,10 +144,11 @@ procedure draw;
 var
   w: integer;
   s: string;
+  top, left: integer;
 begin
   cls(CornflowerBlue);
 
-  if ImageButton(240, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
+  if ImageButton((vgaWidth - getImageWidth(imgWinNormal)) div 2, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
     PromptBox('Accept?', PromptTest);
 
   s := 'Clicks: ' + i32str(clicks);
@@ -157,19 +158,30 @@ begin
   if showPrompt then begin
     clsBlend(SemitransparentBlack);
 
-    spr(imgPromptBG, 100, 60);
+    top := 60;
+    left := 100;
+
+    spr(imgPromptBG, left, top);
 
     w := measureBMFont(promptText, defaultFontGlyphs);
     TextLabel(promptText, (vgaWidth - w) div 2, 90);
 
-    if Button('Yes', 160 - 40, 100, 30, 12) then begin
+    if ImageButton(160 - 40, 110,
+      imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed) then begin
+    { if Button('Yes', 160 - 40, 120, 30, 12) then begin }
       case promptKey of
         PromptTest: inc(clicks, 100);
       end;
       showPrompt := false
     end;
 
-    if Button('No', 160 - 40, 100, 30, 12) then begin
+    s := 'Yes';
+    w := measureBMFont(s, defaultFont)
+    TextLabel(s, );
+
+    if ImageButton(160 + 10, 110,
+      imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed) then begin
+    { if Button('No', 160 + 10, 120, 30, 12) then begin }
       { case promptKey of
       end; }
 
