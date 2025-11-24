@@ -261,10 +261,15 @@ begin
   rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), IceCreamWhite);
   TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
 
-  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
+  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then begin
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
-    Button := true
-  else
+
+    if not clickConsumed then begin
+      Button := true;
+      clickConsumed := true
+    end else
+      Button := false;
+  end else
     Button := false;
 end;
 
@@ -307,7 +312,12 @@ begin
 
   if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
-    ImageButton := true
+
+    if not clickConsumed then begin
+      ImageButton := true;
+      clickConsumed := true
+    end else
+      ImageButton := false
   else
     ImageButton := false;
 end;
@@ -388,9 +398,13 @@ begin
   rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + 5), trunc(zone.y + 5), checkboxColour);
   TextLabel(caption, trunc(zone.x + 7), trunc(zone.y));
 
-  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
+  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then begin
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
-    state.checked := not state.checked;
+    if not clickConsumed then begin
+      state.checked := not state.checked;
+      clickConsumed := true
+    end;
+  end;
 end;
 
 
@@ -550,10 +564,14 @@ begin
 
   TextLabel(text, textX, textY);
 
-  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
+  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then begin
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
-    PromptButton := true
-  else
+    if not clickConsumed then begin
+      PromptButton := true;
+      clickConsumed := true
+    end else
+      PromptButton := false;
+  end else
     PromptButton := false;
 end;
 
