@@ -36,6 +36,8 @@ procedure resetActiveWidget;
 procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 function guiMeasureText(const text: string): word;
 
+function hasHoveredWidget: boolean;
+
 { Widgets }
 procedure TextLabel(const text: string; const x, y: integer);
 function Button(const caption: string; const x, y, width, height: integer): boolean;
@@ -139,6 +141,11 @@ function guiMeasureText(const text: string): word;
 begin
   assertFontSet;
   guiMeasureText := measureBMFont(text, activeFontGlyphs)
+end;
+
+function hasHoveredWidget: boolean;
+begin
+  hasHoveredWidget := hotWidget > 0
 end;
 
 

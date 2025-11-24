@@ -13,7 +13,7 @@ var
   picotronFont: TBMFont;
   picotronFontGlyphs: array[32..126] of TBMFontGlyph;
 
-  imgCursor: longint;
+  imgCursor, imgHandCursor: longint;
   imgDosuEXE: array[0..1] of longint;
 
 { BMFont boilerplate }
@@ -28,6 +28,7 @@ function measureDefault(const text: string): word;
 
 { Asset boilerplate }
 procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
+procedure setImgHandCursor(const imgHandle: longint); public name 'setImgHandCursor';
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
 
 
@@ -75,6 +76,11 @@ end;
 procedure setImgCursor(const imgHandle: longint);
 begin
   imgCursor := imgHandle
+end;
+
+procedure setImgHandCursor(const imgHandle: longint);
+begin
+  imgHandCursor := imgHandle
 end;
 
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer);

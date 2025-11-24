@@ -144,6 +144,8 @@ class Posit92 {
 
     handle = await this.loadImage("assets/images/cursor.png");
     this.#wasm.exports.setImgCursor(handle);
+    handle = await this.loadImage("assets/images/hand.png");
+    this.#wasm.exports.setImgHandCursor(handle);
 
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",

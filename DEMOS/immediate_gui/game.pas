@@ -40,7 +40,10 @@ end;
 
 procedure drawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  if hasHoveredWidget then
+    spr(imgHandCursor, mouseX - 5, mouseY - 1)
+  else
+    spr(imgCursor, mouseX, mouseY);
 end;
 
 
