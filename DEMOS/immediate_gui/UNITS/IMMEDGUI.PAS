@@ -39,6 +39,7 @@ procedure resetActiveWidget;
 procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 function guiMeasureText(const text: string): word;
 
+{ Can be used with drawMouse }
 function hasHoveredWidget: boolean;
 
 { Widgets }
