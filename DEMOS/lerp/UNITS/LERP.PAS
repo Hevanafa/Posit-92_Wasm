@@ -4,6 +4,7 @@
   By Hevanafa, 23-11-2025
 
   Generic unit that contains easing functions
+  All the time / tick units are in seconds
 }
 
 unit Lerp;
@@ -11,8 +12,6 @@ unit Lerp;
 {$Mode TP}
 
 interface
-
-{ All the time / tick units are in seconds }
 
 type
   TLerpTimer = record
@@ -25,8 +24,7 @@ procedure initLerp(var lt: TLerpTimer; const startTick, duration: double);
 function newLerp(const startTick, duration: double): TLerpTimer;
 function getLerpPerc(const lt: TLerpTimer; const t: double): double;
 function isLerpComplete(const lt: TLerpTimer; const t: double): boolean;
-
-{ function easeOutQuad(const perc: double): double; }
+procedure stopLerp(const lt: TLerpTimer);
 
 function lerpLinear(const a, z: double; perc: double): double;
 
@@ -83,6 +81,11 @@ begin
   end;
 
   isLerpComplete := t >= lt.endTick
+end;
+
+procedure stopLerp(const lt: TLerpTimer);
+begin
+  lt.active := false
 end;
 
 

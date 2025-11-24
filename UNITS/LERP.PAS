@@ -24,8 +24,7 @@ procedure initLerp(var lt: TLerpTimer; const startTick, duration: double);
 function newLerp(const startTick, duration: double): TLerpTimer;
 function getLerpPerc(const lt: TLerpTimer; const t: double): double;
 function isLerpComplete(const lt: TLerpTimer; const t: double): boolean;
-
-{ function easeOutQuad(const perc: double): double; }
+procedure stopLerp(const lt: TLerpTimer);
 
 function lerpLinear(const a, z: double; perc: double): double;
 
@@ -82,6 +81,11 @@ begin
   end;
 
   isLerpComplete := t >= lt.endTick
+end;
+
+procedure stopLerp(const lt: TLerpTimer);
+begin
+  lt.active := false
 end;
 
 
