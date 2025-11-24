@@ -500,7 +500,10 @@ end;
 
 function PromptButton(const text: string; const x, y: integer): boolean;
 var
+  zone: TRect;
   thisWidgetID: integer;
+  buttonImgHandle: longword;
+
   textWidth: word;
   w, h: word;
   textX, textY: integer;
@@ -509,8 +512,30 @@ begin
   assertImageSet('imgPromptButtonHovered', imgPromptButtonHovered);
   assertImageSet('imgPromptButtonPressed', imgPromptButtonPressed);
 
-  thisWidgetID := getNextWidgetID;
-  PromptButton := ImageButton(x, y, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
+  zone.x := x;
+  zone.y := y;
+  zone.width := getImageWidth(imgPromptButtonNormal);
+  zone.height := getImageHeight(imgPromptButtonNormal);
+
+  { Update logic }
+  thisWidgetID := nextWidgetID;
+  { PromptButton := ImageButton(x, y, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed); }
+  inc(nextWidgetID);
+
+  if rectIntersects(zone, mouseZone) then begin
+    hotWidget := thisWidgetID;
+    if mouseJustPressed then activeWidget := thisWidgetID;
+  end;
+
+  { Render logic }
+  if activeWidget = thisWidgetID then
+    buttonImgHandle := imgPromptButtonPressed
+  else if hotWidget = thisWidgetID then
+    buttonImgHandle := imgPromptButtonHovered
+  else 
+    buttonImgHandle := imgPromptButtonNormal;
+
+  spr(buttonImgHandle, x, y);
 
   textWidth := guiMeasureText(text);
   w := getImageWidth(imgPromptButtonNormal);
@@ -519,10 +544,17 @@ begin
   textX := x + (w - textWidth) div 2;
   textY := y + (h - activeFont.lineHeight) div 2;
 
+  { when pressed }
   if getActiveWidget = thisWidgetID then
     inc(textY);
 
   TextLabel(text, textX, textY);
+
+  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
+    { activeWidget = -1 }  { Index reset is handled at the end of draw }
+    PromptButton := true
+  else
+    PromptButton := false;
 end;
 
 { Prompt box render logic }
