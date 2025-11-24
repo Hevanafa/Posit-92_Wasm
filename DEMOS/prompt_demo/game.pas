@@ -89,6 +89,20 @@ begin
   promptText := text;
 end;
 
+function PromptButton(const text: string; const x, y: integer): boolean;
+var
+  textWidth: word;
+  w, h: word;
+begin
+  result := ImageButton(x, y, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
+
+  textWidth := measureDefault(text);
+  w := getImageWidth(imgPromptButtonNormal);
+  h := getImageHeight(imgPromptButtonPressed);
+
+  TextLabel(text, x + (w - textWidth) div 2, y + (h - defaultFont.lineHeight) div 2)
+end;
+
 
 procedure init;
 begin
@@ -166,18 +180,13 @@ begin
     w := measureBMFont(promptText, defaultFontGlyphs);
     TextLabel(promptText, (vgaWidth - w) div 2, 90);
 
-    if ImageButton(160 - 40, 110,
-      imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed) then begin
-    { if Button('Yes', 160 - 40, 120, 30, 12) then begin }
+    if PromptButton('Yes', 160 - 40, 110) then begin
       case promptKey of
         PromptTest: inc(clicks, 100);
       end;
       showPrompt := false
     end;
 
-    s := 'Yes';
-    w := measureBMFont(s, defaultFont)
-    TextLabel(s, );
 
     if ImageButton(160 + 10, 110,
       imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed) then begin

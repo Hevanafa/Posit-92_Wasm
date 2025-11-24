@@ -24,6 +24,8 @@ type
 
 procedure initImmediateGUI;
 
+function getNextWidgetID: integer;
+
 { Called before updateMouse }
 procedure updateGUILastMouseButton;
 
@@ -107,6 +109,11 @@ begin
   mouseZone.y := 0;
   mouseZone.width := 1;
   mouseZone.height := 1;
+end;
+
+function getNextWidgetID: integer;
+begin
+  getNextWidgetID := nextWidgetID
 end;
 
 procedure updateGUILastMouseButton;
