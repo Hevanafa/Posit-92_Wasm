@@ -284,7 +284,32 @@ end;
 
 
 procedure Slider(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer);
+var
+  zone: TRect;
+  thisWidgetID: integer;
+  perc, range: double;
+  pendingValue, thumbX: integer;
+  colour: longword;
 begin
+  if minValue >= maxValue then panicHalt('Slider: minValue has to be less than maxValue!');
+
+  zone.x := x;
+  zone.y := y;
+  zone.width := width;
+  zone.height := 5;
+
+  { Update logic }
+  thisWidgetID := nextWidgetID;
+  inc(nextWidgetID);
+
+  if rectIntersects(zone, mouseZone) then begin
+    hotWidget := thisWidgetID;
+
+    if mouseJustPressed then activeWidget := thisWidgetID;
+  end;
+
+  { TODO: Value update logic }
+  { TODO: Render logic }
 
 end;
 
