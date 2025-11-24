@@ -513,6 +513,8 @@ var
   w: word;
 begin
   if not isPromptShown then exit;
+  
+  assertImageSet('imgPromptBG', imgPromptBG);
 
   clsBlend(SemitransparentBlack);
 
