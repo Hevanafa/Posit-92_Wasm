@@ -33,7 +33,6 @@ var
   gameTime: double;
   clicks: word;
   showFPS: TCheckboxState;
-  listItems: array[0..2] of string;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -78,22 +77,18 @@ begin
 end;
 
 procedure afterInit;
-var
-  a: integer;
 begin
   { Initialise game state here }
   hideCursor;
 
   initImmediateGUI;
   guiSetFont(defaultFont, defaultFontGlyphs);
+  setPromptBoxAssets(imgPromptBG, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
 
   replaceColours(blackFont.imgHandle, $FFFFFFFF, $FF000000);
 
   clicks := 0;
   showFPS.checked := true;
-
-  for a:=0 to high(listItems) do
-    listItems[a] := 'ListItem' + i32str(a);
 end;
 
 procedure update;

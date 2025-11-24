@@ -70,6 +70,7 @@ procedure ProgressBar(const x, y, width, height: integer; const perc: double);
 procedure ProgressBarLabelled(const x, y, width, height: integer; const perc: double);
 
 { Prompt Box }
+procedure setPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
 procedure PromptBox(const text: string; const key: integer);
 function PromptButton(const text: string; const x, y: integer): boolean;
 
