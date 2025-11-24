@@ -308,7 +308,14 @@ begin
     if mouseJustPressed then activeWidget := thisWidgetID;
   end;
 
-  { TODO: Value update logic }
+  { Value update logic }
+  range := maxValue - minValue;
+  if activeWidget = thisWidgetID then begin
+    pendingValue := clamp(mouseX, x, x + width) - x;
+    perc := pendingValue / width;
+    state.value := round(perc * range)
+  end;
+
   { TODO: Render logic }
 
 end;
