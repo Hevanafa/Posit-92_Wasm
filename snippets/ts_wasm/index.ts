@@ -1,17 +1,21 @@
-// Add your Pascal external procedures & functions here:
-const importObject = Object.freeze({
+interface ImportObject {
   env: {
-    _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
+    _haltproc: (exitcode: number) => void;
+    helloWorld: () => void;
+  }
+}
+
+// Add your Pascal external procedures & functions here:
+const importObject: ImportObject = Object.freeze({
+  env: {
+    _haltproc: (exitcode: number) => console.log("Programme halted with code:", exitcode),
 
     helloWorld: () => console.log("Hello from snippets!")
     // Add more externals below
   }
 });
 
-/**
- * @type {WebAssembly.Instance}
- */
-let wasm;
+let wasm: WebAssembly.Instance;
 
 async function initWebAssembly() {
   const response = await fetch("main.wasm");
