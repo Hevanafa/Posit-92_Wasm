@@ -29,6 +29,7 @@ var
   clicks: word;
   showFPS: TCheckboxState;
   listItems: array[0..2] of string;
+  sliderValue: TSliderState;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -111,6 +112,9 @@ begin
 
   { spr(imgDosuEXE[0], 100, 80); }
   sprStretch(imgDosuEXE[0], 100, 80, 24, 48);
+
+  Slider(120, 40, 100, sliderValue, 0, 100);
+  TextLabel('Slider value: ' + i32str(sliderValue.value), 120, 30);
 
   guiSetFont(defaultFont, defaultFontGlyphs);
   s := 'Clicks: ' + i32str(clicks);
