@@ -157,6 +157,11 @@ begin
   guiMeasureText := measureBMFont(text, activeFontGlyphs)
 end;
 
+function hasHoveredWidget: boolean;
+begin
+  hasHoveredWidget := hotWidget > -1
+end;
+
 
 { Begin widgets }
 
@@ -208,6 +213,48 @@ begin
     Button := false;
 end;
 
+function ImageButton(const x, y: integer; const imgNormal, imgHovered, imgPressed: longint): boolean;
+var
+  zone: TRect;
+  thisWidgetID: integer;
+  buttonImgHandle: longword;
+begin
+  assertFontSet;
+
+  zone.x := x;
+  zone.y := y;
+  zone.width := getImageWidth(imgNormal);
+  zone.height := getImageHeight(imgNormal);
+
+  { Update logic }
+  thisWidgetID := nextWidgetID;
+  nextWidgetID := nextWidgetID + 1;
+
+  if rectIntersects(zone, mouseZone) then begin
+    hotWidget := thisWidgetID;
+
+    if mouseJustPressed then activeWidget := thisWidgetID;
+  end;
+
+  { Render logic }
+  if activeWidget = thisWidgetID then
+    buttonImgHandle := imgPressed
+  else if hotWidget = thisWidgetID then
+    buttonImgHandle := imgHovered
+  else 
+    buttonImgHandle := imgNormal;
+
+  spr(buttonImgHandle, x, y);
+  { Use this in case you want your buttons have semitransparent pixels }
+  { sprBlend(buttonImgHandle, x, y); }
+
+  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
+    { activeWidget = -1 }  { Index reset is handled at the end of draw }
+    ImageButton := true
+  else
+    ImageButton := false;
+end;
+
 
 procedure ListView(
   const x, y: integer;
@@ -235,6 +282,135 @@ begin
       x + 2, y + 2 + lineHeight * a);
 
   rect(x, y, x + widgetWidth, y + widgetHeight, White);
+end;
+
+procedure Checkbox(const caption: string; const x, y: integer; var state: TCheckboxState);
+var
+  zone: TRect;
+  w: integer;
+  thisWidgetID: integer;
+  checkboxColour: longword;
+begin
+  assertFontSet;
+
+  zone.x := x;
+  zone.y := y;
+
+  w := measureBMFont(caption, activeFontGlyphs);
+  zone.width := w + 6;
+  zone.height := activeFont.lineHeight;
+
+  { Update logic }
+  thisWidgetID := nextWidgetID;
+  inc(nextWidgetID);
+
+  if rectIntersects(zone, mouseZone) then begin
+    hotWidget := thisWidgetID;
+
+    if mouseJustPressed then activeWidget := thisWidgetID;
+  end;
+
+  { Render logic }
+  if state.checked then
+    rectfill(trunc(zone.x), trunc(zone.y), trunc(zone.x + 5), trunc(zone.y + 5), Black)
+  else
+    rectfill(trunc(zone.x), trunc(zone.y), trunc(zone.x + 5), trunc(zone.y + 5), White);
+
+  if activeWidget = thisWidgetID then
+    { on held down }
+    checkboxColour := IceCreamRed
+  else if hotWidget = thisWidgetID then
+    { on hover }
+    checkboxColour := IceCreamOrange
+  else
+    checkboxColour := Black;
+
+  rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + 5), trunc(zone.y + 5), checkboxColour);
+  TextLabel(caption, trunc(zone.x + 7), trunc(zone.y));
+
+  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
+    { activeWidget = -1 }  { Index reset is handled at the end of draw }
+    state.checked := not state.checked;
+end;
+
+
+procedure Slider(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer);
+var
+  zone: TRect;
+  thisWidgetID: integer;
+  perc, range: double;
+  pendingValue, thumbX: integer;
+  colour: longword;
+begin
+  if minValue >= maxValue then panicHalt('Slider: minValue has to be less than maxValue!');
+
+  zone.x := x;
+  zone.y := y;
+  zone.width := width;
+  zone.height := 5;
+
+  { Update logic }
+  thisWidgetID := nextWidgetID;
+  inc(nextWidgetID);
+
+  if rectIntersects(zone, mouseZone) then begin
+    hotWidget := thisWidgetID;
+
+    if mouseJustPressed then activeWidget := thisWidgetID;
+  end;
+
+  { Value update logic }
+  range := maxValue - minValue;
+  if activeWidget = thisWidgetID then begin
+    pendingValue := trunc(clamp(mouseX, x, x + width) - x);
+    perc := pendingValue / width;
+    state.value := round(perc * range)
+  end;
+
+  { Render logic }
+  line(x, y + 2, x + width, y + 2, Black);
+
+  perc := (state.value - minValue) / range;
+  thumbX := round(x + perc * width);
+
+  rectfill(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), White);
+
+  if activeWidget = thisWidgetID then
+    { dragging }
+    colour := IceCreamRed
+  else if hotWidget = thisWidgetID then
+    { hovering }
+    colour := IceCreamOrange
+  else
+    colour := Black;
+
+  rect(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), colour)
+end;
+
+
+procedure ProgressBar(const x, y, width, height: integer; const perc: double);
+var
+  w: word;
+begin
+  w := trunc(clamp(perc, 0.0, 1.0) * width);
+
+  rectfill(x, y, x + width, y + height, black);
+  rectfill(x, y, trunc(x + w), y + height, red);
+  rect(x, y, x + width, y + height, white);
+end;
+
+procedure ProgressBarLabelled(const x, y, width, height: integer; const perc: double);
+var
+  percStr: string;
+  w: word;
+begin
+  assertFontSet;
+
+  ProgressBar(x, y, width, height, perc);
+  
+  percStr := i32str(round(perc * 100)) + '%';
+  w := measureBMFont(percStr, activeFontGlyphs);
+  TextLabel(percStr, x + (width - w) div 2, y + (height - activeFont.lineHeight) div 2);
 end;
 
 end.
