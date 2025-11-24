@@ -21,6 +21,7 @@ type
   TSliderState = record
     value: integer;
   end;
+  TPromptResult = (PromptWait, PromptYes, PromptNo);
 
 var
   { Prompt box variables }
@@ -73,20 +74,21 @@ procedure ProgressBarLabelled(const x, y, width, height: integer; const perc: do
 procedure setPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
 procedure ShowPromptBox(const text: string; const key: integer);
 function PromptButton(const text: string; const x, y: integer): boolean;
-
+function PromptBox: TPromptResult;
 
 implementation
 
 uses
   Conv, Bitmap, Graphics, Maths,
-  Mouse, Panic, Shapes;
+  Mouse, Panic, Shapes, VGA;
 
 const
   Black = $FF000000;
   White = $FFFFFFFF;
   Red = $FFFF5555;
   DarkBlue = $FF0000AA;
-  
+  SemitransparentBlack = $80000000;
+
 { Immediate GUI default theme
   https://lospec.com/palette-list/ice-cream-gb }
   IceCreamWhite = $FFFFF6D3;
@@ -500,6 +502,36 @@ begin
   TextLabel(text, textX, textY);
 
   PromptButton := result
+end;
+
+
+function PromptBox: TPromptResult;
+const
+  top = 60;
+  left = 100;
+var
+  w: word;
+begin
+  if not isPromptShown then exit;
+
+  clsBlend(SemitransparentBlack);
+
+  spr(imgPromptBG, left, top);
+
+  w := guiMeasureText(promptText);
+  TextLabel(promptText, (vgaWidth - w) div 2, 90);
+
+  PromptBox := PromptWait;
+
+  if PromptButton('Yes', 160 - 40, 110) then begin
+    isPromptShown := false;
+    PromptBox := PromptYes
+  end;
+
+  if PromptButton('No', 160 + 10, 110) then begin
+    isPromptShown := false;
+    PromptBox := PromptNo
+  end;
 end;
 
 

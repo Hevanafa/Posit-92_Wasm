@@ -119,7 +119,6 @@ procedure draw;
 var
   w: integer;
   s: string;
-  top, left: integer;
 begin
   cls(CornflowerBlue);
 
@@ -130,30 +129,13 @@ begin
   w := measureBMFont(s, defaultFontGlyphs);
   TextLabel(s, (vgaWidth - w) div 2, 120);
 
-  if isPromptShown then begin
-    clsBlend(SemitransparentBlack);
-
-    top := 60;
-    left := 100;
-
-    spr(imgPromptBG, left, top);
-
-    w := measureBMFont(promptText, defaultFontGlyphs);
-    TextLabel(promptText, (vgaWidth - w) div 2, 90);
-
-    if PromptButton('Yes', 160 - 40, 110) then begin
+  case PromptBox of
+    PromptYes:
       case promptKey of
         PromptTest: inc(clicks, 100);
       end;
-      isPromptShown := false
-    end;
-
-    if PromptButton('No', 160 + 10, 110) then begin
-      { case promptKey of
-      end; }
-
-      isPromptShown := false;
-    end;
+    PromptNo:;
+    else
   end;
 
   resetActiveWidget;
