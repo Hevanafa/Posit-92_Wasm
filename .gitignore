@@ -32,3 +32,4 @@ snippets/wasm_loader/build_run.ps1
 snippets/wasm_loader/compile.ps1
 snippets/wasm_loader/dist.ps1
 snippets/wasm_loader/start_server.ps1
+snippets/ts_wasm/index.js

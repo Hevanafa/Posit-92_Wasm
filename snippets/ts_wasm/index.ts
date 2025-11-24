@@ -1,4 +1,4 @@
-interface ImportObject {
+interface ImportObject extends WebAssembly.Imports {
   env: {
     _haltproc: (exitcode: number) => void;
     helloWorld: () => void;
@@ -15,13 +15,20 @@ const importObject: ImportObject = Object.freeze({
   }
 });
 
-let wasm: WebAssembly.Instance;
+interface WasmExports extends WebAssembly.Exports {
+  init: () => void;
+  // Add other exported functions here
+}
+
+type WasmInstance = WebAssembly.Instance & { exports: WasmExports };
+
+let wasm: WasmInstance;
 
 async function initWebAssembly() {
   const response = await fetch("main.wasm");
   const bytes = await response.arrayBuffer();
   const result = await WebAssembly.instantiate(bytes, importObject);
-  wasm = result.instance;
+  wasm = result.instance as WasmInstance;
 }
 
 async function main() {
