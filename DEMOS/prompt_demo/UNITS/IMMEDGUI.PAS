@@ -190,6 +190,12 @@ begin
   if not isFontSet then panicHalt('activeFont is unset!');
 end;
 
+procedure assertImageSet(const varName: string; const imgHandle: longint);
+begin
+  if not isImageSet(imgHandle) then
+    panicHalt(varName + ' is unset!');
+end;
+
 function guiMeasureText(const text: string): word;
 begin
   assertFontSet;
@@ -473,6 +479,10 @@ var
   textX, textY: integer;
   result: boolean;
 begin
+  assertImageSet('imgPromptButtonNormal', imgPromptButtonNormal);
+  assertImageSet('imgPromptButtonHovered', imgPromptButtonHovered);
+  assertImageSet('imgPromptButtonPressed', imgPromptButtonPressed);
+
   thisWidgetID := getNextWidgetID;
   result := ImageButton(x, y, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
 
