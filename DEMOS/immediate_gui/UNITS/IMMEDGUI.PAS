@@ -53,9 +53,10 @@ procedure Checkbox(const caption: string; const x, y: integer; var state: TCheck
 procedure Slider(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer);
 procedure ProgressBar(const x, y, width, height: integer; const perc: double);
 
+
 implementation
 
-uses Graphics, Maths, Mouse, Panic, Shapes;
+uses Conv, Graphics, Maths, Mouse, Panic, Shapes;
 
 const
   Black = $FF000000;
@@ -341,13 +342,27 @@ end;
 
 procedure ProgressBar(const x, y, width, height: integer; const perc: double);
 var
-  w: integer;
+  w: word;
 begin
   w := trunc(clamp(perc, 0.0, 1.0) * width);
 
   rectfill(x, y, x + width, y + height, black);
   rectfill(x, y, trunc(x + w), y + height, red);
   rect(x, y, x + width, y + height, white);
+end;
+
+procedure ProgressBarLabelled(const x, y, width, height: integer; const perc: double);
+var
+  percStr: string;
+  w: word;
+begin
+  assertFontSet;
+
+  ProgressBar(x, y, width, height, perc);
+  
+  percStr := i32str(round(perc * 100)) + '%';
+  w := measureBMFont(percStr, activeFontGlyphs);
+  TextLabel(percStr, x + (width - w) div 2, y + (height - activeFont.lineHeight) div 2);
 end;
 
 end.
