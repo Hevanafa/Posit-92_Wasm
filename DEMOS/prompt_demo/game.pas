@@ -124,7 +124,7 @@ begin
   cls(CornflowerBlue);
 
   if ImageButton((vgaWidth - getImageWidth(imgWinNormal)) div 2, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
-    PromptBox('Accept?', PromptTest);
+    ShowPromptBox('Accept?', PromptTest);
 
   s := 'Clicks: ' + i32str(clicks);
   w := measureBMFont(s, defaultFontGlyphs);

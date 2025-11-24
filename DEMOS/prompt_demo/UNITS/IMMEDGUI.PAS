@@ -71,7 +71,7 @@ procedure ProgressBarLabelled(const x, y, width, height: integer; const perc: do
 
 { Prompt Box }
 procedure setPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
-procedure PromptBox(const text: string; const key: integer);
+procedure ShowPromptBox(const text: string; const key: integer);
 function PromptButton(const text: string; const x, y: integer): boolean;
 
 
@@ -465,7 +465,7 @@ begin
 end;
 
 { Show prompt box }
-procedure PromptBox(const text: string; const key: integer);
+procedure ShowPromptBox(const text: string; const key: integer);
 begin
   isPromptShown := true;
   promptKey := key;
