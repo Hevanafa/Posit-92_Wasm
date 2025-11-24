@@ -239,7 +239,7 @@ begin
 
   { Update logic }
   thisWidgetID := nextWidgetID;
-  nextWidgetID := nextWidgetID + 1;
+  inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
     if rectIntersects(zone, mouseZone) then begin
@@ -283,7 +283,7 @@ begin
 
   { Update logic }
   thisWidgetID := nextWidgetID;
-  nextWidgetID := nextWidgetID + 1;
+  inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
     if rectIntersects(zone, mouseZone) then begin
