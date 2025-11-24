@@ -14,6 +14,11 @@ interface
 
 uses BMFont;
 
+type
+  TCheckboxState = record
+    checked: boolean;
+  end;
+
 procedure initImmediateGUI;
 
 { Called before updateMouse }
@@ -46,6 +51,10 @@ implementation
 uses Graphics, Mouse, Panic, Shapes;
 
 const
+  Black = $FF000000;
+  White = $FFFFFFFF;
+  Red = $FFFF5555;
+  
 { Immediate GUI default theme
   https://lospec.com/palette-list/ice-cream-gb }
   IceCreamWhite = $FFFFF6D3;
@@ -194,7 +203,7 @@ var
 begin
   assertFontSet;
 
-  lineHeight := defaultFont.lineHeight + 2;
+  lineHeight := activeFont.lineHeight + 2;
 
   widgetWidth := 100;
   widgetHeight := lineHeight * (high(items) + 1);
@@ -206,7 +215,7 @@ begin
     x + widgetWidth, y + lineHeight * (selectedIndex + 1), Red);
 
   for a := 0 to high(items) do
-    printDefault(
+    TextLabel(
       items[a],
       x + 2, y + 2 + lineHeight * a);
 
@@ -241,11 +250,11 @@ begin
 
   { Render logic }
   if state.checked then
-    rectfill(zone.x, zone.y, zone.x + 5, zone.y + 5, Black)
+    rectfill(trunc(zone.x), trunc(zone.y), trunc(zone.x + 5), trunc(zone.y + 5), Black)
   else
-    rectfill(zone.x, zone.y, zone.x + 5, zone.y + 5, White);
+    rectfill(trunc(zone.x), trunc(zone.y), trunc(zone.x + 5), trunc(zone.y + 5), White);
 
-  if activeWidget := thisWidgetID then
+  if activeWidget = thisWidgetID then
     { on held down }
     checkboxColour := IceCreamRed
   else if hotWidget = thisWidgetID then
@@ -254,8 +263,8 @@ begin
   else
     checkboxColour := Black;
 
-  rect(zone.x, zone.y, zone.x + 5, zone.y + 5, checkboxColour);
-  TextLabel(caption, zone.x + 7, zone.y);
+  rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + 5), trunc(zone.y + 5), checkboxColour);
+  TextLabel(caption, trunc(zone.x + 7), trunc(zone.y));
 
   if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
