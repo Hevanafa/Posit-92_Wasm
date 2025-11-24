@@ -31,9 +31,9 @@ async function initWebAssembly() {
   wasm = result.instance as WasmInstance;
 }
 
-async function main() {
+async function init() {
   await initWebAssembly();
   wasm.exports.init();
 }
 
-main()
+init()
