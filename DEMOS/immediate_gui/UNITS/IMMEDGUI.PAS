@@ -54,7 +54,7 @@ procedure Slider(const x, y, width: integer; var state: TSliderState; const minV
 
 implementation
 
-uses Graphics, Mouse, Panic, Shapes;
+uses Graphics, Maths, Mouse, Panic, Shapes;
 
 const
   Black = $FF000000;
@@ -311,7 +311,7 @@ begin
   { Value update logic }
   range := maxValue - minValue;
   if activeWidget = thisWidgetID then begin
-    pendingValue := clamp(mouseX, x, x + width) - x;
+    pendingValue := trunc(clamp(mouseX, x, x + width) - x);
     perc := pendingValue / width;
     state.value := round(perc * range)
   end;
@@ -322,7 +322,7 @@ begin
   perc := (state.value - minValue) / range;
   thumbX := round(x + perc * width);
 
-  rectfill(thumbX - 2, zone.y, thumbX + 2, zone.y + 4, White);
+  rectfill(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), White);
 
   if activeWidget = thisWidgetID then
     { dragging }
@@ -333,7 +333,7 @@ begin
   else
     colour := Black;
 
-  rect(thumbX - 2, zone.y, thumbX + 2, zone.y + 4, sliderColour)
+  rect(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), colour)
 end;
 
 end.
