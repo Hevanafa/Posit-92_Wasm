@@ -10,6 +10,9 @@ var
   { for use in loadBMFont }
   defaultFont: TBMFont;
   defaultFontGlyphs: array[32..126] of TBMFontGlyph;
+  blackFont: TBMFont;
+  blackFontGlyphs: array[32..126] of TBMFontGlyph;
+
   picotronFont: TBMFont;
   picotronFontGlyphs: array[32..126] of TBMFontGlyph;
 
@@ -19,6 +22,8 @@ var
 { BMFont boilerplate }
 function defaultFontPtr: PBMFont; public name 'defaultFontPtr';
 function defaultFontGlyphsPtr: pointer; public name 'defaultFontGlyphsPtr';
+function blackFontPtr: PBMFont; public name 'blackFontPtr';
+function blackFontGlyphsPtr: pointer; public name 'blackFontGlyphsPtr';
 
 function picotronFontPtr: PBMFont; public name 'picotronFontPtr';
 function picotronFontGlyphsPtr: pointer; public name 'picotronFontGlyphsPtr';
@@ -46,6 +51,16 @@ end;
 function defaultFontGlyphsPtr: pointer;
 begin
   defaultFontGlyphsPtr := @defaultFontGlyphs
+end;
+
+function blackFontPtr: PBMFont;
+begin
+  blackFontPtr := @blackFont
+end;
+
+function blackFontGlyphsPtr: pointer;
+begin
+  blackFontGlyphsPtr := @blackFontGlyphs
 end;
 
 function picotronFontPtr: PBMFont;

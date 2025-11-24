@@ -30,10 +30,12 @@ function getSurface: pointer; public name 'getSurface';
 
 { Colour format: $AARRGGBB }
 procedure cls(const colour: longword); public name 'cls';
+procedure flush; external 'env' name 'flush';
 
 procedure unsafePset(const x, y: integer; const colour: longword); public name 'unsafePset';
 procedure pset(const x, y: integer; const colour: longword); public name 'pset';
-procedure flush; external 'env' name 'flush';
+
+procedure unsafePsetBlend(const x, y: integer; const colour: longword); public name 'unsafePsetBlend';
 procedure psetBlend(const x, y: integer; const colour: longword); public name 'psetBlend';
 
 implementation
@@ -102,6 +104,54 @@ begin
     (surface[offset] shl 16) or
     (surface[offset + 1] shl 8) or
     surface[offset + 2]
+end;
+
+procedure unsafePsetBlend(const x, y: integer; const colour: longword);
+var
+  srcA, srcR, srcG, srcB: byte;
+  destA, destR, destG, destB: byte;
+  outA, outR, outG, outB: byte;
+  offset: longword;
+  { inverted alpha }
+  alpha, invAlpha: single;
+begin
+  srcA := colour shr 24 and $FF;
+
+  if srcA = 0 then exit;
+
+  srcR := colour shr 16 and $FF;
+  srcG := colour shr 8 and $FF;
+  srcB := colour and $FF;
+  
+  offset := (x + y * vgaWidth) * 4;
+
+  { Handle opaque pixel }
+  if srcA = 255 then begin
+    surface[offset] := srcR;
+    surface[offset + 1] := srcG;
+    surface[offset + 2] := srcB;
+    surface[offset + 3] := srcA;
+    exit
+  end;
+
+  destR := surface[offset];
+  destG := surface[offset + 1];
+  destB := surface[offset + 2];
+  destA := surface[offset + 3];
+  
+  { Handle alpha blending }
+  alpha := srcA / 255.0;
+  invAlpha := 1.0 - alpha;
+
+  outR := round(srcR * alpha + destR * invAlpha);
+  outG := round(srcG * alpha + destG * invAlpha);
+  outB := round(srcB * alpha + destB * invAlpha);
+  outA := srcA + round(destA * invAlpha);
+
+  surface[offset] := outR;
+  surface[offset + 1] := outG;
+  surface[offset + 2] := outB;
+  surface[offset + 3] := outA;
 end;
 
 procedure psetBlend(const x, y: integer; const colour: longword);

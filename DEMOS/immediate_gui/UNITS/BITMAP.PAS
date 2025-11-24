@@ -24,6 +24,12 @@ function getImagePtr(const imgHandle: longint): pointer; public name 'getImagePt
 function getImageWidth(const imgHandle: longint): word; public name 'getImageWidth';
 function getImageHeight(const imgHandle: longint): word; public name 'getImageHeight';
 
+function unsafeSprPget(const image: PBitmap; const x, y: integer): longword;
+function sprPget(const imgHandle: longint; const x, y: integer): longword;
+
+procedure unsafeSprPset(const image: PBitmap; const x, y: integer; const colour: longword);
+procedure sprPset(const imgHandle: longint; const x, y: integer; const colour: longword);
+
 procedure spr(const imgHandle: longint; const x, y: integer); public name 'spr';
 procedure sprRegion(
   const imgHandle: longint;
@@ -134,6 +140,65 @@ begin
   getImageHeight := image^.height
 end;
 
+
+{ Assuming image isn't nil & the bounds are known }
+function unsafeSprPget(const image: PBitmap; const x, y: integer): longword;
+var
+  offset: longword;
+begin
+  offset := (x + y * image^.width) * 4;
+
+  unsafeSprPget := (image^.data[offset + 3] shl 24)
+    or (image^.data[offset] shl 16)
+    or (image^.data[offset + 1] shl 8)
+    or image^.data[offset + 2]
+end;
+
+function sprPget(const imgHandle: longint; const x, y: integer): longword;
+var
+  image: PBitmap;
+begin
+  sprPget := 0;
+
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+
+  if (x < 0) or (x >= image^.width)
+    or (y < 0) or (y >= image^.height) then exit;
+
+  sprPget := unsafeSprPget(image, x, y)
+end;
+
+{ Assuming image isn't nil & the bounds are known }
+procedure unsafeSprPset(const image: PBitmap; const x, y: integer; const colour: longword);
+var
+  offset: longword;
+begin
+  offset := (x + y * image^.width) * 4;
+
+  { Order: RGBA }
+  image^.data[offset] := colour shr 16 and $FF;
+  image^.data[offset + 1] := colour shr 8 and $FF;
+  image^.data[offset + 2] := colour and $FF;
+  image^.data[offset + 3] := colour shr 24 and $FF;
+end;
+
+procedure sprPset(const imgHandle: longint; const x, y: integer; const colour: longword);
+var
+  image: PBitmap;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+
+  if (x < 0) or (x >= image^.width)
+    or (y < 0) or (y >= image^.height) then exit;
+
+  unsafeSprPset(image, x, y, colour)
+end;
+
+
 procedure spr(const imgHandle: longint; const x, y: integer);
 var
   a, b: integer;
@@ -239,42 +304,6 @@ end;
 procedure sprScale(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
 begin
   sprStretch(imgHandle, destX, destY, destWidth, destHeight)
-end;
-
-function sprPget(const imgHandle: longint; const x, y: integer): longword;
-var
-  offset: longword;
-  a, r, g, b: byte;
-  image: PBitmap;
-begin
-  sprPget := 0;
-  if not isImageSet(imgHandle) then exit;
-
-  image := getImagePtr(imgHandle);
-
-  if (x < 0) or (x >= image^.width)
-    or (y < 0) or (y >= image^.height) then exit;
-
-  offset := (x + y * image^.width) * 4;
-  r := image^.data[offset];
-  g := image^.data[offset + 1];
-  b := image^.data[offset + 2];
-  a := image^.data[offset + 3];
-
-  sprPget := (a shl 24) or (r shl 16) or (g shl 8) or b
-end;
-
-{ Assuming image isn't nil }
-function unsafeSprPget(const image: PBitmap; const x, y: integer): longword; inline;
-var
-  offset: longword;
-begin
-  offset := (x + y * image^.width) * 4;
-
-  unsafeSprPget := (image^.data[offset + 3] shl 24)
-    or (image^.data[offset] shl 16)
-    or (image^.data[offset + 1] shl 8)
-    or image^.data[offset + 2]
 end;
 
 procedure sprBlend(const imgHandle: longint; const x, y: integer);

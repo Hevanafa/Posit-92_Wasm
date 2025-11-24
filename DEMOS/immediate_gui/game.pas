@@ -47,6 +47,24 @@ begin
     spr(imgCursor, mouseX, mouseY);
 end;
 
+procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
+var
+  a, b: word;
+  image: PBitmap;
+begin
+  if not isImageSet(imgHandle) then begin
+    writeLog('replaceColours: Unset imgHandle: ' + i32str(imgHandle));
+    exit
+  end;
+
+  image := getImagePtr(imgHandle);
+
+  for b:=0 to image^.height - 1 do
+  for a:=0 to image^.width - 1 do
+    if unsafeSprPget(image, a, b) = oldColour then
+      unsafeSprPset(image, a, b, newColour);
+end;
+
 
 procedure init;
 begin
@@ -64,6 +82,8 @@ begin
 
   initImmediateGUI;
   guiSetFont(defaultFont, defaultFontGlyphs);
+
+  replaceColours(blackFont.imgHandle, $FFFFFFFF, $FF000000);
 
   clicks := 0;
 
@@ -102,6 +122,7 @@ var
 begin
   cls($FF6495ED);
 
+  guiSetFont(blackFont, blackFontGlyphs);
   if Button('Click me!', 180, 88, 50, 24) then
     inc(clicks);
 
@@ -113,10 +134,10 @@ begin
   { spr(imgDosuEXE[0], 100, 80); }
   sprStretch(imgDosuEXE[0], 100, 80, 24, 48);
 
+  guiSetFont(defaultFont, defaultFontGlyphs);
   Slider(120, 40, 100, sliderValue, 0, 100);
   TextLabel('Slider value: ' + i32str(sliderValue.value), 120, 30);
 
-  guiSetFont(defaultFont, defaultFontGlyphs);
   s := 'Clicks: ' + i32str(clicks);
   w := guiMeasureText(s);
   TextLabel(s, (vgaWidth - w) div 2, 120);

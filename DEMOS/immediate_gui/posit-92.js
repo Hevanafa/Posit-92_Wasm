@@ -147,6 +147,10 @@ class Posit92 {
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.#wasm.exports.defaultFontPtr(),
       this.#wasm.exports.defaultFontGlyphsPtr());
+    await this.loadBMFont(
+      "assets/fonts/nokia_cellphone_fc_8.txt",
+      this.#wasm.exports.blackFontPtr(),
+      this.#wasm.exports.blackFontGlyphsPtr());
 
     await this.loadBMFont(
       "assets/fonts/picotron_8px.txt",
