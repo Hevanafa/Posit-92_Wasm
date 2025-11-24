@@ -316,8 +316,24 @@ begin
     state.value := round(perc * range)
   end;
 
-  { TODO: Render logic }
+  { Render logic }
+  line(x, y + 2, x + width, y + 2, Black);
 
+  perc := (state.value - minValue) / range;
+  thumbX := round(x + perc * width);
+
+  rectfill(thumbX - 2, zone.y, thumbX + 2, zone.y + 4, White);
+
+  if activeWidget = thisWidgetID then
+    { dragging }
+    colour := IceCreamRed
+  else if hotWidget = thisWidgetID then
+    { hovering }
+    colour := IceCreamOrange
+  else
+    colour := Black;
+
+  rect(thumbX - 2, zone.y, thumbX + 2, zone.y + 4, sliderColour)
 end;
 
 end.
