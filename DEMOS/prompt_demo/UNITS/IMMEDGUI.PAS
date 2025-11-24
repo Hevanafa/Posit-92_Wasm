@@ -116,6 +116,7 @@ var
   isPromptShown: boolean;
   promptKey: integer;  { Use Prompts enum }
   promptText: string;
+  clickConsumed: boolean;
 
 
 procedure initImmediateGUI;
@@ -171,6 +172,9 @@ begin
   { Important: Do not reset activeWidget on each frame }
   { activeWidget := -1; }
   nextWidgetID := 0;
+
+  { Used by prompt box }
+  clickConsumed := false;
 end;
 
 procedure resetActiveWidget;
@@ -209,6 +213,11 @@ end;
 
 { Begin widgets }
 
+function allowWidgetInteraction: boolean;
+begin
+  allowWidgetInteraction := (not isPromptShown)
+end;
+
 procedure TextLabel(const text: string; const x, y: integer);
 begin
   assertFontSet;
@@ -232,10 +241,12 @@ begin
   thisWidgetID := nextWidgetID;
   nextWidgetID := nextWidgetID + 1;
 
-  if rectIntersects(zone, mouseZone) then begin
-    hotWidget := thisWidgetID;
+  if allowWidgetInteraction then begin
+    if rectIntersects(zone, mouseZone) then begin
+      hotWidget := thisWidgetID;
 
-    if mouseJustPressed then activeWidget := thisWidgetID;
+      if mouseJustPressed then activeWidget := thisWidgetID;
+    end;
   end;
 
   { Render logic }
@@ -274,10 +285,12 @@ begin
   thisWidgetID := nextWidgetID;
   nextWidgetID := nextWidgetID + 1;
 
-  if rectIntersects(zone, mouseZone) then begin
-    hotWidget := thisWidgetID;
+  if allowWidgetInteraction then begin
+    if rectIntersects(zone, mouseZone) then begin
+      hotWidget := thisWidgetID;
 
-    if mouseJustPressed then activeWidget := thisWidgetID;
+      if mouseJustPressed then activeWidget := thisWidgetID;
+    end;
   end;
 
   { Render logic }
@@ -349,10 +362,12 @@ begin
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
-  if rectIntersects(zone, mouseZone) then begin
-    hotWidget := thisWidgetID;
+  if allowWidgetInteraction then begin
+    if rectIntersects(zone, mouseZone) then begin
+      hotWidget := thisWidgetID;
 
-    if mouseJustPressed then activeWidget := thisWidgetID;
+      if mouseJustPressed then activeWidget := thisWidgetID;
+    end;
   end;
 
   { Render logic }
@@ -398,10 +413,12 @@ begin
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
-  if rectIntersects(zone, mouseZone) then begin
-    hotWidget := thisWidgetID;
+  if allowWidgetInteraction then begin
+    if rectIntersects(zone, mouseZone) then begin
+      hotWidget := thisWidgetID;
 
-    if mouseJustPressed then activeWidget := thisWidgetID;
+      if mouseJustPressed then activeWidget := thisWidgetID;
+    end;
   end;
 
   { Value update logic }
@@ -458,6 +475,7 @@ begin
   TextLabel(percStr, x + (width - w) div 2, y + (height - activeFont.lineHeight) div 2);
 end;
 
+
 { Prompt Box }
 procedure setPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
 begin
@@ -507,7 +525,7 @@ begin
   TextLabel(text, textX, textY);
 end;
 
-
+{ Prompt box render logic }
 function PromptBox: TPromptResult;
 const
   top = 60;
