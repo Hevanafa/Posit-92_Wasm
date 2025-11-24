@@ -59,7 +59,9 @@ procedure ProgressBarLabelled(const x, y, width, height: integer; const perc: do
 
 implementation
 
-uses Conv, Graphics, Maths, Mouse, Panic, Shapes;
+uses
+  Conv, Bitmap, Graphics, Maths,
+  Mouse, Panic, Shapes;
 
 const
   Black = $FF000000;
@@ -207,6 +209,48 @@ begin
     Button := true
   else
     Button := false;
+end;
+
+function ImageButton(const x, y: integer; const imgNormal, imgHovered, imgPressed: longint): boolean;
+var
+  zone: TRect;
+  thisWidgetID: integer;
+  buttonImgHandle: longword;
+begin
+  assertFontSet;
+
+  zone.x := x;
+  zone.y := y;
+  zone.width := getImageWidth(imgNormal);
+  zone.height := getImageHeight(imgNormal);
+
+  { Update logic }
+  thisWidgetID := nextWidgetID;
+  nextWidgetID := nextWidgetID + 1;
+
+  if rectIntersects(zone, mouseZone) then begin
+    hotWidget := thisWidgetID;
+
+    if mouseJustPressed then activeWidget := thisWidgetID;
+  end;
+
+  { Render logic }
+  if activeWidget = thisWidgetID then
+    buttonImgHandle := imgPressed
+  else if hotWidget = thisWidgetID then
+    buttonImgHandle := imgHovered
+  else 
+    buttonImgHandle := imgNormal;
+
+  spr(buttonImgHandle, x, y);
+  { Use this in case you want your buttons have semitransparent pixels }
+  { sprBlend(buttonImgHandle, x, y); }
+
+  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
+    { activeWidget = -1 }  { Index reset is handled at the end of draw }
+    ImageButton := true
+  else
+    ImageButton := false;
 end;
 
 procedure ListView(
@@ -367,5 +411,7 @@ begin
   w := measureBMFont(percStr, activeFontGlyphs);
   TextLabel(percStr, x + (width - w) div 2, y + (height - activeFont.lineHeight) div 2);
 end;
+
+
 
 end.
