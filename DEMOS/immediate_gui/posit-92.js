@@ -162,6 +162,16 @@ class Posit92 {
     handle = await this.loadImage("assets/images/dosu_2.png");
     this.#wasm.exports.setImgDosuEXE(handle, 1);
 
+    this.#wasm.exports.setImgWinNormal(
+      await this.loadImage("assets/images/btn_normal.png"));
+
+    this.#wasm.exports.setImgWinHovered(
+      await this.loadImage("assets/images/btn_hovered.png"));
+
+    this.#wasm.exports.setImgWinPressed(
+      await this.loadImage("assets/images/btn_pressed.png"));
+
+
     // Add more assets as necessary
   }
 

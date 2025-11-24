@@ -18,6 +18,7 @@ var
 
   imgCursor, imgHandCursor: longint;
   imgDosuEXE: array[0..1] of longint;
+  imgWinNormal, imgWinHovered, imgWinPressed: longint;
 
 { BMFont boilerplate }
 function defaultFontPtr: PBMFont; public name 'defaultFontPtr';
@@ -35,6 +36,10 @@ function measureDefault(const text: string): word;
 procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
 procedure setImgHandCursor(const imgHandle: longint); public name 'setImgHandCursor';
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
+
+procedure setImgWinNormal(const imgHandle: longint); public name 'setImgWinNormal';
+procedure setImgWinHovered(const imgHandle: longint); public name 'setImgWinHovered';
+procedure setImgWinPressed(const imgHandle: longint); public name 'setImgWinPressed';
 
 
 implementation
@@ -102,5 +107,21 @@ procedure setImgDosuEXE(const imgHandle: longint; const idx: integer);
 begin
   imgDosuEXE[idx] := imgHandle
 end;
+
+procedure setImgWinNormal(const imgHandle: longint);
+begin
+  imgWinNormal := imgHandle
+end;
+
+procedure setImgWinHovered(const imgHandle: longint);
+begin
+  imgWinHovered := imgHandle
+end;
+
+procedure setImgWinPressed(const imgHandle: longint);
+begin
+  imgWinPressed := imgHandle
+end;
+
 
 end.
