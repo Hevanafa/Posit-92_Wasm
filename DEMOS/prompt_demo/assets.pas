@@ -130,17 +130,17 @@ end;
 
 procedure setImgPromptBG(const imgHandle: longint);
 begin
-  setImgPromptBG := imgHandle
+  imgPromptBG := imgHandle
 end;
 
 procedure setImgPromptNormal(const imgHandle: longint);
 begin
-  setImgPromptNormal := imgHandle
+  imgPromptButtonNormal := imgHandle
 end;
 
 procedure setImgPromptPressed(const imgHandle: longint);
 begin
-  setImgPromptPressed := imgHandle
+  imgPromptButtonPressed := imgHandle
 end;
 
 

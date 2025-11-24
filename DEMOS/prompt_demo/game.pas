@@ -34,7 +34,6 @@ var
   clicks: word;
   showFPS: TCheckboxState;
   listItems: array[0..2] of string;
-  sliderValue: TSliderState;
 
   showPrompt: boolean;
   promptKey: integer;  { Use Prompts enum }
@@ -111,6 +110,7 @@ begin
   replaceColours(blackFont.imgHandle, $FFFFFFFF, $FF000000);
 
   clicks := 0;
+  showFPS.checked := true;
 
   for a:=0 to high(listItems) do
     listItems[a] := 'ListItem' + i32str(a);
@@ -152,8 +152,10 @@ begin
 
     spr(imgPromptBG, 100, 60);
 
-    if Button('Yes', 160 - 15, 100 + 50) then
+    if Button('Yes', 160 - 40, 150, 30, 12) then
       inc(clicks, 100);
+
+    
   end;
 
   if ImageButton(240, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
