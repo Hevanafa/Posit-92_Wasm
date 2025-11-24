@@ -3,7 +3,10 @@ const importObject = Object.freeze({
   env: {
     _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
 
-    helloWorld: () => console.log("Hello from snippets!")
+    helloWorld: () => console.log("Hello from snippets!"),
+    
+    logI32: (n) => console.log("logI32", n),
+    logI32Pair: (a, b) => console.log("logI32Pair", a, b)
     // Add more externals below
   }
 });
