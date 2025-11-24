@@ -104,6 +104,9 @@ var
   activeFont: TBMFont;
   activeFontGlyphs: array[32..126] of TBMFontGlyph;
 
+  { Prompt box assets }
+  imgPromptBG, imgPromptButtonNormal, imgPromptButtonPressed: longint;
+
   { Prompt box variables }
   showPrompt: boolean;
   promptKey: integer;  { Use Prompts enum }
@@ -327,7 +330,7 @@ begin
   zone.x := x;
   zone.y := y;
 
-  w := measureBMFont(caption, activeFontGlyphs);
+  w := guiMeasureText(caption);
   zone.width := w + 6;
   zone.height := activeFont.lineHeight;
 
@@ -459,16 +462,17 @@ var
   textWidth: word;
   w, h: word;
   textX, textY: integer;
+  result: boolean;
 begin
   thisWidgetID := getNextWidgetID;
   result := ImageButton(x, y, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
 
-  textWidth := measureDefault(text);
+  textWidth := guiMeasureText(text);
   w := getImageWidth(imgPromptButtonNormal);
   h := getImageHeight(imgPromptButtonPressed);
 
   textX := x + (w - textWidth) div 2;
-  textY := y + (h - defaultFont.lineHeight) div 2;
+  textY := y + (h - activeFont.lineHeight) div 2;
 
   if getActiveWidget = thisWidgetID then
     inc(textY);
