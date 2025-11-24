@@ -126,6 +126,9 @@ begin
   if Button('Click me!', 180, 88, 50, 24) then
     inc(clicks);
 
+  if ImageButton(240, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
+    inc(clicks);
+
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
   else

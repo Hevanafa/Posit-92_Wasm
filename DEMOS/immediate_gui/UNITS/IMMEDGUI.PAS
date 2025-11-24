@@ -44,7 +44,10 @@ function hasHoveredWidget: boolean;
 
 { Widgets }
 procedure TextLabel(const text: string; const x, y: integer);
+
 function Button(const caption: string; const x, y, width, height: integer): boolean;
+function ImageButton(const x, y: integer; const imgNormal, imgHovered, imgPressed: longint): boolean;
+
 procedure ListView(
   const x, y: integer;
   const items: array of string;
