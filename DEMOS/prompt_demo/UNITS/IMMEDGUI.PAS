@@ -486,14 +486,13 @@ var
   textWidth: word;
   w, h: word;
   textX, textY: integer;
-  result: boolean;
 begin
   assertImageSet('imgPromptButtonNormal', imgPromptButtonNormal);
   assertImageSet('imgPromptButtonHovered', imgPromptButtonHovered);
   assertImageSet('imgPromptButtonPressed', imgPromptButtonPressed);
 
   thisWidgetID := getNextWidgetID;
-  result := ImageButton(x, y, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
+  PromptButton := ImageButton(x, y, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
 
   textWidth := guiMeasureText(text);
   w := getImageWidth(imgPromptButtonNormal);
@@ -506,8 +505,6 @@ begin
     inc(textY);
 
   TextLabel(text, textX, textY);
-
-  PromptButton := result
 end;
 
 
