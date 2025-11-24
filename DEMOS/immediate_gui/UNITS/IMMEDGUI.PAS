@@ -239,10 +239,27 @@ begin
     if mouseJustPressed then activeWidget := thisWidgetID;
   end;
 
-  { TODO: Render logic }
+  { Render logic }
+  if state.checked then
+    rectfill(zone.x, zone.y, zone.x + 5, zone.y + 5, Black)
+  else
+    rectfill(zone.x, zone.y, zone.x + 5, zone.y + 5, White);
 
+  if activeWidget := thisWidgetID then
+    { on held down }
+    checkboxColour := IceCreamRed
+  else if hotWidget = thisWidgetID then
+    { on hover }
+    checkboxColour := IceCreamOrange
+  else
+    checkboxColour := Black;
 
+  rect(zone.x, zone.y, zone.x + 5, zone.y + 5, checkboxColour);
+  TextLabel(caption, zone.x + 7, zone.y);
 
+  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
+    { activeWidget = -1 }  { Index reset is handled at the end of draw }
+    state.checked := not state.checked;
 end;
 
 
