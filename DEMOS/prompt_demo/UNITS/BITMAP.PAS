@@ -54,7 +54,7 @@ uses
 
 { Bitmap operations }
 var
-  images: array[1..10] of TBitmap;
+  images: array[1..20] of TBitmap;
   nextImageHandle: longint = 1;
 
 function loadImageHandle: longint;

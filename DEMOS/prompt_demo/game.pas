@@ -147,23 +147,35 @@ var
 begin
   cls(CornflowerBlue);
 
-  if showPrompt then begin
-    clsBlend(SemitransparentBlack);
-
-    spr(imgPromptBG, 100, 60);
-
-    if Button('Yes', 160 - 40, 150, 30, 12) then
-      inc(clicks, 100);
-
-    
-  end;
-
   if ImageButton(240, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
     PromptBox('Accept?', PromptTest);
 
   s := 'Clicks: ' + i32str(clicks);
   w := measureBMFont(s, defaultFontGlyphs);
   TextLabel(s, (vgaWidth - w) div 2, 120);
+
+  if showPrompt then begin
+    clsBlend(SemitransparentBlack);
+
+    spr(imgPromptBG, 100, 60);
+
+    w := measureBMFont(promptText, defaultFontGlyphs);
+    TextLabel(promptText, (vgaWidth - w) div 2, 90);
+
+    if Button('Yes', 160 - 40, 100, 30, 12) then begin
+      case promptKey of
+        PromptTest: inc(clicks, 100);
+      end;
+      showPrompt := false
+    end;
+
+    if Button('No', 160 - 40, 100, 30, 12) then begin
+      { case promptKey of
+      end; }
+
+      showPrompt := false;
+    end;
+  end;
 
   resetActiveWidget;
   drawMouse;
