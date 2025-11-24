@@ -23,6 +23,9 @@ const
   CornflowerBlue = $FF6495ED;
   SemitransparentBlack = $80000000;
 
+  { Prompts enum }
+  PromptTest = 1;
+
 var
   lastEsc: boolean;
 
@@ -32,6 +35,10 @@ var
   showFPS: TCheckboxState;
   listItems: array[0..2] of string;
   sliderValue: TSliderState;
+
+  showPrompt: boolean;
+  promptKey: integer;  { Use Prompts enum }
+  promptText: string;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -74,6 +81,13 @@ begin
   for b:=0 to vgaHeight - 1 do
   for a:=0 to vgaWidth - 1 do
     unsafePsetBlend(a, b, colour);
+end;
+
+procedure PromptBox(const text: string; const key: integer);
+begin
+  showPrompt := true;
+  promptKey := key;
+  promptText := text;
 end;
 
 
@@ -133,41 +147,14 @@ var
 begin
   cls(CornflowerBlue);
 
-  clsBlend(SemitransparentBlack)
+  if showPrompt then begin
+    clsBlend(SemitransparentBlack);
 
-  guiSetFont(blackFont, blackFontGlyphs);
-  if Button('Click me!', 180, 88, 50, 24) then
-    inc(clicks);
+
+  end;
 
   if ImageButton(240, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
-    inc(clicks);
-
-  if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
-  else
-    spr(imgDosuEXE[0], 148, 88);
-
-  { spr(imgDosuEXE[0], 100, 80); }
-  sprStretch(imgDosuEXE[0], 100, 80, 24, 48);
-
-  guiSetFont(defaultFont, defaultFontGlyphs);
-  Slider(120, 40, 100, sliderValue, 0, 100);
-  TextLabel('Slider value: ' + i32str(sliderValue.value), 120, 30);
-
-  s := 'Clicks: ' + i32str(clicks);
-  w := guiMeasureText(s);
-  TextLabel(s, (vgaWidth - w) div 2, 120);
-
-  guiSetFont(picotronFont, picotronFontGlyphs);
-  s := 'Picotron font';
-  w := guiMeasureText(s);
-  TextLabel(s, (vgaWidth - w) div 2, 140);
-
-  guiSetFont(defaultFont, defaultFontGlyphs);
-  ProgressBar(10, 80, 80, 10, 0.75);
-  ProgressBarLabelled(10, 100, 80, 10, 0.75);
-  Checkbox('Show FPS', 10, 60, showFPS);
-  ListView(10, 10, listItems, 2);
+    PromptBox('Accept?', PromptTest);
 
   resetActiveWidget;
 
