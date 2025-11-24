@@ -27,6 +27,8 @@ var
   { Init your game state here }
   gameTime: double;
   clicks: word;
+  showFPS: TCheckboxState;
+  listItems: array[0..2] of string;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -50,6 +52,8 @@ begin
 end;
 
 procedure afterInit;
+var
+  a: integer;
 begin
   { Initialise game state here }
   hideCursor;
@@ -58,6 +62,9 @@ begin
   guiSetFont(defaultFont, defaultFontGlyphs);
 
   clicks := 0;
+
+  for a:=0 to high(listItems) do
+    listItems[a] := 'ListItem' + i32str(a);
 end;
 
 procedure update;
@@ -112,10 +119,14 @@ begin
   w := guiMeasureText(s);
   TextLabel(s, (vgaWidth - w) div 2, 140);
 
+  Checkbox('Show FPS', 10, 60, showFPS);
+  ListView(10, 10, listItems, 2);
+
   resetActiveWidget;
 
   drawMouse;
-  drawFPS;
+
+  if showFPS.checked then drawFPS;
 
   flush
 end;
