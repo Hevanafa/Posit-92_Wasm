@@ -192,6 +192,8 @@ var
   lineHeight: word;
   widgetWidth, widgetHeight: word;
 begin
+  assertFontSet;
+
   lineHeight := defaultFont.lineHeight + 2;
 
   widgetWidth := 100;
@@ -218,7 +220,29 @@ var
   thisWidgetID: integer;
   checkboxColour: longword;
 begin
-  
+  assertFontSet;
+
+  zone.x := x;
+  zone.y := y;
+
+  w := measureBMFont(caption, activeFontGlyphs);
+  zone.width := w + 6;
+  zone.height := activeFont.lineHeight;
+
+  { Update logic }
+  thisWidgetID := nextWidgetID;
+  inc(nextWidgetID);
+
+  if rectIntersects(zone, mouseZone) then begin
+    hotWidget := thisWidgetID;
+
+    if mouseJustPressed then activeWidget := thisWidgetID;
+  end;
+
+  { TODO: Render logic }
+
+
+
 end;
 
 
