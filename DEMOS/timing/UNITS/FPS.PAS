@@ -6,7 +6,6 @@ interface
 
 procedure initFPSCounter;
 procedure incrementFPS;
-{ procedure drawFPS; }
 
 function getLastFPS: integer;
 
