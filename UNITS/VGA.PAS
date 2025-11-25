@@ -25,19 +25,19 @@ var
   surface: TByteArray;
 
 { Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
-procedure initBuffer; public name 'initBuffer';
-function getSurface: pointer; public name 'getSurface';
+procedure initBuffer;
+function getSurface: pointer;
 
 { Colour format: $AARRGGBB }
-procedure cls(const colour: longword); public name 'cls';
+procedure cls(const colour: longword);
 procedure clsBlend(const colour: longword);
 procedure flush; external 'env' name 'flush';
 
-procedure unsafePset(const x, y: integer; const colour: longword); public name 'unsafePset';
-procedure pset(const x, y: integer; const colour: longword); public name 'pset';
+procedure unsafePset(const x, y: integer; const colour: longword);
+procedure pset(const x, y: integer; const colour: longword);
 
-procedure unsafePsetBlend(const x, y: integer; const colour: longword); public name 'unsafePsetBlend';
-procedure psetBlend(const x, y: integer; const colour: longword); public name 'psetBlend';
+procedure unsafePsetBlend(const x, y: integer; const colour: longword);
+procedure psetBlend(const x, y: integer; const colour: longword);
 
 implementation
 

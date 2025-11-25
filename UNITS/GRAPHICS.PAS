@@ -10,15 +10,15 @@ unit Graphics;
 
 interface
 
-procedure circ(const cx, cy, radius: integer; const colour: longword); public name 'circ';
-procedure circfill(const cx, cy, radius: integer; const colour: longword); public name 'circfill';
+procedure circ(const cx, cy, radius: integer; const colour: longword);
+procedure circfill(const cx, cy, radius: integer; const colour: longword);
 
-procedure rect(x0, y0, x1, y1: integer; const colour: longword); public name 'rect';
-procedure rectfill(x0, y0, x1, y1: integer; const colour: longword); public name 'rectfill';
-procedure hline(x0, x1, y: integer; const colour: longword); public name 'hline';
-procedure vline(x, y0, y1: integer; const colour: longword); public name 'vline';
+procedure rect(x0, y0, x1, y1: integer; const colour: longword);
+procedure rectfill(x0, y0, x1, y1: integer; const colour: longword);
+procedure hline(x0, x1, y: integer; const colour: longword);
+procedure vline(x, y0, y1: integer; const colour: longword);
 
-procedure line(x0, y0, x1, y1: integer; const colour: longword); public name 'line';
+procedure line(x0, y0, x1, y1: integer; const colour: longword);
 
 
 implementation
