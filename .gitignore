@@ -30,6 +30,7 @@ DEMOS/sprites/*.ps1
 DEMOS/particles/*.ps1
 DEMOS/lerp/*.ps1
 DEMOS/prompt_demo/*.ps1
+DEMOS/nine_slice/*.ps1
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
