@@ -90,7 +90,7 @@ uses
 
 { Bitmap operations }
 var
-  images: array[1..10] of TBitmap;
+  images: array[1..15] of TBitmap;
   { nextImageHandle: longint = 1; }
 
 function getMaxBitmapData: longword;

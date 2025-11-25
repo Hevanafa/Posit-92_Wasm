@@ -181,6 +181,11 @@ begin
   if ImageButton((vgaWidth - getImageWidth(imgWinNormal)) div 2, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
     ShowPromptBox('Accept?', PromptTest);
 }
+
+  spr(img9SliceNormal, 30, 30);
+  spr(img9SliceHovered, 60, 30);
+  spr(img9SlicePressed, 90, 30);
+
   sprNineSlice(
     img9SliceNormal,
     100, 100, 60, 30, demoMargins
