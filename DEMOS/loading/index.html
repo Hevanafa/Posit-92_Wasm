@@ -53,6 +53,10 @@ body {
   left: 0;
   width: 640px;
   height: 400px;
+
+  background: black;
+  opacity: 1.0;
+  transition: opacity 0.4s;
 }
 
 #loading-overlay > div {
@@ -63,11 +67,16 @@ body {
   height: fit-content;
 }
 
+#loading-overlay.hidden {
+  opacity: 0.0;
+  pointer-events: none;
+}
+
   </style>
 </head>
 <body>
   <canvas id="game" width="320" height="200"></canvas>
-  
+
   <div id="loading-overlay">
     <div>Now loading...</div>
   </div>

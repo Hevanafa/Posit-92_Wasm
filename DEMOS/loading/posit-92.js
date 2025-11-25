@@ -157,7 +157,9 @@ class Posit92 {
 
   #hideLoadingOverlay() {
     const div = document.getElementById("loading-overlay");
-    div.style.display = "none";
+    // div.style.display = "none";
+    div.classList.add("hidden");
+    this.#setLoadingText("");
   }
 
   async #sleep(ms) {
