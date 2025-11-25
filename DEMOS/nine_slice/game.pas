@@ -16,6 +16,11 @@ uses Bitmap, BMFont, Conv, FPS,
   Timing, VGA,
   Assets;
 
+type
+  TNineSliceMargins = record
+    top, right, bottom, left: integer
+  end;
+
 const
   SC_ESC = $01;
   SC_SPACE = $39;
@@ -66,6 +71,53 @@ begin
   for a:=0 to image^.width - 1 do
     if unsafeSprPget(image, a, b) = oldColour then
       unsafeSprPset(image, a, b, newColour);
+end;
+
+procedure sprNineSlice(
+  const imgHandle: longint;
+  const x, y, width, height: integer;
+  const margins: TNineSliceMargins);
+var
+  srcCentreW, srcCentreH: integer;
+  destCentreW, destCentreH: integer;
+  image: PBitmap;
+begin
+  if not isImageSet(imgHandle) then
+    panicHalt('sprNineSlice: imgHandle is ' + i32str(imgHandle) + '!');
+
+  image := getImagePtr(imgHandle);
+
+  srcCentreW := getImageWidth(imgHandle) - margins.left - margins.right;
+  srcCentreH := getImageHeight(imgHandle) - margins.top - margins.bottom;
+  destCentreW := width - margins.left - margins.right;
+  destCentreH := height - margins.top - margins.bottom;
+
+  { Middle fill }
+  sprRegionStretch(imgHandle,
+    margins.left, margins.top, srcCentreW, srcCentreH,
+    x + margins.left, y + margins.top, destCentreW, destCentreH);
+  
+  { Top side }
+  sprRegionStretch(imgHandle,
+    margins.left, 0, srcCentreW, margins.top,
+    x + margins.left, y, destCentreW, margins.top);
+  
+  { Bottom side }
+  sprRegionStretch(imgHandle,
+    margins.left, getImageHeight(imgHandle) - margins.bottom, srcCentreW, margins.bottom,
+    x + margins.left, y + height - margins.bottom, destCentreW, margins.bottom);
+
+  { Left side }
+  sprRegionStretch(imgHandle,
+    0, margins.top, margins.left, srcCentreH,
+    x, y + margins.top, margins.left, destCentreH);
+
+  { Right side }
+  sprRegionStretch(imgHandle,
+    getImageWidth(imgHandle) - margins.right, margins.top, margins.right, srcCentreH,
+    x + width - margins.right, y + margins.top, margins.right, destCentreH);
+
+  { TODO: Implement corners }
 end;
 
 
