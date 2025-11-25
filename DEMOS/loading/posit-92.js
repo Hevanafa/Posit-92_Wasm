@@ -126,6 +126,7 @@ class Posit92 {
 
   async init() {
     this.#setLoadingText("Loading WebAssembly binary...");
+    await this.#sleep(500);
 
     await this.#initWebAssembly();
     this.#loadMidnightOffset();
@@ -159,11 +160,16 @@ class Posit92 {
     div.style.display = "none";
   }
 
+  async #sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
   async loadAssets() {
     let handle = 0;
 
     this.#setLoadingText("Loading images & fonts...");
-    
+    await this.#sleep(300);
+
     handle = await this.loadImage("assets/images/cursor.png");
     this.#wasm.exports.setImgCursor(handle);
 
@@ -176,6 +182,12 @@ class Posit92 {
     this.#wasm.exports.setImgDosuEXE(handle, 0);
     handle = await this.loadImage("assets/images/dosu_2.png");
     this.#wasm.exports.setImgDosuEXE(handle, 1);
+
+    this.#setLoadingText("Loading sounds...");
+    await this.#sleep(300);
+
+    this.#setLoadingText("Almost there...");
+    await this.#sleep(200);
 
     // Add more assets as necessary
   }
