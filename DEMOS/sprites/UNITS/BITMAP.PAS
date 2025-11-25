@@ -55,6 +55,16 @@ procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: int
 procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
 procedure sprScale(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
 
+procedure sprRegionStretch(
+  const imgHandle: longint;
+  const srcX, srcY, srcWidth, srcHeight: integer;
+  const destX, destY, destWidth, destHeight: integer);
+procedure sprRegionScale(
+  const imgHandle: longint;
+  const srcX, srcY, srcWidth, srcHeight: integer;
+  const destX, destY, destWidth, destHeight: integer);
+
+
 { rotation is in radians }
 procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
 
@@ -433,6 +443,16 @@ begin
 
     unsafePset(dx + destX, dy + destY, colour)
   end;
+end;
+
+procedure sprRegionScale(
+  const imgHandle: longint;
+  const srcX, srcY, srcWidth, srcHeight: integer;
+  const destX, destY, destWidth, destHeight: integer);
+begin
+  sprRegionStretch(imgHandle,
+    srcX, srcY, srcWidth, srcHeight,
+    destX, destY, destWidth, destHeight)
 end;
 
 

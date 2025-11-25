@@ -341,7 +341,7 @@ begin
     DemoStateRegionScaling: begin
       sprRegionStretch(imgBlueEnemy,
         25 * selectedFrame, 0, 25, 25,
-        trunc(dosuZone.x), trunc(dosuZone.y));
+        trunc(dosuZone.x), trunc(dosuZone.y), trunc(dosuZone.width), trunc(dosuZone.height));
 
       printCentred('WASD - Move', 120);
       printCentred('Arrow keys - Resize', 130);
