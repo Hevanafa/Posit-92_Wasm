@@ -108,10 +108,23 @@ class Posit92 {
 
   // Init segment
   async #initWebAssembly() {
-    const response = await fetch(this.#wasmSource);
-    const bytes = await response.arrayBuffer();
-    const result = await WebAssembly.instantiate(bytes, this.#importObject);
-    this.#wasm = result.instance;
+    try {
+      const response = await fetch(this.#wasmSource);
+
+      if (!response.ok) {
+        this.#setLoadingText(`Error: Failed to load ${this.#wasmSource} (${response.status})`);
+        return false
+      }
+
+      const bytes = await response.arrayBuffer();
+      const result = await WebAssembly.instantiate(bytes, this.#importObject);
+      this.#wasm = result.instance;
+      return true
+    } catch (e) {
+      this.#setLoadingText(`Error loading WebAssembly: ${ e.message }`);
+      console.error("Wasm load error:", e);
+      return false
+    }
   }
 
   #initAudio() {
@@ -128,7 +141,11 @@ class Posit92 {
     this.#setLoadingText("Loading WebAssembly binary...");
     await this.#sleep(500);
 
-    await this.#initWebAssembly();
+    if (!(await this.#initWebAssembly())) {
+      done = true;
+      return
+    }
+
     this.#loadMidnightOffset();
     this.#wasm.exports.init();
     this.#initKeyboard();
