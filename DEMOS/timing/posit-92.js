@@ -49,6 +49,8 @@ class Posit92 {
   #musicVolume = 1.0;
   #musicGainNode = null;
 
+  #midnightOffset = 0;
+
   /**
    * For use with WebAssembly init
    */
@@ -85,6 +87,7 @@ class Posit92 {
 
       // Timing
       getTimer: () => this.getTimer(),
+      getFullTimer: () => this.getFullTimer(),
 
       // VGA
       flush: () => this.flush()
@@ -116,12 +119,19 @@ class Posit92 {
     this.#audioContext = new AudioContext();
   }
 
+  #loadMidnightOffset() {
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    this.#midnightOffset = midnight.getTime()
+  }
+
   async init() {
     await this.#initWebAssembly();
     this.#wasm.exports.init();
     this.#initKeyboard();
     this.#initMouse();
     this.#initAudio();
+    this.#loadMidnightOffset();
   }
 
   afterInit() {
@@ -552,6 +562,10 @@ class Posit92 {
 
   // TIMING.PAS
   getTimer() {
+    return (Date.now() - this.#midnightOffset) / 1000
+  }
+
+  getFullTimer() {
     return Date.now() / 1000
   }
 
