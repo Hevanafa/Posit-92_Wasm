@@ -21,8 +21,16 @@ type
   TSliderState = record
     value: integer;
   end;
+  TPromptResult = (PromptWait, PromptYes, PromptNo);
 
 procedure initImmediateGUI;
+
+function getHotWidget: integer;
+function getActiveWidget: integer;
+function getNextWidgetID: integer;
+
+{ Can be used with drawMouse }
+function hasHoveredWidget: boolean;
 
 { Called before updateMouse }
 procedure updateGUILastMouseButton;
@@ -38,9 +46,6 @@ procedure resetActiveWidget;
 
 procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 function guiMeasureText(const text: string): word;
-
-{ Can be used with drawMouse }
-function hasHoveredWidget: boolean;
 
 { Widgets }
 procedure TextLabel(const text: string; const x, y: integer);
@@ -59,18 +64,27 @@ procedure Slider(const x, y, width: integer; var state: TSliderState; const minV
 procedure ProgressBar(const x, y, width, height: integer; const perc: double);
 procedure ProgressBarLabelled(const x, y, width, height: integer; const perc: double);
 
+{ Prompt Box }
+procedure setPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
+function getPromptKey: integer;
+
+procedure ShowPromptBox(const text: string; const key: integer);
+function PromptButton(const text: string; const x, y: integer): boolean;
+function PromptBox: TPromptResult;
 
 implementation
 
 uses
   Conv, Bitmap, Graphics, Maths,
-  Mouse, Panic, Shapes;
+  Mouse, Panic, Shapes, VGA;
 
 const
   Black = $FF000000;
   White = $FFFFFFFF;
   Red = $FFFF5555;
-  
+  DarkBlue = $FF0000AA;
+  SemitransparentBlack = $80000000;
+
 { Immediate GUI default theme
   https://lospec.com/palette-list/ice-cream-gb }
   IceCreamWhite = $FFFFF6D3;
@@ -95,6 +109,15 @@ var
   activeFont: TBMFont;
   activeFontGlyphs: array[32..126] of TBMFontGlyph;
 
+  { Prompt box assets }
+  imgPromptBG, imgPromptButtonNormal, imgPromptButtonHovered, imgPromptButtonPressed: longint;
+
+  { Prompt box variables }
+  isPromptShown: boolean;
+  promptKey: integer;  { Use Prompts enum }
+  promptText: string;
+  clickConsumed: boolean;
+
 
 procedure initImmediateGUI;
 begin
@@ -107,6 +130,27 @@ begin
   mouseZone.width := 1;
   mouseZone.height := 1;
 end;
+
+function getHotWidget: integer;
+begin
+  getHotWidget := hotWidget
+end;
+
+function getActiveWidget: integer;
+begin
+  getActiveWidget := activeWidget
+end;
+
+function getNextWidgetID: integer;
+begin
+  getNextWidgetID := nextWidgetID
+end;
+
+function hasHoveredWidget: boolean;
+begin
+  hasHoveredWidget := hotWidget > -1
+end;
+
 
 procedure updateGUILastMouseButton;
 begin
@@ -128,6 +172,9 @@ begin
   { Important: Do not reset activeWidget on each frame }
   { activeWidget := -1; }
   nextWidgetID := 0;
+
+  { Used by prompt box }
+  clickConsumed := false;
 end;
 
 procedure resetActiveWidget;
@@ -151,19 +198,25 @@ begin
   if not isFontSet then panicHalt('activeFont is unset!');
 end;
 
+procedure assertImageSet(const varName: string; const imgHandle: longint);
+begin
+  if not isImageSet(imgHandle) then
+    panicHalt(varName + ' is unset!');
+end;
+
 function guiMeasureText(const text: string): word;
 begin
   assertFontSet;
   guiMeasureText := measureBMFont(text, activeFontGlyphs)
 end;
 
-function hasHoveredWidget: boolean;
-begin
-  hasHoveredWidget := hotWidget > -1
-end;
-
 
 { Begin widgets }
+
+function allowWidgetInteraction: boolean;
+begin
+  allowWidgetInteraction := (not isPromptShown)
+end;
 
 procedure TextLabel(const text: string; const x, y: integer);
 begin
@@ -186,12 +239,14 @@ begin
 
   { Update logic }
   thisWidgetID := nextWidgetID;
-  nextWidgetID := nextWidgetID + 1;
+  inc(nextWidgetID);
 
-  if rectIntersects(zone, mouseZone) then begin
-    hotWidget := thisWidgetID;
+  if allowWidgetInteraction then begin
+    if rectIntersects(zone, mouseZone) then begin
+      hotWidget := thisWidgetID;
 
-    if mouseJustPressed then activeWidget := thisWidgetID;
+      if mouseJustPressed then activeWidget := thisWidgetID;
+    end;
   end;
 
   { Render logic }
@@ -206,10 +261,15 @@ begin
   rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), IceCreamWhite);
   TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
 
-  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
+  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then begin
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
-    Button := true
-  else
+
+    if not clickConsumed then begin
+      Button := true;
+      clickConsumed := true
+    end else
+      Button := false;
+  end else
     Button := false;
 end;
 
@@ -228,12 +288,14 @@ begin
 
   { Update logic }
   thisWidgetID := nextWidgetID;
-  nextWidgetID := nextWidgetID + 1;
+  inc(nextWidgetID);
 
-  if rectIntersects(zone, mouseZone) then begin
-    hotWidget := thisWidgetID;
+  if allowWidgetInteraction then begin
+    if rectIntersects(zone, mouseZone) then begin
+      hotWidget := thisWidgetID;
 
-    if mouseJustPressed then activeWidget := thisWidgetID;
+      if mouseJustPressed then activeWidget := thisWidgetID;
+    end;
   end;
 
   { Render logic }
@@ -250,11 +312,15 @@ begin
 
   if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
-    ImageButton := true
+
+    if not clickConsumed then begin
+      ImageButton := true;
+      clickConsumed := true
+    end else
+      ImageButton := false
   else
     ImageButton := false;
 end;
-
 
 procedure ListView(
   const x, y: integer;
@@ -265,6 +331,8 @@ var
   lineHeight: word;
   widgetWidth, widgetHeight: word;
 begin
+  assertFontSet;
+
   lineHeight := activeFont.lineHeight + 2;
 
   widgetWidth := 100;
@@ -296,7 +364,7 @@ begin
   zone.x := x;
   zone.y := y;
 
-  w := measureBMFont(caption, activeFontGlyphs);
+  w := guiMeasureText(caption);
   zone.width := w + 6;
   zone.height := activeFont.lineHeight;
 
@@ -304,10 +372,12 @@ begin
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
-  if rectIntersects(zone, mouseZone) then begin
-    hotWidget := thisWidgetID;
+  if allowWidgetInteraction then begin
+    if rectIntersects(zone, mouseZone) then begin
+      hotWidget := thisWidgetID;
 
-    if mouseJustPressed then activeWidget := thisWidgetID;
+      if mouseJustPressed then activeWidget := thisWidgetID;
+    end;
   end;
 
   { Render logic }
@@ -328,9 +398,13 @@ begin
   rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + 5), trunc(zone.y + 5), checkboxColour);
   TextLabel(caption, trunc(zone.x + 7), trunc(zone.y));
 
-  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
+  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then begin
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
-    state.checked := not state.checked;
+    if not clickConsumed then begin
+      state.checked := not state.checked;
+      clickConsumed := true
+    end;
+  end;
 end;
 
 
@@ -353,10 +427,12 @@ begin
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
-  if rectIntersects(zone, mouseZone) then begin
-    hotWidget := thisWidgetID;
+  if allowWidgetInteraction then begin
+    if rectIntersects(zone, mouseZone) then begin
+      hotWidget := thisWidgetID;
 
-    if mouseJustPressed then activeWidget := thisWidgetID;
+      if mouseJustPressed then activeWidget := thisWidgetID;
+    end;
   end;
 
   { Value update logic }
@@ -412,5 +488,124 @@ begin
   w := measureBMFont(percStr, activeFontGlyphs);
   TextLabel(percStr, x + (width - w) div 2, y + (height - activeFont.lineHeight) div 2);
 end;
+
+
+{ Prompt Box }
+procedure setPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
+begin
+  imgPromptBG := background;
+  imgPromptButtonNormal := btnNormal;
+  imgPromptButtonHovered := btnHovered;
+  imgPromptButtonPressed := btnPressed;
+end;
+
+function getPromptKey: integer;
+begin
+  getPromptKey := promptKey
+end;
+
+{ Show prompt box }
+procedure ShowPromptBox(const text: string; const key: integer);
+begin
+  isPromptShown := true;
+  promptKey := key;
+  promptText := text;
+end;
+
+function PromptButton(const text: string; const x, y: integer): boolean;
+var
+  zone: TRect;
+  thisWidgetID: integer;
+  buttonImgHandle: longword;
+
+  textWidth: word;
+  w, h: word;
+  textX, textY: integer;
+begin
+  assertImageSet('imgPromptButtonNormal', imgPromptButtonNormal);
+  assertImageSet('imgPromptButtonHovered', imgPromptButtonHovered);
+  assertImageSet('imgPromptButtonPressed', imgPromptButtonPressed);
+
+  zone.x := x;
+  zone.y := y;
+  zone.width := getImageWidth(imgPromptButtonNormal);
+  zone.height := getImageHeight(imgPromptButtonNormal);
+
+  { Update logic }
+  thisWidgetID := nextWidgetID;
+  { PromptButton := ImageButton(x, y, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed); }
+  inc(nextWidgetID);
+
+  if rectIntersects(zone, mouseZone) then begin
+    hotWidget := thisWidgetID;
+    if mouseJustPressed then activeWidget := thisWidgetID;
+  end;
+
+  { Render logic }
+  if activeWidget = thisWidgetID then
+    buttonImgHandle := imgPromptButtonPressed
+  else if hotWidget = thisWidgetID then
+    buttonImgHandle := imgPromptButtonHovered
+  else 
+    buttonImgHandle := imgPromptButtonNormal;
+
+  spr(buttonImgHandle, x, y);
+
+  textWidth := guiMeasureText(text);
+  w := getImageWidth(imgPromptButtonNormal);
+  h := getImageHeight(imgPromptButtonPressed);
+
+  textX := x + (w - textWidth) div 2;
+  textY := y + (h - activeFont.lineHeight) div 2;
+
+  { when pressed }
+  if getActiveWidget = thisWidgetID then
+    inc(textY);
+
+  TextLabel(text, textX, textY);
+
+  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then begin
+    { activeWidget = -1 }  { Index reset is handled at the end of draw }
+    if not clickConsumed then begin
+      PromptButton := true;
+      clickConsumed := true
+    end else
+      PromptButton := false;
+  end else
+    PromptButton := false;
+end;
+
+{ Prompt box render logic }
+function PromptBox: TPromptResult;
+const
+  top = 60;
+  left = 100;
+var
+  w: word;
+begin
+  if not isPromptShown then exit;
+
+  assertImageSet('imgPromptBG', imgPromptBG);
+
+  clsBlend(SemitransparentBlack);
+
+  spr(imgPromptBG, left, top);
+
+  w := guiMeasureText(promptText);
+  TextLabel(promptText, (vgaWidth - w) div 2, 90);
+
+  PromptBox := PromptWait;
+
+  if PromptButton('Yes', 160 - 40, 110) then begin
+    isPromptShown := false;
+    PromptBox := PromptYes
+  end;
+
+  if PromptButton('No', 160 + 10, 110) then begin
+    isPromptShown := false;
+    PromptBox := PromptNo
+  end;
+end;
+
 
 end.
