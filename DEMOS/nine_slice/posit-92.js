@@ -180,6 +180,14 @@ class Posit92 {
     this.#wasm.exports.setImgPromptPressed(
       await this.loadImage("assets/images/btn_prompt_pressed.png"));
 
+    this.#wasm.exports.setImg9SliceNormal(
+      await this.loadImage("assets/images/9slice_normal.png"));
+
+    this.#wasm.exports.setImg9SliceHovered(
+      await this.loadImage("assets/images/9slice_hovered.png"));
+
+    this.#wasm.exports.setImg9SlicePressed(
+      await this.loadImage("assets/images/9slice_pressed.png"));
 
     // Add more assets as necessary
   }

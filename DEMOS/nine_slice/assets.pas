@@ -46,6 +46,10 @@ procedure setImgPromptBG(const imgHandle: longint); public name 'setImgPromptBG'
 procedure setImgPromptNormal(const imgHandle: longint); public name 'setImgPromptNormal';
 procedure setImgPromptPressed(const imgHandle: longint); public name 'setImgPromptPressed';
 
+procedure setImg9SliceNormal(const imgHandle: longint); public name 'setImg9SliceNormal';
+procedure setImg9SliceHovered(const imgHandle: longint); public name 'setImg9SliceHovered';
+procedure setImg9SlicePressed(const imgHandle: longint); public name 'setImg9SlicePressed';
+
 
 implementation
 
@@ -141,6 +145,21 @@ end;
 procedure setImgPromptPressed(const imgHandle: longint);
 begin
   imgPromptButtonPressed := imgHandle
+end;
+
+procedure setImg9SliceNormal(const imgHandle: longint);
+begin
+  setImg9SliceNormal := imgHandle
+end;
+
+procedure setImg9SliceHovered(const imgHandle: longint);
+begin
+  setImg9SliceHovered := imgHandle
+end;
+
+procedure setImg9SlicePressed(const imgHandle: longint);
+begin
+  setImg9SlicePressed := imgHandle
 end;
 
 
