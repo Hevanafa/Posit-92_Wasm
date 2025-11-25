@@ -397,6 +397,25 @@ begin
   sprStretch(imgHandle, destX, destY, destWidth, destHeight)
 end;
 
+procedure sprRegionStretch(
+  const imgHandle: longint;
+  const srcX, srcY, srcWidth, srcHeight: integer;
+  const destX, destY, destWidth, destHeight: integer);
+var
+  sx, sy: integer;
+  dx, dy: integer;
+  image: PBitmap;
+  alpha: byte;
+  scaleX, scaleY: double;
+  colour: longword;
+begin
+  if not isImageSet(imgHandle) then exit;
+  image := getImagePtr(imgHandle);
+
+  { TODO: Handle scale }
+
+end;
+
 
 procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
 var
