@@ -30,6 +30,7 @@ function getSurface: pointer; public name 'getSurface';
 
 { Colour format: $AARRGGBB }
 procedure cls(const colour: longword); public name 'cls';
+procedure clsBlend(const colour: longword);
 procedure flush; external 'env' name 'flush';
 
 procedure unsafePset(const x, y: integer; const colour: longword); public name 'unsafePset';
@@ -170,6 +171,17 @@ begin
   for y:=0 to vgaHeight - 1 do
     for x:=0 to vgaWidth - 1 do
       unsafePset(x, y, colour);
+end;
+
+procedure clsBlend(const colour: longword);
+var
+  a, b: integer;
+begin
+  if not bufferInitialised then exit;
+  
+  for b:=0 to vgaHeight - 1 do
+  for a:=0 to vgaWidth - 1 do
+    unsafePsetBlend(a, b, colour);
 end;
 
 

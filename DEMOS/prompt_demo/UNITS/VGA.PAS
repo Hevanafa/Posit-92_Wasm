@@ -219,6 +219,8 @@ procedure clsBlend(const colour: longword);
 var
   a, b: integer;
 begin
+  if not bufferInitialised then exit;
+  
   for b:=0 to vgaHeight - 1 do
   for a:=0 to vgaWidth - 1 do
     unsafePsetBlend(a, b, colour);
