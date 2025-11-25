@@ -144,6 +144,8 @@ begin
 
   slot := getEmptyImageSlot;
 
+  if slot < 0 then panicHalt('newImage: Out of bitmap slots!');
+
   bmp.width := width;
   bmp.height := height;
   fillchar(bmp.data, sizeof(bmp.data), 0);
