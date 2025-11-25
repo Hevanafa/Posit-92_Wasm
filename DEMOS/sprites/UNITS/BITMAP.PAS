@@ -36,6 +36,7 @@ function getMaxBitmapData: longword; public name 'getMaxBitmapData';
 function getEmptyImageSlot: longint; public name 'getEmptyImageSlot';
 
 function newImage(const width, height: integer): longint; public name 'newImage';
+function copyImage(const imgHandle: longint): longint;
 procedure freeImage(const imgHandle: longint);
 
 function isImageSet(const imgHandle: longint): boolean; public name 'isImageSet';
@@ -44,6 +45,12 @@ function getImagePtr(const imgHandle: longint): PBitmap; public name 'getImagePt
 
 function getImageWidth(const imgHandle: longint): word; public name 'getImageWidth';
 function getImageHeight(const imgHandle: longint): word; public name 'getImageHeight';
+
+function unsafeSprPget(const image: PBitmap; const x, y: integer): longword;
+function sprPget(const imgHandle: longint; const x, y: integer): longword;
+
+procedure unsafeSprPset(const image: PBitmap; const x, y: integer; const colour: longword);
+procedure sprPset(const imgHandle: longint; const x, y: integer; const colour: longword);
 
 procedure spr(const imgHandle: longint; const x, y: integer); public name 'spr';
 procedure sprRegion(
@@ -68,6 +75,7 @@ procedure sprRegionScale(
 { rotation is in radians }
 procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
 
+procedure sprAlpha(const imgHandle: longint; const x, y: integer; opacity: double);
 procedure sprBlend(const imgHandle: longint; const x, y: integer); public name 'sprBlend';
 procedure sprRegionBlend(
   const imgHandle: longint;
@@ -78,7 +86,7 @@ procedure sprRegionBlend(
 implementation
 
 uses
-  Conv, Logger, Panic, VGA;
+  Conv, Logger, Maths, Panic, VGA;
 
 { Bitmap operations }
 var
@@ -150,6 +158,31 @@ begin
 
   images[slot] := bmp;
   newImage := slot
+end;
+
+function copyImage(const imgHandle: longint): longint;
+var
+  slot: longint;
+  src, dest: PBitmap;
+  a, b: integer;
+begin
+  src := getImagePtr(imgHandle);
+  slot := newImage(src^.width, src^.height);
+  dest := getImagePtr(slot);
+
+  for b:=0 to src^.height - 1 do
+  for a:=0 to src^.width - 1 do
+    unsafeSprPset(dest, a, b, unsafeSprPget(src, a, b));
+
+  copyImage := slot
+end;
+
+procedure freeImage(const imgHandle: longint);
+begin
+  if (imgHandle < low(images)) or (imgHandle > high(images)) then exit;
+  { images[imgHandle] := nil }
+  images[imgHandle].width := 0;
+  images[imgHandle].height := 0;
 end;
 
 
@@ -232,6 +265,7 @@ begin
   getImageHeight := image^.height
 end;
 
+
 { Assuming image isn't nil & the bounds are known }
 function unsafeSprPget(const image: PBitmap; const x, y: integer): longword;
 var
@@ -259,6 +293,34 @@ begin
     or (y < 0) or (y >= image^.height) then exit;
 
   sprPget := unsafeSprPget(image, x, y)
+end;
+
+{ Assuming image isn't nil & the bounds are known }
+procedure unsafeSprPset(const image: PBitmap; const x, y: integer; const colour: longword);
+var
+  offset: longword;
+begin
+  offset := (x + y * image^.width) * 4;
+
+  { Order: RGBA }
+  image^.data[offset] := colour shr 16 and $FF;
+  image^.data[offset + 1] := colour shr 8 and $FF;
+  image^.data[offset + 2] := colour and $FF;
+  image^.data[offset + 3] := colour shr 24 and $FF;
+end;
+
+procedure sprPset(const imgHandle: longint; const x, y: integer; const colour: longword);
+var
+  image: PBitmap;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+
+  if (x < 0) or (x >= image^.width)
+    or (y < 0) or (y >= image^.height) then exit;
+
+  unsafeSprPset(image, x, y, colour)
 end;
 
 
@@ -320,6 +382,7 @@ begin
     unsafePset(destX + a, destY + b, colour);
   end;
 end;
+
 
 { flip: use SprFlips enum }
 procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
@@ -506,6 +569,34 @@ begin
   end;
 end;
 
+
+procedure sprAlpha(const imgHandle: longint; const x, y: integer; opacity: double);
+var
+  image: PBitmap;
+  px, py: integer;
+  colour: longword;
+  alpha: byte;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+  opacity := clamp(opacity, 0.0, 1.0);
+
+  for py := 0 to image^.height - 1 do
+  for px := 0 to image^.width - 1 do begin
+    if (x + px >= vgaWidth) or (x + px < 0)
+      or (y + py >= vgaHeight) or (y + py < 0) then continue;
+
+    colour := unsafeSprPget(image, px, py);
+    alpha := colour shr 24;
+    if alpha = 0 then continue;
+    
+    alpha := trunc(alpha * opacity);
+    colour := (colour and $FFFFFF) or (alpha shl 24);
+
+    unsafePsetBlend(x + px, y + py, colour)
+  end;
+end;
 
 procedure sprBlend(const imgHandle: longint; const x, y: integer);
 var

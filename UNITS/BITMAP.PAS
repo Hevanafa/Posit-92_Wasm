@@ -62,6 +62,16 @@ procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: int
 procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
 procedure sprScale(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
 
+procedure sprRegionStretch(
+  const imgHandle: longint;
+  const srcX, srcY, srcWidth, srcHeight: integer;
+  const destX, destY, destWidth, destHeight: integer);
+procedure sprRegionScale(
+  const imgHandle: longint;
+  const srcX, srcY, srcWidth, srcHeight: integer;
+  const destX, destY, destWidth, destHeight: integer);
+
+
 { rotation is in radians }
 procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
 
@@ -123,6 +133,14 @@ begin
   getEmptyImageSlot := -1
 end;
 }
+
+procedure freeImage(const imgHandle: longint);
+begin
+  if (imgHandle < low(images)) or (imgHandle > high(images)) then exit;
+  { images[imgHandle] := nil }
+  images[imgHandle].width := 0;
+  images[imgHandle].height := 0;
+end;
 
 function newImage(const width, height: integer): longint;
 var
@@ -450,6 +468,54 @@ end;
 procedure sprScale(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
 begin
   sprStretch(imgHandle, destX, destY, destWidth, destHeight)
+end;
+
+procedure sprRegionStretch(
+  const imgHandle: longint;
+  const srcX, srcY, srcWidth, srcHeight: integer;
+  const destX, destY, destWidth, destHeight: integer);
+var
+  sx, sy: integer;
+  dx, dy: integer;
+  image: PBitmap;
+  alpha: byte;
+  scaleX, scaleY: double;
+  colour: longword;
+begin
+  if not isImageSet(imgHandle) then exit;
+  image := getImagePtr(imgHandle);
+
+  scaleX := srcWidth / destWidth;
+  scaleY := srcHeight / destHeight;
+
+  for dy := 0 to destHeight - 1 do
+  for dx := 0 to destWidth - 1 do begin
+    if (destX + dx >= vgaWidth) or (destX + dx < 0)
+      or (destY + dy >= vgaHeight) or (destY + dy < 0) then continue;
+
+    { Map destination pixel to source region }
+    sx := srcX + trunc(dx * scaleX);
+    sy := srcY + trunc(dy * scaleY);
+
+    if (sx >= image^.width) or (sx < 0)
+      or (sy >= image^.height) or (sy < 0) then continue;
+
+    colour := unsafeSprPget(image, sx, sy);
+    alpha := colour shr 24;
+    if alpha < 255 then continue;
+
+    unsafePset(dx + destX, dy + destY, colour)
+  end;
+end;
+
+procedure sprRegionScale(
+  const imgHandle: longint;
+  const srcX, srcY, srcWidth, srcHeight: integer;
+  const destX, destY, destWidth, destHeight: integer);
+begin
+  sprRegionStretch(imgHandle,
+    srcX, srcY, srcWidth, srcHeight,
+    destX, destY, destWidth, destHeight)
 end;
 
 
