@@ -412,7 +412,24 @@ begin
   if not isImageSet(imgHandle) then exit;
   image := getImagePtr(imgHandle);
 
-  { TODO: Handle scale }
+  scaleX := srcWidth / destWidth;
+  scaleY := srcHeight / destHeight;
+
+  for dy := 0 to destHeight - 1 do
+  for dx := 0 to destWidth - 1 do begin
+    if (destX + dx >= vgaWidth) or (destX + dx < 0)
+      or (destY + dy >= vgaHeight) or (destY + dy < 0) then continue;
+
+    { Map destination pixel to source region }
+    sx := srcX + trunc(dx * scaleX);
+    sy := srcY + trunc(dy * scaleY);
+
+    if (sx >= image^.width) or (sx < 0)
+      or (sy >= image^.height) or (sy < 0) then continue;
+
+    { TODO: Plot pixels }
+
+  end;
 
 end;
 
