@@ -500,7 +500,7 @@ class Posit92 {
     done = true;
     this.cleanup();
 
-    window.setTimeout(() => { throw new Error(`PANIC: ${msg}`) }, 100)
+    throw new Error(`PANIC: ${msg}`)
   }
 
 
