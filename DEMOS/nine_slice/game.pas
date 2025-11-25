@@ -144,6 +144,8 @@ begin
 
   clicks := 0;
   showFPS.checked := true;
+
+  panicDisplay('This is a drill!');
 end;
 
 procedure update;

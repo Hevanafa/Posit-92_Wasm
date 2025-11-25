@@ -5,7 +5,7 @@ unit Panic;
 interface
 
 procedure panicHalt(const msg: string);
-procedure panicHalt2(const msg: string);
+procedure panicDisplay(const msg: string);
 
 
 implementation
@@ -22,10 +22,11 @@ begin
   for a:=1 to length(msg) do
     msgBuffer[a-1] := ord(msg[a]);
 
-  jsPanicHalt(@msgBuffer, length(msg))
+  jsPanicHalt(@msgBuffer, length(msg));
+  { halt(1) }
 end;
 
-procedure panicHalt2(const msg: string);
+procedure panicDisplay(const msg: string);
 var
   a: word;
   msgBuffer: array[0..255] of byte;
@@ -37,7 +38,8 @@ begin
   for a:=1 to length(msg) do
     msgBuffer[a-1] := ord(msg[a]);
 
-  jsPanicHalt(@msgBuffer, length(msg))
+  jsPanicHalt(@msgBuffer, length(msg));
+  { halt(1) } { This triggers _haltproc }
 end;
 
 end.
