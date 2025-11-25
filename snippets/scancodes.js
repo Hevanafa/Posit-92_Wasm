@@ -79,6 +79,18 @@ const ScancodeMap = {
   "NumLock": 0x45,
   "ScrollLock": 0x46,
 
+  // NumLock OFF
+  "Home": 0x47,
+  "ArrowUp": 0x48,
+  "PageUp": 0x49,
+  "ArrowLeft": 0x4B,
+  "ArrowRight": 0x4D,
+  "End": 0x4F,
+  "ArrowDown": 0x50,
+  "PageDown": 0x51,
+  "Insert": 0x52,
+  "Delete": 0x53,
+
   // NumLock ON
   "Numpad7": 0x47,
   "Numpad8": 0x48,
@@ -93,4 +105,4 @@ const ScancodeMap = {
   "Numpad3": 0x51,
   "Numpad0": 0x52,
   "NumpadDecimal": 0x53,
-}
+};
