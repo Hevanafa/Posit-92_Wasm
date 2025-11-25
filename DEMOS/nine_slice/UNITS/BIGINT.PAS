@@ -2,6 +2,9 @@
   Big Integer unit
   Part of Posit-92 framework
   By Hevanafa, 21-11-2025
+
+  This unit requires JS bindings
+  See `posit-92.js` in `bigint` demo to see how
 }
 
 unit BigInt;

@@ -12,17 +12,13 @@ unit BMFont;
 interface
 
 type
-  PBMFontGlyph = ^TBMFontGlyph;
+  { PBMFontGlyph = ^TBMFontGlyph; }
   TBMFontGlyph = record
     id: word;
     x, y, width, height: word;
     xoffset, yoffset: integer;
     xadvance: integer;
   end;
-
-  { TPBMFontGlyphArray = array of PBMFontGlyph; }
-
-  PBMFont = ^TBMFont;
   TBMFont = packed record
     face: string[15];  { 16 bytes }
     filename: string[63];  { 64 bytes }

@@ -25,19 +25,19 @@ var
   surface: TByteArray;
 
 { Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
-procedure initBuffer; public name 'initBuffer';
-function getSurface: pointer; public name 'getSurface';
+procedure initBuffer;
+function getSurface: pointer;
 
 { Colour format: $AARRGGBB }
-procedure cls(const colour: longword); public name 'cls';
+procedure cls(const colour: longword);
 procedure clsBlend(const colour: longword);
 procedure flush; external 'env' name 'flush';
 
-procedure unsafePset(const x, y: integer; const colour: longword); public name 'unsafePset';
-procedure pset(const x, y: integer; const colour: longword); public name 'pset';
+procedure unsafePset(const x, y: integer; const colour: longword);
+procedure pset(const x, y: integer; const colour: longword);
 
-procedure unsafePsetBlend(const x, y: integer; const colour: longword); public name 'unsafePsetBlend';
-procedure psetBlend(const x, y: integer; const colour: longword); public name 'psetBlend';
+procedure unsafePsetBlend(const x, y: integer; const colour: longword);
+procedure psetBlend(const x, y: integer; const colour: longword);
 
 implementation
 
@@ -156,52 +156,10 @@ begin
 end;
 
 procedure psetBlend(const x, y: integer; const colour: longword);
-var
-  srcA, srcR, srcG, srcB: byte;
-  destA, destR, destG, destB: byte;
-  outA, outR, outG, outB: byte;
-  offset: longword;
-  { inverted alpha }
-  alpha, invAlpha: single;
 begin
   if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then exit;
 
-  srcA := colour shr 24 and $FF;
-  srcR := colour shr 16 and $FF;
-  srcG := colour shr 8 and $FF;
-  srcB := colour and $FF;
-
-  if srcA = 0 then exit;
-
-  offset := (x + y * vgaWidth) * 4;
-
-  { Handle opaque pixel }
-  if srcA = 255 then begin
-    surface[offset] := srcR;
-    surface[offset + 1] := srcG;
-    surface[offset + 2] := srcB;
-    surface[offset + 3] := srcA;
-    exit
-  end;
-
-  destR := surface[offset];
-  destG := surface[offset + 1];
-  destB := surface[offset + 2];
-  destA := surface[offset + 3];
-  
-  { Handle alpha blending }
-  alpha := srcA / 255.0;
-  invAlpha := 1.0 - alpha;
-
-  outR := round(srcR * alpha + destR * invAlpha);
-  outG := round(srcG * alpha + destG * invAlpha);
-  outB := round(srcB * alpha + destB * invAlpha);
-  outA := srcA + round(destA * invAlpha);
-
-  surface[offset] := outR;
-  surface[offset + 1] := outG;
-  surface[offset + 2] := outB;
-  surface[offset + 3] := outA;
+  unsafePsetBlend(x, y, colour)
 end;
 
 procedure cls(const colour: longword);
@@ -211,8 +169,8 @@ begin
   if not bufferInitialised then exit;
 
   for y:=0 to vgaHeight - 1 do
-  for x:=0 to vgaWidth - 1 do
-    unsafePset(x, y, colour);
+    for x:=0 to vgaWidth - 1 do
+      unsafePset(x, y, colour);
 end;
 
 procedure clsBlend(const colour: longword);
