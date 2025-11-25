@@ -116,7 +116,11 @@ begin
     getImageWidth(imgHandle) - margins.right, margins.top, margins.right, srcCentreH,
     x + width - margins.right, y + margins.top, margins.right, destCentreH);
 
-  { TODO: Implement corners }
+  { Corners }
+  sprRegion(imgHandle, 0, 0, margins.left, margins.top, x, y);
+  sprRegion(imgHandle, getImageWidth(imgHandle) - margins.right, 0, margins.right, margins.top, x + width - margins.right, y);
+  sprRegion(imgHandle, 0, getImageHeight(imgHandle) - margins.bottom, margins.left, margins.bottom, x, y + height - margins.bottom);
+  sprRegion(imgHandle, getImageWidth(imgHandle) - margins.right, getImageHeight(imgHandle) - margins.bottom, margins.right, margins.bottom, x + width - margins.right, y + height - margins.bottom);
 end;
 
 
@@ -178,7 +182,7 @@ begin
     ShowPromptBox('Accept?', PromptTest);
 }
   sprNineSlice(
-    img9SliceHovered,
+    img9SliceNormal,
     100, 100, 60, 30, demoMargins
   );
 
