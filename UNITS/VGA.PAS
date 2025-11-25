@@ -26,7 +26,7 @@ var
 
 { Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
 procedure initBuffer;
-function getSurface: pointer;
+function getSurface: pointer; public name 'getSurface';
 
 { Colour format: $AARRGGBB }
 procedure cls(const colour: longword);

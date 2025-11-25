@@ -41,7 +41,7 @@ procedure freeImage(const imgHandle: longint);
 
 function isImageSet(const imgHandle: longint): boolean;
 procedure debugImage(const imgHandle: longint); public name 'debugImage';
-function getImagePtr(const imgHandle: longint): PBitmap;
+function getImagePtr(const imgHandle: longint): PBitmap; public name 'getImagePtr';
 
 function getImageWidth(const imgHandle: longint): word;
 function getImageHeight(const imgHandle: longint): word;
