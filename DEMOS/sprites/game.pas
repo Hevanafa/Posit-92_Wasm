@@ -101,9 +101,11 @@ begin
     dosuZone.y := (vgaHeight - getImageHeight(imgSlimeGirl)) / 2;
     dosuZone.width := getImageWidth(imgSlimeGirl);
     dosuZone.height := getImageHeight(imgSlimeGirl);
+
   end else if actualDemoState = DemoStateRotation then begin
     dosuZone.x := vgaWidth / 2;
     dosuZone.y := vgaHeight / 2;
+
   end else begin
     dosuZone.x := 148;
     dosuZone.y := 88;
@@ -331,6 +333,15 @@ begin
           sprStretch(imgDosuEXE[1], trunc(x), trunc(y), trunc(width), trunc(height))
         else
           sprStretch(imgDosuEXE[0], trunc(x), trunc(y), trunc(width), trunc(height));
+
+      printCentred('WASD - Move', 120);
+      printCentred('Arrow keys - Resize', 130);
+    end;
+
+    DemoStateRegionScaling: begin
+      sprRegionStretch(imgBlueEnemy,
+        25 * selectedFrame, 0, 25, 25,
+        trunc(dosuZone.x), trunc(dosuZone.y));
 
       printCentred('WASD - Move', 120);
       printCentred('Arrow keys - Resize', 130);
