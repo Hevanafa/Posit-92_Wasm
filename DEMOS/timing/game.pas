@@ -76,6 +76,9 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
+  printDefault('getTimer: ' + f32str(getTimer), 30, 30);
+  printDefault('getFullTimer: ' + f32str(getFullTimer), 30, 45);
+
   s := 'Hello world!';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
