@@ -11,6 +11,8 @@ unit Bitmap;
 {$R-}  { Turn off range checks }
 {$Q-}  { Turn off overflow checks }
 
+{$Define PanicOnNil}
+
 interface
 
 const
@@ -105,6 +107,11 @@ begin
   inc(nextImageHandle)
 end;
 }
+
+procedure assertImageSet(const imgHandle: longint);
+begin
+  if not isImageSet(imgHandle) then panicHalt('imgHandle is unset!');
+end;
 
 function getEmptyImageSlot: longint;
 var
@@ -214,7 +221,11 @@ var
   image: PBitmap;
   a: integer;
 begin
+{$ifdef PanicOnNil}
+  assertImageSet(imgHandle);
+{$else}
   if not isImageSet(imgHandle) then exit;
+{$endif}
 
   image := getImagePtr(imgHandle);
   writeLogI32(image^.width);
@@ -242,7 +253,12 @@ var
   image: PBitmap;
 begin
   getImageWidth := 0;
+
+{$ifdef PanicOnNil}
+  assertImageSet(imgHandle);
+{$else}
   if not isImageSet(imgHandle) then exit;
+{$endif}
 
   image := getImagePtr(imgHandle);
   getImageWidth := image^.width
@@ -253,7 +269,12 @@ var
   image: PBitmap;
 begin
   getImageHeight := 0;
+
+{$ifdef PanicOnNil}
+  assertImageSet(imgHandle);
+{$else}
   if not isImageSet(imgHandle) then exit;
+{$endif}
 
   image := getImagePtr(imgHandle);
   getImageHeight := image^.height
@@ -279,7 +300,11 @@ var
 begin
   sprPget := 0;
 
+{$ifdef PanicOnNil}
+  assertImageSet(imgHandle);
+{$else}
   if not isImageSet(imgHandle) then exit;
+{$endif}
 
   image := getImagePtr(imgHandle);
 
@@ -307,7 +332,11 @@ procedure sprPset(const imgHandle: longint; const x, y: integer; const colour: l
 var
   image: PBitmap;
 begin
+{$ifdef PanicOnNil}
+  assertImageSet(imgHandle);
+{$else}
   if not isImageSet(imgHandle) then exit;
+{$endif}
 
   image := getImagePtr(imgHandle);
 
@@ -326,7 +355,11 @@ var
   alpha: byte;
   colour: longword;
 begin
+{$ifdef PanicOnNil}
+  assertImageSet(imgHandle);
+{$else}
   if not isImageSet(imgHandle) then exit;
+{$endif}
 
   image := getImagePtr(imgHandle);
 
@@ -356,7 +389,11 @@ var
   alpha: byte;
   colour: longword;
 begin
+{$ifdef PanicOnNil}
+  assertImageSet(imgHandle);
+{$else}
   if not isImageSet(imgHandle) then exit;
+{$endif}
 
   image := getImagePtr(imgHandle);
 
@@ -393,7 +430,11 @@ begin
     exit
   end;
 
+{$ifdef PanicOnNil}
+  assertImageSet(imgHandle);
+{$else}
   if not isImageSet(imgHandle) then exit;
+{$endif}
 
   image := getImagePtr(imgHandle);
 
@@ -436,7 +477,12 @@ var
   scaleX, scaleY: double;
   colour: longword;
 begin
+{$ifdef PanicOnNil}
+  assertImageSet(imgHandle);
+{$else}
   if not isImageSet(imgHandle) then exit;
+{$endif}
+
   image := getImagePtr(imgHandle);
 
   scaleX := image^.width / destWidth;
@@ -476,7 +522,12 @@ var
   scaleX, scaleY: double;
   colour: longword;
 begin
+{$ifdef PanicOnNil}
+  assertImageSet(imgHandle);
+{$else}
   if not isImageSet(imgHandle) then exit;
+{$endif}
+
   image := getImagePtr(imgHandle);
 
   scaleX := srcWidth / destWidth;
@@ -528,7 +579,12 @@ var
   halfW, halfH: integer;
   maxRadius: integer;
 begin
+{$ifdef PanicOnNil}
+  assertImageSet(imgHandle);
+{$else}
   if not isImageSet(imgHandle) then exit;
+{$endif}
+
   image := getImagePtr(imgHandle);
 
   { Negative for inverse transform }
@@ -571,7 +627,11 @@ var
   colour: longword;
   alpha: byte;
 begin
+{$ifdef PanicOnNil}
+  assertImageSet(imgHandle);
+{$else}
   if not isImageSet(imgHandle) then exit;
+{$endif}
 
   image := getImagePtr(imgHandle);
   opacity := clamp(opacity, 0.0, 1.0);
@@ -598,7 +658,11 @@ var
   px, py: integer;
   colour: longword;
 begin
+{$ifdef PanicOnNil}
+  assertImageSet(imgHandle);
+{$else}
   if not isImageSet(imgHandle) then exit;
+{$endif}
 
   image := getImagePtr(imgHandle);
 
@@ -617,11 +681,15 @@ procedure sprRegionBlend(
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer);
 var
-  px, py: integer;
+  px, py: integer; 
   colour: longword;
   image: PBitmap;
 begin
+{$ifdef PanicOnNil}
+  assertImageSet(imgHandle);
+{$else}
   if not isImageSet(imgHandle) then exit;
+{$endif}
 
   image := getImagePtr(imgHandle);
 
