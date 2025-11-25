@@ -20,6 +20,7 @@ var
   imgDosuEXE: array[0..1] of longint;
   imgWinNormal, imgWinHovered, imgWinPressed: longint;
   imgPromptBG, imgPromptButtonNormal, imgPromptButtonPressed: longint;
+  img9SliceNormal, img9SliceHovered, img9SlicePressed: longint;
 
 { BMFont boilerplate }
 function defaultFontPtr: PBMFont; public name 'defaultFontPtr';
@@ -149,17 +150,17 @@ end;
 
 procedure setImg9SliceNormal(const imgHandle: longint);
 begin
-  setImg9SliceNormal := imgHandle
+  img9SliceNormal := imgHandle
 end;
 
 procedure setImg9SliceHovered(const imgHandle: longint);
 begin
-  setImg9SliceHovered := imgHandle
+  img9SliceHovered := imgHandle
 end;
 
 procedure setImg9SlicePressed(const imgHandle: longint);
 begin
-  setImg9SlicePressed := imgHandle
+  img9SlicePressed := imgHandle
 end;
 
 

@@ -152,10 +152,10 @@ class Posit92 {
       this.#wasm.exports.blackFontPtr(),
       this.#wasm.exports.blackFontGlyphsPtr());
 
-    await this.loadBMFont(
-      "assets/fonts/picotron_8px.txt",
-      this.#wasm.exports.picotronFontPtr(),
-      this.#wasm.exports.picotronFontGlyphsPtr());
+    // await this.loadBMFont(
+    //   "assets/fonts/picotron_8px.txt",
+    //   this.#wasm.exports.picotronFontPtr(),
+    //   this.#wasm.exports.picotronFontGlyphsPtr());
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.#wasm.exports.setImgDosuEXE(handle, 0);
@@ -171,14 +171,14 @@ class Posit92 {
     this.#wasm.exports.setImgWinPressed(
       await this.loadImage("assets/images/btn_pressed.png"));
 
-    this.#wasm.exports.setImgPromptBG(
-      await this.loadImage("assets/images/prompt_bg.png"));
+    // this.#wasm.exports.setImgPromptBG(
+    //   await this.loadImage("assets/images/prompt_bg.png"));
 
-    this.#wasm.exports.setImgPromptNormal(
-      await this.loadImage("assets/images/btn_prompt_normal.png"));
+    // this.#wasm.exports.setImgPromptNormal(
+    //   await this.loadImage("assets/images/btn_prompt_normal.png"));
 
-    this.#wasm.exports.setImgPromptPressed(
-      await this.loadImage("assets/images/btn_prompt_pressed.png"));
+    // this.#wasm.exports.setImgPromptPressed(
+    //   await this.loadImage("assets/images/btn_prompt_pressed.png"));
 
     this.#wasm.exports.setImg9SliceNormal(
       await this.loadImage("assets/images/9slice_normal.png"));
@@ -258,7 +258,7 @@ class Posit92 {
     const pixels = tempCtx.getImageData(0, 0, img.width, img.height).data;
 
     // Obtain a new handle number
-    const imgHandle = this.#wasm.exports.loadImageHandle();
+    const imgHandle = this.#wasm.exports.newImage(img.width, img.height);
     const bitmapPtr = this.#wasm.exports.getImagePtr(imgHandle);
     
     // Write to TBitmap

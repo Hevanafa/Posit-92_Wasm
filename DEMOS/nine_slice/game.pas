@@ -122,21 +122,14 @@ var
 begin
   cls(CornflowerBlue);
 
+{
   if ImageButton((vgaWidth - getImageWidth(imgWinNormal)) div 2, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
     ShowPromptBox('Accept?', PromptTest);
+}
 
   s := 'Clicks: ' + i32str(clicks);
   w := measureBMFont(s, defaultFontGlyphs);
   TextLabel(s, (vgaWidth - w) div 2, 120);
-
-  case PromptBox of
-    PromptYes:
-      case getPromptKey of
-        PromptTest: inc(clicks, 100);
-      end;
-    PromptNo:;
-    else
-  end;
 
   resetActiveWidget;
   drawMouse;
