@@ -29,22 +29,22 @@ type
     data: array[0..MaxBitmapData-1] of byte;
   end;
 
-function getMaxBitmapData: longword; public name 'getMaxBitmapData';
+function getMaxBitmapData: longword;
 
-{ function loadImageHandle: longint; public name 'loadImageHandle'; }
-{ function findEmptyImageSlot: longint; public name 'findEmptyImageSlot'; }
-function getEmptyImageSlot: longint; public name 'getEmptyImageSlot';
+{ function loadImageHandle: longint; }
+{ function findEmptyImageSlot: longint; }
+function getEmptyImageSlot: longint;
 
 function newImage(const width, height: integer): longint; public name 'newImage';
 function copyImage(const imgHandle: longint): longint;
 procedure freeImage(const imgHandle: longint);
 
-function isImageSet(const imgHandle: longint): boolean; public name 'isImageSet';
+function isImageSet(const imgHandle: longint): boolean;
 procedure debugImage(const imgHandle: longint); public name 'debugImage';
-function getImagePtr(const imgHandle: longint): PBitmap; public name 'getImagePtr';
+function getImagePtr(const imgHandle: longint): PBitmap;
 
-function getImageWidth(const imgHandle: longint): word; public name 'getImageWidth';
-function getImageHeight(const imgHandle: longint): word; public name 'getImageHeight';
+function getImageWidth(const imgHandle: longint): word;
+function getImageHeight(const imgHandle: longint): word;
 
 function unsafeSprPget(const image: PBitmap; const x, y: integer): longword;
 function sprPget(const imgHandle: longint; const x, y: integer): longword;
@@ -52,11 +52,11 @@ function sprPget(const imgHandle: longint; const x, y: integer): longword;
 procedure unsafeSprPset(const image: PBitmap; const x, y: integer; const colour: longword);
 procedure sprPset(const imgHandle: longint; const x, y: integer; const colour: longword);
 
-procedure spr(const imgHandle: longint; const x, y: integer); public name 'spr';
+procedure spr(const imgHandle: longint; const x, y: integer);
 procedure sprRegion(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
-  const destX, destY: integer); public name 'sprRegion';
+  const destX, destY: integer);
 
 procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
 procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
@@ -76,11 +76,11 @@ procedure sprRegionScale(
 procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
 
 procedure sprAlpha(const imgHandle: longint; const x, y: integer; opacity: double);
-procedure sprBlend(const imgHandle: longint; const x, y: integer); public name 'sprBlend';
+procedure sprBlend(const imgHandle: longint; const x, y: integer);
 procedure sprRegionBlend(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
-  const destX, destY: integer); public name 'sprRegionBlend';
+  const destX, destY: integer);
 
 
 implementation
