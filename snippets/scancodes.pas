@@ -83,6 +83,20 @@ const
   SC_NUMLOCK = $45;
   SC_SCROLLLOCK = $46;
 
+  { NumLock OFF }
+  SC_HOME = $47;
+  SC_UP = $48;
+  SC_PAGEUP = $49;
+  SC_LEFT = $4B;
+  SC_CENTER = $4C;
+  SC_RIGHT = $4D;
+  SC_END = $4F;
+  SC_DOWN = $50;
+  SC_PAGEDOWN = $51;
+  SC_INSERT = $52;
+  SC_DELETE = $53;
+
+  { NumLock ON }
   SC_KP_7 = $47;
   SC_KP_8 = $48;
   SC_KP_9 = $49;
