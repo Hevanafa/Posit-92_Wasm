@@ -28,6 +28,8 @@ const
   CornflowerBlue = $FF6495ED;
   SemitransparentBlack = $80000000;
 
+  demoMargins: TNineSliceMargins = (top: 8; right: 8; bottom: 8; left: 8);
+
   { Prompts enum }
   PromptTest = 1;
 
@@ -80,12 +82,9 @@ procedure sprNineSlice(
 var
   srcCentreW, srcCentreH: integer;
   destCentreW, destCentreH: integer;
-  image: PBitmap;
 begin
   if not isImageSet(imgHandle) then
     panicHalt('sprNineSlice: imgHandle is ' + i32str(imgHandle) + '!');
-
-  image := getImagePtr(imgHandle);
 
   srcCentreW := getImageWidth(imgHandle) - margins.left - margins.right;
   srcCentreH := getImageHeight(imgHandle) - margins.top - margins.bottom;
@@ -178,6 +177,10 @@ begin
   if ImageButton((vgaWidth - getImageWidth(imgWinNormal)) div 2, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
     ShowPromptBox('Accept?', PromptTest);
 }
+  sprNineSlice(
+    img9SliceHovered,
+    100, 100, 60, 30, demoMargins
+  );
 
   s := 'Clicks: ' + i32str(clicks);
   w := measureBMFont(s, defaultFontGlyphs);
