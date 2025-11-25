@@ -427,10 +427,12 @@ begin
     if (sx >= image^.width) or (sx < 0)
       or (sy >= image^.height) or (sy < 0) then continue;
 
-    { TODO: Plot pixels }
+    colour := unsafeSprPget(image, sx, sy);
+    alpha := colour shr 24;
+    if alpha < 255 then continue;
 
+    unsafePset(dx + destX, dy + destY, colour)
   end;
-
 end;
 
 
