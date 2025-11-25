@@ -45,10 +45,32 @@ body {
 #game:focus {
   outline: none
 }
+
+#loading-overlay {
+  color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 640px;
+  height: 400px;
+}
+
+#loading-overlay > div {
+  position: absolute;
+  margin: auto;
+  inset: 0;
+  width: fit-content;
+  height: fit-content;
+}
+
   </style>
 </head>
 <body>
   <canvas id="game" width="320" height="200"></canvas>
+  
+  <div id="loading-overlay">
+    <div>Now loading...</div>
+  </div>
 
   <!-- This can be disabled later on release -->
   <div id="play-overlay">

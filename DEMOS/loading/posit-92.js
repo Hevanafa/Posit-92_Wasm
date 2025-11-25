@@ -125,6 +125,8 @@ class Posit92 {
   }
 
   async init() {
+    this.#setLoadingText("Loading WebAssembly binary...");
+
     await this.#initWebAssembly();
     this.#loadMidnightOffset();
     this.#wasm.exports.init();
@@ -136,6 +138,8 @@ class Posit92 {
   afterInit() {
     this.#wasm.exports.afterInit();
     this.#addOutOfFocusFix()
+
+    this.#hideLoadingOverlay();
   }
 
   #addOutOfFocusFix() {
@@ -145,9 +149,21 @@ class Posit92 {
     })
   }
 
+  #setLoadingText(text) {
+    const div = document.querySelector("#loading-overlay > div");
+    div.innerHTML = text;
+  }
+
+  #hideLoadingOverlay() {
+    const div = document.getElementById("loading-overlay");
+    div.style.display = "none";
+  }
+
   async loadAssets() {
     let handle = 0;
 
+    this.#setLoadingText("Loading images & fonts...");
+    
     handle = await this.loadImage("assets/images/cursor.png");
     this.#wasm.exports.setImgCursor(handle);
 
