@@ -498,6 +498,8 @@ class Posit92 {
     const msg = new TextDecoder().decode(buffer);
 
     done = true;
+    this.cleanup();
+    
     throw new Error(`PANIC: ${msg}`)
   }
 
