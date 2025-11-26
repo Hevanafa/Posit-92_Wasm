@@ -97,21 +97,21 @@ begin
 end;
 
 { demoState: use DemoStates }
-procedure changeState(const newState: integer);
+procedure initDemoState(const newState: integer);
 begin
   { resetHeldKeys; }
-
-  actualDemoState := newState;
+  { actualDemoState := newState; }
 
   gameTime := 0.0;
 
-  if (actualDemoState = DemoStateBlend) or (actualDemoState = DemoStateFlip) then begin
+  if (demoListState.selectedIndex = DemoStateBlend)
+    or (demoListState.selectedIndex = DemoStateFlip) then begin
     dosuZone.x := (vgaWidth - getImageWidth(imgSlimeGirl)) / 2;
     dosuZone.y := (vgaHeight - getImageHeight(imgSlimeGirl)) / 2;
     dosuZone.width := getImageWidth(imgSlimeGirl);
     dosuZone.height := getImageHeight(imgSlimeGirl);
 
-  end else if actualDemoState = DemoStateRotation then begin
+  end else if demoListState.selectedIndex = DemoStateRotation then begin
     dosuZone.x := vgaWidth / 2;
     dosuZone.y := vgaHeight / 2;
 
@@ -173,13 +173,13 @@ begin
   showDemoList := true;
 
   for a:=0 to DemoStateLast do
-    demoListItems[a] := getDemoStateName(a + 1);
+    demoListItems[a] := getDemoStateName(a);
 
   demoListState.x := 10;
   demoListState.y := 10;
   demoListState.selectedIndex := 0;
 
-  changeState(DemoStateScaling);
+  initDemoState(DemoStateScaling);
 end;
 
 procedure printCentred(const text: string; const y: integer);
@@ -233,8 +233,8 @@ begin
       
       if demoListState.selectedIndex < 0 then
         demoListState.selectedIndex := DemoStateLast;
-        
-      changeState(demoListState.selectedIndex)
+
+      initDemoState(demoListState.selectedIndex)
     end;
   end;
 
@@ -247,7 +247,7 @@ begin
       if demoListState.selectedIndex > DemoStateLast then
         demoListState.selectedIndex := 0;
 
-      changeState(demoListState.selectedIndex)
+      initDemoState(demoListState.selectedIndex)
     end;
   end;
 
