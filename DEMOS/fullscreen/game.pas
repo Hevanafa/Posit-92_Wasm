@@ -20,8 +20,6 @@ var
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
-procedure toggleFullscreen; external 'env' name 'toggleFullscreen';
-
 
 procedure drawMouse;
 begin
