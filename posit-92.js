@@ -87,6 +87,7 @@ class Posit92 {
 
       // Timing
       getTimer: () => this.getTimer(),
+      getFullTimer: () => this.getFullTimer(),
 
       // VGA
       flush: () => this.flush()
