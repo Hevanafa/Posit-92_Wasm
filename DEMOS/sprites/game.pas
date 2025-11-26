@@ -41,7 +41,8 @@ const
   DemoStateRegionScaling = 4;
   DemoStateFlip = 5;
   DemoStateRotation = 6;
-  DemoStateCount = 7;
+  DemoStateLast = 6;
+  { DemoStateCount = 7; }
 
 var
   lastEsc: boolean;
@@ -57,7 +58,7 @@ var
   dosuZone: TRect;
   demoListStartX, demoListEndX: double;
   demoListLerpTimer: TLerpTimer;
-  demoListItems: array[0..DemoStateCount - 1] of string;
+  demoListItems: array[0..DemoStateLast] of string;
   demoListState: TListViewState;
   lastDemoState: integer;
 
@@ -171,7 +172,7 @@ begin
 
   showDemoList := true;
 
-  for a:=0 to DemoStateCount - 1 do
+  for a:=0 to DemoStateLast do
     demoListItems[a] := getDemoStateName(a + 1);
 
   demoListState.x := 10;
@@ -230,7 +231,9 @@ begin
     if lastPageUp then begin
       dec(demoListState.selectedIndex);
       
-      if demoListState.selectedIndex < 1 then demoListState.selectedIndex := DemoStateCount - 1;
+      if demoListState.selectedIndex < 0 then
+        demoListState.selectedIndex := DemoStateLast;
+        
       changeState(demoListState.selectedIndex)
     end;
   end;
@@ -241,8 +244,8 @@ begin
     if lastPageDown then begin
       inc(demoListState.selectedIndex);
 
-      if demoListState.selectedIndex >= DemoStateCount then
-        demoListState.selectedIndex := 1;
+      if demoListState.selectedIndex > DemoStateLast then
+        demoListState.selectedIndex := 0;
 
       changeState(demoListState.selectedIndex)
     end;
