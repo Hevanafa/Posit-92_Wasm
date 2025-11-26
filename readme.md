@@ -19,8 +19,10 @@ I have prepared a few scripts to ease the build process
 
 - `build_run.ps1` - Build & run
 - `run.ps1` - Run without building
+- `build_dist.ps1` - Build & distribute
 - `compile.ps1` - Contains the command line to automatically delete the output file & compile the WebAssembly binary
 - `start_server.ps1` - Starts the `http-server`
+- `dist.ps1` - Gathers the key files required for distribution
 
 ## Compiler Setup
 
