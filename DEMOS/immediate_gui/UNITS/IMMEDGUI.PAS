@@ -345,7 +345,10 @@ begin
   zone.width := widgetWidth;
   zone.height := widgetHeight;
 
-  { Update logic}
+  { Update logic }
+  thisWidgetID := nextWidgetID;
+  inc(nextWidgetID);
+
   if allowWidgetInteraction then
     if rectIntersects(zone, mouseZone) then begin
       hotWidget := thisWidgetID;
@@ -354,13 +357,13 @@ begin
         activeWidget := thisWidgetID;
 
         { Calculate which item was clicked }
-        clickedIndex := (mouseY, state.y) div lineHeight;
+        clickedIndex := (mouseY - state.y) div lineHeight;
         if clickedIndex in [0..high(items)] then
           state.selectedIndex := clickedIndex;
       end;
     end;
 
-  { TODO: Update Render logic }
+  { Update Render logic }
   rectfill(state.x, state.y, state.x + widgetWidth, state.y + widgetHeight, Black);
 
   rectfill(
