@@ -76,7 +76,8 @@ implementation
 
 uses
   Conv, Bitmap, Graphics, Maths,
-  Mouse, Panic, Shapes, VGA;
+  Mouse, Panic, Shapes, SprFast,
+  VGA;
 
 const
   Black = $FF000000;
