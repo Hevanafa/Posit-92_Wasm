@@ -38,7 +38,7 @@ function measureBMFont(const text: string; const glyphs: array of TBMFontGlyph):
 
 implementation
 
-uses Bitmap, Conv, Logger;
+uses SprFast, Conv, Logger;
 
 procedure printBMFont(
   const text: string;

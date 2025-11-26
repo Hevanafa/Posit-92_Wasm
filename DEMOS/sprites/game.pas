@@ -6,6 +6,7 @@ library Game;
 uses Bitmap, BMFont, Conv, FPS,
   Graphics, Keyboard, Logger, Mouse,
   Panic, Shapes, Sounds, Timing, VGA,
+  SprFast,
   Assets;
 
 const
