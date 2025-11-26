@@ -63,7 +63,7 @@ class Posit92 {
 
       // Keyboard
       isKeyDown: this.isKeyDown.bind(this),
-      signalDone: () => { done = true },
+      signalDone: () => { this.cleanup(); done = true },
 
       // Logger
       writeLogF32: value => console.log("Pascal (f32):", value),
