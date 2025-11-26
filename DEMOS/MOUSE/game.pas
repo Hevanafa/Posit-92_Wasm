@@ -4,7 +4,7 @@ library Game;
 
 uses Bitmap, BMFont, Conv, FPS,
   Graphics, Keyboard, Logger, Mouse,
-  Panic, Sounds, Timing, VGA,
+  Panic, SprFast, Sounds, Timing, VGA,
   Assets;
 
 const
@@ -45,7 +45,7 @@ end;
 
 procedure drawMouse;
 begin
-  sprBlend(imgCursor, mouseX, mouseY)
+  spr(imgCursor, mouseX, mouseY)
 end;
 
 procedure debugMouse;
@@ -101,7 +101,7 @@ begin
   cls($FF6495ED);
 
   image := getImagePtr(imgGasolineMaid);
-  sprBlend(imgGasolineMaid, (vgaWidth - image^.width) div 2, (vgaHeight - image^.height) div 2);
+  spr(imgGasolineMaid, (vgaWidth - image^.width) div 2, (vgaHeight - image^.height) div 2);
 
   s := 'Clicks: ' + i32str(clicks);
   w := measureBMFont(s, _defaultFontGlyphs);
