@@ -14,8 +14,6 @@ const
 var
   lastEsc: boolean;
 
-  stringBuffer: array[0..255] of byte;
-
   { Game state }
   lastLeftButton: boolean;
   clicks: word;
@@ -23,20 +21,6 @@ var
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
-function getStringBuffer: pointer; public name 'getStringBuffer';
-begin
-  getStringBuffer := @stringBuffer
-end;
-
-procedure debugStringBuffer; public name 'debugStringBuffer';
-var
-  a: word;
-begin
-  writeLog('First 20 bytes of stringBuffer');
-
-  for a:=0 to 19 do
-    writeLogI32(stringBuffer[a]);
-end;
 
 procedure drawFPS;
 begin
