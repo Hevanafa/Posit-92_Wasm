@@ -3,9 +3,9 @@ library Game;
 {$Mode TP}
 {$B-}
 
-uses Bitmap, BMFont, Conv, FPS,
-  ImmedGui, Keyboard, Logger, Mouse,
-  Panic, Shapes, Sounds, Timing, VGA,
+uses Bitmap, Conv, FPS, ImmedGui,
+  Keyboard, Lerp, Logger, Mouse,
+  Panic, Shapes, Timing, VGA,
   SprFast, SprComp,
   Assets;
 
@@ -51,9 +51,11 @@ var
   { Init your game state here }
   actualDemoState: integer;
   gameTime: double;
-  showDemoList: boolean;
+  showDemoList, lastShowDemoList: boolean;
 
   dosuZone: TRect;
+  demoListStartX, demoListEndX: integer;
+  demoListLerpTimer: TLerpTimer;
   demoListItems: array[0..DemoStateRotation - 1] of string;
 
   selectedFrame: integer;
@@ -207,6 +209,9 @@ end;
 }
 
 procedure update;
+var
+  perc: double;
+  x: integer;
 begin
   updateDeltaTime;
   incrementFPS;
@@ -305,6 +310,23 @@ begin
       spriteRotation := spriteRotation - pi / 30.0;
     if isKeyDown(SC_RIGHT) then
       spriteRotation := spriteRotation + pi / 30.0;
+  end;
+
+  if lastShowDemoList <> showDemoList then begin
+    lastShowDemoList := showDemoList;
+
+    perc := getLerpPerc(demoListLerpTimer, getTimer);
+    x := lerpEaseOutQuad(demoListStartX, demoListEndX, demoListLerpTimer);
+    
+    if lastShowDemoList then begin
+      demoListStartX := x;
+      demoListEndX := 10;
+    end else begin
+      demoListStartX := x;
+      demoListEndX := -100;
+    end;
+
+    initLerp(demoListLerpTimer, getTimer, 0.4);
   end;
 
   gameTime := gameTime + dt
