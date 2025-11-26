@@ -90,7 +90,8 @@ class Posit92 {
       getFullTimer: () => this.getFullTimer(),
 
       // VGA
-      flush: () => this.flush()
+      flush: () => this.flush(),
+      toggleFullscreen: () => this.toggleFullscreen()
     }
   });
 
@@ -582,6 +583,13 @@ class Posit92 {
     const imgData = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
 
     this.#ctx.putImageData(imgData, 0, 0);
+  }
+
+  toggleFullscreen() {
+    if (!document.fullscreenElement)
+      this.#canvas.requestFullscreen()
+    else
+      document.exitFullscreen();
   }
 
 

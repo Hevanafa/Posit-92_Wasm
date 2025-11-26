@@ -12,13 +12,16 @@ const
   SC_SPACE = $39;
 
 var
-  lastEsc: boolean;
+  lastEsc, lastSpacebar: boolean;
 
   { Init your game state here }
   gameTime: double;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+
+procedure toggleFullscreen; external 'env' name 'toggleFullscreen';
+
 
 procedure drawMouse;
 begin
@@ -50,6 +53,11 @@ begin
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
     if lastEsc then signalDone;
+  end;
+
+  if lastSpacebar <> isKeyDown(SC_SPACE) then begin
+    lastSpacebar := isKeyDown(SC_SPACE);
+    if lastSpacebar then toggleFullscreen;
   end;
 
   gameTime := gameTime + dt
