@@ -4,7 +4,7 @@ library Game;
 
 uses Bitmap, BMFont, Conv, FPS,
   Graphics, Keyboard, Logger, Mouse,
-  Panic, Shapes, Timing, VGA,
+  Panic, SprFast, Shapes, Timing, VGA,
   Assets;
 
 const
@@ -29,6 +29,7 @@ var
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+
 
 procedure drawFPS;
 begin
