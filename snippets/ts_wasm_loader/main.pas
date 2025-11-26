@@ -1,6 +1,6 @@
 {
   Compile:
-  E:\lazarus-wasm\fpc\bin\x86_64-win64\fpc.exe -Pwasm32 -Tembedded .\main.pas
+  E:\fpc-wasm\fpc\bin\x86_64-win64\fpc.exe -Pwasm32 -Tembedded .\main.pas
   remove-item .\main.wasm; rename-item "main" "main.wasm"
 
   Run:

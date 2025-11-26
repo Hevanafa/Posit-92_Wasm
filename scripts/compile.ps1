@@ -2,12 +2,12 @@
 # Part of Posit-92 framework
 # By Hevanafa, 17-11-2025
 
-$compilerPath = "E:\lazarus-wasm\fpc\bin\x86_64-win64\fpc.exe"
+$compilerPath = "E:\fpc-wasm\fpc\bin\x86_64-win64\fpc.exe"
 $primaryUnit = ".\game.pas"
 $outputFile = "game"
 
 # Compile targetting wasm32-embedded
-# E:\lazarus-wasm\fpc\bin\x86_64-win64\fpc.exe -Pwasm32 -Tembedded -FuUNITS .\game.pas
+# E:\fpc-wasm\fpc\bin\x86_64-win64\fpc.exe -Pwasm32 -Tembedded -FuUNITS .\game.pas
 
 $pinfo = new-object System.Diagnostics.ProcessStartInfo
 $pinfo.FileName = $compilerPath
