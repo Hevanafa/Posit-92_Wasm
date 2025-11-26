@@ -341,8 +341,12 @@ begin
   { writeLogF32(gameTime * 4); }
 
   { if showDemoList then drawDemoList; }
-  perc := getLerpPerc(demoListLerpTimer, getTimer);
-  x := lerpEaseOutQuad(demoListStartX, demoListEndX, perc);
+  if isLerpComplete(demoListLerpTimer, getTimer) then
+    x := demoListEndX
+  else begin
+    perc := getLerpPerc(demoListLerpTimer, getTimer);
+    x := lerpEaseOutQuad(demoListStartX, demoListEndX, perc);
+  end;
   ListView(trunc(x), 10, demoListItems, actualDemoState - 1);
   
 
