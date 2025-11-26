@@ -295,7 +295,24 @@ var
   alpha: byte;
   colour: longword;
 begin
-  { TODO: Write the implementation }
+  if not isImageSet(srcHandle) then exit;
+  if not isImageSet(destHandle) then exit;
+
+  srcImage := getImagePtr(srcHandle);
+  destImage := getImagePtr(destHandle);
+
+  for b:=0 to srcImage^.height - 1 do
+  for a:=0 to srcImage^.width - 1 do begin
+    if (x + a >= destImage^.width) or (x + a < 0)
+      or (y + b >= destImage^.height) or (y + b < 0) then continue;
+
+    srcPos := (a + b * srcImage^.width) * 4;
+    alpha := srcImage^.data[srcPos + 3];
+    if alpha < 255 then continue;
+
+    colour := unsafeSprPget(srcImage, a, b);
+    unsafeSprPset(destImage, x + a, y + b, colour)
+  end;
 end;
 
 end.
