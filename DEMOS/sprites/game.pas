@@ -4,7 +4,7 @@ library Game;
 {$B-}
 
 uses Bitmap, BMFont, Conv, FPS,
-  Graphics, Keyboard, Logger, Mouse,
+  ImmedGui, Keyboard, Logger, Mouse,
   Panic, Shapes, Sounds, Timing, VGA,
   SprFast, SprComp,
   Assets;
@@ -52,7 +52,9 @@ var
   actualDemoState: integer;
   gameTime: double;
   showDemoList: boolean;
+
   dosuZone: TRect;
+  demoListItems: array[0..DemoStateRotation - 1] of string;
 
   selectedFrame: integer;
   { Use SprFlips enum }
@@ -119,31 +121,6 @@ begin
   spriteRotation := 0.0;
 end;
 
-
-procedure init;
-begin
-  initBuffer;
-  initDeltaTime;
-  initFPSCounter;
-end;
-
-procedure afterInit;
-begin
-  { Initialise game state here }
-  hideCursor;
-
-  showDemoList := true;
-  changeState(DemoStateScaling);
-end;
-
-procedure printCentred(const text: string; const y: integer);
-var
-  w: word;
-begin
-  w := measureDefault(text);
-  printDefault(text, (vgaWidth - w) div 2, y);
-end;
-
 function getDemoStateName(const state: integer): string;
 var
   result: string;
@@ -168,6 +145,38 @@ begin
   getDemoStateName := result
 end;
 
+
+procedure init;
+begin
+  initBuffer;
+  initDeltaTime;
+  initFPSCounter;
+end;
+
+procedure afterInit;
+var
+  a: word;
+begin
+  { Initialise game state here }
+  hideCursor;
+
+  showDemoList := true;
+
+  for a:=0 to DemoStateRotation - 1 do
+    demoListItems[a] := getDemoStateName(a + 1);
+
+  changeState(DemoStateScaling);
+end;
+
+procedure printCentred(const text: string; const y: integer);
+var
+  w: word;
+begin
+  w := measureDefault(text);
+  printDefault(text, (vgaWidth - w) div 2, y);
+end;
+
+{
 procedure drawDemoList;
 const
   top = 10;
@@ -193,7 +202,7 @@ begin
 
   rect(left, top, 100, top + height, White);
 end;
-
+}
 
 procedure update;
 begin
@@ -306,7 +315,10 @@ begin
 
   { writeLogF32(gameTime * 4); }
 
-  if showDemoList then drawDemoList;
+  { if showDemoList then drawDemoList; }
+  if showDemoList then
+    ListView(10, 10, demoListItems, actualDemoState);
+  
 
   case actualDemoState of
     DemoStateFullSprite: begin
