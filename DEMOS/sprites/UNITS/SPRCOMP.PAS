@@ -3,7 +3,7 @@
   Part of Posit-92 framework
   By Hevanafa, 26-11-2025
 
-  An extension of Bitmap unit to handle with alpha compositing
+  An extension of Bitmap unit to handle alpha compositing
 }
 
 unit SprComp;
