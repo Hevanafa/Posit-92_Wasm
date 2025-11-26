@@ -50,7 +50,7 @@ var
   lastTab, lastPageUp, lastPageDown: boolean;
 
   { Init your game state here }
-  actualDemoState: integer;
+  { actualDemoState: integer; }
   gameTime: double;
   showDemoList, lastShowDemoList: boolean;
 
@@ -59,6 +59,7 @@ var
   demoListLerpTimer: TLerpTimer;
   demoListItems: array[0..DemoStateCount - 1] of string;
   demoListState: TListViewState;
+  lastDemoState: integer;
 
   selectedFrame: integer;
   { Use SprFlips enum }
@@ -227,10 +228,10 @@ begin
     lastPageUp := isKeyDown(SC_PAGEUP);
 
     if lastPageUp then begin
-      dec(actualDemoState);
+      dec(demoListState.selectedIndex);
       
-      if actualDemoState < 1 then actualDemoState := DemoStateCount - 1;
-      changeState(actualDemoState)
+      if demoListState.selectedIndex < 1 then demoListState.selectedIndex := DemoStateCount - 1;
+      changeState(demoListState.selectedIndex)
     end;
   end;
 
@@ -238,12 +239,12 @@ begin
     lastPageDown := isKeyDown(SC_PAGEDOWN);
 
     if lastPageDown then begin
-      inc(actualDemoState);
+      inc(demoListState.selectedIndex);
 
-      if actualDemoState >= DemoStateCount then
-        actualDemoState := 1;
+      if demoListState.selectedIndex >= DemoStateCount then
+        demoListState.selectedIndex := 1;
 
-      changeState(actualDemoState)
+      changeState(demoListState.selectedIndex)
     end;
   end;
 
@@ -253,7 +254,7 @@ begin
   if isKeyDown(SC_A) then dosuZone.x := dosuZone.x - 1;
   if isKeyDown(SC_D) then dosuZone.x := dosuZone.x + 1;
 
-  if (actualDemoState = DemoStateScaling) or (actualDemoState = DemoStateRegionScaling) then begin
+  if (demoListState.selectedIndex = DemoStateScaling) or (demoListState.selectedIndex = DemoStateRegionScaling) then begin
     if isKeyDown(SC_UP) and (dosuZone.height > 1.0) then dosuZone.height := dosuZone.height - 1;
     if isKeyDown(SC_DOWN) then dosuZone.height := dosuZone.height + 1;
 
@@ -261,7 +262,7 @@ begin
     if isKeyDown(SC_LEFT) and (dosuZone.width > 1.0) then dosuZone.width := dosuZone.width - 1;
   end;
 
-  if actualDemoState = DemoStateFlip then begin
+  if demoListState.selectedIndex = DemoStateFlip then begin
     if lastUp <> isKeyDown(SC_UP) then begin
       lastUp := isKeyDown(SC_UP);
 
@@ -285,7 +286,7 @@ begin
     end;
   end;
 
-  if actualDemoState = DemoStateRotation then begin
+  if demoListState.selectedIndex = DemoStateRotation then begin
     if isKeyDown(SC_LEFT) then
       spriteRotation := spriteRotation - pi / 30.0;
     if isKeyDown(SC_RIGHT) then
@@ -331,10 +332,9 @@ begin
   
   { ListView(trunc(x), 10, demoListItems, actualDemoState - 1); }
   demoListState.x := trunc(x);
-  { demoListState.selectedIndex := actualDemoState - 1; }
   ListView(demoListItems, demoListState);
 
-  case actualDemoState of
+  case demoListState.selectedIndex of
     DemoStateFullSprite: begin
       spr(imgDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
       printCentred('WASD - Move', 120);
