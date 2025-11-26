@@ -54,7 +54,7 @@ var
   showDemoList, lastShowDemoList: boolean;
 
   dosuZone: TRect;
-  demoListStartX, demoListEndX: integer;
+  demoListStartX, demoListEndX: double;
   demoListLerpTimer: TLerpTimer;
   demoListItems: array[0..DemoStateRotation - 1] of string;
 
@@ -210,8 +210,7 @@ end;
 
 procedure update;
 var
-  perc: double;
-  x: integer;
+  perc, x: double;
 begin
   updateDeltaTime;
   incrementFPS;
@@ -316,14 +315,14 @@ begin
     lastShowDemoList := showDemoList;
 
     perc := getLerpPerc(demoListLerpTimer, getTimer);
-    x := lerpEaseOutQuad(demoListStartX, demoListEndX, demoListLerpTimer);
+    x := lerpEaseOutQuad(demoListStartX, demoListEndX, perc);
     
     if lastShowDemoList then begin
       demoListStartX := x;
       demoListEndX := 10;
     end else begin
       demoListStartX := x;
-      demoListEndX := -100;
+      demoListEndX := -120;
     end;
 
     initLerp(demoListLerpTimer, getTimer, 0.4);
@@ -334,14 +333,17 @@ end;
 
 
 procedure draw;
+var
+  perc, x: double;
 begin
   cls($FF6495ED);
 
   { writeLogF32(gameTime * 4); }
 
   { if showDemoList then drawDemoList; }
-  if showDemoList then
-    ListView(10, 10, demoListItems, actualDemoState - 1);
+  perc := getLerpPerc(demoListLerpTimer, getTimer);
+  x := lerpEaseOutQuad(demoListStartX, demoListEndX, perc);
+  ListView(trunc(x), 10, demoListItems, actualDemoState - 1);
   
 
   case actualDemoState of
