@@ -62,5 +62,12 @@ body {
 
   <script src="posit-92.js"></script>
   <script src="game.js"></script>
+
+  <script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js")
+    .then(() => console.log("Posit-92 service worker registered!"));
+}
+  </script>
 </body>
 </html>
