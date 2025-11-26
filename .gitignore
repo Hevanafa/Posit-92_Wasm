@@ -19,7 +19,7 @@ boilerplate/start_server.ps1
 boilerplate/build_dist.ps1
 boilerplate/dist.ps1
 
-# Demos
+# Demo Build Scripts
 DEMOS/hello_world/*.ps1
 DEMOS/keyboard/*.ps1
 DEMOS/wasm_string/*.ps1
@@ -35,6 +35,7 @@ DEMOS/timing/*.ps1
 DEMOS/loading/*.ps1
 DEMOS/pwa_demo/*.ps1
 DEMOS/fullscreen/*.ps1
+DEMOS/mouse/*.ps1
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
