@@ -73,7 +73,7 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  s := 'Hello world!';
+  s := 'Press Spacebar to toggle fullscreen';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
 
