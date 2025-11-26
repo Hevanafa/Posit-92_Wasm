@@ -13,6 +13,16 @@ This project is a port of [POSIT-92](https://github.com/Hevanafa/POSIT-92) which
 
 I'm using Windows 10 Home (64-bit, version 22H2, build 19045.6575) to build this project
 
+## Getting Started
+
+1. Open **PowerShell 7**
+2. cd to `boilerplate`
+3. Run `.\setup.ps1; .\compile.ps1`
+
+   This will make sure that all the units can be compiled & run
+
+4. Copy all the contents of the `boilerplate` folder except for `setup.ps1` to your new project
+
 ## Building
 
 I have prepared a few scripts to ease the build process
@@ -32,7 +42,7 @@ I have prepared a few scripts to ease the build process
 
 2. Install in `E:\fpc-wasm` or anywhere that's easy to reach
 3. Under the **Basic** tab, choose the **trunk** version above the FPC button, install **Only FPC**
-   
+
    ![Only FPC](./only_fpc_trunk.png)
 
 4. Under the **Cross** tab, choose CPU: **wasm32**, OS: **embedded**, then click **Install compiler**
