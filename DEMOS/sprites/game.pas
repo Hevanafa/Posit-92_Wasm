@@ -57,6 +57,7 @@ var
   demoListStartX, demoListEndX: double;
   demoListLerpTimer: TLerpTimer;
   demoListItems: array[0..DemoStateRotation - 1] of string;
+  demoListState: TListViewState;
 
   selectedFrame: integer;
   { Use SprFlips enum }
@@ -168,6 +169,10 @@ begin
 
   for a:=0 to DemoStateRotation - 1 do
     demoListItems[a] := getDemoStateName(a + 1);
+
+  demoListState.x := 10;
+  demoListState.y := 10;
+  demoListState.selectedIndex := 0;
 
   changeState(DemoStateScaling);
 end;
@@ -347,8 +352,11 @@ begin
     perc := getLerpPerc(demoListLerpTimer, getTimer);
     x := lerpEaseOutQuad(demoListStartX, demoListEndX, perc);
   end;
-  ListView(trunc(x), 10, demoListItems, actualDemoState - 1);
   
+  { ListView(trunc(x), 10, demoListItems, actualDemoState - 1); }
+  demoListState.x := trunc(x);
+  demoListState.selectedIndex := actualDemoState - 1;
+  ListView(demoListItems, demoListState);
 
   case actualDemoState of
     DemoStateFullSprite: begin
