@@ -64,10 +64,22 @@ body {
   <script src="game.js"></script>
 
   <script>
+// Load Service Worker
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./sw.js")
     .then(() => console.log("Posit-92 service worker registered!"));
 }
+
+/*
+  Doesn't really work
+document.addEventListener("DOMContentLoaded", e => {
+  const isBrowser = matchMedia("(display-mode: browser)").matches;
+  if (!isBrowser) {
+    window.moveTo(64, 16);
+    window.resizeTo(320, 200);
+  }
+});
+*/
   </script>
 </body>
 </html>

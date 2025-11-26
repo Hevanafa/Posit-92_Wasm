@@ -3,7 +3,11 @@
   "short_name": "Posit-92",
   "description": "WebAssembly game framework demo",
   "start_url": "./index.html",
+
   "display": "standalone",
+  "display_override": ["window-controls-overlay"],
+  "prefer_related_applications": false,
+
   "background_color": "#000000",
   "theme_color": "#000000",
   "orientation": "landscape",
