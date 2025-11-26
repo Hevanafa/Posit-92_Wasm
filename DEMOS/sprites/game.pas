@@ -160,6 +160,8 @@ begin
   { Initialise game state here }
   hideCursor;
 
+  guiSetFont(defaultFont, defaultFontGlyphs);
+
   showDemoList := true;
 
   for a:=0 to DemoStateRotation - 1 do
@@ -317,7 +319,7 @@ begin
 
   { if showDemoList then drawDemoList; }
   if showDemoList then
-    ListView(10, 10, demoListItems, actualDemoState);
+    ListView(10, 10, demoListItems, actualDemoState - 1);
   
 
   case actualDemoState of
