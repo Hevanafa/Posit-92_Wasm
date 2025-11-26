@@ -330,14 +330,37 @@ var
   a: word;
   lineHeight: word;
   widgetWidth, widgetHeight: word;
+  thisWidgetID: integer;
+  zone: TRect;
+  clickedIndex: integer;
 begin
   assertFontSet;
 
   lineHeight := activeFont.lineHeight + 2;
-
   widgetWidth := 100;
   widgetHeight := lineHeight * (high(items) + 1);
 
+  zone.x := state.x;
+  zone.y := state.y;
+  zone.width := widgetWidth;
+  zone.height := widgetHeight;
+
+  { Update logic}
+  if allowWidgetInteraction then
+    if rectIntersects(zone, mouseZone) then begin
+      hotWidget := thisWidgetID;
+
+      if mouseJustPressed then begin
+        activeWidget := thisWidgetID;
+
+        { Calculate which item was clicked }
+        clickedIndex := (mouseY, state.y) div lineHeight;
+        if clickedIndex in [0..high(items)] then
+          state.selectedIndex := clickedIndex;
+      end;
+    end;
+
+  { TODO: Update Render logic }
   rectfill(state.x, state.y, state.x + widgetWidth, state.y + widgetHeight, Black);
 
   rectfill(
