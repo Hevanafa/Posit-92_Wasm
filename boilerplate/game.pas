@@ -2,9 +2,9 @@ library Game;
 
 {$Mode ObjFPC}
 
-uses Bitmap, BMFont, Conv, FPS,
-  Graphics, Keyboard, Logger, Mouse,
-  Panic, Sounds, Timing, VGA,
+uses BMFont, Conv, FPS,
+  Keyboard, Mouse,
+  Panic, Sounds, SprFast, Timing, VGA,
   Assets;
 
 const
@@ -19,11 +19,6 @@ var
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
-
-procedure drawFPS;
-begin
-  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
-end;
 
 procedure drawMouse;
 begin
@@ -54,11 +49,7 @@ begin
   { Your update logic here }
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
-
-    if lastEsc then begin
-      writeLog('ESC is pressed!');
-      signalDone
-    end;
+    if lastEsc then signalDone;
   end;
 
   gameTime := gameTime + dt
@@ -81,8 +72,6 @@ begin
   printDefault(s, (vgaWidth - w) div 2, 120);
 
   drawMouse;
-  drawFPS;
-
   flush
 end;
 

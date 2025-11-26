@@ -382,7 +382,7 @@ class Posit92 {
 
   #initKeyboard() {
     window.addEventListener("keydown", e => {
-      console.log("keydown", e.code);
+      // console.log("keydown", e.code);
 
       const scancode = ScancodeMap[e.code];
       if (scancode) {
