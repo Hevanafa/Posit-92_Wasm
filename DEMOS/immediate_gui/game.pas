@@ -28,7 +28,10 @@ var
   gameTime: double;
   clicks: word;
   showFPS: TCheckboxState;
+
   listItems: array[0..2] of string;
+  listState: TListViewState;
+
   sliderValue: TSliderState;
 
 { Use this to set `done` to true }
@@ -89,6 +92,10 @@ begin
 
   for a:=0 to high(listItems) do
     listItems[a] := 'ListItem' + i32str(a);
+  
+  listState.x := 10;
+  listState.y := 10;
+  listState.selectedIndex := 0;
 end;
 
 procedure update;
@@ -154,7 +161,7 @@ begin
   ProgressBar(10, 80, 80, 10, 0.75);
   ProgressBarLabelled(10, 100, 80, 10, 0.75);
   Checkbox('Show FPS', 10, 60, showFPS);
-  ListView(10, 10, listItems, 2);
+  ListView(listItems, listState);
 
   resetActiveWidget;
 
