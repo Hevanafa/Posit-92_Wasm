@@ -10,11 +10,12 @@ unit SprFast;
 
 interface
 
-procedure spr(const imgHandle: longint; const x, y: integer); public name 'spr';
+{ Direct VGA blitting }
+procedure spr(const imgHandle: longint; const x, y: integer);
 procedure sprRegion(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
-  const destX, destY: integer); public name 'sprRegion';
+  const destX, destY: integer);
 
 procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
 procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
@@ -32,6 +33,9 @@ procedure sprRegionScale(
 { rotation is in radians }
 procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
 
+{ Blitting on another sprite }
+procedure sprOnSprite(const srcHandle, destHandle: longint; const x, y: integer);
+
 
 implementation
 
@@ -39,9 +43,9 @@ uses Bitmap, VGA;
 
 procedure spr(const imgHandle: longint; const x, y: integer);
 var
+  image: PBitmap;
   a, b: integer;
   srcPos: longint;
-  image: PBitmap;
   alpha: byte;
   colour: longword;
 begin
@@ -282,5 +286,33 @@ begin
   end;
 end;
 
+
+procedure sprOnSprite(const srcHandle, destHandle: longint; const x, y: integer);
+var
+  srcImage, destImage: PBitmap;
+  a, b: integer;
+  srcPos: longint;
+  alpha: byte;
+  colour: longword;
+begin
+  if not isImageSet(srcHandle) then exit;
+  if not isImageSet(destHandle) then exit;
+
+  srcImage := getImagePtr(srcHandle);
+  destImage := getImagePtr(destHandle);
+
+  for b:=0 to srcImage^.height - 1 do
+  for a:=0 to srcImage^.width - 1 do begin
+    if (x + a >= destImage^.width) or (x + a < 0)
+      or (y + b >= destImage^.height) or (y + b < 0) then continue;
+
+    srcPos := (a + b * srcImage^.width) * 4;
+    alpha := srcImage^.data[srcPos + 3];
+    if alpha < 255 then continue;
+
+    colour := unsafeSprPget(srcImage, a, b);
+    unsafeSprPset(destImage, x + a, y + b, colour)
+  end;
+end;
 
 end.
