@@ -29,22 +29,19 @@ type
     data: array[0..MaxBitmapData-1] of byte;
   end;
 
-function getMaxBitmapData: longword; public name 'getMaxBitmapData';
-
-{ function loadImageHandle: longint; public name 'loadImageHandle'; }
-{ function findEmptyImageSlot: longint; public name 'findEmptyImageSlot'; }
-function getEmptyImageSlot: longint; public name 'getEmptyImageSlot';
+function getMaxBitmapData: longword;
+function findEmptyImageSlot: longint;
 
 function newImage(const width, height: integer): longint; public name 'newImage';
 function copyImage(const imgHandle: longint): longint;
 procedure freeImage(const imgHandle: longint);
 
-function isImageSet(const imgHandle: longint): boolean; public name 'isImageSet';
+function isImageSet(const imgHandle: longint): boolean;
 procedure debugImage(const imgHandle: longint); public name 'debugImage';
 function getImagePtr(const imgHandle: longint): PBitmap; public name 'getImagePtr';
 
-function getImageWidth(const imgHandle: longint): word; public name 'getImageWidth';
-function getImageHeight(const imgHandle: longint): word; public name 'getImageHeight';
+function getImageWidth(const imgHandle: longint): word;
+function getImageHeight(const imgHandle: longint): word;
 
 function unsafeSprPget(const image: PBitmap; const x, y: integer): longword;
 function sprPget(const imgHandle: longint; const x, y: integer): longword;
@@ -61,48 +58,24 @@ uses
 { Bitmap operations }
 var
   images: array[1..10] of TBitmap;
-  { nextImageHandle: longint = 1; }
 
 function getMaxBitmapData: longword;
 begin
   getMaxBitmapData := MaxBitmapData
 end;
 
-{
-function loadImageHandle: longint;
-begin
-  loadImageHandle := nextImageHandle;
-  inc(nextImageHandle)
-end;
-}
-
-function getEmptyImageSlot: longint;
+function findEmptyImageSlot: longint;
 var
   a: longint;
 begin
   for a:=1 to high(images) do
     if not isImageSet(a) then begin
-      getEmptyImageSlot := a;
+      findEmptyImageSlot := a;
       exit
     end;
 
-  getEmptyImageSlot := -1
+  findEmptyImageSlot := -1
 end;
-
-{
-function getEmptyImageSlot: longint;
-var
-  a: longint;
-begin
-  for a:=1 to high(images) do
-    if images[a] = nil then begin
-      getEmptyImageSlot := a;
-      exit
-    end;
-
-  getEmptyImageSlot := -1
-end;
-}
 
 function newImage(const width, height: integer): longint;
 var
@@ -112,7 +85,7 @@ begin
   if width * height * 4 > MaxBitmapData then
     panicHalt('newImage: Bitmap is too large!');
 
-  slot := getEmptyImageSlot;
+  slot := findEmptyImageSlot;
 
   bmp.width := width;
   bmp.height := height;
@@ -142,7 +115,7 @@ end;
 procedure freeImage(const imgHandle: longint);
 begin
   if (imgHandle < low(images)) or (imgHandle > high(images)) then exit;
-  { images[imgHandle] := nil }
+
   images[imgHandle].width := 0;
   images[imgHandle].height := 0;
 end;
@@ -162,12 +135,6 @@ end;
 
 function isImageSet(const imgHandle: longint): boolean;
 begin
-  { isImageSet := (imgHandle < 0) }
-  {
-  isImageSet := false;
-  if getImagePtr(imgHandle) <> nil then
-    isImageSet := true;
-  }
   isImageSet := (images[imgHandle].width > 0) and (images[imgHandle].height > 0)
 end;
 
