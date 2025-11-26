@@ -34,13 +34,14 @@ const
   Red = $FFFF5555;
 
   { DemoStates enum }
-  DemoStateFullSprite = 1;
-  DemoStateRegion = 2;
-  DemoStateBlend = 3;
-  DemoStateScaling = 4;
-  DemoStateRegionScaling = 5;
-  DemoStateFlip = 6;
-  DemoStateRotation = 7;
+  DemoStateFullSprite = 0;
+  DemoStateRegion = 1;
+  DemoStateBlend = 2;
+  DemoStateScaling = 3;
+  DemoStateRegionScaling = 4;
+  DemoStateFlip = 5;
+  DemoStateRotation = 6;
+  DemoStateCount = 7;
 
 var
   lastEsc: boolean;
@@ -56,7 +57,7 @@ var
   dosuZone: TRect;
   demoListStartX, demoListEndX: double;
   demoListLerpTimer: TLerpTimer;
-  demoListItems: array[0..DemoStateRotation - 1] of string;
+  demoListItems: array[0..DemoStateCount - 1] of string;
   demoListState: TListViewState;
 
   selectedFrame: integer;
@@ -143,6 +144,8 @@ begin
       result := 'Sprite flipping';
     DemoStateRotation:
       result := 'Sprite rotation';
+    else
+      result := 'Unknown DemoState: ' + i32str(state);
   end;
 
   getDemoStateName := result
@@ -167,7 +170,7 @@ begin
 
   showDemoList := true;
 
-  for a:=0 to DemoStateRotation - 1 do
+  for a:=0 to DemoStateCount - 1 do
     demoListItems[a] := getDemoStateName(a + 1);
 
   demoListState.x := 10;
@@ -185,33 +188,6 @@ begin
   printDefault(text, (vgaWidth - w) div 2, y);
 end;
 
-{
-procedure drawDemoList;
-const
-  top = 10;
-  left = 10;
-var
-  a: word;
-  lineHeight: word;
-  height: word;
-begin
-  lineHeight := _defaultFont.lineHeight + 2;
-  height := lineHeight * DemoStateRotation;
-
-  rectfill(left, top, 100, top + height, Black);
-
-  rectfill(
-    left, top + lineHeight * (actualDemoState - 1),
-    100, top + lineHeight * actualDemoState, Red);
-
-  for a := 1 to DemoStateRotation do
-    printDefault(
-      getDemoStateName(a),
-      left + 2, top + 2 + lineHeight * (a - 1));
-
-  rect(left, top, 100, top + height, White);
-end;
-}
 
 procedure update;
 var
@@ -253,7 +229,7 @@ begin
     if lastPageUp then begin
       dec(actualDemoState);
       
-      if actualDemoState < 1 then actualDemoState := DemoStateRotation;
+      if actualDemoState < 1 then actualDemoState := DemoStateCount - 1;
       changeState(actualDemoState)
     end;
   end;
@@ -264,7 +240,7 @@ begin
     if lastPageDown then begin
       inc(actualDemoState);
 
-      if actualDemoState > DemoStateRotation then
+      if actualDemoState >= DemoStateCount then
         actualDemoState := 1;
 
       changeState(actualDemoState)
@@ -355,7 +331,7 @@ begin
   
   { ListView(trunc(x), 10, demoListItems, actualDemoState - 1); }
   demoListState.x := trunc(x);
-  demoListState.selectedIndex := actualDemoState - 1;
+  { demoListState.selectedIndex := actualDemoState - 1; }
   ListView(demoListItems, demoListState);
 
   case actualDemoState of
