@@ -27,6 +27,7 @@ var
 { Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
 procedure initBuffer;
 function getSurface: pointer; public name 'getSurface';
+procedure toggleFullscreen; external 'env' name 'toggleFullscreen';
 
 { Colour format: $AARRGGBB }
 procedure cls(const colour: longword);

@@ -14,7 +14,6 @@ const ScancodeMap = {
 };
 
 class Posit92 {
-  #displayScale = Object.freeze(2);
   #wasmSource = "game.wasm";
 
   #vgaWidth = 320;
@@ -90,7 +89,8 @@ class Posit92 {
       getFullTimer: () => this.getFullTimer(),
 
       // VGA
-      flush: () => this.flush()
+      flush: () => this.flush(),
+      toggleFullscreen: () => this.toggleFullscreen()
     }
   });
 
@@ -414,8 +414,12 @@ class Posit92 {
   #initMouse() {
     this.#canvas.addEventListener("mousemove", e => {
       const rect = this.#canvas.getBoundingClientRect();
-      this.#mouseX = Math.floor((e.clientX - rect.left) / this.#displayScale);
-      this.#mouseY = Math.floor((e.clientY - rect.top) / this.#displayScale);
+
+      const scaleX = this.#canvas.width / rect.width;
+      const scaleY = this.#canvas.height / rect.height;
+
+      this.#mouseX = Math.floor((e.clientX - rect.left) * scaleX);
+      this.#mouseY = Math.floor((e.clientY - rect.top) * scaleY);
     });
 
     this.#canvas.addEventListener("mousedown", e => {
@@ -582,6 +586,13 @@ class Posit92 {
     const imgData = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
 
     this.#ctx.putImageData(imgData, 0, 0);
+  }
+
+  toggleFullscreen() {
+    if (!document.fullscreenElement)
+      this.#canvas.requestFullscreen()
+    else
+      document.exitFullscreen();
   }
 
 
