@@ -37,16 +37,16 @@ function getNextWidgetID: integer;
 { Can be used with drawMouse }
 function hasHoveredWidget: boolean;
 
-{ Called before updateMouse }
+{ Required: Called before updateMouse }
 procedure updateGUILastMouseButton;
 
-{ Called after updateMouse }
+{ Required: Called after updateMouse }
 procedure updateGUIMouseZone;
 
-{ Called at the end of update routine }
+{ Required: Called at the end of update routine }
 procedure resetWidgetIndices;
 
-{ Important: Must be placed at the end of the draw routine }
+{ Required: Must be placed at the end of the draw routine }
 procedure resetActiveWidget;
 
 procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);

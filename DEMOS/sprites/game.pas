@@ -167,6 +167,7 @@ var
 begin
   { Initialise game state here }
   hideCursor;
+  initImmediateGUI;
 
   guiSetFont(defaultFont, defaultFontGlyphs);
 
@@ -198,7 +199,9 @@ begin
   updateDeltaTime;
   incrementFPS;
 
+  updateGUILastMouseButton;
   updateMouse;
+  updateGUIMouseZone;
 
   { Your update logic here }
   if lastEsc <> isKeyDown(SC_ESC) then begin
@@ -313,7 +316,9 @@ begin
     initLerp(demoListLerpTimer, getTimer, 0.4);
   end;
 
-  gameTime := gameTime + dt
+  gameTime := gameTime + dt;
+
+  resetWidgetIndices
 end;
 
 
@@ -412,6 +417,8 @@ begin
     printDefault('Page up / down - Choose between demos', 8, vgaHeight - 18);
   end else
     printDefault('TAB - Show the list of demos', 8, vgaHeight - 18);
+
+  resetActiveWidget;
 
   drawMouse;
   drawFPS;
