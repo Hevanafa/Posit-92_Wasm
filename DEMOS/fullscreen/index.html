@@ -35,13 +35,26 @@ body {
 }
 
 #game {
+  border: none;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+  transform-origin: top left;
+  scale: 2;
+}
+
+/* Use this for fullscreen */
+#game.scale-fit {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transform-origin: top left;
-  border: none;
+  scale: 1;
+}
+
+#game.scale-stretch {
+  width: 100vw;
+  height: 100vh;
+  object-fit: fill;
+  scale: 1;
 }
 
 #game:focus {
@@ -50,7 +63,7 @@ body {
   </style>
 </head>
 <body>
-  <canvas id="game" width="320" height="200"></canvas>
+  <canvas id="game" class="scale-fit" width="320" height="200"></canvas>
 
   <!-- This can be disabled later on release -->
   <div id="play-overlay">
