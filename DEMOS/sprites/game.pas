@@ -60,7 +60,7 @@ var
   demoListLerpTimer: TLerpTimer;
   demoListItems: array[0..DemoStateLast] of string;
   demoListState: TListViewState;
-  lastDemoState: integer;
+  lastDemoIndex: integer;
 
   selectedFrame: integer;
   { Use SprFlips enum }
@@ -97,21 +97,21 @@ begin
 end;
 
 { demoState: use DemoStates }
-procedure initDemoState(const newState: integer);
+procedure initDemoState(const which: integer);
 begin
   { resetHeldKeys; }
-  { actualDemoState := newState; }
+  { actualDemoState := which; }
 
   gameTime := 0.0;
 
-  if (demoListState.selectedIndex = DemoStateBlend)
-    or (demoListState.selectedIndex = DemoStateFlip) then begin
+  if (which = DemoStateBlend)
+    or (which = DemoStateFlip) then begin
     dosuZone.x := (vgaWidth - getImageWidth(imgSlimeGirl)) / 2;
     dosuZone.y := (vgaHeight - getImageHeight(imgSlimeGirl)) / 2;
     dosuZone.width := getImageWidth(imgSlimeGirl);
     dosuZone.height := getImageHeight(imgSlimeGirl);
 
-  end else if demoListState.selectedIndex = DemoStateRotation then begin
+  end else if which = DemoStateRotation then begin
     dosuZone.x := vgaWidth / 2;
     dosuZone.y := vgaHeight / 2;
 
@@ -180,7 +180,7 @@ begin
   demoListState.y := 10;
   demoListState.selectedIndex := 0;
 
-  initDemoState(DemoStateScaling);
+  initDemoState(demoListState.selectedIndex);
 end;
 
 procedure printCentred(const text: string; const y: integer);
@@ -237,7 +237,7 @@ begin
       if demoListState.selectedIndex < 0 then
         demoListState.selectedIndex := DemoStateLast;
 
-      initDemoState(demoListState.selectedIndex)
+      { initDemoState(demoListState.selectedIndex) }
     end;
   end;
 
@@ -250,7 +250,7 @@ begin
       if demoListState.selectedIndex > DemoStateLast then
         demoListState.selectedIndex := 0;
 
-      initDemoState(demoListState.selectedIndex)
+      { initDemoState(demoListState.selectedIndex) }
     end;
   end;
 
@@ -314,6 +314,11 @@ begin
     end;
 
     initLerp(demoListLerpTimer, getTimer, 0.4);
+  end;
+
+  if lastDemoIndex <> demoListState.selectedIndex then begin
+    lastDemoIndex := demoListState.selectedIndex;
+    initDemoState(demoListState.selectedIndex)
   end;
 
   gameTime := gameTime + dt;
