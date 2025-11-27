@@ -21,7 +21,7 @@ function defaultFontGlyphsPtr: PBMFontGlyph; public name 'defaultFontGlyphsPtr';
 procedure printDefault(const text: string; const x, y: integer);
 function measureDefault(const text: string): word;
 
-procedure sprRegionTemp(
+procedure sprRegionSolid(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer;
@@ -66,7 +66,7 @@ begin
   measureDefault := measureBMFont(text, defaultFontGlyphs)
 end;
 
-procedure sprRegionTemp(
+procedure sprRegionSolid(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer;
@@ -94,6 +94,7 @@ begin
     alpha := image^.data[srcPos + 3];
     if alpha < 255 then continue;
 
+    { colour := unsafeSprPget(image, sx, sy); }
     unsafePset(destX + a, destY + b, colour);
   end;
 end;
@@ -125,7 +126,7 @@ begin
     if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
       glyph := fontGlyphs[glyphIdx];
 
-      sprRegionTemp(
+      sprRegionSolid(
         font.imgHandle,
         glyph.x, glyph.y,
         glyph.width, glyph.height,
