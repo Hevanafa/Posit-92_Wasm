@@ -30,6 +30,7 @@ class Posit92 {
    * @type {WebAssembly.Instance}
    */
   #wasm;
+  get wasmInstance() { return this.#wasm }
 
   /**
    * @type {AudioContext}
@@ -112,7 +113,7 @@ class Posit92 {
       const response = await fetch(this.#wasmSource);
 
       if (!response.ok) {
-        this.#setLoadingText(`Error: Failed to load ${this.#wasmSource} (${response.status})`);
+        this.setLoadingText(`Error: Failed to load ${this.#wasmSource} (${response.status})`);
         return false
       }
 
@@ -121,7 +122,7 @@ class Posit92 {
       this.#wasm = result.instance;
       return true
     } catch (e) {
-      this.#setLoadingText(`Error loading WebAssembly: ${ e.message }`);
+      this.setLoadingText(`Error loading WebAssembly: ${ e.message }`);
       console.error("Wasm load error:", e);
       return false
     }
@@ -138,8 +139,8 @@ class Posit92 {
   }
 
   async init() {
-    this.#setLoadingText("Loading WebAssembly binary...");
-    await this.#sleep(500);
+    this.setLoadingText("Loading WebAssembly binary...");
+    await this.sleep(500);
 
     if (!(await this.#initWebAssembly())) {
       done = true;
@@ -151,6 +152,9 @@ class Posit92 {
     this.#initKeyboard();
     this.#initMouse();
     this.#initAudio();
+
+    if (this.loadAssets)
+      await this.loadAssets();
   }
 
   afterInit() {
@@ -167,7 +171,7 @@ class Posit92 {
     })
   }
 
-  #setLoadingText(text) {
+  setLoadingText(text) {
     const div = document.querySelector("#loading-overlay > div");
     div.innerHTML = text;
   }
@@ -176,39 +180,11 @@ class Posit92 {
     const div = document.getElementById("loading-overlay");
     // div.style.display = "none";
     div.classList.add("hidden");
-    this.#setLoadingText("");
+    this.setLoadingText("");
   }
 
-  async #sleep(ms) {
+  async sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
-  }
-
-  async loadAssets() {
-    let handle = 0;
-
-    this.#setLoadingText("Loading images & fonts...");
-    await this.#sleep(300);
-
-    handle = await this.loadImage("assets/images/cursor.png");
-    this.#wasm.exports.setImgCursor(handle);
-
-    await this.loadBMFont(
-      "assets/fonts/nokia_cellphone_fc_8.txt",
-      this.#wasm.exports.defaultFontPtr(),
-      this.#wasm.exports.defaultFontGlyphsPtr());
-
-    handle = await this.loadImage("assets/images/dosu_1.png");
-    this.#wasm.exports.setImgDosuEXE(handle, 0);
-    handle = await this.loadImage("assets/images/dosu_2.png");
-    this.#wasm.exports.setImgDosuEXE(handle, 1);
-
-    this.#setLoadingText("Loading sounds...");
-    await this.#sleep(300);
-
-    this.#setLoadingText("Almost there...");
-    await this.#sleep(200);
-
-    // Add more assets as necessary
   }
 
   cleanup() {
