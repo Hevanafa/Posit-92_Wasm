@@ -18,6 +18,8 @@ boilerplate/run.ps1
 boilerplate/start_server.ps1
 boilerplate/build_dist.ps1
 boilerplate/dist.ps1
+boilerplate/build_run_demo.ps1
+boilerplate/compile_demo.ps1
 
 # Demo Build Scripts
 DEMOS/hello_world/*.ps1

@@ -15,8 +15,8 @@ var
   imgDosuEXE: array[0..1] of longint;
 
 { BMFont boilerplate }
-function defaultFontPtr: pointer; public name 'defaultFontPtr';
-function defaultFontGlyphsPtr: pointer; public name 'defaultFontGlyphsPtr';
+function defaultFontPtr: PBMFont; public name 'defaultFontPtr';
+function defaultFontGlyphsPtr: PBMFontGlyph; public name 'defaultFontGlyphsPtr';
 
 procedure printDefault(const text: string; const x, y: integer);
 function measureDefault(const text: string): word;
@@ -32,12 +32,12 @@ uses Conv;
 
 { Begin BMFont boilerplate}
 
-function defaultFontPtr: pointer;
+function defaultFontPtr: PBMFont;
 begin
   defaultFontPtr := @defaultFont
 end;
 
-function defaultFontGlyphsPtr: pointer;
+function defaultFontGlyphsPtr: PBMFontGlyph;
 begin
   defaultFontGlyphsPtr := @defaultFontGlyphs
 end;
