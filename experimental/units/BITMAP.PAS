@@ -42,7 +42,7 @@ function getMaxBitmapData: longword;
 function findEmptyImageSlot: longint;
 
 procedure registerImageRef(const handle: longint; const dataPtr: pointer; const w, h: integer); public name 'registerImageRef';
-function getImageRef(const handle: integer): PImageRef;
+function getImageRefPtr(const handle: integer): PImageRef;
 { function getImageRefCount: integer; }
 
 function newImage(const width, height: integer): longint; public name 'newImage';
@@ -115,6 +115,7 @@ end;
 procedure registerImageRef(const handle: longint; const dataPtr: pointer; const w, h: integer);
 var
   idx: integer;
+  testByte: PByte;
 begin
   idx := findEmptyImageRefSlot;
 
@@ -129,6 +130,11 @@ begin
 
   { imageRefs[handle].handle := handle; }
   imageRefs[handle].dataPtr := dataPtr;
+
+  testByte := PByte(dataPtr);
+  writeLog('dataPtr[0]:');
+  writeLogI32(testByte[0]);
+
   imageRefs[handle].width := w;
   imageRefs[handle].height := h;
 
@@ -142,9 +148,9 @@ begin
   { inc(imageRefCount) }
 end;
 
-function getImageRef(const handle: integer): PImageRef;
+function getImageRefPtr(const handle: integer): PImageRef;
 begin
-  getImageRef := @imageRefs[handle]
+  getImageRefPtr := @imageRefs[handle]
 end;
 
 {

@@ -378,16 +378,21 @@ begin
   { if (handle < 1) or (handle >= getImageRefCount) then exit; }
   { TODO: Handle if image is set }
 
-  ref := getImageRef(handle);
+  ref := getImageRefPtr(handle);
+
+  data := PByte(ref^.dataPtr);
 
   if not sprRefOnceB then begin
     writeLog('Got image ref');
     writeLogI32(ref^.width);
     writeLogI32(ref^.height);
+
+    writeLog('First 20 bytes of data');
+    for px:=0 to 19 do
+      writeLogI32(data[px]);
+
     sprRefOnceB := true
   end;
-
-  data := PByte(ref^.dataPtr);
 
   for py:=0 to ref^.height - 1 do
   for px:=0 to ref^.width - 1 do begin

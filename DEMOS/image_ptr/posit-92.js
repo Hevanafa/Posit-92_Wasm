@@ -252,14 +252,17 @@ class Posit92 {
     const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
     const dataPtr = imageData.data.buffer;
 
+    console.log("What is dataPtr?", dataPtr);  // imgCursor has ArrayBuffer[112]
+
     if (this.#images.length == 0)
       this.#images.push(null);
-    
+
     const handle = this.#images.length;
     this.#images.push(imageData);
 
     this.#wasm.exports.registerImageRef(
       handle,
+      // imageData.data.byteOffset,
       dataPtr,  // was imageData.data.byteOffset,
       img.width,
       img.height);
