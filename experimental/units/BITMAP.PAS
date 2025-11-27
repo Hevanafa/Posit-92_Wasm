@@ -40,6 +40,7 @@ type
 function getMaxBitmapData: longword;
 function findEmptyImageSlot: longint;
 
+procedure registerImageRef(const handle: longint; const dataPtr: pointer; const w, h: integer); public name 'registerImageRef';
 function getImageRef(const idx: integer): TImageRef;
 function getImageRefCount: integer;
 
@@ -50,8 +51,6 @@ procedure freeImage(const imgHandle: longint);
 function isImageSet(const imgHandle: longint): boolean;
 procedure debugImage(const imgHandle: longint); public name 'debugImage';
 function getImagePtr(const imgHandle: longint): PBitmap; public name 'getImagePtr';
-
-procedure registerImageRef(const handle: longint; const dataPtr: pointer; const w, h: integer); public name 'registerImageRef';
 
 function getImageWidth(const imgHandle: longint): word;
 function getImageHeight(const imgHandle: longint): word;
@@ -96,6 +95,25 @@ begin
     end;
 
   findEmptyImageSlot := -1
+end;
+
+
+procedure registerImageRef(const handle: longint; const dataPtr: pointer; const w, h: integer);
+begin
+  if imageRefCount >= MaxImageRefs then
+    panicHalt('Image ref pool is full!');
+
+  writeLog('registerImageRef: handle, w, h');
+  writeLogI32(handle);
+  writeLogI32(w);
+  writeLogI32(h);
+
+  imageRefs[imageRefCount].handle := handle;
+  imageRefs[imageRefCount].dataPtr := dataPtr;
+  imageRefs[imageRefCount].width := w;
+  imageRefs[imageRefCount].height := h;
+
+  inc(imageRefCount)
 end;
 
 function getImageRef(const idx: integer): TImageRef;
@@ -163,20 +181,6 @@ begin
     getImagePtr := @images[idx]
   else
     getImagePtr := nil;
-end;
-
-
-procedure registerImageRef(const handle: longint; const dataPtr: pointer; const w, h: integer);
-begin
-  if imageRefCount >= MaxImageRefs then
-    panicHalt('Image ref pool is full!');
-
-  imageRefs[imageRefCount].handle := handle;
-  imageRefs[imageRefCount].dataPtr := dataPtr;
-  imageRefs[imageRefCount].width := w;
-  imageRefs[imageRefCount].height := h;
-
-  inc(imageRefCount)
 end;
 
 
