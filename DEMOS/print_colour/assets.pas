@@ -21,12 +21,6 @@ function defaultFontGlyphsPtr: PBMFontGlyph; public name 'defaultFontGlyphsPtr';
 procedure printDefault(const text: string; const x, y: integer);
 function measureDefault(const text: string): word;
 
-procedure sprRegionSolid(
-  const imgHandle: longint;
-  const srcX, srcY, srcW, srcH: integer;
-  const destX, destY: integer;
-  const colour: longword);
-
 function printCharColour(
   const ch: char;
   const x, y: integer;
@@ -49,7 +43,7 @@ procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public na
 
 implementation
 
-uses Bitmap, Conv, VGA;
+uses SprFast, Conv, VGA;
 
 { Begin BMFont boilerplate}
 
@@ -73,38 +67,6 @@ begin
   measureDefault := measureBMFont(text, defaultFontGlyphs)
 end;
 
-procedure sprRegionSolid(
-  const imgHandle: longint;
-  const srcX, srcY, srcW, srcH: integer;
-  const destX, destY: integer;
-  const colour: longword);
-var
-  image: PBitmap;
-  a, b: integer;
-  sx, sy: integer;
-  srcPos: longint;
-  alpha: byte;
-begin
-  if not isImageSet(imgHandle) then exit;
-
-  image := getImagePtr(imgHandle);
-
-  for b:=0 to srcH - 1 do
-  for a:=0 to srcW - 1 do begin
-    if (destX + a >= vgaWidth) or (destX + a < 0)
-      or (destY + b >= vgaHeight) or (destY + b < 0) then continue;
-
-    sx := srcX + a;
-    sy := srcY + b;
-    srcPos := (sx + sy * image^.width) * 4;
-
-    alpha := image^.data[srcPos + 3];
-    if alpha < 255 then continue;
-
-    { colour := unsafeSprPget(image, sx, sy); }
-    unsafePset(destX + a, destY + b, colour);
-  end;
-end;
 
 { Returns xadvance for the next char }
 function printCharColour(
