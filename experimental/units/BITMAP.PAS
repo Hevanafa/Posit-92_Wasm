@@ -30,8 +30,9 @@ type
     data: array[0..MaxBitmapData-1] of byte;
   end;
 
+  PImageRef = ^TImageRef;
   TImageRef = record
-    handle: longint;  { Index on JS }
+    { handle: longint; }  { Index on JS }
     dataPtr: pointer;
     width: integer;
     height: integer;
@@ -41,7 +42,7 @@ function getMaxBitmapData: longword;
 function findEmptyImageSlot: longint;
 
 procedure registerImageRef(const handle: longint; const dataPtr: pointer; const w, h: integer); public name 'registerImageRef';
-function getImageRef(const idx: integer): TImageRef;
+function getImageRef(const handle: integer): PImageRef;
 { function getImageRefCount: integer; }
 
 function newImage(const width, height: integer): longint; public name 'newImage';
@@ -126,17 +127,24 @@ begin
   writeLogI32(w);
   writeLogI32(h);
 
-  imageRefs[idx].handle := handle;
-  imageRefs[idx].dataPtr := dataPtr;
-  imageRefs[idx].width := w;
-  imageRefs[idx].height := h;
+  { imageRefs[handle].handle := handle; }
+  imageRefs[handle].dataPtr := dataPtr;
+  imageRefs[handle].width := w;
+  imageRefs[handle].height := h;
+
+  writeLog('imageRefs[handle]: handle, width, height');
+  writeLogI32(handle);
+  with imageRefs[handle] do begin
+    writeLogI32(width);
+    writeLogI32(height);
+  end;
 
   { inc(imageRefCount) }
 end;
 
-function getImageRef(const idx: integer): TImageRef;
+function getImageRef(const handle: integer): PImageRef;
 begin
-  getImageRef := imageRefs[idx]
+  getImageRef := @imageRefs[handle]
 end;
 
 {

@@ -362,7 +362,7 @@ end;
 
 procedure sprRef(const handle: longint; const x, y: integer);
 var
-  ref: TImageRef;
+  ref: PImageRef;
   px, py: integer;
   offset: longword;
   data: PByte;
@@ -382,20 +382,20 @@ begin
 
   if not sprRefOnceB then begin
     writeLog('Got image ref');
-    writeLogI32(ref.width);
-    writeLogI32(ref.height);
+    writeLogI32(ref^.width);
+    writeLogI32(ref^.height);
     sprRefOnceB := true
   end;
 
-  data := PByte(ref.dataPtr);
+  data := PByte(ref^.dataPtr);
 
-  for py:=0 to ref.height - 1 do
-  for px:=0 to ref.width - 1 do begin
+  for py:=0 to ref^.height - 1 do
+  for px:=0 to ref^.width - 1 do begin
     if (x + px >= vgaWidth) or (x + px < 0)
       or (y + py >= vgaHeight) or (y + py < 0) then continue;
 
     { offset to ImageData buffer }
-    offset := (px + py * ref.width) * 4;
+    offset := (px + py * ref^.width) * 4;
 
     r := data[offset];
     g := data[offset + 1];
