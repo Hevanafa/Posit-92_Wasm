@@ -42,7 +42,7 @@ function findEmptyImageSlot: longint;
 
 procedure registerImageRef(const handle: longint; const dataPtr: pointer; const w, h: integer); public name 'registerImageRef';
 function getImageRef(const idx: integer): TImageRef;
-function getImageRefCount: integer;
+{ function getImageRefCount: integer; }
 
 function newImage(const width, height: integer): longint; public name 'newImage';
 function copyImage(const imgHandle: longint): longint;
@@ -76,7 +76,7 @@ var
   images: array[1..16] of TBitmap;
 
   imageRefs: array[1..MaxImageRefs] of TImageRef;
-  imageRefCount: integer = 0;
+  { imageRefCount: integer = 0; }
 
 
 function getMaxBitmapData: longword;
@@ -98,9 +98,27 @@ begin
 end;
 
 
-procedure registerImageRef(const handle: longint; const dataPtr: pointer; const w, h: integer);
+function findEmptyImageRefSlot: integer;
+var
+  a: longint;
 begin
-  if imageRefCount >= MaxImageRefs then
+  for a:=1 to high(images) do
+    if not isImageSet(a) then begin
+      findEmptyImageRefSlot := a;
+      exit
+    end;
+
+  findEmptyImageRefSlot := -1
+end;
+
+procedure registerImageRef(const handle: longint; const dataPtr: pointer; const w, h: integer);
+var
+  idx: integer;
+begin
+  idx := findEmptyImageRefSlot;
+
+  { if imageRefCount >= MaxImageRefs then }
+  if idx < 0 then
     panicHalt('Image ref pool is full!');
 
   writeLog('registerImageRef: handle, w, h');
@@ -108,12 +126,12 @@ begin
   writeLogI32(w);
   writeLogI32(h);
 
-  imageRefs[imageRefCount].handle := handle;
-  imageRefs[imageRefCount].dataPtr := dataPtr;
-  imageRefs[imageRefCount].width := w;
-  imageRefs[imageRefCount].height := h;
+  imageRefs[idx].handle := handle;
+  imageRefs[idx].dataPtr := dataPtr;
+  imageRefs[idx].width := w;
+  imageRefs[idx].height := h;
 
-  inc(imageRefCount)
+  { inc(imageRefCount) }
 end;
 
 function getImageRef(const idx: integer): TImageRef;
@@ -121,10 +139,12 @@ begin
   getImageRef := imageRefs[idx]
 end;
 
+{
 function getImageRefCount: integer;
 begin
   getImageRefCount := imageRefCount
 end;
+}
 
 
 function newImage(const width, height: integer): longint;

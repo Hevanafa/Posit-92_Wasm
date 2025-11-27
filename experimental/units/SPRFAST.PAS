@@ -375,7 +375,8 @@ begin
     sprRefOnceA := true
   end;
 
-  if (handle < 1) or (handle >= getImageRefCount) then exit;
+  { if (handle < 1) or (handle >= getImageRefCount) then exit; }
+  { TODO: Handle if image is set }
 
   ref := getImageRef(handle);
 
