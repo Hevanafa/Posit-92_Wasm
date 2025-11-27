@@ -91,6 +91,8 @@ begin
   w := measureBMFont(s, _defaultFontGlyphs);
   printDefault(s, (vgaWidth - w) div 2, 160);
 
+  { printDefault('getTimer: ' + f32str(getTimer), 0, 40); }
+
   drawMouse;
 
   debugMouse;
@@ -109,4 +111,3 @@ exports
 begin
 { Starting point is intentionally left empty }
 end.
-

@@ -22,6 +22,9 @@ class Posit92 {
    * @type {WebAssembly.Instance}
    */
   #wasm;
+  get wasmInstance() {
+    return this.#wasm
+  }
 
   /**
    * @type {AudioContext}
@@ -40,6 +43,8 @@ class Posit92 {
   #music = null;
   #musicVolume = 1.0;
   #musicGainNode = null;
+
+  #midnightOffset = 0;
 
   /**
    * For use with WebAssembly init
@@ -76,7 +81,8 @@ class Posit92 {
       stopMusic: () => this.stopMusic(),
 
       // Timing
-      getTimer: () => this.getTimer()
+      getTimer: () => this.getTimer(),
+      getFullTimer: () => this.getFullTimer()
     }
   });
 
@@ -105,10 +111,19 @@ class Posit92 {
     this.#audioContext = new AudioContext();
   }
 
+  #loadMidnightOffset() {
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    this.#midnightOffset = midnight.getTime()
+  }
+
   async init() {
     await this.#initWebAssembly();
-    // console.log("wasm.exports", this.#wasm.exports);
-    // this.#wasm.exports.initBuffer();
+    this.#loadMidnightOffset();
+
+    if (this.loadAssets)
+      await this.loadAssets();
+
     this.#wasm.exports.init();
     this.#initKeyboard();
     this.#initMouse();
@@ -125,18 +140,6 @@ class Posit92 {
       this.#canvas.tabIndex = 0;
       this.#canvas.focus()
     })
-  }
-
-  async loadAssets() {
-    const imgCursor = await this.loadImage("assets/images/cursor.png");
-    this.#wasm.exports.setImgCursor(imgCursor);
-
-    const imgGasolineMaid = await this.loadImage("assets/images/gasoline_maid_100px.png")
-    this.#wasm.exports.setImgGasolineMaid(imgGasolineMaid);
-
-    await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
-
-    // Add more assets as necessary
   }
 
   cleanup() {
@@ -623,24 +626,15 @@ class Posit92 {
 
   // TIMING.PAS
   getTimer() {
+    return (Date.now() - this.#midnightOffset) / 1000
+  }
+
+  getFullTimer() {
     return Date.now() / 1000
-  }
-
-  initDeltaTime() {
-    this.#wasm.exports.initDeltaTime()
-  }
-
-  updateDeltaTime() {
-    this.#wasm.exports.updateDeltaTime()
   }
 
 
   // VGA.PAS
-  cls(colour) {
-    this.#assertNumber(colour);
-    this.#wasm.exports.cls(colour);
-  }
-
   flush() {
     const surfacePtr = this.#wasm.exports.getSurfacePtr();
     const imageData = new Uint8ClampedArray(
@@ -649,23 +643,12 @@ class Posit92 {
       320 * 200 * 4
     );
 
-    // console.log("First 5 pixels:");
-    // for (let a=0; a < 20; a += 4)
-    //   console.log(`Pixel ${a / 4}: R=${imageData[a]} G=${imageData[a+1]} B=${imageData[a+2]} A=${imageData[a+3]}`);
-
     const imgData = new ImageData(imageData, 320, 200);
 
     this.#ctx.putImageData(imgData, 0, 0);
   }
 
-  pset(x, y, colour) {
-    this.#assertNumber(x);
-    this.#assertNumber(y);
-    this.#assertNumber(colour);
-
-    this.#wasm.exports.pset(x, y, colour)
-  }
-
+  
   // Game loop
   update() {
     this.#wasm.exports.update()
@@ -673,37 +656,5 @@ class Posit92 {
 
   draw() {
     this.#wasm.exports.draw()
-  }
-
-  // Stress test 1
-  startStressTest() {
-    // this.#wasm.exports.stressTest()
-
-    const stressTest = () => {
-      const iterations = 100;
-
-      for (let a=0; a<iterations; a++) {
-        this.#wasm.exports.update();
-        this.#wasm.exports.draw();
-      }
-
-      this.flush();
-
-      if (!done) requestAnimationFrame(stressTest)
-    }
-
-    stressTest();
-  }
-
-  // Stress test 2
-  startBenchmark() {
-    const start = performance.now();
-    for (let a=0; a<10000; a++) {
-      this.#wasm.exports.update();
-      this.#wasm.exports.draw();
-    }
-
-    const elapsed = performance.now() - start;
-    console.log(`10000 update & draw calls in ${elapsed}ms = ${10000 / (elapsed / 1000)} FPS`);
   }
 }
