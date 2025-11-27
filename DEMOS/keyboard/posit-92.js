@@ -36,6 +36,9 @@ class Posit92 {
    * @type {WebAssembly.Instance}
    */
   #wasm;
+  get wasmInstance() {
+    return this.#wasm
+  }
 
   /**
    * @type {AudioContext}
@@ -55,6 +58,8 @@ class Posit92 {
   #musicVolume = 1.0;
   #musicGainNode = null;
 
+  #midnightOffset = 0;
+
   /**
    * For use with WebAssembly init
    */
@@ -71,7 +76,6 @@ class Posit92 {
 
       // Logger
       writeLogI32: value => console.log("Pascal (i32):", value),
-      flush: () => this.flush(),
       flushLog: () => this.pascalWriteLog(),
 
       // Mouse
@@ -90,7 +94,11 @@ class Posit92 {
       stopMusic: () => this.stopMusic(),
 
       // Timing
-      getTimer: () => this.getTimer()
+      getTimer: () => this.getTimer(),
+      getFullTimer: () => this.getFullTimer(),
+
+      // VGA
+      flush: () => this.flush()
     }
   });
 
@@ -119,8 +127,19 @@ class Posit92 {
     this.#audioContext = new AudioContext();
   }
 
+  #loadMidnightOffset() {
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    this.#midnightOffset = midnight.getTime()
+  }
+
   async init() {
     await this.#initWebAssembly();
+    this.#loadMidnightOffset();
+
+    if (this.loadAssets)
+      await this.loadAssets();
+
     this.#wasm.exports.init();
     this.#initKeyboard();
     this.#initMouse();
@@ -137,17 +156,6 @@ class Posit92 {
       this.#canvas.tabIndex = 0;
       this.#canvas.focus()
     })
-  }
-
-  async loadAssets() {
-    let handle = 0;
-
-    handle = await this.loadImage("assets/images/cursor.png");
-    this.#wasm.exports.setImgCursor(handle);
-
-    await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
-
-    // Add more assets as necessary
   }
 
   cleanup() {
@@ -246,11 +254,13 @@ class Posit92 {
     }
   }
 
-  async loadBMFont(url) {
+  async loadBMFont(url, fontPtrRef, fontGlyphsPtrRef) {
     if (url == null)
       throw new Error("loadBMFont: url is required");
 
     this.#assertString(url);
+    this.#assertNumber(fontPtrRef);
+    this.#assertNumber(fontGlyphsPtrRef);
 
     const res = await fetch(url);
     const text = await res.text();
@@ -314,9 +324,8 @@ class Posit92 {
     imgHandle = await this.loadImage(filename);
     // console.log("loadBMFont imgHandle:", imgHandle);
 
-    // Obtain pointers to Pascal structures
-    const fontPtr = this.#wasm.exports.defaultFontPtr();
-    const glyphsPtr = this.#wasm.exports.defaultFontGlyphsPtr();
+    const fontPtr = fontPtrRef;
+    const glyphsPtr = fontGlyphsPtrRef;
 
     // Write font data
     const fontMem = new DataView(this.#wasm.exports.memory.buffer, fontPtr);
@@ -544,6 +553,10 @@ class Posit92 {
 
   // TIMING.PAS
   getTimer() {
+    return (Date.now() - this.#midnightOffset) / 1000
+  }
+
+  getFullTimer() {
     return Date.now() / 1000
   }
 
