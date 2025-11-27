@@ -57,6 +57,7 @@ uses
 
 { Bitmap operations }
 var
+  { bitmap pool }
   images: array[1..16] of TBitmap;
 
 function getMaxBitmapData: longword;
