@@ -6,7 +6,8 @@
 
 unit Bitmap;
 
-{$Mode TP}
+{Mode TP}
+{$Mode ObjFPC}
 {$B-}  { Enable boolean short-circuiting }
 {$R-}  { Turn off range checks }
 {$Q-}  { Turn off overflow checks }
@@ -27,6 +28,13 @@ type
   TBitmap = record
     width, height: word;
     data: array[0..MaxBitmapData-1] of byte;
+  end;
+
+  TImageRef = record
+    handle: longint;  { Index on JS }
+    dataPtr: pointer;
+    width: integer;
+    height: integer;
   end;
 
 function getMaxBitmapData: longword;
@@ -55,10 +63,17 @@ implementation
 uses
   Conv, Logger, Maths, Panic, VGA;
 
+const
+  MaxImageRefs = 256;
+
 { Bitmap operations }
 var
   { bitmap pool }
   images: array[1..16] of TBitmap;
+
+  imageRefs: array[0..MaxImageRefs - 1] of TImageRef;
+  imageRefCount: integer = 0;
+
 
 function getMaxBitmapData: longword;
 begin
