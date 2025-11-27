@@ -75,7 +75,7 @@ var
   { bitmap pool }
   images: array[1..16] of TBitmap;
 
-  imageRefs: array[0..MaxImageRefs - 1] of TImageRef;
+  imageRefs: array[1..MaxImageRefs] of TImageRef;
   imageRefCount: integer = 0;
 
 

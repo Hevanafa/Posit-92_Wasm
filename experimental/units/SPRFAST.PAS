@@ -48,7 +48,10 @@ procedure sprRef(const handle: longint; const x, y: integer);
 
 implementation
 
-uses Bitmap, VGA;
+uses Bitmap, Logger, VGA;
+
+var
+  sprRefOnceA, sprRefOnceB: boolean;
 
 procedure spr(const imgHandle: longint; const x, y: integer);
 var
@@ -366,9 +369,23 @@ var
   r, g, b, a: byte;
   colour: longword;
 begin
-  if (handle < 0) or (handle >= getImageRefCount) then exit;
+  if not sprRefOnceA then begin
+    writeLog('sprRef handle');
+    writeLogI32(handle);
+    sprRefOnceA := true
+  end;
+
+  if (handle < 1) or (handle >= getImageRefCount) then exit;
 
   ref := getImageRef(handle);
+
+  if not sprRefOnceB then begin
+    writeLog('Got image ref');
+    writeLogI32(ref.width);
+    writeLogI32(ref.height);
+    sprRefOnceB := true
+  end;
+
   data := PByte(ref.dataPtr);
 
   for py:=0 to ref.height - 1 do
