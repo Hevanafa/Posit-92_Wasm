@@ -1,5 +1,31 @@
 "use strict";
 
+// Asset boilerplate
+class Game extends Posit92 {
+  async loadAssets() {
+    let handle = 0;
+
+    handle = await this.loadImage("assets/images/cursor.png");
+    this.wasmInstance.exports.setImgCursor(handle);
+    handle = await this.loadImage("assets/images/hand.png");
+    this.wasmInstance.exports.setImgHandCursor(handle);
+
+    await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
+
+    handle = await this.loadImage("assets/images/dosu_1.png");
+    this.wasmInstance.exports.setImgDosuEXE(handle, 0);
+    handle = await this.loadImage("assets/images/dosu_2.png");
+    this.wasmInstance.exports.setImgDosuEXE(handle, 1);
+
+    handle = await this.loadImage("assets/images/piyo_0426_slime_girl.png");
+    this.wasmInstance.exports.setImgSlimeGirl(handle);
+    handle = await this.loadImage("assets/images/blue_enemy.png");
+    this.wasmInstance.exports.setImgBlueEnemy(handle);
+
+    // Add more assets as necessary
+  }
+}
+
 const TargetFPS = 60;
 const FrameTime = 1000 / 60.0;
 /**
@@ -10,14 +36,13 @@ let lastFrameTime = 0.0;
 var done = false;
 
 async function main() {
-  const P92 = new Posit92("game");
-  await P92.init();
-  await P92.loadAssets();
-  P92.afterInit();
+  const game = new Game("game");
+  await game.init();
+  game.afterInit();
 
   function loop(currentTime) {
     if (done) {
-      P92.cleanup();
+      game.cleanup();
       return;
     }
 
@@ -25,8 +50,8 @@ async function main() {
 
     if (elapsed >= FrameTime) {
       lastFrameTime = currentTime - (elapsed % FrameTime);  // Carry over extra time
-      P92.update();
-      P92.draw();
+      game.update();
+      game.draw();
     }
 
     requestAnimationFrame(loop)
