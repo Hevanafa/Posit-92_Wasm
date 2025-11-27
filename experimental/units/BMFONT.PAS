@@ -146,7 +146,7 @@ begin
     result := glyph.xadvance
   end;
 
-  printCharColour := result
+  printBMFontCharColour := result
 end;
 
 procedure printBMFontColour(
@@ -162,7 +162,11 @@ begin
   left := 0;
 
   for a:=1 to length(text) do
-    inc(left, printCharColour(text[a], x + left, y, font, fontGlyphs, colour))
+    inc(left,
+      printBMFontCharColour(
+        text[a],
+        x + left, y,
+        font, fontGlyphs, colour))
 end;
 
 end.

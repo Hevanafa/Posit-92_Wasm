@@ -21,6 +21,8 @@ function defaultFontGlyphsPtr: PBMFontGlyph; public name 'defaultFontGlyphsPtr';
 procedure printDefault(const text: string; const x, y: integer);
 function measureDefault(const text: string): word;
 
+{ Returns xadvance for the next char }
+function printCharColour(const ch: char; const x, y: integer; const colour: longword): word;
 
 { Asset boilerplate }
 procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
@@ -51,6 +53,12 @@ end;
 function measureDefault(const text: string): word;
 begin
   measureDefault := measureBMFont(text, defaultFontGlyphs)
+end;
+
+function printCharColour(const ch: char; const x, y: integer; const colour: longword): word;
+begin
+  printCharColour := printBMFontCharColour(
+    ch, x, y, defaultFont, defaultFontGlyphs, colour)
 end;
 
 

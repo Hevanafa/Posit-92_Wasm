@@ -122,7 +122,6 @@ begin
   { colour := HSVtoRGB(gameTime - trunc(gameTime), 1.0, 1.0); }
   { printColour(s,
     (vgaWidth - w) div 2, 120,
-    defaultFont, defaultFontGlyphs,
     colour); }
 
   x := (vgaWidth - w) / 2;
@@ -134,7 +133,6 @@ begin
     inc(left,
       printCharColour(s[a],
       trunc(x + left), 120,
-      defaultFont, defaultFontGlyphs,
       colour));
   end;
 
