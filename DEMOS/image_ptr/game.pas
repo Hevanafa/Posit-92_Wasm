@@ -22,7 +22,14 @@ procedure signalDone; external 'env' name 'signalDone';
 
 procedure drawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  sprRef(imgCursorRef, mouseX, mouseY)
+  { spr(imgCursor, mouseX, mouseY) }
+end;
+
+procedure debugMouse;
+begin
+  printDefault('Mouse: {x:' + i32str(mouseX) + ', y:' + i32str(mouseY) + '}', 0, 0);
+  printDefault('Button: ' + i32str(integer(mouseButton)), 0, 8);
 end;
 
 
@@ -70,6 +77,8 @@ begin
   s := 'Hello world!';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
+
+  sprRef(imgCursorRef, 10, 10);
 
   drawMouse;
   flush

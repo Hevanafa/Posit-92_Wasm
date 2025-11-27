@@ -14,6 +14,8 @@ var
   imgCursor: longint;
   imgDosuEXE: array[0..1] of longint;
 
+  imgCursorRef: longint;
+
 { BMFont boilerplate }
 function defaultFontPtr: PBMFont; public name 'defaultFontPtr';
 function defaultFontGlyphsPtr: PBMFontGlyph; public name 'defaultFontGlyphsPtr';
@@ -24,6 +26,8 @@ function measureDefault(const text: string): word;
 { Asset boilerplate }
 procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
+
+procedure setImgCursorRef(const imgHandle: longint); public name 'setImgCursorRef';
 
 
 implementation
@@ -64,5 +68,11 @@ procedure setImgDosuEXE(const imgHandle: longint; const idx: integer);
 begin
   imgDosuEXE[idx] := imgHandle
 end;
+
+procedure setImgCursorRef(const imgHandle: longint);
+begin
+  imgCursorRef := imgHandle
+end;
+
 
 end.
