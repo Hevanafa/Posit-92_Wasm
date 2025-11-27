@@ -22,12 +22,12 @@ var
 
 { BMFont boilerplate }
 function defaultFontPtr: PBMFont; public name 'defaultFontPtr';
-function defaultFontGlyphsPtr: pointer; public name 'defaultFontGlyphsPtr';
+function defaultFontGlyphsPtr: PBMFontGlyph; public name 'defaultFontGlyphsPtr';
 function blackFontPtr: PBMFont; public name 'blackFontPtr';
-function blackFontGlyphsPtr: pointer; public name 'blackFontGlyphsPtr';
+function blackFontGlyphsPtr: PBMFontGlyph; public name 'blackFontGlyphsPtr';
 
 function picotronFontPtr: PBMFont; public name 'picotronFontPtr';
-function picotronFontGlyphsPtr: pointer; public name 'picotronFontGlyphsPtr';
+function picotronFontGlyphsPtr: PBMFontGlyph; public name 'picotronFontGlyphsPtr';
 
 procedure printDefault(const text: string; const x, y: integer);
 function measureDefault(const text: string): word;
@@ -53,7 +53,7 @@ begin
   defaultFontPtr := @defaultFont
 end;
 
-function defaultFontGlyphsPtr: pointer;
+function defaultFontGlyphsPtr: PBMFontGlyph;
 begin
   defaultFontGlyphsPtr := @defaultFontGlyphs
 end;
@@ -63,7 +63,7 @@ begin
   blackFontPtr := @blackFont
 end;
 
-function blackFontGlyphsPtr: pointer;
+function blackFontGlyphsPtr: PBMFontGlyph;
 begin
   blackFontGlyphsPtr := @blackFontGlyphs
 end;
@@ -73,7 +73,7 @@ begin
   picotronFontPtr := @picotronFont
 end;
 
-function picotronFontGlyphsPtr: pointer;
+function picotronFontGlyphsPtr: PBMFontGlyph;
 begin
   picotronFontGlyphsPtr := @picotronFontGlyphs
 end;
