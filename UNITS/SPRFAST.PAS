@@ -17,6 +17,12 @@ procedure sprRegion(
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer);
 
+procedure sprRegionSolid(
+  const imgHandle: longint;
+  const srcX, srcY, srcW, srcH: integer;
+  const destX, destY: integer;
+  const colour: longword);
+
 procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
 procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
 procedure sprScale(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
@@ -96,6 +102,39 @@ begin
     if alpha < 255 then continue;
 
     colour := unsafeSprPget(image, sx, sy);
+    unsafePset(destX + a, destY + b, colour);
+  end;
+end;
+
+procedure sprRegionSolid(
+  const imgHandle: longint;
+  const srcX, srcY, srcW, srcH: integer;
+  const destX, destY: integer;
+  const colour: longword);
+var
+  image: PBitmap;
+  a, b: integer;
+  sx, sy: integer;
+  srcPos: longint;
+  alpha: byte;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+
+  for b:=0 to srcH - 1 do
+  for a:=0 to srcW - 1 do begin
+    if (destX + a >= vgaWidth) or (destX + a < 0)
+      or (destY + b >= vgaHeight) or (destY + b < 0) then continue;
+
+    sx := srcX + a;
+    sy := srcY + b;
+    srcPos := (sx + sy * image^.width) * 4;
+
+    alpha := image^.data[srcPos + 3];
+    if alpha < 255 then continue;
+
+    { colour := unsafeSprPget(image, sx, sy); }
     unsafePset(destX + a, destY + b, colour);
   end;
 end;
