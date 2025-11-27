@@ -30,6 +30,7 @@ class Posit92 {
    * @type {WebAssembly.Instance}
    */
   #wasm;
+  get wasmInstance() { return this.#wasm }
 
   /**
    * @type {AudioContext}
@@ -122,6 +123,9 @@ class Posit92 {
     this.#initKeyboard();
     this.#initMouse();
     this.#initAudio();
+
+    if (this.loadAssets)
+      await this.loadAssets();
   }
 
   afterInit() {
@@ -134,28 +138,6 @@ class Posit92 {
       this.#canvas.tabIndex = 0;
       this.#canvas.focus()
     })
-  }
-
-  async loadAssets() {
-    let handle = 0;
-
-    handle = await this.loadImage("assets/images/cursor.png");
-    this.#wasm.exports.setImgCursor(handle);
-
-    await this.loadBMFont(
-      "assets/fonts/nokia_cellphone_fc_8.txt",
-      this.#wasm.exports.defaultFontPtr(),
-      this.#wasm.exports.defaultFontGlyphsPtr());
-
-    handle = await this.loadImage("assets/images/dosu_1.png");
-    this.#wasm.exports.setImgDosuEXE(handle, 0);
-    handle = await this.loadImage("assets/images/dosu_2.png");
-    this.#wasm.exports.setImgDosuEXE(handle, 1);
-
-    handle = await this.loadImage("assets/images/particle.png");
-    this.#wasm.exports.setImgParticle(handle);
-
-    // Add more assets as necessary
   }
 
   cleanup() {

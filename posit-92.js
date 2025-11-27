@@ -29,9 +29,7 @@ class Posit92 {
    * @type {WebAssembly.Instance}
    */
   #wasm;
-  get wasmInstance() {
-    return this.#wasm
-  }
+  get wasmInstance() { return this.#wasm }
 
   /**
    * @type {AudioContext}
