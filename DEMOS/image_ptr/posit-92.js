@@ -51,6 +51,8 @@ class Posit92 {
 
   #midnightOffset = 0;
 
+  #images = [];
+
   /**
    * For use with WebAssembly init
    */
@@ -228,6 +230,38 @@ class Posit92 {
     memory.set(pixels, 4);  // TBitmap.data
 
     return imgHandle
+  }
+
+  async loadImageRef(url) {
+    if (url == null)
+      throw new Error("loadImage: url is required");
+
+    this.#assertString(url);
+
+    const img = await this.loadImageFromURL(url);
+
+    // Copy image
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = img.width;
+    tempCanvas.height = img.height;
+    const tempCtx = tempCanvas.getContext("2d");
+    tempCtx.drawImage(img, 0, 0);
+    // const pixels = tempCtx.getImageData(0, 0, img.width, img.height).data;
+
+    // Obtain a new handle number
+    const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
+    const dataPtr = imageData.data.buffer;
+
+    const handle = this.#images.length;
+    this.#images.push(imageData);
+
+    this.#wasm.exports.registerImageRef(
+      handle,
+      dataPtr,  // was imageData.data.byteOffset,
+      img.width,
+      img.height);
+
+    return handle
   }
 
 
