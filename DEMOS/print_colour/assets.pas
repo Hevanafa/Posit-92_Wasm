@@ -21,6 +21,46 @@ function defaultFontGlyphsPtr: PBMFontGlyph; public name 'defaultFontGlyphsPtr';
 procedure printDefault(const text: string; const x, y: integer);
 function measureDefault(const text: string): word;
 
+procedure printColour(
+  const text: string;
+  const x, y: integer;
+  const font: TBMFont;
+  const fontGlyphs: array of TBMFontGlyph;
+  const colour: longword);
+var
+  a: word;
+  ch: char;
+  charcode: byte;
+  left: integer;
+
+  glyphIdx: integer;
+  glyph: TBMFontGlyph;
+begin
+  left := 0;
+
+  for a:=1 to length(text) do begin
+    ch := text[a];
+    charcode := ord(ch);
+
+    { Assuming the starting charcode is always 32 }
+    glyphIdx := charcode - 32;
+
+    if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
+      glyph := fontGlyphs[glyphIdx];
+
+      { TODO: Expand this }
+      sprRegion(
+        font.imgHandle,
+        glyph.x, glyph.y,
+        glyph.width, glyph.height,
+        x + left + glyph.xoffset, y + glyph.yoffset);
+
+      inc(left, glyph.xadvance)
+    end;
+  end;
+end;
+
+
 { Asset boilerplate }
 procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
