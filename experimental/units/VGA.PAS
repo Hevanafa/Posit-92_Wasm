@@ -26,7 +26,7 @@ var
 
 { Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
 procedure initBuffer;
-function getSurface: pointer; public name 'getSurface';
+function getSurfacePtr: pointer; public name 'getSurfacePtr';
 procedure toggleFullscreen; external 'env' name 'toggleFullscreen';
 
 { Colour format: $AARRGGBB }
@@ -61,9 +61,9 @@ begin
   end;
 end;
 
-function getSurface: pointer;
+function getSurfacePtr: pointer;
 begin
-  getSurface := @surface
+  getSurfacePtr := @surface
 end;
 
 procedure unsafePset(const x, y: integer; const colour: longword);

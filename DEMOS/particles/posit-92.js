@@ -559,7 +559,7 @@ class Posit92 {
 
   // VGA.PAS
   flush() {
-    const surfacePtr = this.#wasm.exports.getSurface();
+    const surfacePtr = this.#wasm.exports.getSurfacePtr();
     const imageData = new Uint8ClampedArray(
       this.#wasm.exports.memory.buffer,
       surfacePtr,
