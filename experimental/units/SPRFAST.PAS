@@ -362,12 +362,14 @@ var
   ref: TImageRef;
   px, py: integer;
   offset: longword;
+  data: PByte;
   r, g, b, a: byte;
   colour: longword;
 begin
   if (handle < 0) or (handle >= getImageRefCount) then exit;
 
   ref := getImageRef(handle);
+  data := PByte(ref.dataPtr);
 
   for py:=0 to ref.height - 1 do
   for px:=0 to ref.width - 1 do begin
@@ -377,7 +379,10 @@ begin
     { offset to ImageData buffer }
     offset := (px + py * ref.width) * 4;
 
-    { TODO: Read RGBA }
+    r := data[offset];
+    g := data[offset + 1];
+    b := data[offset + 2];
+    a := data[offset + 3];
 
     if a < 255 then continue;
 
