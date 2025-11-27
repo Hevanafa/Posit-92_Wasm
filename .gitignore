@@ -38,6 +38,7 @@ DEMOS/loading/*.ps1
 DEMOS/pwa_demo/*.ps1
 DEMOS/fullscreen/*.ps1
 DEMOS/mouse/*.ps1
+DEMOS/print_colour/*.ps1
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
