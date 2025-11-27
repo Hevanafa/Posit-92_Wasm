@@ -153,25 +153,6 @@ class Posit92 {
     })
   }
 
-  async loadAssets() {
-    let handle = 0;
-
-    handle = await this.loadImage("assets/images/cursor.png");
-    this.#wasm.exports.setImgCursor(handle);
-
-    await this.loadBMFont(
-      "assets/fonts/nokia_cellphone_fc_8.txt",
-      this.#wasm.exports.defaultFontPtr(),
-      this.#wasm.exports.defaultFontGlyphsPtr());
-
-    handle = await this.loadImage("assets/images/dosu_1.png");
-    this.#wasm.exports.setImgDosuEXE(handle, 0);
-    handle = await this.loadImage("assets/images/dosu_2.png");
-    this.#wasm.exports.setImgDosuEXE(handle, 1);
-
-    // Add more assets as necessary
-  }
-
   cleanup() {
     this.stopMusic();
     this.showCursor();
