@@ -365,9 +365,9 @@ var
   r, g, b, a: byte;
   colour: longword;
 begin
-  if (handle < 0) or (handle >= imageRefCount) then exit;
+  if (handle < 0) or (handle >= getImageRefCount) then exit;
 
-  ref := imageRefs[handle];
+  ref := getImageRef(handle);
 
   for py:=0 to ref.height - 1 do
   for px:=0 to ref.width - 1 do begin

@@ -40,6 +40,9 @@ type
 function getMaxBitmapData: longword;
 function findEmptyImageSlot: longint;
 
+function getImageRef(const idx: integer): TImageRef;
+function getImageRefCount: integer;
+
 function newImage(const width, height: integer): longint; public name 'newImage';
 function copyImage(const imgHandle: longint): longint;
 procedure freeImage(const imgHandle: longint);
@@ -94,6 +97,17 @@ begin
 
   findEmptyImageSlot := -1
 end;
+
+function getImageRef(const idx: integer): TImageRef;
+begin
+  getImageRef := imageRefs[idx]
+end;
+
+function getImageRefCount: integer;
+begin
+  getImageRefCount := imageRefCount
+end;
+
 
 function newImage(const width, height: integer): longint;
 var
