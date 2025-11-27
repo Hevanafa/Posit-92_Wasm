@@ -5,7 +5,7 @@ library Game;
 uses Bitmap, BMFont, Conv, FPS,
   Graphics, Keyboard, Lerp, Logger,
   Maths, Mouse, Panic, Sounds,
-  Timing, VGA,
+  SprFast, SprComp, Timing, VGA,
   Assets;
 
 const
@@ -246,9 +246,6 @@ end;
 
 procedure draw;
 var
-  w: integer;
-  s: string;
-
   perc: double;
   x: integer;
 begin
