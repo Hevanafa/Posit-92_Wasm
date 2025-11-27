@@ -34,6 +34,14 @@ I have prepared a few scripts to ease the build process
 - `start_server.ps1` - Starts the `http-server`
 - `dist.ps1` - Gathers the key files required for distribution
 
+### Scripts for Demos
+
+The demo projects use a special units collection: `experimental\units`, so the scripts are different
+
+- `build_run_demo.ps1` - Build & run
+- `compile_demo.ps1` - Compile only (similar to `compile.ps1`)
+- `start_server.ps1` - Run without building (the same as above)
+
 ## Compiler Setup
 
 1. Download **fpcupdeluxe-x86_64-win64.exe** from [LongDirtyAnimAlf/fpcupdeluxe](https://github.com/LongDirtyAnimAlf/fpcupdeluxe/releases/)
