@@ -4,7 +4,8 @@ library Game;
 
 uses Bitmap, BMFont, Conv, FPS,
   Graphics, Keyboard, Logger, Mouse,
-  Panic, Sounds, Timing, VGA,
+  Panic, Sounds, SprFast, Timing,
+  VGA,
   Assets;
 
 const
