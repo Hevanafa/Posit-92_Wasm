@@ -37,6 +37,20 @@ procedure printBMFont(
 
 function measureBMFont(const text: string; const glyphs: array of TBMFontGlyph): integer;
 
+function printBMFontCharColour(
+  const ch: char;
+  const x, y: integer;
+  const font: TBMFont;
+  const fontGlyphs: array of TBMFontGlyph;
+  const colour: longword): word;
+
+procedure printBMFontColour(
+  const text: string;
+  const x, y: integer;
+  const font: TBMFont;
+  const fontGlyphs: array of TBMFontGlyph;
+  const colour: longword);
+
 
 implementation
 
@@ -99,6 +113,56 @@ begin
   end;
 
   measureBMFont := result
+end;
+
+{ Returns xadvance for the next char }
+function printBMFontCharColour(
+  const ch: char;
+  const x, y: integer;
+  const font: TBMFont;
+  const fontGlyphs: array of TBMFontGlyph;
+  const colour: longword): word;
+var
+  charcode: byte;
+  glyphIdx: integer;
+  glyph: TBMFontGlyph;
+  result: word;
+begin
+  charcode := ord(ch);
+  glyphIdx := charcode - 32;
+
+  result := 0;
+
+  if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
+    glyph := fontGlyphs[glyphIdx];
+
+    sprRegionSolid(
+      font.imgHandle,
+      glyph.x, glyph.y,
+      glyph.width, glyph.height,
+      x + glyph.xoffset, y + glyph.yoffset,
+      colour);
+
+    result := glyph.xadvance
+  end;
+
+  printCharColour := result
+end;
+
+procedure printBMFontColour(
+  const text: string;
+  const x, y: integer;
+  const font: TBMFont;
+  const fontGlyphs: array of TBMFontGlyph;
+  const colour: longword);
+var
+  a: word;
+  left: integer;
+begin
+  left := 0;
+
+  for a:=1 to length(text) do
+    inc(left, printCharColour(text[a], x + left, y, font, fontGlyphs, colour))
 end;
 
 end.
