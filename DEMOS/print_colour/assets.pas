@@ -27,6 +27,13 @@ procedure sprRegionSolid(
   const destX, destY: integer;
   const colour: longword);
 
+function printCharColour(
+  const ch: char;
+  const x, y: integer;
+  const font: TBMFont;
+  const fontGlyphs: array of TBMFontGlyph;
+  const colour: longword): word;
+
 procedure printColour(
   const text: string;
   const x, y: integer;

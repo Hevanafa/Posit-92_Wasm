@@ -12,6 +12,7 @@ const
   SC_SPACE = $39;
 
   Black = $FF000000;
+  DarkBlue = $FF0000AA;
   Red = $FFFF5555;
 
 var
@@ -105,8 +106,10 @@ var
   w: integer;
   s: string;
   colour: longword;
+  a, left: word;
+  hue, x: double;
 begin
-  cls(Black);
+  cls(DarkBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
@@ -116,11 +119,24 @@ begin
   s := 'Hello world!';
   w := measureDefault(s);
 
-  colour := HSVtoRGB(gameTime - trunc(gameTime), 1.0, 1.0);
-  printColour(s,
+  { colour := HSVtoRGB(gameTime - trunc(gameTime), 1.0, 1.0); }
+  { printColour(s,
     (vgaWidth - w) div 2, 120,
     defaultFont, defaultFontGlyphs,
-    colour);
+    colour); }
+
+  x := (vgaWidth - w) / 2;
+  left := 0;
+  for a:=1 to length(s) do begin
+    hue := (a * 0.1) + (gameTime - trunc(gameTime));
+    colour := HSVtoRGB(hue - trunc(hue), 1.0, 1.0);
+
+    inc(left,
+      printCharColour(s[a],
+      trunc(x + left), 120,
+      defaultFont, defaultFontGlyphs,
+      colour));
+  end;
 
   drawMouse;
   flush
