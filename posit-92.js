@@ -29,6 +29,9 @@ class Posit92 {
    * @type {WebAssembly.Instance}
    */
   #wasm;
+  get wasmInstance() {
+    return this.#wasm
+  }
 
   /**
    * @type {AudioContext}
@@ -128,6 +131,10 @@ class Posit92 {
   async init() {
     await this.#initWebAssembly();
     this.#loadMidnightOffset();
+
+    if (this.loadAssets)
+      await this.loadAssets();
+
     this.#wasm.exports.init();
     this.#initKeyboard();
     this.#initMouse();
