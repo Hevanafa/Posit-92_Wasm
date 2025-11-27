@@ -48,6 +48,8 @@ function isImageSet(const imgHandle: longint): boolean;
 procedure debugImage(const imgHandle: longint); public name 'debugImage';
 function getImagePtr(const imgHandle: longint): PBitmap; public name 'getImagePtr';
 
+procedure registerImageRef(const handle: longint; const dataPtr: pointer; const w, h: integer); public name 'registerImageRef';
+
 function getImageWidth(const imgHandle: longint): word;
 function getImageHeight(const imgHandle: longint): word;
 
@@ -149,11 +151,25 @@ begin
     getImagePtr := nil;
 end;
 
+
+procedure registerImageRef(const handle: longint; const dataPtr: pointer; const w, h: integer);
+begin
+  if imageRefCount >= MaxImageRefs then
+    panicHalt('Image ref pool is full!');
+
+  imageRefs[imageRefCount].handle := handle;
+  imageRefs[imageRefCount].dataPtr := dataPtr;
+  imageRefs[imageRefCount].width := w;
+  imageRefs[imageRefCount].height := h;
+
+  inc(imageRefCount)
+end;
+
+
 function isImageSet(const imgHandle: longint): boolean;
 begin
   isImageSet := (images[imgHandle].width > 0) and (images[imgHandle].height > 0)
 end;
-
 
 procedure debugImage(const imgHandle: longint);
 var
