@@ -44,7 +44,6 @@ var done = false;
 async function main() {
   const game = new Game("game");
   await game.init();
-  await game.loadAssets();
   game.afterInit();
 
   function loop(currentTime) {
