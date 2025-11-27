@@ -11,6 +11,8 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+  Red = $FFFF5555;
+
 var
   lastEsc: boolean;
 
@@ -69,7 +71,10 @@ begin
 
   s := 'Hello world!';
   w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  printColour(s,
+    (vgaWidth - w) div 2, 120,
+    defaultFont, defaultFontGlyphs,
+    red);
 
   drawMouse;
   flush
