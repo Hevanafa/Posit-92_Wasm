@@ -2,11 +2,14 @@
   Bitmap unit
   Part of Posit-92 framework
   By Hevanafa, 22-11-2025
+
+  Deprecated in favour of ImgRef
 }
 
 unit Bitmap;
 
-{$Mode TP}
+{Mode TP}
+{$Mode ObjFPC}
 {$B-}  { Enable boolean short-circuiting }
 {$R-}  { Turn off range checks }
 {$Q-}  { Turn off overflow checks }
@@ -58,7 +61,10 @@ uses
 { Bitmap operations }
 var
   { bitmap pool }
-  images: array[1..16] of TBitmap;
+  { Recommended for bigger demos like immediate GUI }
+  { images: array[1..16] of TBitmap; }
+  images: array[1..8] of TBitmap;
+
 
 function getMaxBitmapData: longword;
 begin
@@ -77,6 +83,7 @@ begin
 
   findEmptyImageSlot := -1
 end;
+
 
 function newImage(const width, height: integer): longint;
 var
@@ -134,11 +141,11 @@ begin
     getImagePtr := nil;
 end;
 
+
 function isImageSet(const imgHandle: longint): boolean;
 begin
   isImageSet := (images[imgHandle].width > 0) and (images[imgHandle].height > 0)
 end;
-
 
 procedure debugImage(const imgHandle: longint);
 var

@@ -4,6 +4,7 @@
   By Hevanafa, 26-11-2025
 
   An extension of Bitmap unit
+  Deprecated in favour of SprFast
 }
 
 unit SprFast;
@@ -45,7 +46,7 @@ procedure sprOnSprite(const srcHandle, destHandle: longint; const x, y: integer)
 
 implementation
 
-uses Bitmap, VGA;
+uses Bitmap, Logger, VGA;
 
 procedure spr(const imgHandle: longint; const x, y: integer);
 var
@@ -353,5 +354,6 @@ begin
     unsafeSprPset(destImage, x + a, y + b, colour)
   end;
 end;
+
 
 end.

@@ -78,9 +78,8 @@ function PromptBox: TPromptResult;
 implementation
 
 uses
-  Conv, Bitmap, Graphics, Maths,
-  Mouse, Panic, Shapes, SprFast,
-  VGA;
+  Conv, Graphics, ImgRef, ImgRefFast,
+  Maths, Mouse, Panic, Shapes, VGA;
 
 const
   Black = $FF000000;

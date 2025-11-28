@@ -4,6 +4,7 @@
   By Hevanafa, 26-11-2025
 
   An extension of Bitmap unit to handle alpha compositing
+  Deprecated in favour of ImgRefComp
 }
 
 unit SprComp;
@@ -11,11 +12,11 @@ unit SprComp;
 interface
 
 procedure sprAlpha(const imgHandle: longint; const x, y: integer; opacity: double);
-procedure sprBlend(const imgHandle: longint; const x, y: integer); public name 'sprBlend';
+procedure sprBlend(const imgHandle: longint; const x, y: integer);
 procedure sprRegionBlend(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
-  const destX, destY: integer); public name 'sprRegionBlend';
+  const destX, destY: integer);
 
 
 implementation

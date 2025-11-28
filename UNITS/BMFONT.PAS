@@ -54,7 +54,7 @@ procedure printBMFontColour(
 
 implementation
 
-uses SprFast, Conv, Logger;
+uses ImgRefFast, Conv, Logger;
 
 procedure printBMFont(
   const text: string;
