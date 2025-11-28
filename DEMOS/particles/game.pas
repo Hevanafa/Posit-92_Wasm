@@ -118,7 +118,7 @@ begin
 
   imgParticles[0] := imgParticle;
   for a:=1 to high(palette) do begin
-    imgParticles[a] := copyImage(imgParticle);
+    imgParticles[a] := copyImageRef(imgParticle);
     replaceColours(imgParticles[a], palette[0], palette[a])
   end;
 end;
