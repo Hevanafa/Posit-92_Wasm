@@ -61,6 +61,8 @@ class Posit92 {
       hideCursor: () => this.hideCursor(),
       showCursor: () => this.showCursor(),
 
+      wasmgetmem: this.#WasmGetMem.bind(this),
+
       // Keyboard
       isKeyDown: this.isKeyDown.bind(this),
       signalDone: () => { this.cleanup(); done = true },
@@ -229,7 +231,7 @@ class Posit92 {
 
     const wasmMemory = new Uint8Array(this.#wasm.exports.memory.buffer);
     const byteSize = img.width * img.height * 4;
-    const wasmPtr = this.#wasmGetmem(byteSize);
+    const wasmPtr = this.#WasmGetMem(byteSize);
     wasmMemory.set(imageData.data, wasmPtr)
 
     if (this.#images.length == 0)
@@ -246,7 +248,7 @@ class Posit92 {
   // Start at 1 MB
   #wasmMemoryOffset = 1048576;
 
-  #wasmGetmem(bytes) {
+  #WasmGetMem(bytes) {
     const ptr = this.#wasmMemoryOffset;
     this.#wasmMemoryOffset += bytes;
 
