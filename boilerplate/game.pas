@@ -2,9 +2,10 @@ library Game;
 
 {$Mode ObjFPC}
 
-uses BMFont, Conv, FPS,
+uses
   Keyboard, Mouse,
-  Panic, Sounds, SprFast, Timing, VGA,
+  ImgRef, ImgRefFast,
+  Timing, VGA,
   Assets;
 
 const
@@ -30,7 +31,6 @@ procedure init;
 begin
   initBuffer;
   initDeltaTime;
-  initFPSCounter;
 end;
 
 procedure afterInit;
@@ -42,7 +42,6 @@ end;
 procedure update;
 begin
   updateDeltaTime;
-  incrementFPS;
 
   updateMouse;
 
