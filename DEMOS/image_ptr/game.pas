@@ -2,10 +2,11 @@ library Game;
 
 {$Mode ObjFPC}
 
-uses BMFont, Conv, FPS,
-  Keyboard, Mouse,
-  Panic, Sounds, SprFast, Timing, VGA,
-  Assets;
+uses
+  BMFont, Conv, FPS, Keyboard,
+  Mouse, Panic, Sounds, SprFast,
+  Timing, VGA,
+  Assets, ImgRef;
 
 const
   SC_ESC = $01;
@@ -78,7 +79,7 @@ begin
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
 
-  sprRef(imgCursorRef, 10, 10);
+  { sprRef(imgCursorRef, 10, 10); }
 
   drawMouse;
   flush

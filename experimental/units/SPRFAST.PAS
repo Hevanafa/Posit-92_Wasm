@@ -42,16 +42,10 @@ procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotat
 { Blitting on another sprite }
 procedure sprOnSprite(const srcHandle, destHandle: longint; const x, y: integer);
 
-{ spr with TImageRef }
-procedure sprRef(const handle: longint; const x, y: integer);
-
 
 implementation
 
 uses Bitmap, Logger, VGA;
-
-var
-  sprRefOnceA, sprRefOnceB: boolean;
 
 procedure spr(const imgHandle: longint; const x, y: integer);
 var
@@ -360,58 +354,5 @@ begin
   end;
 end;
 
-procedure sprRef(const handle: longint; const x, y: integer);
-var
-  ref: PImageRef;
-  px, py: integer;
-  offset: longword;
-  data: PByte;
-  r, g, b, a: byte;
-  colour: longword;
-begin
-  if not sprRefOnceA then begin
-    writeLog('sprRef handle');
-    writeLogI32(handle);
-    sprRefOnceA := true
-  end;
-
-  { if (handle < 1) or (handle >= getImageRefCount) then exit; }
-  { TODO: Handle if image is set }
-
-  ref := getImageRefPtr(handle);
-
-  data := PByte(ref^.dataPtr);
-
-  if not sprRefOnceB then begin
-    writeLog('Got image ref');
-    writeLogI32(ref^.width);
-    writeLogI32(ref^.height);
-
-    writeLog('First 20 bytes of data');
-    for px:=0 to 19 do
-      writeLogI32(data[px]);
-
-    sprRefOnceB := true
-  end;
-
-  for py:=0 to ref^.height - 1 do
-  for px:=0 to ref^.width - 1 do begin
-    if (x + px >= vgaWidth) or (x + px < 0)
-      or (y + py >= vgaHeight) or (y + py < 0) then continue;
-
-    { offset to ImageData buffer }
-    offset := (px + py * ref^.width) * 4;
-
-    r := data[offset];
-    g := data[offset + 1];
-    b := data[offset + 2];
-    a := data[offset + 3];
-
-    if a < 255 then continue;
-
-    colour := (a shl 24) or (r shl 16) or (g shl 8) or b;
-    unsafePset(x + px, y + py, colour)
-  end;
-end;
 
 end.

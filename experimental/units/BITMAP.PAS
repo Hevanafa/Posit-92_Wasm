@@ -30,20 +30,8 @@ type
     data: array[0..MaxBitmapData-1] of byte;
   end;
 
-  PImageRef = ^TImageRef;
-  TImageRef = record
-    { handle: longint; }  { Index on JS }
-    dataPtr: pointer;
-    width: integer;
-    height: integer;
-  end;
-
 function getMaxBitmapData: longword;
 function findEmptyImageSlot: longint;
-
-procedure registerImageRef(const handle: longint; const dataPtr: pointer; const w, h: integer); public name 'registerImageRef';
-function getImageRefPtr(const handle: integer): PImageRef;
-{ function getImageRefCount: integer; }
 
 function newImage(const width, height: integer): longint; public name 'newImage';
 function copyImage(const imgHandle: longint): longint;
@@ -68,16 +56,10 @@ implementation
 uses
   Conv, Logger, Maths, Panic, VGA;
 
-const
-  MaxImageRefs = 256;
-
 { Bitmap operations }
 var
   { bitmap pool }
   images: array[1..16] of TBitmap;
-
-  imageRefs: array[1..MaxImageRefs] of TImageRef;
-  { imageRefCount: integer = 0; }
 
 
 function getMaxBitmapData: longword;
@@ -97,68 +79,6 @@ begin
 
   findEmptyImageSlot := -1
 end;
-
-
-function findEmptyImageRefSlot: integer;
-var
-  a: longint;
-begin
-  for a:=1 to high(images) do
-    if not isImageSet(a) then begin
-      findEmptyImageRefSlot := a;
-      exit
-    end;
-
-  findEmptyImageRefSlot := -1
-end;
-
-procedure registerImageRef(const handle: longint; const dataPtr: pointer; const w, h: integer);
-var
-  idx: integer;
-  testByte: PByte;
-begin
-  idx := findEmptyImageRefSlot;
-
-  { if imageRefCount >= MaxImageRefs then }
-  if idx < 0 then
-    panicHalt('Image ref pool is full!');
-
-  writeLog('registerImageRef: handle, w, h');
-  writeLogI32(handle);
-  writeLogI32(w);
-  writeLogI32(h);
-
-  { imageRefs[handle].handle := handle; }
-  imageRefs[handle].dataPtr := dataPtr;
-
-  testByte := PByte(dataPtr);
-  writeLog('dataPtr[0]:');
-  writeLogI32(testByte[0]);
-
-  imageRefs[handle].width := w;
-  imageRefs[handle].height := h;
-
-  writeLog('imageRefs[handle]: handle, width, height');
-  writeLogI32(handle);
-  with imageRefs[handle] do begin
-    writeLogI32(width);
-    writeLogI32(height);
-  end;
-
-  { inc(imageRefCount) }
-end;
-
-function getImageRefPtr(const handle: integer): PImageRef;
-begin
-  getImageRefPtr := @imageRefs[handle]
-end;
-
-{
-function getImageRefCount: integer;
-begin
-  getImageRefCount := imageRefCount
-end;
-}
 
 
 function newImage(const width, height: integer): longint;
