@@ -3,10 +3,10 @@ library Game;
 {$Mode TP}
 {$B-}
 
-uses Bitmap, Conv, FPS, ImmedGui,
+uses
+  Conv, FPS, ImgRef, ImmedGui,
   Keyboard, Lerp, Logger, Mouse,
   Panic, Shapes, Timing, VGA,
-  SprFast, SprComp,
   Assets;
 
 const
@@ -78,7 +78,7 @@ end;
 procedure drawMouse;
 begin
   { spr(imgCursor, mouseX, mouseY) }
-  spr(imgHandCursor, mouseX - 5, mouseY - 1)
+  sprRef(imgHandCursor, mouseX - 5, mouseY - 1)
 end;
 
 procedure resetHeldKeys;
@@ -349,7 +349,7 @@ begin
 
   case demoListState.selectedIndex of
     DemoStateFullSprite: begin
-      spr(imgDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
+      sprRef(imgDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
       printCentred('WASD - Move', 120);
     end;
 
@@ -395,23 +395,15 @@ begin
 
     DemoStateRotation: begin
       sprRotate(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteRotation);
-{
-      rect(
-        trunc(dosuZone.x - getImageWidth(imgSlimeGirl) / 2),
-        trunc(dosuZone.y - getImageHeight(imgSlimeGirl) / 2),
-        trunc(dosuZone.x + getImageWidth(imgSlimeGirl) / 2),
-        trunc(dosuZone.y + getImageHeight(imgSlimeGirl) / 2),
-        white);
-}
       printCentred('WASD - Move', 120);
       printCentred('Left / right - Rotate', 130);
     end
 
     else begin
       if (trunc(gameTime * 4) and 1) > 0 then
-        spr(imgDosuEXE[1], trunc(dosuZone.x), trunc(dosuZone.y))
+        sprRef(imgDosuEXE[1], trunc(dosuZone.x), trunc(dosuZone.y))
       else
-        spr(imgDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
+        sprRef(imgDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
 
       printCentred('(Not implemented)', 130);
     end

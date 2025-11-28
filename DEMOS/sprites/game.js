@@ -5,21 +5,21 @@ class Game extends Posit92 {
   async loadAssets() {
     let handle = 0;
 
-    handle = await this.loadImage("assets/images/cursor.png");
+    handle = await this.loadImageRef("assets/images/cursor.png");
     this.wasmInstance.exports.setImgCursor(handle);
-    handle = await this.loadImage("assets/images/hand.png");
+    handle = await this.loadImageRef("assets/images/hand.png");
     this.wasmInstance.exports.setImgHandCursor(handle);
 
     await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
 
-    handle = await this.loadImage("assets/images/dosu_1.png");
+    handle = await this.loadImageRef("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
-    handle = await this.loadImage("assets/images/dosu_2.png");
+    handle = await this.loadImageRef("assets/images/dosu_2.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
 
-    handle = await this.loadImage("assets/images/piyo_0426_slime_girl.png");
+    handle = await this.loadImageRef("assets/images/piyo_0426_slime_girl.png");
     this.wasmInstance.exports.setImgSlimeGirl(handle);
-    handle = await this.loadImage("assets/images/blue_enemy.png");
+    handle = await this.loadImageRef("assets/images/blue_enemy.png");
     this.wasmInstance.exports.setImgBlueEnemy(handle);
 
     // Add more assets as necessary

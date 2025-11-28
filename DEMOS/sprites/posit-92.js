@@ -76,6 +76,8 @@ class Posit92 {
       hideCursor: () => this.hideCursor(),
       showCursor: () => this.showCursor(),
 
+      wasmgetmem: this.#WasmGetMem.bind(this),
+
       // Keyboard
       isKeyDown: this.isKeyDown.bind(this),
       signalDone: () => { done = true },
@@ -128,6 +130,14 @@ class Posit92 {
     const bytes = await response.arrayBuffer();
     const result = await WebAssembly.instantiate(bytes, this.#importObject);
     this.#wasm = result.instance;
+
+    // Grow Wasm memory size
+    // Wasm memory grows in 64KB pages
+    const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
+    const requiredPages = Math.ceil(2 * 1048576 / 65536);
+
+    if (pages < requiredPages)
+      this.#wasm.exports.memory.grow(requiredPages - pages);
   }
 
   #initAudio() {
@@ -209,11 +219,10 @@ class Posit92 {
     })
   }
 
-  debugImage(imgHandle) {
-    this.#wasm.exports.debugImage(imgHandle)
-  }
+  // Used in loadImageRef
+  #images = [];
 
-  async loadImage(url) {
+  async loadImageRef(url) {
     if (url == null)
       throw new Error("loadImage: url is required");
 
@@ -227,21 +236,35 @@ class Posit92 {
     tempCanvas.height = img.height;
     const tempCtx = tempCanvas.getContext("2d");
     tempCtx.drawImage(img, 0, 0);
-    const pixels = tempCtx.getImageData(0, 0, img.width, img.height).data;
 
-    // Obtain a new handle number
-    const imgHandle = this.#wasm.exports.newImage(img.width, img.height);
-    const bitmapPtr = this.#wasm.exports.getImagePtr(imgHandle);
-    
-    // Write to TBitmap
-    const memory = new Uint8Array(this.#wasm.exports.memory.buffer, bitmapPtr);
-    memory[0] = img.width & 0xff;
-    memory[1] = (img.width >> 8) & 0xff;
-    memory[2] = img.height & 0xff;
-    memory[3] = (img.height >> 8) & 0xff;
-    memory.set(pixels, 4);  // TBitmap.data
+    const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
 
-    return imgHandle
+    const wasmMemory = new Uint8Array(this.#wasm.exports.memory.buffer);
+    const byteSize = img.width * img.height * 4;
+    const wasmPtr = this.#WasmGetMem(byteSize);
+    wasmMemory.set(imageData.data, wasmPtr)
+
+    if (this.#images.length == 0)
+      this.#images.push(null);
+
+    // Register with Wasm pointer
+    const handle = this.#images.length;
+    this.#images.push(imageData);  // Keep data in JS for reference
+    this.#wasm.exports.registerImageRef(handle, wasmPtr, img.width, img.height);
+
+    return handle
+  }
+
+  // Start at 1 MB
+  #wasmMemoryOffset = 1048576;
+
+  #WasmGetMem(bytes) {
+    const ptr = this.#wasmMemoryOffset;
+    this.#wasmMemoryOffset += bytes;
+
+    // Align to 4 byte
+    this.#wasmMemoryOffset = (this.#wasmMemoryOffset + 3) & ~3;
+    return ptr
   }
 
 

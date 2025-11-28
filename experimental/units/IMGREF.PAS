@@ -23,6 +23,13 @@ type
     dataPtr: PByte;
   end;
 
+const
+  { SprFlips enum }
+  SprFlipNone = 0;
+  SprFlipHorizontal = 1;
+  SprFlipVertical = 2;
+  SprFlipBoth = SprFlipHorizontal or SprFlipVertical;
+
 procedure registerImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: integer); public name 'registerImageRef';
 
 function newImageRef(const width, height: integer): longint;
