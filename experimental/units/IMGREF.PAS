@@ -53,25 +53,19 @@ var
 begin
   idx := findEmptyImageRefSlot;
 
-  { if imageRefCount >= MaxImageRefs then }
   if idx < 0 then
     panicHalt('Image ref pool is full!');
 
-  writeLog('registerImageRef: imgHandle, w, h');
-  writeLogI32(imgHandle);
-  writeLogI32(w);
-  writeLogI32(h);
-
-  { imageRefs[imgHandle].imgHandle := imgHandle; }
   imageRefs[imgHandle].dataPtr := dataPtr;
+  imageRefs[imgHandle].width := w;
+  imageRefs[imgHandle].height := h;
 
+  { Removing this crashes the program for some reason }
   testByte := PByte(dataPtr);
   writeLog('dataPtr[0]:');
   writeLogI32(testByte[0]);
 
-  imageRefs[imgHandle].width := w;
-  imageRefs[imgHandle].height := h;
-
+  { Removing this crashes the program for some reason }
   writeLog('imageRefs[imgHandle]: imgHandle, width, height');
   writeLogI32(imgHandle);
   with imageRefs[imgHandle] do begin
