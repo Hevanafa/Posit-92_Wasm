@@ -11,35 +11,37 @@ unit ImgRefFast;
 interface
 
 { spr with TImageRef }
-procedure sprRef(const imgHandle: longint; const x, y: integer);
+procedure spr(const imgHandle: longint; const x, y: integer);
 
-procedure sprRefRegion(
+procedure sprRegion(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer);
 
-procedure sprRefStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
+procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
 
-procedure sprRefRegionStretch(
+procedure sprRegionStretch(
   const imgHandle: longint;
   const srcX, srcY, srcWidth, srcHeight: integer;
   const destX, destY, destWidth, destHeight: integer);
 
-procedure sprRefRegionSolid(
+procedure sprRegionSolid(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer;
   const colour: longword);
 
-procedure sprRefFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
+procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
 
 { rotation is in radians }
-procedure sprRefRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
+procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
 
 
 implementation
 
-procedure sprRef(const imgHandle: longint; const x, y: integer);
+uses ImgRef, VGA;
+
+procedure spr(const imgHandle: longint; const x, y: integer);
 var
   image: PImageRef;
   px, py: integer;
@@ -68,7 +70,7 @@ begin
   end;
 end;
 
-procedure sprRefRegion(
+procedure sprRegion(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer);
@@ -102,7 +104,7 @@ begin
 end;
 
 { Stretch a sprite with nearest neighbour scaling }
-procedure sprRefStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
+procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
 var
   sx, sy: integer;
   dx, dy: integer;
@@ -135,7 +137,7 @@ begin
   end;
 end;
 
-procedure sprRefRegionStretch(
+procedure sprRegionStretch(
   const imgHandle: longint;
   const srcX, srcY, srcWidth, srcHeight: integer;
   const destX, destY, destWidth, destHeight: integer);
@@ -173,7 +175,7 @@ begin
   end;
 end;
 
-procedure sprRefRegionSolid(
+procedure sprRegionSolid(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer;
@@ -207,7 +209,7 @@ begin
 end;
 
 { flip: use SprFlips enum }
-procedure sprRefFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
+procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
 var
   sx, sy: integer;
   dx, dy: integer;
@@ -217,7 +219,7 @@ var
   colour: longword;
 begin
   if flip = SprFlipNone then begin
-    sprRef(imgHandle, x, y);
+    spr(imgHandle, x, y);
     exit
   end;
 
@@ -253,7 +255,7 @@ begin
   end;
 end;
 
-procedure sprRefRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
+procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
 var
   sx, sy: double;
   dx, dy: integer;
