@@ -121,6 +121,14 @@ class Posit92 {
     const bytes = await response.arrayBuffer();
     const result = await WebAssembly.instantiate(bytes, this.#importObject);
     this.#wasm = result.instance;
+
+    // Grow Wasm memory size
+    // Wasm memory grows in 64KB pages
+    const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
+    const requiredPages = Math.ceil(2 * 1048576 / 65536);
+
+    if (pages < requiredPages)
+      this.#wasm.exports.memory.grow(requiredPages - pages);
   }
 
   #initAudio() {
@@ -238,6 +246,53 @@ class Posit92 {
     return imgHandle
   }
 
+  // Used in loadImageRef
+  #images = [];
+
+  async loadImageRef(url) {
+    if (url == null)
+      throw new Error("loadImage: url is required");
+
+    this.#assertString(url);
+
+    const img = await this.loadImageFromURL(url);
+
+    // Copy image
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = img.width;
+    tempCanvas.height = img.height;
+    const tempCtx = tempCanvas.getContext("2d");
+    tempCtx.drawImage(img, 0, 0);
+
+    const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
+
+    const wasmMemory = new Uint8Array(this.#wasm.exports.memory.buffer);
+    const byteSize = img.width * img.height * 4;
+    const wasmPtr = this.#wasmGetmem(byteSize);
+    wasmMemory.set(imageData.data, wasmPtr)
+
+    if (this.#images.length == 0)
+      this.#images.push(null);
+
+    // Register with Wasm pointer
+    const handle = this.#images.length;
+    this.#images.push(imageData);  // Keep data in JS for reference
+    this.#wasm.exports.registerImageRef(handle, wasmPtr, img.width, img.height);
+
+    return handle
+  }
+
+  // Start at 1 MB
+  #wasmMemoryOffset = 1048576;
+
+  #wasmGetmem(bytes) {
+    const ptr = this.#wasmMemoryOffset;
+    this.#wasmMemoryOffset += bytes;
+
+    // Align to 4 byte
+    this.#wasmMemoryOffset = (this.#wasmMemoryOffset + 3) & ~3;
+    return ptr
+  }
 
   // BMFONT.PAS
   #newBMFontGlyph() {

@@ -5,7 +5,7 @@ class Game extends Posit92 {
   async loadAssets() {
     let handle = 0;
 
-    handle = await this.loadImage("assets/images/cursor.png");
+    handle = await this.loadImageRef("assets/images/cursor.png");
     this.wasmInstance.exports.setImgCursor(handle);
 
     await this.loadBMFont(

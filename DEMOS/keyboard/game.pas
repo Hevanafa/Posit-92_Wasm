@@ -4,9 +4,8 @@ library Game;
 
 uses
   BMFont, Conv, FPS, Graphics,
-  Keyboard, Logger, Mouse,
-  Panic, SprFast, Shapes, Timing,
-  VGA,
+  ImgRef, Keyboard, Logger, Mouse,
+  Panic, Shapes, Timing, VGA,
   Assets;
 
 const
@@ -40,7 +39,7 @@ end;
 
 procedure drawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  sprRef(imgCursor, mouseX, mouseY)
 end;
 
 
