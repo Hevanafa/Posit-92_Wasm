@@ -24,8 +24,11 @@ type
   end;
 
 procedure registerImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: integer); public name 'registerImageRef';
-function getImageRefPtr(const imgHandle: longint): PImageRef;
+
+function newImageRef(const width, height: integer): longint;
+
 function isImageSet(const imgHandle: longint): boolean;
+function getImageRefPtr(const imgHandle: longint): PImageRef;
 
 function getImageWidth(const imgHandle: longint): word;
 function getImageHeight(const imgHandle: longint): word;
@@ -51,7 +54,7 @@ procedure sprRefRegionSolid(
 
 implementation
 
-uses Logger, Panic, VGA;
+uses Logger, Panic, VGA, Wasm;
 
 const
   MaxImageRefs = 256;
@@ -59,11 +62,6 @@ const
 var
   imageRefs: array[1..MaxImageRefs] of TImageRef;
 
-
-function isImageSet(const imgHandle: longint): boolean;
-begin
-  isImageSet := (imageRefs[imgHandle].width > 0) and (imageRefs[imgHandle].height > 0)
-end;
 
 function findEmptyImageRefSlot: integer;
 var
@@ -89,6 +87,32 @@ begin
   imageRefs[imgHandle].width := w;
   imageRefs[imgHandle].height := h;
   imageRefs[imgHandle].dataPtr := dataPtr;
+end;
+
+function newImageRef(const width, height: integer): longint;
+var
+  slot: longint;
+  dataPtr: PByte;
+  byteSize: longword;
+begin
+  byteSize := width * height * 4;
+  dataPtr := PByte(WasmGetMem(byteSize));
+
+  fillchar(dataPtr^, byteSize, 0);
+
+  slot := findEmptyImageRefSlot;
+  if slot < 0 then panicHalt('Image ref pool is full!');
+
+  imageRefs[slot].width := width;
+  imageRefs[slot].height := height;
+  imageRefs[slot].dataPtr := dataPtr;
+
+  newImageRef := slot
+end;
+
+function isImageSet(const imgHandle: longint): boolean;
+begin
+  isImageSet := (imageRefs[imgHandle].width > 0) and (imageRefs[imgHandle].height > 0)
 end;
 
 function getImageRefPtr(const imgHandle: longint): PImageRef;
