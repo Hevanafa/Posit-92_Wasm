@@ -116,6 +116,14 @@ class Posit92 {
     const bytes = await response.arrayBuffer();
     const result = await WebAssembly.instantiate(bytes, this.#importObject);
     this.#wasm = result.instance;
+
+    // Grow Wasm memory size
+    // Wasm memory grows in 64KB pages
+    const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
+    const requiredPages = Math.ceil(2 * 1048576 / 65536);
+
+    if (pages < requiredPages)
+      this.#wasm.exports.memory.grow(requiredPages - pages);
   }
 
   #initAudio() {
@@ -265,7 +273,8 @@ class Posit92 {
     return handle
   }
 
-  #wasmMemoryOffset = 0;
+  // Start at 1 MB
+  #wasmMemoryOffset = 1048576;
 
   #wasmGetmem(bytes) {
     const ptr = this.#wasmMemoryOffset;
