@@ -394,7 +394,7 @@ begin
     end;
 
     DemoStateRotation: begin
-      sprRotate(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteRotation);
+      sprRefRotate(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteRotation);
       printCentred('WASD - Move', 120);
       printCentred('Left / right - Rotate', 130);
     end

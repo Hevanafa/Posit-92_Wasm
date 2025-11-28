@@ -69,6 +69,9 @@ procedure sprRefRegionSolid(
 
 procedure sprRefFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
 
+{ rotation is in radians }
+procedure sprRefRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
+
 { Based on SprComp unit }
 procedure sprAlpha(const imgHandle: longint; const x, y: integer; opacity: double);
 procedure sprBlend(const imgHandle: longint; const x, y: integer);
@@ -420,6 +423,56 @@ begin
 
     colour := unsafeSprPget(image, sx, sy);
     unsafePset(dx, dy, colour);
+  end;
+end;
+
+procedure sprRefRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
+var
+  sx, sy: double;
+  dx, dy: integer;
+  srcPos: longint;
+  srcX, srcY: integer;
+  image: PImageRef;
+
+  alpha: byte;
+  colour: longword;
+
+  cosAngle, sinAngle: double;
+  halfW, halfH: integer;
+  maxRadius: integer;
+begin
+  if not isImageSet(imgHandle) then exit;
+  image := getImageRefPtr(imgHandle);
+
+  { Negative for inverse transform }
+  cosAngle := cos(-rotation);
+  sinAngle := sin(-rotation);
+
+  halfW := image^.width div 2;
+  halfH := image^.height div 2;
+
+  maxRadius := trunc(sqrt(halfW * halfW + halfH * halfH)) + 1;
+  
+  for dy := -maxRadius to maxRadius do
+  for dx := -maxRadius to maxRadius do begin
+    if (cx + dx < 0) or (cx + dx >= vgaWidth)
+      or (cy + dy < 0) or (cy + dy >= vgaHeight) then continue;
+
+    sx := dx * cosAngle - dy * sinAngle;
+    sy := dx * sinAngle + dy * cosAngle;
+
+    srcX := trunc(sx) + halfW;
+    srcY := trunc(sy) + halfH;
+
+    if (srcX < 0) or (srcX >= image^.width)
+      or (srcY < 0) or (srcY >= image^.height) then continue;
+
+    srcPos := (srcX + srcY * image^.width) * 4;
+    alpha := image^.dataPtr[srcPos + 3];
+    if alpha < 255 then continue;
+
+    colour := unsafeSprPget(image, srcX, srcY);
+    unsafePset(cx + dx, cy + dy, colour)
   end;
 end;
 
