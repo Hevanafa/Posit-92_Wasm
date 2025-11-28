@@ -25,6 +25,7 @@ type
 
 procedure registerImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: integer); public name 'registerImageRef';
 function getImageRefPtr(const imgHandle: longint): PImageRef;
+function isImageSet(const imgHandle: longint): boolean;
 
 function getImageWidth(const imgHandle: longint): word;
 function getImageHeight(const imgHandle: longint): word;

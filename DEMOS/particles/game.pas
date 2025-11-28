@@ -3,9 +3,9 @@ library Game;
 {$Mode ObjFPC}
 {$B-}
 
-uses Bitmap, BMFont, Conv, FPS,
+uses BMFont, Conv, FPS,
   Graphics, Keyboard, Logger, Mouse,
-  Panic, Shapes, Sounds, SprFast,
+  ImgRef, Panic, Shapes, Sounds,
   Timing, VGA,
   Assets;
 
@@ -44,7 +44,7 @@ end;
 
 procedure drawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  sprRef(imgCursor, mouseX, mouseY)
 end;
 
 function EnumHasFlag(const value, flag: integer): boolean;
@@ -78,14 +78,14 @@ end;
 procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
 var
   a, b: word;
-  image: PBitmap;
+  image: PImageRef;
 begin
   if not isImageSet(imgHandle) then begin
     writeLog('replaceColours: Unset imgHandle: ' + i32str(imgHandle));
     exit
   end;
 
-  image := getImagePtr(imgHandle);
+  image := getImageRefPtr(imgHandle);
 
   for b:=0 to image^.height - 1 do
   for a:=0 to image^.width - 1 do
@@ -176,14 +176,14 @@ begin
   cls(DarkBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    sprRef(imgDosuEXE[1], 148, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    sprRef(imgDosuEXE[0], 148, 88);
 
   for a:=0 to high(particles) do begin
     if not particles[a].active then continue;
 
-    spr(
+    sprRef(
       particles[a].imgHandle,
       trunc(particles[a].zone.x),
       trunc(particles[a].zone.y))
