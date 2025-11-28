@@ -32,11 +32,11 @@ const
 
 procedure registerImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: integer); public name 'registerImageRef';
 
-function newImageRef(const width, height: integer): longint;
-function copyImageRef(const imgHandle: longint): longint;
+function newImage(const width, height: integer): longint;
+function copyImage(const imgHandle: longint): longint;
 
 function isImageSet(const imgHandle: longint): boolean;
-function getImageRefPtr(const imgHandle: longint): PImageRef;
+function getImagePtr(const imgHandle: longint): PImageRef;
 
 function getImageWidth(const imgHandle: longint): word;
 function getImageHeight(const imgHandle: longint): word;
@@ -82,7 +82,7 @@ begin
   imageRefs[imgHandle].dataPtr := dataPtr;
 end;
 
-function newImageRef(const width, height: integer): longint;
+function newImage(const width, height: integer): longint;
 var
   slot: longint;
   dataPtr: PByte;
@@ -100,21 +100,21 @@ begin
   imageRefs[slot].height := height;
   imageRefs[slot].dataPtr := dataPtr;
 
-  newImageRef := slot
+  newImage := slot
 end;
 
 { imgHandle: Source image handle }
-function copyImageRef(const imgHandle: longint): longint;
+function copyImage(const imgHandle: longint): longint;
 var
   slot: longint;
   src, dest: PImageRef;
 begin
-  src := getImageRefPtr(imgHandle);
-  slot := newImageRef(src^.width, src^.height);
-  dest := getImageRefPtr(slot);
+  src := getImagePtr(imgHandle);
+  slot := newImage(src^.width, src^.height);
+  dest := getImagePtr(slot);
 
   move(src^.dataPtr^, dest^.dataPtr^, src^.width * src^.height * 4);
-  copyImageRef := slot
+  copyImage := slot
 end;
 
 function isImageSet(const imgHandle: longint): boolean;
@@ -122,9 +122,9 @@ begin
   isImageSet := (imageRefs[imgHandle].width > 0) and (imageRefs[imgHandle].height > 0)
 end;
 
-function getImageRefPtr(const imgHandle: longint): PImageRef;
+function getImagePtr(const imgHandle: longint): PImageRef;
 begin
-  getImageRefPtr := @imageRefs[imgHandle]
+  getImagePtr := @imageRefs[imgHandle]
 end;
 
 function getImageWidth(const imgHandle: longint): word;
@@ -134,7 +134,7 @@ begin
   getImageWidth := 0;
   if not isImageSet(imgHandle) then exit;
 
-  image := getImageRefPtr(imgHandle);
+  image := getImagePtr(imgHandle);
   getImageWidth := image^.width
 end;
 
@@ -145,7 +145,7 @@ begin
   getImageHeight := 0;
   if not isImageSet(imgHandle) then exit;
 
-  image := getImageRefPtr(imgHandle);
+  image := getImagePtr(imgHandle);
   getImageHeight := image^.height
 end;
 

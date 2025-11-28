@@ -5,7 +5,7 @@ class Game extends Posit92 {
   async loadAssets() {
     let handle = 0;
 
-    handle = await this.loadImageRef("assets/images/cursor.png");
+    handle = await this.loadImage("assets/images/cursor.png");
     this.wasmInstance.exports.setImgCursor(handle);
 
     await this.loadBMFont(
@@ -13,12 +13,12 @@ class Game extends Posit92 {
       this.wasmInstance.exports.defaultFontPtr(),
       this.wasmInstance.exports.defaultFontGlyphsPtr());
 
-    handle = await this.loadImageRef("assets/images/dosu_1.png");
+    handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
-    handle = await this.loadImageRef("assets/images/dosu_2.png");
+    handle = await this.loadImage("assets/images/dosu_2.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
 
-    handle = await this.loadImageRef("assets/images/particle.png");
+    handle = await this.loadImage("assets/images/particle.png");
     this.wasmInstance.exports.setImgParticle(handle);
 
     // Add more assets as necessary

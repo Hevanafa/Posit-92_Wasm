@@ -84,7 +84,7 @@ var
 begin
   cls($FF6495ED);
 
-  image := getImageRefPtr(imgGasolineMaid);
+  image := getImagePtr(imgGasolineMaid);
   sprRef(imgGasolineMaid, (vgaWidth - image^.width) div 2, (vgaHeight - image^.height) div 2);
 
   s := 'Clicks: ' + i32str(clicks);

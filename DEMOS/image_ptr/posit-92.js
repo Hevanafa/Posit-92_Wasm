@@ -238,10 +238,10 @@ class Posit92 {
     return imgHandle
   }
 
-  // Used in loadImageRef
+  // Used in loadImage
   #images = [];
 
-  async loadImageRef(url) {
+  async loadImage(url) {
     if (url == null)
       throw new Error("loadImage: url is required");
 
