@@ -1,0 +1,306 @@
+{ 
+  ImgRefFast unit
+  Part of Posit-92 framework
+  By Hevanafa, 29-11-2025
+
+  Based on SprFast unit
+}
+
+unit ImgRefFast;
+
+interface
+
+{ spr with TImageRef }
+procedure sprRef(const imgHandle: longint; const x, y: integer);
+
+procedure sprRefRegion(
+  const imgHandle: longint;
+  const srcX, srcY, srcW, srcH: integer;
+  const destX, destY: integer);
+
+procedure sprRefStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
+
+procedure sprRefRegionStretch(
+  const imgHandle: longint;
+  const srcX, srcY, srcWidth, srcHeight: integer;
+  const destX, destY, destWidth, destHeight: integer);
+
+procedure sprRefRegionSolid(
+  const imgHandle: longint;
+  const srcX, srcY, srcW, srcH: integer;
+  const destX, destY: integer;
+  const colour: longword);
+
+procedure sprRefFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
+
+{ rotation is in radians }
+procedure sprRefRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
+
+
+implementation
+
+procedure sprRef(const imgHandle: longint; const x, y: integer);
+var
+  image: PImageRef;
+  px, py: integer;
+  offset: longword;
+  data: PByte;
+  a: byte;
+  colour: longword;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImageRefPtr(imgHandle);
+  data := PByte(image^.dataPtr);
+
+  for py:=0 to image^.height - 1 do
+  for px:=0 to image^.width - 1 do begin
+    if (x + px >= vgaWidth) or (x + px < 0)
+      or (y + py >= vgaHeight) or (y + py < 0) then continue;
+
+    { offset to ImageData buffer }
+    offset := (px + py * image^.width) * 4;
+    a := data[offset + 3];
+    if a < 255 then continue;
+
+    colour := unsafeSprPget(image, px, py);
+    unsafePset(x + px, y + py, colour)
+  end;
+end;
+
+procedure sprRefRegion(
+  const imgHandle: longint;
+  const srcX, srcY, srcW, srcH: integer;
+  const destX, destY: integer);
+var
+  image: PImageRef;
+  a, b: integer;
+  sx, sy: integer;
+  srcPos: longint;
+  alpha: byte;
+  colour: longword;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImageRefPtr(imgHandle);
+
+  for b:=0 to srcH - 1 do
+  for a:=0 to srcW - 1 do begin
+    if (destX + a >= vgaWidth) or (destX + a < 0)
+      or (destY + b >= vgaHeight) or (destY + b < 0) then continue;
+
+    sx := srcX + a;
+    sy := srcY + b;
+    srcPos := (sx + sy * image^.width) * 4;
+
+    alpha := image^.dataPtr[srcPos + 3];
+    if alpha < 255 then continue;
+
+    colour := unsafeSprPget(image, sx, sy);
+    unsafePset(destX + a, destY + b, colour);
+  end;
+end;
+
+{ Stretch a sprite with nearest neighbour scaling }
+procedure sprRefStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
+var
+  sx, sy: integer;
+  dx, dy: integer;
+  srcPos: longint;
+  image: PImageRef;
+  alpha: byte;
+  scaleX, scaleY: double;
+  colour: longword;
+begin
+  if not isImageSet(imgHandle) then exit;
+  image := getImageRefPtr(imgHandle);
+
+  scaleX := image^.width / destWidth;
+  scaleY := image^.height / destHeight;
+
+  for dy := 0 to destHeight - 1 do
+  for dx := 0 to destWidth - 1 do begin
+    if (destX + dx >= vgaWidth) or (destX + dx < 0)
+      or (destY + dy >= vgaHeight) or (destY + dy < 0) then continue;
+
+    sx := trunc(dx * scaleX);
+    sy := trunc(dy * scaleY);
+
+    srcPos := (sx + sy * image^.width) * 4;
+    alpha := image^.dataPtr[srcPos + 3];
+    if alpha < 255 then continue;
+
+    colour := unsafeSprPget(image, sx, sy);
+    unsafePset(dx + destX, dy + destY, colour);
+  end;
+end;
+
+procedure sprRefRegionStretch(
+  const imgHandle: longint;
+  const srcX, srcY, srcWidth, srcHeight: integer;
+  const destX, destY, destWidth, destHeight: integer);
+var
+  sx, sy: integer;
+  dx, dy: integer;
+  image: PImageRef;
+  alpha: byte;
+  scaleX, scaleY: double;
+  colour: longword;
+begin
+  if not isImageSet(imgHandle) then exit;
+  image := getImageRefPtr(imgHandle);
+
+  scaleX := srcWidth / destWidth;
+  scaleY := srcHeight / destHeight;
+
+  for dy := 0 to destHeight - 1 do
+  for dx := 0 to destWidth - 1 do begin
+    if (destX + dx >= vgaWidth) or (destX + dx < 0)
+      or (destY + dy >= vgaHeight) or (destY + dy < 0) then continue;
+
+    { Map destination pixel to source region }
+    sx := srcX + trunc(dx * scaleX);
+    sy := srcY + trunc(dy * scaleY);
+
+    if (sx >= image^.width) or (sx < 0)
+      or (sy >= image^.height) or (sy < 0) then continue;
+
+    colour := unsafeSprPget(image, sx, sy);
+    alpha := colour shr 24;
+    if alpha < 255 then continue;
+
+    unsafePset(dx + destX, dy + destY, colour)
+  end;
+end;
+
+procedure sprRefRegionSolid(
+  const imgHandle: longint;
+  const srcX, srcY, srcW, srcH: integer;
+  const destX, destY: integer;
+  const colour: longword);
+var
+  image: PImageRef;
+  a, b: integer;
+  sx, sy: integer;
+  srcPos: longint;
+  alpha: byte;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImageRefPtr(imgHandle);
+
+  for b:=0 to srcH - 1 do
+  for a:=0 to srcW - 1 do begin
+    if (destX + a >= vgaWidth) or (destX + a < 0)
+      or (destY + b >= vgaHeight) or (destY + b < 0) then continue;
+
+    sx := srcX + a;
+    sy := srcY + b;
+    srcPos := (sx + sy * image^.width) * 4;
+
+    alpha := image^.dataPtr[srcPos + 3];
+    if alpha < 255 then continue;
+
+    { colour := unsafeSprPget(image, sx, sy); }
+    unsafePset(destX + a, destY + b, colour);
+  end;
+end;
+
+{ flip: use SprFlips enum }
+procedure sprRefFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
+var
+  sx, sy: integer;
+  dx, dy: integer;
+  srcPos: longint;
+  image: PImageRef;
+  alpha: byte;
+  colour: longword;
+begin
+  if flip = SprFlipNone then begin
+    sprRef(imgHandle, x, y);
+    exit
+  end;
+
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImageRefPtr(imgHandle);
+
+  for sy := 0 to image^.height - 1 do
+  for sx := 0 to image^.width - 1 do begin
+    srcPos := (sx + sy * image^.width) * 4;
+    alpha := image^.dataPtr[srcPos + 3];
+    if alpha < 255 then continue;
+
+    dx := x + sx;
+    dy := y + sy;
+
+    case flip of
+      SprFlipHorizontal:
+        dx := x + image^.width - sx - 1;
+      SprFlipVertical:
+        dy := y + image^.height - sy - 1;
+      else begin
+        dx := x + image^.width - sx - 1;
+        dy := y + image^.height - sy - 1;
+      end
+    end;
+
+    if (dx >= vgaWidth) or (dx < 0)
+      or (dy >= vgaHeight) or (dy < 0) then continue;
+
+    colour := unsafeSprPget(image, sx, sy);
+    unsafePset(dx, dy, colour);
+  end;
+end;
+
+procedure sprRefRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
+var
+  sx, sy: double;
+  dx, dy: integer;
+  srcPos: longint;
+  srcX, srcY: integer;
+  image: PImageRef;
+
+  alpha: byte;
+  colour: longword;
+
+  cosAngle, sinAngle: double;
+  halfW, halfH: integer;
+  maxRadius: integer;
+begin
+  if not isImageSet(imgHandle) then exit;
+  image := getImageRefPtr(imgHandle);
+
+  { Negative for inverse transform }
+  cosAngle := cos(-rotation);
+  sinAngle := sin(-rotation);
+
+  halfW := image^.width div 2;
+  halfH := image^.height div 2;
+
+  maxRadius := trunc(sqrt(halfW * halfW + halfH * halfH)) + 1;
+  
+  for dy := -maxRadius to maxRadius do
+  for dx := -maxRadius to maxRadius do begin
+    if (cx + dx < 0) or (cx + dx >= vgaWidth)
+      or (cy + dy < 0) or (cy + dy >= vgaHeight) then continue;
+
+    sx := dx * cosAngle - dy * sinAngle;
+    sy := dx * sinAngle + dy * cosAngle;
+
+    srcX := trunc(sx) + halfW;
+    srcY := trunc(sy) + halfH;
+
+    if (srcX < 0) or (srcX >= image^.width)
+      or (srcY < 0) or (srcY >= image^.height) then continue;
+
+    srcPos := (srcX + srcY * image^.width) * 4;
+    alpha := image^.dataPtr[srcPos + 3];
+    if alpha < 255 then continue;
+
+    colour := unsafeSprPget(image, srcX, srcY);
+    unsafePset(cx + dx, cy + dy, colour)
+  end;
+end;
+
+end.
