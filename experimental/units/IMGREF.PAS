@@ -19,9 +19,13 @@ function getImageRefPtr(const imgHandle: longint): PImageRef;
 function getImageWidth(const imgHandle: longint): word;
 function getImageHeight(const imgHandle: longint): word;
 
-
+{ Rendering procedures }
 { spr with TImageRef }
 procedure sprRef(const imgHandle: longint; const x, y: integer);
+procedure sprRefRegion(
+  const imgHandle: longint;
+  const srcX, srcY, srcW, srcH: integer;
+  const destX, destY: integer);
 
 
 implementation
@@ -108,41 +112,87 @@ begin
   getImageHeight := image^.height
 end;
 
+
+{ Assuming image isn't nil & the bounds are known }
+function unsafeSprPget(const image: PImageRef; const x, y: integer): longword;
+var
+  offset: longword;
+begin
+  offset := (x + y * image^.width) * 4;
+
+  unsafeSprPget :=
+    (image^.dataPtr[offset + 3] shl 24)
+    or (image^.dataPtr[offset] shl 16)
+    or (image^.dataPtr[offset + 1] shl 8)
+    or image^.dataPtr[offset + 2]
+end;
+
+
+
 { Render procedures }
 
 procedure sprRef(const imgHandle: longint; const x, y: integer);
 var
-  ref: PImageRef;
+  image: PImageRef;
   px, py: integer;
   offset: longword;
   data: PByte;
-  r, g, b, a: byte;
+  a: byte;
   colour: longword;
 begin
   if not isImageSet(imgHandle) then exit;
 
-  ref := getImageRefPtr(imgHandle);
-  data := PByte(ref^.dataPtr);
+  image := getImageRefPtr(imgHandle);
+  data := PByte(image^.dataPtr);
 
-  for py:=0 to ref^.height - 1 do
-  for px:=0 to ref^.width - 1 do begin
+  for py:=0 to image^.height - 1 do
+  for px:=0 to image^.width - 1 do begin
     if (x + px >= vgaWidth) or (x + px < 0)
       or (y + py >= vgaHeight) or (y + py < 0) then continue;
 
     { offset to ImageData buffer }
-    offset := (px + py * ref^.width) * 4;
-
-    r := data[offset];
-    g := data[offset + 1];
-    b := data[offset + 2];
+    offset := (px + py * image^.width) * 4;
     a := data[offset + 3];
-
     if a < 255 then continue;
 
-    colour := (a shl 24) or (r shl 16) or (g shl 8) or b;
+    colour := unsafeSprPget(image, px, py);
     unsafePset(x + px, y + py, colour)
   end;
 end;
+
+procedure sprRefRegion(
+  const imgHandle: longint;
+  const srcX, srcY, srcW, srcH: integer;
+  const destX, destY: integer);
+var
+  image: PImageRef;
+  a, b: integer;
+  sx, sy: integer;
+  srcPos: longint;
+  alpha: byte;
+  colour: longword;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImageRefPtr(imgHandle);
+
+  for b:=0 to srcH - 1 do
+  for a:=0 to srcW - 1 do begin
+    if (destX + a >= vgaWidth) or (destX + a < 0)
+      or (destY + b >= vgaHeight) or (destY + b < 0) then continue;
+
+    sx := srcX + a;
+    sy := srcY + b;
+    srcPos := (sx + sy * image^.width) * 4;
+
+    alpha := image^.dataPtr[srcPos + 3];
+    if alpha < 255 then continue;
+
+    colour := unsafeSprPget(image, sx, sy);
+    unsafePset(destX + a, destY + b, colour);
+  end;
+end;
+
 
 end.
 
