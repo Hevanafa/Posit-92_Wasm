@@ -47,6 +47,8 @@ procedure sprRefRegion(
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer);
 
+procedure sprRefStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
+
 procedure sprRefRegionStretch(
   const imgHandle: longint;
   const srcX, srcY, srcWidth, srcHeight: integer;
@@ -256,6 +258,40 @@ begin
 
     colour := unsafeSprPget(image, sx, sy);
     unsafePset(destX + a, destY + b, colour);
+  end;
+end;
+
+{ Stretch a sprite with nearest neighbour scaling }
+procedure sprRefStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
+var
+  sx, sy: integer;
+  dx, dy: integer;
+  srcPos: longint;
+  image: PImageRef;
+  alpha: byte;
+  scaleX, scaleY: double;
+  colour: longword;
+begin
+  if not isImageSet(imgHandle) then exit;
+  image := getImageRefPtr(imgHandle);
+
+  scaleX := image^.width / destWidth;
+  scaleY := image^.height / destHeight;
+
+  for dy := 0 to destHeight - 1 do
+  for dx := 0 to destWidth - 1 do begin
+    if (destX + dx >= vgaWidth) or (destX + dx < 0)
+      or (destY + dy >= vgaHeight) or (destY + dy < 0) then continue;
+
+    sx := trunc(dx * scaleX);
+    sy := trunc(dy * scaleY);
+
+    srcPos := (sx + sy * image^.width) * 4;
+    alpha := image^.dataPtr[srcPos + 3];
+    if alpha < 255 then continue;
+
+    colour := unsafeSprPget(image, sx, sy);
+    unsafePset(dx + destX, dy + destY, colour);
   end;
 end;
 
