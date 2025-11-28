@@ -61,7 +61,7 @@ begin
     exit
   end;
 
-  image := getImageRefPtr(imgHandle);
+  image := getImagePtr(imgHandle);
 
   for b:=0 to image^.height - 1 do
   for a:=0 to image^.width - 1 do

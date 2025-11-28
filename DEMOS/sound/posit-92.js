@@ -206,10 +206,10 @@ class Posit92 {
     this.#wasm.exports.debugImage(imgHandle)
   }
 
-  // Used in loadImageRef
+  // Used in loadImage
   #images = [];
 
-  async loadImageRef(url) {
+  async loadImage(url) {
     if (url == null)
       throw new Error("loadImage: url is required");
 
@@ -335,7 +335,7 @@ class Posit92 {
     console.log("Loaded", glyphCount, "glyphs");
 
     // Load font bitmap
-    imgHandle = await this.loadImageRef(filename);
+    imgHandle = await this.loadImage(filename);
     // console.log("loadBMFont imgHandle:", imgHandle);
 
     // Obtain pointers to Pascal structures

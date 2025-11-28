@@ -52,7 +52,7 @@ var
 begin
   if not isImageSet(imgHandle) then exit;
 
-  image := getImageRefPtr(imgHandle);
+  image := getImagePtr(imgHandle);
   data := PByte(image^.dataPtr);
 
   for py:=0 to image^.height - 1 do
@@ -84,7 +84,7 @@ var
 begin
   if not isImageSet(imgHandle) then exit;
 
-  image := getImageRefPtr(imgHandle);
+  image := getImagePtr(imgHandle);
 
   for b:=0 to srcH - 1 do
   for a:=0 to srcW - 1 do begin
@@ -115,7 +115,7 @@ var
   colour: longword;
 begin
   if not isImageSet(imgHandle) then exit;
-  image := getImageRefPtr(imgHandle);
+  image := getImagePtr(imgHandle);
 
   scaleX := image^.width / destWidth;
   scaleY := image^.height / destHeight;
@@ -150,7 +150,7 @@ var
   colour: longword;
 begin
   if not isImageSet(imgHandle) then exit;
-  image := getImageRefPtr(imgHandle);
+  image := getImagePtr(imgHandle);
 
   scaleX := srcWidth / destWidth;
   scaleY := srcHeight / destHeight;
@@ -189,7 +189,7 @@ var
 begin
   if not isImageSet(imgHandle) then exit;
 
-  image := getImageRefPtr(imgHandle);
+  image := getImagePtr(imgHandle);
 
   for b:=0 to srcH - 1 do
   for a:=0 to srcW - 1 do begin
@@ -225,7 +225,7 @@ begin
 
   if not isImageSet(imgHandle) then exit;
 
-  image := getImageRefPtr(imgHandle);
+  image := getImagePtr(imgHandle);
 
   for sy := 0 to image^.height - 1 do
   for sx := 0 to image^.width - 1 do begin
@@ -271,7 +271,7 @@ var
   maxRadius: integer;
 begin
   if not isImageSet(imgHandle) then exit;
-  image := getImageRefPtr(imgHandle);
+  image := getImagePtr(imgHandle);
 
   { Negative for inverse transform }
   cosAngle := cos(-rotation);
