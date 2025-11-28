@@ -388,7 +388,7 @@ begin
     end;
 
     DemoStateFlip: begin
-      sprFlip(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteFlip);
+      sprRefFlip(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteFlip);
       printCentred('WASD - Move', 120);
       printCentred('Arrow keys - Flip', 130);
     end;

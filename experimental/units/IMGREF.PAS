@@ -67,6 +67,8 @@ procedure sprRefRegionSolid(
   const destX, destY: integer;
   const colour: longword);
 
+procedure sprRefFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
+
 { Based on SprComp unit }
 procedure sprAlpha(const imgHandle: longint; const x, y: integer; opacity: double);
 procedure sprBlend(const imgHandle: longint; const x, y: integer);
@@ -371,6 +373,53 @@ begin
 
     { colour := unsafeSprPget(image, sx, sy); }
     unsafePset(destX + a, destY + b, colour);
+  end;
+end;
+
+{ flip: use SprFlips enum }
+procedure sprRefFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
+var
+  sx, sy: integer;
+  dx, dy: integer;
+  srcPos: longint;
+  image: PImageRef;
+  alpha: byte;
+  colour: longword;
+begin
+  if flip = SprFlipNone then begin
+    sprRef(imgHandle, x, y);
+    exit
+  end;
+
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImageRefPtr(imgHandle);
+
+  for sy := 0 to image^.height - 1 do
+  for sx := 0 to image^.width - 1 do begin
+    srcPos := (sx + sy * image^.width) * 4;
+    alpha := image^.dataPtr[srcPos + 3];
+    if alpha < 255 then continue;
+
+    dx := x + sx;
+    dy := y + sy;
+
+    case flip of
+      SprFlipHorizontal:
+        dx := x + image^.width - sx - 1;
+      SprFlipVertical:
+        dy := y + image^.height - sy - 1;
+      else begin
+        dx := x + image^.width - sx - 1;
+        dy := y + image^.height - sy - 1;
+      end
+    end;
+
+    if (dx >= vgaWidth) or (dx < 0)
+      or (dy >= vgaHeight) or (dy < 0) then continue;
+
+    colour := unsafeSprPget(image, sx, sy);
+    unsafePset(dx, dy, colour);
   end;
 end;
 
