@@ -5,18 +5,16 @@ interface
 type
   PImageRef = ^TImageRef;
   TImageRef = record
-    { handle: longint; }  { Index on JS }
     dataPtr: pointer;
     width: integer;
     height: integer;
   end;
 
-procedure registerImageRef(const handle: longint; const dataPtr: pointer; const w, h: integer); public name 'registerImageRef';
-function getImageRefPtr(const handle: integer): PImageRef;
-{ function getImageRefCount: integer; }
+procedure registerImageRef(const imgHandle: longint; const dataPtr: pointer; const w, h: integer); public name 'registerImageRef';
+function getImageRefPtr(const imgHandle: longint): PImageRef;
 
 { spr with TImageRef }
-procedure sprRef(const handle: longint; const x, y: integer);
+procedure sprRef(const imgHandle: longint; const x, y: integer);
 
 
 implementation
@@ -28,7 +26,6 @@ const
 
 var
   imageRefs: array[1..MaxImageRefs] of TImageRef;
-  { imageRefCount: integer = 0; }
 
   { Debug variables }
   sprRefOnceA, sprRefOnceB: boolean;
@@ -52,7 +49,7 @@ begin
   findEmptyImageRefSlot := -1
 end;
 
-procedure registerImageRef(const handle: longint; const dataPtr: pointer; const w, h: integer);
+procedure registerImageRef(const imgHandle: longint; const dataPtr: pointer; const w, h: integer);
 var
   idx: integer;
   testByte: PByte;
@@ -63,24 +60,24 @@ begin
   if idx < 0 then
     panicHalt('Image ref pool is full!');
 
-  writeLog('registerImageRef: handle, w, h');
-  writeLogI32(handle);
+  writeLog('registerImageRef: imgHandle, w, h');
+  writeLogI32(imgHandle);
   writeLogI32(w);
   writeLogI32(h);
 
-  { imageRefs[handle].handle := handle; }
-  imageRefs[handle].dataPtr := dataPtr;
+  { imageRefs[imgHandle].imgHandle := imgHandle; }
+  imageRefs[imgHandle].dataPtr := dataPtr;
 
   testByte := PByte(dataPtr);
   writeLog('dataPtr[0]:');
   writeLogI32(testByte[0]);
 
-  imageRefs[handle].width := w;
-  imageRefs[handle].height := h;
+  imageRefs[imgHandle].width := w;
+  imageRefs[imgHandle].height := h;
 
-  writeLog('imageRefs[handle]: handle, width, height');
-  writeLogI32(handle);
-  with imageRefs[handle] do begin
+  writeLog('imageRefs[imgHandle]: imgHandle, width, height');
+  writeLogI32(imgHandle);
+  with imageRefs[imgHandle] do begin
     writeLogI32(width);
     writeLogI32(height);
   end;
@@ -88,9 +85,9 @@ begin
   { inc(imageRefCount) }
 end;
 
-function getImageRefPtr(const handle: integer): PImageRef;
+function getImageRefPtr(const imgHandle: longint): PImageRef;
 begin
-  getImageRefPtr := @imageRefs[handle]
+  getImageRefPtr := @imageRefs[imgHandle]
 end;
 
 {
@@ -101,7 +98,7 @@ end;
 }
 
 { Render procedures }
-procedure sprRef(const handle: longint; const x, y: integer);
+procedure sprRef(const imgHandle: longint; const x, y: integer);
 var
   ref: PImageRef;
   px, py: integer;
@@ -111,15 +108,14 @@ var
   colour: longword;
 begin
   if not sprRefOnceA then begin
-    writeLog('sprRef handle');
-    writeLogI32(handle);
+    writeLog('sprRef imgHandle');
+    writeLogI32(imgHandle);
     sprRefOnceA := true
   end;
 
-  { if (handle < 1) or (handle >= getImageRefCount) then exit; }
-  { TODO: Handle if image is set }
+  if not isImageSet(imgHandle) then exit;
 
-  ref := getImageRefPtr(handle);
+  ref := getImageRefPtr(imgHandle);
 
   data := PByte(ref^.dataPtr);
 

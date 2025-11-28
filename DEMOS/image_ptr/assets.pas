@@ -27,6 +27,7 @@ function measureDefault(const text: string): word;
 procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
 
+{ Use TImageRef instead of TBitmap }
 procedure setImgCursorRef(const imgHandle: longint); public name 'setImgCursorRef';
 
 
