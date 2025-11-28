@@ -12,7 +12,7 @@ library Game;
 
 uses
   BMFont, Conv, FPS, Graphics,
-  ImgRef, ImmedGui, Keyboard, Logger,
+  ImgRef, ImgRefFast, ImmedGui, Keyboard, Logger,
   Mouse, Panic, Shapes, Sounds,
   Timing, VGA,
   Assets;
@@ -46,9 +46,9 @@ end;
 procedure drawMouse;
 begin
   if hasHoveredWidget then
-    sprRef(imgHandCursor, mouseX - 5, mouseY - 1)
+    spr(imgHandCursor, mouseX - 5, mouseY - 1)
   else
-    sprRef(imgCursor, mouseX, mouseY);
+    spr(imgCursor, mouseX, mouseY);
 end;
 
 procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
@@ -138,12 +138,12 @@ begin
     inc(clicks);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    sprRef(imgDosuEXE[1], 148, 88)
+    spr(imgDosuEXE[1], 148, 88)
   else
-    sprRef(imgDosuEXE[0], 148, 88);
+    spr(imgDosuEXE[0], 148, 88);
 
   { spr(imgDosuEXE[0], 100, 80); }
-  sprRefStretch(imgDosuEXE[0], 100, 80, 24, 48);
+  sprStretch(imgDosuEXE[0], 100, 80, 24, 48);
 
   guiSetFont(defaultFont, defaultFontGlyphs);
   Slider(120, 40, 100, sliderValue, 0, 100);

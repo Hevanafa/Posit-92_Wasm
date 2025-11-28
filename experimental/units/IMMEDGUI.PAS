@@ -78,8 +78,8 @@ function PromptBox: TPromptResult;
 implementation
 
 uses
-  Conv, Graphics, ImgRef, Maths,
-  Mouse, Panic, Shapes, VGA;
+  Conv, Graphics, ImgRef, ImgRefFast,
+  Maths, Mouse, Panic, Shapes, VGA;
 
 const
   Black = $FF000000;
@@ -309,7 +309,7 @@ begin
   else 
     buttonImgHandle := imgNormal;
 
-  sprRef(buttonImgHandle, x, y);
+  spr(buttonImgHandle, x, y);
   { Use this in case you want your buttons have semitransparent pixels }
   { sprBlend(buttonImgHandle, x, y); }
 
@@ -575,7 +575,7 @@ begin
   else 
     buttonImgHandle := imgPromptButtonNormal;
 
-  sprRef(buttonImgHandle, x, y);
+  spr(buttonImgHandle, x, y);
 
   textWidth := guiMeasureText(text);
   w := getImageWidth(imgPromptButtonNormal);
@@ -615,7 +615,7 @@ begin
 
   clsBlend(SemitransparentBlack);
 
-  sprRef(imgPromptBG, left, top);
+  spr(imgPromptBG, left, top);
 
   w := guiMeasureText(promptText);
   TextLabel(promptText, (vgaWidth - w) div 2, 90);

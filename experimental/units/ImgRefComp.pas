@@ -9,6 +9,8 @@ procedure sprBlend(const imgHandle: longint; const x, y: integer);
 
 implementation
 
+uses ImgRef, Maths, VGA;
+
 procedure sprAlpha(const imgHandle: longint; const x, y: integer; opacity: double);
 var
   image: PImageRef;
@@ -18,7 +20,7 @@ var
 begin
   if not isImageSet(imgHandle) then exit;
 
-  image := getImageRefPtr(imgHandle);
+  image := getImagePtr(imgHandle);
   opacity := clamp(opacity, 0.0, 1.0);
 
   for py := 0 to image^.height - 1 do
@@ -45,7 +47,7 @@ var
 begin
   if not isImageSet(imgHandle) then exit;
 
-  image := getImageRefPtr(imgHandle);
+  image := getImagePtr(imgHandle);
 
   for py := 0 to image^.height - 1 do
   for px := 0 to image^.width - 1 do begin

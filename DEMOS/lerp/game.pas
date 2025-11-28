@@ -3,10 +3,10 @@ library Game;
 {$Mode TP}
 
 uses
-  BMFont, Conv, FPS, Graphics,
-  ImgRef, Keyboard, Lerp, Logger,
-  Maths, Mouse, Panic, Sounds,
-  Timing, VGA,
+  Conv, FPS, Graphics, ImgRef,
+  ImgRefFast, ImgRefComp, Keyboard, Lerp,
+  Logger, Maths, Mouse, Panic,
+  Sounds, Timing, VGA,
   Assets;
 
 const
@@ -57,7 +57,7 @@ end;
 
 procedure drawMouse;
 begin
-  sprRef(imgCursor, mouseX, mouseY)
+  spr(imgCursor, mouseX, mouseY)
 end;
 
 procedure changeState(const state: integer);
@@ -282,9 +282,9 @@ begin
   sprAlpha(imgDosuEXE[0], endX, 88, 0.5);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    sprRef(imgDosuEXE[1], x, 88)
+    spr(imgDosuEXE[1], x, 88)
   else
-    sprRef(imgDosuEXE[0], x, 88);
+    spr(imgDosuEXE[0], x, 88);
 
   circfill(30, 130, 10, lerpColour(Red, Purple, perc));
   circfill(60, 130, 10, HSVtoRGB(perc, 1.0, 0.5));
