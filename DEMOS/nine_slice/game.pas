@@ -53,22 +53,22 @@ end;
 procedure drawMouse;
 begin
   if hasHoveredWidget then
-    spr(imgHandCursor, mouseX - 5, mouseY - 1)
+    sprRef(imgHandCursor, mouseX - 5, mouseY - 1)
   else
-    spr(imgCursor, mouseX, mouseY);
+    sprRef(imgCursor, mouseX, mouseY);
 end;
 
 procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
 var
   a, b: word;
-  image: PBitmap;
+  image: PImageRef;
 begin
   if not isImageSet(imgHandle) then begin
     writeLog('replaceColours: Unset imgHandle: ' + i32str(imgHandle));
     exit
   end;
 
-  image := getImagePtr(imgHandle);
+  image := getImageRefPtr(imgHandle);
 
   for b:=0 to image^.height - 1 do
   for a:=0 to image^.width - 1 do
@@ -93,35 +93,35 @@ begin
   destCentreH := height - margins.top - margins.bottom;
 
   { Middle fill }
-  sprRegionStretch(imgHandle,
+  sprRefRegionStretch(imgHandle,
     margins.left, margins.top, srcCentreW, srcCentreH,
     x + margins.left, y + margins.top, destCentreW, destCentreH);
   
   { Top side }
-  sprRegionStretch(imgHandle,
+  sprRefRegionStretch(imgHandle,
     margins.left, 0, srcCentreW, margins.top,
     x + margins.left, y, destCentreW, margins.top);
   
   { Bottom side }
-  sprRegionStretch(imgHandle,
+  sprRefRegionStretch(imgHandle,
     margins.left, getImageHeight(imgHandle) - margins.bottom, srcCentreW, margins.bottom,
     x + margins.left, y + height - margins.bottom, destCentreW, margins.bottom);
 
   { Left side }
-  sprRegionStretch(imgHandle,
+  sprRefRegionStretch(imgHandle,
     0, margins.top, margins.left, srcCentreH,
     x, y + margins.top, margins.left, destCentreH);
 
   { Right side }
-  sprRegionStretch(imgHandle,
+  sprRefRegionStretch(imgHandle,
     getImageWidth(imgHandle) - margins.right, margins.top, margins.right, srcCentreH,
     x + width - margins.right, y + margins.top, margins.right, destCentreH);
 
   { Corners }
-  sprRegion(imgHandle, 0, 0, margins.left, margins.top, x, y);
-  sprRegion(imgHandle, getImageWidth(imgHandle) - margins.right, 0, margins.right, margins.top, x + width - margins.right, y);
-  sprRegion(imgHandle, 0, getImageHeight(imgHandle) - margins.bottom, margins.left, margins.bottom, x, y + height - margins.bottom);
-  sprRegion(imgHandle, getImageWidth(imgHandle) - margins.right, getImageHeight(imgHandle) - margins.bottom, margins.right, margins.bottom, x + width - margins.right, y + height - margins.bottom);
+  sprRefRegion(imgHandle, 0, 0, margins.left, margins.top, x, y);
+  sprRefRegion(imgHandle, getImageWidth(imgHandle) - margins.right, 0, margins.right, margins.top, x + width - margins.right, y);
+  sprRefRegion(imgHandle, 0, getImageHeight(imgHandle) - margins.bottom, margins.left, margins.bottom, x, y + height - margins.bottom);
+  sprRefRegion(imgHandle, getImageWidth(imgHandle) - margins.right, getImageHeight(imgHandle) - margins.bottom, margins.right, margins.bottom, x + width - margins.right, y + height - margins.bottom);
 end;
 
 

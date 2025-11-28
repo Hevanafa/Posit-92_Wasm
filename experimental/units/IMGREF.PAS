@@ -47,6 +47,11 @@ procedure sprRefRegion(
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer);
 
+procedure sprRefRegionStretch(
+  const imgHandle: longint;
+  const srcX, srcY, srcWidth, srcHeight: integer;
+  const destX, destY, destWidth, destHeight: integer);
+
 procedure sprRefRegionSolid(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
@@ -251,6 +256,44 @@ begin
 
     colour := unsafeSprPget(image, sx, sy);
     unsafePset(destX + a, destY + b, colour);
+  end;
+end;
+
+procedure sprRefRegionStretch(
+  const imgHandle: longint;
+  const srcX, srcY, srcWidth, srcHeight: integer;
+  const destX, destY, destWidth, destHeight: integer);
+var
+  sx, sy: integer;
+  dx, dy: integer;
+  image: PImageRef;
+  alpha: byte;
+  scaleX, scaleY: double;
+  colour: longword;
+begin
+  if not isImageSet(imgHandle) then exit;
+  image := getImageRefPtr(imgHandle);
+
+  scaleX := srcWidth / destWidth;
+  scaleY := srcHeight / destHeight;
+
+  for dy := 0 to destHeight - 1 do
+  for dx := 0 to destWidth - 1 do begin
+    if (destX + dx >= vgaWidth) or (destX + dx < 0)
+      or (destY + dy >= vgaHeight) or (destY + dy < 0) then continue;
+
+    { Map destination pixel to source region }
+    sx := srcX + trunc(dx * scaleX);
+    sy := srcY + trunc(dy * scaleY);
+
+    if (sx >= image^.width) or (sx < 0)
+      or (sy >= image^.height) or (sy < 0) then continue;
+
+    colour := unsafeSprPget(image, sx, sy);
+    alpha := colour shr 24;
+    if alpha < 255 then continue;
+
+    unsafePset(dx + destX, dy + destY, colour)
   end;
 end;
 
