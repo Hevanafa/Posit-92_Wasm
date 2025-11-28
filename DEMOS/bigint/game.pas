@@ -2,9 +2,10 @@ library Game;
 
 {$Mode ObjFPC}
 
-uses Bitmap, BMFont, Conv, FPS,
-  Graphics, Keyboard, Logger, Mouse,
-  Panic, Sounds, SprFast, Timing, VGA,
+uses
+  Conv, FPS, Graphics, ImgRef,
+  Keyboard, Logger, Mouse, Panic,
+  Sounds, Timing, VGA,
   Assets, BigInt;
 
 const
@@ -36,7 +37,7 @@ end;
 
 procedure drawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  sprRef(imgCursor, mouseX, mouseY)
 end;
 
 { Used by BigInt }
@@ -162,9 +163,9 @@ begin
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    sprRef(imgDosuEXE[1], 148, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    sprRef(imgDosuEXE[0], 148, 88);
 
   printCentred(points, 140);
 
