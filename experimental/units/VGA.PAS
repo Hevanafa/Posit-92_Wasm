@@ -21,12 +21,9 @@ const
   vgaWidth = 320;
   vgaHeight = 200;
 
-var
-  surface: TByteArray;
-
 { Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
 procedure initBuffer;
-function getSurfacePtr: pointer; public name 'getSurfacePtr';
+function getSurfacePtr: PByteArray; public name 'getSurfacePtr';
 procedure toggleFullscreen; external 'env' name 'toggleFullscreen';
 
 { Colour format: $AARRGGBB }
@@ -40,30 +37,29 @@ procedure pset(const x, y: integer; const colour: longword);
 procedure unsafePsetBlend(const x, y: integer; const colour: longword);
 procedure psetBlend(const x, y: integer; const colour: longword);
 
+
 implementation
 
-uses Logger;
+uses Logger, Wasm;
 
 var
   bufferInitialised: boolean;
+  surface: PByteArray;
 
 procedure initBuffer;
 begin
   { writeLog('Attempting to call initBuffer'); }
 
   if not bufferInitialised then begin
-    { This throws
-      "Uncaught (in promise) RuntimeError: null function or function signature mismatch"
-      for some reason }
-    { Issue: https://en.delphipraxis.net/topic/7122-free-pascal-web-assembly-objects/ }
-    { getmem(surface, bufferSize); }
+    surface := PByteArray(WasmGetMem(bufferSize));
+    fillchar(surface^, bufferSize, 0);
     bufferInitialised := true
   end;
 end;
 
-function getSurfacePtr: pointer;
+function getSurfacePtr: PByteArray;
 begin
-  getSurfacePtr := @surface
+  getSurfacePtr := surface
 end;
 
 procedure unsafePset(const x, y: integer; const colour: longword);
@@ -77,10 +73,10 @@ begin
   b := colour and $FF;
 
   offset := (y * vgaWidth + x) * 4;
-  surface[offset] := r;
-  surface[offset + 1] := g;
-  surface[offset + 2] := b;
-  surface[offset + 3] := a;
+  surface^[offset] := r;
+  surface^[offset + 1] := g;
+  surface^[offset + 2] := b;
+  surface^[offset + 3] := a;
 end;
 
 { colour: AARRGGBB }
@@ -102,10 +98,10 @@ begin
 
   offset := (y * vgaWidth + x) * 4;
 
-  pget := (surface[offset + 3] shl 24) or
-    (surface[offset] shl 16) or
-    (surface[offset + 1] shl 8) or
-    surface[offset + 2]
+  pget := (surface^[offset + 3] shl 24) or
+    (surface^[offset] shl 16) or
+    (surface^[offset + 1] shl 8) or
+    surface^[offset + 2]
 end;
 
 procedure unsafePsetBlend(const x, y: integer; const colour: longword);
@@ -129,17 +125,17 @@ begin
 
   { Handle opaque pixel }
   if srcA = 255 then begin
-    surface[offset] := srcR;
-    surface[offset + 1] := srcG;
-    surface[offset + 2] := srcB;
-    surface[offset + 3] := srcA;
+    surface^[offset] := srcR;
+    surface^[offset + 1] := srcG;
+    surface^[offset + 2] := srcB;
+    surface^[offset + 3] := srcA;
     exit
   end;
 
-  destR := surface[offset];
-  destG := surface[offset + 1];
-  destB := surface[offset + 2];
-  destA := surface[offset + 3];
+  destR := surface^[offset];
+  destG := surface^[offset + 1];
+  destB := surface^[offset + 2];
+  destA := surface^[offset + 3];
   
   { Handle alpha blending }
   alpha := srcA / 255.0;
@@ -150,10 +146,10 @@ begin
   outB := round(srcB * alpha + destB * invAlpha);
   outA := srcA + round(destA * invAlpha);
 
-  surface[offset] := outR;
-  surface[offset + 1] := outG;
-  surface[offset + 2] := outB;
-  surface[offset + 3] := outA;
+  surface^[offset] := outR;
+  surface^[offset + 1] := outG;
+  surface^[offset + 2] := outB;
+  surface^[offset + 3] := outA;
 end;
 
 procedure psetBlend(const x, y: integer; const colour: longword);

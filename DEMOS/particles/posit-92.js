@@ -60,10 +60,10 @@ class Posit92 {
       hideCursor: () => this.hideCursor(),
       showCursor: () => this.showCursor(),
 
-      wasmgetmem: bytes => this.#WasmGetMem(bytes),
+      wasmgetmem: this.#WasmGetMem.bind(this),
 
       // Keyboard
-      isKeyDown: scancode => this.isKeyDown(scancode),
+      isKeyDown: this.isKeyDown.bind(this),
       signalDone: () => { done = true },
 
       // Logger
