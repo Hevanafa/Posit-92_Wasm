@@ -31,7 +31,7 @@ procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public na
 
 implementation
 
-uses SprFast, Conv, VGA;
+uses ImgRefFast, Conv, VGA;
 
 { Begin BMFont boilerplate}
 

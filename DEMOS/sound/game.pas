@@ -3,8 +3,8 @@ library Game;
 {$Mode ObjFPC}
 
 uses
-  BMFont, Conv, FPS, Graphics,
-  ImgRef, Keyboard, Logger, Mouse,
+  Conv, FPS, Graphics,
+  ImgRef, ImgRefFast, Keyboard, Logger, Mouse,
   Panic, Sounds, Timing, VGA,
   Assets;
 
@@ -35,7 +35,7 @@ end;
 
 procedure drawMouse;
 begin
-  sprRef(imgCursor, mouseX, mouseY)
+  spr(imgCursor, mouseX, mouseY)
 end;
 
 procedure playRandomSFX;
@@ -116,9 +116,9 @@ begin
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    sprRef(imgDosuEXE[1], 148, 88)
+    spr(imgDosuEXE[1], 148, 88)
   else
-    sprRef(imgDosuEXE[0], 148, 88);
+    spr(imgDosuEXE[0], 148, 88);
 
   s := '1, 2, 3, 4, 5 - Play sound';
   w := measureDefault(s);
