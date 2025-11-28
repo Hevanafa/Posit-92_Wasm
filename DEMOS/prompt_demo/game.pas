@@ -10,10 +10,11 @@ library Game;
 
 {$Mode ObjFPC}
 
-uses Bitmap, BMFont, Conv, FPS,
-  Graphics, ImmedGui, Keyboard, Logger,
+uses
+  BMFont, Conv, FPS, Graphics,
+  ImgRef, ImmedGui, Keyboard, Logger,
   Mouse, Panic, Shapes, Sounds,
-  SprFast, Timing, VGA,
+  Timing, VGA,
   Assets;
 
 const
@@ -45,22 +46,22 @@ end;
 procedure drawMouse;
 begin
   if hasHoveredWidget then
-    spr(imgHandCursor, mouseX - 5, mouseY - 1)
+    sprRef(imgHandCursor, mouseX - 5, mouseY - 1)
   else
-    spr(imgCursor, mouseX, mouseY);
+    sprRef(imgCursor, mouseX, mouseY);
 end;
 
 procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
 var
   a, b: word;
-  image: PBitmap;
+  image: PImageRef;
 begin
   if not isImageSet(imgHandle) then begin
     writeLog('replaceColours: Unset imgHandle: ' + i32str(imgHandle));
     exit
   end;
 
-  image := getImagePtr(imgHandle);
+  image := getImageRefPtr(imgHandle);
 
   for b:=0 to image^.height - 1 do
   for a:=0 to image^.width - 1 do
