@@ -4,6 +4,7 @@
   By Hevanafa, 26-11-2025
 
   An extension of Bitmap unit
+  Deprecated in favour of SprFast
 }
 
 unit SprFast;
