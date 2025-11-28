@@ -10,10 +10,11 @@ library Game;
 
 {$Mode ObjFPC}
 
-uses Bitmap, BMFont, Conv, FPS,
-  Graphics, ImmedGui, Keyboard, Logger,
+uses
+  BMFont, Conv, FPS, Graphics,
+  ImgRef, ImmedGui, Keyboard, Logger,
   Mouse, Panic, Shapes, Sounds,
-  SprFast, Timing, VGA,
+  Timing, VGA,
   Assets;
 
 type
@@ -184,9 +185,9 @@ begin
     ShowPromptBox('Accept?', PromptTest);
 }
 
-  spr(img9SliceNormal, 30, 30);
-  spr(img9SliceHovered, 60, 30);
-  spr(img9SlicePressed, 90, 30);
+  sprRef(img9SliceNormal, 30, 30);
+  sprRef(img9SliceHovered, 60, 30);
+  sprRef(img9SlicePressed, 90, 30);
 
   sprNineSlice(
     img9SliceNormal,
