@@ -27,9 +27,6 @@ const
 var
   imageRefs: array[1..MaxImageRefs] of TImageRef;
 
-  { Debug variables }
-  sprRefOnceA, sprRefOnceB: boolean;
-
 
 function isImageSet(const imgHandle: longint): boolean;
 begin
@@ -81,8 +78,6 @@ begin
     writeLogI32(width);
     writeLogI32(height);
   end;
-
-  { inc(imageRefCount) }
 end;
 
 function getImageRefPtr(const imgHandle: longint): PImageRef;
@@ -90,14 +85,9 @@ begin
   getImageRefPtr := @imageRefs[imgHandle]
 end;
 
-{
-function getImageRefCount: integer;
-begin
-  getImageRefCount := imageRefCount
-end;
-}
 
 { Render procedures }
+
 procedure sprRef(const imgHandle: longint; const x, y: integer);
 var
   ref: PImageRef;
@@ -107,29 +97,10 @@ var
   r, g, b, a: byte;
   colour: longword;
 begin
-  if not sprRefOnceA then begin
-    writeLog('sprRef imgHandle');
-    writeLogI32(imgHandle);
-    sprRefOnceA := true
-  end;
-
   if not isImageSet(imgHandle) then exit;
 
   ref := getImageRefPtr(imgHandle);
-
   data := PByte(ref^.dataPtr);
-
-  if not sprRefOnceB then begin
-    writeLog('Got image ref');
-    writeLogI32(ref^.width);
-    writeLogI32(ref^.height);
-
-    writeLog('First 20 bytes of data');
-    for px:=0 to 19 do
-      writeLogI32(data[px]);
-
-    sprRefOnceB := true
-  end;
 
   for py:=0 to ref^.height - 1 do
   for px:=0 to ref^.width - 1 do begin
