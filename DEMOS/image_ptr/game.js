@@ -5,11 +5,14 @@ class Game extends Posit92 {
   async loadAssets() {
     let handle = 0;
 
-    handle = await this.loadImage("assets/images/cursor.png");
-    this.wasmInstance.exports.setImgCursor(handle);
+    // handle = await this.loadImage("assets/images/cursor.png");
+    // this.wasmInstance.exports.setImgCursor(handle);
 
     handle = await this.loadImageRef("assets/images/cursor.png");
     this.wasmInstance.exports.setImgCursorRef(handle);
+
+    handle = await this.loadImageRef("assets/images/gasoline_maid_100px.png");
+    this.wasmInstance.exports.setImgGasolineMaid(handle);
 
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",

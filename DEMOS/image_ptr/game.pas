@@ -70,6 +70,8 @@ var
 begin
   cls($FF6495ED);
 
+  sprRef(imgGasolineMaid, 10, 10);
+
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
   else
