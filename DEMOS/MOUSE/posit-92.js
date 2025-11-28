@@ -199,40 +199,6 @@ class Posit92 {
     this.#wasm.exports.debugImage(imgHandle)
   }
 
-  async loadImage(url) {
-    if (url == null)
-      throw new Error("loadImage: url is required");
-
-    this.#assertString(url);
-
-    const img = await this.loadImageFromURL(url);
-    // console.log(`Loaded image: { w: ${img.width}, h: ${img.height} }`);
-
-    // Copy image
-    const tempCanvas = document.createElement("canvas");
-    tempCanvas.width = img.width;
-    tempCanvas.height = img.height;
-    const tempCtx = tempCanvas.getContext("2d");
-    tempCtx.drawImage(img, 0, 0);
-    const pixels = tempCtx.getImageData(0, 0, img.width, img.height).data;
-
-    // Obtain a new handle number
-    const imgHandle = this.#wasm.exports.newImage(img.width, img.height);
-    const bitmapPtr = this.#wasm.exports.getImagePtr(imgHandle);
-    
-    // Write to TBitmap
-    const memory = new Uint8Array(this.#wasm.exports.memory.buffer, bitmapPtr);
-    memory[0] = img.width & 0xff;
-    memory[1] = (img.width >> 8) & 0xff;
-    memory[2] = img.height & 0xff;
-    memory[3] = (img.height >> 8) & 0xff;
-    memory.set(pixels, 4);  // TBitmap.data
-
-    // console.log("First 20 bytes:", Array.from(memory).slice(0, 20));
-
-    return imgHandle
-  }
-
   // Used in loadImageRef
   #images = [];
 
@@ -394,7 +360,7 @@ class Posit92 {
     console.log("Loaded", glyphCount, "glyphs");
 
     // Load font bitmap
-    imgHandle = await this.loadImage(filename);
+    imgHandle = await this.loadImageRef(filename);
     // console.log("loadBMFont imgHandle:", imgHandle);
 
     const fontPtr = fontPtrRef;
