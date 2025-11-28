@@ -232,6 +232,8 @@ class Posit92 {
     return imgHandle
   }
 
+  #wasmMemoryOffset = 0;
+
   async loadImageRef(url) {
     if (url == null)
       throw new Error("loadImage: url is required");
@@ -250,24 +252,42 @@ class Posit92 {
 
     // Obtain a new handle number
     const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
-    const dataPtr = imageData.data.buffer;
+    // const dataPtr = imageData.data.buffer;
+    const byteSize = img.width * img.height * 4;
 
-    console.log("What is dataPtr?", dataPtr);  // imgCursor has ArrayBuffer[112]
+    const wasmMemory = new Uint8Array(this.#wasm.exports.memory.buffer);
+    const wasmPtr = this.#allocateInWasm(byteSize);
+    wasmMemory.set(imageData.data, wasmPtr)
 
     if (this.#images.length == 0)
       this.#images.push(null);
 
     const handle = this.#images.length;
     this.#images.push(imageData);
+    this.#wasm.exports.registerImageRef(handle, wasmPtr, img.width, img.height);
 
-    this.#wasm.exports.registerImageRef(
-      handle,
-      // imageData.data.byteOffset,
-      dataPtr,  // was imageData.data.byteOffset,
-      img.width,
-      img.height);
+    // console.log("What is dataPtr?", dataPtr);  // imgCursor has ArrayBuffer[112]
+
+    // const handle = this.#images.length;
+    // this.#images.push(imageData);
+
+    // this.#wasm.exports.registerImageRef(
+    //   handle,
+    //   // imageData.data.byteOffset,
+    //   dataPtr,  // was imageData.data.byteOffset,
+    //   img.width,
+    //   img.height);
 
     return handle
+  }
+
+  #allocateInWasm(bytes) {
+    const ptr = this.#wasmMemoryOffset;
+    this.#wasmMemoryOffset += bytes;
+
+    // Align to 4 byte
+    this.#wasmMemoryOffset = (this.#wasmMemoryOffset + 3) & ~3;
+    return ptr
   }
 
 
