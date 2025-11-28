@@ -51,6 +51,7 @@ class Posit92 {
 
   #midnightOffset = 0;
 
+  // Used in loadImageRef
   #images = [];
 
   /**

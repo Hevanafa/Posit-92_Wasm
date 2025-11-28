@@ -9,7 +9,7 @@ class Game extends Posit92 {
     // this.wasmInstance.exports.setImgCursor(handle);
 
     handle = await this.loadImageRef("assets/images/cursor.png");
-    this.wasmInstance.exports.setImgCursorRef(handle);
+    this.wasmInstance.exports.setImgCursor(handle);
 
     handle = await this.loadImageRef("assets/images/gasoline_maid_100px.png");
     this.wasmInstance.exports.setImgGasolineMaid(handle);
@@ -19,13 +19,10 @@ class Game extends Posit92 {
       this.wasmInstance.exports.defaultFontPtr(),
       this.wasmInstance.exports.defaultFontGlyphsPtr());
 
-    handle = await this.loadImage("assets/images/dosu_1.png");
+    handle = await this.loadImageRef("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
-    handle = await this.loadImage("assets/images/dosu_2.png");
+    handle = await this.loadImageRef("assets/images/dosu_2.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
-
-    // handle = await this.loadImageRef("assets/images/dosu_1.png");
-    // this.wasmInstance.exports.setImgDosuEXE(handle, 0);
 
     // Add more assets as necessary
   }

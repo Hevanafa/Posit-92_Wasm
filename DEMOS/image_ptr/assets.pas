@@ -11,10 +11,9 @@ var
   defaultFont: TBMFont;
   defaultFontGlyphs: array[32..126] of TBMFontGlyph;
 
+  { handles to TImageRef }
   imgCursor: longint;
   imgDosuEXE: array[0..1] of longint;
-
-  imgCursorRef: longint;
   imgGasolineMaid: longint;
 
 { BMFont boilerplate }
@@ -25,11 +24,8 @@ procedure printDefault(const text: string; const x, y: integer);
 function measureDefault(const text: string): word;
 
 { Asset boilerplate }
-{ procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor'; }
+procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
-
-{ Use TImageRef instead of TBitmap }
-procedure setImgCursorRef(const imgHandle: longint); public name 'setImgCursorRef';
 procedure setImgGasolineMaid(const imgHandle: longint); public name 'setImgGasolineMaid';
 
 
@@ -62,19 +58,14 @@ end;
 
 { Begin asset boilerplate }
 
-{ procedure setImgCursor(const imgHandle: longint);
+procedure setImgCursor(const imgHandle: longint);
 begin
   imgCursor := imgHandle
-end; }
+end;
 
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer);
 begin
   imgDosuEXE[idx] := imgHandle
-end;
-
-procedure setImgCursorRef(const imgHandle: longint);
-begin
-  imgCursorRef := imgHandle
 end;
 
 procedure setImgGasolineMaid(const imgHandle: longint);

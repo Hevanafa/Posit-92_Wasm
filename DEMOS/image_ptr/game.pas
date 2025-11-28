@@ -23,7 +23,7 @@ procedure signalDone; external 'env' name 'signalDone';
 
 procedure drawMouse;
 begin
-  sprRef(imgCursorRef, mouseX, mouseY)
+  sprRef(imgCursor, mouseX, mouseY)
   { spr(imgCursor, mouseX, mouseY) }
 end;
 
@@ -73,9 +73,9 @@ begin
   sprRef(imgGasolineMaid, 10, 10);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    sprRef(imgDosuEXE[1], 148, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    sprRef(imgDosuEXE[0], 148, 88);
 
   s := 'Hello world!';
   w := measureDefault(s);
