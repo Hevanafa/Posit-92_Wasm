@@ -1,16 +1,19 @@
 unit ImgRef;
 
+{$Mode TP}
+{$H-}
+
 interface
 
 type
   PImageRef = ^TImageRef;
   TImageRef = record
-    dataPtr: pointer;
     width: integer;
     height: integer;
+    dataPtr: PByte;
   end;
 
-procedure registerImageRef(const imgHandle: longint; const dataPtr: pointer; const w, h: integer); public name 'registerImageRef';
+procedure registerImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: integer); public name 'registerImageRef';
 function getImageRefPtr(const imgHandle: longint): PImageRef;
 
 { spr with TImageRef }
@@ -46,7 +49,7 @@ begin
   findEmptyImageRefSlot := -1
 end;
 
-procedure registerImageRef(const imgHandle: longint; const dataPtr: pointer; const w, h: integer);
+procedure registerImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: integer);
 var
   idx: integer;
   testByte: PByte;
@@ -56,9 +59,9 @@ begin
   if idx < 0 then
     panicHalt('Image ref pool is full!');
 
-  imageRefs[imgHandle].dataPtr := dataPtr;
   imageRefs[imgHandle].width := w;
   imageRefs[imgHandle].height := h;
+  imageRefs[imgHandle].dataPtr := dataPtr;
 
   { Removing this crashes the program for some reason }
   testByte := PByte(dataPtr);
