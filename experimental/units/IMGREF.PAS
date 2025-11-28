@@ -26,6 +26,7 @@ type
 procedure registerImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: integer); public name 'registerImageRef';
 
 function newImageRef(const width, height: integer): longint;
+function copyImageRef(const imgHandle: longint): longint;
 
 function isImageSet(const imgHandle: longint): boolean;
 function getImageRefPtr(const imgHandle: longint): PImageRef;
@@ -108,6 +109,19 @@ begin
   imageRefs[slot].dataPtr := dataPtr;
 
   newImageRef := slot
+end;
+
+{ imgHandle: Source image handle }
+function copyImageRef(const imgHandle: longint): longint;
+var
+  slot: longint;
+  src, dest: PImageRef;
+begin
+  src := getImageRefPtr(imgHandle);
+  slot := newImageRef(src^.width, src^.height);
+  dest := getImageRefPtr(slot);
+
+  move(src^.dataPtr^, dest^.dataPtr^, src^.width * src^.height * 4)
 end;
 
 function isImageSet(const imgHandle: longint): boolean;
