@@ -69,6 +69,7 @@ procedure sprRefRegionSolid(
 
 { Based on SprComp unit }
 procedure sprAlpha(const imgHandle: longint; const x, y: integer; opacity: double);
+procedure sprBlend(const imgHandle: longint; const x, y: integer);
 
 
 implementation
@@ -399,6 +400,26 @@ begin
     colour := (colour and $FFFFFF) or (alpha shl 24);
 
     unsafePsetBlend(x + px, y + py, colour)
+  end;
+end;
+
+procedure sprBlend(const imgHandle: longint; const x, y: integer);
+var
+  image: PImageRef;
+  px, py: integer;
+  colour: longword;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImageRefPtr(imgHandle);
+
+  for py := 0 to image^.height - 1 do
+  for px := 0 to image^.width - 1 do begin
+    if (x + px >= vgaWidth) or (x + px < 0)
+      or (y + py >= vgaHeight) or (y + py < 0) then continue;
+
+    colour := unsafeSprPget(image, px, py);
+    psetBlend(x + px, y + py, colour)
   end;
 end;
 

@@ -354,7 +354,7 @@ begin
     end;
 
     DemoStateRegion: begin
-      sprRegion(imgBlueEnemy,
+      sprRefRegion(imgBlueEnemy,
         25 * selectedFrame, 0, 25, 25,
         trunc(dosuZone.x), trunc(dosuZone.y));
 
@@ -370,16 +370,16 @@ begin
     DemoStateScaling: begin
       with dosuZone do
         if (trunc(gameTime * 4) and 1) > 0 then
-          sprStretch(imgDosuEXE[1], trunc(x), trunc(y), trunc(width), trunc(height))
+          sprRefStretch(imgDosuEXE[1], trunc(x), trunc(y), trunc(width), trunc(height))
         else
-          sprStretch(imgDosuEXE[0], trunc(x), trunc(y), trunc(width), trunc(height));
+          sprRefStretch(imgDosuEXE[0], trunc(x), trunc(y), trunc(width), trunc(height));
 
       printCentred('WASD - Move', 120);
       printCentred('Arrow keys - Resize', 130);
     end;
 
     DemoStateRegionScaling: begin
-      sprRegionStretch(imgBlueEnemy,
+      sprRefRegionStretch(imgBlueEnemy,
         25 * selectedFrame, 0, 25, 25,
         trunc(dosuZone.x), trunc(dosuZone.y), trunc(dosuZone.width), trunc(dosuZone.height));
 
