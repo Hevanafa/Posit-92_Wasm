@@ -58,3 +58,8 @@ The demo projects use a special units collection: `experimental\units`, so the s
    ![wasm32-embedded](./wasm32_embedded.png)
 
 It took me a few retries until the compiler finally completed compiling
+
+Just in case you want to use a different installation folder, you can change `$compilerPath` in these scripts:
+
+- `compile.ps1` - Main compile script
+- Optional: `compile_demo.ps1` - Change this if you want to play around with the demos
