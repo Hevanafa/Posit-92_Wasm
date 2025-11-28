@@ -3,7 +3,7 @@ library Game;
 {$Mode ObjFPC}
 
 uses
-  Conv, FPS, Graphics, ImgRef,
+  Conv, FPS, Graphics, ImgRef, ImgRefFast,
   Keyboard, Logger, Mouse, Panic,
   Sounds, Timing, VGA,
   Assets, BigInt;
@@ -37,7 +37,7 @@ end;
 
 procedure drawMouse;
 begin
-  sprRef(imgCursor, mouseX, mouseY)
+  spr(imgCursor, mouseX, mouseY)
 end;
 
 { Used by BigInt }
@@ -163,9 +163,9 @@ begin
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    sprRef(imgDosuEXE[1], 148, 88)
+    spr(imgDosuEXE[1], 148, 88)
   else
-    sprRef(imgDosuEXE[0], 148, 88);
+    spr(imgDosuEXE[0], 148, 88);
 
   printCentred(points, 140);
 

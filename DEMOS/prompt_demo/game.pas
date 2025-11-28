@@ -12,7 +12,7 @@ library Game;
 
 uses
   BMFont, Conv, FPS, Graphics,
-  ImgRef, ImmedGui, Keyboard, Logger,
+  ImgRef, ImgRefFast, ImmedGui, Keyboard, Logger,
   Mouse, Panic, Shapes, Sounds,
   Timing, VGA,
   Assets;
@@ -46,9 +46,9 @@ end;
 procedure drawMouse;
 begin
   if hasHoveredWidget then
-    sprRef(imgHandCursor, mouseX - 5, mouseY - 1)
+    spr(imgHandCursor, mouseX - 5, mouseY - 1)
   else
-    sprRef(imgCursor, mouseX, mouseY);
+    spr(imgCursor, mouseX, mouseY);
 end;
 
 procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
