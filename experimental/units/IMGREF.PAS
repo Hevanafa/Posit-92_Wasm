@@ -16,6 +16,10 @@ type
 procedure registerImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: integer); public name 'registerImageRef';
 function getImageRefPtr(const imgHandle: longint): PImageRef;
 
+function getImageWidth(const imgHandle: longint): word;
+function getImageHeight(const imgHandle: longint): word;
+
+
 { spr with TImageRef }
 procedure sprRef(const imgHandle: longint; const x, y: integer);
 
@@ -82,6 +86,27 @@ begin
   getImageRefPtr := @imageRefs[imgHandle]
 end;
 
+function getImageWidth(const imgHandle: longint): word;
+var
+  image: PImageRef;
+begin
+  getImageWidth := 0;
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImageRefPtr(imgHandle);
+  getImageWidth := image^.width
+end;
+
+function getImageHeight(const imgHandle: longint): word;
+var
+  image: PImageRef;
+begin
+  getImageHeight := 0;
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImageRefPtr(imgHandle);
+  getImageHeight := image^.height
+end;
 
 { Render procedures }
 
