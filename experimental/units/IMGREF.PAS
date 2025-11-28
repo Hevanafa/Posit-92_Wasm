@@ -121,7 +121,8 @@ begin
   slot := newImageRef(src^.width, src^.height);
   dest := getImageRefPtr(slot);
 
-  move(src^.dataPtr^, dest^.dataPtr^, src^.width * src^.height * 4)
+  move(src^.dataPtr^, dest^.dataPtr^, src^.width * src^.height * 4);
+  copyImageRef := slot
 end;
 
 function isImageSet(const imgHandle: longint): boolean;
