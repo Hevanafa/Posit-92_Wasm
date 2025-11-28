@@ -56,7 +56,7 @@ class Posit92 {
    */
   #importObject = Object.freeze({
     env: {
-      _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
+      _haltproc: this.#handleHaltProc.bind(this),
 
       hideCursor: () => this.hideCursor(),
       showCursor: () => this.showCursor(),
@@ -65,7 +65,7 @@ class Posit92 {
 
       // Keyboard
       isKeyDown: this.isKeyDown.bind(this),
-      signalDone: () => { this.cleanup(); done = true },
+      signalDone: this.#signalDone.bind(this),
 
       // Logger
       writeLogF32: value => console.log("Pascal (f32):", value),
@@ -96,6 +96,17 @@ class Posit92 {
       toggleFullscreen: () => this.toggleFullscreen()
     }
   });
+
+  #handleHaltProc(exitcode) {
+    console.log("Programme halted with code:", exitcode);
+    this.cleanup();
+    done = true
+  }
+
+  #signalDone() {
+    this.cleanup();
+    done = true
+  }
 
   constructor(canvasID) {
     if (canvasID == null)
