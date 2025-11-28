@@ -232,8 +232,6 @@ class Posit92 {
     return imgHandle
   }
 
-  #wasmMemoryOffset = 0;
-
   async loadImageRef(url) {
     if (url == null)
       throw new Error("loadImage: url is required");
@@ -248,40 +246,28 @@ class Posit92 {
     tempCanvas.height = img.height;
     const tempCtx = tempCanvas.getContext("2d");
     tempCtx.drawImage(img, 0, 0);
-    // const pixels = tempCtx.getImageData(0, 0, img.width, img.height).data;
 
-    // Obtain a new handle number
     const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
-    // const dataPtr = imageData.data.buffer;
-    const byteSize = img.width * img.height * 4;
 
     const wasmMemory = new Uint8Array(this.#wasm.exports.memory.buffer);
-    const wasmPtr = this.#allocateInWasm(byteSize);
+    const byteSize = img.width * img.height * 4;
+    const wasmPtr = this.#wasmGetmem(byteSize);
     wasmMemory.set(imageData.data, wasmPtr)
 
     if (this.#images.length == 0)
       this.#images.push(null);
 
+    // Register with Wasm pointer
     const handle = this.#images.length;
-    this.#images.push(imageData);
+    this.#images.push(imageData);  // Keep data in JS for reference
     this.#wasm.exports.registerImageRef(handle, wasmPtr, img.width, img.height);
-
-    // console.log("What is dataPtr?", dataPtr);  // imgCursor has ArrayBuffer[112]
-
-    // const handle = this.#images.length;
-    // this.#images.push(imageData);
-
-    // this.#wasm.exports.registerImageRef(
-    //   handle,
-    //   // imageData.data.byteOffset,
-    //   dataPtr,  // was imageData.data.byteOffset,
-    //   img.width,
-    //   img.height);
 
     return handle
   }
 
-  #allocateInWasm(bytes) {
+  #wasmMemoryOffset = 0;
+
+  #wasmGetmem(bytes) {
     const ptr = this.#wasmMemoryOffset;
     this.#wasmMemoryOffset += bytes;
 
