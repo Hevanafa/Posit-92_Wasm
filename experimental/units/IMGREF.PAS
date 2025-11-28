@@ -75,29 +75,14 @@ end;
 procedure registerImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: integer);
 var
   idx: integer;
-  testByte: PByte;
 begin
   idx := findEmptyImageRefSlot;
 
-  if idx < 0 then
-    panicHalt('Image ref pool is full!');
+  if idx < 0 then panicHalt('Image ref pool is full!');
 
   imageRefs[imgHandle].width := w;
   imageRefs[imgHandle].height := h;
   imageRefs[imgHandle].dataPtr := dataPtr;
-
-  { Removing this crashes the program for some reason }
-  testByte := PByte(dataPtr);
-  writeLog('dataPtr[0]:');
-  writeLogI32(testByte[0]);
-
-  { Removing this crashes the program for some reason }
-  writeLog('imageRefs[imgHandle]: imgHandle, width, height');
-  writeLogI32(imgHandle);
-  with imageRefs[imgHandle] do begin
-    writeLogI32(width);
-    writeLogI32(height);
-  end;
 end;
 
 function getImageRefPtr(const imgHandle: longint): PImageRef;
