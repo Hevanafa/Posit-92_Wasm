@@ -54,7 +54,7 @@ procedure printBMFontColour(
 
 implementation
 
-uses SprFast, ImgRef, Conv, Logger;
+uses ImgRef, Conv, Logger;
 
 procedure printBMFont(
   const text: string;
@@ -136,7 +136,7 @@ begin
   if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
     glyph := fontGlyphs[glyphIdx];
 
-    sprRegionSolid(
+    sprRefRegionSolid(
       font.imgHandle,
       glyph.x, glyph.y,
       glyph.width, glyph.height,

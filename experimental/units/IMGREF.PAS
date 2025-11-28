@@ -1,3 +1,11 @@
+{
+  ImgRef unit
+  Part of Posit-92 framework
+  By Hevanafa, 28-11-2025
+
+  Most of the procedures & functions here are based on Bitmap and SprFast units
+}
+
 unit ImgRef;
 
 {$Mode TP}
@@ -22,10 +30,17 @@ function getImageHeight(const imgHandle: longint): word;
 { Rendering procedures }
 { spr with TImageRef }
 procedure sprRef(const imgHandle: longint; const x, y: integer);
+
 procedure sprRefRegion(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: integer;
   const destX, destY: integer);
+
+procedure sprRefRegionSolid(
+  const imgHandle: longint;
+  const srcX, srcY, srcW, srcH: integer;
+  const destX, destY: integer;
+  const colour: longword);
 
 
 implementation
@@ -189,6 +204,39 @@ begin
     if alpha < 255 then continue;
 
     colour := unsafeSprPget(image, sx, sy);
+    unsafePset(destX + a, destY + b, colour);
+  end;
+end;
+
+procedure sprRefRegionSolid(
+  const imgHandle: longint;
+  const srcX, srcY, srcW, srcH: integer;
+  const destX, destY: integer;
+  const colour: longword);
+var
+  image: PImageRef;
+  a, b: integer;
+  sx, sy: integer;
+  srcPos: longint;
+  alpha: byte;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImageRefPtr(imgHandle);
+
+  for b:=0 to srcH - 1 do
+  for a:=0 to srcW - 1 do begin
+    if (destX + a >= vgaWidth) or (destX + a < 0)
+      or (destY + b >= vgaHeight) or (destY + b < 0) then continue;
+
+    sx := srcX + a;
+    sy := srcY + b;
+    srcPos := (sx + sy * image^.width) * 4;
+
+    alpha := image^.dataPtr[srcPos + 3];
+    if alpha < 255 then continue;
+
+    { colour := unsafeSprPget(image, sx, sy); }
     unsafePset(destX + a, destY + b, colour);
   end;
 end;

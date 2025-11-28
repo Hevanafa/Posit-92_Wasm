@@ -3,8 +3,8 @@ library Game;
 {$Mode ObjFPC}
 
 uses BMFont, Conv, FPS,
-  Keyboard, Maths, Mouse,
-  Panic, Sounds, SprFast, Timing, VGA,
+  ImgRef, Keyboard, Maths, Mouse,
+  Panic, Sounds, Timing, VGA,
   Assets;
 
 const
@@ -26,7 +26,7 @@ procedure signalDone; external 'env' name 'signalDone';
 
 procedure drawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  sprRef(imgCursor, mouseX, mouseY)
 end;
 
 { h, s, v: [0.0, 1.0] }
@@ -112,9 +112,9 @@ begin
   cls(DarkBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    sprRef(imgDosuEXE[1], 148, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    sprRef(imgDosuEXE[0], 148, 88);
 
   s := 'Hello world!';
   w := measureDefault(s);
