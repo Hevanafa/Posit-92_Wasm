@@ -51,9 +51,6 @@ class Posit92 {
 
   #midnightOffset = 0;
 
-  // Used in loadImageRef
-  #images = [];
-
   /**
    * For use with WebAssembly init
    */
@@ -240,6 +237,9 @@ class Posit92 {
 
     return imgHandle
   }
+
+  // Used in loadImageRef
+  #images = [];
 
   async loadImageRef(url) {
     if (url == null)

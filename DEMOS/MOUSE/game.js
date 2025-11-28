@@ -3,13 +3,16 @@
 // Asset boilerplate
 class Game extends Posit92 {
   async loadAssets() {
-    const imgCursor = await this.loadImage("assets/images/cursor.png");
+    const imgCursor = await this.loadImageRef("assets/images/cursor.png");
     this.wasmInstance.exports.setImgCursor(imgCursor);
 
-    const imgGasolineMaid = await this.loadImage("assets/images/gasoline_maid_100px.png")
+    const imgGasolineMaid = await this.loadImageRef("assets/images/gasoline_maid_100px.png")
     this.wasmInstance.exports.setImgGasolineMaid(imgGasolineMaid);
 
-    await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
+    await this.loadBMFont(
+      "assets/fonts/nokia_cellphone_fc_8.txt",
+      this.wasmInstance.exports.defaultFontPtr(),
+      this.wasmInstance.exports.defaultFontGlyphsPtr());
 
     // Add more assets as necessary
   }

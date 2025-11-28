@@ -2,9 +2,9 @@ library Game;
 
 {$Mode ObjFPC}
 
-uses Bitmap, BMFont, Conv, FPS,
-  Graphics, Keyboard, Logger, Mouse,
-  Panic, SprFast, Sounds, Timing, VGA,
+uses BMFont, Conv, FPS,
+  Graphics, ImgRef, Keyboard, Logger, Mouse,
+  Panic, Sounds, Timing, VGA,
   Assets;
 
 const
@@ -29,7 +29,7 @@ end;
 
 procedure drawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  sprRef(imgCursor, mouseX, mouseY)
 end;
 
 procedure debugMouse;
@@ -78,14 +78,14 @@ end;
 
 procedure draw;
 var
-  image: PBitmap;
+  image: PImageRef;
   w: integer;
   s: string;
 begin
   cls($FF6495ED);
 
-  image := getImagePtr(imgGasolineMaid);
-  spr(imgGasolineMaid, (vgaWidth - image^.width) div 2, (vgaHeight - image^.height) div 2);
+  image := getImageRefPtr(imgGasolineMaid);
+  sprRef(imgGasolineMaid, (vgaWidth - image^.width) div 2, (vgaHeight - image^.height) div 2);
 
   s := 'Clicks: ' + i32str(clicks);
   w := measureBMFont(s, _defaultFontGlyphs);

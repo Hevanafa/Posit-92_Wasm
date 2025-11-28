@@ -105,6 +105,14 @@ class Posit92 {
     const bytes = await response.arrayBuffer();
     const result = await WebAssembly.instantiate(bytes, this.#importObject);
     this.#wasm = result.instance;
+    
+    // Grow Wasm memory size
+    // Wasm memory grows in 64KB pages
+    const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
+    const requiredPages = Math.ceil(2 * 1048576 / 65536);
+
+    if (pages < requiredPages)
+      this.#wasm.exports.memory.grow(requiredPages - pages);
   }
 
   #initAudio() {
@@ -225,6 +233,54 @@ class Posit92 {
     return imgHandle
   }
 
+  // Used in loadImageRef
+  #images = [];
+
+  async loadImageRef(url) {
+    if (url == null)
+      throw new Error("loadImage: url is required");
+
+    this.#assertString(url);
+
+    const img = await this.loadImageFromURL(url);
+
+    // Copy image
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = img.width;
+    tempCanvas.height = img.height;
+    const tempCtx = tempCanvas.getContext("2d");
+    tempCtx.drawImage(img, 0, 0);
+
+    const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
+
+    const wasmMemory = new Uint8Array(this.#wasm.exports.memory.buffer);
+    const byteSize = img.width * img.height * 4;
+    const wasmPtr = this.#wasmGetmem(byteSize);
+    wasmMemory.set(imageData.data, wasmPtr)
+
+    if (this.#images.length == 0)
+      this.#images.push(null);
+
+    // Register with Wasm pointer
+    const handle = this.#images.length;
+    this.#images.push(imageData);  // Keep data in JS for reference
+    this.#wasm.exports.registerImageRef(handle, wasmPtr, img.width, img.height);
+
+    return handle
+  }
+
+  // Start at 1 MB
+  #wasmMemoryOffset = 1048576;
+
+  #wasmGetmem(bytes) {
+    const ptr = this.#wasmMemoryOffset;
+    this.#wasmMemoryOffset += bytes;
+
+    // Align to 4 byte
+    this.#wasmMemoryOffset = (this.#wasmMemoryOffset + 3) & ~3;
+    return ptr
+  }
+
   getImageWidth(imgHandle) {
     this.#assertNumber(imgHandle);
     return this.#wasm.exports.getImageWidth(imgHandle)
@@ -271,11 +327,13 @@ class Posit92 {
     }
   }
 
-  async loadBMFont(url) {
+  async loadBMFont(url, fontPtrRef, fontGlyphsPtrRef) {
     if (url == null)
       throw new Error("loadBMFont: url is required");
 
     this.#assertString(url);
+    this.#assertNumber(fontPtrRef);
+    this.#assertNumber(fontGlyphsPtrRef);
 
     const res = await fetch(url);
     const text = await res.text();
@@ -303,17 +361,14 @@ class Posit92 {
 
       if (txtLine.startsWith("info")) {
         [k, v] = pairs.find(pair => pair[0] == "face");
-        // console.log("face", v)
 
       } else if (txtLine.startsWith("common")) {
         [k, v] = pairs.find(pair => pair[0] == "lineHeight");
         lineHeight = parseInt(v);
-        // console.log("lineHeight", lineHeight);
 
       } else if (txtLine.startsWith("page")) {
         [k, v] = pairs.find(pair => pair[0] == "file");
         filename = v.replaceAll(/"/g, "");
-        // console.log("filename", filename);
 
       } else if (txtLine.startsWith("char") && !txtLine.startsWith("chars")) {
         const tempGlyph = this.#newBMFontGlyph();
@@ -340,11 +395,10 @@ class Posit92 {
 
     // Load font bitmap
     imgHandle = await this.loadImage(filename);
-    console.log("loadBMFont imgHandle:", imgHandle);
+    // console.log("loadBMFont imgHandle:", imgHandle);
 
-    // Obtain pointers to Pascal structures
-    const fontPtr = this.#wasm.exports.defaultFontPtr();
-    const glyphsPtr = this.#wasm.exports.defaultFontGlyphsPtr();
+    const fontPtr = fontPtrRef;
+    const glyphsPtr = fontGlyphsPtrRef;
 
     // Write font data
     const fontMem = new DataView(this.#wasm.exports.memory.buffer, fontPtr);
@@ -357,7 +411,8 @@ class Posit92 {
 
     // true makes it little-endian
     fontMem.setUint16(offset, lineHeight, true);
-    // console.log("imgHandle to write", imgHandle);
+    
+    // +2 requires a packed record because Pascal records are padded by default
     fontMem.setInt32(offset + 2, imgHandle, true);
 
     // Write glyphs
