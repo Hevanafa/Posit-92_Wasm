@@ -29,6 +29,9 @@ function getImageRefPtr(const imgHandle: longint): PImageRef;
 function getImageWidth(const imgHandle: longint): word;
 function getImageHeight(const imgHandle: longint): word;
 
+function unsafeSprPget(const image: PImageRef; const x, y: integer): longword;
+procedure unsafeSprPset(const image: PImageRef; const x, y: integer; const colour: longword);
+
 { Rendering procedures }
 { spr with TImageRef }
 procedure sprRef(const imgHandle: longint; const x, y: integer);
@@ -129,6 +132,18 @@ begin
     or image^.dataPtr[offset + 2]
 end;
 
+procedure unsafeSprPset(const image: PImageRef; const x, y: integer; const colour: longword);
+var
+  offset: longword;
+begin
+  offset := (x + y * image^.width) * 4;
+
+  { Order: RGBA }
+  image^.dataPtr[offset] := colour shr 16 and $FF;
+  image^.dataPtr[offset + 1] := colour shr 8 and $FF;
+  image^.dataPtr[offset + 2] := colour and $FF;
+  image^.dataPtr[offset + 3] := colour shr 24 and $FF;
+end;
 
 
 { Render procedures }
