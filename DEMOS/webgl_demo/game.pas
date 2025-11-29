@@ -4,8 +4,8 @@ library Game;
 
 uses
   Keyboard, Mouse,
-  ImgRef, ImgRefFast,
-  Timing, VGA,
+  { ImgRef, ImgRefFast, }
+  Timing, WebGL, { VGA, }
   Assets;
 
 const
@@ -21,16 +21,19 @@ var
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
+{
 procedure drawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
-
+}
 
 procedure init;
 begin
-  initBuffer;
+  { initBuffer; }
   initDeltaTime;
+
+  glViewport(0, 0, 320, 200);
 end;
 
 procedure afterInit;
@@ -54,6 +57,17 @@ begin
   gameTime := gameTime + dt
 end;
 
+{ Draw in WebGL context }
+procedure draw;
+begin
+  glClearColor(0.2, 0.4, 0.8, 1.0);
+  glClear(GL_COLOR_BUFFER_BIT);
+
+
+end;
+
+{ Draw in canvas context }
+{
 procedure draw;
 var
   w: integer;
@@ -73,6 +87,7 @@ begin
   drawMouse;
   flush
 end;
+}
 
 exports
   { Main game procedures }

@@ -34,26 +34,26 @@ var done = false;
 async function main() {
   const game = new Game("game");
   await game.init();
-  // game.afterInit();
+  game.afterInit();
 
-  // function loop(currentTime) {
-  //   if (done) {
-  //     game.cleanup();
-  //     return;
-  //   }
+  function loop(currentTime) {
+    if (done) {
+      game.cleanup();
+      return;
+    }
 
-  //   const elapsed = currentTime - lastFrameTime;
+    const elapsed = currentTime - lastFrameTime;
 
-  //   if (elapsed >= FrameTime) {
-  //     lastFrameTime = currentTime - (elapsed % FrameTime);  // Carry over extra time
-  //     game.update();
-  //     game.draw();
-  //   }
+    if (elapsed >= FrameTime) {
+      lastFrameTime = currentTime - (elapsed % FrameTime);  // Carry over extra time
+      game.update();
+      game.draw();
+    }
 
-  //   requestAnimationFrame(loop)
-  // }
+    requestAnimationFrame(loop)
+  }
 
-  // requestAnimationFrame(loop)
+  requestAnimationFrame(loop)
 }
 
 function play() {
