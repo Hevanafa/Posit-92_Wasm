@@ -70,6 +70,9 @@ class Posit92 {
   #musicPauseTime = 0.0;
   #musicPlaying = false;
 
+  /**
+   * Used in getTimer
+   */
   #midnightOffset = 0;
 
   /**

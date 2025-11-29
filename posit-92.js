@@ -40,15 +40,39 @@ class Posit92 {
    * @type {Map<number, AudioBuffer>}
    */
   #sounds = new Map();
+  /**
+   * @type {Map<number, number>}
+   */
   #soundVolumes = new Map();
 
   /**
-   * @type {AudioBufferSourceNode | null}
+   * @type {AudioBufferSourceNode}
    */
-  #music = null;
+  #musicPlayer = null;
+
+  /**
+   * @type {AudioBuffer}
+   */
+  #musicBuffer = null;
   #musicVolume = 1.0;
+  /**
+   * @type {GainNode}
+   */
   #musicGainNode = null;
 
+  /**
+   * in seconds
+   */
+  #musicStartTime = 0.0;
+  /**
+   * in seconds
+   */
+  #musicPauseTime = 0.0;
+  #musicPlaying = false;
+
+  /**
+   * Used in getTimer
+   */
   #midnightOffset = 0;
 
   /**
@@ -81,11 +105,18 @@ class Posit92 {
       panicHalt: this.panicHalt.bind(this),
 
       // Sounds
-      playSound: this.playSound.bind(this),
-      playMusic: this.playMusic.bind(this),
-      setSoundVolume: this.setSoundVolume.bind(this),
-      setMusicVolume: this.setMusicVolume.bind(this),
-      stopMusic: () => this.stopMusic(),
+      playSound: this.#playSound.bind(this),
+
+      playMusic: this.#playMusic.bind(this),
+      pauseMusic: this.#pauseMusic.bind(this),
+      stopMusic: this.#stopMusic.bind(this),
+      seekMusic: this.#seekMusic.bind(this),
+      getMusicPlaying: () => { return this.#musicPlaying },
+      getMusicTime: this.#getMusicTime.bind(this),
+      getMusicDuration: this.#getMusicDuration.bind(this),
+
+      setSoundVolume: this.#setSoundVolume.bind(this),
+      setMusicVolume: this.#setMusicVolume.bind(this),
 
       // Timing
       getTimer: () => this.getTimer(),
@@ -510,7 +541,7 @@ class Posit92 {
     this.setSoundVolume(key, 0.5)
   }
 
-  playSound(key) {
+  #playSound(key) {
     const buffer = this.#sounds.get(key);
     if (buffer == null) {
       console.warn("Sound " + key + " is not loaded");
@@ -532,8 +563,18 @@ class Posit92 {
     // source automatically disconnects when done
   }
 
-  playMusic(key) {
-    this.stopMusic();
+  #playMusic(key) {
+    // If still playing
+    if (this.#musicPlaying && this.#musicBuffer != null)
+      return;
+
+    // Resuming
+    if (this.#musicBuffer != null) {
+      this.#resumeMusic();
+      return
+    }
+
+    this.#stopMusic();
 
     const buffer = this.#sounds.get(key);
     if (buffer == null) {
@@ -541,17 +582,86 @@ class Posit92 {
       return
     }
 
-    this.#music = this.#audioContext.createBufferSource();
+    this.#musicBuffer = buffer;
+    this.#musicPauseTime = 0.0;
+    this.#resumeMusic();
+  }
+
+  #resumeMusic() {
+    // Create a new fresh player node
+    this.#musicPlayer = this.#audioContext.createBufferSource();
     this.#musicGainNode = this.#audioContext.createGain();
 
-    this.#music.buffer = buffer;
-    this.#music.loop = true;
+    this.#musicPlayer.buffer = this.#musicBuffer;
+    this.#musicPlayer.loop = true;
     this.#musicGainNode.gain.value = this.#musicVolume;
 
-    // Connect source -> gain -> destination
-    this.#music.connect(this.#musicGainNode);
+    // Connect the audio graph:
+    // music player -> gain -> destination
+    this.#musicPlayer.connect(this.#musicGainNode);
     this.#musicGainNode.connect(this.#audioContext.destination);
-    this.#music.start(0)
+
+    // Start playback from saved position
+    this.#musicPlayer.start(0, this.#musicPauseTime);
+    this.#musicStartTime = this.#audioContext.currentTime - this.#musicPauseTime;
+    this.#musicPlaying = true
+  }
+
+  #pauseMusic() {
+    if (!this.#musicPlaying || this.#musicPlayer == null)
+      return;
+
+    this.#musicPauseTime = this.#audioContext.currentTime - this.#musicStartTime;
+
+    // Handle looping
+    if (this.#musicBuffer != null) {
+      const duration = this.#musicBuffer.duration;  // in seconds
+      this.#musicPauseTime %= duration
+    }
+
+    // Stop the music player, but don't "forget" the last position
+    this.#musicPlayer.stop();
+    this.#musicPlayer = null;
+    this.#musicGainNode = null;
+    this.#musicPlaying = false
+  }
+
+  #stopMusic() {
+    if (this.#musicPlayer != null) {
+      this.#musicPlayer.stop();
+      this.#musicPlayer = null;
+      this.#musicGainNode = null;
+    }
+
+    this.#musicBuffer = null;
+    this.#musicPauseTime = 0.0;
+    this.#musicPlaying = false
+  }
+
+  /**
+   * @param {number} t time in seconds
+   */
+  #seekMusic(t) {
+    this.#assertNumber(t);
+    if (this.#musicBuffer == null) return;
+
+    const duration = this.#musicBuffer.duration;
+    t = this.#clamp(t, 0.0, duration);
+
+    const wasPlaying = this.#musicPlaying;
+
+    // Stop current playback
+    if (this.#musicPlayer != null) {
+      this.#musicPlayer.stop();
+      this.#musicPlayer = null;
+      this.#musicGainNode = null
+    }
+
+    this.#musicPauseTime = t;
+    this.#musicPlaying = false;
+
+    if (wasPlaying)
+      this.#resumeMusic();
   }
 
   #clamp(value, min, max) {
@@ -562,24 +672,36 @@ class Posit92 {
     return Math.max(min, Math.min(max, value))
   }
 
-  setSoundVolume(key, volume) {
+  #setSoundVolume(key, volume) {
     const clamped = this.#clamp(volume, 0.0, 1.0);
     this.#soundVolumes.set(key, clamped)
   }
 
-  setMusicVolume(volume) {
+  #setMusicVolume(volume) {
     this.#musicVolume = this.#clamp(volume, 0.0, 1.0);
 
     if (this.#musicGainNode != null)
       this.#musicGainNode.gain.value = this.#musicVolume;
   }
 
-  stopMusic() {
-    if (this.#music == null) return;
+  #getMusicDuration() {
+    if (this.#musicBuffer == null)
+      return 0.0;
 
-    this.#music.stop();
-    this.#music = null;
-    this.#musicGainNode = null
+    return this.#musicBuffer.duration
+  }
+
+  #getMusicTime() {
+    if (this.#musicBuffer == null)
+      return 0.0;
+
+    if (!this.#musicPlaying)
+      return this.#musicPauseTime;
+
+    const elapsed = this.#audioContext.currentTime - this.#musicStartTime;
+    const duration = this.#getMusicDuration();
+
+    return elapsed % duration
   }
 
 
