@@ -57,8 +57,9 @@ begin
 
   seekerState.value := 0;
 
-  volumeState.value := 75;
+  volumeState.value := 25;
   lastVolume := volumeState.value;
+  setMusicVolume(volumeState.value / 100.0)
 end;
 
 function getMusicTimeStr: string;
@@ -100,7 +101,9 @@ var
   w: integer;
   s: string;
   isPlaying: boolean;
-  duration, seekTime: double;
+
+  duration, actualTime, seekTime: double;
+  dragState: TSliderDragState;
 begin
   cls($FF6495ED);
 
@@ -115,21 +118,23 @@ begin
   else
     printDefault('Paused / Stopped', 10, 10);
 
-  case SliderDrag(64, 94, 192, seekerState, 0, 100) of
-    SliderDragging: { printDefault('Dragging slider', 10, 30) };
-    SliderReleased: begin
-      duration := getMusicDuration;
-      seekTime := seekerState.value / 100.0 * duration;
-      seekMusic(seekTime)
-    end
-    else
+  { Music Seeker }
+  duration := getMusicDuration;
+  actualTime := getMusicTime;
+
+  dragState := SliderDrag(64, 94, 192, seekerState, 0, 100);
+
+  if dragState = SliderReleased then begin
+    writeLog('Attempting to release slider');
+    seekTime := seekerState.value / 100.0 * duration;
+    writeLogF32(seekTime);
+
+    seekMusic(seekTime)
   end;
 
-{
-  s := 'Hello world!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
-}
+  if (dragState <> SliderDragging) and (duration > 0.0) then
+    seekerState.value := round(actualTime / duration * 100.0);
+
   printDefault(getMusicTimeStr, 100, 124);
 
   if isPlaying then begin
