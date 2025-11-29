@@ -1,6 +1,7 @@
 unit Sounds;
 
 {$Mode TP}
+{$B-}
 
 interface
 
@@ -9,6 +10,7 @@ procedure playSound(const key: longint); external 'env' name 'playSound';
 procedure playMusic(const key: longint); external 'env' name 'playMusic';
 function getMusicRepeat: boolean; external 'env' name 'getMusicRepeat';
 procedure setMusicRepeat(const value: boolean); external 'env' name 'setMusicRepeat';
+procedure handleMusicRepeat(const musicKey: integer);
 procedure pauseMusic; external 'env' name 'pauseMusic';
 procedure stopMusic; external 'env' name 'stopMusic';
 
@@ -23,5 +25,17 @@ procedure setMusicVolume(const volume: double); external 'env' name 'setMusicVol
 
 
 implementation
+
+{ Handle music repeat (only when it is playing)
+  Important: #musicPlayer.loop must be turned off! }
+procedure handleMusicRepeat(const musicKey: integer);
+begin
+  if getMusicPlaying and (getMusicTime >= getMusicDuration - 0.05) then
+    if getMusicRepeat then begin
+      stopMusic;
+      playMusic(musicKey)
+    end else
+      stopMusic;
+end;
 
 end.
