@@ -11,6 +11,7 @@ function getMusicRepeat: boolean; external 'env' name 'getMusicRepeat';
 procedure setMusicRepeat(const value: boolean); external 'env' name 'setMusicRepeat';
 procedure pauseMusic; external 'env' name 'pauseMusic';
 procedure stopMusic; external 'env' name 'stopMusic';
+
 { t: time in seconds }
 procedure seekMusic(const t: double); external 'env' name 'seekMusic';
 function getMusicPlaying: boolean; external 'env' name 'getMusicPlaying';
