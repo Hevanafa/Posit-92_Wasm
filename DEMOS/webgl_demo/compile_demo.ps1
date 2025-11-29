@@ -4,10 +4,11 @@
 
 $compilerPath = "E:\fpc-wasm\fpc\bin\x86_64-win64\fpc.exe"
 $primaryUnit = ".\game.pas"
+# $primaryUnit = ".\TestWebGL.pas"
 $outputFile = "game.wasm"
 
 # Compile targetting wasm32-embedded
-# E:\fpc-wasm\fpc\bin\x86_64-win64\fpc.exe -Pwasm32 -Tembedded -FuUNITS .\game.pas -ogame.wasm
+# E:\fpc-wasm\fpc\bin\x86_64-win64\fpc.exe -Pwasm32 -Tembedded -FuUNITS -ogame.wasm .\game.pas
 
 $pinfo = new-object System.Diagnostics.ProcessStartInfo
 $pinfo.FileName = $compilerPath

@@ -41,7 +41,7 @@ DEMOS/mouse/*.ps1
 DEMOS/print_colour/*.ps1
 DEMOS/image_ptr/*.ps1
 DEMOS/music/*.ps1
-DEMOS/webgl_demo/*.ps1
+# DEMOS/webgl_demo/*.ps1
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
