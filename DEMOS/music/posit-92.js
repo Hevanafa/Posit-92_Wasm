@@ -40,6 +40,9 @@ class Posit92 {
    * @type {Map<number, AudioBuffer>}
    */
   #sounds = new Map();
+  /**
+   * @type {Map<number, number>}
+   */
   #soundVolumes = new Map();
 
   /**
@@ -676,6 +679,19 @@ class Posit92 {
       return 0.0;
 
     return this.#musicBuffer.duration
+  }
+
+  getMusicTime() {
+    if (this.#musicBuffer == null)
+      return 0.0;
+
+    if (!this.#musicPlaying)
+      return this.#musicPauseTime;
+
+    const elapsed = this.#audioContext.currentTime - this.#musicStartTime;
+    const duration = this.getMusicDuration();
+
+    return elapsed % duration
   }
 
 
