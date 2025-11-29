@@ -3,10 +3,9 @@ library Game;
 {$Mode ObjFPC}
 
 uses
-  Keyboard, Mouse,
-  ImmedGui,
+  Conv, Keyboard, Mouse, ImmedGui,
   ImgRef, ImgRefFast,
-  Sounds, Timing, VGA,
+  Sounds, Strings, Timing, VGA,
   Assets;
 
 const
@@ -46,6 +45,17 @@ begin
   guiSetFont(defaultFont, defaultFontGlyphs);
 end;
 
+function getMusicTimeStr: string;
+var
+  m, s: integer;
+begin
+  m := trunc(getMusicTime) div 60;
+  s := trunc(getMusicTime) mod 60;
+  getMusicTimeStr := i32str(m) + ':' + padStart(i32str(s), 2, '0');
+end;
+
+
+
 procedure update;
 begin
   updateDeltaTime;
@@ -77,9 +87,12 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
+{
   s := 'Hello world!';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
+}
+  printDefault(getMusicTimeStr, 100, 124);
 
   if ImageButton(129, 116, imgPlay, imgPlay, imgPlay) then
     playMusic(BgmPhonk);
