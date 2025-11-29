@@ -134,7 +134,7 @@ begin
   if ImageButton(161, 116, imgStop, imgStop, imgStop) then
     stopMusic;
 
-  if isMuted then
+  if isMuted or (volumeState.value = 0) then
     spr(imgVolumeOff, 202, 123)
   else
     spr(imgVolumeOn, 202, 123);
