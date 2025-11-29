@@ -22,6 +22,10 @@ var
   gameTime: double;
   { Use sound keys }
   actualMusicKey: integer;
+  isMuted: boolean;
+  
+  volumeState: TSliderState;
+  lastVolume: integer;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -47,6 +51,10 @@ begin
   guiSetFont(defaultFont, defaultFontGlyphs);
 
   actualMusicKey := -1;
+  isMuted := false;
+
+  volumeState.value := 75;
+  lastVolume := volumeState.value;
 end;
 
 function getMusicTimeStr: string;
@@ -57,7 +65,6 @@ begin
   s := trunc(getMusicTime) mod 60;
   getMusicTimeStr := i32str(m) + ':' + padStart(i32str(s), 2, '0');
 end;
-
 
 
 procedure update;
@@ -75,6 +82,11 @@ begin
   end;
 
   gameTime := gameTime + dt;
+
+  if lastVolume <> volumeState.value then begin
+    lastVolume := volumeState.value;
+    setMusicVolume(volumeState.value / 100.0)
+  end;
 
   resetWidgetIndices
 end;
@@ -121,6 +133,13 @@ begin
   
   if ImageButton(161, 116, imgStop, imgStop, imgStop) then
     stopMusic;
+
+  if isMuted then
+    spr(imgVolumeOff, 202, 123)
+  else
+    spr(imgVolumeOn, 202, 123);
+
+  Slider(217, 125, 64, volumeState, 0, 100);
 
   resetActiveWidget;
   drawMouse;
