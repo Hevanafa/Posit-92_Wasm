@@ -132,7 +132,12 @@ class Posit92 {
 
       // VGA
       flush: () => this.flush(),
-      toggleFullscreen: () => this.toggleFullscreen()
+      toggleFullscreen: () => this.toggleFullscreen(),
+
+      // WebGL
+      glClearColor: (r, g, b, a) => this.#gl.clearColor(r, g, b, a),
+      glClear: mask => this.#gl.clear(mask),
+      glViewport: (x, y, w, h) => this.#gl.viewport(x, y, w, h)
     }
   });
 
