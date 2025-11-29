@@ -625,6 +625,32 @@ class Posit92 {
     this.#musicPlaying = false
   }
 
+  /**
+   * @param {number} t time in seconds
+   */
+  seekMusic(t) {
+    this.#assertNumber(t);
+    if (this.#musicBuffer == null) return;
+
+    const duration = this.#musicBuffer.duration;
+    t = this.#clamp(t, 0.0, duration);
+
+    const wasPlaying = this.#musicPlaying;
+
+    // Stop current playback
+    if (this.#musicPlayer != null) {
+      this.#musicPlayer.stop();
+      this.#musicPlayer = null;
+      this.#musicGainNode = null
+    }
+
+    this.#musicPauseTime = t;
+    this.#musicPlaying = false;
+
+    if (wasPlaying)
+      this.#resumeMusic();
+  }
+
   #clamp(value, min, max) {
     this.#assertNumber(value);
     this.#assertNumber(min);
