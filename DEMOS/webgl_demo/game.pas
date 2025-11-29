@@ -1,6 +1,8 @@
 library Game;
 
 {$Mode ObjFPC}
+{$ModeSwitch MultiLineStrings}
+{$H-}
 
 uses
   Keyboard, Mouse,
@@ -44,7 +46,27 @@ begin
 end;
 
 procedure afterInit;
+var
+  textureId: longword;
+  vertShader, fragShader, prog: longword;
 begin
+  { Vertex shader - positions a fullscreen quad }
+  vertShader := glCreateShader(GL_VERTEX_SHADER);
+  glShaderSource(vertShader,`
+attribute vec2 pos;
+varying vec2 uv;
+void main() {
+  uv = pos * 0.5 + 0.5;
+  gl_Position = vec4(pos, 0.0, 1.0);
+}
+  `);
+
+  glCompileShader(vertShader);
+
+  { TODO: Fragment shader }
+
+  { TODO: Link the vertex & fragment shaders }
+
   { Initialise game state here }
   hideCursor;
 end;
