@@ -18,6 +18,18 @@ class Game extends Posit92 {
     handle = await this.loadImage("assets/images/dosu_2.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
 
+    this.wasmInstance.exports.setImgPlay(
+      await this.loadImage("assets/images/play.png"));
+    this.wasmInstance.exports.setImgStop(
+      await this.loadImage("assets/images/stop.png"));
+    this.wasmInstance.exports.setImgPause(
+      await this.loadImage("assets/images/pause.png"));
+
+    this.wasmInstance.exports.setImgVolumeOn(
+      await this.loadImage("assets/images/volume_on.png"));
+    this.wasmInstance.exports.setImgVolumeOff(
+      await this.loadImage("assets/images/volume_off.png"));
+
     // Add more assets as necessary
   }
 }
