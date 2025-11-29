@@ -784,6 +784,17 @@ class Posit92 {
   }
 
   // WEBGL.PAS
+  #readCString(ptr) {
+    this.#assertNumber(ptr);
+    
+    const memory = new Uint8Array(this.#wasm.exports.memory.buffer);
+    let end = ptr;
+    while (memory[end] != 0) end++;  // Find null terminator
+
+    const bytes = memory.subarray(ptr, end);
+    return new TextDecoder().decode(bytes)
+  }
+
   /**
    * @type {Map<number, WebGLTexture>}
    */
