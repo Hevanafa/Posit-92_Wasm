@@ -18,9 +18,17 @@ type
   TCheckboxState = record
     checked: boolean;
   end;
+
   TSliderState = record
     value: integer;
   end;
+  TSliderDragState = (
+    SliderIdle,
+    SliderHover,
+    SliderDragging,
+    SliderReleased
+  );
+
   TPromptResult = (PromptWait, PromptYes, PromptNo);
 
   TListViewState = record
@@ -107,6 +115,7 @@ var
   activeWidget must survive across frames
   }
   hotWidget, activeWidget, nextWidgetID: integer;
+  lastActiveWidget: integer;
 
   isFontSet: boolean;
   activeFont: TBMFont;
@@ -127,6 +136,7 @@ begin
   hotWidget := -1;
   activeWidget := -1;
   nextWidgetID := 0;
+  lastActiveWidget := -1;
 
   mouseZone.x := 0;
   mouseZone.y := 0;
@@ -183,6 +193,7 @@ end;
 procedure resetActiveWidget;
 begin
   if mouseJustReleased and (activeWidget >= 0) then activeWidget := -1;
+  lastActiveWidget := activeWidget
 end;
 
 procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
@@ -487,6 +498,71 @@ begin
     colour := Black;
 
   rect(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), colour)
+end;
+
+function SliderDrag(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer): TSliderDragState;
+var
+  zone: TRect;
+  thisWidgetID: integer;
+  perc, range: double;
+  pendingValue, thumbX: integer;
+  colour: longword;
+begin
+  if minValue >= maxValue then panicHalt('Slider: minValue has to be less than maxValue!');
+
+  zone.x := x;
+  zone.y := y;
+  zone.width := width;
+  zone.height := 5;
+
+  { Update logic }
+  thisWidgetID := nextWidgetID;
+  inc(nextWidgetID);
+
+  if allowWidgetInteraction then begin
+    if rectIntersects(zone, mouseZone) then begin
+      hotWidget := thisWidgetID;
+
+      if mouseJustPressed then
+        activeWidget := thisWidgetID;
+    end;
+  end;
+
+  { Value update logic }
+  range := maxValue - minValue;
+  if activeWidget = thisWidgetID then begin
+    pendingValue := trunc(clamp(mouseX, x, x + width) - x);
+    perc := pendingValue / width;
+    state.value := round(perc * range)
+  end;
+
+  { Render logic }
+  line(x, y + 2, x + width, y + 2, Black);
+
+  perc := (state.value - minValue) / range;
+  thumbX := round(x + perc * width);
+
+  rectfill(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), White);
+
+  if activeWidget = thisWidgetID then
+    { dragging }
+    colour := IceCreamRed
+  else if hotWidget = thisWidgetID then
+    { hovering }
+    colour := IceCreamOrange
+  else
+    colour := Black;
+
+  rect(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), colour)
+
+  if activeWidget = thisWidgetID then
+    SliderDrag := SliderDragging
+  else if lastActiveWidget = thisWidgetID then
+    SliderDrag := SliderReleased
+  else if hotWidget = thisWidgetID then
+    SliderDrag := SliderHover
+  else
+    SliderDrag := SliderIdle;
 end;
 
 
