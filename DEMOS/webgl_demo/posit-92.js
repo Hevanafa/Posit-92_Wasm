@@ -142,7 +142,15 @@ class Posit92 {
 
       glBindTexture: this.#glBindTexture.bind(this),
       glTexParameteri: this.#glTextParameteri.bind(this),
-      glTexImage2D: this.#glTexImage2D.bind(this)
+      glTexImage2D: this.#glTexImage2D.bind(this),
+
+      glCreateShader: this.#glCreateShader.bind(this),
+      glShaderSource: this.#glShaderSource.bind(this),
+      glCompileShader: this.#glCompileShader.bind(this),
+      glCreateProgram: this.#glCreateProgram.bind(this),
+      glAttachShader: this.#glAttachShader.bind(this),
+      glLinkProgram: this.#glLinkProgram.bind(this),
+      glUseProgram: this.#glUseProgram.bind(this)
     }
   });
 
@@ -813,6 +821,52 @@ class Posit92 {
       target, level, internalFormat,
       width, height, border,
       format, type, pixels)
+  }
+
+  #shaders = new Map();
+  #nextShaderId = 1;
+  #programs = new Map();
+  #nextProgramId = 1;
+
+  #glCreateShader(type) {
+    const shader = this.#gl.createShader(type);
+    const id = this.#nextShaderId++;
+    this.#shaders.set(id, shader);
+    return id
+  }
+
+  #glShaderSource(shaderId, sourcePtr) {
+    const shader = this.#shaders.get(shaderId);
+    const source = this.#readCString(sourcePtr);
+    this.#gl.shaderSource(shader, source)
+  }
+
+  #glCompileShader(shaderId) {
+    const shader = this.#shaders.get(shaderId);
+    this.#gl.compileShader(shader)
+  }
+
+  #glCreateProgram() {
+    const program = this.#gl.createProgram();
+    const id = this.#nextProgramId++;
+    this.#programs.set(id, program);
+    return id
+  }
+
+  #glAttachShader(programId, shaderId) {
+    const program = this.#programs.get(programId);
+    const shader = this.#shaders.get(shaderId);
+    this.#gl.attachShader(program, shader)
+  }
+
+  #glLinkProgram(programId) {
+    const program = this.#programs.get(programId);
+    this.#gl.linkProgram(program)
+  }
+
+  #glUseProgram(programId) {
+    const program = this.#programs.get(programId);
+    this.#gl.useProgram(program)
   }
 
 
