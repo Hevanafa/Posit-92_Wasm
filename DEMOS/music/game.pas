@@ -20,6 +20,8 @@ var
 
   { Init your game state here }
   gameTime: double;
+  { Use sound keys }
+  actualMusicKey: integer;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -43,6 +45,8 @@ begin
 
   initImmediateGUI;
   guiSetFont(defaultFont, defaultFontGlyphs);
+
+  actualMusicKey := -1;
 end;
 
 function getMusicTimeStr: string;
@@ -79,6 +83,7 @@ procedure draw;
 var
   w: integer;
   s: string;
+  isPlaying: boolean;
 begin
   cls($FF6495ED);
 
@@ -87,7 +92,8 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  if getMusicPlaying then
+  isPlaying := getMusicPlaying;
+  if isPlaying then
     printDefault('Playing', 10, 10)
   else
     printDefault('Paused / Stopped', 10, 10);
@@ -99,8 +105,19 @@ begin
 }
   printDefault(getMusicTimeStr, 100, 124);
 
-  if ImageButton(129, 116, imgPlay, imgPlay, imgPlay) then
-    playMusic(BgmPhonk);
+  if isPlaying then begin
+    if ImageButton(129, 116, imgPause, imgPause, imgPause) then
+      pauseMusic;
+  end else
+    if ImageButton(129, 116, imgPlay, imgPlay, imgPlay) then begin
+      if actualMusicKey < 0 then begin
+        { Starting new }
+        actualMusicKey := BgmPhonk;
+        playMusic(BgmPhonk)
+      end else
+        { Resuming }
+        playMusic(actualMusicKey);
+    end;
   
   if ImageButton(161, 116, imgStop, imgStop, imgStop) then
     stopMusic;
