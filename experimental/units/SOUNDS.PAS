@@ -18,6 +18,7 @@ function getMusicDuration: double; external 'env' name 'getMusicDuration';
 procedure setSoundVolume(const key: longint; const volume: double); external 'env' name 'setSoundVolume';
 procedure setMusicVolume(const volume: double); external 'env' name 'setMusicVolume';
 
+
 implementation
 
 end.
