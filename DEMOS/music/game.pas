@@ -104,7 +104,7 @@ begin
     setMusicVolume(volumeState.value / 100.0)
   end;
 
-  { Handle music loop (only when it is playing)
+  { Handle music repeat (only when it is playing)
     Important: #musicPlayer.loop must be turned off! }
   if getMusicPlaying and (getMusicTime >= getMusicDuration - 0.05) then
     if getMusicRepeat then begin
