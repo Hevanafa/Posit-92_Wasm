@@ -15,6 +15,11 @@ const
   GL_RGBA = $1908;
   GL_UNSIGNED_BYTE = $1401;
 
+  GL_VERTEX_SHADER = $8B31;
+  GL_FRAGMENT_SHADER = $8B30;
+  GL_COMPILE_STATUS = $8B81;
+  GL_LINK_STATUS = $8B82;
+
 procedure glClearColor(const r, g, b, a: single); external 'env' name 'glClearColor';
 procedure glClear(const mask: longword); external 'env' name 'glClear';
 procedure glViewport(const x, y, width, height: longint); external 'env' name 'glViewport';
@@ -28,6 +33,15 @@ procedure glTexImage2D(
     width, height, border,
     format, pixelType: longword;
   const pixels: pointer); external 'env' name 'glTexImage2D';
+
+function glCreateShader(const shaderType: longword): longword; external 'env' name 'glCreateShader';
+procedure glShaderSource(const shader: longword; const source: PChar); external 'env' name 'glShaderSource';
+procedure glCompileShader(const shader: longword); external 'env' name 'glCompileShader';
+
+function glCreateProgram: longword; external 'env' name 'glCreateProgram';
+procedure glAttachShader(const prog, shader: longword); external 'env' name 'glAttachShader';
+procedure glLinkProgram(const prog: longword); external 'env' name 'glLinkProgram';
+procedure glUseProgram(const prog: longword); external 'env' name 'glUseProgram';
 
 
 implementation
