@@ -47,7 +47,6 @@ end;
 
 procedure afterInit;
 var
-  textureId: longword;
   vertShader, fragShader, prog: longword;
 begin
   { Vertex shader - positions a fullscreen quad }
@@ -78,7 +77,12 @@ void main() {
 
   glCompileShader(fragShader);
 
-  { TODO: Link the vertex & fragment shaders }
+  { Link the vertex & fragment shaders }
+  prog := glCreateProgram;
+  glAttachShader(prog, vertShader);
+  glAttachShader(prog, fragShader);
+  glLinkProgram(prog);
+  glUseProgram(prog);
 
   { Initialise game state here }
   hideCursor;
