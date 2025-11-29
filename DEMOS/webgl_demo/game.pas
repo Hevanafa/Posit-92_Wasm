@@ -30,7 +30,7 @@ end;
 
 procedure init;
 begin
-  { initBuffer; }
+  initBuffer;
   initDeltaTime;
 
   glViewport(0, 0, 320, 200);

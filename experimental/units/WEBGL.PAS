@@ -11,6 +11,8 @@ procedure glClearColor(const r, g, b, a: single); external 'env' name 'glClearCo
 procedure glClear(const mask: longword); external 'env' name 'glClear';
 procedure glViewport(const x, y, width, height: longint); external 'env' name 'glViewport';
 
+function glCreateTexture: longword; external 'env' name 'glCreateTexture';
+
 
 implementation
 

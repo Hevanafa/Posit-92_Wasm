@@ -137,7 +137,8 @@ class Posit92 {
       // WebGL
       glClearColor: (r, g, b, a) => this.#gl.clearColor(r, g, b, a),
       glClear: mask => this.#gl.clear(mask),
-      glViewport: (x, y, w, h) => this.#gl.viewport(x, y, w, h)
+      glViewport: (x, y, w, h) => this.#gl.viewport(x, y, w, h),
+      glCreateTexture: this.#glCreateTexture.bind(this)
     }
   });
 
@@ -768,6 +769,21 @@ class Posit92 {
       this.#canvas.requestFullscreen()
     else
       document.exitFullscreen();
+  }
+
+  // WEBGL.PAS
+  /**
+   * @type {Map<number, WebGLTexture>}
+   */
+  #textures = new Map();
+  #nextTextureId = 1;
+
+  #glCreateTexture() {
+    const texture = this.#gl.createTexture();
+    const id = this.#nextTextureId++;
+    console.log(id);
+    this.#textures.set(id, texture);
+    return 1
   }
 
 
