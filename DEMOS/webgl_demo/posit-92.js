@@ -158,7 +158,10 @@ class Posit92 {
       glGetAttribLocation: this.#glGetAttribLocation.bind(this),
       glEnableVertexAttribArray: this.#glEnableVertexAttribArray.bind(this),
       glVertexAttribPointer: this.#glVertexAttribPointer.bind(this),
-      glDrawArrays: this.#glDrawArrays.bind(this)
+      glDrawArrays: this.#glDrawArrays.bind(this),
+
+      glGetUniformLocation: this.#glGetUniformLocation.bind(this),
+      glUniform1i: this.#glUniform1i.bind(this)
     }
   });
 
@@ -928,6 +931,18 @@ class Posit92 {
 
   #glDrawArrays(mode, first, count) {
     this.#gl.drawArrays(mode, first, count)
+  }
+
+  #glGetUniformLocation(programId, namePtr) {
+    const program = this.#programs.get(programId);
+    const name = this.#readCString(namePtr);
+    console.log("glGetUniformLocation name", name);
+    return this.#gl.getUniformLocation(program, name)
+  }
+
+  #glUniform1i(unifLoc, value) {
+    console.log("unifLoc", unifLoc, value);
+    this.#gl.uniform1i(unifLoc, value)
   }
 
 

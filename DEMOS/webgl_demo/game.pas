@@ -47,6 +47,7 @@ end;
 procedure afterInit;
 var
   vertShader, fragShader, prog: longword;
+  texLoc: longint;
   posBuffer: longword;
   posLoc: longint;
   vertices: array[0..7] of single = (
@@ -87,6 +88,9 @@ void main() {
   glAttachShader(prog, fragShader);
   glLinkProgram(prog);
   glUseProgram(prog);
+
+  texLoc := glGetUniformLocation(prog, 'tex');
+  glUniform1i(texLoc, 0);
 
   posBuffer := glCreateBuffer;
   glBindBuffer(GL_ARRAY_BUFFER, posBuffer);
