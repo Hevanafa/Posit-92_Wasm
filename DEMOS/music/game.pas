@@ -138,9 +138,9 @@ begin
   dragState := SliderDrag(64, 94, 192, seekerState, 0, 100);
 
   if dragState = SliderReleased then begin
-    writeLog('Attempting to release slider');
+    { writeLog('Attempting to release slider'); }
     seekTime := seekerState.value / 100.0 * duration;
-    writeLogF32(seekTime);
+    { writeLogF32(seekTime); }
 
     seekMusic(seekTime)
   end;
