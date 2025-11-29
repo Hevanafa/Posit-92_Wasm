@@ -25,6 +25,9 @@ var
   
   seekerState: TSliderState;
 
+  loopState: TCheckboxState;
+  lastLoop: boolean;
+
   isMuted: boolean;
   volumeState: TSliderState;
   lastVolume: integer;
@@ -57,6 +60,9 @@ begin
 
   seekerState.value := 0;
 
+  loopState.value := true;
+  lastLoop := loopState.value;
+
   volumeState.value := 25;
   lastVolume := volumeState.value;
   setMusicVolume(volumeState.value / 100.0)
@@ -88,6 +94,12 @@ begin
 
   gameTime := gameTime + dt;
 
+  if lastLoop <> loopState.value then begin
+    lastLoop := loopState.value;
+
+    { TODO: Forward the state to JS glue code }
+  end;
+
   if lastVolume <> volumeState.value then begin
     lastVolume := volumeState.value;
     setMusicVolume(volumeState.value / 100.0)
@@ -111,6 +123,8 @@ begin
     spr(imgDosuEXE[1], 148, 48)
   else
     spr(imgDosuEXE[0], 148, 48);
+
+  Checkbox('Loop', 50, 125, loopState);
 
   isPlaying := getMusicPlaying;
   if isPlaying then

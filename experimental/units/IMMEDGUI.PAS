@@ -117,6 +117,7 @@ var
   activeWidget must survive across frames
   }
   hotWidget, activeWidget, nextWidgetID: integer;
+  { Used by SliderDrag }
   lastActiveWidget: integer;
 
   isFontSet: boolean;

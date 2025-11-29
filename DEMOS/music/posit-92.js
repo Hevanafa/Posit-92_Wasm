@@ -49,6 +49,7 @@ class Posit92 {
    * @type {AudioBufferSourceNode}
    */
   #musicPlayer = null;
+  #musicLoop = true;
 
   /**
    * @type {AudioBuffer}
@@ -587,13 +588,24 @@ class Posit92 {
     this.#resumeMusic();
   }
 
+  #setMusicLoop(value) {
+    this.#musicLoop = value;
+
+    if (this.#musicPlaying) {
+      const currentTime = this.#getMusicTime();
+      this.#pauseMusic();
+      this.#musicPauseTime = currentTime;
+      this.#resumeMusic()
+    }
+  }
+
   #resumeMusic() {
     // Create a new fresh player node
     this.#musicPlayer = this.#audioContext.createBufferSource();
     this.#musicGainNode = this.#audioContext.createGain();
 
     this.#musicPlayer.buffer = this.#musicBuffer;
-    this.#musicPlayer.loop = true;
+    this.#musicPlayer.loop = this.#musicLoop;
     this.#musicGainNode.gain.value = this.#musicVolume;
 
     // Connect the audio graph:
