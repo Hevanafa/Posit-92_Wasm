@@ -6,7 +6,7 @@ library Game;
 
 uses
   Keyboard, Mouse,
-  ImgRef, ImgRefFast,
+  ImgRef, ImgRefFast, Logger,
   Timing, VGA, WebGL,
   Assets;
 
@@ -118,13 +118,46 @@ end;
 { Draw in WebGL context }
 procedure draw;
 var
+  a: integer;
+  drawOnce: boolean;
+begin
+  for a:=0 to bufferSize - 1 do
+    getSurfacePtr^[a] := $FF;
+
+  if not drawOnce then begin
+    writeLogI32(getSurfacePtr^[0]);
+    writeLogI32(getSurfacePtr^[1]);
+    writeLogI32(getSurfacePtr^[2]);
+    writeLogI32(getSurfacePtr^[3]);
+    drawOnce := true
+  end;
+
+  glClearColor(1.0, 0.4, 0.4, 1.0);
+  glClear(GL_COLOR_BUFFER_BIT);
+
+  { Upload pixel data to the GPU }
+  glBindTexture(GL_TEXTURE_2D, textureId);
+  glTexImage2D(
+    GL_TEXTURE_2D, 0, GL_RGBA,
+    320, 200, 0,
+    GL_RGBA, GL_UNSIGNED_BYTE,
+    getSurfacePtr);
+
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
+end;
+
+{ Draw in WebGL context }
+{
+procedure draw;
+var
   s: string;
   w: word;
 begin
-  glClearColor(0.39, 0.58, 0.92, 1.0);
+  glClearColor(1.0, 0.4, 0.4, 1.0);
   glClear(GL_COLOR_BUFFER_BIT);
-
+}
   { CPU rendering code }
+{
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
@@ -137,9 +170,10 @@ begin
   printDefault(s, (vgaWidth - w) div 2, 120);
 
   drawMouse;
-  { flush }
+}
 
   { Upload pixel data to the GPU }
+{
   glBindTexture(GL_TEXTURE_2D, textureId);
   glTexImage2D(
     GL_TEXTURE_2D, 0, GL_RGBA,
@@ -149,6 +183,7 @@ begin
 
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 end;
+}
 
 
 exports
