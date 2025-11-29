@@ -572,20 +572,26 @@ class Posit92 {
     this.#musicBuffer = buffer;
     this.#musicPauseTime = 0.0;
     this.#resumeMusic();
+  }
 
-    // this.#musicPlayer = this.#audioContext.createBufferSource();
-    // this.#musicGainNode = this.#audioContext.createGain();
+  #resumeMusic() {
+    // Create a new fresh player node
+    this.#musicPlayer = this.#audioContext.createBufferSource();
+    this.#musicGainNode = this.#audioContext.createGain();
 
-    // this.#musicPlayer.buffer = buffer;
-    // this.#musicPlayer.loop = true;
-    // this.#musicGainNode.gain.value = this.#musicVolume;
+    this.#musicPlayer.buffer = this.#musicBuffer;
+    this.#musicPlayer.loop = true;
+    this.#musicGainNode.gain.value = this.#musicVolume;
 
-    // // Connect source -> gain -> destination
-    // this.#musicPlayer.connect(this.#musicGainNode);
-    // this.#musicGainNode.connect(this.#audioContext.destination);
+    // Connect the audio graph:
+    // music player -> gain -> destination
+    this.#musicPlayer.connect(this.#musicGainNode);
+    this.#musicGainNode.connect(this.#audioContext.destination);
 
-    // this.#musicStartTime = this.#audioContext.currentTime;
-    // this.#musicPlayer.start(0)
+    // Start playback from saved position
+    this.#musicPlayer.start(0, this.#musicPauseTime);
+    this.#musicStartTime = this.#audioContext.currentTime - this.#musicPauseTime;
+    this.#musicPlaying = true
   }
 
   #clamp(value, min, max) {
