@@ -781,7 +781,7 @@ class Posit92 {
   #glCreateTexture() {
     const texture = this.#gl.createTexture();
     const id = this.#nextTextureId++;
-    console.log(id);
+    console.log("id", id, this.#nextTextureId);
     this.#textures.set(id, texture);
     return 1
   }

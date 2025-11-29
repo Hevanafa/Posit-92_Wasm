@@ -5,7 +5,7 @@ library Game;
 uses
   Keyboard, Mouse,
   { ImgRef, ImgRefFast, }
-  Timing, WebGL, { VGA, }
+  Timing, VGA, WebGL,
   Assets;
 
 const
@@ -29,11 +29,14 @@ end;
 }
 
 procedure init;
+var
+  textureId: longword;
 begin
   initBuffer;
   initDeltaTime;
 
   glViewport(0, 0, 320, 200);
+  textureId := glCreateTexture;
 end;
 
 procedure afterInit;
