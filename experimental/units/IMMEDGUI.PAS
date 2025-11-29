@@ -69,7 +69,9 @@ function ImageButton(const x, y: integer; const imgNormal, imgHovered, imgPresse
 procedure ListView(const items: array of string; var state: TListViewState);
 
 procedure Checkbox(const caption: string; const x, y: integer; var state: TCheckboxState);
+
 procedure Slider(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer);
+function SliderDrag(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer): TSliderDragState;
 
 procedure ProgressBar(const x, y, width, height: integer; const perc: double);
 procedure ProgressBarLabelled(const x, y, width, height: integer; const perc: double);
@@ -192,8 +194,8 @@ end;
 
 procedure resetActiveWidget;
 begin
+  lastActiveWidget := activeWidget;
   if mouseJustReleased and (activeWidget >= 0) then activeWidget := -1;
-  lastActiveWidget := activeWidget
 end;
 
 procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
@@ -553,7 +555,7 @@ begin
   else
     colour := Black;
 
-  rect(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), colour)
+  rect(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), colour);
 
   if activeWidget = thisWidgetID then
     SliderDrag := SliderDragging

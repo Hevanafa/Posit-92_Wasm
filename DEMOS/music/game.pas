@@ -4,7 +4,7 @@ library Game;
 
 uses
   Conv, Keyboard, Mouse, ImmedGui,
-  ImgRef, ImgRefFast,
+  ImgRef, ImgRefFast, Logger,
   Sounds, Strings, Timing, VGA,
   Assets;
 
@@ -22,8 +22,10 @@ var
   gameTime: double;
   { Use sound keys }
   actualMusicKey: integer;
-  isMuted: boolean;
   
+  seekerState: TSliderState;
+
+  isMuted: boolean;
   volumeState: TSliderState;
   lastVolume: integer;
 
@@ -52,6 +54,8 @@ begin
 
   actualMusicKey := -1;
   isMuted := false;
+
+  seekerState.value := 0;
 
   volumeState.value := 75;
   lastVolume := volumeState.value;
@@ -110,6 +114,13 @@ begin
   else
     printDefault('Paused / Stopped', 10, 10);
 
+  case SliderDrag(64, 94, 192, seekerState, 0, 100) of
+    SliderDragging: printDefault('Dragging slider', 10, 30);
+    { SliderReleased: printDefault('Slider released', 10, 30); }
+    SliderReleased: writeLog('Slider released');
+    else
+  end;
+
 {
   s := 'Hello world!';
   w := measureDefault(s);
@@ -142,7 +153,7 @@ begin
   Slider(217, 125, 64, volumeState, 0, 100);
 
   resetActiveWidget;
-  
+
   drawMouse;
   flush
 end;
