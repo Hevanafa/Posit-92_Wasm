@@ -110,7 +110,7 @@ class Posit92 {
       playSound: this.#playSound.bind(this),
 
       playMusic: this.#playMusic.bind(this),
-      getMusicRepeat: () => this.#musicRepeat,
+      getMusicRepeat: this.#getMusicRepeat.bind(this),
       setMusicRepeat: this.#setMusicRepeat.bind(this),
       pauseMusic: this.#pauseMusic.bind(this),
       stopMusic: this.#stopMusic.bind(this),
@@ -574,6 +574,7 @@ class Posit92 {
 
     // Resuming
     if (this.#musicBuffer != null) {
+      this.#resetMusicPlayerNode();
       this.#resumeMusic();
       return
     }
@@ -588,14 +589,17 @@ class Posit92 {
 
     this.#musicBuffer = buffer;
     this.#musicPauseTime = 0.0;
+
+    this.#resetMusicPlayerNode();
     this.#resumeMusic();
   }
 
+  #getMusicRepeat() { return this.#musicRepeat }
   #setMusicRepeat(value) {
     this.#musicRepeat = value;
   }
 
-  #resumeMusic() {
+  #resetMusicPlayerNode() {
     // Create a new fresh player node
     this.#musicPlayer = this.#audioContext.createBufferSource();
     this.#musicGainNode = this.#audioContext.createGain();
@@ -609,7 +613,9 @@ class Posit92 {
     // music player -> gain -> destination
     this.#musicPlayer.connect(this.#musicGainNode);
     this.#musicGainNode.connect(this.#audioContext.destination);
+  }
 
+  #resumeMusic() {
     // Start playback from saved position
     this.#musicPlayer.start(0, this.#musicPauseTime);
     this.#musicStartTime = this.#audioContext.currentTime - this.#musicPauseTime;
@@ -628,20 +634,21 @@ class Posit92 {
       this.#musicPauseTime %= duration
     }
 
-    // Stop the music player, but don't "forget" the last position
-    this.#musicPlayer.stop();
-    this.#musicPlayer = null;
-    this.#musicGainNode = null;
+    // Stop the music player, but don't "forget" the pause position
+    this.#destroyMusicPlayerNode();
     this.#musicPlaying = false
   }
 
-  #stopMusic() {
+  #destroyMusicPlayerNode() {
     if (this.#musicPlayer != null) {
       this.#musicPlayer.stop();
       this.#musicPlayer = null;
       this.#musicGainNode = null;
     }
+  }
 
+  #stopMusic() {
+    this.#destroyMusicPlayerNode();
     this.#musicBuffer = null;
     this.#musicPauseTime = 0.0;
     this.#musicPlaying = false
@@ -660,17 +667,15 @@ class Posit92 {
     const wasPlaying = this.#musicPlaying;
 
     // Stop current playback
-    if (this.#musicPlayer != null) {
-      this.#musicPlayer.stop();
-      this.#musicPlayer = null;
-      this.#musicGainNode = null
-    }
+    this.#destroyMusicPlayerNode();
 
     this.#musicPauseTime = t;
     this.#musicPlaying = false;
 
-    if (wasPlaying)
+    if (wasPlaying) {
+      this.#resetMusicPlayerNode();
       this.#resumeMusic();
+    }
   }
 
   #clamp(value, min, max) {
