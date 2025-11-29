@@ -606,7 +606,23 @@ class Posit92 {
       this.#musicPauseTime %= duration
     }
 
-    this.stopMusic()
+    // Stop the music player, but don't "forget" the last position
+    this.#musicPlayer.stop();
+    this.#musicPlayer = null;
+    this.#musicGainNode = null;
+    this.#musicPlaying = false
+  }
+
+  stopMusic() {
+    if (this.#musicPlayer == null) return;
+
+    this.#musicPlayer.stop();
+    this.#musicPlayer = null;
+    this.#musicGainNode = null;
+    this.#musicBuffer = null;
+    this.#musicPauseTime = 0.0;
+
+    this.#musicPlaying = false
   }
 
   #clamp(value, min, max) {
@@ -627,15 +643,6 @@ class Posit92 {
 
     if (this.#musicGainNode != null)
       this.#musicGainNode.gain.value = this.#musicVolume;
-  }
-
-  stopMusic() {
-    if (this.#musicPlayer == null) return;
-
-    this.#musicPlayer.stop();
-    this.#musicPlayer = null;
-    this.#musicGainNode = null;
-    this.#musicPlaying = false
   }
 
 
