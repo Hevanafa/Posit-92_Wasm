@@ -96,13 +96,20 @@ begin
 
   if lastLoop <> loopState.checked then begin
     lastLoop := loopState.checked;
-    setMusicLoop(loopState.checked)
+    setMusicRepeat(loopState.checked)
   end;
 
   if lastVolume <> volumeState.value then begin
     lastVolume := volumeState.value;
     setMusicVolume(volumeState.value / 100.0)
   end;
+
+  if getMusicTime >= getMusicDuration - 0.05 then
+    if getMusicRepeat then begin
+      stopMusic;
+      playMusic(BgmPhonk)
+    end else
+      stopMusic;
 
   resetWidgetIndices
 end;

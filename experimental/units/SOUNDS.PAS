@@ -7,7 +7,8 @@ interface
 procedure playSound(const key: longint); external 'env' name 'playSound';
 
 procedure playMusic(const key: longint); external 'env' name 'playMusic';
-procedure setMusicLoop(const value: boolean); external 'env' name 'setMusicLoop';
+function getMusicRepeat: boolean; external 'env' name 'getMusicRepeat';
+procedure setMusicRepeat(const value: boolean); external 'env' name 'setMusicRepeat';
 procedure pauseMusic; external 'env' name 'pauseMusic';
 procedure stopMusic; external 'env' name 'stopMusic';
 { t: time in seconds }

@@ -49,17 +49,18 @@ class Posit92 {
    * @type {AudioBufferSourceNode}
    */
   #musicPlayer = null;
-  #musicLoop = true;
+  /**
+   * @type {GainNode}
+   */
+  #musicGainNode = null;
 
   /**
    * @type {AudioBuffer}
    */
   #musicBuffer = null;
+
+  #musicRepeat = true;
   #musicVolume = 1.0;
-  /**
-   * @type {GainNode}
-   */
-  #musicGainNode = null;
 
   /**
    * in seconds
@@ -109,7 +110,8 @@ class Posit92 {
       playSound: this.#playSound.bind(this),
 
       playMusic: this.#playMusic.bind(this),
-      setMusicLoop: this.#setMusicLoop.bind(this),
+      getMusicRepeat: () => this.#musicRepeat,
+      setMusicRepeat: this.#setMusicRepeat.bind(this),
       pauseMusic: this.#pauseMusic.bind(this),
       stopMusic: this.#stopMusic.bind(this),
       seekMusic: this.#seekMusic.bind(this),
@@ -589,66 +591,24 @@ class Posit92 {
     this.#resumeMusic();
   }
 
-  #setMusicLoop(value) {
-    this.#musicLoop = value;
-
-    if (this.#musicPlaying) {
-      this.#pauseMusic();
-      this.#resumeMusic(true)
-    }
+  #setMusicRepeat(value) {
+    this.#musicRepeat = value;
   }
 
-  #resumeMusic(isManual) {
+  #resumeMusic() {
     // Create a new fresh player node
     this.#musicPlayer = this.#audioContext.createBufferSource();
     this.#musicGainNode = this.#audioContext.createGain();
 
     this.#musicPlayer.buffer = this.#musicBuffer;
-    this.#musicPlayer.loop = this.#musicLoop;
-    console.log("loop?", this.#musicPlayer.loop);
+    // this.#musicPlayer.loop = this.#musicRepeat;
+    // console.log("loop?", this.#musicPlayer.loop);
     this.#musicGainNode.gain.value = this.#musicVolume;
 
     // Connect the audio graph:
     // music player -> gain -> destination
     this.#musicPlayer.connect(this.#musicGainNode);
     this.#musicGainNode.connect(this.#audioContext.destination);
-
-    // Handle stop music if it's not looping
-    this.#musicPlayer.onended = () => {
-      // if (isManual) {
-      //   console.log("musicPlayer onended");
-
-        if (!this.#musicLoop && this.#getMusicTime >= this.#getMusicDuration)
-          this.#stopMusic();
-      // }
-    };
-
-    // this.#musicPlayer.onended = () => {
-    //   console.log("onended is triggered");
-    // //   this.#musicPlayer = null;
-    // //   this.#musicGainNode = null;
-    // //   this.#musicPlaying = false;
-
-    //   if (!this.#musicLoop && this.#musicPlaying) {
-    //     this.#musicPlayer.stop();
-    //     this.#musicPlayer = null;
-    //     this.#musicGainNode = null;
-    //     this.#musicPauseTime = 0;
-
-    //     // this.#musicPlaying = false;
-    //     this.#resumeMusic();
-    //   }
-      
-    //   // if (!this.#musicLoop) {
-    //   //   this.#musicPlayer.stop();
-    //   //   this.#musicPlayer = null;
-    //   //   this.#musicGainNode = null;
-    //   //   this.#musicPlaying = false;
-    //   // }
-
-    // //   // Don't clear buffer / pauseTime
-    // //   // This allows restart from beginning
-    // };
 
     // Start playback from saved position
     this.#musicPlayer.start(0, this.#musicPauseTime);
