@@ -17,6 +17,7 @@ var
 
   { Init your game state here }
   gameTime: double;
+  textureId: longword;  { Used by WebGL }
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -29,8 +30,6 @@ end;
 }
 
 procedure init;
-var
-  textureId: longword;
 begin
   initBuffer;
   initDeltaTime;
@@ -72,7 +71,9 @@ begin
   glClearColor(0.39, 0.58, 0.92, 1.0);
   glClear(GL_COLOR_BUFFER_BIT);
 
-
+  { Upload pixel data to the GPU }
+  glBindTexture(GL_TEXTURE_2D, textureId);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 320, 200, 0, GL_RGBA, GL_UNSIGNED_BYTE, getSurfacePtr)
 end;
 
 { Draw in canvas context }
