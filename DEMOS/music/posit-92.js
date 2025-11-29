@@ -102,11 +102,17 @@ class Posit92 {
       panicHalt: this.panicHalt.bind(this),
 
       // Sounds
-      playSound: this.playSound.bind(this),
-      playMusic: this.playMusic.bind(this),
-      setSoundVolume: this.setSoundVolume.bind(this),
-      setMusicVolume: this.setMusicVolume.bind(this),
-      stopMusic: () => this.stopMusic(),
+      playSound: this.#playSound.bind(this),
+
+      playMusic: this.#playMusic.bind(this),
+      pauseMusic: this.#pauseMusic.bind(this),
+      stopMusic: this.#stopMusic.bind(this),
+      seekMusic: this.#seekMusic.bind(this),
+      getMusicTime: this.#getMusicTime.bind(this),
+      getMusicDuration: this.#getMusicDuration.bind(this),
+
+      setSoundVolume: this.#setSoundVolume.bind(this),
+      setMusicVolume: this.#setMusicVolume.bind(this),
 
       // Timing
       getTimer: () => this.getTimer(),
@@ -193,7 +199,7 @@ class Posit92 {
   }
 
   cleanup() {
-    this.stopMusic();
+    this.#stopMusic();
     this.showCursor();
   }
 
@@ -528,10 +534,10 @@ class Posit92 {
     const audioBuffer = await this.#audioContext.decodeAudioData(arrayBuffer);
 
     this.#sounds.set(key, audioBuffer);
-    this.setSoundVolume(key, 0.5)
+    this.#setSoundVolume(key, 0.5)
   }
 
-  playSound(key) {
+  #playSound(key) {
     const buffer = this.#sounds.get(key);
     if (buffer == null) {
       console.warn("Sound " + key + " is not loaded");
@@ -553,7 +559,7 @@ class Posit92 {
     // source automatically disconnects when done
   }
 
-  playMusic(key) {
+  #playMusic(key) {
     // If still playing
     if (this.#musicPlaying && this.#musicBuffer != null)
       return;
@@ -564,7 +570,7 @@ class Posit92 {
       return
     }
 
-    this.stopMusic();
+    this.#stopMusic();
 
     const buffer = this.#sounds.get(key);
     if (buffer == null) {
@@ -616,7 +622,7 @@ class Posit92 {
     this.#musicPlaying = false
   }
 
-  stopMusic() {
+  #stopMusic() {
     if (this.#musicPlayer == null) return;
 
     this.#musicPlayer.stop();
@@ -631,7 +637,7 @@ class Posit92 {
   /**
    * @param {number} t time in seconds
    */
-  seekMusic(t) {
+  #seekMusic(t) {
     this.#assertNumber(t);
     if (this.#musicBuffer == null) return;
 
@@ -662,26 +668,26 @@ class Posit92 {
     return Math.max(min, Math.min(max, value))
   }
 
-  setSoundVolume(key, volume) {
+  #setSoundVolume(key, volume) {
     const clamped = this.#clamp(volume, 0.0, 1.0);
     this.#soundVolumes.set(key, clamped)
   }
 
-  setMusicVolume(volume) {
+  #setMusicVolume(volume) {
     this.#musicVolume = this.#clamp(volume, 0.0, 1.0);
 
     if (this.#musicGainNode != null)
       this.#musicGainNode.gain.value = this.#musicVolume;
   }
 
-  getMusicDuration() {
+  #getMusicDuration() {
     if (this.#musicBuffer == null)
       return 0.0;
 
     return this.#musicBuffer.duration
   }
 
-  getMusicTime() {
+  #getMusicTime() {
     if (this.#musicBuffer == null)
       return 0.0;
 
@@ -689,7 +695,7 @@ class Posit92 {
       return this.#musicPauseTime;
 
     const elapsed = this.#audioContext.currentTime - this.#musicStartTime;
-    const duration = this.getMusicDuration();
+    const duration = this.#getMusicDuration();
 
     return elapsed % duration
   }
