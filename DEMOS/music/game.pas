@@ -60,8 +60,8 @@ begin
 
   seekerState.value := 0;
 
-  loopState.value := true;
-  lastLoop := loopState.value;
+  loopState.checked := true;
+  lastLoop := loopState.checked;
 
   volumeState.value := 25;
   lastVolume := volumeState.value;
@@ -94,10 +94,9 @@ begin
 
   gameTime := gameTime + dt;
 
-  if lastLoop <> loopState.value then begin
-    lastLoop := loopState.value;
-
-    { TODO: Forward the state to JS glue code }
+  if lastLoop <> loopState.checked then begin
+    lastLoop := loopState.checked;
+    setMusicLoop(loopState.checked)
   end;
 
   if lastVolume <> volumeState.value then begin

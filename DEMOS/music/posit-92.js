@@ -109,6 +109,7 @@ class Posit92 {
       playSound: this.#playSound.bind(this),
 
       playMusic: this.#playMusic.bind(this),
+      setMusicLoop: this.#setMusicLoop.bind(this),
       pauseMusic: this.#pauseMusic.bind(this),
       stopMusic: this.#stopMusic.bind(this),
       seekMusic: this.#seekMusic.bind(this),
