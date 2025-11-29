@@ -138,7 +138,10 @@ class Posit92 {
       glClearColor: (r, g, b, a) => this.#gl.clearColor(r, g, b, a),
       glClear: mask => this.#gl.clear(mask),
       glViewport: (x, y, w, h) => this.#gl.viewport(x, y, w, h),
-      glCreateTexture: this.#glCreateTexture.bind(this)
+      glCreateTexture: this.#glCreateTexture.bind(this),
+
+      glBindTexture: this.#glBindTexture.bind(this),
+      glTexParameteri: this.#glTextParameteri.bind(this)
     }
   });
 
@@ -784,6 +787,15 @@ class Posit92 {
     console.log("id", id, this.#nextTextureId);
     this.#textures.set(id, texture);
     return 1
+  }
+
+  #glBindTexture(target, textureId) {
+    const texture = this.#textures.get(textureId);
+    this.#gl.bindTexture(target, texture)
+  }
+
+  #glTextParameteri(target, pname, param) {
+    this.#gl.texParameteri(target, pname, param)
   }
 
 
