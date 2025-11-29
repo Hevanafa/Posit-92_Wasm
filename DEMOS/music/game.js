@@ -1,7 +1,8 @@
 "use strict";
 
 const
-  BgmPhonk = 1;
+  BgmPhonk = 1,
+  BgmCrystals = 2;
 
 // Asset boilerplate
 class Game extends Posit92 {
@@ -15,8 +16,6 @@ class Game extends Posit92 {
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.wasmInstance.exports.defaultFontPtr(),
       this.wasmInstance.exports.defaultFontGlyphsPtr());
-
-    
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
@@ -35,7 +34,7 @@ class Game extends Posit92 {
     this.wasmInstance.exports.setImgVolumeOff(
       await this.loadImage("assets/images/volume_off.png"));
 
-    await this.loadSound(BgmPhonk, "assets/bgm/Dia Delicia - Nakama.mp3");
+    await this.loadSound(BgmPhonk, "assets/bgm/CRYSTALS (Slowed) - PR1SVX.mp3");
 
     // Add more assets as necessary
   }

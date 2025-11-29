@@ -14,6 +14,7 @@ const
 
   { Sound keys -- must be the same as on JS side }
   BgmPhonk = 1;
+  BgmCrystals = 2;
 
 var
   lastEsc: boolean;
