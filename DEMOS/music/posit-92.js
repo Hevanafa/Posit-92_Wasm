@@ -551,8 +551,17 @@ class Posit92 {
   }
 
   playMusic(key) {
+    // If still playing
+    if (this.#musicPlaying && this.#musicBuffer != null)
+      return;
+
+    // Resuming
+    if (this.#musicBuffer != null) {
+      this.#resumeMusic();
+      return
+    }
+
     this.stopMusic();
-    // if (this.#musicPlaying) {}
 
     const buffer = this.#sounds.get(key);
     if (buffer == null) {
@@ -560,19 +569,23 @@ class Posit92 {
       return
     }
 
-    this.#musicPlayer = this.#audioContext.createBufferSource();
-    this.#musicGainNode = this.#audioContext.createGain();
+    this.#musicBuffer = buffer;
+    this.#musicPauseTime = 0.0;
+    this.#resumeMusic();
 
-    this.#musicPlayer.buffer = buffer;
-    this.#musicPlayer.loop = true;
-    this.#musicGainNode.gain.value = this.#musicVolume;
+    // this.#musicPlayer = this.#audioContext.createBufferSource();
+    // this.#musicGainNode = this.#audioContext.createGain();
 
-    // Connect source -> gain -> destination
-    this.#musicPlayer.connect(this.#musicGainNode);
-    this.#musicGainNode.connect(this.#audioContext.destination);
+    // this.#musicPlayer.buffer = buffer;
+    // this.#musicPlayer.loop = true;
+    // this.#musicGainNode.gain.value = this.#musicVolume;
 
-    this.#musicStartTime = this.#audioContext.currentTime;
-    this.#musicPlayer.start(0)
+    // // Connect source -> gain -> destination
+    // this.#musicPlayer.connect(this.#musicGainNode);
+    // this.#musicGainNode.connect(this.#audioContext.destination);
+
+    // this.#musicStartTime = this.#audioContext.currentTime;
+    // this.#musicPlayer.start(0)
   }
 
   #clamp(value, min, max) {
