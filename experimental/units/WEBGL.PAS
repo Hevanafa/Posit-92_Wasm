@@ -20,6 +20,11 @@ const
   GL_COMPILE_STATUS = $8B81;
   GL_LINK_STATUS = $8B82;
 
+  GL_ARRAY_BUFFER = $8892;
+  GL_STATIC_DRAW = $88E4;
+  GL_FLOAT = $1406;
+  GL_TRIANGLE_STRIP = $0005;
+
 procedure glClearColor(const r, g, b, a: single); external 'env' name 'glClearColor';
 procedure glClear(const mask: longword); external 'env' name 'glClear';
 procedure glViewport(const x, y, width, height: longint); external 'env' name 'glViewport';
@@ -42,6 +47,15 @@ function glCreateProgram: longword; external 'env' name 'glCreateProgram';
 procedure glAttachShader(const prog, shader: longword); external 'env' name 'glAttachShader';
 procedure glLinkProgram(const prog: longword); external 'env' name 'glLinkProgram';
 procedure glUseProgram(const prog: longword); external 'env' name 'glUseProgram';
+
+function glCreateBuffer: longword; external 'env' name 'glCreateBuffer';
+procedure glBindBuffer(const target, buffer: longword); external 'env' name 'glBindBuffer';
+procedure glBufferData(const target: longword; const size: longint; const data: pointer; const usage: longword); external 'env' name 'glBufferData';
+function glGetAttribLocation(const prog: longword; const name: PChar): longint; external 'env' name 'glGetAttribLocation';
+
+procedure glEnableVertexAttribArray(const idx: longword); external 'env' name 'glEnableVertexAttribArray';
+procedure glVertexAttribPointer(const idx, size, attrType: longword; const normalized: boolean; const stride, offset: longint); external 'env' name 'glVertexAttribPointer';
+procedure glDrawArrays(const mode: longword; const first, count: longint); external 'env' name 'glDrawArrays';
 
 
 implementation
