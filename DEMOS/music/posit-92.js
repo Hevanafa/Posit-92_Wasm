@@ -593,26 +593,62 @@ class Posit92 {
     this.#musicLoop = value;
 
     if (this.#musicPlaying) {
-      const currentTime = this.#getMusicTime();
       this.#pauseMusic();
-      this.#musicPauseTime = currentTime;
-      this.#resumeMusic()
+      this.#resumeMusic(true)
     }
   }
 
-  #resumeMusic() {
+  #resumeMusic(isManual) {
     // Create a new fresh player node
     this.#musicPlayer = this.#audioContext.createBufferSource();
     this.#musicGainNode = this.#audioContext.createGain();
 
     this.#musicPlayer.buffer = this.#musicBuffer;
     this.#musicPlayer.loop = this.#musicLoop;
+    console.log("loop?", this.#musicPlayer.loop);
     this.#musicGainNode.gain.value = this.#musicVolume;
 
     // Connect the audio graph:
     // music player -> gain -> destination
     this.#musicPlayer.connect(this.#musicGainNode);
     this.#musicGainNode.connect(this.#audioContext.destination);
+
+    // Handle stop music if it's not looping
+    this.#musicPlayer.onended = () => {
+      // if (isManual) {
+      //   console.log("musicPlayer onended");
+
+        if (!this.#musicLoop && this.#getMusicTime >= this.#getMusicDuration)
+          this.#stopMusic();
+      // }
+    };
+
+    // this.#musicPlayer.onended = () => {
+    //   console.log("onended is triggered");
+    // //   this.#musicPlayer = null;
+    // //   this.#musicGainNode = null;
+    // //   this.#musicPlaying = false;
+
+    //   if (!this.#musicLoop && this.#musicPlaying) {
+    //     this.#musicPlayer.stop();
+    //     this.#musicPlayer = null;
+    //     this.#musicGainNode = null;
+    //     this.#musicPauseTime = 0;
+
+    //     // this.#musicPlaying = false;
+    //     this.#resumeMusic();
+    //   }
+      
+    //   // if (!this.#musicLoop) {
+    //   //   this.#musicPlayer.stop();
+    //   //   this.#musicPlayer = null;
+    //   //   this.#musicGainNode = null;
+    //   //   this.#musicPlaying = false;
+    //   // }
+
+    // //   // Don't clear buffer / pauseTime
+    // //   // This allows restart from beginning
+    // };
 
     // Start playback from saved position
     this.#musicPlayer.start(0, this.#musicPauseTime);

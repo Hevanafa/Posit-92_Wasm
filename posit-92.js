@@ -661,7 +661,7 @@ class Posit92 {
     this.#musicPlaying = false;
 
     if (wasPlaying)
-      this.#resumeMusic();
+      this.#resumeMusic(true);
   }
 
   #clamp(value, min, max) {
