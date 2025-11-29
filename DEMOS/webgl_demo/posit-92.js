@@ -150,7 +150,15 @@ class Posit92 {
       glCreateProgram: this.#glCreateProgram.bind(this),
       glAttachShader: this.#glAttachShader.bind(this),
       glLinkProgram: this.#glLinkProgram.bind(this),
-      glUseProgram: this.#glUseProgram.bind(this)
+      glUseProgram: this.#glUseProgram.bind(this),
+
+      glCreateBuffer: this.#glCreateBuffer.bind(this),
+      glBindBuffer: this.#glBindBuffer.bind(this),
+      glBufferData: this.#glBufferData.bind(this),
+      glGetAttribLocation: this.#glGetAttribLocation.bind(this),
+      glEnableVertexAttribArray: this.#glEnableVertexAttribArray.bind(this),
+      glVertexAttribPointer: this.#glVertexAttribPointer.bind(this),
+      glDrawArrays: this.#glDrawArrays.bind(this)
     }
   });
 
