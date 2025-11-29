@@ -87,6 +87,11 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
+  if getMusicPlaying then
+    printDefault('Playing', 10, 10)
+  else
+    printDefault('Paused / Stopped', 10, 10);
+
 {
   s := 'Hello world!';
   w := measureDefault(s);
