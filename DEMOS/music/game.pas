@@ -104,25 +104,15 @@ begin
     setMusicVolume(volumeState.value / 100.0)
   end;
 
-  { Handle music repeat (only when it is playing)
-    Important: #musicPlayer.loop must be turned off! }
-  if getMusicPlaying and (getMusicTime >= getMusicDuration - 0.05) then
-    if getMusicRepeat then begin
-      stopMusic;
-      playMusic(BgmPhonk)
-    end else
-      stopMusic;
+  handleMusicRepeat(BgmPhonk);
 
   resetWidgetIndices
 end;
 
 procedure draw;
 var
-  w: integer;
-  s: string;
   isPlaying: boolean;
 
-  lastMusicRepeat: boolean;
   duration, actualTime, seekTime: double;
   dragState: TSliderDragState;
 begin
@@ -176,12 +166,8 @@ begin
         playMusic(actualMusicKey);
     end;
   
-  if ImageButton(161, 116, imgStop, imgStop, imgStop) then begin
-    { lastMusicRepeat := getMusicRepeat;
-    setMusicRepeat(false); }
+  if ImageButton(161, 116, imgStop, imgStop, imgStop) then
     stopMusic;
-    { setMusicRepeat(lastMusicRepeat) }
-  end;
 
   { Volume control }
   if isMuted or (volumeState.value = 0) then
