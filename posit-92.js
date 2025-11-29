@@ -46,19 +46,21 @@ class Posit92 {
   #soundVolumes = new Map();
 
   /**
-   * @type {AudioBufferSourceNode}
+   * @type {AudioBufferSourceNode} One-shot, dies after `.stop()`
    */
   #musicPlayer = null;
-
   /**
-   * @type {AudioBuffer}
-   */
-  #musicBuffer = null;
-  #musicVolume = 1.0;
-  /**
-   * @type {GainNode}
+   * @type {GainNode} One-shot, dies after `.stop()`
    */
   #musicGainNode = null;
+
+  /**
+   * @type {AudioBuffer} Reusable audio buffer data
+   */
+  #musicBuffer = null;
+
+  #musicRepeat = true;
+  #musicVolume = 1.0;
 
   /**
    * in seconds
@@ -106,16 +108,18 @@ class Posit92 {
 
       // Sounds
       playSound: this.#playSound.bind(this),
+      setSoundVolume: this.#setSoundVolume.bind(this),
 
       playMusic: this.#playMusic.bind(this),
       pauseMusic: this.#pauseMusic.bind(this),
       stopMusic: this.#stopMusic.bind(this),
       seekMusic: this.#seekMusic.bind(this),
-      getMusicPlaying: () => { return this.#musicPlaying },
       getMusicTime: this.#getMusicTime.bind(this),
       getMusicDuration: this.#getMusicDuration.bind(this),
 
-      setSoundVolume: this.#setSoundVolume.bind(this),
+      getMusicPlaying: () => { return this.#musicPlaying },
+      getMusicRepeat: this.#getMusicRepeat.bind(this),
+      setMusicRepeat: this.#setMusicRepeat.bind(this),
       setMusicVolume: this.#setMusicVolume.bind(this),
 
       // Timing
@@ -563,6 +567,32 @@ class Posit92 {
     // source automatically disconnects when done
   }
 
+  /**
+   * Create a new music player node
+   */
+  #resetMusicPlayerNode() {
+    this.#musicPlayer = this.#audioContext.createBufferSource();
+    this.#musicGainNode = this.#audioContext.createGain();
+
+    this.#musicPlayer.buffer = this.#musicBuffer;
+    // this.#musicPlayer.loop = this.#musicRepeat;
+    // console.log("loop?", this.#musicPlayer.loop);
+    this.#musicGainNode.gain.value = this.#musicVolume;
+
+    // Connect the audio graph:
+    // music player -> gain -> destination
+    this.#musicPlayer.connect(this.#musicGainNode);
+    this.#musicGainNode.connect(this.#audioContext.destination);
+  }
+
+  #destroyMusicPlayerNode() {
+    if (this.#musicPlayer != null) {
+      this.#musicPlayer.stop();
+      this.#musicPlayer = null;
+      this.#musicGainNode = null;
+    }
+  }
+
   #playMusic(key) {
     // If still playing
     if (this.#musicPlaying && this.#musicBuffer != null)
@@ -570,6 +600,7 @@ class Posit92 {
 
     // Resuming
     if (this.#musicBuffer != null) {
+      this.#resetMusicPlayerNode();
       this.#resumeMusic();
       return
     }
@@ -584,24 +615,17 @@ class Posit92 {
 
     this.#musicBuffer = buffer;
     this.#musicPauseTime = 0.0;
+
+    this.#resetMusicPlayerNode();
     this.#resumeMusic();
   }
 
+  /**
+   * Start playback from a saved position
+   * 
+   * Requires `#resetMusicPlayerNode()` to be called right before this
+   */
   #resumeMusic() {
-    // Create a new fresh player node
-    this.#musicPlayer = this.#audioContext.createBufferSource();
-    this.#musicGainNode = this.#audioContext.createGain();
-
-    this.#musicPlayer.buffer = this.#musicBuffer;
-    this.#musicPlayer.loop = true;
-    this.#musicGainNode.gain.value = this.#musicVolume;
-
-    // Connect the audio graph:
-    // music player -> gain -> destination
-    this.#musicPlayer.connect(this.#musicGainNode);
-    this.#musicGainNode.connect(this.#audioContext.destination);
-
-    // Start playback from saved position
     this.#musicPlayer.start(0, this.#musicPauseTime);
     this.#musicStartTime = this.#audioContext.currentTime - this.#musicPauseTime;
     this.#musicPlaying = true
@@ -619,20 +643,13 @@ class Posit92 {
       this.#musicPauseTime %= duration
     }
 
-    // Stop the music player, but don't "forget" the last position
-    this.#musicPlayer.stop();
-    this.#musicPlayer = null;
-    this.#musicGainNode = null;
+    // Stop the music player, but don't "forget" the pause position
+    this.#destroyMusicPlayerNode();
     this.#musicPlaying = false
   }
 
   #stopMusic() {
-    if (this.#musicPlayer != null) {
-      this.#musicPlayer.stop();
-      this.#musicPlayer = null;
-      this.#musicGainNode = null;
-    }
-
+    this.#destroyMusicPlayerNode();
     this.#musicBuffer = null;
     this.#musicPauseTime = 0.0;
     this.#musicPlaying = false
@@ -651,17 +668,15 @@ class Posit92 {
     const wasPlaying = this.#musicPlaying;
 
     // Stop current playback
-    if (this.#musicPlayer != null) {
-      this.#musicPlayer.stop();
-      this.#musicPlayer = null;
-      this.#musicGainNode = null
-    }
+    this.#destroyMusicPlayerNode();
 
     this.#musicPauseTime = t;
     this.#musicPlaying = false;
 
-    if (wasPlaying)
-      this.#resumeMusic(true);
+    if (wasPlaying) {
+      this.#resetMusicPlayerNode();
+      this.#resumeMusic();
+    }
   }
 
   #clamp(value, min, max) {
@@ -670,6 +685,11 @@ class Posit92 {
     this.#assertNumber(max);
 
     return Math.max(min, Math.min(max, value))
+  }
+
+  #getMusicRepeat() { return this.#musicRepeat }
+  #setMusicRepeat(value) {
+    this.#musicRepeat = value;
   }
 
   #setSoundVolume(key, volume) {
