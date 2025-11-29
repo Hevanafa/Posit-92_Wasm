@@ -671,6 +671,13 @@ class Posit92 {
       this.#musicGainNode.gain.value = this.#musicVolume;
   }
 
+  getMusicDuration() {
+    if (this.#musicBuffer == null)
+      return 0.0;
+
+    return this.#musicBuffer.duration
+  }
+
 
   // TIMING.PAS
   getTimer() {
