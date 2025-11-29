@@ -37,6 +37,11 @@ begin
 
   glViewport(0, 0, 320, 200);
   textureId := glCreateTexture;
+  glBindTexture(GL_TEXTURE_2D, textureId);
+
+  { Enable nearest neighbour filter }
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 end;
 
 procedure afterInit;
