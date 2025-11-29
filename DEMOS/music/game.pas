@@ -25,8 +25,8 @@ var
   
   seekerState: TSliderState;
 
-  loopState: TCheckboxState;
-  lastLoop: boolean;
+  repeatState: TCheckboxState;
+  lastRepeat: boolean;
 
   isMuted: boolean;
   volumeState: TSliderState;
@@ -60,8 +60,8 @@ begin
 
   seekerState.value := 0;
 
-  loopState.checked := true;
-  lastLoop := loopState.checked;
+  repeatState.checked := true;
+  lastRepeat := repeatState.checked;
 
   volumeState.value := 25;
   lastVolume := volumeState.value;
@@ -94,9 +94,9 @@ begin
 
   gameTime := gameTime + dt;
 
-  if lastLoop <> loopState.checked then begin
-    lastLoop := loopState.checked;
-    setMusicRepeat(loopState.checked)
+  if lastRepeat <> repeatState.checked then begin
+    lastRepeat := repeatState.checked;
+    setMusicRepeat(repeatState.checked)
   end;
 
   if lastVolume <> volumeState.value then begin
@@ -104,6 +104,8 @@ begin
     setMusicVolume(volumeState.value / 100.0)
   end;
 
+  { Handle music loop (only when it is playing)
+    Important: #musicPlayer.loop must be turned off! }
   if getMusicPlaying and (getMusicTime >= getMusicDuration - 0.05) then
     if getMusicRepeat then begin
       stopMusic;
@@ -131,7 +133,7 @@ begin
   else
     spr(imgDosuEXE[0], 148, 48);
 
-  Checkbox('Loop', 50, 125, loopState);
+  Checkbox('Repeat', 50, 125, repeatState);
 
   isPlaying := getMusicPlaying;
   if isPlaying then

@@ -46,16 +46,16 @@ class Posit92 {
   #soundVolumes = new Map();
 
   /**
-   * @type {AudioBufferSourceNode}
+   * @type {AudioBufferSourceNode} One-shot, dies after `.stop()`
    */
   #musicPlayer = null;
   /**
-   * @type {GainNode}
+   * @type {GainNode} One-shot, dies after `.stop()`
    */
   #musicGainNode = null;
 
   /**
-   * @type {AudioBuffer}
+   * @type {AudioBuffer} Reusable audio buffer data
    */
   #musicBuffer = null;
 
@@ -110,15 +110,15 @@ class Posit92 {
       playSound: this.#playSound.bind(this),
 
       playMusic: this.#playMusic.bind(this),
-      getMusicRepeat: this.#getMusicRepeat.bind(this),
-      setMusicRepeat: this.#setMusicRepeat.bind(this),
       pauseMusic: this.#pauseMusic.bind(this),
       stopMusic: this.#stopMusic.bind(this),
       seekMusic: this.#seekMusic.bind(this),
-      getMusicPlaying: () => { return this.#musicPlaying },
       getMusicTime: this.#getMusicTime.bind(this),
       getMusicDuration: this.#getMusicDuration.bind(this),
 
+      getMusicPlaying: () => { return this.#musicPlaying },
+      getMusicRepeat: this.#getMusicRepeat.bind(this),
+      setMusicRepeat: this.#setMusicRepeat.bind(this),
       setSoundVolume: this.#setSoundVolume.bind(this),
       setMusicVolume: this.#setMusicVolume.bind(this),
 
@@ -567,6 +567,32 @@ class Posit92 {
     // source automatically disconnects when done
   }
 
+  /**
+   * Create a new music player node
+   */
+  #resetMusicPlayerNode() {
+    this.#musicPlayer = this.#audioContext.createBufferSource();
+    this.#musicGainNode = this.#audioContext.createGain();
+
+    this.#musicPlayer.buffer = this.#musicBuffer;
+    // this.#musicPlayer.loop = this.#musicRepeat;
+    // console.log("loop?", this.#musicPlayer.loop);
+    this.#musicGainNode.gain.value = this.#musicVolume;
+
+    // Connect the audio graph:
+    // music player -> gain -> destination
+    this.#musicPlayer.connect(this.#musicGainNode);
+    this.#musicGainNode.connect(this.#audioContext.destination);
+  }
+
+  #destroyMusicPlayerNode() {
+    if (this.#musicPlayer != null) {
+      this.#musicPlayer.stop();
+      this.#musicPlayer = null;
+      this.#musicGainNode = null;
+    }
+  }
+
   #playMusic(key) {
     // If still playing
     if (this.#musicPlaying && this.#musicBuffer != null)
@@ -594,29 +620,12 @@ class Posit92 {
     this.#resumeMusic();
   }
 
-  #getMusicRepeat() { return this.#musicRepeat }
-  #setMusicRepeat(value) {
-    this.#musicRepeat = value;
-  }
-
-  #resetMusicPlayerNode() {
-    // Create a new fresh player node
-    this.#musicPlayer = this.#audioContext.createBufferSource();
-    this.#musicGainNode = this.#audioContext.createGain();
-
-    this.#musicPlayer.buffer = this.#musicBuffer;
-    // this.#musicPlayer.loop = this.#musicRepeat;
-    // console.log("loop?", this.#musicPlayer.loop);
-    this.#musicGainNode.gain.value = this.#musicVolume;
-
-    // Connect the audio graph:
-    // music player -> gain -> destination
-    this.#musicPlayer.connect(this.#musicGainNode);
-    this.#musicGainNode.connect(this.#audioContext.destination);
-  }
-
+  /**
+   * Start playback from a saved position
+   * 
+   * Requires `#resetMusicPlayerNode()` to be called right before this
+   */
   #resumeMusic() {
-    // Start playback from saved position
     this.#musicPlayer.start(0, this.#musicPauseTime);
     this.#musicStartTime = this.#audioContext.currentTime - this.#musicPauseTime;
     this.#musicPlaying = true
@@ -637,14 +646,6 @@ class Posit92 {
     // Stop the music player, but don't "forget" the pause position
     this.#destroyMusicPlayerNode();
     this.#musicPlaying = false
-  }
-
-  #destroyMusicPlayerNode() {
-    if (this.#musicPlayer != null) {
-      this.#musicPlayer.stop();
-      this.#musicPlayer = null;
-      this.#musicGainNode = null;
-    }
   }
 
   #stopMusic() {
@@ -684,6 +685,11 @@ class Posit92 {
     this.#assertNumber(max);
 
     return Math.max(min, Math.min(max, value))
+  }
+
+  #getMusicRepeat() { return this.#musicRepeat }
+  #setMusicRepeat(value) {
+    this.#musicRepeat = value;
   }
 
   #setSoundVolume(key, volume) {
