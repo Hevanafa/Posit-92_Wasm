@@ -23,7 +23,11 @@ class Posit92 {
    * @type {HTMLCanvasElement}
    */
   #canvas;
-  #ctx;
+  // #ctx;
+  /**
+   * @type {WebGLRenderingContext}
+   */
+  #gl;
 
   /**
    * @type {WebAssembly.Instance}
@@ -153,7 +157,11 @@ class Posit92 {
     if (this.#canvas == null)
       throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
 
-    this.#ctx = this.#canvas.getContext("2d");
+    // this.#ctx = this.#canvas.getContext("2d");
+    this.#gl = this.#canvas.getContext("webgl") ?? this.#canvas.getContext("experimental-webgl");
+
+    if (this.#gl == null)
+      throw new Error("WebGL is not supported!");
   }
 
   // Init segment
@@ -745,7 +753,9 @@ class Posit92 {
 
     const imgData = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
 
-    this.#ctx.putImageData(imgData, 0, 0);
+    throw new Error("Attempting to call flush in WebGL");
+
+    // this.#ctx.putImageData(imgData, 0, 0);
   }
 
   toggleFullscreen() {
