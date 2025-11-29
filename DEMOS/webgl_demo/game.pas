@@ -60,7 +60,8 @@ end;
 { Draw in WebGL context }
 procedure draw;
 begin
-  glClearColor(0.2, 0.4, 0.8, 1.0);
+  { glClearColor(0.2, 0.4, 0.8, 1.0); }
+  glClearColor(0.39, 0.58, 0.92, 1.0);
   glClear(GL_COLOR_BUFFER_BIT);
 
 
