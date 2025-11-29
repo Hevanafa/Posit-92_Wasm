@@ -624,14 +624,14 @@ class Posit92 {
   }
 
   #stopMusic() {
-    if (this.#musicPlayer == null) return;
+    if (this.#musicPlayer != null) {
+      this.#musicPlayer.stop();
+      this.#musicPlayer = null;
+      this.#musicGainNode = null;
+    }
 
-    this.#musicPlayer.stop();
-    this.#musicPlayer = null;
-    this.#musicGainNode = null;
     this.#musicBuffer = null;
     this.#musicPauseTime = 0.0;
-
     this.#musicPlaying = false
   }
 
