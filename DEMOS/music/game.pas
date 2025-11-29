@@ -4,13 +4,17 @@ library Game;
 
 uses
   Keyboard, Mouse,
+  ImmedGui,
   ImgRef, ImgRefFast,
-  Timing, VGA,
+  Sounds, Timing, VGA,
   Assets;
 
 const
   SC_ESC = $01;
   SC_SPACE = $39;
+
+  { Sound keys -- must be the same as on JS side }
+  BgmPhonk = 1;
 
 var
   lastEsc: boolean;
@@ -37,13 +41,18 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  initImmediateGUI;
+  guiSetFont(defaultFont, defaultFontGlyphs);
 end;
 
 procedure update;
 begin
   updateDeltaTime;
 
+  updateGUILastMouseButton;
   updateMouse;
+  updateGUIMouseZone;
 
   { Your update logic here }
   if lastEsc <> isKeyDown(SC_ESC) then begin
@@ -51,7 +60,9 @@ begin
     if lastEsc then signalDone;
   end;
 
-  gameTime := gameTime + dt
+  gameTime := gameTime + dt;
+
+  resetWidgetIndices
 end;
 
 procedure draw;
@@ -70,6 +81,13 @@ begin
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
 
+  if ImageButton(129, 116, imgPlay, imgPlay, imgPlay) then
+    playMusic(BgmPhonk);
+  
+  if ImageButton(161, 116, imgStop, imgStop, imgStop) then
+    stopMusic;
+
+  resetActiveWidget;
   drawMouse;
   flush
 end;
