@@ -108,9 +108,9 @@ begin
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    spr(imgDosuEXE[1], 148, 48)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    spr(imgDosuEXE[0], 148, 48);
 
   isPlaying := getMusicPlaying;
   if isPlaying then
@@ -135,8 +135,10 @@ begin
   if (dragState <> SliderDragging) and (duration > 0.0) then
     seekerState.value := round(actualTime / duration * 100.0);
 
+  { Music time }
   printDefault(getMusicTimeStr, 100, 124);
 
+  { Play / pause button }
   if isPlaying then begin
     if ImageButton(129, 116, imgPause, imgPause, imgPause) then
       pauseMusic;
@@ -154,6 +156,7 @@ begin
   if ImageButton(161, 116, imgStop, imgStop, imgStop) then
     stopMusic;
 
+  { Volume control }
   if isMuted or (volumeState.value = 0) then
     spr(imgVolumeOff, 202, 123)
   else
