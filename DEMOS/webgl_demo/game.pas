@@ -52,6 +52,7 @@ var
 begin
   { Vertex shader - positions a fullscreen quad }
   vertShader := glCreateShader(GL_VERTEX_SHADER);
+
   glShaderSource(vertShader,`
 attribute vec2 pos;
 varying vec2 uv;
@@ -63,7 +64,19 @@ void main() {
 
   glCompileShader(vertShader);
 
-  { TODO: Fragment shader }
+  { Fragment shader - samples the texture }
+  fragShader := glCreateShader(GL_FRAGMENT_SHADER);
+
+  glShaderSource(fragShader, `
+precision mediump float;
+varying vec2 uv;
+uniform sampler2D tex;
+void main() {
+  gl_FragColor = texture2D(tex, vec2(uv.x, 1.0 - uv.y));
+}
+  `);
+
+  glCompileShader(fragShader);
 
   { TODO: Link the vertex & fragment shaders }
 
