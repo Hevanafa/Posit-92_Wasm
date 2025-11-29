@@ -786,7 +786,7 @@ class Posit92 {
   // WEBGL.PAS
   #readCString(ptr) {
     this.#assertNumber(ptr);
-    
+
     const memory = new Uint8Array(this.#wasm.exports.memory.buffer);
     let end = ptr;
     while (memory[end] != 0) end++;  // Find null terminator
@@ -878,6 +878,48 @@ class Posit92 {
   #glUseProgram(programId) {
     const program = this.#programs.get(programId);
     this.#gl.useProgram(program)
+  }
+
+  #buffers = new Map();
+  #nextBufferId = 1;
+
+  #glCreateBuffer() {
+    const buffer = this.#gl.createBuffer();
+    const id = this.#nextBufferId++;
+    this.#buffers.set(id, buffer);
+    return id
+  }
+
+  #glBindBuffer(target, bufferId) {
+    const buffer = this.#buffers.get(bufferId);
+    this.#gl.bindBuffer(target, buffer)
+  }
+
+  #glBufferData(target, size, dataPtr, usage) {
+    const data = new Float32Array(
+      this.#wasm.exports.memory.buffer,
+      dataPtr,
+      size / 4
+    );
+    this.#gl.bufferData(target, data, usage)
+  }
+
+  #glGetAttribLocation(programId, namePtr) {
+    const program = this.#programs.get(programId);
+    const name = this.#readCString(namePtr);
+    return this.#gl.getAttribLocation(program, name)
+  }
+
+  #glEnableVertexAttribArray(idx) {
+    this.#gl.enableVertexAttribArray(idx)
+  }
+
+  #glVertexAttribPointer(idx, size, type, normalized, stride, offset) {
+    this.#gl.vertexAttribPointer(idx, size, type, normalized, stride, offset)
+  }
+
+  #glDrawArrays(mode, first, count) {
+    this.#gl.drawArrays(mode, first, count)
   }
 
 
