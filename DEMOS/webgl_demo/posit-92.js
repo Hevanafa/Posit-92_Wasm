@@ -141,7 +141,8 @@ class Posit92 {
       glCreateTexture: this.#glCreateTexture.bind(this),
 
       glBindTexture: this.#glBindTexture.bind(this),
-      glTexParameteri: this.#glTextParameteri.bind(this)
+      glTexParameteri: this.#glTextParameteri.bind(this),
+      glTexImage2D: this.#glTexImage2D.bind(this)
     }
   });
 
@@ -796,6 +797,22 @@ class Posit92 {
 
   #glTextParameteri(target, pname, param) {
     this.#gl.texParameteri(target, pname, param)
+  }
+
+  #glTexImage2D(
+    target, level, internalFormat,
+    width, height, border,
+    format, type, pixelsPtr) {
+
+    const pixels = new Uint8Array(
+      this.#wasm.exports.memory.buffer,
+      pixelsPtr,
+      width * height * 4);
+
+    this.#gl.texImage2D(
+      target, level, internalFormat,
+      width, height, border,
+      format, type, pixels)
   }
 
 

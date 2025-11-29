@@ -12,6 +12,9 @@ const
   GL_TEXTURE_MAG_FILTER = $2800;
   GL_NEAREST = $2600;
 
+  GL_RGBA = $1908;
+  GL_UNSIGNED_BYTE = $1401;
+
 procedure glClearColor(const r, g, b, a: single); external 'env' name 'glClearColor';
 procedure glClear(const mask: longword); external 'env' name 'glClear';
 procedure glViewport(const x, y, width, height: longint); external 'env' name 'glViewport';
@@ -19,6 +22,12 @@ procedure glViewport(const x, y, width, height: longint); external 'env' name 'g
 function glCreateTexture: longword; external 'env' name 'glCreateTexture';
 procedure glBindTexture(const target, texture: longword); external 'env' name 'glBindTexture';
 procedure glTexParameteri(const target, pname, param: longword); external 'env' name 'glTexParameteri';
+
+procedure glTexImage2D(
+  const target, level, internalFormat,
+    width, height, border,
+    format, pixelType: longword;
+  const pixels: pointer); external 'env' name 'glTexImage2D';
 
 
 implementation
