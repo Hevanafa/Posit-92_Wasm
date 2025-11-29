@@ -1,5 +1,7 @@
 unit Strings;
 
+{$Mode TP}
+
 interface
 
 function split(text, delim: string; var output: array of string): word;
@@ -12,7 +14,8 @@ function trimEnd(const txt: string): string;
 function trim(const txt: string): string;
 function lower(const txt: string): string;
 function upper(const txt: string): string;
-
+function padStart(text: string; const targetLength: integer; const padString: string): string;
+function padEnd(text: string; const targetLength: integer; const padString: string): string;
 
 implementation
 
@@ -141,6 +144,22 @@ begin
     if ('a' <= result[a]) and (result[a] <= 'z') then
       result[a] := chr(ord(result[a]) - 32);
   upper := result
+end;
+
+function padStart(text: string; const targetLength: integer; const padString: string): string;
+begin
+  while length(text) < targetLength do
+    text := padString + text;
+
+  padStart := text
+end;
+
+function padEnd(text: string; const targetLength: integer; const padString: string): string;
+begin
+  while length(text) < targetLength do
+    text := text + padString;
+
+  padEnd := text
 end;
 
 end.
