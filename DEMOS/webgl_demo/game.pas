@@ -48,6 +48,11 @@ end;
 procedure afterInit;
 var
   vertShader, fragShader, prog: longword;
+  posBuffer: longword;
+  posLoc: longint;
+  vertices: array[0..7] of single = (
+    -1, -1, 1, -1,
+    -1, 1, 1, 1);
 begin
   { Vertex shader - positions a fullscreen quad }
   vertShader := glCreateShader(GL_VERTEX_SHADER);
@@ -84,6 +89,14 @@ void main() {
   glLinkProgram(prog);
   glUseProgram(prog);
 
+  posBuffer := glCreateBuffer;
+  glBindBuffer(GL_ARRAY_BUFFER, posBuffer);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), @vertices, GL_STATIC_DRAW);
+
+  posLoc := glGetAttribLocation(prog, 'pos');
+  glEnableVertexAttribArray(posLoc);
+  glVertexAttribPointer(posLoc, 2, GL_FLOAT, false, 0, 0);
+
   { Initialise game state here }
   hideCursor;
 end;
@@ -112,7 +125,14 @@ begin
 
   { Upload pixel data to the GPU }
   glBindTexture(GL_TEXTURE_2D, textureId);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 320, 200, 0, GL_RGBA, GL_UNSIGNED_BYTE, getSurfacePtr)
+  glTexImage2D(
+    GL_TEXTURE_2D, 0, GL_RGBA,
+    320, 200, 0,
+    GL_RGBA, GL_UNSIGNED_BYTE,
+    getSurfacePtr);
+
+  { flush }
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 end;
 
 { Draw in canvas context }
