@@ -100,6 +100,7 @@ var
   w: integer;
   s: string;
   isPlaying: boolean;
+  duration, seekTime: double;
 begin
   cls($FF6495ED);
 
@@ -115,9 +116,12 @@ begin
     printDefault('Paused / Stopped', 10, 10);
 
   case SliderDrag(64, 94, 192, seekerState, 0, 100) of
-    SliderDragging: printDefault('Dragging slider', 10, 30);
-    { SliderReleased: printDefault('Slider released', 10, 30); }
-    SliderReleased: writeLog('Slider released');
+    SliderDragging: { printDefault('Dragging slider', 10, 30) };
+    SliderReleased: begin
+      duration := getMusicDuration;
+      seekTime := seekerState.value / 100.0 * duration;
+      seekMusic(seekTime)
+    end
     else
   end;
 
