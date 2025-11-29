@@ -34,7 +34,7 @@ class Posit92 {
   /**
    * @type {AudioContext}
    */
-  #audioContext;
+  #audioContext = null;
 
   /**
    * @type {Map<number, AudioBuffer>}
@@ -43,11 +43,29 @@ class Posit92 {
   #soundVolumes = new Map();
 
   /**
-   * @type {AudioBufferSourceNode | null}
+   * @type {AudioBufferSourceNode}
    */
-  #music = null;
+  #musicPlayer = null;
+
+  /**
+   * @type {AudioBuffer}
+   */
+  #musicBuffer = null;
   #musicVolume = 1.0;
+  /**
+   * @type {GainNode}
+   */
   #musicGainNode = null;
+
+  /**
+   * in seconds
+   */
+  #musicStartTime = 0.0;
+  /**
+   * in seconds
+   */
+  #musicPauseTime = 0.0;
+  #musicPlaying = false;
 
   #midnightOffset = 0;
 
@@ -534,6 +552,7 @@ class Posit92 {
 
   playMusic(key) {
     this.stopMusic();
+    // if (this.#musicPlaying) {}
 
     const buffer = this.#sounds.get(key);
     if (buffer == null) {
@@ -541,17 +560,19 @@ class Posit92 {
       return
     }
 
-    this.#music = this.#audioContext.createBufferSource();
+    this.#musicPlayer = this.#audioContext.createBufferSource();
     this.#musicGainNode = this.#audioContext.createGain();
 
-    this.#music.buffer = buffer;
-    this.#music.loop = true;
+    this.#musicPlayer.buffer = buffer;
+    this.#musicPlayer.loop = true;
     this.#musicGainNode.gain.value = this.#musicVolume;
 
     // Connect source -> gain -> destination
-    this.#music.connect(this.#musicGainNode);
+    this.#musicPlayer.connect(this.#musicGainNode);
     this.#musicGainNode.connect(this.#audioContext.destination);
-    this.#music.start(0)
+
+    this.#musicStartTime = this.#audioContext.currentTime;
+    this.#musicPlayer.start(0)
   }
 
   #clamp(value, min, max) {
@@ -575,10 +596,10 @@ class Posit92 {
   }
 
   stopMusic() {
-    if (this.#music == null) return;
+    if (this.#musicPlayer == null) return;
 
-    this.#music.stop();
-    this.#music = null;
+    this.#musicPlayer.stop();
+    this.#musicPlayer = null;
     this.#musicGainNode = null
   }
 
