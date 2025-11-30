@@ -1,61 +1,48 @@
 class WebGLGame extends Posit92 {
-  #wasmSource = "game.wasm";
-
-  /**
-   * @type {WebAssembly.Instance}
-   */
-  // #wasm;
-  // get wasmInstance() { return this.#wasm }
+  // WebAssembly initialisation happens in the parent class Posit92
 
   /**
    * @type {WebGLRenderingContext}
    */
   #gl;
 
-  /**
-   * For use with WebAssembly init
-   * @type {WebAssembly.Imports}
-   */
-  #importObject = null;
-
   #setupImportObject() {
-    this.#importObject = super._getWasmImportObject();
+    const { env } = super._getWasmImportObject();
 
-    Object.assign(
-      this.#importObject.env, {
-        // WebGL
-        glClearColor: (r, g, b, a) => this.#gl.clearColor(r, g, b, a),
-        glClear: mask => this.#gl.clear(mask),
-        glViewport: (x, y, w, h) => this.#gl.viewport(x, y, w, h),
-        glCreateTexture: this.#glCreateTexture.bind(this),
+    Object.assign(env, {
+      // WebGL
+      glClearColor: (r, g, b, a) => this.#gl.clearColor(r, g, b, a),
+      glClear: mask => this.#gl.clear(mask),
+      glViewport: (x, y, w, h) => this.#gl.viewport(x, y, w, h),
+      glCreateTexture: this.#glCreateTexture.bind(this),
 
-        glBindTexture: this.#glBindTexture.bind(this),
-        glTexParameteri: this.#glTextParameteri.bind(this),
-        glTexImage2D: this.#glTexImage2D.bind(this),
+      glBindTexture: this.#glBindTexture.bind(this),
+      glTexParameteri: this.#glTextParameteri.bind(this),
+      glTexImage2D: this.#glTexImage2D.bind(this),
 
-        glCreateShader: this.#glCreateShader.bind(this),
-        glShaderSource: this.#glShaderSource.bind(this),
-        glCompileShader: this.#glCompileShader.bind(this),
-        glCreateProgram: this.#glCreateProgram.bind(this),
-        glAttachShader: this.#glAttachShader.bind(this),
-        glLinkProgram: this.#glLinkProgram.bind(this),
-        glUseProgram: this.#glUseProgram.bind(this),
+      glCreateShader: this.#glCreateShader.bind(this),
+      glShaderSource: this.#glShaderSource.bind(this),
+      glCompileShader: this.#glCompileShader.bind(this),
+      glCreateProgram: this.#glCreateProgram.bind(this),
+      glAttachShader: this.#glAttachShader.bind(this),
+      glLinkProgram: this.#glLinkProgram.bind(this),
+      glUseProgram: this.#glUseProgram.bind(this),
 
-        glCreateBuffer: this.#glCreateBuffer.bind(this),
-        glBindBuffer: this.#glBindBuffer.bind(this),
-        glBufferData: this.#glBufferData.bind(this),
-        glGetAttribLocation: this.#glGetAttribLocation.bind(this),
-        glEnableVertexAttribArray: this.#glEnableVertexAttribArray.bind(this),
-        glVertexAttribPointer: this.#glVertexAttribPointer.bind(this),
-        glDrawArrays: this.#glDrawArrays.bind(this),
+      glCreateBuffer: this.#glCreateBuffer.bind(this),
+      glBindBuffer: this.#glBindBuffer.bind(this),
+      glBufferData: this.#glBufferData.bind(this),
+      glGetAttribLocation: this.#glGetAttribLocation.bind(this),
+      glEnableVertexAttribArray: this.#glEnableVertexAttribArray.bind(this),
+      glVertexAttribPointer: this.#glVertexAttribPointer.bind(this),
+      glDrawArrays: this.#glDrawArrays.bind(this),
 
-        glGetUniformLocation: this.#glGetUniformLocation.bind(this),
-        glUniform1i: this.#glUniform1i.bind(this),
+      glGetUniformLocation: this.#glGetUniformLocation.bind(this),
+      glUniform1i: this.#glUniform1i.bind(this),
 
-        glActiveTexture: this.#glActiveTexture.bind(this)
-      });
+      glActiveTexture: this.#glActiveTexture.bind(this)
+    });
 
-    console.log("this.#importObject", this.#importObject)
+    super._freezeImportObject()
   }
 
   /**
@@ -69,13 +56,7 @@ class WebGLGame extends Posit92 {
       throw new Error("WebGL is not supported!");
 
     this.#setupImportObject();
-
     await super.init();
-    // await this.#initWebAssembly();
-    // this.#wasm.exports.init();
-    
-    if (this.loadAssets)
-      await this.loadAssets();
   }
 
   async afterinit() { super.afterinit() }
@@ -96,32 +77,6 @@ class WebGLGame extends Posit92 {
     super.panicHalt(textPtr, textLen)
   }
 
-  /**
-   * @override
-   */
-  _getWasmImportObject() {
-    return this.#importObject
-  }
-
-  /**
-   * Important: #initWebAssembly in the parent class must be turned off
-   * @override
-   */
-  async #initWebAssembly() {}
-  // async #initWebAssembly() {
-  //   const response = await fetch(this.#wasmSource);
-  //   const bytes = await response.arrayBuffer();
-  //   const result = await WebAssembly.instantiate(bytes, this.#importObject);
-  //   this.#wasm = result.instance;
-
-  //   // Grow Wasm memory size
-  //   // Wasm memory grows in 64KB pages
-  //   const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
-  //   const requiredPages = Math.ceil(2 * 1048576 / 65536);
-
-  //   if (pages < requiredPages)
-  //     this.#wasm.exports.memory.grow(requiredPages - pages);
-  // }
 
   cleanup() { super.cleanup() }
 
@@ -140,11 +95,6 @@ class WebGLGame extends Posit92 {
       throw new Error("Expected a number, but received NaN");
   }
 
-  // VGA.PAS
-  /**
-   * Superseded by flushWebGL in Pascal code
-   */
-  flush() { }
 
   // WEBGL.PAS
   #readCString(ptr) {

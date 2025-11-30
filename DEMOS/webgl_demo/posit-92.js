@@ -82,6 +82,8 @@ class Posit92 {
    * For use with WebAssembly init
    * 
    * Freezing happens later in `WebGLGame`
+   * 
+   * @type {WebAssembly.Imports}
    */
   #importObject = {
     env: {
@@ -137,6 +139,10 @@ class Posit92 {
 
   _getWasmImportObject() {
     return this.#importObject
+  }
+
+  _freezeImportObject() {
+    Object.freeze(this.#importObject)
   }
 
   #handleHaltProc(exitcode) {
@@ -198,8 +204,8 @@ class Posit92 {
     this.#initMouse();
     this.#initAudio();
 
-    // if (this.loadAssets)
-    //   await this.loadAssets();
+    if (this.loadAssets)
+      await this.loadAssets();
   }
 
   afterInit() {
