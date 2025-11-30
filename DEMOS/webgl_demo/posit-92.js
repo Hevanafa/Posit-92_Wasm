@@ -933,16 +933,25 @@ class Posit92 {
     this.#gl.drawArrays(mode, first, count)
   }
 
+  #uniformLocations = new Map();
+  #nextUniformId = 1;
+
   #glGetUniformLocation(programId, namePtr) {
     const program = this.#programs.get(programId);
     const name = this.#readCString(namePtr);
-    console.log("glGetUniformLocation name", name);
-    return this.#gl.getUniformLocation(program, name)
+    const location = this.#gl.getUniformLocation(program, name);
+
+    const id = this.#nextUniformId++;
+    this.#uniformLocations.set(id, location);
+    return id
+    // console.log("glGetUniformLocation name", name);
+    // return this.#gl.getUniformLocation(program, name)
   }
 
-  #glUniform1i(unifLoc, value) {
-    console.log("unifLoc", unifLoc, value);
-    this.#gl.uniform1i(unifLoc, value)
+  #glUniform1i(locationId, value) {
+    console.log("unifLoc", locationId, value);
+    const loc = this.#uniformLocations.get(locationId);
+    this.#gl.uniform1i(loc, value)
   }
 
 

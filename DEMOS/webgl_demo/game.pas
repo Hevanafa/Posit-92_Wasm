@@ -19,6 +19,8 @@ var
 
   { Init your game state here }
   gameTime: double;
+  drawOnce: boolean;
+
   textureId: longword;  { Used by WebGL }
 
 { Use this to set `done` to true }
@@ -90,6 +92,9 @@ void main() {
   glUseProgram(prog);
 
   texLoc := glGetUniformLocation(prog, 'tex');
+  writeLog('texLoc');
+  writeLogI32(texLoc);
+  
   glUniform1i(texLoc, 0);
 
   posBuffer := glCreateBuffer;
@@ -102,6 +107,7 @@ void main() {
 
   { Initialise game state here }
   hideCursor;
+  drawOnce := false;
 end;
 
 procedure update;
@@ -123,7 +129,6 @@ end;
 procedure draw;
 var
   a: integer;
-  drawOnce: boolean;
 begin
   for a:=0 to bufferSize - 1 do
     getSurfacePtr^[a] := $FF;

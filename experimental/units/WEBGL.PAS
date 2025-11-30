@@ -58,7 +58,7 @@ procedure glVertexAttribPointer(const idx, size, attrType: longword; const norma
 procedure glDrawArrays(const mode: longword; const first, count: longint); external 'env' name 'glDrawArrays';
 
 function glGetUniformLocation(const prog: longword; const name: PChar): longint; external 'env' name 'glGetUniformLocation';
-procedure glUniform1i(const location, value: longint); external 'env' name 'glUniform1i';
+procedure glUniform1i(const locationId, value: longint); external 'env' name 'glUniform1i';
 
 
 implementation
