@@ -44,6 +44,9 @@ begin
   { Enable nearest neighbour filter }
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 end;
 
 procedure afterInit;
@@ -127,6 +130,8 @@ begin
 end;
 
 { Draw in WebGL context }
+{ Test code }
+{
 procedure draw;
 var
   a: integer;
@@ -145,9 +150,8 @@ begin
   glClearColor(1.0, 0.4, 0.4, 1.0);
   glClear(GL_COLOR_BUFFER_BIT);
 
+  Upload pixel data to the GPU
   glActiveTexture(GL_TEXTURE0);
-
-  { Upload pixel data to the GPU }
   glBindTexture(GL_TEXTURE_2D, textureId);
   glTexImage2D(
     GL_TEXTURE_2D, 0, GL_RGBA,
@@ -157,19 +161,20 @@ begin
 
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
 end;
+}
 
 { Draw in WebGL context }
-{
 procedure draw;
 var
   s: string;
   w: word;
 begin
+{
   glClearColor(1.0, 0.4, 0.4, 1.0);
   glClear(GL_COLOR_BUFFER_BIT);
 }
+
   { CPU rendering code }
-{
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
@@ -182,10 +187,9 @@ begin
   printDefault(s, (vgaWidth - w) div 2, 120);
 
   drawMouse;
-}
 
   { Upload pixel data to the GPU }
-{
+  glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, textureId);
   glTexImage2D(
     GL_TEXTURE_2D, 0, GL_RGBA,
@@ -193,9 +197,8 @@ begin
     GL_RGBA, GL_UNSIGNED_BYTE,
     getSurfacePtr);
 
-  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
 end;
-}
 
 
 exports

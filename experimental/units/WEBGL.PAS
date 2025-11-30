@@ -27,6 +27,10 @@ const
 
   GL_TEXTURE0 = $84C0;
 
+  GL_TEXTURE_WRAP_S = $2802;
+  GL_TEXTURE_WRAP_T = $2803;
+  GL_CLAMP_TO_EDGE = $812F;
+
 procedure glClearColor(const r, g, b, a: single); external 'env' name 'glClearColor';
 procedure glClear(const mask: longword); external 'env' name 'glClear';
 procedure glViewport(const x, y, width, height: longint); external 'env' name 'glViewport';
