@@ -6,6 +6,36 @@ class WebGLGame extends Posit92 {
    */
   #gl;
 
+  /**
+   * @type {Map<number, WebGLTexture>}
+   */
+  #textures = new Map();
+  #nextTextureId = 1;
+
+  /**
+   * @type {Map<number, WebGLShader>}
+   */
+  #shaders = new Map();
+  #nextShaderId = 1;
+
+  /**
+   * @type {Map<number, WebGLProgram>}
+   */
+  #programs = new Map();
+  #nextProgramId = 1;
+
+  /**
+   * @type {Map<number, WebGLBuffer>}
+   */
+  #buffers = new Map();
+  #nextBufferId = 1;
+
+  /**
+   * @type {Map<number, WebGLUniformLocation>}
+   */
+  #uniformLocations = new Map();
+  #nextUniformId = 1;
+
   #setupImportObject() {
     const { env } = super._getWasmImportObject();
 
@@ -83,11 +113,6 @@ class WebGLGame extends Posit92 {
     return new TextDecoder().decode(bytes)
   }
 
-  /**
-   * @type {Map<number, WebGLTexture>}
-   */
-  #textures = new Map();
-  #nextTextureId = 1;
 
   #glCreateTexture() {
     const texture = this.#gl.createTexture();
@@ -122,10 +147,6 @@ class WebGLGame extends Posit92 {
       format, type, pixels)
   }
 
-  #shaders = new Map();
-  #nextShaderId = 1;
-  #programs = new Map();
-  #nextProgramId = 1;
 
   #glCreateShader(type) {
     const shader = this.#gl.createShader(type);
@@ -168,8 +189,6 @@ class WebGLGame extends Posit92 {
     this.#gl.useProgram(program)
   }
 
-  #buffers = new Map();
-  #nextBufferId = 1;
 
   #glCreateBuffer() {
     const buffer = this.#gl.createBuffer();
@@ -218,8 +237,6 @@ class WebGLGame extends Posit92 {
       throw new Error("WebGL error after draw:", err);
   }
 
-  #uniformLocations = new Map();
-  #nextUniformId = 1;
 
   #glGetUniformLocation(programId, namePtr) {
     const program = this.#programs.get(programId);
