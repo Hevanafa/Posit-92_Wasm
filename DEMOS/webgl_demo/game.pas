@@ -20,8 +20,6 @@ var
   gameTime: double;
   drawOnce: boolean;
 
-  textureId: longword;  { Used by WebGL }
-
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
@@ -36,22 +34,12 @@ begin
   initBuffer;
   initDeltaTime;
 
-  glViewport(0, 0, 320, 200);
-  textureId := glCreateTexture;
-  glBindTexture(GL_TEXTURE_2D, textureId);
-
-  { Enable nearest neighbour filter }
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  setupWebGLViewport;
+  setupWebGLShaders;
 end;
 
 procedure afterInit;
 begin
-  setupWebGLShaders;
-
   { Initialise game state here }
   hideCursor;
   drawOnce := false;
@@ -92,16 +80,7 @@ begin
   glClearColor(1.0, 0.4, 0.4, 1.0);
   glClear(GL_COLOR_BUFFER_BIT);
 
-  { Upload pixel data to the GPU }
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, textureId);
-  glTexImage2D(
-    GL_TEXTURE_2D, 0, GL_RGBA,
-    320, 200, 0,
-    GL_RGBA, GL_UNSIGNED_BYTE,
-    getSurfacePtr);
-
-  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
+  flushWebGL
 end;
 
 
@@ -128,17 +107,7 @@ begin
   printDefault(s, (vgaWidth - w) div 2, 120);
 
   drawMouse;
-
-  { Upload pixel data to the GPU }
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, textureId);
-  glTexImage2D(
-    GL_TEXTURE_2D, 0, GL_RGBA,
-    320, 200, 0,
-    GL_RGBA, GL_UNSIGNED_BYTE,
-    getSurfacePtr);
-
-  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
+  flushWebGL
 end;
 
 

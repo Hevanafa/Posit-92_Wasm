@@ -71,13 +71,31 @@ procedure glUniform1i(const locationId, value: longint); external 'env' name 'gl
 
 procedure glActiveTexture(const texture: longword); external 'env' name 'glActiveTexture';
 
+procedure setupWebGLViewport;
 procedure setupWebGLShaders;
+procedure flushWebGL;
 
 
 implementation
 
-uses Logger;
+uses Logger, VGA;
 
+var
+  textureId: longword;  { Used by WebGL }
+
+procedure setupWebGLViewport;
+begin
+  glViewport(0, 0, vgaWidth, vgaHeight);
+  textureId := glCreateTexture;
+  glBindTexture(GL_TEXTURE_2D, textureId);
+
+  { Enable nearest neighbour filter }
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+end;
 
 procedure setupWebGLShaders;
 const
@@ -139,6 +157,25 @@ void main() {
   posLoc := glGetAttribLocation(prog, 'pos');
   glEnableVertexAttribArray(posLoc);
   glVertexAttribPointer(posLoc, 2, GL_FLOAT, false, 0, 0);
+end;
+
+{ Upload pixel data to the GPU }
+procedure flushWebGL;
+begin
+{
+  glClearColor(1.0, 0.4, 0.4, 1.0);
+  glClear(GL_COLOR_BUFFER_BIT);
+}
+
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, textureId);
+  glTexImage2D(
+    GL_TEXTURE_2D, 0, GL_RGBA,
+    320, 200, 0,
+    GL_RGBA, GL_UNSIGNED_BYTE,
+    getSurfacePtr);
+
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
 end;
 
 end.
