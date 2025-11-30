@@ -4,8 +4,8 @@ class WebGLGame extends Posit92 {
   /**
    * @type {WebAssembly.Instance}
    */
-  #wasm;
-  get wasmInstance() { return this.#wasm }
+  // #wasm;
+  // get wasmInstance() { return this.#wasm }
 
   /**
    * @type {WebGLRenderingContext}
@@ -19,7 +19,7 @@ class WebGLGame extends Posit92 {
   #importObject = null;
 
   #setupImportObject() {
-    this.#importObject = this._getWasmImportObject();
+    this.#importObject = super._getWasmImportObject();
 
     Object.assign(
       this.#importObject.env, {
@@ -62,18 +62,20 @@ class WebGLGame extends Posit92 {
    * @override
    */
   async init() {
-    this.#setupImportObject();
-
     // Important: this.#ctx initialisation must be turned off
     this.#gl = this._getCanvas().getContext("webgl") ?? this._getCanvas().getContext("experimental-webgl");
 
     if (this.#gl == null)
       throw new Error("WebGL is not supported!");
 
-    await this.#initWebAssembly();
-    this.#wasm.exports.init();
+    this.#setupImportObject();
 
     await super.init();
+    // await this.#initWebAssembly();
+    // this.#wasm.exports.init();
+    
+    if (this.loadAssets)
+      await this.loadAssets();
   }
 
   async afterinit() { super.afterinit() }
@@ -95,23 +97,31 @@ class WebGLGame extends Posit92 {
   }
 
   /**
+   * @override
+   */
+  _getWasmImportObject() {
+    return this.#importObject
+  }
+
+  /**
    * Important: #initWebAssembly in the parent class must be turned off
    * @override
    */
-  async #initWebAssembly() {
-    const response = await fetch(this.#wasmSource);
-    const bytes = await response.arrayBuffer();
-    const result = await WebAssembly.instantiate(bytes, this.#importObject);
-    this.#wasm = result.instance;
+  async #initWebAssembly() {}
+  // async #initWebAssembly() {
+  //   const response = await fetch(this.#wasmSource);
+  //   const bytes = await response.arrayBuffer();
+  //   const result = await WebAssembly.instantiate(bytes, this.#importObject);
+  //   this.#wasm = result.instance;
 
-    // Grow Wasm memory size
-    // Wasm memory grows in 64KB pages
-    const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
-    const requiredPages = Math.ceil(2 * 1048576 / 65536);
+  //   // Grow Wasm memory size
+  //   // Wasm memory grows in 64KB pages
+  //   const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
+  //   const requiredPages = Math.ceil(2 * 1048576 / 65536);
 
-    if (pages < requiredPages)
-      this.#wasm.exports.memory.grow(requiredPages - pages);
-  }
+  //   if (pages < requiredPages)
+  //     this.#wasm.exports.memory.grow(requiredPages - pages);
+  // }
 
   cleanup() { super.cleanup() }
 
@@ -140,7 +150,7 @@ class WebGLGame extends Posit92 {
   #readCString(ptr) {
     this.#assertNumber(ptr);
 
-    const memory = new Uint8Array(this.#wasm.exports.memory.buffer);
+    const memory = new Uint8Array(this.wasmInstance.exports.memory.buffer);
     let end = ptr;
     while (memory[end] != 0) end++;  // Find null terminator
 
@@ -177,7 +187,7 @@ class WebGLGame extends Posit92 {
     format, type, pixelsPtr) {
 
     const pixels = new Uint8Array(
-      this.#wasm.exports.memory.buffer,
+      this.wasmInstance.exports.memory.buffer,
       pixelsPtr,
       width * height * 4);
 
@@ -250,7 +260,7 @@ class WebGLGame extends Posit92 {
 
   #glBufferData(target, size, dataPtr, usage) {
     const data = new Float32Array(
-      this.#wasm.exports.memory.buffer,
+      this.wasmInstance.exports.memory.buffer,
       dataPtr,
       size / 4
     );

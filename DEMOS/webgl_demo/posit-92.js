@@ -167,7 +167,7 @@ class Posit92 {
   async #initWebAssembly() {
     const response = await fetch(this.#wasmSource);
     const bytes = await response.arrayBuffer();
-    const result = await WebAssembly.instantiate(bytes, this.#importObject);
+    const result = await WebAssembly.instantiate(bytes, this._getWasmImportObject());
     this.#wasm = result.instance;
 
     // Grow Wasm memory size
@@ -190,16 +190,16 @@ class Posit92 {
   }
 
   async init() {
-    // await this.#initWebAssembly();
-    // this.#wasm.exports.init();
+    await this.#initWebAssembly();
+    this.#wasm.exports.init();
     
     this.#loadMidnightOffset();
     this.#initKeyboard();
     this.#initMouse();
     this.#initAudio();
 
-    if (this.loadAssets)
-      await this.loadAssets();
+    // if (this.loadAssets)
+    //   await this.loadAssets();
   }
 
   afterInit() {
