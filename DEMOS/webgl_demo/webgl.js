@@ -1,4 +1,12 @@
 class WebGLGame extends Posit92 {
+  #wasmSource = "game.wasm";
+
+  /**
+   * @type {WebAssembly.Instance}
+   */
+  #wasm;
+  get wasmInstance() { return this.#wasm }
+
   /**
    * @type {WebGLRenderingContext}
    */
@@ -7,107 +15,66 @@ class WebGLGame extends Posit92 {
   /**
    * For use with WebAssembly init
    */
-  #importObject = Object.freeze({
-    env: {
-      _haltproc: this.#handleHaltProc.bind(this),
+  #importObject = null;
 
-      hideCursor: () => this.hideCursor(),
-      showCursor: () => this.showCursor(),
+  #setupImportObject() {
+    this.#importObject = Object.assign(
+      this._getWasmImportObject(), {
+        env: {
+          // WebGL
+          glClearColor: (r, g, b, a) => this.#gl.clearColor(r, g, b, a),
+          glClear: mask => this.#gl.clear(mask),
+          glViewport: (x, y, w, h) => this.#gl.viewport(x, y, w, h),
+          glCreateTexture: this.#glCreateTexture.bind(this),
 
-      wasmgetmem: this.#WasmGetMem.bind(this),
+          glBindTexture: this.#glBindTexture.bind(this),
+          glTexParameteri: this.#glTextParameteri.bind(this),
+          glTexImage2D: this.#glTexImage2D.bind(this),
 
-      // Keyboard
-      isKeyDown: this.isKeyDown.bind(this),
-      signalDone: this.#signalDone.bind(this),
+          glCreateShader: this.#glCreateShader.bind(this),
+          glShaderSource: this.#glShaderSource.bind(this),
+          glCompileShader: this.#glCompileShader.bind(this),
+          glCreateProgram: this.#glCreateProgram.bind(this),
+          glAttachShader: this.#glAttachShader.bind(this),
+          glLinkProgram: this.#glLinkProgram.bind(this),
+          glUseProgram: this.#glUseProgram.bind(this),
 
-      // Logger
-      writeLogF32: value => console.log("Pascal (f32):", value),
-      writeLogI32: value => console.log("Pascal (i32):", value),
-      flushLog: () => this.pascalWriteLog(),
+          glCreateBuffer: this.#glCreateBuffer.bind(this),
+          glBindBuffer: this.#glBindBuffer.bind(this),
+          glBufferData: this.#glBufferData.bind(this),
+          glGetAttribLocation: this.#glGetAttribLocation.bind(this),
+          glEnableVertexAttribArray: this.#glEnableVertexAttribArray.bind(this),
+          glVertexAttribPointer: this.#glVertexAttribPointer.bind(this),
+          glDrawArrays: this.#glDrawArrays.bind(this),
 
-      // Mouse
-      getMouseX: () => this.getMouseX(),
-      getMouseY: () => this.getMouseY(),
-      getMouseButton: () => this.getMouseButton(),
+          glGetUniformLocation: this.#glGetUniformLocation.bind(this),
+          glUniform1i: this.#glUniform1i.bind(this),
 
-      // Panic
-      panicHalt: this.panicHalt.bind(this),
-
-      // Sounds
-      playSound: this.#playSound.bind(this),
-      setSoundVolume: this.#setSoundVolume.bind(this),
-
-      playMusic: this.#playMusic.bind(this),
-      pauseMusic: this.#pauseMusic.bind(this),
-      stopMusic: this.#stopMusic.bind(this),
-      seekMusic: this.#seekMusic.bind(this),
-      getMusicTime: this.#getMusicTime.bind(this),
-      getMusicDuration: this.#getMusicDuration.bind(this),
-
-      getMusicPlaying: () => { return this.#musicPlaying },
-      getMusicRepeat: this.#getMusicRepeat.bind(this),
-      setMusicRepeat: this.#setMusicRepeat.bind(this),
-      setMusicVolume: this.#setMusicVolume.bind(this),
-
-      // Timing
-      getTimer: () => this.getTimer(),
-      getFullTimer: () => this.getFullTimer(),
-
-      // VGA
-      flush: () => this.flush(),
-      toggleFullscreen: () => this.toggleFullscreen(),
-
-      // WebGL
-      glClearColor: (r, g, b, a) => this.#gl.clearColor(r, g, b, a),
-      glClear: mask => this.#gl.clear(mask),
-      glViewport: (x, y, w, h) => this.#gl.viewport(x, y, w, h),
-      glCreateTexture: this.#glCreateTexture.bind(this),
-
-      glBindTexture: this.#glBindTexture.bind(this),
-      glTexParameteri: this.#glTextParameteri.bind(this),
-      glTexImage2D: this.#glTexImage2D.bind(this),
-
-      glCreateShader: this.#glCreateShader.bind(this),
-      glShaderSource: this.#glShaderSource.bind(this),
-      glCompileShader: this.#glCompileShader.bind(this),
-      glCreateProgram: this.#glCreateProgram.bind(this),
-      glAttachShader: this.#glAttachShader.bind(this),
-      glLinkProgram: this.#glLinkProgram.bind(this),
-      glUseProgram: this.#glUseProgram.bind(this),
-
-      glCreateBuffer: this.#glCreateBuffer.bind(this),
-      glBindBuffer: this.#glBindBuffer.bind(this),
-      glBufferData: this.#glBufferData.bind(this),
-      glGetAttribLocation: this.#glGetAttribLocation.bind(this),
-      glEnableVertexAttribArray: this.#glEnableVertexAttribArray.bind(this),
-      glVertexAttribPointer: this.#glVertexAttribPointer.bind(this),
-      glDrawArrays: this.#glDrawArrays.bind(this),
-
-      glGetUniformLocation: this.#glGetUniformLocation.bind(this),
-      glUniform1i: this.#glUniform1i.bind(this),
-
-      glActiveTexture: this.#glActiveTexture.bind(this)
-    }
-  });
-
+          glActiveTexture: this.#glActiveTexture.bind(this)
+        }});
+  }
 
 	async init() {
-    await super.init()
+    this.#setupImportObject();
 
-    // Important: #ctx initialisation must be turned off
-    this.#gl = this.#canvas.getContext("webgl") ?? this.#canvas.getContext("experimental-webgl");
+    // Important: this.#ctx initialisation must be turned off
+    this.#gl = this._getCanvas().getContext("webgl") ?? this._getCanvas().getContext("experimental-webgl");
 
     if (this.#gl == null)
       throw new Error("WebGL is not supported!");
-  }
 
-  // TODO: Override initWebAssembly
+    this.#initWebAssembly();
+    this.#wasm.exports.init();
+
+    await super.init();
+  }
 
   async afterinit() {
     await super.afterinit()
   }
 
   /**
+   * Important: #initWebAssembly in the parent class must be turned off
    * @override
    */
   async #initWebAssembly() {
@@ -130,6 +97,17 @@ class WebGLGame extends Posit92 {
   // Game loop
   update() { super.update() }
   draw() { super.draw() }
+
+  /**
+   * @override
+   */
+  #assertNumber(value) {
+    if (typeof value != "number")
+      throw new Error(`Expected a number, but received ${typeof value}`);
+
+    if (isNaN(value))
+      throw new Error("Expected a number, but received NaN");
+  }
 
   // VGA.PAS
   /**

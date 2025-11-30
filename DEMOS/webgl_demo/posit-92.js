@@ -23,6 +23,7 @@ class Posit92 {
    * @type {HTMLCanvasElement}
    */
   #canvas;
+  _getCanvas() { return this.#canvas }
   // #ctx;
 
   /**
@@ -132,7 +133,7 @@ class Posit92 {
     }
   });
 
-  getWasmImportObject() {
+  _getWasmImportObject() {
     return this.#importObject
   }
 
@@ -187,9 +188,10 @@ class Posit92 {
   }
 
   async init() {
-    await this.#initWebAssembly();
+    // await this.#initWebAssembly();
+    // this.#wasm.exports.init();
+    
     this.#loadMidnightOffset();
-    this.#wasm.exports.init();
     this.#initKeyboard();
     this.#initMouse();
     this.#initAudio();
@@ -740,7 +742,7 @@ class Posit92 {
 
   // VGA.PAS
   flush() {
-    // throw new Error("Attempting to call flush in WebGL context");
+    throw new Error("Attempting to call flush in WebGL context");
 
     const surfacePtr = this.#wasm.exports.getSurfacePtr();
     const imageData = new Uint8ClampedArray(
@@ -751,7 +753,7 @@ class Posit92 {
 
     const imgData = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
 
-    this.#ctx.putImageData(imgData, 0, 0);
+    // this.#ctx.putImageData(imgData, 0, 0);
   }
 
   toggleFullscreen() {
