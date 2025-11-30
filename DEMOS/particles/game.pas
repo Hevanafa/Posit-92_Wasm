@@ -6,7 +6,7 @@ library Game;
 uses
   BMFont, Conv, FPS,
   Graphics, Keyboard, Logger, Mouse,
-  ImgRef, ImgRefFast, Panic, Shapes, Sounds,
+  ImgRef, ImgRefFast, Panic, Shapes,
   Timing, VGA,
   Assets;
 

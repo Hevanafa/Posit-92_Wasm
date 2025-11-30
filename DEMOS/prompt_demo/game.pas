@@ -12,9 +12,9 @@ library Game;
 
 uses
   BMFont, Conv, FPS, Graphics,
-  ImgRef, ImgRefFast, ImmedGui, Keyboard, Logger,
-  Mouse, Panic, Shapes, Sounds,
-  Timing, VGA,
+  ImgRef, ImgRefFast, ImmedGui,
+  Keyboard, Logger, Mouse,
+  Panic, Shapes, Timing, VGA,
   Assets;
 
 const

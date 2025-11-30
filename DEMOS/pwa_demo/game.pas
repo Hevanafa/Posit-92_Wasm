@@ -4,7 +4,7 @@ library Game;
 
 uses
   Conv, FPS, ImgRef, ImgRefFast, Keyboard,
-  Mouse, Panic, Sounds, Timing,
+  Mouse, Panic, Timing,
   VGA,
   Assets;
 
