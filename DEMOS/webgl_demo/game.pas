@@ -180,7 +180,7 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  s := 'Hello world!';
+  s := 'Hello from Posit-92 + WebAssembly + WebGL!';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
 
