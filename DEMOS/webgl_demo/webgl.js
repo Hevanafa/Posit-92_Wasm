@@ -18,43 +18,45 @@ class WebGLGame extends Posit92 {
   #importObject = null;
 
   #setupImportObject() {
+    this.#importObject = this._getWasmImportObject();
+    const env = this.#importObject.env;
+
     this.#importObject = Object.assign(
-      this._getWasmImportObject(), {
-        env: {
-          // WebGL
-          glClearColor: (r, g, b, a) => this.#gl.clearColor(r, g, b, a),
-          glClear: mask => this.#gl.clear(mask),
-          glViewport: (x, y, w, h) => this.#gl.viewport(x, y, w, h),
-          glCreateTexture: this.#glCreateTexture.bind(this),
+      env, {
+        // WebGL
+        glClearColor: (r, g, b, a) => this.#gl.clearColor(r, g, b, a),
+        glClear: mask => this.#gl.clear(mask),
+        glViewport: (x, y, w, h) => this.#gl.viewport(x, y, w, h),
+        glCreateTexture: this.#glCreateTexture.bind(this),
 
-          glBindTexture: this.#glBindTexture.bind(this),
-          glTexParameteri: this.#glTextParameteri.bind(this),
-          glTexImage2D: this.#glTexImage2D.bind(this),
+        glBindTexture: this.#glBindTexture.bind(this),
+        glTexParameteri: this.#glTextParameteri.bind(this),
+        glTexImage2D: this.#glTexImage2D.bind(this),
 
-          glCreateShader: this.#glCreateShader.bind(this),
-          glShaderSource: this.#glShaderSource.bind(this),
-          glCompileShader: this.#glCompileShader.bind(this),
-          glCreateProgram: this.#glCreateProgram.bind(this),
-          glAttachShader: this.#glAttachShader.bind(this),
-          glLinkProgram: this.#glLinkProgram.bind(this),
-          glUseProgram: this.#glUseProgram.bind(this),
+        glCreateShader: this.#glCreateShader.bind(this),
+        glShaderSource: this.#glShaderSource.bind(this),
+        glCompileShader: this.#glCompileShader.bind(this),
+        glCreateProgram: this.#glCreateProgram.bind(this),
+        glAttachShader: this.#glAttachShader.bind(this),
+        glLinkProgram: this.#glLinkProgram.bind(this),
+        glUseProgram: this.#glUseProgram.bind(this),
 
-          glCreateBuffer: this.#glCreateBuffer.bind(this),
-          glBindBuffer: this.#glBindBuffer.bind(this),
-          glBufferData: this.#glBufferData.bind(this),
-          glGetAttribLocation: this.#glGetAttribLocation.bind(this),
-          glEnableVertexAttribArray: this.#glEnableVertexAttribArray.bind(this),
-          glVertexAttribPointer: this.#glVertexAttribPointer.bind(this),
-          glDrawArrays: this.#glDrawArrays.bind(this),
+        glCreateBuffer: this.#glCreateBuffer.bind(this),
+        glBindBuffer: this.#glBindBuffer.bind(this),
+        glBufferData: this.#glBufferData.bind(this),
+        glGetAttribLocation: this.#glGetAttribLocation.bind(this),
+        glEnableVertexAttribArray: this.#glEnableVertexAttribArray.bind(this),
+        glVertexAttribPointer: this.#glVertexAttribPointer.bind(this),
+        glDrawArrays: this.#glDrawArrays.bind(this),
 
-          glGetUniformLocation: this.#glGetUniformLocation.bind(this),
-          glUniform1i: this.#glUniform1i.bind(this),
+        glGetUniformLocation: this.#glGetUniformLocation.bind(this),
+        glUniform1i: this.#glUniform1i.bind(this),
 
-          glActiveTexture: this.#glActiveTexture.bind(this)
-        }});
+        glActiveTexture: this.#glActiveTexture.bind(this)
+      });
   }
 
-	async init() {
+  async init() {
     this.#setupImportObject();
 
     // Important: this.#ctx initialisation must be turned off
@@ -63,7 +65,7 @@ class WebGLGame extends Posit92 {
     if (this.#gl == null)
       throw new Error("WebGL is not supported!");
 
-    this.#initWebAssembly();
+    await this.#initWebAssembly();
     this.#wasm.exports.init();
 
     await super.init();

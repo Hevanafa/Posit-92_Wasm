@@ -80,8 +80,10 @@ class Posit92 {
 
   /**
    * For use with WebAssembly init
+   * 
+   * Freezing happens later in `WebGLGame`
    */
-  #importObject = Object.freeze({
+  #importObject = {
     env: {
       _haltproc: this.#handleHaltProc.bind(this),
 
@@ -131,7 +133,7 @@ class Posit92 {
       flush: () => this.flush(),
       toggleFullscreen: () => this.toggleFullscreen()
     }
-  });
+  };
 
   _getWasmImportObject() {
     return this.#importObject
