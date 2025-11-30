@@ -14,15 +14,15 @@ class WebGLGame extends Posit92 {
 
   /**
    * For use with WebAssembly init
+   * @type {WebAssembly.Imports}
    */
   #importObject = null;
 
   #setupImportObject() {
     this.#importObject = this._getWasmImportObject();
-    const env = this.#importObject.env;
 
-    this.#importObject = Object.assign(
-      env, {
+    Object.assign(
+      this.#importObject.env, {
         // WebGL
         glClearColor: (r, g, b, a) => this.#gl.clearColor(r, g, b, a),
         glClear: mask => this.#gl.clear(mask),
@@ -54,8 +54,13 @@ class WebGLGame extends Posit92 {
 
         glActiveTexture: this.#glActiveTexture.bind(this)
       });
+
+    console.log("this.#importObject", this.#importObject)
   }
 
+  /**
+   * @override
+   */
   async init() {
     this.#setupImportObject();
 
@@ -71,8 +76,22 @@ class WebGLGame extends Posit92 {
     await super.init();
   }
 
-  async afterinit() {
-    await super.afterinit()
+  async afterinit() { super.afterinit() }
+
+  async loadImage(url) {
+    return await super.loadImage(url)
+  }
+
+  async loadBMFont(url, fontPtrRef, fontGlyphsPtrRef) {
+    super.loadBMFont(url, fontPtrRef, fontGlyphsPtrRef)
+  }
+
+  // LOGGER.PAS
+  pascalWriteLog() { super.pascalWriteLog() }
+
+  // PANIC.PAS
+  panicHalt(textPtr, textLen) {
+    super.panicHalt(textPtr, textLen)
   }
 
   /**
