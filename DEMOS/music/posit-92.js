@@ -117,7 +117,7 @@ class Posit92 {
       getMusicTime: this.#getMusicTime.bind(this),
       getMusicDuration: this.#getMusicDuration.bind(this),
 
-      getMusicPlaying: () => { return this.#musicPlaying },
+      getMusicPlaying: () => this.#musicPlaying,
       getMusicRepeat: this.#getMusicRepeat.bind(this),
       setMusicRepeat: this.#setMusicRepeat.bind(this),
       setMusicVolume: this.#setMusicVolume.bind(this),
