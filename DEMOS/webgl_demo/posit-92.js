@@ -137,6 +137,9 @@ class Posit92 {
     }
   };
 
+  /**
+   * Used by WebGLGame
+   */
   _getWasmImportObject() {
     return this.#importObject
   }
@@ -221,7 +224,7 @@ class Posit92 {
   }
 
   cleanup() {
-    this.stopMusic();
+    this.#stopMusic();
     this.showCursor();
   }
 

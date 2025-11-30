@@ -147,7 +147,7 @@ void main() {
   `);
 
   glCompileShader(fragShader);
-  writeLog('Vertex shader has been compiled');
+  { writeLog('Vertex shader has been compiled'); }
 
   { Link the vertex & fragment shaders }
   prog := glCreateProgram;
@@ -157,9 +157,6 @@ void main() {
   glUseProgram(prog);
 
   texLoc := glGetUniformLocation(prog, 'tex');
-  writeLog('texLoc');
-  writeLogI32(texLoc);
-
   glUniform1i(texLoc, 0);
 
   posBuffer := glCreateBuffer;

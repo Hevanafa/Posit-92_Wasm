@@ -59,31 +59,6 @@ class WebGLGame extends Posit92 {
     await super.init();
   }
 
-  async afterinit() { super.afterinit() }
-
-  async loadImage(url) {
-    return await super.loadImage(url)
-  }
-
-  async loadBMFont(url, fontPtrRef, fontGlyphsPtrRef) {
-    super.loadBMFont(url, fontPtrRef, fontGlyphsPtrRef)
-  }
-
-  // LOGGER.PAS
-  pascalWriteLog() { super.pascalWriteLog() }
-
-  // PANIC.PAS
-  panicHalt(textPtr, textLen) {
-    super.panicHalt(textPtr, textLen)
-  }
-
-
-  cleanup() { super.cleanup() }
-
-  // Game loop
-  update() { super.update() }
-  draw() { super.draw() }
-
   /**
    * @override
    */
@@ -254,12 +229,10 @@ class WebGLGame extends Posit92 {
     const id = this.#nextUniformId++;
     this.#uniformLocations.set(id, location);
     return id
-    // console.log("glGetUniformLocation name", name);
-    // return this.#gl.getUniformLocation(program, name)
   }
 
   #glUniform1i(locationId, value) {
-    console.log("unifLoc", locationId, value);
+    // console.log("unifLoc", locationId, value);
     const loc = this.#uniformLocations.get(locationId);
     this.#gl.uniform1i(loc, value)
   }
