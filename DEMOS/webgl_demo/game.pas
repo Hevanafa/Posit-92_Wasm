@@ -131,8 +131,7 @@ end;
 
 { Draw in WebGL context }
 { Test code }
-{
-procedure draw;
+procedure testDraw;
 var
   a: integer;
 begin
@@ -150,7 +149,7 @@ begin
   glClearColor(1.0, 0.4, 0.4, 1.0);
   glClear(GL_COLOR_BUFFER_BIT);
 
-  Upload pixel data to the GPU
+  { Upload pixel data to the GPU }
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, textureId);
   glTexImage2D(
@@ -161,7 +160,7 @@ begin
 
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
 end;
-}
+
 
 { Draw in WebGL context }
 procedure draw;
@@ -170,8 +169,7 @@ var
   w: word;
 begin
 {
-  glClearColor(1.0, 0.4, 0.4, 1.0);
-  glClear(GL_COLOR_BUFFER_BIT);
+  testDraw; exit;
 }
 
   { CPU rendering code }
