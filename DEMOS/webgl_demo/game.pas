@@ -83,6 +83,7 @@ void main() {
   `);
 
   glCompileShader(fragShader);
+  writeLog('Vertex shader has been compiled');
 
   { Link the vertex & fragment shaders }
   prog := glCreateProgram;
@@ -94,7 +95,7 @@ void main() {
   texLoc := glGetUniformLocation(prog, 'tex');
   writeLog('texLoc');
   writeLogI32(texLoc);
-  
+
   glUniform1i(texLoc, 0);
 
   posBuffer := glCreateBuffer;
@@ -143,6 +144,8 @@ begin
 
   glClearColor(1.0, 0.4, 0.4, 1.0);
   glClear(GL_COLOR_BUFFER_BIT);
+
+  glActiveTexture(GL_TEXTURE0);
 
   { Upload pixel data to the GPU }
   glBindTexture(GL_TEXTURE_2D, textureId);

@@ -161,7 +161,9 @@ class Posit92 {
       glDrawArrays: this.#glDrawArrays.bind(this),
 
       glGetUniformLocation: this.#glGetUniformLocation.bind(this),
-      glUniform1i: this.#glUniform1i.bind(this)
+      glUniform1i: this.#glUniform1i.bind(this),
+
+      glActiveTexture: this.#glActiveTexture.bind(this)
     }
   });
 
@@ -930,7 +932,15 @@ class Posit92 {
   }
 
   #glDrawArrays(mode, first, count) {
-    this.#gl.drawArrays(mode, first, count)
+    let err = this.#gl.getError();
+    if (err != 0)
+      throw new Error("WebGL error before draw:", err);
+
+    this.#gl.drawArrays(mode, first, count);
+
+    err = this.#gl.getError();
+    if (err != 0)
+      throw new Error("WebGL error after draw:", err);
   }
 
   #uniformLocations = new Map();
@@ -952,6 +962,10 @@ class Posit92 {
     console.log("unifLoc", locationId, value);
     const loc = this.#uniformLocations.get(locationId);
     this.#gl.uniform1i(loc, value)
+  }
+
+  #glActiveTexture(texture) {
+    this.#gl.activeTexture(texture)
   }
 
 

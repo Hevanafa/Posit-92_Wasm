@@ -25,6 +25,8 @@ const
   GL_FLOAT = $1406;
   GL_TRIANGLE_STRIP = $0005;
 
+  GL_TEXTURE0 = $84C0;
+
 procedure glClearColor(const r, g, b, a: single); external 'env' name 'glClearColor';
 procedure glClear(const mask: longword); external 'env' name 'glClear';
 procedure glViewport(const x, y, width, height: longint); external 'env' name 'glViewport';
@@ -59,6 +61,8 @@ procedure glDrawArrays(const mode: longword; const first, count: longint); exter
 
 function glGetUniformLocation(const prog: longword; const name: PChar): longint; external 'env' name 'glGetUniformLocation';
 procedure glUniform1i(const locationId, value: longint); external 'env' name 'glUniform1i';
+
+procedure glActiveTexture(const texture: longword); external 'env' name 'glActiveTexture';
 
 
 implementation
