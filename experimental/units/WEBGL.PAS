@@ -1,3 +1,11 @@
+{
+  WebGL unit
+  Part of Posit-92 framework
+  By Hevanafa, 30-11-2025
+
+  A thin 1:1 wrapper around WebGL
+}
+
 unit WebGL;
 
 {$Mode TP}
@@ -82,6 +90,7 @@ uses Logger, VGA;
 
 var
   textureId: longword;  { Used by WebGL }
+  vertexShader, fragShader, prog: longword;
 
 procedure setupWebGLViewport;
 begin
@@ -103,32 +112,35 @@ const
     -1, -1, 1, -1,
     -1, 1, 1, 1);
 var
-  vertShader, fragShader, prog: longword;
   texLoc: longint;
   posBuffer: longword;
   posLoc: longint;
 begin
   { Vertex shader - positions a fullscreen quad }
-  vertShader := glCreateShader(GL_VERTEX_SHADER);
+  vertexShader := glCreateShader(GL_VERTEX_SHADER);
 
-  glShaderSource(vertShader,`
+  glShaderSource(vertexShader, `
+
 attribute vec2 pos;
 varying vec2 uv;
+
 void main() {
   uv = pos * 0.5 + 0.5;
   gl_Position = vec4(pos, 0.0, 1.0);
 }
   `);
 
-  glCompileShader(vertShader);
+  glCompileShader(vertexShader);
 
   { Fragment shader - samples the texture }
   fragShader := glCreateShader(GL_FRAGMENT_SHADER);
 
   glShaderSource(fragShader, `
+
 precision mediump float;
 varying vec2 uv;
 uniform sampler2D tex;
+
 void main() {
   gl_FragColor = texture2D(tex, vec2(uv.x, 1.0 - uv.y));
 }
@@ -139,7 +151,7 @@ void main() {
 
   { Link the vertex & fragment shaders }
   prog := glCreateProgram;
-  glAttachShader(prog, vertShader);
+  glAttachShader(prog, vertexShader);
   glAttachShader(prog, fragShader);
   glLinkProgram(prog);
   glUseProgram(prog);
