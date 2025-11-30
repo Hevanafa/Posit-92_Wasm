@@ -1,7 +1,6 @@
 library Game;
 
 {$Mode ObjFPC}
-{$ModeSwitch MultiLineStrings}
 {$H-}
 
 uses
@@ -50,64 +49,8 @@ begin
 end;
 
 procedure afterInit;
-var
-  vertShader, fragShader, prog: longword;
-  texLoc: longint;
-  posBuffer: longword;
-  posLoc: longint;
-  vertices: array[0..7] of single = (
-    -1, -1, 1, -1,
-    -1, 1, 1, 1);
 begin
-  { Vertex shader - positions a fullscreen quad }
-  vertShader := glCreateShader(GL_VERTEX_SHADER);
-
-  glShaderSource(vertShader,`
-attribute vec2 pos;
-varying vec2 uv;
-void main() {
-  uv = pos * 0.5 + 0.5;
-  gl_Position = vec4(pos, 0.0, 1.0);
-}
-  `);
-
-  glCompileShader(vertShader);
-
-  { Fragment shader - samples the texture }
-  fragShader := glCreateShader(GL_FRAGMENT_SHADER);
-
-  glShaderSource(fragShader, `
-precision mediump float;
-varying vec2 uv;
-uniform sampler2D tex;
-void main() {
-  gl_FragColor = texture2D(tex, vec2(uv.x, 1.0 - uv.y));
-}
-  `);
-
-  glCompileShader(fragShader);
-  writeLog('Vertex shader has been compiled');
-
-  { Link the vertex & fragment shaders }
-  prog := glCreateProgram;
-  glAttachShader(prog, vertShader);
-  glAttachShader(prog, fragShader);
-  glLinkProgram(prog);
-  glUseProgram(prog);
-
-  texLoc := glGetUniformLocation(prog, 'tex');
-  writeLog('texLoc');
-  writeLogI32(texLoc);
-
-  glUniform1i(texLoc, 0);
-
-  posBuffer := glCreateBuffer;
-  glBindBuffer(GL_ARRAY_BUFFER, posBuffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), @vertices, GL_STATIC_DRAW);
-
-  posLoc := glGetAttribLocation(prog, 'pos');
-  glEnableVertexAttribArray(posLoc);
-  glVertexAttribPointer(posLoc, 2, GL_FLOAT, false, 0, 0);
+  setupWebGLShaders;
 
   { Initialise game state here }
   hideCursor;
