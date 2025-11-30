@@ -4,6 +4,93 @@ class WebGLGame extends Posit92 {
    */
   #gl;
 
+  /**
+   * For use with WebAssembly init
+   */
+  #importObject = Object.freeze({
+    env: {
+      _haltproc: this.#handleHaltProc.bind(this),
+
+      hideCursor: () => this.hideCursor(),
+      showCursor: () => this.showCursor(),
+
+      wasmgetmem: this.#WasmGetMem.bind(this),
+
+      // Keyboard
+      isKeyDown: this.isKeyDown.bind(this),
+      signalDone: this.#signalDone.bind(this),
+
+      // Logger
+      writeLogF32: value => console.log("Pascal (f32):", value),
+      writeLogI32: value => console.log("Pascal (i32):", value),
+      flushLog: () => this.pascalWriteLog(),
+
+      // Mouse
+      getMouseX: () => this.getMouseX(),
+      getMouseY: () => this.getMouseY(),
+      getMouseButton: () => this.getMouseButton(),
+
+      // Panic
+      panicHalt: this.panicHalt.bind(this),
+
+      // Sounds
+      playSound: this.#playSound.bind(this),
+      setSoundVolume: this.#setSoundVolume.bind(this),
+
+      playMusic: this.#playMusic.bind(this),
+      pauseMusic: this.#pauseMusic.bind(this),
+      stopMusic: this.#stopMusic.bind(this),
+      seekMusic: this.#seekMusic.bind(this),
+      getMusicTime: this.#getMusicTime.bind(this),
+      getMusicDuration: this.#getMusicDuration.bind(this),
+
+      getMusicPlaying: () => { return this.#musicPlaying },
+      getMusicRepeat: this.#getMusicRepeat.bind(this),
+      setMusicRepeat: this.#setMusicRepeat.bind(this),
+      setMusicVolume: this.#setMusicVolume.bind(this),
+
+      // Timing
+      getTimer: () => this.getTimer(),
+      getFullTimer: () => this.getFullTimer(),
+
+      // VGA
+      flush: () => this.flush(),
+      toggleFullscreen: () => this.toggleFullscreen(),
+
+      // WebGL
+      glClearColor: (r, g, b, a) => this.#gl.clearColor(r, g, b, a),
+      glClear: mask => this.#gl.clear(mask),
+      glViewport: (x, y, w, h) => this.#gl.viewport(x, y, w, h),
+      glCreateTexture: this.#glCreateTexture.bind(this),
+
+      glBindTexture: this.#glBindTexture.bind(this),
+      glTexParameteri: this.#glTextParameteri.bind(this),
+      glTexImage2D: this.#glTexImage2D.bind(this),
+
+      glCreateShader: this.#glCreateShader.bind(this),
+      glShaderSource: this.#glShaderSource.bind(this),
+      glCompileShader: this.#glCompileShader.bind(this),
+      glCreateProgram: this.#glCreateProgram.bind(this),
+      glAttachShader: this.#glAttachShader.bind(this),
+      glLinkProgram: this.#glLinkProgram.bind(this),
+      glUseProgram: this.#glUseProgram.bind(this),
+
+      glCreateBuffer: this.#glCreateBuffer.bind(this),
+      glBindBuffer: this.#glBindBuffer.bind(this),
+      glBufferData: this.#glBufferData.bind(this),
+      glGetAttribLocation: this.#glGetAttribLocation.bind(this),
+      glEnableVertexAttribArray: this.#glEnableVertexAttribArray.bind(this),
+      glVertexAttribPointer: this.#glVertexAttribPointer.bind(this),
+      glDrawArrays: this.#glDrawArrays.bind(this),
+
+      glGetUniformLocation: this.#glGetUniformLocation.bind(this),
+      glUniform1i: this.#glUniform1i.bind(this),
+
+      glActiveTexture: this.#glActiveTexture.bind(this)
+    }
+  });
+
+
 	async init() {
     await super.init()
 
@@ -18,6 +105,24 @@ class WebGLGame extends Posit92 {
 
   async afterinit() {
     await super.afterinit()
+  }
+
+  /**
+   * @override
+   */
+  async #initWebAssembly() {
+    const response = await fetch(this.#wasmSource);
+    const bytes = await response.arrayBuffer();
+    const result = await WebAssembly.instantiate(bytes, this.#importObject);
+    this.#wasm = result.instance;
+
+    // Grow Wasm memory size
+    // Wasm memory grows in 64KB pages
+    const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
+    const requiredPages = Math.ceil(2 * 1048576 / 65536);
+
+    if (pages < requiredPages)
+      this.#wasm.exports.memory.grow(requiredPages - pages);
   }
 
   cleanup() { super.cleanup() }
