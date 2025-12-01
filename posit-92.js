@@ -75,6 +75,10 @@ class Posit92 {
     }
   };
 
+  _getWasmImportObject() {
+    return this.#importObject
+  }
+  
   #handleHaltProc(exitcode) {
     console.log("Programme halted with code:", exitcode);
     this.cleanup();

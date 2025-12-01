@@ -80,6 +80,10 @@ class Posit92 {
       formatBigIntScientific: () => this.formatBigIntScientific()
     }
   };
+  
+  _getWasmImportObject() {
+    return this.#importObject
+  }
 
   constructor(canvasID) {
     if (canvasID == null)

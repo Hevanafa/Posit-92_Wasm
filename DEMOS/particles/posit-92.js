@@ -69,6 +69,10 @@ class Posit92 {
     }
   };
 
+  _getWasmImportObject() {
+    return this.#importObject
+  }
+  
   constructor(canvasID) {
     if (canvasID == null)
       throw new Error("canvasID is required!");
