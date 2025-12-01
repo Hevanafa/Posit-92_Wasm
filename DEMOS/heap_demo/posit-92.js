@@ -103,6 +103,12 @@ class Posit92 {
     this.#ctx = this.#canvas.getContext("2d");
   }
 
+  #loadMidnightOffset() {
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    this.#midnightOffset = midnight.getTime()
+  }
+
   // Init segment
   async #initWebAssembly() {
     const response = await fetch(this.#wasmSource);
@@ -110,19 +116,19 @@ class Posit92 {
     const result = await WebAssembly.instantiate(bytes, this.#importObject);
     this.#wasm = result.instance;
 
-    // Grow Wasm memory size
-    // Wasm memory grows in 64KB pages
+    /**
+     * Grow Wasm memory size (DOS-style: fixed allocation)
+     * Layout:
+     * * 0-1 MB: stack / globals
+     * * 1MB-2MB: heap
+     */
+
+    // Wasm memory is in 64KB pages
     const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
     const requiredPages = Math.ceil(2 * 1048576 / 65536);
 
     if (pages < requiredPages)
       this.#wasm.exports.memory.grow(requiredPages - pages);
-  }
-
-  #loadMidnightOffset() {
-    const now = new Date();
-    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    this.#midnightOffset = midnight.getTime()
   }
 
   async init() {
@@ -131,9 +137,8 @@ class Posit92 {
     Object.freeze(this.#importObject);
     await this.#initWebAssembly();
 
-    // TODO: Refactor this
     const heapStart = 1048576;
-    const heapSize = 16 * 1024 * 1024;
+    const heapSize = 1 * 1024 * 1024;
     this.#wasm.exports.initHeap(heapStart, heapSize);
 
     this.#wasm.exports.init();
