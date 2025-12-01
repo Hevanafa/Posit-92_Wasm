@@ -84,6 +84,7 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+  gameTime := 0.0;
 end;
 
 procedure update;
@@ -124,6 +125,9 @@ begin
   { printColour(s,
     (vgaWidth - w) div 2, 120,
     colour); }
+
+  { Debug gameTime }
+  printDefault('gameTime: ' + f32str(gameTime), 10, vgaHeight - 20);
 
   x := (vgaWidth - w) / 2;
   left := 0;
