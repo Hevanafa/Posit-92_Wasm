@@ -169,9 +169,6 @@ class Posit92 {
   }
 
   #assertNumber(value) {
-    if (value == null)
-      throw new Error("Expected a number, but received null");
-
     if (typeof value != "number")
       throw new Error(`Expected a number, but received ${typeof value}`);
 
@@ -237,15 +234,18 @@ class Posit92 {
   }
 
   // Start at 1 MB
-  #wasmMemoryOffset = 1048576;
+  // #wasmMemoryOffset = 1048576;
 
+  // #WasmGetMem(bytes) {
+  //   const ptr = this.#wasmMemoryOffset;
+  //   this.#wasmMemoryOffset += bytes;
+
+  //   // Align to 4 byte
+  //   this.#wasmMemoryOffset = (this.#wasmMemoryOffset + 3) & ~3;
+  //   return ptr
+  // }
   #WasmGetMem(bytes) {
-    const ptr = this.#wasmMemoryOffset;
-    this.#wasmMemoryOffset += bytes;
-
-    // Align to 4 byte
-    this.#wasmMemoryOffset = (this.#wasmMemoryOffset + 3) & ~3;
-    return ptr
+    console.warn("WasmGetMem (JS): Should use the Pascal version!");
   }
 
   // BMFONT.PAS
