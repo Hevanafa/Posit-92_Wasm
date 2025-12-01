@@ -5,8 +5,8 @@ const
   BgmCrystals = 2;
 
 // Asset boilerplate
-// Game < Sounds < Posit92
-class Game extends Sounds {
+// Game < SoundsMixin < Posit92
+class Game extends SoundsMixin {
   async loadAssets() {
     let handle = 0;
 

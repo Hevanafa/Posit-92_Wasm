@@ -1,7 +1,7 @@
 /**
  * Sounds mixin
  */
-class Sounds extends Posit92 {
+class SoundsMixin extends Posit92 {
   /**
    * @type {AudioContext}
    */

@@ -1,7 +1,8 @@
 "use strict";
 
 // Asset boilerplate
-class Game extends WebGLGame {
+// Game < WebGLMixin < Posit92
+class Game extends WebGLMixin {
   async loadAssets() {
     let handle = 0;
 

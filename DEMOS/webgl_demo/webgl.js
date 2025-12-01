@@ -1,4 +1,4 @@
-class WebGLGame extends Posit92 {
+class WebGLMixin extends Posit92 {
   // WebAssembly initialisation happens in the parent class Posit92
 
   /**
