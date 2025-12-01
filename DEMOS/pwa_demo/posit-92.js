@@ -37,7 +37,7 @@ class Posit92 {
   /**
    * For use with WebAssembly init
    */
-  #importObject = Object.freeze({
+  #importObject = {
     env: {
       _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
 
@@ -70,7 +70,7 @@ class Posit92 {
       // VGA
       flush: () => this.flush()
     }
-  });
+  };
 
   constructor(canvasID) {
     if (canvasID == null)
@@ -108,9 +108,11 @@ class Posit92 {
   }
 
   async init() {
+    Object.freeze(this.#importObject);
     await this.#initWebAssembly();
-    this.#loadMidnightOffset();
     this.#wasm.exports.init();
+    
+    this.#loadMidnightOffset();
     this.#initKeyboard();
     this.#initMouse();
     
