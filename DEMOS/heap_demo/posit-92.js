@@ -147,8 +147,8 @@ class Posit92 {
     this.#initKeyboard();
     this.#initMouse();
 
-    // if (this.loadAssets)
-    //   await this.loadAssets();
+    if (this.loadAssets)
+      await this.loadAssets();
   }
 
   afterInit() {
@@ -226,7 +226,8 @@ class Posit92 {
 
     const wasmMemory = new Uint8Array(this.#wasm.exports.memory.buffer);
     const byteSize = img.width * img.height * 4;
-    const wasmPtr = this.#WasmGetMem(byteSize);
+    // const wasmPtr = this.#WasmGetMem(byteSize);
+    const wasmPtr = this.#wasm.exports.WasmGetMem(byteSize);
     wasmMemory.set(imageData.data, wasmPtr)
 
     if (this.#images.length == 0)

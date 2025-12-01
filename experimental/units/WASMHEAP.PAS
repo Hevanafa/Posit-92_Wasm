@@ -16,8 +16,8 @@ var
 
 procedure initHeap(const startAddr, heapSize: longword); public name 'initHeap';
 
-function WasmGetMem(const bytes: longword): pointer;
-procedure WasmFreeMem(const ptr: pointer);
+function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
+procedure WasmFreeMem(const ptr: pointer); public name 'WasmFreeMem';
 function GetFreeHeapSize: longword;
 
 
