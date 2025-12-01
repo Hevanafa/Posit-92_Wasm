@@ -46,7 +46,7 @@ class Posit92 {
       hideCursor: () => this.hideCursor(),
       showCursor: () => this.showCursor(),
 
-      wasmgetmem: this.#WasmGetMem.bind(this),
+      wasmgetmem: () => {}, // no-op
 
       // Keyboard
       isKeyDown: this.isKeyDown.bind(this),
@@ -226,7 +226,6 @@ class Posit92 {
 
     const wasmMemory = new Uint8Array(this.#wasm.exports.memory.buffer);
     const byteSize = img.width * img.height * 4;
-    // const wasmPtr = this.#WasmGetMem(byteSize);
     const wasmPtr = this.#wasm.exports.WasmGetMem(byteSize);
     wasmMemory.set(imageData.data, wasmPtr)
 
@@ -241,20 +240,6 @@ class Posit92 {
     return handle
   }
 
-  // Start at 1 MB
-  // #wasmMemoryOffset = 1048576;
-
-  // #WasmGetMem(bytes) {
-  //   const ptr = this.#wasmMemoryOffset;
-  //   this.#wasmMemoryOffset += bytes;
-
-  //   // Align to 4 byte
-  //   this.#wasmMemoryOffset = (this.#wasmMemoryOffset + 3) & ~3;
-  //   return ptr
-  // }
-  #WasmGetMem(bytes) {
-    console.warn("WasmGetMem (JS): Should use the Pascal version!");
-  }
 
   // BMFONT.PAS
   #newBMFontGlyph() {
