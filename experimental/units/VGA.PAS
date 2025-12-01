@@ -5,6 +5,8 @@
 
 unit VGA;
 
+{$Define ExperimentalHeap}
+
 {$Mode TP}
 {$B-}  { Enable boolean short-circuiting }
 
@@ -40,7 +42,15 @@ procedure psetBlend(const x, y: integer; const colour: longword);
 
 implementation
 
-uses Logger, Wasm;
+uses
+  Logger,
+
+{$ifdef ExperimentalHeap}
+  WasmHeap
+{$else}
+  Wasm
+{$endif}
+;
 
 var
   bufferInitialised: boolean;

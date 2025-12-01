@@ -31,9 +31,10 @@ end;
 
 procedure init;
 begin
-  { initBuffer; }
+  initBuffer;
   initDeltaTime;
 
+  { Test memory allocation & free memory }
   ptr1 := WasmGetMem(100);
   ptr2 := WasmGetMem(50);
 
