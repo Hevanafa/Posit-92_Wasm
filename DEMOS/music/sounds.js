@@ -79,7 +79,7 @@ class Sounds extends Posit92 {
    */
   cleanup() {
     this.#stopMusic();
-    this.showCursor();
+    super.cleanup()
   }
 
   #assertNumber(value) {
