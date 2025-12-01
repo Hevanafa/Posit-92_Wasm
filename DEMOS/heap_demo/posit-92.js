@@ -123,12 +123,17 @@ class Posit92 {
      * * 1MB-2MB: heap
      */
 
+    const heapStart = 1048576;  // 1 MB = 1024 * 1024 B
+    const heapSize = 1 * 1048576;
+
     // Wasm memory is in 64KB pages
     const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
-    const requiredPages = Math.ceil(2 * 1048576 / 65536);
+    const requiredPages = Math.ceil((heapStart + heapSize) / 65536);
 
     if (pages < requiredPages)
       this.#wasm.exports.memory.grow(requiredPages - pages);
+
+    this.#wasm.exports.initHeap(heapStart, heapSize);
   }
 
   async init() {
@@ -136,10 +141,6 @@ class Posit92 {
 
     Object.freeze(this.#importObject);
     await this.#initWebAssembly();
-
-    const heapStart = 1048576;
-    const heapSize = 1 * 1024 * 1024;
-    this.#wasm.exports.initHeap(heapStart, heapSize);
 
     this.#wasm.exports.init();
     
