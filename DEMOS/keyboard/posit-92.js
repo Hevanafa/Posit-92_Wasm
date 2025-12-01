@@ -40,24 +40,6 @@ class Posit92 {
     return this.#wasm
   }
 
-  /**
-   * @type {AudioContext}
-   */
-  #audioContext;
-
-  /**
-   * @type {Map<number, AudioBuffer>}
-   */
-  #sounds = new Map();
-  #soundVolumes = new Map();
-
-  /**
-   * @type {AudioBufferSourceNode | null}
-   */
-  #music = null;
-  #musicVolume = 1.0;
-  #musicGainNode = null;
-
   #midnightOffset = 0;
 
   /**
@@ -486,89 +468,6 @@ class Posit92 {
 
     done = true;
     throw new Error(`PANIC: ${msg}`)
-  }
-
-
-  // SOUNDS.PAS
-  async loadSound(key, url) {
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
-    const audioBuffer = await this.#audioContext.decodeAudioData(arrayBuffer);
-
-    this.#sounds.set(key, audioBuffer);
-    this.setSoundVolume(key, 0.5)
-  }
-
-  playSound(key) {
-    const buffer = this.#sounds.get(key);
-    if (buffer == null) {
-      console.warn("Sound " + key + " is not loaded");
-      return
-    }
-
-    const volume = this.#soundVolumes.get(key);
-
-    const source = this.#audioContext.createBufferSource();
-    const gainNode = this.#audioContext.createGain();
-
-    source.buffer = buffer;
-    gainNode.gain.value = volume;
-
-    // Connect source -> gain -> destination
-    source.connect(gainNode);
-    gainNode.connect(this.#audioContext.destination);
-    source.start(0)
-    // source automatically disconnects when done
-  }
-
-  playMusic(key) {
-    this.stopMusic();
-
-    const buffer = this.#sounds.get(key);
-    if (buffer == null) {
-      console.warn("Music " + key + " is not loaded");
-      return
-    }
-
-    this.#music = this.#audioContext.createBufferSource();
-    this.#musicGainNode = this.#audioContext.createGain();
-
-    this.#music.buffer = buffer;
-    this.#music.loop = true;
-    this.#musicGainNode.gain.value = this.#musicVolume;
-
-    // Connect source -> gain -> destination
-    this.#music.connect(this.#musicGainNode);
-    this.#musicGainNode.connect(this.#audioContext.destination);
-    this.#music.start(0)
-  }
-
-  #clamp(value, min, max) {
-    this.#assertNumber(value);
-    this.#assertNumber(min);
-    this.#assertNumber(max);
-
-    return Math.max(min, Math.min(max, value))
-  }
-
-  setSoundVolume(key, volume) {
-    const clamped = this.#clamp(volume, 0.0, 1.0);
-    this.#soundVolumes.set(key, clamped)
-  }
-
-  setMusicVolume(volume) {
-    this.#musicVolume = this.#clamp(volume, 0.0, 1.0);
-
-    if (this.#musicGainNode != null)
-      this.#musicGainNode.gain.value = this.#musicVolume;
-  }
-
-  stopMusic() {
-    if (this.#music == null) return;
-
-    this.#music.stop();
-    this.#music = null;
-    this.#musicGainNode = null
   }
 
 
