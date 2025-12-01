@@ -117,10 +117,6 @@ class Posit92 {
       this.#wasm.exports.memory.grow(requiredPages - pages);
   }
 
-  #initAudio() {
-    this.#audioContext = new AudioContext();
-  }
-
   #loadMidnightOffset() {
     const now = new Date();
     const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -129,15 +125,14 @@ class Posit92 {
 
   async init() {
     await this.#initWebAssembly();
+    this.#wasm.exports.init();
+    
     this.#loadMidnightOffset();
+    this.#initKeyboard();
+    this.#initMouse();
 
     if (this.loadAssets)
       await this.loadAssets();
-
-    this.#wasm.exports.init();
-    this.#initKeyboard();
-    this.#initMouse();
-    this.#initAudio();
   }
 
   afterInit() {
