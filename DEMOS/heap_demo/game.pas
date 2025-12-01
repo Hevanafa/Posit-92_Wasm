@@ -5,7 +5,7 @@ library Game;
 uses
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Timing, VGA,
+  Timing, VGA, WasmHeap,
   Assets;
 
 const

@@ -19,7 +19,7 @@ procedure initHeap(const startAddr, heapSize: longword); public name 'initHeap';
 
 implementation
 
-procedure initHeap(const startAddr, heapSize: longword); public name 'initHeap';
+procedure initHeap(const startAddr, heapSize: longword);
 begin
   heapStart := PByte(startAddr);
   heapEnd := PByte(startAddr + heapSize);

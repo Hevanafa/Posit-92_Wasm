@@ -135,8 +135,13 @@ class Posit92 {
     this.#initKeyboard();
     this.#initMouse();
 
-    if (this.loadAssets)
-      await this.loadAssets();
+    // if (this.loadAssets)
+    //   await this.loadAssets();
+
+    const heapStart = 1048576;
+    const heapSize = 16 * 1024 * 1024;
+
+    this.#wasm.exports.initHeap(heapStart, heapSize);
   }
 
   afterInit() {
