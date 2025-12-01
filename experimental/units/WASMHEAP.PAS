@@ -17,6 +17,7 @@ var
 procedure initHeap(const startAddr, heapSize: longword); public name 'initHeap';
 
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
+function WasmFreeMem(const ptr: pointer);
 
 
 implementation
@@ -27,6 +28,7 @@ begin
   heapEnd := PByte(startAddr + heapSize);
   heapCurrent := heapStart
 end;
+
 
 function WasmGetMem(const bytes: longword): pointer;
 var
@@ -71,5 +73,17 @@ begin
 
   WasmGetMem := pointer(dataPtr)
 end;
+
+function WasmFreeMem(const ptr: pointer);
+var
+  block: PMemBlock;
+begin
+  if ptr = nil then exit;
+
+  { Find the block header & mark it as free }
+  block := PMemBlock(PByte(ptr) - sizeof(TMemBlock));
+  block^.inUse := false
+end;
+
 
 end.
