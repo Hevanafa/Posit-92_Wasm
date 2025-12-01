@@ -39,6 +39,7 @@ begin
 
   { First-fit search }
   current := heapStart;
+
   while longword(current) < longword(heapCurrent) do begin
     block := PMemBlock(current);
 
@@ -48,11 +49,27 @@ begin
       exit
     end;
 
-    current := current + sizeof(TMemBlock) + block^.size
+    { Find where the next block starts }
+    inc(current, sizeof(TMemBlock) + block^.size)
   end;
 
-  { TODO: Implement a new block at heapCurrent }
-  WasmGetMem := nil
+  { Allocate a new block at heapCurrent }
+  block := PMemBlock(heapCurrent);
+
+  if longword(heapCurrent) + sizeof(TMemBlock) + alignedSize > longword(heapEnd) then begin
+    { out of memory}
+    WasmGetMem := nil;
+    exit
+  end;
+
+  { Create a new block }
+  block^.size := alignedSize;
+  block^.inUse := true;
+
+  dataPtr := heapCurrent + sizeof(TMemBlock);
+  heapCurrent := dataPtr + alignedSize;
+
+  WasmGetMem := pointer(dataPtr)
 end;
 
 end.
