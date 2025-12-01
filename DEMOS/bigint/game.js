@@ -1,7 +1,7 @@
 "use strict";
 
 // Asset boilerplate
-class Game extends Posit92 {
+class Game extends BigIntMixin {
   async loadAssets() {
     let handle = 0;
 
