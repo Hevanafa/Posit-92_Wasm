@@ -39,7 +39,7 @@ class Posit92 {
   /**
    * For use with WebAssembly init
    */
-  #importObject = Object.freeze({
+  #importObject = {
     env: {
       _haltproc: this.#handleHaltProc.bind(this),
 
@@ -73,7 +73,7 @@ class Posit92 {
       flush: () => this.flush(),
       toggleFullscreen: () => this.toggleFullscreen()
     }
-  });
+  };
 
   #handleHaltProc(exitcode) {
     console.log("Programme halted with code:", exitcode);

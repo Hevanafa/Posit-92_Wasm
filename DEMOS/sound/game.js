@@ -8,7 +8,7 @@ const
   SfxSlip = 5;
 
 // Asset boilerplate
-class Game extends Posit92 {
+class Game extends Sounds {
   async loadAssets() {
     let handle = 0;
 

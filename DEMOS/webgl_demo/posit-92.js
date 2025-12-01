@@ -120,7 +120,7 @@ class Posit92 {
   async #initWebAssembly() {
     const response = await fetch(this.#wasmSource);
     const bytes = await response.arrayBuffer();
-    const result = await WebAssembly.instantiate(bytes, this._getWasmImportObject());
+    const result = await WebAssembly.instantiate(bytes, this.#importObject);
     this.#wasm = result.instance;
 
     // Grow Wasm memory size

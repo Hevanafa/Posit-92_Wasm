@@ -76,9 +76,6 @@ class Posit92 {
     }
   };
 
-  /**
-   * Used by WebGLGame
-   */
   _getWasmImportObject() {
     return this.#importObject
   }
