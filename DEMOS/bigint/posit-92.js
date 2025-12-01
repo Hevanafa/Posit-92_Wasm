@@ -38,7 +38,7 @@ class Posit92 {
   /**
    * For use with WebAssembly init
    */
-  #importObject = Object.freeze({
+  #importObject = {
     env: {
       _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
 
@@ -79,7 +79,7 @@ class Posit92 {
       formatBigInt: () => this.formatBigInt(),
       formatBigIntScientific: () => this.formatBigIntScientific()
     }
-  });
+  };
 
   constructor(canvasID) {
     if (canvasID == null)
@@ -111,8 +111,10 @@ class Posit92 {
   }
 
   async init() {
+    Object.freeze(this.#importObject);
     await this.#initWebAssembly();
     this.#wasm.exports.init();
+    
     this.#initKeyboard();
     this.#initMouse();
     

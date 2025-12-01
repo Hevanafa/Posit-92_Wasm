@@ -36,7 +36,7 @@ class Posit92 {
   /**
    * For use with WebAssembly init
    */
-  #importObject = Object.freeze({
+  #importObject = {
     env: {
       _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
 
@@ -62,13 +62,6 @@ class Posit92 {
       // Panic
       panicHalt: this.panicHalt.bind(this),
 
-      // Sounds
-      playSound: this.playSound.bind(this),
-      playMusic: this.playMusic.bind(this),
-      setSoundVolume: this.setSoundVolume.bind(this),
-      setMusicVolume: this.setMusicVolume.bind(this),
-      stopMusic: () => this.stopMusic(),
-
       // Timing
       getTimer: () => this.getTimer(),
       getFullTimer: () => this.getFullTimer(),
@@ -77,7 +70,7 @@ class Posit92 {
       flush: () => this.flush(),
       toggleFullscreen: () => this.toggleFullscreen()
     }
-  });
+  };
 
   constructor(canvasID) {
     if (canvasID == null)
@@ -115,6 +108,7 @@ class Posit92 {
   }
 
   async init() {
+    Object.freeze(this.#importObject);
     await this.#initWebAssembly();
     this.#loadMidnightOffset();
     this.#wasm.exports.init();

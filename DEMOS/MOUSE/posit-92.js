@@ -57,13 +57,6 @@ class Posit92 {
       // Panic
       panicHalt: this.panicHalt.bind(this),
 
-      // Sounds
-      playSound: this.playSound.bind(this),
-      playMusic: this.playMusic.bind(this),
-      setSoundVolume: this.setSoundVolume.bind(this),
-      setMusicVolume: this.setMusicVolume.bind(this),
-      stopMusic: () => this.stopMusic(),
-
       // Timing
       getTimer: () => this.getTimer(),
       getFullTimer: () => this.getFullTimer()
