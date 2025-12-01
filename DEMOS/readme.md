@@ -15,11 +15,16 @@ If there are assets involved, you can take a look into both `assets.pas` and `lo
 - **image_ptr** -- Shows sprite loading with TImageRef instead of TBitmap
 - **lerp** -- Shows how to implement easing
 - **loading** -- Loading screen with simulated delays
+- **music** -- Shows a music player that can handle repeat song
+  - **Sounds** mixin is used here
 - **particles**
 - **print_colour**
 - **sound**
+  - **Sounds** mixin is used here
 - **sprites** -- Sprite loading & various rendering techniques
 - **timing** -- Shows the difference between `getTimer` and `getFullTimer`
+- **webgl_demo** -- Shows how to setup WebGL with Posit-92
+  - **WebGLMixin** mixin is used here
 
 ### Input Handling
 
@@ -35,6 +40,7 @@ If there are assets involved, you can take a look into both `assets.pas` and `lo
 ### Interop
 
 - **bigint** -- Shows how big integers are handled
+  - **BigIntMixin** mixin is used here
 - **wasm_string** -- Shows how string interop (JS to Pascal) is done
 
 The string interop from Pascal to JS is already demonstrated in `writeLog` mechanism in `LOGGER.PAS` unit
