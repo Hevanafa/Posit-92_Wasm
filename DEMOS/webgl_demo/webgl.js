@@ -71,8 +71,6 @@ class WebGLMixin extends Posit92 {
 
       glActiveTexture: this.#glActiveTexture.bind(this)
     });
-
-    super._freezeImportObject()
   }
 
   /**

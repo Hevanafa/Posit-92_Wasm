@@ -128,6 +128,8 @@ class Posit92 {
     this.setLoadingText("Loading WebAssembly binary...");
     await this.sleep(500);
 
+    this.#loadMidnightOffset();
+    
     Object.freeze(this.#importObject);
     if (!(await this.#initWebAssembly())) {
       done = true;
@@ -135,7 +137,6 @@ class Posit92 {
     }
     this.#wasm.exports.init();
 
-    this.#loadMidnightOffset();
     this.#initKeyboard();
     this.#initMouse();
 

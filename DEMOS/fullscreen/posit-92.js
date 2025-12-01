@@ -112,10 +112,12 @@ class Posit92 {
   }
 
   async init() {
+    this.#loadMidnightOffset();
+
     Object.freeze(this.#importObject);
     await this.#initWebAssembly();
-    this.#loadMidnightOffset();
     this.#wasm.exports.init();
+    
     this.#initKeyboard();
     this.#initMouse();
     
