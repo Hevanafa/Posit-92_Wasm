@@ -16,8 +16,9 @@ var
 
 procedure initHeap(const startAddr, heapSize: longword); public name 'initHeap';
 
-function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
+function WasmGetMem(const bytes: longword): pointer;
 function WasmFreeMem(const ptr: pointer);
+function GetFreeHeapSize: longword;
 
 
 implementation
@@ -85,5 +86,27 @@ begin
   block^.inUse := false
 end;
 
+
+function GetFreeHeapSize: longword;
+var
+  current: PByte;  { current memory offset }
+  block: PMemBlock;
+  freeBytes: longword;
+begin
+  freeBytes := 0;
+
+  current := heapStart;
+  while longword(current) < longword(heapCurrent) do begin
+    block := PMemBlock(current);
+    
+    if not block^.inUse then
+      inc(freeBytes, block^.size);
+
+    inc(current, sizeof(TMemBlock) + block^.size)
+  end;
+
+  { TODO: increment freeBytes }
+
+end;
 
 end.
