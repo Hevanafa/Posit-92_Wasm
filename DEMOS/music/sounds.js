@@ -69,20 +69,9 @@ class Sounds extends Posit92 {
    */
   async init() {
     this.#initAudio();
-    
+
     this.#setupImportObject();
     await super.init()
-    // Object.freeze(this.#importObject);
-    // await this.#initWebAssembly();
-    // this.#wasm.exports.init();
-
-    // this.#loadMidnightOffset();
-    // this.#initKeyboard();
-    // this.#initMouse();
-    // this.#initAudio();
-
-    // if (this.loadAssets)
-    //   await this.loadAssets();
   }
 
   /**
@@ -90,6 +79,7 @@ class Sounds extends Posit92 {
    */
   cleanup() {
     this.#stopMusic();
+    this.showCursor();
   }
 
   #assertNumber(value) {
