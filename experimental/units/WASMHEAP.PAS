@@ -17,17 +17,24 @@ var
 procedure initHeap(const startAddr, heapSize: longword); public name 'initHeap';
 
 function WasmGetMem(const bytes: longword): pointer;
-function WasmFreeMem(const ptr: pointer);
+procedure WasmFreeMem(const ptr: pointer);
 function GetFreeHeapSize: longword;
 
 
 implementation
 
+uses Logger;
+
 procedure initHeap(const startAddr, heapSize: longword);
 begin
   heapStart := PByte(startAddr);
   heapEnd := PByte(startAddr + heapSize);
-  heapCurrent := heapStart
+  heapCurrent := heapStart;
+
+  writeLog('Attempting to call initHeap');
+  writeLogI32(longword(heapStart));
+  writeLogI32(longword(heapEnd));
+  writeLogI32(longword(heapCurrent));
 end;
 
 
@@ -75,7 +82,7 @@ begin
   WasmGetMem := pointer(dataPtr)
 end;
 
-function WasmFreeMem(const ptr: pointer);
+procedure WasmFreeMem(const ptr: pointer);
 var
   block: PMemBlock;
 begin
@@ -106,7 +113,7 @@ begin
   end;
 
   inc(freeBytes, longword(heapEnd) - longword(heapCurrent));
-  
+
   GetFreeHeapSize := freeBytes
 end;
 

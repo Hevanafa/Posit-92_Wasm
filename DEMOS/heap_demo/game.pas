@@ -3,8 +3,8 @@ library Game;
 {$Mode ObjFPC}
 
 uses
-  Keyboard, Mouse,
-  ImgRef, ImgRefFast,
+  Conv, Keyboard, Mouse,
+  ImgRef, ImgRefFast, Logger,
   Timing, VGA, WasmHeap,
   Assets;
 
@@ -18,6 +18,8 @@ var
   { Init your game state here }
   gameTime: double;
 
+  ptr1, ptr2: pointer;
+
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
@@ -29,8 +31,17 @@ end;
 
 procedure init;
 begin
-  initBuffer;
+  { initBuffer; }
   initDeltaTime;
+
+  ptr1 := WasmGetMem(100);
+  ptr2 := WasmGetMem(50);
+
+  writeLog('Free heap: ' + i32str(GetFreeHeapSize));
+
+  WasmFreeMem(ptr1);
+
+  writeLog('After free: ' + i32str(GetFreeHeapSize));
 end;
 
 procedure afterInit;

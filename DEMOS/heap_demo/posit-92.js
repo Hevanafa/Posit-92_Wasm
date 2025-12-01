@@ -130,6 +130,12 @@ class Posit92 {
 
     Object.freeze(this.#importObject);
     await this.#initWebAssembly();
+
+    // TODO: Refactor this
+    const heapStart = 1048576;
+    const heapSize = 16 * 1024 * 1024;
+    this.#wasm.exports.initHeap(heapStart, heapSize);
+
     this.#wasm.exports.init();
     
     this.#initKeyboard();
@@ -137,12 +143,6 @@ class Posit92 {
 
     // if (this.loadAssets)
     //   await this.loadAssets();
-
-    // TODO: Refactor this
-    const heapStart = 1048576;
-    const heapSize = 16 * 1024 * 1024;
-
-    this.#wasm.exports.initHeap(heapStart, heapSize);
   }
 
   afterInit() {
