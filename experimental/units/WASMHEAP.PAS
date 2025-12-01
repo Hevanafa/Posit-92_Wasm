@@ -105,8 +105,9 @@ begin
     inc(current, sizeof(TMemBlock) + block^.size)
   end;
 
-  { TODO: increment freeBytes }
-
+  inc(freeBytes, longword(heapEnd) - longword(heapCurrent));
+  
+  GetFreeHeapSize := freeBytes
 end;
 
 end.
