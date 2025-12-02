@@ -45,8 +45,6 @@ class Posit92 {
       hideCursor: () => this.hideCursor(),
       showCursor: () => this.showCursor(),
 
-      wasmgetmem: () => {}, // no-op
-
       // Keyboard
       isKeyDown: this.isKeyDown.bind(this),
       signalDone: () => { done = true },

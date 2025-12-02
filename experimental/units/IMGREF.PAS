@@ -47,7 +47,7 @@ procedure unsafeSprPset(const image: PImageRef; const x, y: integer; const colou
 
 implementation
 
-uses Logger, Maths, Panic, VGA, Wasm;
+uses Logger, Maths, Panic, VGA, WasmHeap;
 
 const
   MaxImageRefs = 256;
