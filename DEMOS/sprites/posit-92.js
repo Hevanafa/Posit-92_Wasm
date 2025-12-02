@@ -58,7 +58,7 @@ class Posit92 {
       hideCursor: () => this.hideCursor(),
       showCursor: () => this.showCursor(),
 
-      wasmgetmem: this.#WasmGetMem.bind(this),
+      wasmgetmem: () => {}, // no-op
 
       // Keyboard
       isKeyDown: this.isKeyDown.bind(this),
@@ -103,26 +103,36 @@ class Posit92 {
     this.#ctx = this.#canvas.getContext("2d");
   }
 
-  // Init segment
+  #loadMidnightOffset() {
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    this.#midnightOffset = midnight.getTime()
+  }
+  
   async #initWebAssembly() {
     const response = await fetch(this.#wasmSource);
     const bytes = await response.arrayBuffer();
     const result = await WebAssembly.instantiate(bytes, this.#importObject);
     this.#wasm = result.instance;
 
-    // Grow Wasm memory size
-    // Wasm memory grows in 64KB pages
+    /**
+     * Grow Wasm memory size (DOS-style: fixed allocation)
+     * Layout:
+     * * 0-1 MB: stack / globals
+     * * 1MB-2MB: heap
+     */
+
+    const heapStart = 1048576;  // 1 MB = 1024 * 1024 B
+    const heapSize = 1 * 1048576;
+
+    // Wasm memory is in 64KB pages
     const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
-    const requiredPages = Math.ceil(2 * 1048576 / 65536);
+    const requiredPages = Math.ceil((heapStart + heapSize) / 65536);
 
     if (pages < requiredPages)
       this.#wasm.exports.memory.grow(requiredPages - pages);
-  }
 
-  #loadMidnightOffset() {
-    const now = new Date();
-    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    this.#midnightOffset = midnight.getTime()
+    this.#wasm.exports.initHeap(heapStart, heapSize);
   }
 
   async init() {
@@ -218,7 +228,7 @@ class Posit92 {
 
     const wasmMemory = new Uint8Array(this.#wasm.exports.memory.buffer);
     const byteSize = img.width * img.height * 4;
-    const wasmPtr = this.#WasmGetMem(byteSize);
+    const wasmPtr = this.#wasm.exports.WasmGetMem(byteSize);
     wasmMemory.set(imageData.data, wasmPtr)
 
     if (this.#images.length == 0)
@@ -230,18 +240,6 @@ class Posit92 {
     this.#wasm.exports.registerImageRef(handle, wasmPtr, img.width, img.height);
 
     return handle
-  }
-
-  // Start at 1 MB
-  #wasmMemoryOffset = 1048576;
-
-  #WasmGetMem(bytes) {
-    const ptr = this.#wasmMemoryOffset;
-    this.#wasmMemoryOffset += bytes;
-
-    // Align to 4 byte
-    this.#wasmMemoryOffset = (this.#wasmMemoryOffset + 3) & ~3;
-    return ptr
   }
 
 
