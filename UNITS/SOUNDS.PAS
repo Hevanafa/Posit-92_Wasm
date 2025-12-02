@@ -1,3 +1,11 @@
+{
+  Sounds unit
+  Part of Posit-92 framework
+  By Hevanafa
+
+  Requires SoundsMixin class
+}
+
 unit Sounds;
 
 {$Mode TP}

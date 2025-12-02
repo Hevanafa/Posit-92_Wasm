@@ -40,7 +40,8 @@ procedure psetBlend(const x, y: integer; const colour: longword);
 
 implementation
 
-uses Logger, Wasm;
+uses
+  Logger, WasmHeap;
 
 var
   bufferInitialised: boolean;
@@ -48,7 +49,7 @@ var
 
 procedure initBuffer;
 begin
-  { writeLog('Attempting to call initBuffer'); }
+  writeLog('Attempting to call initBuffer');
 
   if not bufferInitialised then begin
     surface := PByteArray(WasmGetMem(bufferSize));
