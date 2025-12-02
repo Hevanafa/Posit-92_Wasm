@@ -39,6 +39,9 @@ class Posit92 {
   /**
    * For use with WebAssembly init
    */
+  /**
+   * @type {WebAssembly.Imports}
+   */
   #importObject = {
     env: {
       _haltproc: this.#handleHaltProc.bind(this),
@@ -109,7 +112,6 @@ class Posit92 {
     this.#midnightOffset = midnight.getTime()
   }
 
-  // Init segment
   async #initWebAssembly() {
     const response = await fetch(this.#wasmSource);
     const bytes = await response.arrayBuffer();
@@ -141,7 +143,6 @@ class Posit92 {
 
     Object.freeze(this.#importObject);
     await this.#initWebAssembly();
-
     this.#wasm.exports.init();
     
     this.#initKeyboard();
