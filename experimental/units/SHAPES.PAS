@@ -33,6 +33,7 @@ function newRect(const x, y, width, height: double): TRect;
 
 function rectIntersects(const self, other: TRect): boolean;
 function circleIntersects(const self, other: TCircle): boolean;
+function circleRectIntersects(const circ: TCircle; const rect: TRect): boolean;
 
 
 implementation
@@ -96,6 +97,7 @@ begin
     and (self.y < other.y + other.height)
 end;
 
+{ Distance isn't square rooted }
 function circleIntersects(const self, other: TCircle): boolean;
 var
   dx, dy, dist, radiusSum: double;
@@ -107,6 +109,22 @@ begin
 
   dist := dx * dx + dy * dy;
   circleIntersects := dist < radiusSum * radiusSum
+end;
+
+{ Distance isn't square rooted }
+function circleRectIntersects(const circ: TCircle; const rect: TRect): boolean;
+var
+  closestX, closestY: double;
+  dx, dy, dist: double;
+begin
+  closestX := clamp(circ.cx, rect.x, rect.x + rect.width);
+  closestY := clamp(circ.cy, rect.y, rect.y + rect.height);
+
+  dx := circ.cx - closestX;
+  dy := circ.cy - closestY;
+  dist := dx * dx + dy * dy;
+
+  circleRectIntersects := dist < circ.radius * circ.radius
 end;
 
 
