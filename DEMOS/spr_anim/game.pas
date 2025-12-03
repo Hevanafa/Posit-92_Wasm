@@ -44,8 +44,7 @@ begin
 
   initSpriteAnim(sprHourglass, imgHourglass, 15, 32, 32, 0.2);
   sprHourglass.looping := false;
-  hourglassFrameIdx := 0;
-  hourglassStartTick := getTimer
+  rewindSpriteAnim(hourglassStartTick, getTimer, hourglassFrameIdx);
 end;
 
 procedure update;

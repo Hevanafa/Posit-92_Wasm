@@ -28,6 +28,8 @@ procedure updateSpriteAnim(
   var startTick: double;
   var frameIdx: integer);
 
+procedure rewindSpriteAnim(var startTickRef: double; const startTick: double; var frameIdx: integer);
+
 procedure drawSpriteAnim(const sprite: TSpriteAnim; const frameIdx: integer; const x, y: integer);
 
 
@@ -64,6 +66,12 @@ begin
       startTick := startTick + sprite.interval
     end;
   end;
+end;
+
+procedure rewindSpriteAnim(var startTickRef: double; const startTick: double; var frameIdx: integer);
+begin
+  startTickRef := startTick;
+  frameIdx := 0
 end;
 
 procedure drawSpriteAnim(const sprite: TSpriteAnim; const frameIdx: integer; const x, y: integer);
