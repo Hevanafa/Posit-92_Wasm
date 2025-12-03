@@ -107,13 +107,18 @@ var
 begin
   cls($FF6495ED);
 
+  { Circle to circle intersection }
+  {
   drawCircleZone(
     playerCircleZone,
     u32Iif(circleIntersects(playerCircleZone, npcCircleZone),
       green, grey));
 
   drawCircleZone(npcCircleZone, white);
+  }
 
+  { Rectangle intersection}
+  {
   drawZone(
     playerZone,
     u32Iif(rectIntersects(playerZone, npcZone),
@@ -123,6 +128,15 @@ begin
     npcZone,
     u32Iif(rectIntersects(playerZone, npcZone),
       white, grey));
+  }
+
+  { Circle to rect intersection }
+  drawCircleZone(
+    playerCircleZone,
+    u32Iif(circleRectIntersects(playerCircleZone, npcZone),
+      green, grey));
+
+  drawZone(npcZone, white);
 
   spr(imgDosuEXE[1], trunc(npcZone.x), trunc(npcZone.y));
 

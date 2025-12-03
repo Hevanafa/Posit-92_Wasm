@@ -38,7 +38,7 @@ function circleRectIntersects(const circ: TCircle; const rect: TRect): boolean;
 
 implementation
 
-uses Graphics;
+uses Maths, Graphics;
 
 procedure drawZone(const zone: TRect; const colour: longword);
 begin
