@@ -1,6 +1,7 @@
 library Game;
 
 {$Mode ObjFPC}
+{$H-}
 
 uses
   Conv, Graphics, Keyboard, Mouse,
@@ -11,6 +12,10 @@ uses
 const
   SC_ESC = $01;
   SC_SPACE = $39;
+
+  SC_1 = $02;
+  SC_2 = $03;
+  SC_3 = $04;
 
   SC_W = $11;
   SC_A = $1E;
@@ -23,10 +28,16 @@ const
   White = $FFFFFFFF;  { AARRGGBB }
   Green = $FF55FF55;
 
+  DemoModeRect = 1;
+  DemoModeCircle = 2;
+  DemoModeCircleRect = 3;
+
 var
   lastEsc: boolean;
 
   { Init your game state here }
+  actualDemoMode: integer;
+
   gameTime: double;
   mapBounds: TRect;
 
@@ -42,6 +53,18 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
+function getDemoModeName(const mode: integer): string;
+begin
+  case mode of
+    DemoModeRect: result := 'Rect vs Rect';
+    DemoModeCircle: result := 'Circle vs Circle';
+    DemoModeCircleRect: result := 'Circle vs Rect';
+    else result := 'Unknown mode: ' + i32str(mode)
+  end;
+
+  getDemoModeName := result
+end;
+
 
 procedure init;
 begin
@@ -53,6 +76,8 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  actualDemoMode := DemoModeRect;
 
   mapBounds := newRect(20, 20, 280, 160);
 
@@ -148,6 +173,8 @@ begin
   s := 'WASD - Move';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
+
+  printDefault('Mode: ' + getDemoModeName(actualDemoMode), 10, 10);
 
   drawMouse;
   flush

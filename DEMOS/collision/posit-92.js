@@ -11,6 +11,10 @@ const ScancodeMap = {
   "Escape": 0x01,
   "Space": 0x39,
 
+  "Digit1": 0x02,
+  "Digit2": 0x03,
+  "Digit3": 0x04,
+  
   "KeyW": 0x11,
   "KeyA": 0x1E,
   "KeyS": 0x1F,
