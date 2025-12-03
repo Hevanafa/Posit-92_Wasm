@@ -160,7 +160,7 @@ begin
       drawZone(
         playerZone,
         u32Iif(rectIntersects(playerZone, npcZone),
-          white, grey));
+          green, white));
 
       drawZone(
         npcZone,
@@ -181,9 +181,9 @@ begin
       drawCircleZone(
         playerCircleZone,
         u32Iif(circleRectIntersects(playerCircleZone, npcZone),
-          green, grey));
+          green, white));
 
-      drawZone(npcZone, white);
+      drawZone(npcZone, grey);
     end;
   end;
 
