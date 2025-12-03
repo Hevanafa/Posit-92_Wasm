@@ -22,12 +22,17 @@ var
   hourglassStartTick: double;
   sprHourglass: TSpriteAnim;
 
+  cursorFrameIdx: integer;
+  cursorStartTick: double;
+  sprAppStartingCursor: TSpriteAnim;
+
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
 procedure drawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  { spr(imgCursor, mouseX, mouseY) }
+  drawSpriteAnim(sprAppStartingCursor, cursorFrameIdx, mouseX, mouseY)
 end;
 
 
@@ -43,8 +48,11 @@ begin
   hideCursor;
 
   initSpriteAnim(sprHourglass, imgHourglass, 15, 32, 32, 0.2);
-  sprHourglass.looping := false;
+  { sprHourglass.looping := false; }
   rewindSpriteAnim(hourglassStartTick, getTimer, hourglassFrameIdx);
+
+  initSpriteAnim(sprAppStartingCursor, imgAppStartingCursor, 10, 32, 32, 0.2);
+  rewindSpriteAnim(cursorStartTick, getTimer, cursorFrameIdx);
 end;
 
 procedure update;
@@ -60,6 +68,7 @@ begin
   end;
 
   updateSpriteAnim(sprHourglass, getTimer, hourglassStartTick, hourglassFrameIdx);
+  updateSpriteAnim(sprAppStartingCursor, getTimer, cursorStartTick, cursorFrameIdx);
 
   gameTime := gameTime + dt
 end;
@@ -76,8 +85,9 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  spr(imgAppStartingCursor, 10, 10);
+  { spr(imgAppStartingCursor, 10, 10); }
   { spr(imgHourglass, 10, 60); }
+
   drawSpriteAnim(sprHourglass, hourglassFrameIdx, 188, 80);
 
   s := 'Hello world!';
