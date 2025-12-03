@@ -13,6 +13,8 @@ var
 
   imgCursor: longint;
   imgDosuEXE: array[0..1] of longint;
+  imgAppStartingCursor: longint;
+  imgHourglass: longint;
 
 { BMFont boilerplate }
 function defaultFontPtr: PBMFont; public name 'defaultFontPtr';

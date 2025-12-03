@@ -18,13 +18,10 @@ class Game extends Posit92 {
     handle = await this.loadImage("assets/images/dosu_2.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
 
-    await this.loadImage(
-      this.wasmInstance.exports.setImgAppStartingCursor(
-        "assets/images/appstarting_sheet.png"));
-
-    await this.loadImage(
-      this.wasmInstance.exports.setImgHourglass(
-        "assets/images/hourglass_sheet.png"));
+    handle = await this.loadImage("assets/images/appstarting_sheet.png");
+    this.wasmInstance.exports.setImgAppStartingCursor(handle);
+    handle = await this.loadImage("assets/images/hourglass_sheet.png");
+    this.wasmInstance.exports.setImgHourglass(handle);
 
     // Add more assets as necessary
   }

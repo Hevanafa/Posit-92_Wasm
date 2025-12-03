@@ -66,6 +66,9 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
+  spr(imgAppStartingCursor, 10, 10);
+  spr(imgHourglass, 10, 60);
+
   s := 'Hello world!';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
