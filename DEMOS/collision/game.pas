@@ -160,10 +160,13 @@ begin
   { Rectangle intersection }
   case actualDemoMode of
     DemoModeRect: begin
-      drawZone(
-        playerZone,
-        u32Iif(rectIntersects(playerZone, npcZone),
-          green, white));
+      if pointRectIntersects(mouseP, playerZone) then
+        drawZone(playerZone, yellow)
+      else
+        drawZone(
+          playerZone,
+          u32Iif(rectIntersects(playerZone, npcZone),
+            green, white));
 
       drawZone(
         npcZone,
@@ -208,6 +211,9 @@ begin
   printDefault('WASD - Move', 8, 160);
   printDefault('TAB - Switch entity', 8, 170);
   printDefault('1, 2, 3 - Change mode', 8, 180);
+
+  printDefault('Hover over an active entity', 128, 160);
+  printDefault('to turn the zone yellow', 128, 170);
 
   drawMouse;
   flush
