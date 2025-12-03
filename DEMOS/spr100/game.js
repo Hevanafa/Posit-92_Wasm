@@ -36,6 +36,7 @@ async function main() {
   await game.init();
   game.afterInit();
 
+  /*
   function loop(currentTime) {
     if (done) {
       game.cleanup();
@@ -54,6 +55,10 @@ async function main() {
   }
 
   requestAnimationFrame(loop)
+  */
+
+  // game.update();
+  game.draw();
 }
 
 function play() {
