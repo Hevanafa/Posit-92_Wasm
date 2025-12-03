@@ -141,10 +141,8 @@ begin
   nextWidgetID := 0;
   lastActiveWidget := -1;
 
-  mouseZone.x := 0;
-  mouseZone.y := 0;
-  mouseZone.width := 1;
-  mouseZone.height := 1;
+  mousePoint.x := 0;
+  mousePoint.y := 0;
 end;
 
 function getHotWidget: integer;
@@ -259,7 +257,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
-    if rectIntersects(zone, mouseZone) then begin
+    if pointRectIntersects(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then activeWidget := thisWidgetID;
@@ -308,7 +306,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
-    if rectIntersects(zone, mouseZone) then begin
+    if pointRectIntersects(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then activeWidget := thisWidgetID;
@@ -364,7 +362,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then
-    if rectIntersects(zone, mouseZone) then begin
+    if pointRectIntersects(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then begin
@@ -413,7 +411,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
-    if rectIntersects(zone, mouseZone) then begin
+    if pointRectIntersects(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then activeWidget := thisWidgetID;
@@ -468,7 +466,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
-    if rectIntersects(zone, mouseZone) then begin
+    if pointRectIntersects(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then activeWidget := thisWidgetID;
@@ -523,7 +521,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
-    if rectIntersects(zone, mouseZone) then begin
+    if pointRectIntersects(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then
@@ -641,7 +639,7 @@ begin
   { PromptButton := ImageButton(x, y, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed); }
   inc(nextWidgetID);
 
-  if rectIntersects(zone, mouseZone) then begin
+  if pointRectIntersects(mousePoint, zone) then begin
     hotWidget := thisWidgetID;
     if mouseJustPressed then activeWidget := thisWidgetID;
   end;
