@@ -1,6 +1,7 @@
 unit Shapes;
 
 {$Mode TP}
+{$B-}
 
 interface
 
@@ -12,6 +13,11 @@ type
   TRect = record
     x, y: double;
     width, height: double;
+    vx, vy: double;
+  end;
+
+  TCircle = record
+    cx, cy, radius: double;
     vx, vy: double;
   end;
 
@@ -76,10 +82,10 @@ end;
 
 function rectIntersects(const self, other: TRect): boolean;
 begin
-  rectIntersects := (other.x < self.x + self.width) and
-    (self.x < other.x + other.width) and
-    (other.y < self.y + self.height) and
-    (self.y < other.y + other.height)
+  rectIntersects := (other.x < self.x + self.width)
+    and (self.x < other.x + other.width)
+    and (other.y < self.y + self.height)
+    and (self.y < other.y + other.height)
 end;
 
 end.
