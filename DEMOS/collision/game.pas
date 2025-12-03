@@ -3,7 +3,7 @@ library Game;
 {$Mode ObjFPC}
 
 uses
-  Graphics, Keyboard, Mouse,
+  Conv, Graphics, Keyboard, Mouse,
   ImgRef, ImgRefFast,
   Shapes, Timing, VGA,
   Assets;
@@ -21,6 +21,7 @@ const
 
   Grey = $FFAAAAAA;
   White = $FFFFFFFF;  { AARRGGBB }
+  Green = $FF55FF55;
 
 var
   lastEsc: boolean;
@@ -30,7 +31,7 @@ var
   mapBounds: TRect;
 
   playerZone, npcZone: TRect;
-  playerCircleZone, npcCirc: TCircle;
+  playerCircleZone, npcCircleZone: TCircle;
 
 
 { Use this to set `done` to true }
@@ -60,7 +61,11 @@ begin
 
   playerCircleZone.cx := 155;
   playerCircleZone.cy := 95;
-  playerCircleZone.radius := 20;
+  playerCircleZone.radius := 30;
+
+  npcCircleZone.cx := getZoneCX(npcZone);
+  npcCircleZone.cy := getZoneCY(npcZone);
+  npcCircleZone.radius := 30;
 end;
 
 procedure update;
@@ -102,17 +107,22 @@ var
 begin
   cls($FF6495ED);
 
-  drawCircleZone(playerCircleZone, white);
+  drawCircleZone(
+    playerCircleZone,
+    u32Iif(circleIntersects(playerCircleZone, npcCircleZone),
+      green, grey));
 
-  if rectIntersects(playerZone, npcZone) then
-    drawZone(playerZone, white)
-  else
-    drawZone(playerZone, grey);
+  drawCircleZone(npcCircleZone, white);
 
-  if rectIntersects(playerZone, npcZone) then
-    drawZone(npcZone, white)
-  else
-    drawZone(npcZone, grey);
+  drawZone(
+    playerZone,
+    u32Iif(rectIntersects(playerZone, npcZone),
+      white, grey));
+
+  drawZone(
+    npcZone,
+    u32Iif(rectIntersects(playerZone, npcZone),
+      white, grey));
 
   spr(imgDosuEXE[1], trunc(npcZone.x), trunc(npcZone.y));
 

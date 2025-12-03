@@ -97,7 +97,7 @@ begin
     u16Iif := falsePart;
 end;
 
-function i32Iif(const expr: boolean; const truePart, falsePart: integer): integer;
+function i32Iif(const expr: boolean; const truePart, falsePart: longint): longint;
 begin
   if expr then
     i32Iif := truePart
