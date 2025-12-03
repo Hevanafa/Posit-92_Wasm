@@ -49,7 +49,7 @@ function hasHoveredWidget: boolean;
 procedure updateGUILastMouseButton;
 
 { Required: Called after updateMouse }
-procedure updateGUIMouseZone;
+procedure updateGUIMousePoint;
 
 { Required: Called at the end of update routine }
 procedure resetWidgetIndices;
@@ -108,7 +108,7 @@ const
 var
   { Immediate GUI }
   { Additional mouse variables }
-  mouseZone: TRect;
+  mousePoint: TPoint;
   lastMouseButton: integer;
   mouseJustPressed, mouseJustReleased: boolean;
 
@@ -173,10 +173,10 @@ begin
   lastMouseButton := mouseButton
 end;
 
-procedure updateGUIMouseZone;
+procedure updateGUIMousePoint;
 begin
-  mouseZone.x := mouseX;
-  mouseZone.y := mouseY;
+  mousePoint.x := mouseX;
+  mousePoint.y := mouseY;
 
   mouseJustPressed := (mouseButton <> MouseButtonNone) and (lastMouseButton = MouseButtonNone);
   mouseJustReleased := (mouseButton = MouseButtonNone) and (lastMouseButton <> MouseButtonNone)

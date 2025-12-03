@@ -202,7 +202,7 @@ begin
 
   updateGUILastMouseButton;
   updateMouse;
-  updateGUIMouseZone;
+  updateGUIMousePoint;
 
   { Your update logic here }
   if lastEsc <> isKeyDown(SC_ESC) then begin
