@@ -28,6 +28,7 @@ const
   Grey = $FFAAAAAA;
   White = $FFFFFFFF;  { AARRGGBB }
   Green = $FF55FF55;
+  Yellow = $FFFFFF55;
 
   DemoModeRect = 1;
   DemoModeCircle = 2;
@@ -149,10 +150,12 @@ end;
 
 procedure draw;
 var
-  w: integer;
-  s: string;
+  mouseP: TPoint;
 begin
   cls($FF6495ED);
+
+  mouseP.x := mouseX;
+  mouseP.y := mouseY;
 
   { Rectangle intersection }
   case actualDemoMode of
@@ -169,19 +172,25 @@ begin
     end;
 
     DemoModeCircle: begin
-      drawCircleZone(
-        playerCircleZone,
-        u32Iif(circleIntersects(playerCircleZone, npcCircleZone),
-          green, white));
+      if pointCircleIntersects(mouseP, playerCircleZone) then
+        drawCircleZone(playerCircleZone, yellow)
+      else
+        drawCircleZone(
+          playerCircleZone,
+          u32Iif(circleIntersects(playerCircleZone, npcCircleZone),
+            green, white));
 
       drawCircleZone(npcCircleZone, grey);
     end;
 
     DemoModeCircleRect: begin
-      drawCircleZone(
-        playerCircleZone,
-        u32Iif(circleRectIntersects(playerCircleZone, npcZone),
-          green, white));
+      if pointCircleIntersects(mouseP, playerCircleZone) then
+        drawCircleZone(playerCircleZone, yellow)
+      else
+        drawCircleZone(
+          playerCircleZone,
+          u32Iif(circleRectIntersects(playerCircleZone, npcZone),
+            green, white));
 
       drawZone(npcZone, grey);
     end;
