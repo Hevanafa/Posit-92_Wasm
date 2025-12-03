@@ -196,7 +196,8 @@ begin
 
   printDefault('Mode: ' + getDemoModeName(actualDemoMode), 10, 10);
 
-  printDefault('WASD - Move', 8, 170);
+  printDefault('WASD - Move', 8, 160);
+  printDefault('TAB - Switch entity', 8, 170);
   printDefault('1, 2, 3 - Change mode', 8, 180);
 
   drawMouse;
