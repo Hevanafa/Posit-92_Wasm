@@ -17,16 +17,13 @@ type
   { Stateless lerp timer
     Requires a pair of start & end values }
   TLerpTimer = record
-    { active: boolean; }
     startTick, endTick: double;
-    { looping: boolean; }
   end;
 
 procedure initLerp(var lt: TLerpTimer; const startTick, duration: double);
 function newLerp(const startTick, duration: double): TLerpTimer;
 function getLerpPerc(const lt: TLerpTimer; const t: double): double;
 function isLerpComplete(const lt: TLerpTimer; const t: double): boolean;
-{ procedure stopLerp(var lt: TLerpTimer); }
 
 function lerpLinear(const a, z: double; perc: double): double;
 
@@ -45,54 +42,29 @@ uses Maths, Timing;
 
 procedure initLerp(var lt: TLerpTimer; const startTick, duration: double);
 begin
-  { lt.active := true; }
   lt.startTick := startTick;
   lt.endTick := startTick + duration;
-  { lt.looping := false; }
 end;
 
 function newLerp(const startTick, duration: double): TLerpTimer;
 var
   result: TLerpTimer;
 begin
-  { result.active := true; }
   result.startTick := startTick;
   result.endTick := startTick + duration;
-  { result.looping := false; }
 
   newLerp := result
 end;
 
 function getLerpPerc(const lt: TLerpTimer; const t: double): double;
 begin
-{
-  if not lt.active then begin
-    getLerpPerc := 0.0;
-    exit
-  end;
-}
-
   getLerpPerc := clamp((t - lt.startTick) / (lt.endTick - lt.startTick), 0.0, 1.0)
 end;
 
 function isLerpComplete(const lt: TLerpTimer; const t: double): boolean;
 begin
-{
-  if lt.looping then begin
-    isLerpComplete := false;
-    exit
-  end;
-}
-
   isLerpComplete := t >= lt.endTick
 end;
-
-{
-procedure stopLerp(var lt: TLerpTimer);
-begin
-  lt.active := false
-end;
-}
 
 
 { Begin easing functions }
