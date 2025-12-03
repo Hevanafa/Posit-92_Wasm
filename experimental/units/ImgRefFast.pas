@@ -8,10 +8,17 @@
 
 unit ImgRefFast;
 
+{$Mode TP}
+{$B-}  { Enable boolean short-circuiting }
+{$R-}  { Turn off range checks }
+{$Q-}  { Turn off overflow checks }
+
 interface
 
 { spr with TImageRef }
 procedure spr(const imgHandle: longint; const x, y: integer);
+
+procedure sprClear(const imgHandle: longint; const colour: longword);
 
 procedure sprRegion(
   const imgHandle: longint;
@@ -68,6 +75,21 @@ begin
     colour := unsafeSprPget(image, px, py);
     unsafePset(x + px, y + py, colour)
   end;
+end;
+
+procedure sprClear(const imgHandle: longint; const colour: longword);
+var
+  image: PImageRef;
+  px, py: integer;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+
+  { fillchar(image^.dataPtr, image^.width * image^.height * 4, 0); }
+  for py:=0 to image^.height - 1 do
+  for px:=0 to image^.width - 1 do begin
+    unsafeSprPset(image, px, py, colour);
 end;
 
 procedure sprRegion(
