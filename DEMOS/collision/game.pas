@@ -105,6 +105,10 @@ begin
     if lastEsc then signalDone;
   end;
 
+  if isKeyDown(SC_1) then actualDemoMode := DemoModeRect;
+  if isKeyDown(SC_2) then actualDemoMode := DemoModeCircle;
+  if isKeyDown(SC_3) then actualDemoMode := DemoModeCircleRect;
+
   if isKeyDown(SC_W) then playerZone.y := playerZone.y - MoveSpeed * dt;
   if isKeyDown(SC_S) then playerZone.y := playerZone.y + MoveSpeed * dt;
 
@@ -132,36 +136,38 @@ var
 begin
   cls($FF6495ED);
 
-  { Circle to circle intersection }
-  {
-  drawCircleZone(
-    playerCircleZone,
-    u32Iif(circleIntersects(playerCircleZone, npcCircleZone),
-      green, grey));
+  { Rectangle intersection }
+  case actualDemoMode of
+    DemoModeRect: begin
+      drawZone(
+        playerZone,
+        u32Iif(rectIntersects(playerZone, npcZone),
+          white, grey));
 
-  drawCircleZone(npcCircleZone, white);
-  }
+      drawZone(
+        npcZone,
+        u32Iif(rectIntersects(playerZone, npcZone),
+          white, grey));
+    end;
 
-  { Rectangle intersection}
-  {
-  drawZone(
-    playerZone,
-    u32Iif(rectIntersects(playerZone, npcZone),
-      white, grey));
+    DemoModeCircle: begin
+      drawCircleZone(
+        playerCircleZone,
+        u32Iif(circleIntersects(playerCircleZone, npcCircleZone),
+          green, grey));
 
-  drawZone(
-    npcZone,
-    u32Iif(rectIntersects(playerZone, npcZone),
-      white, grey));
-  }
+      drawCircleZone(npcCircleZone, white);
+    end;
 
-  { Circle to rect intersection }
-  drawCircleZone(
-    playerCircleZone,
-    u32Iif(circleRectIntersects(playerCircleZone, npcZone),
-      green, grey));
+    DemoModeCircleRect: begin
+      drawCircleZone(
+        playerCircleZone,
+        u32Iif(circleRectIntersects(playerCircleZone, npcZone),
+          green, grey));
 
-  drawZone(npcZone, white);
+      drawZone(npcZone, white);
+    end;
+  end;
 
   spr(imgDosuEXE[1], trunc(npcZone.x), trunc(npcZone.y));
 
@@ -170,11 +176,10 @@ begin
   else
     spr(imgDosuEXE[0], trunc(playerZone.x), trunc(playerZone.y));
 
-  s := 'WASD - Move';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
-
   printDefault('Mode: ' + getDemoModeName(actualDemoMode), 10, 10);
+  
+  printDefault('WASD - Move', 8, 170);
+  printDefault('1, 2, 3 - Change mode', 8, 180);
 
   drawMouse;
   flush
