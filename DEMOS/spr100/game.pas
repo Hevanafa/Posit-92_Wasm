@@ -1,9 +1,9 @@
 library Game;
 
-{$Mode ObjFPC}
+{$Mode TP}
 
 uses
-  Keyboard, Mouse,
+  BMFont, Conv, Keyboard, Mouse,
   ImgRef, ImgRefFast,
   Timing, VGA,
   Assets;
@@ -13,7 +13,9 @@ const
   SC_SPACE = $39;
 
   CornflowerBlue = $FF6495ED;
+  Black = $FF000000;
   DarkBlue = $FF0000AA;
+  Green = $FF55FF55;
 
 var
   lastEsc: boolean;
@@ -60,39 +62,27 @@ end;
 
 procedure draw;
 var
-  w: integer;
-  s: string;
+  a: word;
   startTick, endTick: double;
 begin
   startTick := getTimer;
 
   imgLayer := newImage(vgaWidth, vgaHeight);
-  { sprClear(imgTest, CornflowerBlue); }
-  for a:=0 to 100 do
-    sprToDest(imgDosuEXE[0], imgLayer, random(vgaWidth), random(vgaHeight));
+  
+  for a:=0 to 1000 do
+    sprToDest(imgDosuEXE[0], imgLayer, random(vgaWidth) - 20, random(vgaHeight) - 20);
 
   endTick := getTimer;
 
   cls(DarkBlue);
+  spr(imgLayer, 0, 0);
 
-{
-  if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
-  else
-    spr(imgDosuEXE[0], 148, 88);
-}
+  printBMFontColour(
+    '1000 sprites rendered in ' + f32str(endTick - startTick) + ' seconds',
+    10, 10,
+    defaultFont, defaultFontGlyphs,
+    green);
 
-  spr(imgLayer, 10, 10);
-
-  printDefault('100 sprites rendered in ' + f32str(endTick - startTick) + ' seconds');
-
-{
-  s := 'Hello world!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
-
-  drawMouse;
-}
   flush
 end;
 
