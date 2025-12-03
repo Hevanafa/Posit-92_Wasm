@@ -1,11 +1,11 @@
 library Game;
 
-{$Mode ObjFPC}
+{$Mode TP}
 
 uses
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Timing, VGA,
+  SprAnim, Timing, VGA,
   Assets;
 
 const
@@ -58,6 +58,8 @@ begin
     lastEsc := isKeyDown(SC_ESC);
     if lastEsc then signalDone;
   end;
+
+  updateSpriteAnim(sprHourglass, getTimer, hourglassStartTick, hourglassFrameIdx);
 
   gameTime := gameTime + dt
 end;
