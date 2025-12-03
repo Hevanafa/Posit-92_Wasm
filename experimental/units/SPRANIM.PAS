@@ -13,7 +13,7 @@ type
     frameCount: word;
     frameWidth, frameHeight: word;
     interval: double;  { in seconds }
-    isLooping: boolean;
+    looping: boolean;
   end;
 
 procedure initSpriteAnim(
@@ -46,7 +46,7 @@ begin
   sprite.frameWidth := frameWidth;
   sprite.frameHeight := frameHeight;
   sprite.interval := interval;
-  sprite.isLooping := true
+  sprite.looping := true
 end;
 
 procedure updateSpriteAnim(
@@ -59,7 +59,7 @@ begin
     if frameIdx < sprite.frameCount - 1 then begin
       inc(frameIdx);
       startTick := startTick + sprite.interval
-    end else if sprite.isLooping then begin
+    end else if sprite.looping then begin
       frameIdx := 0;
       startTick := startTick + sprite.interval
     end;
