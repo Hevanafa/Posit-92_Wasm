@@ -44,6 +44,8 @@ begin
 
   imgTest := newImage(32, 32);
   sprClear(imgTest, CornflowerBlue);
+
+  sprToDest(imgDosuEXE[0], imgTest, 0, 0);
 end;
 
 procedure update;

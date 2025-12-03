@@ -44,6 +44,8 @@ procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: int
 procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
 
 
+procedure sprToDest(const src, dest: longint; const x, y: integer);
+
 implementation
 
 uses ImgRef, VGA;
@@ -324,6 +326,35 @@ begin
 
     colour := unsafeSprPget(image, srcX, srcY);
     unsafePset(cx + dx, cy + dy, colour)
+  end;
+end;
+
+
+procedure sprToDest(const src, dest: longint; const x, y: integer);
+var
+  srcImage, destImage: PImageRef;
+  a, b: integer;
+  srcOffset: longword;
+  alpha: byte;
+  colour: longword;
+begin
+  if not isImageSet(src) then exit;
+  if not isImageSet(dest) then exit;
+
+  srcImage := getImagePtr(src);
+  destImage := getImagePtr(dest);
+
+  for b:=0 to srcImage^.height - 1 do
+  for a:=0 to srcImage^.width - 1 do begin
+    if (x + a >= destImage^.width) or (x + a < 0)
+      or (y + b >= destImage^.height) or (y + b < 0) then continue;
+
+    srcOffset := (a + b * srcImage^.width) * 4;
+    alpha := srcImage^.dataPtr[srcOffset + 3];
+    if alpha < 255 then continue;
+
+    colour := unsafeSprPget(srcImage, a, b);
+    unsafeSprPset(destImage, x + a, y + b, colour)
   end;
 end;
 
