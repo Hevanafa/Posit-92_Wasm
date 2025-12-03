@@ -19,6 +19,7 @@ const
 
   MoveSpeed = 100;  { pixels per second }
 
+  Grey = $FFAAAAAA;
   White = $FFFFFFFF;  { AARRGGBB }
 
 var
@@ -27,6 +28,7 @@ var
   { Init your game state here }
   gameTime: double;
   playerZone: TRect;
+  npcZone: TRect;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -48,7 +50,8 @@ begin
   { Initialise game state here }
   hideCursor;
 
-  playerZone := newRect(155, 95, 24, 24)
+  playerZone := newRect(155, 95, 24, 24);
+  npcZone := newRect(180, 55, 24, 24);
 end;
 
 procedure update;
@@ -79,7 +82,17 @@ var
 begin
   cls($FF6495ED);
 
-  drawZone(playerZone, white);
+  if rectIntersects(playerZone, npcZone) then
+    drawZone(playerZone, white)
+  else
+    drawZone(playerZone, grey);
+
+  if rectIntersects(playerZone, npcZone) then
+    drawZone(npcZone, white)
+  else
+    drawZone(npcZone, grey);
+
+  spr(imgDosuEXE[1], trunc(npcZone.x), trunc(npcZone.y));
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], trunc(playerZone.x), trunc(playerZone.y))
