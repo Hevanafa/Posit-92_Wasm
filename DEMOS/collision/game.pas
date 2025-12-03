@@ -27,8 +27,9 @@ var
 
   { Init your game state here }
   gameTime: double;
-  playerZone: TRect;
-  npcZone: TRect;
+  mapBounds: TRect;
+  playerZone, npcZone: TRect;
+
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -49,6 +50,8 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  mapBounds := newRect(20, 20, 280, 160);
 
   playerZone := newRect(155, 95, 24, 24);
   npcZone := newRect(180, 55, 24, 24);
@@ -71,6 +74,14 @@ begin
 
   if isKeyDown(SC_A) then playerZone.x := playerZone.x - MoveSpeed * dt;
   if isKeyDown(SC_D) then playerZone.x := playerZone.x + MoveSpeed * dt;
+
+  if playerZone.x < mapBounds.x then playerZone.x := mapBounds.x;
+  if playerZone.y < mapBounds.y then playerZone.y := mapBounds.y;
+
+  if playerZone.x + playerZone.width >= mapBounds.x + mapBounds.width then
+    playerZone.x := mapBounds.x + mapBounds.width - playerZone.width;
+  if playerZone.y + playerZone.height >= mapBounds.y + mapBounds.height then
+    playerZone.y := mapBounds.y + mapBounds.height - playerZone.height;
 
   gameTime := gameTime + dt
 end;
