@@ -3,20 +3,30 @@ library Game;
 {$Mode ObjFPC}
 
 uses
-  Keyboard, Mouse,
+  Graphics, Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Timing, VGA,
+  Shapes, Timing, VGA,
   Assets;
 
 const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+  SC_W = $11;
+  SC_A = $1E;
+  SC_S = $1F;
+  SC_D = $20;
+
+  MoveSpeed = 100;  { pixels per second }
+
+  White = $FFFFFFFF;  { AARRGGBB }
+
 var
   lastEsc: boolean;
 
   { Init your game state here }
   gameTime: double;
+  playerZone: TRect;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -37,6 +47,8 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  playerZone := newRect(155, 95, 24, 24)
 end;
 
 procedure update;
@@ -51,6 +63,12 @@ begin
     if lastEsc then signalDone;
   end;
 
+  if isKeyDown(SC_W) then playerZone.y := playerZone.y - MoveSpeed * dt;
+  if isKeyDown(SC_S) then playerZone.y := playerZone.y + MoveSpeed * dt;
+
+  if isKeyDown(SC_A) then playerZone.x := playerZone.x - MoveSpeed * dt;
+  if isKeyDown(SC_D) then playerZone.x := playerZone.x + MoveSpeed * dt;
+
   gameTime := gameTime + dt
 end;
 
@@ -61,12 +79,14 @@ var
 begin
   cls($FF6495ED);
 
-  if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
-  else
-    spr(imgDosuEXE[0], 148, 88);
+  drawZone(playerZone, white);
 
-  s := 'Hello world!';
+  if (trunc(gameTime * 4) and 1) > 0 then
+    spr(imgDosuEXE[1], trunc(playerZone.x), trunc(playerZone.y))
+  else
+    spr(imgDosuEXE[0], trunc(playerZone.x), trunc(playerZone.y));
+
+  s := 'WASD - Move';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
 
