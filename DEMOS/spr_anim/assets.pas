@@ -25,6 +25,9 @@ function measureDefault(const text: string): word;
 procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
 
+procedure setImgAppStartingCursor(const imgHandle: longint); public name 'setImgAppStartingCursor';
+procedure setImgHourglass(const imgHandle: longint); public name 'setImgHourglass';
+
 
 implementation
 
@@ -64,5 +67,16 @@ procedure setImgDosuEXE(const imgHandle: longint; const idx: integer);
 begin
   imgDosuEXE[idx] := imgHandle
 end;
+
+procedure setImgAppStartingCursor(const imgHandle: longint);
+begin
+  imgAppStartingCursor := imgHandle
+end;
+
+procedure setImgHourglass(const imgHandle: longint);
+begin
+  imgHourglass := imgHandle
+end;
+
 
 end.

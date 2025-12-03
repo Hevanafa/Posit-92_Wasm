@@ -4,7 +4,7 @@ interface
 
 type
   { Stateless sprite animation
-    Requires 3 variables: frame index, start tick, end tick }
+    Requires 3 variables: frame index, start tick }
   TSpriteAnim = record
     imgHandle: longint;
     frameCount: word;
