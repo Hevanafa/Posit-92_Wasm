@@ -44,6 +44,7 @@ DEMOS/music/*.ps1
 # DEMOS/webgl_demo/*.ps1
 DEMOS/heap_demo/*.ps1
 DEMOS/collision/*.ps1
+DEMOS/spr_anim/*.ps1
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
