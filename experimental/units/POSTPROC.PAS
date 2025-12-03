@@ -14,6 +14,7 @@ var
   image: PImageRef;
   px, py: integer;
   r, g, b, a: byte;
+  grey: byte;
   colour: longword;
 begin
   if not isImageSet(imgHandle) then exit;
@@ -29,10 +30,10 @@ begin
     b := colour shr 8 and $FF;
     a := colour and $FF;
 
-    { TODO: Apply grey filter }
-    { TODO: unsafeSprPset }
+    grey := trunc(r * 0.299 + g * 0.587 + b * 0.114);
+    colour := ((grey shl 8 or grey) shl 8 or grey) shl 8 or alpha;
+    unsafeSprPset(image, px, py, colour)
   end;
-  
 end;
 
 end.
