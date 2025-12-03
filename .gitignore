@@ -8,7 +8,7 @@
 dist/
 
 # Boilerplate files
-boilerplate/units/*.pas
+boilerplate/units/
 boilerplate/posit-92.js
 
 # The only required script is setup.ps1
@@ -43,6 +43,7 @@ DEMOS/image_ptr/*.ps1
 DEMOS/music/*.ps1
 # DEMOS/webgl_demo/*.ps1
 DEMOS/heap_demo/*.ps1
+DEMOS/collision/*.ps1
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
