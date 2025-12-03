@@ -34,7 +34,7 @@ function newRect(const x, y, width, height: double): TRect;
 function rectIntersects(const self, other: TRect): boolean;
 function circleIntersects(const self, other: TCircle): boolean;
 function circleRectIntersects(const circ: TCircle; const rect: TRect): boolean;
-
+function pointCircleIntersects(const p: TPoint; const circ: TCircle): boolean;
 
 implementation
 
@@ -125,6 +125,17 @@ begin
   dist := dx * dx + dy * dy;
 
   circleRectIntersects := dist < circ.radius * circ.radius
+end;
+
+function pointCircleIntersects(const p: TPoint; const circ: TCircle): boolean;
+var
+  dx, dy, dist: double;
+begin
+  dx := p.x - circ.cx;
+  dy := p.y - circ.cy;
+  dist := dx * dx + dy * dy;
+
+  pointCircleIntersects := dist < circ.radius * circ.radius
 end;
 
 
