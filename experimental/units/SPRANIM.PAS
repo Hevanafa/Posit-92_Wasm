@@ -13,6 +13,26 @@ type
     isLooping: boolean;
   end;
 
+procedure initSpriteAnim(
+  var sprite: TSpriteAnim;
+  const imgHandle: longint;
+  const frameCount, frameWidth, frameHeight: word;
+  const interval: double);
+
 implementation
+
+procedure initSpriteAnim(
+  var sprite: TSpriteAnim;
+  const imgHandle: longint;
+  const frameCount, frameWidth, frameHeight: word;
+  const interval: double);
+begin
+  sprite.imgHandle := imgHandle;
+  sprite.frameCount := frameCount;
+  sprite.frameWidth := frameWidth;
+  sprite.frameHeight := frameHeight;
+  sprite.interval := interval;
+  sprite.isLooping := true
+end;
 
 end.

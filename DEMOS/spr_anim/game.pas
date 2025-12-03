@@ -18,6 +18,10 @@ var
   { Init your game state here }
   gameTime: double;
 
+  hourglassFrameIdx: integer;
+  hourglassStartTick: double;
+  sprHourglass: TSpriteAnim;
+
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
@@ -37,6 +41,10 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  initSpriteAnim(sprHourglass, imgHourglass, 15, 32, 32, 0.2);
+  hourglassFrameIdx := 0;
+  hourglassStartTick := getTimer
 end;
 
 procedure update;
