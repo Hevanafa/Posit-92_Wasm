@@ -46,6 +46,7 @@ DEMOS/heap_demo/*.ps1
 DEMOS/collision/*.ps1
 DEMOS/spr_anim/*.ps1
 DEMOS/spr_dest/*.ps1
+DEMOS/spr_dest/*.pas
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
