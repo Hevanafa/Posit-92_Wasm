@@ -48,7 +48,7 @@ procedure sprToDest(const src, dest: longint; const x, y: integer);
 
 implementation
 
-uses ImgRef, VGA;
+uses ImgRef, Maths, VGA;
 
 procedure spr(const imgHandle: longint; const x, y: integer);
 var
@@ -333,6 +333,7 @@ end;
 procedure sprToDest(const src, dest: longint; const x, y: integer);
 var
   srcImage, destImage: PImageRef;
+  startX, endX, startY, endY: word;
   a, b: integer;
   srcOffset: longword;
   alpha: byte;
@@ -344,11 +345,13 @@ begin
   srcImage := getImagePtr(src);
   destImage := getImagePtr(dest);
 
-  for b:=0 to srcImage^.height - 1 do
-  for a:=0 to srcImage^.width - 1 do begin
-    if (x + a >= destImage^.width) or (x + a < 0)
-      or (y + b >= destImage^.height) or (y + b < 0) then continue;
+  startX := trunc(max(0, -x));
+  startY := trunc(max(0, -y));
+  endX := trunc(min(srcImage^.width, destImage^.width - x));
+  endY := trunc(min(srcImage^.height, destImage^.height - y));
 
+  for b:=startY to endY - 1 do
+  for a:=startX to endX - 1 do begin
     srcOffset := (a + b * srcImage^.width) * 4;
     alpha := srcImage^.dataPtr[srcOffset + 3];
     if alpha < 255 then continue;
