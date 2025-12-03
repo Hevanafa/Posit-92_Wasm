@@ -12,6 +12,7 @@ uses
 const
   SC_ESC = $01;
   SC_SPACE = $39;
+  SC_TAB = $0F;
 
   SC_1 = $02;
   SC_2 = $03;
@@ -33,7 +34,7 @@ const
   DemoModeCircleRect = 3;
 
 var
-  lastEsc: boolean;
+  lastEsc, lastTab: boolean;
 
   { Init your game state here }
   actualDemoMode: integer;
@@ -94,6 +95,9 @@ begin
 end;
 
 procedure update;
+var
+  tempZone: TRect;
+  tempCircle: TCircle;
 begin
   updateDeltaTime;
 
@@ -103,6 +107,20 @@ begin
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
     if lastEsc then signalDone;
+  end;
+
+  if lastTab <> isKeyDown(SC_TAB) then begin
+    lastTab := isKeyDown(SC_TAB);
+
+    if lastTab then begin
+      tempZone := playerZone;
+      playerZone := npcZone;
+      npcZone := tempZone;
+
+      tempCircle := playerCircleZone;
+      playerCircleZone := npcCircleZone;
+      npcCircleZone := tempCircle;
+    end;
   end;
 
   if isKeyDown(SC_1) then actualDemoMode := DemoModeRect;
@@ -154,9 +172,9 @@ begin
       drawCircleZone(
         playerCircleZone,
         u32Iif(circleIntersects(playerCircleZone, npcCircleZone),
-          green, grey));
+          green, white));
 
-      drawCircleZone(npcCircleZone, white);
+      drawCircleZone(npcCircleZone, grey);
     end;
 
     DemoModeCircleRect: begin
@@ -177,7 +195,7 @@ begin
     spr(imgDosuEXE[0], trunc(playerZone.x), trunc(playerZone.y));
 
   printDefault('Mode: ' + getDemoModeName(actualDemoMode), 10, 10);
-  
+
   printDefault('WASD - Move', 8, 170);
   printDefault('1, 2, 3 - Change mode', 8, 180);
 
