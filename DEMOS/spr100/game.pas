@@ -43,6 +43,8 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  imgLayer := newImage(vgaWidth, vgaHeight);
 end;
 
 procedure update;
@@ -67,8 +69,6 @@ var
 begin
   startTick := getTimer;
 
-  imgLayer := newImage(vgaWidth, vgaHeight);
-  
   for a:=0 to 1000 do
     sprToDest(imgDosuEXE[0], imgLayer, random(vgaWidth) - 20, random(vgaHeight) - 20);
 
