@@ -4,7 +4,7 @@ library Game;
 
 uses
   Keyboard, Mouse,
-  ImgRef, ImgRefFast,
+  ImgRef, ImgRefFast, PostProc,
   Timing, VGA,
   Assets;
 
@@ -37,6 +37,8 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  applyGreyscale(imgGasolineMaid);
 end;
 
 procedure update;

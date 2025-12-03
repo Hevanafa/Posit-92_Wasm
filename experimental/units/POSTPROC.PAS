@@ -21,17 +21,17 @@ begin
 
   image := getImagePtr(imgHandle);
 
-  for py:=0 to image^.height do
-  for px:=0 to image^.width do begin
+  for py:=0 to image^.height - 1 do
+  for px:=0 to image^.width - 1 do begin
     colour := unsafeSprPget(image, px, py);
 
-    r := colour shr 24 and $FF;
-    g := colour shr 16 and $FF;
-    b := colour shr 8 and $FF;
-    a := colour and $FF;
+    a := colour shr 24 and $FF;
+    r := colour shr 16 and $FF;
+    g := colour shr 8 and $FF;
+    b := colour and $FF;
 
     grey := trunc(r * 0.299 + g * 0.587 + b * 0.114);
-    colour := ((grey shl 8 or grey) shl 8 or grey) shl 8 or alpha;
+    colour := ((a shl 8 or grey) shl 8 or grey) shl 8 or grey;
     unsafeSprPset(image, px, py, colour)
   end;
 end;
