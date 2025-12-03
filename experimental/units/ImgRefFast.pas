@@ -88,7 +88,7 @@ begin
 
   { fillchar(image^.dataPtr, image^.width * image^.height * 4, 0); }
   for py:=0 to image^.height - 1 do
-  for px:=0 to image^.width - 1 do begin
+  for px:=0 to image^.width - 1 do
     unsafeSprPset(image, px, py, colour);
 end;
 

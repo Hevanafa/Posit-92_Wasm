@@ -12,11 +12,15 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+  CornflowerBlue = $FF6495ED;
+  DarkBlue = $FF0000AA;
+
 var
   lastEsc: boolean;
 
   { Init your game state here }
   gameTime: double;
+  imgTest: longint;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -37,6 +41,9 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  imgTest := newImage(32, 32);
+  sprClear(imgTest, CornflowerBlue);
 end;
 
 procedure update;
@@ -59,12 +66,14 @@ var
   w: integer;
   s: string;
 begin
-  cls($FF6495ED);
+  cls(DarkBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
   else
     spr(imgDosuEXE[0], 148, 88);
+
+  spr(imgTest, 10, 10);
 
   s := 'Hello world!';
   w := measureDefault(s);
