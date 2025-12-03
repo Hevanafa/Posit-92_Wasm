@@ -28,7 +28,9 @@ var
   { Init your game state here }
   gameTime: double;
   mapBounds: TRect;
+
   playerZone, npcZone: TRect;
+  playerCircleZone, npcCirc: TCircle;
 
 
 { Use this to set `done` to true }
@@ -55,6 +57,10 @@ begin
 
   playerZone := newRect(155, 95, 24, 24);
   npcZone := newRect(180, 55, 24, 24);
+
+  playerCircleZone.cx := 155;
+  playerCircleZone.cy := 95;
+  playerCircleZone.radius := 20;
 end;
 
 procedure update;
@@ -83,6 +89,9 @@ begin
   if playerZone.y + playerZone.height >= mapBounds.y + mapBounds.height then
     playerZone.y := mapBounds.y + mapBounds.height - playerZone.height;
 
+  playerCircleZone.cx := getZoneCX(playerZone);
+  playerCircleZone.cy := getZoneCY(playerZone);
+
   gameTime := gameTime + dt
 end;
 
@@ -92,6 +101,8 @@ var
   s: string;
 begin
   cls($FF6495ED);
+
+  drawCircleZone(playerCircleZone, white);
 
   if rectIntersects(playerZone, npcZone) then
     drawZone(playerZone, white)

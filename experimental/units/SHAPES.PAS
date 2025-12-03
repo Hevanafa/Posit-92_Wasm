@@ -22,6 +22,8 @@ type
   end;
 
 procedure drawZone(const zone: TRect; const colour: longword);
+procedure drawCircleZone(const zone: TCircle; const colour: longword);
+
 function getZoneCX(const zone: TRect): double;
 function getZoneCY(const zone: TRect): double;
 function getZoneDist(const a, b: TRect): double;
@@ -30,6 +32,7 @@ function newPoint(const x, y: double): TPoint;
 function newRect(const x, y, width, height: double): TRect;
 
 function rectIntersects(const self, other: TRect): boolean;
+function circleIntersects(const self, other: TCircle): boolean;
 
 
 implementation
@@ -39,6 +42,11 @@ uses Graphics;
 procedure drawZone(const zone: TRect; const colour: longword);
 begin
   rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), colour)
+end;
+
+procedure drawCircleZone(const zone: TCircle; const colour: longword);
+begin
+  circ(trunc(zone.cx), trunc(zone.cy), trunc(zone.radius), colour)
 end;
 
 function getZoneCX(const zone: TRect): double;
@@ -87,5 +95,19 @@ begin
     and (other.y < self.y + self.height)
     and (self.y < other.y + other.height)
 end;
+
+function circleIntersects(const self, other: TCircle): boolean;
+var
+  dx, dy, dist, radiusSum: double;
+begin
+  dx := other.cx - self.cx;
+  dy := other.cy - self.cy;
+
+  radiusSum := self.radius + other.radius;
+
+  dist := dx * dx + dy * dy;
+  circleIntersects := dist < radiusSum * radiusSum
+end;
+
 
 end.
