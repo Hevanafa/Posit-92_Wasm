@@ -5,7 +5,7 @@ library Game;
 uses
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Timing, VGA,
+  PostProc, Timing, VGA,
   Assets;
 
 const
@@ -69,6 +69,8 @@ begin
   s := 'Hello world!';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
+
+  applyFullScanlines;
 
   drawMouse;
   flush

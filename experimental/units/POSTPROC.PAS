@@ -1,5 +1,7 @@
 unit PostProc;
 
+{$Mode TP}
+
 interface
 
 uses ImgRef;
@@ -8,6 +10,8 @@ procedure applyGreyscale(const imgHandle: longint);
 
 
 implementation
+
+uses VGA;
 
 procedure applyGreyscale(const imgHandle: longint);
 var
@@ -33,6 +37,23 @@ begin
     grey := trunc(r * 0.299 + g * 0.587 + b * 0.114);
     colour := ((a shl 8 or grey) shl 8 or grey) shl 8 or grey;
     unsafeSprPset(image, px, py, colour)
+  end;
+end;
+
+procedure applyFullScanlines;
+var
+  a, b: word;
+  colour: longword;
+begin
+  b:=1;
+  while b < vgaHeight do begin
+    for a:=0 to vgaWidth - 1 do begin
+      colour := unsafePget(a, b);
+
+      { TODO: Handle 50% brightness }
+    end;
+
+    inc(b, 2);
   end;
 end;
 
