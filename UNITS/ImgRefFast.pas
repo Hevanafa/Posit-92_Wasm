@@ -8,10 +8,17 @@
 
 unit ImgRefFast;
 
+{$Mode TP}
+{$B-}  { Enable boolean short-circuiting }
+{$R-}  { Turn off range checks }
+{$Q-}  { Turn off overflow checks }
+
 interface
 
 { spr with TImageRef }
 procedure spr(const imgHandle: longint; const x, y: integer);
+
+procedure sprClear(const imgHandle: longint; const colour: longword);
 
 procedure sprRegion(
   const imgHandle: longint;
@@ -37,9 +44,11 @@ procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: int
 procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
 
 
+procedure sprToDest(const src, dest: longint; const x, y: integer);
+
 implementation
 
-uses ImgRef, VGA;
+uses ImgRef, Maths, VGA;
 
 procedure spr(const imgHandle: longint; const x, y: integer);
 var
@@ -68,6 +77,21 @@ begin
     colour := unsafeSprPget(image, px, py);
     unsafePset(x + px, y + py, colour)
   end;
+end;
+
+procedure sprClear(const imgHandle: longint; const colour: longword);
+var
+  image: PImageRef;
+  px, py: integer;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+
+  { fillchar(image^.dataPtr, image^.width * image^.height * 4, 0); }
+  for py:=0 to image^.height - 1 do
+  for px:=0 to image^.width - 1 do
+    unsafeSprPset(image, px, py, colour);
 end;
 
 procedure sprRegion(
@@ -302,6 +326,38 @@ begin
 
     colour := unsafeSprPget(image, srcX, srcY);
     unsafePset(cx + dx, cy + dy, colour)
+  end;
+end;
+
+
+procedure sprToDest(const src, dest: longint; const x, y: integer);
+var
+  srcImage, destImage: PImageRef;
+  startX, endX, startY, endY: word;
+  a, b: integer;
+  srcOffset: longword;
+  alpha: byte;
+  colour: longword;
+begin
+  if not isImageSet(src) then exit;
+  if not isImageSet(dest) then exit;
+
+  srcImage := getImagePtr(src);
+  destImage := getImagePtr(dest);
+
+  startX := trunc(max(0, -x));
+  startY := trunc(max(0, -y));
+  endX := trunc(min(srcImage^.width, destImage^.width - x));
+  endY := trunc(min(srcImage^.height, destImage^.height - y));
+
+  for b:=startY to endY - 1 do
+  for a:=startX to endX - 1 do begin
+    srcOffset := (a + b * srcImage^.width) * 4;
+    alpha := srcImage^.dataPtr[srcOffset + 3];
+    if alpha < 255 then continue;
+
+    colour := unsafeSprPget(srcImage, a, b);
+    unsafeSprPset(destImage, x + a, y + b, colour)
   end;
 end;
 

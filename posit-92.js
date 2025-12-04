@@ -1,18 +1,5 @@
 "use strict";
 
-/**
- * Game assets are loaded in loadAssets()
- */
-
-/**
- * KeyboardEvent.code to DOS scancode
- */
-const ScancodeMap = {
-  "Escape": 0x01,
-  "Space": 0x39
-  // Add more scancodes as necessary
-};
-
 class Posit92 {
   #wasmSource = "game.wasm";
 
@@ -37,39 +24,39 @@ class Posit92 {
   #midnightOffset = 0;
 
   /**
-   * For use with WebAssembly init
+   * @type {WebAssembly.Imports}
    */
   #importObject = {
     env: {
       _haltproc: this.#handleHaltProc.bind(this),
 
-      hideCursor: () => this.hideCursor(),
-      showCursor: () => this.showCursor(),
+      hideCursor: () => this.#hideCursor(),
+      showCursor: () => this.#showCursor(),
 
       // Keyboard
-      isKeyDown: this.isKeyDown.bind(this),
+      isKeyDown: this.#isKeyDown.bind(this),
       signalDone: this.#signalDone.bind(this),
 
       // Logger
       writeLogF32: value => console.log("Pascal (f32):", value),
       writeLogI32: value => console.log("Pascal (i32):", value),
-      flushLog: () => this.pascalWriteLog(),
+      flushLog: () => this.#pascalWriteLog(),
 
       // Mouse
-      getMouseX: () => this.getMouseX(),
-      getMouseY: () => this.getMouseY(),
-      getMouseButton: () => this.getMouseButton(),
+      getMouseX: () => this.#getMouseX(),
+      getMouseY: () => this.#getMouseY(),
+      getMouseButton: () => this.#getMouseButton(),
 
       // Panic
-      panicHalt: this.panicHalt.bind(this),
+      panicHalt: this.#panicHalt.bind(this),
 
       // Timing
-      getTimer: () => this.getTimer(),
-      getFullTimer: () => this.getFullTimer(),
+      getTimer: () => this.#getTimer(),
+      getFullTimer: () => this.#getFullTimer(),
 
       // VGA
-      flush: () => this.flush(),
-      toggleFullscreen: () => this.toggleFullscreen()
+      flush: () => this.#flush(),
+      toggleFullscreen: () => this.#toggleFullscreen()
     }
   };
 
@@ -160,21 +147,18 @@ class Posit92 {
   }
 
   cleanup() {
-    this.showCursor();
+    this.#showCursor();
   }
 
-  hideCursor() {
+  #hideCursor() {
     this.#canvas.style.cursor = "none"
   }
 
-  showCursor() {
+  #showCursor() {
     this.#canvas.style.removeProperty("cursor")
   }
 
   #assertNumber(value) {
-    if (value == null)
-      throw new Error("Expected a number, but received null");
-
     if (typeof value != "number")
       throw new Error(`Expected a number, but received ${typeof value}`);
 
@@ -238,6 +222,7 @@ class Posit92 {
 
     return handle
   }
+
 
   // BMFONT.PAS
   #newBMFontGlyph() {
@@ -375,8 +360,10 @@ class Posit92 {
   heldScancodes = new Set();
 
   #initKeyboard() {
+    const ScancodeMap = this.ScancodeMap;
+    
     window.addEventListener("keydown", e => {
-      // console.log("keydown", e.code);
+      if (e.repeat) return;
 
       const scancode = ScancodeMap[e.code];
       if (scancode) {
@@ -391,7 +378,7 @@ class Posit92 {
     })
   }
 
-  isKeyDown(scancode) {
+  #isKeyDown(scancode) {
     return this.heldScancodes.has(scancode)
   }
 
@@ -433,9 +420,9 @@ class Posit92 {
     });
   }
 
-  getMouseX() { return this.#mouseX }
-  getMouseY() { return this.#mouseY }
-  getMouseButton() { return this.#mouseButton }
+  #getMouseX() { return this.#mouseX }
+  #getMouseY() { return this.#mouseY }
+  #getMouseButton() { return this.#mouseButton }
 
   #updateMouseButton() {
     if (this.#leftButtonDown && this.#rightButtonDown)
@@ -450,7 +437,7 @@ class Posit92 {
 
 
   // LOGGER.PAS
-  pascalWriteLog() {
+  #pascalWriteLog() {
     const bufferPtr = this.#wasm.exports.getLogBuffer();
     const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, bufferPtr, 256);
 
@@ -463,7 +450,7 @@ class Posit92 {
 
 
   // PANIC.PAS
-  panicHalt(textPtr, textLen) {
+  #panicHalt(textPtr, textLen) {
     const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, textPtr, textLen);
     const msg = new TextDecoder().decode(buffer);
 
@@ -475,17 +462,17 @@ class Posit92 {
 
 
   // TIMING.PAS
-  getTimer() {
+  #getTimer() {
     return (Date.now() - this.#midnightOffset) / 1000
   }
 
-  getFullTimer() {
+  #getFullTimer() {
     return Date.now() / 1000
   }
 
 
   // VGA.PAS
-  flush() {
+  #flush() {
     const surfacePtr = this.#wasm.exports.getSurfacePtr();
     const imageData = new Uint8ClampedArray(
       this.#wasm.exports.memory.buffer,
@@ -498,7 +485,7 @@ class Posit92 {
     this.#ctx.putImageData(imgData, 0, 0);
   }
 
-  toggleFullscreen() {
+  #toggleFullscreen() {
     if (!document.fullscreenElement)
       this.#canvas.requestFullscreen()
     else
