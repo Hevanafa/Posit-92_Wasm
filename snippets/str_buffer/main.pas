@@ -25,7 +25,8 @@ end;
 procedure init;
 begin
   fillchar(stringBuffer, 255, 0);
-  { hello }
+
+  hello;
 
   loadStringBuffer('Hello from Pascal!');
   documentWrite

@@ -35,7 +35,7 @@ const importObject = Object.freeze({
   env: {
     _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
 
-    hello: () => console.log("Hello from Wasm!"),
+    hello: () => document.writeln("Hello from Wasm!"),
     documentWrite: () => documentWrite()
     // Add more externals below
   }
