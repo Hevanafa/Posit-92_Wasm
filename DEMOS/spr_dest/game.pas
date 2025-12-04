@@ -17,6 +17,8 @@ const
   SC_S = $1F;
   SC_D = $20;
 
+  Velocity = 100; { pixels per second }
+
   CornflowerBlue = $FF6495ED;
   DarkBlue = $FF0000AA;
 
@@ -84,6 +86,12 @@ begin
     if lastEsc then signalDone;
   end;
 
+  if isKeyDown(SC_W) then layerZone.y := layerZone.y - Velocity * dt;
+  if isKeyDown(SC_S) then layerZone.y := layerZone.y + Velocity * dt;
+
+  if isKeyDown(SC_A) then layerZone.x := layerZone.x - Velocity * dt;
+  if isKeyDown(SC_D) then layerZone.x := layerZone.x + Velocity * dt;
+
   gameTime := gameTime + dt
 end;
 
@@ -100,7 +108,7 @@ begin
     spr(imgDosuEXE[0], 148, 88);
 
   { spr(imgTest, 10, 10); }
-  spr(img100Sprites, 0, 0);
+  spr(img100Sprites, trunc(layerZone.x), trunc(layerZone.y));
 
   s := 'Hello world!';
   w := measureDefault(s);
