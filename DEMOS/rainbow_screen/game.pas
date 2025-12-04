@@ -101,6 +101,7 @@ procedure draw;
 var
   w: integer;
   s: string;
+  hue, v: double;
   a, b: word;
   colour: longword;
 begin
@@ -108,7 +109,10 @@ begin
 
   for b:=0 to vgaHeight - 1 do
   for a:=0 to vgaWidth - 1 do begin
-    colour := HSVtoRGB(a / (vgaWidth), 1.0, 1.0 - b / (vgaHeight));
+    hue := a / (vgaWidth) + getTimer;
+    hue := hue - trunc(hue);
+    v := 0.25 + (1.0 - b / (vgaHeight)) * 0.75;
+    colour := HSVtoRGB(hue, 1.0, v);
     unsafePset(a, b, colour)
   end;
 
