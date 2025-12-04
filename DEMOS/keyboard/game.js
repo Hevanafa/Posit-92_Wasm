@@ -1,7 +1,21 @@
 "use strict";
 
-// Asset boilerplate
 class Game extends Posit92 {
+  /**
+   * KeyboardEvent.code to DOS scancode
+   */
+  ScancodeMap = {
+    "Escape": 0x01,
+    "Space": 0x39,
+
+    "KeyW": 0x11,
+    "KeyA": 0x1E,
+    "KeyS": 0x1F,
+    "KeyD": 0x20,
+
+    // Add more scancodes as necessary
+  };
+
   async loadAssets() {
     let handle = 0;
 
