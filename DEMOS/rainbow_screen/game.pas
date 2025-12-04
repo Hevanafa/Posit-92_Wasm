@@ -109,7 +109,7 @@ begin
 
   for b:=0 to vgaHeight - 1 do
   for a:=0 to vgaWidth - 1 do begin
-    hue := a / (vgaWidth) + getTimer;
+    hue := a / (vgaWidth) + getTimer / 2;
     hue := hue - trunc(hue);
     v := 0.25 + (1.0 - b / (vgaHeight)) * 0.75;
     colour := HSVtoRGB(hue, 1.0, v);
