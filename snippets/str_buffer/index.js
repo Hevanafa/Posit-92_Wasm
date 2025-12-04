@@ -27,7 +27,7 @@ function documentWrite() {
   const bytes = buffer.slice(1, 1 + len);
   const msg = new TextDecoder().decode(bytes);
 
-  document.write(msg)
+  document.writeln(msg)
 }
 
 // Add your Pascal external procedures & functions here:
