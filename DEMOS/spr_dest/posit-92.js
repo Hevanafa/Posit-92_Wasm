@@ -1,14 +1,5 @@
 "use strict";
 
-/**
- * KeyboardEvent.code to DOS scancode
- */
-const ScancodeMap = {
-  "Escape": 0x01,
-  "Space": 0x39
-  // Add more scancodes as necessary
-};
-
 class Posit92 {
   #wasmSource = "game.wasm";
 
@@ -33,7 +24,7 @@ class Posit92 {
   #midnightOffset = 0;
 
   /**
-   * For use with WebAssembly init
+   * @type {WebAssembly.Imports}
    */
   #importObject = {
     env: {
@@ -168,9 +159,6 @@ class Posit92 {
   }
 
   #assertNumber(value) {
-    if (value == null)
-      throw new Error("Expected a number, but received null");
-
     if (typeof value != "number")
       throw new Error(`Expected a number, but received ${typeof value}`);
 
@@ -234,6 +222,7 @@ class Posit92 {
 
     return handle
   }
+
 
   // BMFONT.PAS
   #newBMFontGlyph() {
@@ -371,8 +360,10 @@ class Posit92 {
   heldScancodes = new Set();
 
   #initKeyboard() {
+    const ScancodeMap = this.ScancodeMap;
+    
     window.addEventListener("keydown", e => {
-      // console.log("keydown", e.code);
+      if (e.repeat) return;
 
       const scancode = ScancodeMap[e.code];
       if (scancode) {
