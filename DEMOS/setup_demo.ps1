@@ -14,7 +14,7 @@ $mixinMap = @{
   "sound" = @("sounds.js")
   "music" = @("sounds.js")
   "bigint" = @("bigint.js")
-  "webgl" = @("webgl.js")
+  "webgl_demo" = @("webgl.js")
 }
 
 $demoPath = join-path $PSScriptRoot $demoName
