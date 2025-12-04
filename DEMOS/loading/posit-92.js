@@ -1,10 +1,6 @@
 "use strict";
 
 /**
- * Game assets are loaded in loadAssets()
- */
-
-/**
  * KeyboardEvent.code to DOS scancode
  */
 const ScancodeMap = {

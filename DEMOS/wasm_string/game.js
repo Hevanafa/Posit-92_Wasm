@@ -6,7 +6,6 @@
 
 "use strict";
 
-// Asset boilerplate
 class Game extends Posit92 {
   /**
    * KeyboardEvent.code to DOS scancode

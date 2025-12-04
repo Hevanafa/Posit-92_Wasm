@@ -1,6 +1,5 @@
 "use strict";
 
-// Asset boilerplate
 // Game < WebGLMixin < Posit92
 class Game extends WebGLMixin {
   async loadAssets() {

@@ -1,6 +1,5 @@
 "use strict";
 
-// Asset boilerplate
 class Game extends Posit92 {
   async loadAssets() {
     let handle = 0;
