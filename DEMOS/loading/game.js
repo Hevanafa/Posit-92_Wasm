@@ -1,6 +1,15 @@
 "use strict";
 
-class Game extends Posit92 {
+class Game extends LoadingMixin {
+  /**
+   * KeyboardEvent.code to DOS scancode
+   */
+  ScancodeMap = {
+    "Escape": 0x01,
+    "Space": 0x39
+    // Add more scancodes as necessary
+  };
+
   async loadAssets() {
     let handle = 0;
 
@@ -41,8 +50,11 @@ var done = false;
 
 async function main() {
   const game = new Game("game");
+  game.setLoadingText("Loading WebAssembly binary...");
   await game.init();
   game.afterInit();
+
+  game.hideLoadingOverlay();
 
   function loop(currentTime) {
     if (done) {

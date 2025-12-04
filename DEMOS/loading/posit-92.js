@@ -1,14 +1,5 @@
 "use strict";
 
-/**
- * KeyboardEvent.code to DOS scancode
- */
-const ScancodeMap = {
-  "Escape": 0x01,
-  "Space": 0x39
-  // Add more scancodes as necessary
-};
-
 class Posit92 {
   #displayScale = Object.freeze(2);
   #wasmSource = "game.wasm";
@@ -84,43 +75,31 @@ class Posit92 {
 
   // Init segment
   async #initWebAssembly() {
-    try {
-      const response = await fetch(this.#wasmSource);
+    const response = await fetch(this.#wasmSource);
+    const bytes = await response.arrayBuffer();
+    const result = await WebAssembly.instantiate(bytes, this.#importObject);
+    this.#wasm = result.instance;
 
-      if (!response.ok) {
-        this.setLoadingText(`Error: Failed to load ${this.#wasmSource} (${response.status})`);
-        return false
-      }
+    /**
+     * Grow Wasm memory size (DOS-style: fixed allocation)
+     * Layout:
+     * * 0-1 MB: stack / globals
+     * * 1MB-2MB: heap
+     */
 
-      const bytes = await response.arrayBuffer();
-      const result = await WebAssembly.instantiate(bytes, this.#importObject);
-      this.#wasm = result.instance;
+    const heapStart = 1048576;  // 1 MB = 1024 * 1024 B
+    const heapSize = 1 * 1048576;
 
-      /**
-       * Grow Wasm memory size (DOS-style: fixed allocation)
-       * Layout:
-       * * 0-1 MB: stack / globals
-       * * 1MB-2MB: heap
-       */
+    // Wasm memory is in 64KB pages
+    const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
+    const requiredPages = Math.ceil((heapStart + heapSize) / 65536);
 
-      const heapStart = 1048576;  // 1 MB = 1024 * 1024 B
-      const heapSize = 1 * 1048576;
+    if (pages < requiredPages)
+      this.#wasm.exports.memory.grow(requiredPages - pages);
 
-      // Wasm memory is in 64KB pages
-      const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
-      const requiredPages = Math.ceil((heapStart + heapSize) / 65536);
+    this.#wasm.exports.initHeap(heapStart, heapSize);
 
-      if (pages < requiredPages)
-        this.#wasm.exports.memory.grow(requiredPages - pages);
-
-      this.#wasm.exports.initHeap(heapStart, heapSize);
-
-      return true
-    } catch (e) {
-      this.setLoadingText(`Error loading WebAssembly: ${ e.message }`);
-      console.error("Wasm load error:", e);
-      return false
-    }
+    return true
   }
 
   #loadMidnightOffset() {
@@ -130,7 +109,6 @@ class Posit92 {
   }
 
   async init() {
-    this.setLoadingText("Loading WebAssembly binary...");
     await this.sleep(500);
 
     this.#loadMidnightOffset();
@@ -152,8 +130,6 @@ class Posit92 {
   afterInit() {
     this.#wasm.exports.afterInit();
     this.#addOutOfFocusFix()
-
-    this.#hideLoadingOverlay();
   }
 
   #addOutOfFocusFix() {
@@ -163,24 +139,7 @@ class Posit92 {
     })
   }
 
-  setLoadingText(text) {
-    const div = document.querySelector("#loading-overlay > div");
-    div.innerHTML = text;
-  }
-
-  #hideLoadingOverlay() {
-    const div = document.getElementById("loading-overlay");
-    // div.style.display = "none";
-    div.classList.add("hidden");
-    this.setLoadingText("");
-  }
-
-  async sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
-  }
-
   cleanup() {
-    this.stopMusic();
     this.showCursor();
   }
 
@@ -193,9 +152,6 @@ class Posit92 {
   }
 
   #assertNumber(value) {
-    if (value == null)
-      throw new Error("Expected a number, but received null");
-
     if (typeof value != "number")
       throw new Error(`Expected a number, but received ${typeof value}`);
 
