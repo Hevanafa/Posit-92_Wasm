@@ -363,7 +363,7 @@ class Posit92 {
     const ScancodeMap = this.ScancodeMap;
     
     window.addEventListener("keydown", e => {
-      // console.log("keydown", e.code);
+      if (e.repeat) return;
 
       const scancode = ScancodeMap[e.code];
       if (scancode) {
