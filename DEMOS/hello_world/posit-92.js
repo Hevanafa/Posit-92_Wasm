@@ -1,21 +1,10 @@
 "use strict";
 
-/**
- * Game assets are loaded in loadAssets()
- */
-
-/**
- * KeyboardEvent.code to DOS scancode
- */
-const ScancodeMap = {
-  "Escape": 0x01,
-  "Space": 0x39
-  // Add more scancodes as necessary
-};
-
 class Posit92 {
-  #displayScale = Object.freeze(2);
   #wasmSource = "game.wasm";
+
+  #vgaWidth = 320;
+  #vgaHeight = 200;
 
   /**
    * @type {HTMLCanvasElement}
@@ -27,28 +16,30 @@ class Posit92 {
    * @type {WebAssembly.Instance}
    */
   #wasm;
-  get wasmInstance() {
-    return this.#wasm
-  }
-
+  get wasmInstance() { return this.#wasm }
 
   /**
-   * For use with WebAssembly init
+   * Used in getTimer
+   */
+  #midnightOffset = 0;
+
+  /**
+   * @type {WebAssembly.Imports}
    */
   #importObject = {
     env: {
-      _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
+      _haltproc: this.#handleHaltProc.bind(this),
 
       hideCursor: () => this.hideCursor(),
       showCursor: () => this.showCursor(),
 
       // Keyboard
-      isKeyDown: scancode => this.isKeyDown(scancode),
-      signalDone: () => { done = true },
+      isKeyDown: this.isKeyDown.bind(this),
+      signalDone: this.#signalDone.bind(this),
 
       // Logger
+      writeLogF32: value => console.log("Pascal (f32):", value),
       writeLogI32: value => console.log("Pascal (i32):", value),
-      flush: () => this.flush(),
       flushLog: () => this.pascalWriteLog(),
 
       // Mouse
@@ -60,12 +51,28 @@ class Posit92 {
       panicHalt: this.panicHalt.bind(this),
 
       // Timing
-      getTimer: () => this.getTimer()
+      getTimer: () => this.getTimer(),
+      getFullTimer: () => this.getFullTimer(),
+
+      // VGA
+      flush: () => this.flush(),
+      toggleFullscreen: () => this.toggleFullscreen()
     }
   };
 
   _getWasmImportObject() {
     return this.#importObject
+  }
+  
+  #handleHaltProc(exitcode) {
+    console.log("Programme halted with code:", exitcode);
+    this.cleanup();
+    done = true
+  }
+
+  #signalDone() {
+    this.cleanup();
+    done = true
   }
 
   constructor(canvasID) {
@@ -79,6 +86,12 @@ class Posit92 {
       throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
 
     this.#ctx = this.#canvas.getContext("2d");
+  }
+
+  #loadMidnightOffset() {
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    this.#midnightOffset = midnight.getTime()
   }
 
   async #initWebAssembly() {
@@ -108,6 +121,8 @@ class Posit92 {
   }
 
   async init() {
+    this.#loadMidnightOffset();
+
     Object.freeze(this.#importObject);
     await this.#initWebAssembly();
     this.#wasm.exports.init();
@@ -132,7 +147,6 @@ class Posit92 {
   }
 
   cleanup() {
-    this.stopMusic();
     this.showCursor();
   }
 
@@ -145,9 +159,6 @@ class Posit92 {
   }
 
   #assertNumber(value) {
-    if (value == null)
-      throw new Error("Expected a number, but received null");
-
     if (typeof value != "number")
       throw new Error(`Expected a number, but received ${typeof value}`);
 
@@ -228,11 +239,13 @@ class Posit92 {
     }
   }
 
-  async loadBMFont(url) {
+  async loadBMFont(url, fontPtrRef, fontGlyphsPtrRef) {
     if (url == null)
       throw new Error("loadBMFont: url is required");
 
     this.#assertString(url);
+    this.#assertNumber(fontPtrRef);
+    this.#assertNumber(fontGlyphsPtrRef);
 
     const res = await fetch(url);
     const text = await res.text();
@@ -296,9 +309,8 @@ class Posit92 {
     imgHandle = await this.loadImage(filename);
     // console.log("loadBMFont imgHandle:", imgHandle);
 
-    // Obtain pointers to Pascal structures
-    const fontPtr = this.#wasm.exports.defaultFontPtr();
-    const glyphsPtr = this.#wasm.exports.defaultFontGlyphsPtr();
+    const fontPtr = fontPtrRef;
+    const glyphsPtr = fontGlyphsPtrRef;
 
     // Write font data
     const fontMem = new DataView(this.#wasm.exports.memory.buffer, fontPtr);
@@ -348,8 +360,10 @@ class Posit92 {
   heldScancodes = new Set();
 
   #initKeyboard() {
+    const ScancodeMap = this.ScancodeMap;
+    
     window.addEventListener("keydown", e => {
-      // console.log("keydown", e.code);
+      if (e.repeat) return;
 
       const scancode = ScancodeMap[e.code];
       if (scancode) {
@@ -380,8 +394,12 @@ class Posit92 {
   #initMouse() {
     this.#canvas.addEventListener("mousemove", e => {
       const rect = this.#canvas.getBoundingClientRect();
-      this.#mouseX = Math.floor((e.clientX - rect.left) / this.#displayScale);
-      this.#mouseY = Math.floor((e.clientY - rect.top) / this.#displayScale);
+
+      const scaleX = this.#canvas.width / rect.width;
+      const scaleY = this.#canvas.height / rect.height;
+
+      this.#mouseX = Math.floor((e.clientX - rect.left) * scaleX);
+      this.#mouseY = Math.floor((e.clientY - rect.top) * scaleY);
     });
 
     this.#canvas.addEventListener("mousedown", e => {
@@ -437,12 +455,18 @@ class Posit92 {
     const msg = new TextDecoder().decode(buffer);
 
     done = true;
+    this.cleanup();
+
     throw new Error(`PANIC: ${msg}`)
   }
 
 
   // TIMING.PAS
   getTimer() {
+    return (Date.now() - this.#midnightOffset) / 1000
+  }
+
+  getFullTimer() {
     return Date.now() / 1000
   }
 
@@ -453,12 +477,19 @@ class Posit92 {
     const imageData = new Uint8ClampedArray(
       this.#wasm.exports.memory.buffer,
       surfacePtr,
-      320 * 200 * 4
+      this.#vgaWidth * this.#vgaHeight * 4
     );
 
-    const imgData = new ImageData(imageData, 320, 200);
+    const imgData = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
 
     this.#ctx.putImageData(imgData, 0, 0);
+  }
+
+  toggleFullscreen() {
+    if (!document.fullscreenElement)
+      this.#canvas.requestFullscreen()
+    else
+      document.exitFullscreen();
   }
 
 

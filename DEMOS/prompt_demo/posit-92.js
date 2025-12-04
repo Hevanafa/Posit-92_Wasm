@@ -1,20 +1,6 @@
 "use strict";
 
-/**
- * Game assets are loaded in loadAssets()
- */
-
-/**
- * KeyboardEvent.code to DOS scancode
- */
-const ScancodeMap = {
-  "Escape": 0x01,
-  "Space": 0x39
-  // Add more scancodes as necessary
-};
-
 class Posit92 {
-  #displayScale = Object.freeze(2);
   #wasmSource = "game.wasm";
 
   #vgaWidth = 320;
@@ -33,20 +19,26 @@ class Posit92 {
   get wasmInstance() { return this.#wasm }
 
   /**
-   * For use with WebAssembly init
+   * Used in getTimer
+   */
+  #midnightOffset = 0;
+
+  /**
+   * @type {WebAssembly.Imports}
    */
   #importObject = {
     env: {
-      _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
+      _haltproc: this.#handleHaltProc.bind(this),
 
       hideCursor: () => this.hideCursor(),
       showCursor: () => this.showCursor(),
 
       // Keyboard
-      isKeyDown: scancode => this.isKeyDown(scancode),
-      signalDone: () => { done = true },
+      isKeyDown: this.isKeyDown.bind(this),
+      signalDone: this.#signalDone.bind(this),
 
       // Logger
+      writeLogF32: value => console.log("Pascal (f32):", value),
       writeLogI32: value => console.log("Pascal (i32):", value),
       flushLog: () => this.pascalWriteLog(),
 
@@ -60,9 +52,11 @@ class Posit92 {
 
       // Timing
       getTimer: () => this.getTimer(),
+      getFullTimer: () => this.getFullTimer(),
 
       // VGA
-      flush: () => this.flush()
+      flush: () => this.flush(),
+      toggleFullscreen: () => this.toggleFullscreen()
     }
   };
 
@@ -70,6 +64,17 @@ class Posit92 {
     return this.#importObject
   }
   
+  #handleHaltProc(exitcode) {
+    console.log("Programme halted with code:", exitcode);
+    this.cleanup();
+    done = true
+  }
+
+  #signalDone() {
+    this.cleanup();
+    done = true
+  }
+
   constructor(canvasID) {
     if (canvasID == null)
       throw new Error("canvasID is required!");
@@ -81,6 +86,12 @@ class Posit92 {
       throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
 
     this.#ctx = this.#canvas.getContext("2d");
+  }
+
+  #loadMidnightOffset() {
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    this.#midnightOffset = midnight.getTime()
   }
 
   async #initWebAssembly() {
@@ -110,13 +121,15 @@ class Posit92 {
   }
 
   async init() {
+    this.#loadMidnightOffset();
+
     Object.freeze(this.#importObject);
     await this.#initWebAssembly();
     this.#wasm.exports.init();
     
     this.#initKeyboard();
     this.#initMouse();
-    
+
     if (this.loadAssets)
       await this.loadAssets();
   }
@@ -134,7 +147,6 @@ class Posit92 {
   }
 
   cleanup() {
-    this.stopMusic();
     this.showCursor();
   }
 
@@ -173,10 +185,6 @@ class Posit92 {
       img.onerror = reject;
       img.src = url
     })
-  }
-
-  debugImage(imgHandle) {
-    this.#wasm.exports.debugImage(imgHandle)
   }
 
   // Used in loadImage
@@ -352,8 +360,10 @@ class Posit92 {
   heldScancodes = new Set();
 
   #initKeyboard() {
+    const ScancodeMap = this.ScancodeMap;
+    
     window.addEventListener("keydown", e => {
-      // console.log("keydown", e.code);
+      if (e.repeat) return;
 
       const scancode = ScancodeMap[e.code];
       if (scancode) {
@@ -384,8 +394,12 @@ class Posit92 {
   #initMouse() {
     this.#canvas.addEventListener("mousemove", e => {
       const rect = this.#canvas.getBoundingClientRect();
-      this.#mouseX = Math.floor((e.clientX - rect.left) / this.#displayScale);
-      this.#mouseY = Math.floor((e.clientY - rect.top) / this.#displayScale);
+
+      const scaleX = this.#canvas.width / rect.width;
+      const scaleY = this.#canvas.height / rect.height;
+
+      this.#mouseX = Math.floor((e.clientX - rect.left) * scaleX);
+      this.#mouseY = Math.floor((e.clientY - rect.top) * scaleY);
     });
 
     this.#canvas.addEventListener("mousedown", e => {
@@ -441,12 +455,18 @@ class Posit92 {
     const msg = new TextDecoder().decode(buffer);
 
     done = true;
+    this.cleanup();
+
     throw new Error(`PANIC: ${msg}`)
   }
 
 
   // TIMING.PAS
   getTimer() {
+    return (Date.now() - this.#midnightOffset) / 1000
+  }
+
+  getFullTimer() {
     return Date.now() / 1000
   }
 
@@ -463,6 +483,13 @@ class Posit92 {
     const imgData = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
 
     this.#ctx.putImageData(imgData, 0, 0);
+  }
+
+  toggleFullscreen() {
+    if (!document.fullscreenElement)
+      this.#canvas.requestFullscreen()
+    else
+      document.exitFullscreen();
   }
 
 

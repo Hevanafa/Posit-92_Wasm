@@ -1,7 +1,18 @@
 "use strict";
 
-// Asset boilerplate
 class Game extends BigIntMixin {
+  /**
+   * KeyboardEvent.code to DOS scancode
+   */
+  ScancodeMap = {
+    "Escape": 0x01,
+    "Space": 0x39,
+
+    "ArrowLeft": 0x4B,
+    "ArrowRight": 0x4D
+    // Add more scancodes as necessary
+  };
+
   async loadAssets() {
     let handle = 0;
 
