@@ -1,6 +1,29 @@
 "use strict";
 
 class Game extends Posit92 {
+  /**
+   * KeyboardEvent.code to DOS scancode
+   */
+  ScancodeMap = {
+    "Escape": 0x01,
+    "Space": 0x39,
+
+    "KeyW": 0x11,
+    "KeyA": 0x1E,
+    "KeyS": 0x1F,
+    "KeyD": 0x20,
+
+    "ArrowUp": 0x48,
+    "ArrowLeft": 0x4B,
+    "ArrowRight": 0x4D,
+    "ArrowDown": 0x50,
+
+    "Tab": 0x0F,
+    "PageUp": 0x49,
+    "PageDown": 0x51
+    // Add more scancodes as necessary
+  };
+
   async loadAssets() {
     let handle = 0;
 
@@ -9,7 +32,10 @@ class Game extends Posit92 {
     handle = await this.loadImage("assets/images/hand.png");
     this.wasmInstance.exports.setImgHandCursor(handle);
 
-    await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
+    await this.loadBMFont(
+      "assets/fonts/nokia_cellphone_fc_8.txt",
+      this.wasmInstance.exports.defaultFontPtr(),
+      this.wasmInstance.exports.defaultFontGlyphsPtr());
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
