@@ -22,6 +22,14 @@ if (-not (test-path $demoPath)) {
   exit 1
 }
 
-# TODO: Copy posit-92.js with comment
+$header = "// Copied from experimental/posit-92.js`n// Last synced: $today`n`n"
+$content = get-content $canonicalPosit -raw
+$content = $header + $content
+
+$destPath = join-path $demoPath "posit-92.js"
+set-content -path $destPath -value $content -noNewLine
+
+write-host "Copied posit-92.js to $demoName" -foregroundColor green
+
 # TODO: COpy mixins if needed
 # TODO: Success message
