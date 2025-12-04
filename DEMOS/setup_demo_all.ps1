@@ -1,5 +1,5 @@
 $demoFolders = get-childItem -path $PSScriptRoot -directory
-$skip = @("loading")
+$skip = @()  # "loading"
 
 foreach ($demo in $demoFolders) {
   $demoName = $demo.Name
