@@ -7,6 +7,7 @@ interface
 uses ImgRef;
 
 procedure applyGreyscale(const imgHandle: longint);
+procedure applyFullScanlines;
 
 
 implementation
@@ -42,18 +43,30 @@ end;
 
 procedure applyFullScanlines;
 var
-  a, b: word;
+  px, py: word;
+  r, g, b: byte;
   colour: longword;
 begin
-  b:=1;
-  while b < vgaHeight do begin
-    for a:=0 to vgaWidth - 1 do begin
-      colour := unsafePget(a, b);
+  py:=1;
+  while py < vgaHeight do begin
+    for px:=0 to vgaWidth - 1 do begin
+      colour := unsafePget(px, py);
 
-      { TODO: Handle 50% brightness }
+      { Darken by 50% }
+      r := colour shr 16 and $FF;
+      g := colour shr 8 and $FF;
+      b := colour and $FF;
+
+      r := r shr 1;
+      g := g shr 1;
+      b := b shr 1;
+
+      colour := (colour and $FF000000) or (r shl 16) or (g shl 8) or b;
+
+      unsafePset(px, py, colour);
     end;
 
-    inc(b, 2);
+    inc(py, 2);
   end;
 end;
 
