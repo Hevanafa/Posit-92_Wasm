@@ -7,16 +7,33 @@ const
   SfxStrum = 4,
   SfxSlip = 5;
 
-// Asset boilerplate
 // Game < SoundsMixin < Posit92
 class Game extends SoundsMixin {
+  /**
+   * KeyboardEvent.code to DOS scancode
+   */
+  ScancodeMap = {
+    "Escape": 0x01,
+    "Space": 0x39,
+
+    "Digit1": 0x02,
+    "Digit2": 0x03,
+    "Digit3": 0x04,
+    "Digit4": 0x05,
+    "Digit5": 0x06
+    // Add more scancodes as necessary
+  };
+
   async loadAssets() {
     let handle = 0;
 
     handle = await this.loadImage("assets/images/cursor.png");
     this.wasmInstance.exports.setImgCursor(handle);
 
-    await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
+    await this.loadBMFont(
+      "assets/fonts/nokia_cellphone_fc_8.txt",
+      this.wasmInstance.exports.defaultFontPtr(),
+      this.wasmInstance.exports.defaultFontGlyphsPtr());
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);

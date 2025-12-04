@@ -1,14 +1,5 @@
 "use strict";
 
-/**
- * KeyboardEvent.code to DOS scancode
- */
-const ScancodeMap = {
-  "Escape": 0x01,
-  "Space": 0x39
-  // Add more scancodes as necessary
-};
-
 class Posit92 {
   #wasmSource = "game.wasm";
 

@@ -1,7 +1,15 @@
 "use strict";
 
-// Asset boilerplate
 class Game extends Posit92 {
+  /**
+   * KeyboardEvent.code to DOS scancode
+   */
+  ScancodeMap = {
+    "Escape": 0x01,
+    "Space": 0x39
+    // Add more scancodes as necessary
+  };
+
   async loadAssets() {
     const imgCursor = await this.loadImage("assets/images/cursor.png");
     this.wasmInstance.exports.setImgCursor(imgCursor);

@@ -4,9 +4,17 @@ const
   BgmPhonk = 1,
   BgmCrystals = 2;
 
-// Asset boilerplate
 // Game < SoundsMixin < Posit92
 class Game extends SoundsMixin {
+  /**
+   * KeyboardEvent.code to DOS scancode
+   */
+  ScancodeMap = {
+    "Escape": 0x01,
+    "Space": 0x39
+    // Add more scancodes as necessary
+  };
+
   async loadAssets() {
     let handle = 0;
 
