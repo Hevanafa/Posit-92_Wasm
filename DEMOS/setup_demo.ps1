@@ -53,5 +53,3 @@ if ($mixinMap.ContainsKey($demoName)) {
 } else {
   write-host "No mixins needed for $demoName" -foregroundColor cyan
 }
-
-# TODO: Success message
