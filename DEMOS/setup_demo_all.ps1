@@ -10,5 +10,8 @@ foreach ($demo in $demoFolders) {
   }
 
   write-host "Setting up: $demoName" -foregroundColor yellow
-  # TODO: Call the script in each demo
+  
+  # & <-- Call operator
+  # Basically runs a script with the argument $demoName
+  & (join-path $PSScriptRoot "setup_demo.ps1") $demoName
 }
