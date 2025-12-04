@@ -31,6 +31,8 @@ procedure cls(const colour: longword);
 procedure clsBlend(const colour: longword);
 procedure flush; external 'env' name 'flush';
 
+procedure unsafePget(const x, y: integer): longword;
+
 procedure unsafePset(const x, y: integer; const colour: longword);
 procedure pset(const x, y: integer; const colour: longword);
 
@@ -61,6 +63,20 @@ end;
 function getSurfacePtr: PByteArray;
 begin
   getSurfacePtr := surface
+end;
+
+function unsafePget(const x, y: integer): longword;
+var
+  offset: longword;
+  a: byte;
+begin
+  offset := (x + y * vgaWidth) * 4;
+
+  { RGBA to ARGB }
+  unsafePget := surface[offset + 3] shl 24
+    or surface[offset] shl 16
+    or surface[offset + 1] shl 8
+    or surface[offset + 2]
 end;
 
 procedure unsafePset(const x, y: integer; const colour: longword);
