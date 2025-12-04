@@ -16,7 +16,12 @@ $mixinsDir = join-path $PSScriptRoot "..\experimental\mixins"
 
 $today = get-date -format "yyyy-MM-dd"
 
-# TODO: Check if demo exists
+# Check if demo exists
+if (-not (test-path $demoPath)) {
+  write-host "Couldn't find $demoName demo project" -foregroundColor magenta
+  exit 1
+}
+
 # TODO: Copy posit-92.js with comment
 # TODO: COpy mixins if needed
 # TODO: Success message
