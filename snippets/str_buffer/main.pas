@@ -6,6 +6,7 @@ var
 procedure hello; external 'env' name 'hello';
 procedure documentWrite; external 'env' name 'documentWrite';
 
+{ Requires at least 1 `exports` item to use `public name` }
 function getStringBuffer: pointer; public name 'getStringBuffer';
 begin
   getStringBuffer := @stringBuffer
@@ -22,7 +23,7 @@ begin
 end;
 
 
-procedure init;
+procedure init; public name 'init';
 begin
   fillchar(stringBuffer, 255, 0);
 
