@@ -2,6 +2,15 @@
 
 // Game < WebGLMixin < Posit92
 class Game extends WebGLMixin {
+  /**
+   * KeyboardEvent.code to DOS scancode
+   */
+  ScancodeMap = {
+    "Escape": 0x01,
+    "Space": 0x39
+    // Add more scancodes as necessary
+  };
+
   async loadAssets() {
     let handle = 0;
 

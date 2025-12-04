@@ -1,14 +1,5 @@
 "use strict";
 
-/**
- * KeyboardEvent.code to DOS scancode
- */
-const ScancodeMap = {
-  "Escape": 0x01,
-  "Space": 0x39
-  // Add more scancodes as necessary
-};
-
 class Posit92 {
   #wasmSource = "game.wasm";
 
@@ -19,8 +10,7 @@ class Posit92 {
    * @type {HTMLCanvasElement}
    */
   #canvas;
-  _getCanvas() { return this.#canvas }
-  // #ctx;
+  #ctx;
 
   /**
    * @type {WebAssembly.Instance}
@@ -28,17 +18,12 @@ class Posit92 {
   #wasm;
   get wasmInstance() { return this.#wasm }
 
-
   /**
    * Used in getTimer
    */
   #midnightOffset = 0;
 
   /**
-   * For use with WebAssembly init
-   * 
-   * Freezing happens later in `WebGLGame`
-   * 
    * @type {WebAssembly.Imports}
    */
   #importObject = {
@@ -75,17 +60,10 @@ class Posit92 {
     }
   };
 
-  /**
-   * Used by WebGLGame
-   */
   _getWasmImportObject() {
     return this.#importObject
   }
-
-  _freezeImportObject() {
-    Object.freeze(this.#importObject)
-  }
-
+  
   #handleHaltProc(exitcode) {
     console.log("Programme halted with code:", exitcode);
     this.cleanup();
@@ -107,7 +85,7 @@ class Posit92 {
     if (this.#canvas == null)
       throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
 
-    // this.#ctx = this.#canvas.getContext("2d");
+    this.#ctx = this.#canvas.getContext("2d");
   }
 
   #loadMidnightOffset() {
@@ -181,9 +159,6 @@ class Posit92 {
   }
 
   #assertNumber(value) {
-    if (value == null)
-      throw new Error("Expected a number, but received null");
-
     if (typeof value != "number")
       throw new Error(`Expected a number, but received ${typeof value}`);
 
@@ -247,6 +222,7 @@ class Posit92 {
 
     return handle
   }
+
 
   // BMFONT.PAS
   #newBMFontGlyph() {
@@ -384,8 +360,10 @@ class Posit92 {
   heldScancodes = new Set();
 
   #initKeyboard() {
+    const ScancodeMap = this.ScancodeMap;
+    
     window.addEventListener("keydown", e => {
-      // console.log("keydown", e.code);
+      if (e.repeat) return;
 
       const scancode = ScancodeMap[e.code];
       if (scancode) {
@@ -495,8 +473,6 @@ class Posit92 {
 
   // VGA.PAS
   flush() {
-    throw new Error("Attempting to call flush in WebGL context");
-
     const surfacePtr = this.#wasm.exports.getSurfacePtr();
     const imageData = new Uint8ClampedArray(
       this.#wasm.exports.memory.buffer,
@@ -506,7 +482,7 @@ class Posit92 {
 
     const imgData = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
 
-    // this.#ctx.putImageData(imgData, 0, 0);
+    this.#ctx.putImageData(imgData, 0, 0);
   }
 
   toggleFullscreen() {
@@ -515,6 +491,7 @@ class Posit92 {
     else
       document.exitFullscreen();
   }
+
 
   // Game loop
   update() {
