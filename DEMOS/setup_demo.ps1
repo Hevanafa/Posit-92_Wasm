@@ -11,9 +11,10 @@ if ($demoName -match '[\\\/]') {
 }
 
 $mixinMap = @{
+  "loading_demo" = @("loading.js")
   "sound" = @("sounds.js")
   "music" = @("sounds.js")
-  "bigint" = @("bigint.js")
+  "bigint_demo" = @("bigint.js")
   "webgl_demo" = @("webgl.js")
 }
 
