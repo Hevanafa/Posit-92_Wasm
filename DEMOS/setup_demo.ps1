@@ -3,6 +3,13 @@ param(
   [string]$demoName
 )
 
+if ($demoName -match '[\\\/]') {
+  write-host "Error: Demo name should not contain path parameters" -ForegroundColor red
+  write-host "Use: .\setup-demo.ps1 sound" -ForegroundColor white
+  write-host "Not: .\setup_demo.ps1 .\sound\" -ForegroundColor white
+  exit 1
+}
+
 $mixinMap = @{
   "sound" = @("sounds.js")
   "music" = @("sounds.js")
