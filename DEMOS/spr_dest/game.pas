@@ -4,13 +4,18 @@ library Game;
 
 uses
   Keyboard, Mouse,
-  ImgRef, ImgRefFast,
-  Timing, VGA,
+  ImgRef, ImgRefFast, Logger,
+  Shapes, Timing, VGA,
   Assets;
 
 const
   SC_ESC = $01;
   SC_SPACE = $39;
+
+  SC_W = $11;
+  SC_A = $1E;
+  SC_S = $1F;
+  SC_D = $20;
 
   CornflowerBlue = $FF6495ED;
   DarkBlue = $FF0000AA;
@@ -21,6 +26,8 @@ var
   { Init your game state here }
   gameTime: double;
   imgTest: longint;
+  img100Sprites: longint;
+  layerZone: TRect;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -28,6 +35,12 @@ procedure signalDone; external 'env' name 'signalDone';
 procedure drawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
+end;
+
+procedure setRandomSeed(const seed: longint); public name 'setRandomSeed';
+begin
+  RandSeed := seed
+  { randomize }
 end;
 
 
@@ -38,13 +51,25 @@ begin
 end;
 
 procedure afterInit;
+var
+  a: word;
 begin
   { Initialise game state here }
   hideCursor;
 
-  imgTest := newImage(32, 32);
+  writeLog('getTimer');
+  writeLogI32(trunc(getTimer));
+  setRandomSeed(trunc(getTimer));
+
+  {
+  imgTest := newImage(32, 32); 
   sprClear(imgTest, CornflowerBlue);
   sprToDest(imgDosuEXE[0], imgTest, 0, 0);
+  }
+
+  img100Sprites := newImage(vgaWidth, vgaHeight);
+  for a:=1 to 100 do
+    sprToDest(imgDosuEXE[0], img100Sprites, random(vgaWidth) - 20, random(vgaHeight) - 20);
 end;
 
 procedure update;
@@ -74,7 +99,8 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  spr(imgTest, 10, 10);
+  { spr(imgTest, 10, 10); }
+  spr(img100Sprites, 0, 0);
 
   s := 'Hello world!';
   w := measureDefault(s);
