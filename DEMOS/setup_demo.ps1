@@ -31,5 +31,19 @@ set-content -path $destPath -value $content -noNewLine
 
 write-host "Copied posit-92.js to $demoName" -foregroundColor green
 
-# TODO: COpy mixins if needed
+# Handle copy mixins
+if ($mixinMap.ContainsKey($demoName)) {
+  $required = $mixinMap[$demoName]
+
+  foreach ($mixin in $required) {
+    $srcPath = join-path $mixinsDir $mixin
+    $destPath = join-path $demoPath $mixin
+
+    copy-item $srcPath $destPath
+    write-host "Copied $mixin to $demoName" -foregroundColor green
+  }
+} else {
+  write-host "No mixins needed for $demoName" -foregroundColor cyan
+}
+
 # TODO: Success message
