@@ -41,52 +41,11 @@ begin
 end;
 
 procedure applyTint(const which: TintModes);
-var
-  px, py: word;
-  colour: longword;
-  r, g, b: byte;
 begin
   case which of
-    TintModeNight:
-      applyFullTint($FF4060A0);
-
-    TintModeSepia: begin
-      for py:=0 to vgaHeight - 1 do
-      for px:=0 to vgaWidth - 1 do begin
-        colour := unsafePget(px, py);
-        
-        r := colour shr 16 and $FF;
-        g := colour shr 8 and $FF;
-        b := colour and $FF;
-
-        { $4060A0 };
-        r := (r * $C0) div 255;
-        g := (g * $A0) div 255;
-        b := (b * $80) div 255;
-
-        colour := (colour and $FF000000) or (r shl 16) or (g shl 8) or b;
-        unsafePset(px, py, colour)
-      end;
-    end;
-
-    TintModeDamage: begin
-      for py:=0 to vgaHeight - 1 do
-      for px:=0 to vgaWidth - 1 do begin
-        colour := unsafePget(px, py);
-        
-        r := colour shr 16 and $FF;
-        g := colour shr 8 and $FF;
-        b := colour and $FF;
-
-        { $4060A0 };
-        r := (r * $FF) div 255;
-        g := (g * $60) div 255;
-        b := (b * $60) div 255;
-
-        colour := (colour and $FF000000) or (r shl 16) or (g shl 8) or b;
-        unsafePset(px, py, colour)
-      end;
-    end;
+    TintModeNight: applyFullTint($FF4060A0);
+    TintModeSepia: applyFullTint($FFC0A080);
+    TintModeDamage: applyFullTint($FFFF6060);
     else
   end;
 end;
