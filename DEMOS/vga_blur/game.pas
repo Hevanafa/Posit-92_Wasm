@@ -77,7 +77,7 @@ begin
   if not drawOnce then begin
     imgBlur := newImage(vgaWidth, vgaHeight);
 
-    { Process from VGA }
+    { Process from VGA (alpha channel is ignored) }
     for b:=0 to vgaHeight - 1 do
     for a:=0 to vgaWidth - 1 do begin
       red := 0;
@@ -104,7 +104,9 @@ begin
       green := green div count;
       blue := blue div count;
 
-      { TODO: Output to imgBlur }
+      { Output to imgBlur }
+      colour := ($FF shl 24) or (red shl 16) or (green shl 8) or blue;
+      unsafePset(a, b, colour)
     end;
   end;
 
@@ -116,7 +118,7 @@ begin
     (vgaWidth - w) - 10, vgaHeight - 20,
     defaultFont, defaultFontGlyphs, black);
 
-  drawMouse;
+  { drawMouse; }
   flush
 end;
 
