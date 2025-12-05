@@ -5,20 +5,22 @@ library Game;
 uses
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Timing, VGA,
+  PostProc, Timing, VGA,
   Assets;
 
 const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+  SC_LEFT = $4B;
+  SC_RIGHT = $4D;
+
 var
   lastEsc: boolean;
 
   { Init your game state here }
   gameTime: double;
-  imgVignette: longint;
-  imgVignettePtr: PImageRef;
+  vignetteStrength: double;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -26,63 +28,6 @@ procedure signalDone; external 'env' name 'signalDone';
 procedure drawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
-end;
-
-procedure applyFullVignette;
-var
-  px, py: integer;
-  centreX, centreY: double;
-  offsetX, offsetY: double;
-  normX, normY: double;
-  dist, t, factor: double;
-  a, r, g, b: byte;
-  colour: longword;
-begin
-  if imgVignettePtr = nil then begin
-    imgVignette := newImage(vgaWidth, vgaHeight);
-    imgVignettePtr := getImagePtr(imgVignette);
-  end;
-
-  for py:=0 to vgaHeight - 1 do 
-  for px:=0 to vgaWidth - 1 do begin
-    { Coordinate normalisation }
-    centreX := vgaWidth / 2;
-    centreY := vgaHeight / 2;
-
-    offsetX := px - centreX;
-    offsetY := py - centreY;
-
-    normX := offsetX / centreX;
-    normY := offsetY / centreY;
-
-    { Elliptical distance }
-    dist := sqrt(normX * normX + normY * normY);
-
-    { Vignette factor (falloff) }
-    { t: gradient }
-    t := 1.0 - dist;
-    if t < 0.0 then t := 0.0;
-    if t > 1.0 then t := 1.0;
-    factor := t * t * (3.0 - 2.0 * t);
-
-    { Darken RGB channels with vignette factor }
-    colour := unsafePget(px, py);
-
-    r := colour shr 16 and $FF;
-    g := colour shr 8 and $FF;
-    b := colour and $FF;
-    a := colour shr 24 and $FF;
-
-    r := trunc(r * factor);
-    g := trunc(g * factor);
-    b := trunc(b * factor);
-
-    { Render to buffer }
-    colour := (a shl 24) or (r shl 16) or (g shl 8) or b;
-    unsafeSprPset(imgVignettePtr, px, py, colour)
-  end;
-
-  spr(imgVignette, 0, 0)
 end;
 
 
@@ -96,6 +41,8 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  vignetteStrength := 0.3;
 end;
 
 procedure update;
@@ -110,19 +57,33 @@ begin
     if lastEsc then signalDone;
   end;
 
+  if isKeyDown(SC_LEFT) then
+    vignetteStrength := vignetteStrength - dt / 2;
+  
+  if isKeyDown(SC_RIGHT) then
+    vignetteStrength := vignetteStrength + dt / 2;
+
+  vignetteStrength := clamp(vignetteStrength, 0.0, 1.0);
+
   gameTime := gameTime + dt
 end;
 
 procedure draw;
 var
-  w: integer;
   s: string;
+  w: word;
 begin
   cls($FF6495ED);
 
   spr(imgArkRoad, 0, 0);
 
-  applyFullVignette;
+  applyFullVignette(vignetteStrength);
+
+  printDefault('Left / right: Adjust strength', 10, vgaHeight - 20);
+
+  s := 'Art by Kevin Hong';
+  w := measureDefault(s);
+  printDefault(s, vgaWidth - w - 10, vgaHeight - 20);
 
   drawMouse;
   flush

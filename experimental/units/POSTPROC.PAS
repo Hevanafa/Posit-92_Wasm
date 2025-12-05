@@ -13,6 +13,7 @@ procedure applyFullSubtleScanlines;
 procedure applyFullTint(const tint: longword);
 procedure applyFullBoxBlur(const radius: integer);
 procedure applyFullChromabe;
+procedure applyFullVignette(const strength: double);
 
 
 implementation
@@ -24,6 +25,8 @@ var
   imgBlurPtr: PImageRef;
   imgChromabe: longint;
   imgChromabePtr: PImageRef;
+  imgVignette: longint;
+  imgVignettePtr: PImageRef;
 
 procedure applyGreyscale(const imgHandle: longint);
 var
@@ -243,6 +246,68 @@ begin
     end;
 
   spr(imgChromabe, 0, 0)
+end;
+
+procedure applyFullVignette(const strength: double);
+{ const
+  strength: double = 0.7; } { Either 0.3 or 0.7 }
+var
+  px, py: integer;
+  centreX, centreY: double;
+  offsetX, offsetY: double;
+  normX, normY: double;
+  dist, t, factor: double;
+  a, r, g, b: byte;
+  colour: longword;
+begin
+  if imgVignettePtr = nil then begin
+    imgVignette := newImage(vgaWidth, vgaHeight);
+    imgVignettePtr := getImagePtr(imgVignette);
+  end;
+
+  for py:=0 to vgaHeight - 1 do 
+  for px:=0 to vgaWidth - 1 do begin
+    { Coordinate normalisation }
+    centreX := vgaWidth / 2;
+    centreY := vgaHeight / 2;
+
+    offsetX := px - centreX;
+    offsetY := py - centreY;
+
+    normX := offsetX / centreX;
+    normY := offsetY / centreY;
+
+    { Elliptical distance }
+    dist := sqrt(normX * normX + normY * normY);
+
+    { Vignette factor (falloff) }
+    { t: gradient }
+    t := 1.0 - dist;
+    if t < 0.0 then t := 0.0;
+    if t > 1.0 then t := 1.0;
+    factor := t * t * (3.0 - 2.0 * t);
+
+    { Apply strength}
+    factor := 1.0 - (1.0 - factor) * strength;
+
+    { Darken RGB channels with vignette factor }
+    colour := unsafePget(px, py);
+
+    r := colour shr 16 and $FF;
+    g := colour shr 8 and $FF;
+    b := colour and $FF;
+    a := colour shr 24 and $FF;
+
+    r := trunc(r * factor);
+    g := trunc(g * factor);
+    b := trunc(b * factor);
+
+    { Render to buffer }
+    colour := (a shl 24) or (r shl 16) or (g shl 8) or b;
+    unsafeSprPset(imgVignettePtr, px, py, colour)
+  end;
+
+  spr(imgVignette, 0, 0)
 end;
 
 
