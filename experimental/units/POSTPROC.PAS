@@ -216,7 +216,20 @@ begin
 
   for py:=0 to vgaHeight - 1 do
     for py:=0 to vgaWidth - 1 do begin
-      { TODO: Handle pixel processing }
+      { red shifts right }
+      redX := px + 1;
+      if redX >= vgaWidth then redX := vgaWidth - 1;
+
+      { blue shifts left }
+      blueX := px - 1;
+      if blueX < 0 then blueX := 0;
+
+      redPixel := unsafePget(redX, py);
+      greenPixel := unsafePget(px, py);
+      bluePixel := unsafePget(blueX, py);
+
+      { TODO: Handle each channels }
+      { TODO: pset to the buffer }
     end;
 
   spr(imgChromabe, 0, 0)
