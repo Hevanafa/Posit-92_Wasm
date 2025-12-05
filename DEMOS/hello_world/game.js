@@ -16,7 +16,10 @@ class Game extends Posit92 {
     handle = await this.loadImage("assets/images/cursor.png");
     this.wasmInstance.exports.setImgCursor(handle);
 
-    await this.loadBMFont("assets/fonts/nokia_cellphone_fc_8.txt");
+    await this.loadBMFont(
+      "assets/fonts/nokia_cellphone_fc_8.txt",
+      this.wasmInstance.exports.defaultFontPtr(),
+      this.wasmInstance.exports.defaultFontGlyphsPtr());
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
