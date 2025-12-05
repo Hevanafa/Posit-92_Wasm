@@ -43,6 +43,7 @@ function getImageWidth(const imgHandle: longint): word;
 function getImageHeight(const imgHandle: longint): word;
 
 function unsafeSprPget(const image: PImageRef; const x, y: integer): longword;
+function unsafeSprGetAlpha(const image: PImageRef; const x, y: integer): byte;
 procedure unsafeSprPset(const image: PImageRef; const x, y: integer; const colour: longword);
 
 
@@ -181,6 +182,15 @@ begin
     or (image^.dataPtr[offset + 1] shl 8)
     or image^.dataPtr[offset + 2]
 end;
+
+function unsafeSprGetAlpha(const image: PImageRef; const x, y: integer): byte;
+var
+  offset: longword;
+begin
+  offset := (x + y * image^.width) * 4;
+  unsafeSprGetAlpha := image^.dataPtr[offset + 3] shr 24 and $FF
+end;
+
 
 procedure unsafeSprPset(const image: PImageRef; const x, y: integer; const colour: longword);
 var
