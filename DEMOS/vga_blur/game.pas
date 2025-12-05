@@ -5,7 +5,7 @@ library Game;
 uses
   BMFont, Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Timing, VGA,
+  PostProc, Timing, VGA,
   Assets;
 
 const
@@ -65,57 +65,13 @@ procedure draw;
 var
   w: integer;
   s: string;
-  a, b, c, d: integer;
-  colour: longword;
-  count: word;
-  red, green, blue: word;
-  imgBlurPtr: PImageRef;
 begin
   cls($FF6495ED);
 
-  if not drawOnce then begin
-    { force flush before rendering }
-    spr(imgDreamscapeCrossing, 0, 0);
-    flush;
+  spr(imgDreamscapeCrossing, 0, 0);
 
-    drawOnce := true;
-    imgBlur := newImage(vgaWidth, vgaHeight);
-    imgBlurPtr := getImagePtr(imgBlur);
-
-    { Process from VGA (alpha channel is ignored) }
-    for b:=0 to vgaHeight - 1 do
-      for a:=0 to vgaWidth - 1 do begin
-        red := 0;
-        green := 0;
-        blue := 0;
-        count := 0;
-
-        for d:=-1 to 1 do
-          for c:=-1 to 1 do begin
-            if (a + c < 0) or (a + c >= vgaWidth)
-              or (b + d < 0) or (b + d >= vgaHeight) then continue;
-
-            colour := unsafePget(a + c, b + d);
-
-            inc(red, colour shr 16 and $FF);
-            inc(green, colour shr 8 and $FF);
-            inc(blue, colour and $FF);
-
-            inc(count)
-          end;
-
-        { Average this pixel }
-        red := red div count;
-        green := green div count;
-        blue := blue div count;
-
-        { Output to imgBlur }
-        colour := ($FF shl 24) or (red shl 16) or (green shl 8) or blue;
-        unsafeSprPset(imgBlurPtr, a, b, colour)
-      end;
-  end;
-
-  spr(imgBlur, 0, 0);
+  { spr(imgBlur, 0, 0); }
+  applyFullBoxBlur(1);
 
   s := 'Art by [Unknown Artist]';
   w := measureDefault(s);
@@ -123,6 +79,8 @@ begin
     (vgaWidth - w) - 10, vgaHeight - 20,
     defaultFont, defaultFontGlyphs, black);
 
+  { TODO: Show FPS }
+  
   drawMouse;
   flush
 end;
