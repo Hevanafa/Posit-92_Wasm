@@ -166,10 +166,10 @@ var
 begin
   cls($FF6495ED);
 
-  hue := getTimer - trunc(getTimer);
-  outline := HSVtoRGB(hue, 1.0, 1.0);
-
   for a:=-1 to 1 do begin
+    hue := frac(getTimer + a * 0.33);
+    outline := HSVtoRGB(hue, 1.0, 1.0);
+
     if (trunc(gameTime * 4) and 1) > 0 then
       sprOutline(imgDosuEXE[1], 148 + a * 40, 88, outline)
     else
