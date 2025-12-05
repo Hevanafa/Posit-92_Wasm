@@ -58,7 +58,6 @@ begin
 
   gameTime := gameTime + dt;
   drawOnce := false
-  
 end;
 
 procedure draw;
@@ -72,9 +71,11 @@ var
 begin
   cls($FF6495ED);
 
-  spr(imgDreamscapeCrossing, 0, 0);
-
   if not drawOnce then begin
+    spr(imgDreamscapeCrossing, 0, 0);
+    flush;
+
+    drawOnce := true;
     imgBlur := newImage(vgaWidth, vgaHeight);
 
     { Process from VGA (alpha channel is ignored) }
@@ -118,7 +119,7 @@ begin
     (vgaWidth - w) - 10, vgaHeight - 20,
     defaultFont, defaultFontGlyphs, black);
 
-  { drawMouse; }
+  drawMouse;
   flush
 end;
 

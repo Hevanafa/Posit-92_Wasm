@@ -88,6 +88,10 @@ var
   dataPtr: PByte;
   byteSize: longword;
 begin
+  writeLog('Calling newImage');
+  writeLogI32(width);
+  writeLogI32(height);
+
   byteSize := width * height * 4;
   dataPtr := PByte(WasmGetMem(byteSize));
 
