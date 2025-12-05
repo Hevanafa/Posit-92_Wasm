@@ -40,6 +40,35 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
+procedure applyFullTint(const which: TintModes);
+var
+  px, py: word;
+  colour: longword;
+  a, r, g, b: byte;
+begin
+  case which of
+    TintModeNight: begin
+      for py:=0 to vgaHeight - 1 do
+      for px:=0 to vgaWidth - 1 do begin
+        colour := unsafePget(px, py);
+        
+        r := colour shr 24;
+        g := colour shr 16;
+        b := colour shr 8;
+
+        { $4060A0 };
+        r := (r * $40) div 255;
+        g := (g * $60) div 255;
+        b := (b * $A0) div 255;
+
+        colour := (colour and $FF000000) or (r shl 16) or (g shl 8) or b;
+        unsafePset(px, py, colour)
+      end;
+    end;
+    else
+  end;
+end;
+
 
 procedure init;
 begin
@@ -93,8 +122,9 @@ var
 begin
   cls($FF6495ED);
 
-  printDefault('Tint mode: ' + i32str(actualTintMode), 10, 10);
+  spr(imgArkRoad, 0, 0);
 
+  {
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
   else
@@ -103,6 +133,11 @@ begin
   s := 'Hello world!';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
+  }
+
+  applyFullTint(TintModes(actualTintMode));
+
+  printDefault('Tint mode: ' + i32str(actualTintMode), 10, 10);
 
   drawMouse;
   flush

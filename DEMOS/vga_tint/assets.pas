@@ -25,6 +25,7 @@ function measureDefault(const text: string): word;
 { Asset boilerplate }
 procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
+procedure setImgArkRoad(const imgHandle: longint); public name 'setImgArkRoad';
 
 
 implementation
