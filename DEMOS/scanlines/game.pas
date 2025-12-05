@@ -33,13 +33,13 @@ begin
   initDeltaTime;
 end;
 
-procedure afterInit;
+procedure afterInit; public name 'afterInit';
 begin
   { Initialise game state here }
   hideCursor;
 end;
 
-procedure update;
+procedure update; public name 'update';
 begin
   updateDeltaTime;
 
@@ -54,7 +54,7 @@ begin
   gameTime := gameTime + dt
 end;
 
-procedure draw;
+procedure draw; public name 'draw';
 var
   w: integer;
   s: string;
@@ -70,18 +70,16 @@ begin
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
 
-  applyFullScanlines;
+  { applyFullScanlines; }
+  applyFullSubtleScanlines;
 
   drawMouse;
   flush
 end;
 
+{ Requires at least 1 `exports` item to use `public name` }
 exports
-  { Main game procedures }
-  init,
-  afterInit,
-  update,
-  draw;
+  init;
 
 begin
 { Starting point is intentionally left empty }
