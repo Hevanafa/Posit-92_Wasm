@@ -4,9 +4,9 @@ library Game;
 
 uses
   BMFont, Conv, FPS,
-  Keyboard, Mouse,
+  Logger, Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  PostProc, Timing, VGA,
+  PostProc, Timing, VGA, WasmHeap,
   Assets;
 
 const
@@ -44,11 +44,20 @@ begin
 end;
 
 procedure afterInit;
+var
+  tempImg: longint;
 begin
   { Initialise game state here }
   hideCursor;
 
   applyBlur := true;
+
+  writeLog('Free heap');
+  tempImg := newImage(10, 10);
+  writeLogI32(GetFreeHeapSize);
+
+  freeImage(tempImg);
+  writeLogI32(GetFreeHeapSize);
 end;
 
 procedure update;

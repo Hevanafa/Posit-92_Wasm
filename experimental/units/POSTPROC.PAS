@@ -142,12 +142,12 @@ var
   count: word;
   red, green, blue: word;
 begin
+  if radius <= 0 then exit;
+
   if imgBlurPtr = nil then begin
     imgBlur := newImage(vgaWidth, vgaHeight);
     imgBlurPtr := getImagePtr(imgBlur);
   end;
-
-  { TODO: Handle the radius }
 
   { Process from VGA (alpha channel is ignored) }
   for b:=0 to vgaHeight - 1 do
@@ -157,8 +157,8 @@ begin
       blue := 0;
       count := 0;
 
-      for d:=-1 to 1 do
-        for c:=-1 to 1 do begin
+      for d := -radius to radius do
+        for c := -radius to radius do begin
           if (a + c < 0) or (a + c >= vgaWidth)
             or (b + d < 0) or (b + d >= vgaHeight) then continue;
 
