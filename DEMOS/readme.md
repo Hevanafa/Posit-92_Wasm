@@ -45,6 +45,12 @@ If there are assets involved, you can take a look into both `assets.pas` and `lo
 
 The string interop from Pascal to JS is already demonstrated in `writeLog` mechanism in `LOGGER.PAS` unit
 
+### Post-Processing
+
+- **spr_post_processing**
+- **scanlines**
+- **vga_tint**
+
 ### Progressive Web App (PWA)
 
 - **pwa_demo** -- Shows the most basic setup of an installable Progressive Web App
