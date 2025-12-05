@@ -42,6 +42,8 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  drawOnce := false
 end;
 
 procedure update;
@@ -56,8 +58,7 @@ begin
     if lastEsc then signalDone;
   end;
 
-  gameTime := gameTime + dt;
-  drawOnce := false
+  gameTime := gameTime + dt
 end;
 
 procedure draw;
@@ -68,15 +69,18 @@ var
   colour: longword;
   count: word;
   red, green, blue: word;
+  imgBlurPtr: PImageRef;
 begin
   cls($FF6495ED);
 
   if not drawOnce then begin
+    { force flush before rendering }
     spr(imgDreamscapeCrossing, 0, 0);
     flush;
 
     drawOnce := true;
     imgBlur := newImage(vgaWidth, vgaHeight);
+    imgBlurPtr := getImagePtr(imgBlur);
 
     { Process from VGA (alpha channel is ignored) }
     for b:=0 to vgaHeight - 1 do
@@ -107,7 +111,7 @@ begin
 
         { Output to imgBlur }
         colour := ($FF shl 24) or (red shl 16) or (green shl 8) or blue;
-        unsafePset(a, b, colour)
+        unsafeSprPset(imgBlurPtr, a, b, colour)
       end;
   end;
 
