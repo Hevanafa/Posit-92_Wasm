@@ -13,6 +13,7 @@ var
 
   imgCursor: longint;
   imgDosuEXE: array[0..1] of longint;
+  imgArkRoad: longint;
 
 { BMFont boilerplate }
 function defaultFontPtr: PBMFont; public name 'defaultFontPtr';
@@ -24,6 +25,7 @@ function measureDefault(const text: string): word;
 { Asset boilerplate }
 procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
+procedure setImgArkRoad(const imgHandle: longint); public name 'setImgArkRoad';
 
 
 implementation
@@ -63,6 +65,11 @@ end;
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer);
 begin
   imgDosuEXE[idx] := imgHandle
+end;
+
+procedure setImgArkRoad(const imgHandle: longint);
+begin
+  imgArkRoad := imgHandle
 end;
 
 end.

@@ -35,6 +35,8 @@ var
   offsetX, offsetY: double;
   normX, normY: double;
   dist, t, factor: double;
+  a, r, g, b: byte;
+  colour: longword;
 begin
   if imgVignettePtr = nil then begin
     imgVignette := newImage(vgaWidth, vgaHeight);
@@ -75,8 +77,10 @@ begin
     g := trunc(g * factor);
     b := trunc(b * factor);
 
-    { TODO: Render to buffer }
-    end;
+    { Render to buffer }
+    colour := (a shl 24) or (r shl 16) or (g shl 8) or b;
+    unsafeSprPset(imgVignettePtr, px, py, colour)
+  end;
 
   spr(imgVignette, 0, 0)
 end;
@@ -116,14 +120,9 @@ var
 begin
   cls($FF6495ED);
 
-  if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
-  else
-    spr(imgDosuEXE[0], 148, 88);
+  spr(imgArkRoad, 0, 0);
 
-  s := 'Hello world!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  applyFullVignette;
 
   drawMouse;
   flush
