@@ -10,6 +10,7 @@ class Game extends Posit92 {
     
     "ArrowLeft": 0x4B,
     "ArrowRight": 0x4D,
+    "Backspace": 0x0E,
     // Add more scancodes as necessary
   };
 

@@ -4,7 +4,7 @@ library Game;
 
 uses
   Keyboard, Mouse,
-  ImgRef, ImgRefFast,
+  ImgRef, ImgRefFast, Maths,
   PostProc, Timing, VGA,
   Assets;
 
@@ -14,9 +14,10 @@ const
 
   SC_LEFT = $4B;
   SC_RIGHT = $4D;
+  SC_BACKSPACE = $0E;
 
 var
-  lastEsc: boolean;
+  lastEsc, lastBackspace: boolean;
 
   { Init your game state here }
   gameTime: double;
@@ -28,6 +29,11 @@ procedure signalDone; external 'env' name 'signalDone';
 procedure drawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
+end;
+
+procedure resetParameters;
+begin
+  vignetteStrength := 0.3;
 end;
 
 
@@ -42,7 +48,7 @@ begin
   { Initialise game state here }
   hideCursor;
 
-  vignetteStrength := 0.3;
+  resetParameters;
 end;
 
 procedure update;
@@ -55,6 +61,11 @@ begin
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
     if lastEsc then signalDone;
+  end;
+
+  if lastBackspace <> isKeyDown(SC_BACKSPACE) then begin
+    lastBackspace := isKeyDown(SC_BACKSPACE);
+    if lastBackspace then resetParameters;
   end;
 
   if isKeyDown(SC_LEFT) then
