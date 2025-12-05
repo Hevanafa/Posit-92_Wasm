@@ -5,7 +5,7 @@ library Game;
 uses
   Conv, Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Timing, VGA,
+  PostProc, Timing, VGA,
   Assets;
 
 const
@@ -40,31 +40,15 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure applyFullTint(const which: TintModes);
+procedure applyTint(const which: TintModes);
 var
   px, py: word;
   colour: longword;
   r, g, b: byte;
 begin
   case which of
-    TintModeNight: begin
-      for py:=0 to vgaHeight - 1 do
-      for px:=0 to vgaWidth - 1 do begin
-        colour := unsafePget(px, py);
-        
-        r := colour shr 16 and $FF;
-        g := colour shr 8 and $FF;
-        b := colour and $FF;
-
-        { $4060A0 };
-        r := (r * $40) div 255;
-        g := (g * $60) div 255;
-        b := (b * $A0) div 255;
-
-        colour := (colour and $FF000000) or (r shl 16) or (g shl 8) or b;
-        unsafePset(px, py, colour)
-      end;
-    end;
+    TintModeNight:
+      applyFullTint($FF4060A0);
 
     TintModeSepia: begin
       for py:=0 to vgaHeight - 1 do
@@ -177,7 +161,7 @@ begin
   cls($FF6495ED);
 
   spr(imgArkRoad, 0, 0);
-  applyFullTint(TintModes(actualTintMode));
+  applyTint(TintModes(actualTintMode));
 
   printDefault('Tint mode: ' + getTintName(TintModes(actualTintMode)), 10, 10);
   printDefault('Left / right: Change tint mode', 10, vgaHeight - 20);

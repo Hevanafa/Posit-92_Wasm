@@ -9,6 +9,7 @@ uses ImgRef;
 procedure applyGreyscale(const imgHandle: longint);
 procedure applyFullScanlines;
 procedure applyFullSubtleScanlines;
+procedure applyFullTint(const tint: longword);
 
 
 implementation
@@ -97,6 +98,34 @@ begin
     end;
 
     inc(py, 2);
+  end;
+end;
+
+procedure applyFullTint(const tint: longword);
+var
+  px, py: word;
+  colour: longword;
+  r, g, b: byte;
+  tintR, tintG, tintB: byte;
+begin
+  tintR := tint shr 16 and $FF;
+  tintG := tint shr 8 and $FF;
+  tintB := tint and $FF;
+
+  for py:=0 to vgaHeight - 1 do
+  for px:=0 to vgaWidth - 1 do begin
+    colour := unsafePget(px, py);
+    
+    r := colour shr 16 and $FF;
+    g := colour shr 8 and $FF;
+    b := colour and $FF;
+
+    r := (r * tintR) div 255;
+    g := (g * tintG) div 255;
+    b := (b * tintB) div 255;
+
+    colour := (colour and $FF000000) or (r shl 16) or (g shl 8) or b;
+    unsafePset(px, py, colour)
   end;
 end;
 
