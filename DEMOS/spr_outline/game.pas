@@ -1,6 +1,6 @@
 library Game;
 
-{$Mode ObjFPC}
+{$Mode TP}
 
 uses
   Keyboard, Mouse,
@@ -11,6 +11,8 @@ uses
 const
   SC_ESC = $01;
   SC_SPACE = $39;
+
+  Green = $FF55FF55;
 
 var
   lastEsc: boolean;
@@ -24,6 +26,23 @@ procedure signalDone; external 'env' name 'signalDone';
 procedure drawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
+end;
+
+procedure sprOutline(const imgHandle: longint; const x, y: integer; const colour: longword);
+var
+  px, py: integer;
+  image: PImageRef;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+
+  for b:=0 to image^.height - 1 do
+    for a:=0 to image^.width - 1 do begin
+      { TODO: Check 4 neighbours }
+    end;
+
+  spr(imgHandle, x, y)
 end;
 
 
@@ -62,9 +81,9 @@ begin
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    sprOutline(imgDosuEXE[1], 148, 88, green)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    sprOutline(imgDosuEXE[0], 148, 88, green);
 
   s := 'Hello world!';
   w := measureDefault(s);
