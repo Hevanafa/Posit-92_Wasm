@@ -68,7 +68,6 @@ end;
 function unsafePget(const x, y: integer): longword;
 var
   offset: longword;
-  a: byte;
 begin
   offset := (x + y * vgaWidth) * 4;
 
@@ -81,19 +80,15 @@ end;
 
 procedure unsafePset(const x, y: integer; const colour: longword);
 var
-  a, r, g, b: byte;
   offset: longword;
 begin
-  a := colour shr 24 and $FF;
-  r := colour shr 16 and $FF;
-  g := colour shr 8 and $FF;
-  b := colour and $FF;
-
   offset := (y * vgaWidth + x) * 4;
-  surface^[offset] := r;
-  surface^[offset + 1] := g;
-  surface^[offset + 2] := b;
-  surface^[offset + 3] := a;
+
+  { ARGB to RGBA }
+  surface^[offset] := colour shr 16 and $FF;
+  surface^[offset + 1] := colour shr 8 and $FF;
+  surface^[offset + 2] := colour and $FF;
+  surface^[offset + 3] := colour shr 24 and $FF;
 end;
 
 { colour: AARRGGBB }
