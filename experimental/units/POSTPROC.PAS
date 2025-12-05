@@ -22,7 +22,8 @@ uses ImgRefFast, VGA;
 var
   imgBlur: longint;
   imgBlurPtr: PImageRef;
-  imgChromabe: PImageRef;
+  imgChromabe: longint;
+  imgChromabePtr: PImageRef;
 
 procedure applyGreyscale(const imgHandle: longint);
 var
@@ -210,9 +211,12 @@ var
   redPixel, greenPixel, bluePixel: longword;
   r, g, b, a: byte;
   redX, blueX: integer;
+  colour: longword;
 begin
-  if imgChromabe = nil then
-    newImage(vgaWidth, vgaHeight);
+  if imgChromabePtr = nil then begin
+    imgChromabe := newImage(vgaWidth, vgaHeight);
+    imgChromabePtr := getImagePtr(imgChromabe);
+  end;
 
   for py:=0 to vgaHeight - 1 do
     for py:=0 to vgaWidth - 1 do begin
@@ -228,8 +232,14 @@ begin
       greenPixel := unsafePget(px, py);
       bluePixel := unsafePget(blueX, py);
 
-      { TODO: Handle each channels }
-      { TODO: pset to the buffer }
+      { Extract each channels }
+      r := redPixel shr 16 and $FF;
+      g := greenPixel shr 8 and $FF;
+      b := bluePixel and $FF;
+      a := greenPixel shr 24 and $FF;  { Use green's alpha }
+
+      colour := (a shl 24) or (r shl 16) or (g shl 8) or b;
+      unsafeSprPset(imgChromabePtr, px, py, colour)
     end;
 
   spr(imgChromabe, 0, 0)
