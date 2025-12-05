@@ -34,6 +34,7 @@ procedure registerImageRef(const imgHandle: longint; const dataPtr: PByte; const
 
 function newImage(const width, height: integer): longint;
 function copyImage(const imgHandle: longint): longint;
+procedure freeImage(const imgHandle: longint);
 
 function isImageSet(const imgHandle: longint): boolean;
 function getImagePtr(const imgHandle: longint): PImageRef;
@@ -88,6 +89,10 @@ var
   dataPtr: PByte;
   byteSize: longword;
 begin
+  writeLog('Calling newImage');
+  writeLogI32(width);
+  writeLogI32(height);
+
   byteSize := width * height * 4;
   dataPtr := PByte(WasmGetMem(byteSize));
 
@@ -116,6 +121,19 @@ begin
   move(src^.dataPtr^, dest^.dataPtr^, src^.width * src^.height * 4);
   copyImage := slot
 end;
+
+procedure freeImage(const imgHandle: longint);
+begin
+  if (imgHandle < 0) or (imgHandle >= MaxImageRefs) then exit;
+  if imageRefs[imgHandle].dataPtr = nil then exit;
+
+  WasmFreeMem(imageRefs[imgHandle].dataPtr);
+
+  imageRefs[imgHandle].width := 0;
+  imageRefs[imgHandle].height := 0;
+  imageRefs[imgHandle].dataPtr := nil;
+end;
+
 
 function isImageSet(const imgHandle: longint): boolean;
 begin
