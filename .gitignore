@@ -51,6 +51,7 @@ DEMOS/spr_post_processing/*.ps1
 DEMOS/rainbow_screen/*.ps1
 DEMOS/scanlines/*.ps1
 DEMOS/vga_tint/*.ps1
+DEMOS/vga_blur/*.ps1
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
@@ -59,3 +60,4 @@ snippets/wasm_loader/compile.ps1
 snippets/wasm_loader/dist.ps1
 snippets/wasm_loader/start_server.ps1
 snippets/ts_wasm/index.js
+
