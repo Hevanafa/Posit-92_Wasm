@@ -20,6 +20,9 @@ var
   { Init your game state here }
   gameTime: double;
 
+  drawOnce: boolean;
+  imgBlur: longint;
+
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
@@ -53,7 +56,9 @@ begin
     if lastEsc then signalDone;
   end;
 
-  gameTime := gameTime + dt
+  gameTime := gameTime + dt;
+  drawOnce := false
+  
 end;
 
 procedure draw;
@@ -65,14 +70,12 @@ begin
 
   spr(imgDreamscapeCrossing, 0, 0);
 
-  // if (trunc(gameTime * 4) and 1) > 0 then
-  //   spr(imgDosuEXE[1], 148, 88)
-  // else
-  //   spr(imgDosuEXE[0], 148, 88);
+  if not drawOnce then begin
+    imgBlur := newImage(vgaWidth, vgaHeight);
+    { TODO: Process from VGA }
+  end;
 
-  // s := 'Hello world!';
-  // w := measureDefault(s);
-  // printDefault(s, (vgaWidth - w) div 2, 120);
+  spr(imgBlur, 0, 0);
 
   s := 'Art by [Unknown Artist]';
   w := measureDefault(s);
