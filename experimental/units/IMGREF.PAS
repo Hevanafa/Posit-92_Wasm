@@ -184,11 +184,9 @@ begin
 end;
 
 function unsafeSprGetAlpha(const image: PImageRef; const x, y: integer): byte;
-var
-  offset: longword;
 begin
-  offset := (x + y * image^.width) * 4;
-  unsafeSprGetAlpha := image^.dataPtr[offset + 3]
+  unsafeSprGetAlpha := image^.dataPtr[
+    (x + y * image^.width) * 4 + 3]
 end;
 
 
