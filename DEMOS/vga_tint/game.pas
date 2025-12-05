@@ -44,7 +44,7 @@ procedure applyFullTint(const which: TintModes);
 var
   px, py: word;
   colour: longword;
-  a, r, g, b: byte;
+  r, g, b: byte;
 begin
   case which of
     TintModeNight: begin
@@ -67,6 +67,22 @@ begin
     end;
     else
   end;
+end;
+
+function getTintName(const which: TintModes): string;
+var
+  result: string;
+begin
+  case which of
+  TintModeNone: result := 'None';
+  TintModeNight: result := 'Night';
+  TintModeSepia: result := 'Sepia';
+  TintModeDamage: result := 'Damage';
+  else
+    result := 'Unknown TintMode: ' + i32str(ord(which));
+  end;
+
+  getTintName := result
 end;
 
 
@@ -137,7 +153,9 @@ begin
 
   applyFullTint(TintModes(actualTintMode));
 
-  printDefault('Tint mode: ' + i32str(actualTintMode), 10, 10);
+  printDefault('Tint mode: ' + getTintName(TintModes(actualTintMode)), 10, 10);
+
+  printDefault('Left / right: Change tint mode', 10, vgaHeight - 20);
 
   drawMouse;
   flush
