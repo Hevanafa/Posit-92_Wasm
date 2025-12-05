@@ -12,6 +12,7 @@ procedure applyFullScanlines;
 procedure applyFullSubtleScanlines;
 procedure applyFullTint(const tint: longword);
 procedure applyFullBoxBlur(const radius: integer);
+procedure applyFullChromabe;
 
 
 implementation
@@ -21,6 +22,7 @@ uses ImgRefFast, VGA;
 var
   imgBlur: longint;
   imgBlurPtr: PImageRef;
+  imgChromabe: PImageRef;
 
 procedure applyGreyscale(const imgHandle: longint);
 var
@@ -199,6 +201,25 @@ begin
     end;
 
   spr(imgBlur, 0, 0)
+end;
+
+
+procedure applyFullChromabe;
+var
+  px, py: integer;
+  redPixel, greenPixel, bluePixel: longword;
+  r, g, b, a: byte;
+  redX, blueX: integer;
+begin
+  if imgChromabe = nil then
+    newImage(vgaWidth, vgaHeight);
+
+  for py:=0 to vgaHeight - 1 do
+    for py:=0 to vgaWidth - 1 do begin
+      { TODO: Handle pixel processing }
+    end;
+
+  spr(imgChromabe, 0, 0)
 end;
 
 

@@ -61,6 +61,9 @@ var
 begin
   cls($FF6495ED);
 
+  spr(imgArkRoad, 0, 0);
+
+{
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
   else
@@ -69,6 +72,8 @@ begin
   s := 'Hello world!';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
+}
+  applyFullChromabe;
 
   drawMouse;
   flush
