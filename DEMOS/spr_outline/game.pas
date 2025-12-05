@@ -73,7 +73,14 @@ begin
       unsafePset(x + a, y + image^.height, colour);
   end;
 
-  { TODO: left & right }
+  { left & right }
+  for b:=0 to image^.height - 1 do begin
+    if unsafeSprGetAlpha(image, 0, b) > 0 then
+      unsafePset(x - 1, y + b, colour);
+
+    if unsafeSprGetAlpha(image, image^.width - 1, b) > 0 then
+      unsafePset(x + image^.width, y + b, colour);
+  end;
 
   spr(imgHandle, x, y)
 end;
