@@ -1,9 +1,9 @@
 library Game;
 
-{$Mode ObjFPC}
+{$Mode TP}
 
 uses
-  Keyboard, Mouse,
+  Conv, Keyboard, Mouse,
   ImgRef, ImgRefFast,
   Timing, VGA,
   Assets;
@@ -12,11 +12,25 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+  SC_LEFT = $4B;
+  SC_RIGHT = $4D;
+
+type
+  TintModes = (
+    TintModeNone,
+    TintModeNight,
+    TintModeSepia,
+    TintModeDamage,
+    TintModeCount
+  );
+
 var
   lastEsc: boolean;
+  lastLeft, lastRight: boolean;
 
   { Init your game state here }
   gameTime: double;
+  actualTintMode: integer;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -37,6 +51,8 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  actualTintMode := 0;
 end;
 
 procedure update;
@@ -51,6 +67,22 @@ begin
     if lastEsc then signalDone;
   end;
 
+  if lastLeft <> isKeyDown(SC_LEFT) then begin
+    lastLeft := isKeyDown(SC_LEFT);
+    if lastLeft then dec(actualTintMode);
+  end;
+
+  if lastRight <> isKeyDown(SC_RIGHT) then begin
+    lastRight := isKeyDown(SC_RIGHT);
+    if lastRight then inc(actualTintMode);
+  end;
+
+  if actualTintMode < 0 then
+    actualTintMode := ord(TintModeCount) - 1;
+
+  if actualTintMode >= ord(TintModeCount) then
+    actualTintMode := 0;
+
   gameTime := gameTime + dt
 end;
 
@@ -60,6 +92,8 @@ var
   s: string;
 begin
   cls($FF6495ED);
+
+  printDefault('Tint mode: ' + i32str(actualTintMode), 10, 10);
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
