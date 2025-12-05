@@ -53,6 +53,7 @@ DEMOS/scanlines/*.ps1
 DEMOS/vga_tint/*.ps1
 DEMOS/vga_blur/*.ps1
 DEMOS/spr_outline/*.ps1
+DEMOS/vga_chromabe/*.ps1
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
