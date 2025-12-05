@@ -79,35 +79,35 @@ begin
 
     { Process from VGA (alpha channel is ignored) }
     for b:=0 to vgaHeight - 1 do
-    for a:=0 to vgaWidth - 1 do begin
-      red := 0;
-      green := 0;
-      blue := 0;
-      count := 0;
+      for a:=0 to vgaWidth - 1 do begin
+        red := 0;
+        green := 0;
+        blue := 0;
+        count := 0;
 
-      for d:=-1 to 1 do
-      for c:=-1 to 1 do begin
-        if (a + c < 0) or (a + c >= vgaWidth)
-          or (b + d < 0) or (b + d >= vgaHeight) then continue;
+        for d:=-1 to 1 do
+          for c:=-1 to 1 do begin
+            if (a + c < 0) or (a + c >= vgaWidth)
+              or (b + d < 0) or (b + d >= vgaHeight) then continue;
 
-        colour := unsafePget(a + c, b + d);
+            colour := unsafePget(a + c, b + d);
 
-        inc(red, colour shr 16 and $FF);
-        inc(green, colour shr 8 and $FF);
-        inc(blue, colour and $FF);
+            inc(red, colour shr 16 and $FF);
+            inc(green, colour shr 8 and $FF);
+            inc(blue, colour and $FF);
 
-        inc(count)
+            inc(count)
+          end;
+
+        { Average this pixel }
+        red := red div count;
+        green := green div count;
+        blue := blue div count;
+
+        { Output to imgBlur }
+        colour := ($FF shl 24) or (red shl 16) or (green shl 8) or blue;
+        unsafePset(a, b, colour)
       end;
-
-      { Average this pixel }
-      red := red div count;
-      green := green div count;
-      blue := blue div count;
-
-      { Output to imgBlur }
-      colour := ($FF shl 24) or (red shl 16) or (green shl 8) or blue;
-      unsafePset(a, b, colour)
-    end;
   end;
 
   spr(imgBlur, 0, 0);
