@@ -39,13 +39,18 @@ begin
 
   image := getImagePtr(imgHandle);
 
-  { TODO: Check bounds }
   { 1px padding is added }
   for b:=-1 to image^.height do
     for a:=-1 to image^.width do begin
+      if (a < 0) or (a >= image^.width) or (b < 0) or (b >= image^.height) then
+        continue;
+
+      { Skip this solid pixel }
+      if unsafeSprGetAlpha(image, a, b) > 0 then continue;
+
+      { Check 4 neighbours }
       solid := false;
 
-      { TODO: Check 4 neighbours }
       if (b - 1 >= 0) and (unsafeSprGetAlpha(image, a, b - 1) > 0) then
         solid := true;
       if (b + 1 < image^.height) and (unsafeSprGetAlpha(image, a, b + 1) > 0) then
