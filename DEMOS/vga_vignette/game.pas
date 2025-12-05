@@ -17,6 +17,8 @@ var
 
   { Init your game state here }
   gameTime: double;
+  imgVignette: longint;
+  imgVignettePtr: PImageRef;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -32,8 +34,13 @@ var
   centreX, centreY: double;
   offsetX, offsetY: double;
   normX, normY: double;
-  dist, t: double;
+  dist, t, factor: double;
 begin
+  if imgVignettePtr = nil then begin
+    imgVignette := newImage(vgaWidth, vgaHeight);
+    imgVignettePtr := getImagePtr(imgVignette);
+  end;
+
   for py:=0 to vgaHeight - 1 do 
   for px:=0 to vgaWidth - 1 do begin
     { Coordinate normalisation }
@@ -56,7 +63,19 @@ begin
     if t > 1.0 then t := 1.0;
     factor := t * t * (3.0 - 2.0 * t);
 
-    { TODO: Darken RGB channels }
+    { Darken RGB channels with vignette factor }
+    colour := unsafePget(px, py);
+
+    r := colour shr 16 and $FF;
+    g := colour shr 8 and $FF;
+    b := colour and $FF;
+    a := colour shr 24 and $FF;
+
+    r := trunc(r * factor);
+    g := trunc(g * factor);
+    b := trunc(b * factor);
+
+    { TODO: Render to buffer }
     end;
 
   spr(imgVignette, 0, 0)
