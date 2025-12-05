@@ -31,7 +31,7 @@ var
   centreX, centreY: double;
   offsetX, offsetY: double;
   normX, normY: double;
-  dist: double;
+  dist, t: double;
 begin
   { Coordinate normalisation }
   centreX := vgaWidth / 2;
@@ -46,7 +46,13 @@ begin
   { Elliptical distance }
   dist := sqrt(normX * normX + normY * normY);
 
-  { TODO: Falloff }
+  { Vignette factor (falloff) }
+  { t: gradient }
+  t := 1.0 - dist;
+  if t < 0.0 then t := 0.0;
+  if t > 1.0 then t := 1.0;
+  factor := t * t * (3.0 - 2.0 * t);
+
   { TODO: Darken RGB channels}
 end;
 
