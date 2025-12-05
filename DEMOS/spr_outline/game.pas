@@ -33,7 +33,6 @@ procedure sprOutline(const imgHandle: longint; const x, y: integer; const colour
 var
   a, b: integer;
   image: PImageRef;
-  solid: boolean;
 begin
   if not isImageSet(imgHandle) then exit;
 
@@ -46,22 +45,12 @@ begin
       if unsafeSprGetAlpha(image, a, b) > 0 then continue;
 
       { Check 4 neighbours }
-      solid := false;
-
-      if (b - 1 >= 0) and (unsafeSprGetAlpha(image, a, b - 1) > 0) then
-        solid := true;
-      if (b + 1 < image^.height) and (unsafeSprGetAlpha(image, a, b + 1) > 0) then
-        solid := true;
-
-      if (a - 1 >= 0) and (unsafeSprGetAlpha(image, a - 1, b) > 0) then
-        solid := true;
-      if (a + 1 < image^.width) and (unsafeSprGetAlpha(image, a + 1, b) > 0) then
-        solid := true;
-
-      if solid then
+      if (b - 1 >= 0) and (unsafeSprGetAlpha(image, a, b - 1) > 0)
+        or (b + 1 < image^.height) and (unsafeSprGetAlpha(image, a, b + 1) > 0)
+        or (a - 1 >= 0) and (unsafeSprGetAlpha(image, a - 1, b) > 0)
+        or (a + 1 < image^.width) and (unsafeSprGetAlpha(image, a + 1, b) > 0) then
         pset(x + a, y + b, colour);
     end;
-
   
   { Padding area }
   { top & bottom }
