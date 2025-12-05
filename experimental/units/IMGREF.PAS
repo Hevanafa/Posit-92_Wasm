@@ -188,7 +188,7 @@ var
   offset: longword;
 begin
   offset := (x + y * image^.width) * 4;
-  unsafeSprGetAlpha := image^.dataPtr[offset + 3] shr 24 and $FF
+  unsafeSprGetAlpha := image^.dataPtr[offset + 3]
 end;
 
 

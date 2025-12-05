@@ -1,6 +1,7 @@
 library Game;
 
 {$Mode TP}
+{$B-}
 
 uses
   Keyboard, Mouse,
@@ -30,16 +31,33 @@ end;
 
 procedure sprOutline(const imgHandle: longint; const x, y: integer; const colour: longword);
 var
-  px, py: integer;
+  a, b: integer;
   image: PImageRef;
+  solid: boolean;
 begin
   if not isImageSet(imgHandle) then exit;
 
   image := getImagePtr(imgHandle);
 
-  for b:=0 to image^.height - 1 do
-    for a:=0 to image^.width - 1 do begin
+  { TODO: Check bounds }
+  { 1px padding is added }
+  for b:=-1 to image^.height do
+    for a:=-1 to image^.width do begin
+      solid := false;
+
       { TODO: Check 4 neighbours }
+      if (b - 1 >= 0) and (unsafeSprGetAlpha(image, a, b - 1) > 0) then
+        solid := true;
+      if (b + 1 < image^.height) and (unsafeSprGetAlpha(image, a, b + 1) > 0) then
+        solid := true;
+
+      if (a - 1 >= 0) and (unsafeSprGetAlpha(image, a - 1, b) > 0) then
+        solid := true;
+      if (a + 1 < image^.width) and (unsafeSprGetAlpha(image, a + 1, b) > 0) then
+        solid := true;
+
+      if solid then
+        unsafePset(x + a, y + b, colour);
     end;
 
   spr(imgHandle, x, y)
