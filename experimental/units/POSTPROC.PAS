@@ -17,7 +17,7 @@ procedure applyFullChromabe;
 
 implementation
 
-uses ImgRefFast, VGA;
+uses ImgRefFast, Logger, VGA;
 
 var
   imgBlur: longint;
@@ -219,7 +219,7 @@ begin
   end;
 
   for py:=0 to vgaHeight - 1 do
-    for py:=0 to vgaWidth - 1 do begin
+    for px:=0 to vgaWidth - 1 do begin
       { red shifts right }
       redX := px + 1;
       if redX >= vgaWidth then redX := vgaWidth - 1;
