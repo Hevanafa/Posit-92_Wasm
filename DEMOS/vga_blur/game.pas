@@ -77,12 +77,13 @@ begin
   if not drawOnce then begin
     imgBlur := newImage(vgaWidth, vgaHeight);
 
+    { Process from VGA }
     for b:=0 to vgaHeight - 1 do
     for a:=0 to vgaWidth - 1 do begin
-      { Process from VGA }
       red := 0;
       green := 0;
       blue := 0;
+      count := 0;
 
       for d:=-1 to 1 do
       for c:=-1 to 1 do begin
@@ -91,10 +92,19 @@ begin
 
         colour := unsafePget(a + c, b + d);
 
-        { TODO: Collect 3x3 }
+        inc(red, colour shr 16 and $FF);
+        inc(green, colour shr 8 and $FF);
+        inc(blue, colour and $FF);
+
+        inc(count)
       end;
 
-      { TODO: Average this pixel }
+      { Average this pixel }
+      red := red div count;
+      green := green div count;
+      blue := blue div count;
+
+      { TODO: Output to imgBlur }
     end;
   end;
 
