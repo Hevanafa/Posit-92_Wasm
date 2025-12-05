@@ -52,9 +52,9 @@ begin
       for px:=0 to vgaWidth - 1 do begin
         colour := unsafePget(px, py);
         
-        r := colour shr 24;
-        g := colour shr 16;
-        b := colour shr 8;
+        r := colour shr 16 and $FF;
+        g := colour shr 8 and $FF;
+        b := colour and $FF;
 
         { $4060A0 };
         r := (r * $40) div 255;
@@ -154,7 +154,6 @@ begin
   applyFullTint(TintModes(actualTintMode));
 
   printDefault('Tint mode: ' + getTintName(TintModes(actualTintMode)), 10, 10);
-
   printDefault('Left / right: Change tint mode', 10, vgaHeight - 20);
 
   drawMouse;
