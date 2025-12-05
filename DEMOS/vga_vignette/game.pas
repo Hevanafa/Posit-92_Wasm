@@ -31,6 +31,7 @@ var
   centreX, centreY: double;
   offsetX, offsetY: double;
   normX, normY: double;
+  dist: double;
 begin
   { Coordinate normalisation }
   centreX := vgaWidth / 2;
@@ -42,7 +43,9 @@ begin
   normX := offsetX / centreX;
   normY := offsetY / centreY;
 
-  { TODO: Elliptical distance }
+  { Elliptical distance }
+  dist := sqrt(normX * normX + normY * normY);
+
   { TODO: Falloff }
   { TODO: Darken RGB channels}
 end;
