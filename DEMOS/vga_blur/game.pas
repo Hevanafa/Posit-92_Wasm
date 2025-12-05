@@ -3,7 +3,8 @@ library Game;
 {$Mode ObjFPC}
 
 uses
-  BMFont, Keyboard, Mouse,
+  BMFont, Conv, FPS,
+  Keyboard, Mouse,
   ImgRef, ImgRefFast,
   PostProc, Timing, VGA,
   Assets;
@@ -31,11 +32,17 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
+procedure drawFPS;
+begin
+  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
+end;
+
 
 procedure init;
 begin
   initBuffer;
   initDeltaTime;
+  initFPSCounter;
 end;
 
 procedure afterInit;
@@ -49,6 +56,7 @@ end;
 procedure update;
 begin
   updateDeltaTime;
+  incrementFPS;
 
   updateMouse;
 
@@ -79,8 +87,7 @@ begin
     (vgaWidth - w) - 10, vgaHeight - 20,
     defaultFont, defaultFontGlyphs, black);
 
-  { TODO: Show FPS }
-  
+  drawFPS;
   drawMouse;
   flush
 end;
