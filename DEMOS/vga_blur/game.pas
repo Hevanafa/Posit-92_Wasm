@@ -3,7 +3,7 @@ library Game;
 {$Mode ObjFPC}
 
 uses
-  Keyboard, Mouse,
+  BMFont, Keyboard, Mouse,
   ImgRef, ImgRefFast,
   Timing, VGA,
   Assets;
@@ -11,6 +11,8 @@ uses
 const
   SC_ESC = $01;
   SC_SPACE = $39;
+
+  Black = $FF000000;
 
 var
   lastEsc: boolean;
@@ -61,14 +63,22 @@ var
 begin
   cls($FF6495ED);
 
-  if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
-  else
-    spr(imgDosuEXE[0], 148, 88);
+  spr(imgDreamscapeCrossing, 0, 0);
 
-  s := 'Hello world!';
+  // if (trunc(gameTime * 4) and 1) > 0 then
+  //   spr(imgDosuEXE[1], 148, 88)
+  // else
+  //   spr(imgDosuEXE[0], 148, 88);
+
+  // s := 'Hello world!';
+  // w := measureDefault(s);
+  // printDefault(s, (vgaWidth - w) div 2, 120);
+
+  s := 'Art by [Unknown Artist]';
   w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  printBMFontColour(s,
+    (vgaWidth - w) - 10, vgaHeight - 20,
+    defaultFont, defaultFontGlyphs, black);
 
   drawMouse;
   flush
