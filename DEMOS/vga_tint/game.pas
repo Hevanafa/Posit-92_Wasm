@@ -65,6 +65,44 @@ begin
         unsafePset(px, py, colour)
       end;
     end;
+
+    TintModeSepia: begin
+      for py:=0 to vgaHeight - 1 do
+      for px:=0 to vgaWidth - 1 do begin
+        colour := unsafePget(px, py);
+        
+        r := colour shr 16 and $FF;
+        g := colour shr 8 and $FF;
+        b := colour and $FF;
+
+        { $4060A0 };
+        r := (r * $C0) div 255;
+        g := (g * $A0) div 255;
+        b := (b * $80) div 255;
+
+        colour := (colour and $FF000000) or (r shl 16) or (g shl 8) or b;
+        unsafePset(px, py, colour)
+      end;
+    end;
+
+    TintModeDamage: begin
+      for py:=0 to vgaHeight - 1 do
+      for px:=0 to vgaWidth - 1 do begin
+        colour := unsafePget(px, py);
+        
+        r := colour shr 16 and $FF;
+        g := colour shr 8 and $FF;
+        b := colour and $FF;
+
+        { $4060A0 };
+        r := (r * $FF) div 255;
+        g := (g * $60) div 255;
+        b := (b * $60) div 255;
+
+        colour := (colour and $FF000000) or (r shl 16) or (g shl 8) or b;
+        unsafePset(px, py, colour)
+      end;
+    end;
     else
   end;
 end;
@@ -133,28 +171,20 @@ end;
 
 procedure draw;
 var
-  w: integer;
   s: string;
+  w: word;
 begin
   cls($FF6495ED);
 
   spr(imgArkRoad, 0, 0);
-
-  {
-  if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
-  else
-    spr(imgDosuEXE[0], 148, 88);
-
-  s := 'Hello world!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
-  }
-
   applyFullTint(TintModes(actualTintMode));
 
   printDefault('Tint mode: ' + getTintName(TintModes(actualTintMode)), 10, 10);
   printDefault('Left / right: Change tint mode', 10, vgaHeight - 20);
+
+  s := 'Art by Kevin Hong';
+  w := measureDefault(s);
+  printDefault(s, vgaWidth - w - 10, vgaHeight - 20);
 
   drawMouse;
   flush
