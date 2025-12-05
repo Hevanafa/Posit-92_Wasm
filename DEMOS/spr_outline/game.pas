@@ -39,12 +39,9 @@ begin
 
   image := getImagePtr(imgHandle);
 
-  { 1px padding is added }
-  for b:=-1 to image^.height do
-    for a:=-1 to image^.width do begin
-      if (a < 0) or (a >= image^.width) or (b < 0) or (b >= image^.height) then
-        continue;
-
+  { Within sprite bounds }
+  for b:=0 to image^.height - 1 do
+    for a:=0 to image^.width - 1 do begin
       { Skip this solid pixel }
       if unsafeSprGetAlpha(image, a, b) > 0 then continue;
 
@@ -64,6 +61,19 @@ begin
       if solid then
         unsafePset(x + a, y + b, colour);
     end;
+
+  
+  { Padding area }
+  { top & bottom }
+  for a:=0 to image^.width - 1 do begin
+    if unsafeSprGetAlpha(image, a, 0) > 0 then
+      unsafePset(x + a, y - 1, colour);
+
+    if unsafeSprGetAlpha(image, a, image^.height - 1) > 0 then
+      unsafePset(x + a, y + image^.height, colour);
+  end;
+
+  { TODO: left & right }
 
   spr(imgHandle, x, y)
 end;
