@@ -28,32 +28,38 @@ end;
 
 procedure applyFullVignette;
 var
+  px, py: integer;
   centreX, centreY: double;
   offsetX, offsetY: double;
   normX, normY: double;
   dist, t: double;
 begin
-  { Coordinate normalisation }
-  centreX := vgaWidth / 2;
-  centreY := vgaHeight / 2;
+  for py:=0 to vgaHeight - 1 do 
+  for px:=0 to vgaWidth - 1 do begin
+    { Coordinate normalisation }
+    centreX := vgaWidth / 2;
+    centreY := vgaHeight / 2;
 
-  offsetX := px - centreX;
-  offsetY := py - centreY;
+    offsetX := px - centreX;
+    offsetY := py - centreY;
 
-  normX := offsetX / centreX;
-  normY := offsetY / centreY;
+    normX := offsetX / centreX;
+    normY := offsetY / centreY;
 
-  { Elliptical distance }
-  dist := sqrt(normX * normX + normY * normY);
+    { Elliptical distance }
+    dist := sqrt(normX * normX + normY * normY);
 
-  { Vignette factor (falloff) }
-  { t: gradient }
-  t := 1.0 - dist;
-  if t < 0.0 then t := 0.0;
-  if t > 1.0 then t := 1.0;
-  factor := t * t * (3.0 - 2.0 * t);
+    { Vignette factor (falloff) }
+    { t: gradient }
+    t := 1.0 - dist;
+    if t < 0.0 then t := 0.0;
+    if t > 1.0 then t := 1.0;
+    factor := t * t * (3.0 - 2.0 * t);
 
-  { TODO: Darken RGB channels}
+    { TODO: Darken RGB channels }
+    end;
+
+  spr(imgVignette, 0, 0)
 end;
 
 
