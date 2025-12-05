@@ -7,6 +7,7 @@ interface
 uses ImgRef;
 
 procedure applyGreyscale(const imgHandle: longint);
+procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
 procedure applyFullScanlines;
 procedure applyFullSubtleScanlines;
 procedure applyFullTint(const tint: longword);
@@ -47,6 +48,22 @@ begin
     unsafeSprPset(image, px, py, colour)
   end;
 end;
+
+procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
+var
+  a, b: word;
+  image: PImageRef;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+
+  for b:=0 to image^.height - 1 do
+  for a:=0 to image^.width - 1 do
+    if unsafeSprPget(image, a, b) = oldColour then
+      unsafeSprPset(image, a, b, newColour);
+end;
+
 
 procedure applyFullScanlines;
 var

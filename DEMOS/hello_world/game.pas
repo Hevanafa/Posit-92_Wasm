@@ -5,7 +5,7 @@ library Game;
 uses
   Conv, FPS, Keyboard, Logger,
   Mouse, Timing, ImgRef, ImgRefFast,
-  VGA,
+  PostProc, VGA,
   Assets;
 
 const
@@ -43,6 +43,8 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
 end;
 
 procedure update;

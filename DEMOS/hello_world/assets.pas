@@ -8,8 +8,8 @@ uses BMFont;
 
 var
   { for use in loadBMFont }
-  _defaultFont: TBMFont;
-  _defaultFontGlyphs: array[32..126] of TBMFontGlyph;
+  defaultFont: TBMFont;
+  defaultFontGlyphs: array[32..126] of TBMFontGlyph;
 
   imgCursor: longint;
   imgDosuEXE: array[0..1] of longint;
@@ -33,22 +33,22 @@ uses Conv;
 
 function defaultFontPtr: PBMFont;
 begin
-  defaultFontPtr := @_defaultFont
+  defaultFontPtr := @defaultFont
 end;
 
 function defaultFontGlyphsPtr: PBMFontGlyph;
 begin
-  defaultFontGlyphsPtr := @_defaultFontGlyphs
+  defaultFontGlyphsPtr := @defaultFontGlyphs
 end;
 
 procedure printDefault(const text: string; const x, y: integer);
 begin
-  printBMFont(text, x, y, _defaultFont, _defaultFontGlyphs)
+  printBMFont(text, x, y, defaultFont, defaultFontGlyphs)
 end;
 
 function measureDefault(const text: string): word;
 begin
-  measureDefault := measureBMFont(text, _defaultFontGlyphs)
+  measureDefault := measureBMFont(text, defaultFontGlyphs)
 end;
 
 
