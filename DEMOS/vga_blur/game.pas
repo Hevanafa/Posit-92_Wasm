@@ -65,6 +65,10 @@ procedure draw;
 var
   w: integer;
   s: string;
+  a, b, c, d: integer;
+  colour: longword;
+  count: word;
+  red, green, blue: word;
 begin
   cls($FF6495ED);
 
@@ -72,7 +76,26 @@ begin
 
   if not drawOnce then begin
     imgBlur := newImage(vgaWidth, vgaHeight);
-    { TODO: Process from VGA }
+
+    for b:=0 to vgaHeight - 1 do
+    for a:=0 to vgaWidth - 1 do begin
+      { Process from VGA }
+      red := 0;
+      green := 0;
+      blue := 0;
+
+      for d:=-1 to 1 do
+      for c:=-1 to 1 do begin
+        if (a + c < 0) or (a + c >= vgaWidth)
+          or (b + d < 0) or (b + d >= vgaHeight) then continue;
+
+        colour := unsafePget(a + c, b + d);
+
+        { TODO: Collect 3x3 }
+      end;
+
+      { TODO: Average this pixel }
+    end;
   end;
 
   spr(imgBlur, 0, 0);
