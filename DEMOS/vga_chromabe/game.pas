@@ -13,10 +13,11 @@ const
   SC_SPACE = $39;
 
 var
-  lastEsc: boolean;
+  lastEsc, lastSpacebar: boolean;
 
   { Init your game state here }
   gameTime: double;
+  showFilter: boolean;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -37,6 +38,8 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  showFilter := true
 end;
 
 procedure update;
@@ -51,6 +54,11 @@ begin
     if lastEsc then signalDone;
   end;
 
+  if lastSpacebar <> isKeyDown(SC_SPACE) then begin
+    lastSpacebar := isKeyDown(SC_SPACE);
+    if lastSpacebar then showFilter := not showFilter;
+  end;
+
   gameTime := gameTime + dt
 end;
 
@@ -62,18 +70,9 @@ begin
   cls($FF6495ED);
 
   spr(imgArkRoad, 0, 0);
+  if showFilter then applyFullChromabe;
 
-{
-  if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
-  else
-    spr(imgDosuEXE[0], 148, 88);
-
-  s := 'Hello world!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
-}
-  applyFullChromabe;
+  printDefault('Spacebar - Toggle chromatic aberration', 10, vgaHeight - 20);
 
   drawMouse;
   flush
