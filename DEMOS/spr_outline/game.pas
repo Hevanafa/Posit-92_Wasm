@@ -59,7 +59,7 @@ begin
         solid := true;
 
       if solid then
-        unsafePset(x + a, y + b, colour);
+        pset(x + a, y + b, colour);
     end;
 
   
@@ -67,19 +67,19 @@ begin
   { top & bottom }
   for a:=0 to image^.width - 1 do begin
     if unsafeSprGetAlpha(image, a, 0) > 0 then
-      unsafePset(x + a, y - 1, colour);
+      pset(x + a, y - 1, colour);
 
     if unsafeSprGetAlpha(image, a, image^.height - 1) > 0 then
-      unsafePset(x + a, y + image^.height, colour);
+      pset(x + a, y + image^.height, colour);
   end;
 
   { left & right }
   for b:=0 to image^.height - 1 do begin
     if unsafeSprGetAlpha(image, 0, b) > 0 then
-      unsafePset(x - 1, y + b, colour);
+      pset(x - 1, y + b, colour);
 
     if unsafeSprGetAlpha(image, image^.width - 1, b) > 0 then
-      unsafePset(x + image^.width, y + b, colour);
+      pset(x + image^.width, y + b, colour);
   end;
 
   spr(imgHandle, x, y)
