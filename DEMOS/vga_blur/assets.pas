@@ -20,6 +20,7 @@ function defaultFontPtr: PBMFont; public name 'defaultFontPtr';
 function defaultFontGlyphsPtr: PBMFontGlyph; public name 'defaultFontGlyphsPtr';
 
 procedure printDefault(const text: string; const x, y: integer);
+procedure printBlack(const text: string; const x, y: integer);
 function measureDefault(const text: string): word;
 
 { Asset boilerplate }
@@ -46,6 +47,13 @@ end;
 procedure printDefault(const text: string; const x, y: integer);
 begin
   printBMFont(text, x, y, defaultFont, defaultFontGlyphs)
+end;
+
+procedure printBlack(const text: string; const x, y: integer);
+const
+  Black = $FF000000;
+begin
+  printBMFontColour(text, x, y, defaultFont, defaultFontGlyphs, black)
 end;
 
 function measureDefault(const text: string): word;

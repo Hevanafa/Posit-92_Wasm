@@ -16,13 +16,11 @@ const
   Black = $FF000000;
 
 var
-  lastEsc: boolean;
+  lastEsc, lastSpacebar: boolean;
 
   { Init your game state here }
   gameTime: double;
-
-  drawOnce: boolean;
-  imgBlur: longint;
+  applyBlur: boolean;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -50,7 +48,7 @@ begin
   { Initialise game state here }
   hideCursor;
 
-  drawOnce := false
+  applyBlur := true;
 end;
 
 procedure update;
@@ -66,6 +64,12 @@ begin
     if lastEsc then signalDone;
   end;
 
+  if lastSpacebar <> isKeyDown(SC_SPACE) then begin
+    lastSpacebar := isKeyDown(SC_SPACE);
+    if lastSpacebar then
+      applyBlur := not applyBlur;
+  end;
+
   gameTime := gameTime + dt
 end;
 
@@ -78,14 +82,14 @@ begin
 
   spr(imgDreamscapeCrossing, 0, 0);
 
-  { spr(imgBlur, 0, 0); }
-  applyFullBoxBlur(1);
+  if applyBlur then
+    applyFullBoxBlur(1);
+
+  printBlack('Press Spacebar to toggle blur', 10, vgaHeight - 20);
 
   s := 'Art by [Unknown Artist]';
   w := measureDefault(s);
-  printBMFontColour(s,
-    (vgaWidth - w) - 10, vgaHeight - 20,
-    defaultFont, defaultFontGlyphs, black);
+  printBlack(s, (vgaWidth - w) - 10, vgaHeight - 20);
 
   drawFPS;
   drawMouse;
