@@ -9,6 +9,7 @@ interface
 
 function i32str(const value: Longint): string;
 function f32str(const value: double): string;
+function toFixed(const value: double; const decimals: integer): string;
 function i16HexStr(const value: word): string;
 function i8HexStr(const value: byte): string;
 function boolStr(const value: boolean): string;
@@ -40,6 +41,16 @@ begin
   str(value:0:4, result);
   f32str := result
 end;
+
+function toFixed(const value: double; const decimals: integer): string;
+var
+  result: string;
+begin
+  str(value:0:decimals, result);
+  toFixed := result
+end;
+
+
 
 function i16HexStr(const value: word): string;
 const
