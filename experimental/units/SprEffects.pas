@@ -1,5 +1,8 @@
 unit SprEffects;
 
+{$Mode TP}
+{$B-}
+
 interface
 
 procedure sprOutline(const imgHandle: longint; const x, y: integer; const colour: longword);
@@ -57,8 +60,23 @@ end;
 
 
 procedure sprShadow(const imgHandle: longint; const x, y: integer; const offsetX, offsetY: integer; const colour: longword);
+var
+  a, b: integer;
+  image: PImageRef;
 begin
   { TODO: Draw the shadow }
+  if not isImageSet(imgHandle) then exit;
+  image := getImagePtr(imgHandle);
+
+  for b:=0 to image^.height do
+  for a:=0 to image^.width do begin
+    if unsafeSprGetAlpha(image, a, b) < 255 then continue;
+
+    if (x + a + offsetX < 0) or (x + a + offsetX >= vgaWidth)
+      or (y + b + offsetY < 0) or (y + b + offsetY >= vgaHeight) then continue;
+
+    unsafePset(x + a + offsetX, y + b + offsetY, colour)
+  end;
   
   spr(imgHandle, x, y)
 end;
