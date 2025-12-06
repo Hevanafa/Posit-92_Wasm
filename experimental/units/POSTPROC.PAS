@@ -295,7 +295,7 @@ begin
     imgVignettePtr := getImagePtr(imgVignette);
   end;
 
-  writeLog('DEBUG applyFullVignette');
+  { writeLog('DEBUG applyFullVignette'); }
 
   for py:=0 to vgaHeight - 1 do 
   for px:=0 to vgaWidth - 1 do begin
@@ -311,11 +311,12 @@ begin
 
     { Elliptical distance }
     dist := sqrt(normX * normX + normY * normY);
-
+{
     writeLog('normX, normY, dist');
     writeLogF32(normX);
     writeLogF32(normY);
     writeLogF32(dist);
+}
 
     { Vignette factor (falloff) }
     { t: gradient }
@@ -323,8 +324,10 @@ begin
     if t < 0.0 then t := 0.0;
     if t > 1.0 then t := 1.0;
 
+{
     writeLog('t after clamp');
     writeLogF32(t);
+}
 
     case falloffType of
       FalloffTypeLinear:
@@ -338,15 +341,18 @@ begin
       else { Default: FalloffTypeSmoothstep }
         factor := t * t * (3.0 - 2.0 * t);
     end;
-
+{
     writeLog('factor after falloffType');
     writeLogF32(factor);
+}
 
     { Apply strength }
     factor := 1.0 - (1.0 - factor) * strength;
 
+{
     writeLog('factor after apply strength');
     writeLogF32(factor);
+}
 
     { Darken RGB channels with vignette factor }
     colour := unsafePget(px, py);
@@ -355,11 +361,12 @@ begin
     g := colour shr 8 and $FF;
     b := colour and $FF;
     a := colour shr 24 and $FF;
-
+{
     writeLog('rgb with factor');
     writeLogF32(r * factor);
     writeLogF32(g * factor);
     writeLogF32(b * factor);
+}
 
     r := trunc(r * factor);
     g := trunc(g * factor);

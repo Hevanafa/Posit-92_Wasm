@@ -108,7 +108,7 @@ class Posit92 {
      */
 
     const heapStart = 1048576;  // 1 MB = 1024 * 1024 B
-    const heapSize = 1 * 1048576;
+    const heapSize = 2 * 1048576;
 
     // Wasm memory is in 64KB pages
     const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
