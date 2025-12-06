@@ -81,9 +81,9 @@ begin
   applyFullPhosphor(1);
   applyFullChromabe;
   applyFullSubtleScanlines;
-  {
+  
+  { This one's bugged }
   applyFullVignette(FalloffTypeEaseOutQuad, 0.4);
-  }
 
   flush
 end;
