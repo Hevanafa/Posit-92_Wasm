@@ -3,7 +3,7 @@ library Game;
 {$Mode TP}
 
 uses
-  Keyboard, Mouse,
+  Conv, FPS, Keyboard, Mouse,
   ImgRef, ImgRefFast,
   PostProc, Timing, VGA,
   Assets;
@@ -28,11 +28,17 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
+procedure drawFPS;
+begin
+  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
+end;
+
 
 procedure init;
 begin
   initBuffer;
   initDeltaTime;
+  initFPSCounter;
 end;
 
 procedure afterInit;
@@ -44,6 +50,7 @@ end;
 procedure update;
 begin
   updateDeltaTime;
+  incrementFPS;
 
   updateMouse;
 
@@ -67,12 +74,14 @@ begin
     (vgaWidth - getImageWidth(imgPipBoy)) div 2,
     (vgaHeight - getImageHeight(imgPipBoy)) div 2);
 
+  drawFPS;
   drawMouse;
 
   { Apply post-processing chain }
   applyFullPhosphor(1);
   applyFullChromabe;
-  { applyFullScanlines;
+  applyFullSubtleScanlines;
+  {
   applyFullVignette(FalloffTypeEaseOutQuad, 0.4);
   }
 

@@ -1,5 +1,6 @@
 { Step 1: Include the FPS unit }
-uses FPS;
+uses
+  Conv, FPS;
 
 { Step 2: Add these lines in init }
 initDeltaTime;
