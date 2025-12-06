@@ -13,6 +13,8 @@ const
   SC_SPACE = $39;
 
   Black = $FF181818;
+  DarkGreen = $FF00AA00;
+  Green = $FF55FF55;
 
 var
   lastEsc: boolean;
@@ -68,7 +70,7 @@ var
   w: integer;
   s: string;
 begin
-  cls(Black);
+  cls(DarkGreen);
 
   spr(imgPipBoy,
     (vgaWidth - getImageWidth(imgPipBoy)) div 2,
