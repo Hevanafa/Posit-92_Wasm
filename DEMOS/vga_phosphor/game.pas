@@ -12,6 +12,9 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+  CornflowerBlue = $FF6495ED;
+  Black = $FF181818;
+
 var
   lastEsc: boolean;
 
@@ -59,18 +62,10 @@ var
   w: integer;
   s: string;
 begin
-  cls($FF6495ED);
+  cls(Black);
 
-  if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
-  else
-    spr(imgDosuEXE[0], 148, 88);
+  spr(imgPipBoy, 0, 0);
 
-  s := 'Hello world!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
-
-  { applyFullBoxBlur(1); }
   applyFullPhosphor(1);
 
   drawMouse;
