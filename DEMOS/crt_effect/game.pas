@@ -1,16 +1,18 @@
 library Game;
 
-{$Mode ObjFPC}
+{$Mode TP}
 
 uses
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Timing, VGA,
+  PostProc, Timing, VGA,
   Assets;
 
 const
   SC_ESC = $01;
   SC_SPACE = $39;
+
+  Black = $FF181818;
 
 var
   lastEsc: boolean;
@@ -59,24 +61,21 @@ var
   w: integer;
   s: string;
 begin
-  cls($FF6495ED);
+  cls(Black);
 
   spr(imgPipBoy,
     (vgaWidth - getImageWidth(imgPipBoy)) div 2,
     (vgaHeight - getImageHeight(imgPipBoy)) div 2);
 
-{
-  if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
-  else
-    spr(imgDosuEXE[0], 148, 88);
-
-  s := 'Hello world!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
-}
-
   drawMouse;
+
+  { Apply post-processing chain }
+  applyFullPhosphor(1);
+  applyFullChromabe;
+  { applyFullScanlines;
+  applyFullVignette(FalloffTypeEaseOutQuad, 0.4);
+  }
+
   flush
 end;
 
