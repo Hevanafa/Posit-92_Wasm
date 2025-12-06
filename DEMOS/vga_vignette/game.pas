@@ -114,7 +114,7 @@ begin
   applyFullVignette(FalloffTypes(actualFalloffType), vignetteStrength);
 
   printDefault('Falloff: ' + getFalloffName(FalloffTypes(actualFalloffType)) + ' (' + i32str(ord(actualFalloffType)) + ')', 10, vgaHeight - 60);
-  printDefault('Strength: ' + f32str(vignetteStrength), 10, vgaHeight - 50);
+  printDefault('Strength: ' + toFixed(vignetteStrength, 2), 10, vgaHeight - 50);
 
   printDefault('Left / right: Adjust strength', 10, vgaHeight - 30);
   printDefault('Up / down: Toggle falloff', 10, vgaHeight - 20);
