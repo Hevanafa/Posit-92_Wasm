@@ -7,10 +7,12 @@ class Game extends Posit92 {
   ScancodeMap = {
     "Escape": 0x01,
     "Space": 0x39,
+    "Backspace": 0x0E,
     
     "ArrowLeft": 0x4B,
     "ArrowRight": 0x4D,
-    "Backspace": 0x0E,
+    "ArrowUp": 0x48,
+    "ArrowDown": 0x50,
     // Add more scancodes as necessary
   };
 

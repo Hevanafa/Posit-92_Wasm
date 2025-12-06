@@ -4,7 +4,7 @@ library Game;
 
 uses
   Keyboard, Mouse,
-  ImgRef, ImgRefFast, Maths,
+  Conv, ImgRef, ImgRefFast, Maths,
   PostProc, Timing, VGA,
   Assets;
 
@@ -12,12 +12,17 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+  SC_BACKSPACE = $0E;
+
   SC_LEFT = $4B;
   SC_RIGHT = $4D;
-  SC_BACKSPACE = $0E;
+  SC_UP = $48;
+  SC_DOWN = $50;
+
 
 var
   lastEsc, lastBackspace: boolean;
+  lastUp, lastDown: boolean;
 
   { Init your game state here }
   gameTime: double;
@@ -91,6 +96,8 @@ begin
   applyFullVignette(vignetteStrength);
 
   printDefault('Left / right: Adjust strength', 10, vgaHeight - 20);
+
+  printDefault('Strength: ' + f32str(vignetteStrength), 10, vgaHeight - 50);
 
   s := 'Art by Kevin Hong';
   w := measureDefault(s);

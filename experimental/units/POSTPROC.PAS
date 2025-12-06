@@ -6,6 +6,14 @@ interface
 
 uses ImgRef;
 
+{ FalloffTypes }
+type FalloffTypes = (
+  FalloffTypeSmoothstep,  { default }
+  FalloffTypeLinear,
+  FalloffTypeEaseInQuad,
+  FalloffTypeEaseOutQuad
+);
+
 procedure applyGreyscale(const imgHandle: longint);
 procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
 procedure applyFullScanlines;
@@ -13,7 +21,7 @@ procedure applyFullSubtleScanlines;
 procedure applyFullTint(const tint: longword);
 procedure applyFullBoxBlur(const radius: integer);
 procedure applyFullChromabe;
-procedure applyFullVignette(const strength: double);
+procedure applyFullVignette(const falloffType: FalloffTypes; const strength: double);
 
 
 implementation
@@ -248,7 +256,7 @@ begin
   spr(imgChromabe, 0, 0)
 end;
 
-procedure applyFullVignette(const strength: double);
+procedure applyFullVignette(const falloffType: FalloffTypes; const strength: double);
 { const
   strength: double = 0.7; } { Either 0.3 or 0.7 }
 var
@@ -285,7 +293,19 @@ begin
     t := 1.0 - dist;
     if t < 0.0 then t := 0.0;
     if t > 1.0 then t := 1.0;
-    factor := t * t * (3.0 - 2.0 * t);
+
+    case falloffType of
+      FalloffTypeLinear:
+        factor := lerpLinear(0.0, 1.0, t);
+
+      FalloffTypeEaseInQuad:
+        factor := lerpEaseInQuad(0.0, 1.0, t);
+      FalloffTypeEaseOutQuad:
+        factor := lerpEaseOutQuad(0.0, 1.0, t);
+
+      else { Default: FalloffTypeSmoothstep }
+        factor := t * t * (3.0 - 2.0 * t);
+    end;
 
     { Apply strength}
     factor := 1.0 - (1.0 - factor) * strength;
