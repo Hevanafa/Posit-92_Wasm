@@ -26,6 +26,8 @@ var
 
   { Init your game state here }
   gameTime: double;
+
+  actualFalloffType: FalloffTypes;
   vignetteStrength: double;
 
 { Use this to set `done` to true }
@@ -38,6 +40,7 @@ end;
 
 procedure resetParameters;
 begin
+  falloffType := FalloffTypes(0);
   vignetteStrength := 0.3;
 end;
 
@@ -79,6 +82,16 @@ begin
   if isKeyDown(SC_RIGHT) then
     vignetteStrength := vignetteStrength + dt / 2;
 
+  if lastUp <> isKeyDown(SC_UP) then begin
+    lastUp := isKeyDown(SC_UP);
+    if lastUp then dec(falloffType);
+  end;
+
+  if lastDown <> isKeyDown(SC_DOWN) then begin
+    lastDown := isKeyDown(SC_DOWN);
+    if lastDown then inc(falloffType);
+  end;
+
   vignetteStrength := clamp(vignetteStrength, 0.0, 1.0);
 
   gameTime := gameTime + dt
@@ -95,9 +108,11 @@ begin
 
   applyFullVignette(vignetteStrength);
 
-  printDefault('Left / right: Adjust strength', 10, vgaHeight - 20);
-
+  printDefault('Falloff: ' + getFalloffName(actualFalloffType), 10, vgaHeight - 60);
   printDefault('Strength: ' + f32str(vignetteStrength), 10, vgaHeight - 50);
+
+  printDefault('Left / right: Adjust strength', 10, vgaHeight - 30);
+  printDefault('Up / down: Toggle falloff', 10, vgaHeight - 20);
 
   s := 'Art by Kevin Hong';
   w := measureDefault(s);
