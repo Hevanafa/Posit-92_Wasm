@@ -40,7 +40,7 @@ end;
 
 procedure resetParameters;
 begin
-  falloffType := FalloffTypes(0);
+  actualFalloffType := FalloffTypes(0);
   vignetteStrength := 0.3;
 end;
 
@@ -84,13 +84,18 @@ begin
 
   if lastUp <> isKeyDown(SC_UP) then begin
     lastUp := isKeyDown(SC_UP);
-    if lastUp then dec(falloffType);
+    if lastUp then dec(actualFalloffType);
   end;
 
   if lastDown <> isKeyDown(SC_DOWN) then begin
     lastDown := isKeyDown(SC_DOWN);
-    if lastDown then inc(falloffType);
+    if lastDown then inc(actualFalloffType);
   end;
+
+  if ord(actualFalloffType) < 0 then
+    actualFalloffType := FalloffTypes(ord(FalloffTypeCount) - 1);
+  if ord(actualFalloffType) >= ord(FalloffTypeCount) then
+    actualFalloffType := FalloffTypes(0);
 
   vignetteStrength := clamp(vignetteStrength, 0.0, 1.0);
 
@@ -106,9 +111,9 @@ begin
 
   spr(imgArkRoad, 0, 0);
 
-  applyFullVignette(vignetteStrength);
+  applyFullVignette(actualFalloffType, vignetteStrength);
 
-  printDefault('Falloff: ' + getFalloffName(actualFalloffType), 10, vgaHeight - 60);
+  printDefault('Falloff: ' + getFalloffName(actualFalloffType) + ' (' + i32str(ord(actualFalloffType)) + ')', 10, vgaHeight - 60);
   printDefault('Strength: ' + f32str(vignetteStrength), 10, vgaHeight - 50);
 
   printDefault('Left / right: Adjust strength', 10, vgaHeight - 30);

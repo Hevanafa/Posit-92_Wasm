@@ -11,7 +11,8 @@ type FalloffTypes = (
   FalloffTypeSmoothstep,  { default }
   FalloffTypeLinear,
   FalloffTypeEaseInQuad,
-  FalloffTypeEaseOutQuad
+  FalloffTypeEaseOutQuad,
+  FalloffTypeCount
 );
 
 procedure applyGreyscale(const imgHandle: longint);
@@ -21,13 +22,15 @@ procedure applyFullSubtleScanlines;
 procedure applyFullTint(const tint: longword);
 procedure applyFullBoxBlur(const radius: integer);
 procedure applyFullChromabe;
+
+function getFalloffName(const which: FalloffTypes): string;
 procedure applyFullVignette(const falloffType: FalloffTypes; const strength: double);
 
 
 implementation
 
 uses
-  Conv, ImgRefFast, Logger, VGA;
+  Conv, ImgRefFast, Lerp, Logger, VGA;
 
 var
   imgBlur: longint;
@@ -266,7 +269,7 @@ begin
     FalloffTypeLinear: result := 'Linear';
     FalloffTypeEaseInQuad: result := 'Ease in quad';
     FalloffTypeEaseOutQuad: result := 'Ease out quad';
-    else result := 'Unknown falloff type: ' + i32str(which);
+    else result := 'Unknown falloff type: ' + i32str(ord(which));
   end;
 
   getFalloffName := result
