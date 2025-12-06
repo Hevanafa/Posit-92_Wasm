@@ -3,6 +3,7 @@ unit SprEffects;
 interface
 
 procedure sprOutline(const imgHandle: longint; const x, y: integer; const colour: longword);
+procedure sprShadow(const imgHandle: longint; const x, y: integer; const offsetX, offsetY: integer; const colour: longword);
 
 
 implementation
@@ -53,5 +54,14 @@ begin
 
   spr(imgHandle, x, y)
 end;
+
+
+procedure sprShadow(const imgHandle: longint; const x, y: integer; const offsetX, offsetY: integer; const colour: longword);
+begin
+  { TODO: Draw the shadow }
+  
+  spr(imgHandle, x, y)
+end;
+
 
 end.
