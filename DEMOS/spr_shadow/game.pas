@@ -13,6 +13,7 @@ const
   SC_SPACE = $39;
 
   Grey = $FF555555;
+  SemitransparentBlack = $60000000;
 
 var
   lastEsc: boolean;
@@ -67,9 +68,9 @@ begin
   offsetY := trunc(sin(getTimer * 3.0) * 10);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    sprShadow(imgDosuEXE[1], 148, 88, 10, offsetY, grey)
+    sprShadow(imgDosuEXE[1], 148, 88, 10, offsetY, SemitransparentBlack)
   else
-    sprShadow(imgDosuEXE[0], 148, 88, 10, offsetY, grey);
+    sprShadow(imgDosuEXE[0], 148, 88, 10, offsetY, SemitransparentBlack);
 
   s := 'Hello world!';
   w := measureDefault(s);

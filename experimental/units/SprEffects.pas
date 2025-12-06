@@ -59,22 +59,34 @@ begin
 end;
 
 
+{ This procedure only processes solid pixels }
 procedure sprShadow(const imgHandle: longint; const x, y: integer; const offsetX, offsetY: integer; const colour: longword);
 var
   a, b: integer;
+  destX, destY: integer;
   image: PImageRef;
+  alpha: byte;
 begin
   if not isImageSet(imgHandle) then exit;
   image := getImagePtr(imgHandle);
+
+  alpha := colour shr 24 and $FF;
+  if alpha = 0 then exit;
 
   for b:=0 to image^.height - 1 do
   for a:=0 to image^.width - 1 do begin
     if unsafeSprGetAlpha(image, a, b) < 255 then continue;
 
-    if (x + a + offsetX < 0) or (x + a + offsetX >= vgaWidth)
-      or (y + b + offsetY < 0) or (y + b + offsetY >= vgaHeight) then continue;
+    destX := x + a + offsetX;
+    destY := y + b + offsetY;
 
-    unsafePset(x + a + offsetX, y + b + offsetY, colour)
+    if (destX < 0) or (destX >= vgaWidth)
+      or (destY < 0) or (destY >= vgaHeight) then continue;
+
+    if alpha = 255 then
+      unsafePset(destX, destY, colour)
+    else
+      unsafePsetBlend(destX, destY, colour);
   end;
   
   spr(imgHandle, x, y)
