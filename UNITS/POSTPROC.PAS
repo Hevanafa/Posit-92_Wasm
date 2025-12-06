@@ -6,21 +6,38 @@ interface
 
 uses ImgRef;
 
+type FalloffTypes = (
+  FalloffTypeSmoothstep,  { default }
+  FalloffTypeLinear,
+  FalloffTypeEaseInQuad,
+  FalloffTypeEaseOutQuad,
+  FalloffTypeCount
+);
+
 procedure applyGreyscale(const imgHandle: longint);
 procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
 procedure applyFullScanlines;
 procedure applyFullSubtleScanlines;
 procedure applyFullTint(const tint: longword);
 procedure applyFullBoxBlur(const radius: integer);
+procedure applyFullChromabe;
+
+function getFalloffName(const which: FalloffTypes): string;
+procedure applyFullVignette(const falloffType: FalloffTypes; const strength: double);
 
 
 implementation
 
-uses ImgRefFast, VGA;
+uses
+  Conv, ImgRefFast, Lerp, Logger, VGA;
 
 var
   imgBlur: longint;
   imgBlurPtr: PImageRef;
+  imgChromabe: longint;
+  imgChromabePtr: PImageRef;
+  imgVignette: longint;
+  imgVignettePtr: PImageRef;
 
 procedure applyGreyscale(const imgHandle: longint);
 var
@@ -199,6 +216,136 @@ begin
     end;
 
   spr(imgBlur, 0, 0)
+end;
+
+
+procedure applyFullChromabe;
+var
+  px, py: integer;
+  redPixel, greenPixel, bluePixel: longword;
+  r, g, b, a: byte;
+  redX, blueX: integer;
+  colour: longword;
+begin
+  if imgChromabePtr = nil then begin
+    imgChromabe := newImage(vgaWidth, vgaHeight);
+    imgChromabePtr := getImagePtr(imgChromabe);
+  end;
+
+  for py:=0 to vgaHeight - 1 do
+    for px:=0 to vgaWidth - 1 do begin
+      { red shifts right }
+      redX := px + 1;
+      if redX >= vgaWidth then redX := vgaWidth - 1;
+
+      { blue shifts left }
+      blueX := px - 1;
+      if blueX < 0 then blueX := 0;
+
+      redPixel := unsafePget(redX, py);
+      greenPixel := unsafePget(px, py);
+      bluePixel := unsafePget(blueX, py);
+
+      { Extract each channels }
+      r := redPixel shr 16 and $FF;
+      g := greenPixel shr 8 and $FF;
+      b := bluePixel and $FF;
+      a := greenPixel shr 24 and $FF;  { Use green's alpha }
+
+      colour := (a shl 24) or (r shl 16) or (g shl 8) or b;
+      unsafeSprPset(imgChromabePtr, px, py, colour)
+    end;
+
+  spr(imgChromabe, 0, 0)
+end;
+
+function getFalloffName(const which: FalloffTypes): string;
+var
+  result: string;
+begin
+  case which of
+    FalloffTypeSmoothstep: result := 'Smoothstep';
+    FalloffTypeLinear: result := 'Linear';
+    FalloffTypeEaseInQuad: result := 'Ease in quad';
+    FalloffTypeEaseOutQuad: result := 'Ease out quad';
+    else result := 'Unknown falloff type: ' + i32str(ord(which));
+  end;
+
+  getFalloffName := result
+end;
+
+procedure applyFullVignette(const falloffType: FalloffTypes; const strength: double);
+{ const
+  strength: double = 0.7; } { Either 0.3 or 0.7 }
+var
+  px, py: integer;
+  centreX, centreY: double;
+  offsetX, offsetY: double;
+  normX, normY: double;
+  dist, t, factor: double;
+  a, r, g, b: byte;
+  colour: longword;
+begin
+  if imgVignettePtr = nil then begin
+    imgVignette := newImage(vgaWidth, vgaHeight);
+    imgVignettePtr := getImagePtr(imgVignette);
+  end;
+
+  for py:=0 to vgaHeight - 1 do 
+  for px:=0 to vgaWidth - 1 do begin
+    { Coordinate normalisation }
+    centreX := vgaWidth / 2;
+    centreY := vgaHeight / 2;
+
+    offsetX := px - centreX;
+    offsetY := py - centreY;
+
+    normX := offsetX / centreX;
+    normY := offsetY / centreY;
+
+    { Elliptical distance }
+    dist := sqrt(normX * normX + normY * normY);
+
+    { Vignette factor (falloff) }
+    { t: gradient }
+    t := 1.0 - dist;
+    if t < 0.0 then t := 0.0;
+    if t > 1.0 then t := 1.0;
+
+    case falloffType of
+      FalloffTypeLinear:
+        factor := lerpLinear(0.0, 1.0, t);
+
+      FalloffTypeEaseInQuad:
+        factor := lerpEaseInQuad(0.0, 1.0, t);
+      FalloffTypeEaseOutQuad:
+        factor := lerpEaseOutQuad(0.0, 1.0, t);
+
+      else { Default: FalloffTypeSmoothstep }
+        factor := t * t * (3.0 - 2.0 * t);
+    end;
+
+    { Apply strength}
+    factor := 1.0 - (1.0 - factor) * strength;
+
+    { Darken RGB channels with vignette factor }
+    colour := unsafePget(px, py);
+
+    r := colour shr 16 and $FF;
+    g := colour shr 8 and $FF;
+    b := colour and $FF;
+    a := colour shr 24 and $FF;
+
+    r := trunc(r * factor);
+    g := trunc(g * factor);
+    b := trunc(b * factor);
+
+    { Render to buffer }
+    colour := (a shl 24) or (r shl 16) or (g shl 8) or b;
+    unsafeSprPset(imgVignettePtr, px, py, colour)
+  end;
+
+  spr(imgVignette, 0, 0)
 end;
 
 
