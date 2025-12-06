@@ -25,6 +25,7 @@ procedure applyFullChromabe;
 function getFalloffName(const which: FalloffTypes): string;
 procedure applyFullVignette(const falloffType: FalloffTypes; const strength: double);
 
+procedure applyFullPhosphor(const radius: integer);
 
 implementation
 
@@ -36,8 +37,11 @@ var
   imgBlurPtr: PImageRef;
   imgChromabe: longint;
   imgChromabePtr: PImageRef;
+
   imgVignette: longint;
   imgVignettePtr: PImageRef;
+  imgPhosphor: longint;
+  imgPhosphorPtr: PImageRef;
 
 procedure applyGreyscale(const imgHandle: longint);
 var
@@ -348,5 +352,57 @@ begin
   spr(imgVignette, 0, 0)
 end;
 
+{ Based on box blur }
+procedure applyFullPhosphor(const radius: integer);
+var
+  a, b, c, d: integer;
+  colour: longword;
+  count: word;
+  red, green, blue: word;
+begin
+  if radius <= 0 then exit;
+
+  if imgPhosphorPtr = nil then begin
+    imgPhosphor := newImage(vgaWidth, vgaHeight);
+    imgPhosphorPtr := getImagePtr(imgPhosphor);
+  end;
+
+  { Process from VGA (alpha channel is ignored) }
+  for b:=0 to vgaHeight - 1 do
+    for a:=0 to vgaWidth - 1 do begin
+      red := 0;
+      green := 0;
+      blue := 0;
+      count := 0;
+
+      for d := -radius to radius do
+        for c := -radius to radius do begin
+          if (a + c < 0) or (a + c >= vgaWidth)
+            or (b + d < 0) or (b + d >= vgaHeight) then continue;
+
+          colour := unsafePget(a + c, b + d);
+
+          inc(red, colour shr 16 and $FF);
+          inc(green, colour shr 8 and $FF);
+          inc(blue, colour and $FF);
+
+          inc(count)
+        end;
+
+      { Average this pixel }
+      red := red div count;
+      green := green div count;
+      blue := blue div count;
+
+      { Output to imgBlur }
+      colour := ($FF shl 24) or (red shl 16) or (green shl 8) or blue;
+      unsafeSprPset(imgPhosphorPtr, a, b, colour)
+    end;
+
+  { TODO: blend logic }
+  { TODO: brighten logic }
+
+  spr(imgPhosphor, 0, 0)
+end;
 
 end.
