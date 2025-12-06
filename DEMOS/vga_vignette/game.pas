@@ -27,7 +27,7 @@ var
   { Init your game state here }
   gameTime: double;
 
-  actualFalloffType: FalloffTypes;
+  actualFalloffType: integer; {FalloffTypes}
   vignetteStrength: double;
 
 { Use this to set `done` to true }
@@ -40,7 +40,7 @@ end;
 
 procedure resetParameters;
 begin
-  actualFalloffType := FalloffTypes(0);
+  actualFalloffType := 0;
   vignetteStrength := 0.3;
 end;
 
@@ -92,10 +92,10 @@ begin
     if lastDown then inc(actualFalloffType);
   end;
 
-  if ord(actualFalloffType) < 0 then
-    actualFalloffType := FalloffTypes(ord(FalloffTypeCount) - 1);
+  if actualFalloffType < 0 then
+    actualFalloffType := ord(FalloffTypeCount) - 1;
   if ord(actualFalloffType) >= ord(FalloffTypeCount) then
-    actualFalloffType := FalloffTypes(0);
+    actualFalloffType := 0;
 
   vignetteStrength := clamp(vignetteStrength, 0.0, 1.0);
 
@@ -111,9 +111,9 @@ begin
 
   spr(imgArkRoad, 0, 0);
 
-  applyFullVignette(actualFalloffType, vignetteStrength);
+  applyFullVignette(FalloffTypes(actualFalloffType), vignetteStrength);
 
-  printDefault('Falloff: ' + getFalloffName(actualFalloffType) + ' (' + i32str(ord(actualFalloffType)) + ')', 10, vgaHeight - 60);
+  printDefault('Falloff: ' + getFalloffName(FalloffTypes(actualFalloffType)) + ' (' + i32str(ord(actualFalloffType)) + ')', 10, vgaHeight - 60);
   printDefault('Strength: ' + f32str(vignetteStrength), 10, vgaHeight - 50);
 
   printDefault('Left / right: Adjust strength', 10, vgaHeight - 30);

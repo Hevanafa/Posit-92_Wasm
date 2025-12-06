@@ -6,7 +6,6 @@ interface
 
 uses ImgRef;
 
-{ FalloffTypes }
 type FalloffTypes = (
   FalloffTypeSmoothstep,  { default }
   FalloffTypeLinear,
