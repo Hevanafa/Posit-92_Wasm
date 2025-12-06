@@ -356,7 +356,8 @@ end;
 procedure applyFullPhosphor(const radius: integer);
 const
   { blendAmount: double = 0.7; } { 70% original, 30% blur }
-  blendAmount: double = 0.3; { 70% original, 30% blur }
+  blendAmount: double = 0.3;  { 30% original, 70% blur }
+  brightnessMult: double = 1.2;
 var
   a, b, c, d: integer;
   colour: longword;
@@ -366,7 +367,7 @@ var
   origColour, blurColour: longword;
   origR, origG, origB: byte;
   blurR, blurG, blurB: byte;
-  finalR, finalG, finalB: byte;
+  finalR, finalG, finalB: word;
 begin
   if radius <= 0 then exit;
 
@@ -429,14 +430,22 @@ begin
       finalG := trunc(origG * blendAmount + blurG * (1.0 - blendAmount));
       finalB := trunc(origB * blendAmount + blurB * (1.0 - blendAmount));
 
+      { Brighten logic }
+      finalR := trunc(finalR * brightnessMult);
+      finalG := trunc(finalG * brightnessMult);
+      finalB := trunc(finalB * brightnessMult);
+
+      { Clamp to 255 }
+      if finalR > $FF then finalR := $FF;
+      if finalG > $FF then finalG := $FF;
+      if finalB > $FF then finalB := $FF;
+
       { Write back to VGA }
       colour := ($FF shl 24) or (finalR shl 16) or (finalG shl 8) or finalB;
       unsafePset(a, b, colour)
     end;
 
   { spr(imgPhosphor, 0, 0) }
-
-  { TODO: brighten logic }
 end;
 
 end.
