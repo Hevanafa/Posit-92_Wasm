@@ -26,7 +26,8 @@ procedure applyFullVignette(const falloffType: FalloffTypes; const strength: dou
 
 implementation
 
-uses ImgRefFast, Logger, VGA;
+uses
+  Conv, ImgRefFast, Logger, VGA;
 
 var
   imgBlur: longint;
@@ -254,6 +255,21 @@ begin
     end;
 
   spr(imgChromabe, 0, 0)
+end;
+
+function getFalloffName(const which: FalloffTypes): string;
+var
+  result: string;
+begin
+  case which of
+    FalloffTypeSmoothstep: result := 'Smoothstep';
+    FalloffTypeLinear: result := 'Linear';
+    FalloffTypeEaseInQuad: result := 'Ease in quad';
+    FalloffTypeEaseOutQuad: result := 'Ease out quad';
+    else result := 'Unknown falloff type: ' + i32str(which);
+  end;
+
+  getFalloffName := result
 end;
 
 procedure applyFullVignette(const falloffType: FalloffTypes; const strength: double);
