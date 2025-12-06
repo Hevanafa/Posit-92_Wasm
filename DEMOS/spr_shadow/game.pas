@@ -1,16 +1,18 @@
 library Game;
 
-{$Mode ObjFPC}
+{$Mode TP}
 
 uses
   Keyboard, Mouse,
-  ImgRef, ImgRefFast,
+  ImgRef, ImgRefFast, SprEffects,
   Timing, VGA,
   Assets;
 
 const
   SC_ESC = $01;
   SC_SPACE = $39;
+
+  Grey = $FF555555;
 
 var
   lastEsc: boolean;
@@ -58,13 +60,16 @@ procedure draw;
 var
   w: integer;
   s: string;
+  offsetY: integer;
 begin
   cls($FF6495ED);
 
+  offsetY := trunc(sin(getTimer * 3.0) * 10);
+
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    sprShadow(imgDosuEXE[1], 148, 88, 10, offsetY, grey)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    sprShadow(imgDosuEXE[0], 148, 88, 10, offsetY, grey);
 
   s := 'Hello world!';
   w := measureDefault(s);

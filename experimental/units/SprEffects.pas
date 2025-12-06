@@ -64,12 +64,11 @@ var
   a, b: integer;
   image: PImageRef;
 begin
-  { TODO: Draw the shadow }
   if not isImageSet(imgHandle) then exit;
   image := getImagePtr(imgHandle);
 
-  for b:=0 to image^.height do
-  for a:=0 to image^.width do begin
+  for b:=0 to image^.height - 1 do
+  for a:=0 to image^.width - 1 do begin
     if unsafeSprGetAlpha(image, a, b) < 255 then continue;
 
     if (x + a + offsetX < 0) or (x + a + offsetX >= vgaWidth)
