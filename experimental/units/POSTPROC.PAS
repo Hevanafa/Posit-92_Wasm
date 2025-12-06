@@ -354,11 +354,18 @@ end;
 
 { Based on box blur }
 procedure applyFullPhosphor(const radius: integer);
+const
+  blendAmount: double = 0.7; { 70% original, 30% blur }
 var
   a, b, c, d: integer;
   colour: longword;
   count: word;
   red, green, blue: word;
+
+  origColour, blurColour: longword;
+  origR, origG, origB: byte;
+  blurR, blurG, blurB: byte;
+  finalR, finalG, finalB: byte;
 begin
   if radius <= 0 then exit;
 
@@ -399,10 +406,32 @@ begin
       unsafeSprPset(imgPhosphorPtr, a, b, colour)
     end;
 
-  { TODO: blend logic }
-  { TODO: brighten logic }
+  { spr(imgPhosphor, 0, 0) }
 
-  spr(imgPhosphor, 0, 0)
+  { Blend logic }
+  for b:=0 to vgaHeight - 1 do
+    for a:=0 to vgaWidth - 1 do begin
+      { Get original from VGA }
+      origColour := unsafePget(a, b);
+      origR := origColour shr 16 and $FF;
+      origG := origColour shr 8 and $FF;
+      origB := origColour and $FF;
+
+      { Handle blurring }
+      blurColour := unsafeSprPget(imgPhosphorPtr, a, b);
+      blurR := blurColour shr 16 and $FF;
+      blurG := blurColour shr 8 and $FF;
+      blurB := blurColour and $FF;
+
+      { Handle blending }
+      finalR := trunc(origR * blendAmount + blurR * (1.0 - blendAmount));
+      finalG := trunc(origG * blendAmount + blurG * (1.0 - blendAmount));
+      finalB := trunc(origB * blendAmount + blurB * (1.0 - blendAmount));
+
+      { TODO: Write back to VGA }
+    end;
+
+  { TODO: brighten logic }
 end;
 
 end.
