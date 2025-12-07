@@ -21,15 +21,18 @@ const
   vgaWidth = 320;
   vgaHeight = 200;
 
+{$ifdef WASM}
+procedure toggleFullscreen; external 'env' name 'toggleFullscreen';
+procedure flush; external 'env' name 'flush';
+{$endif}
+
 { Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
 procedure initBuffer;
 function getSurfacePtr: PByteArray; public name 'getSurfacePtr';
-procedure toggleFullscreen; external 'env' name 'toggleFullscreen';
 
 { Colour format: $AARRGGBB }
 procedure cls(const colour: longword);
 procedure clsBlend(const colour: longword);
-procedure flush; external 'env' name 'flush';
 
 function unsafePget(const x, y: integer): longword;
 
@@ -42,8 +45,15 @@ procedure psetBlend(const x, y: integer; const colour: longword);
 
 implementation
 
+{$ifdef WASM}
 uses
-  Logger, WasmHeap;
+  Logger,
+  WasmHeap;
+{$endif}
+{$ifdef WIN64}
+uses
+  Logger;
+{$endif}
 
 var
   bufferInitialised: boolean;
@@ -54,7 +64,13 @@ begin
   writeLog('Attempting to call initBuffer');
 
   if not bufferInitialised then begin
+{$ifdef WASM}
     surface := PByteArray(WasmGetMem(bufferSize));
+{$endif}
+{$ifdef WIN64}
+    surface := PByteArray(getmem(bufferSize));
+{$endif}
+
     fillchar(surface^, bufferSize, 0);
     bufferInitialised := true
   end;

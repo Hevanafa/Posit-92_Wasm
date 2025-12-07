@@ -51,6 +51,8 @@ uses
   WasmHeap;
 {$endif}
 {$ifdef WIN64}
+uses
+  Logger;
 {$endif}
 
 var
@@ -59,18 +61,16 @@ var
 
 procedure initBuffer;
 begin
-{$ifdef WASM}
   writeLog('Attempting to call initBuffer');
 
   if not bufferInitialised then begin
+{$ifdef WASM}
     surface := PByteArray(WasmGetMem(bufferSize));
 {$endif}
 {$ifdef WIN64}
-  writeln('Attempting to call initBuffer');
-
-  if not bufferInitialised then begin
     surface := PByteArray(getmem(bufferSize));
 {$endif}
+
     fillchar(surface^, bufferSize, 0);
     bufferInitialised := true
   end;
