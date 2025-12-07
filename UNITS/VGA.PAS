@@ -45,8 +45,13 @@ procedure psetBlend(const x, y: integer; const colour: longword);
 
 implementation
 
+{$ifdef WASM}
 uses
-  Logger, WasmHeap;
+  Logger,
+  WasmHeap;
+{$endif}
+{$ifdef WIN64}
+{$endif}
 
 var
   bufferInitialised: boolean;
@@ -54,10 +59,18 @@ var
 
 procedure initBuffer;
 begin
+{$ifdef WASM}
   writeLog('Attempting to call initBuffer');
 
   if not bufferInitialised then begin
     surface := PByteArray(WasmGetMem(bufferSize));
+{$endif}
+{$ifdef WIN64}
+  writeln('Attempting to call initBuffer');
+
+  if not bufferInitialised then begin
+    surface := PByteArray(getmem(bufferSize));
+{$endif}
     fillchar(surface^, bufferSize, 0);
     bufferInitialised := true
   end;
