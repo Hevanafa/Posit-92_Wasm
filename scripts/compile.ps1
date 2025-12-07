@@ -11,7 +11,7 @@ $outputFile = "game.wasm"
 
 $pinfo = new-object System.Diagnostics.ProcessStartInfo
 $pinfo.FileName = $compilerPath
-$pinfo.Arguments = "-Pwasm32", "-Tembedded", "-FuUNITS", "-o$outputFile", $primaryUnit
+$pinfo.Arguments = "-Pwasm32", "-Tembedded", "-FuUNITS", "-dWASM", "-o$outputFile", $primaryUnit
 $pinfo.WorkingDirectory = $PSScriptRoot
 $pinfo.RedirectStandardError = $true
 $pinfo.RedirectStandardOutput = $true
