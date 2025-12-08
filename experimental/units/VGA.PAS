@@ -61,7 +61,7 @@ var
 
 procedure initBuffer;
 begin
-  writeLog('Attempting to call initBuffer');
+  { writeLog('Attempting to call initBuffer'); }
 
   if not bufferInitialised then begin
 {$ifdef WASM}

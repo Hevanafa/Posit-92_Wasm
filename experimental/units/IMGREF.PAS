@@ -97,8 +97,8 @@ var
   dataPtr: PByte;
   byteSize: longword;
 begin
-  writeLog('Calling newImage');
 {
+  writeLog('Calling newImage');
   writeLogI32(width);
   writeLogI32(height);
 }
