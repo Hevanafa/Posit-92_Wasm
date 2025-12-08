@@ -51,7 +51,7 @@ var
 begin
   cls($FF000000);
   printDefault('PANIC: ' + msg, 0, 0);
-  flush;
+  vgaFlush;
 
   for a:=1 to length(msg) do
     msgBuffer[a-1] := ord(msg[a]);
