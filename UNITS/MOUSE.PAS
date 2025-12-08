@@ -13,16 +13,18 @@ const
 var
   mouseX, mouseY, mouseButton: integer;
 
+{$ifdef WASM}
 { Hide system cursor }
 procedure hideCursor; external 'env' name 'hideCursor';
 { Show system cursor }
 procedure showCursor; external 'env' name 'showCursor';
-
 procedure updateMouse;
+{$endif}
 
 
 implementation
 
+{$ifdef WASM}
 function getMouseX: integer; external 'env' name 'getMouseX';
 function getMouseY: integer; external 'env' name 'getMouseY';
 function getMouseButton: integer; external 'env' name 'getMouseButton';
@@ -33,5 +35,6 @@ begin
   mouseY := getMouseY;
   mouseButton := getMouseButton;
 end;
+{$endif}
 
 end.

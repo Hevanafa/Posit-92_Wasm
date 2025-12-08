@@ -49,7 +49,14 @@ procedure unsafeSprPset(const image: PImageRef; const x, y: integer; const colou
 
 implementation
 
-uses Logger, Maths, Panic, VGA, WasmHeap;
+uses
+  Logger, Maths, Panic,
+{$ifdef WASM}
+  WasmHeap,
+{$endif}
+{$ifdef WIN64}
+{$endif}
+  VGA;
 
 const
   MaxImageRefs = 256;
@@ -90,12 +97,19 @@ var
   dataPtr: PByte;
   byteSize: longword;
 begin
+{
   writeLog('Calling newImage');
   writeLogI32(width);
   writeLogI32(height);
+}
 
   byteSize := width * height * 4;
+{$ifdef WASM}
   dataPtr := PByte(WasmGetMem(byteSize));
+{$endif}
+{$ifdef WIN64}
+  dataPtr := PByte(getmem(byteSize));
+{$endif}
 
   fillchar(dataPtr^, byteSize, 0);
 
@@ -128,7 +142,12 @@ begin
   if (imgHandle < 0) or (imgHandle >= MaxImageRefs) then exit;
   if imageRefs[imgHandle].dataPtr = nil then exit;
 
+{$ifdef WASM}
   WasmFreeMem(imageRefs[imgHandle].dataPtr);
+{$endif}
+{$ifdef WIN64}
+  FreeMem(imageRefs[imgHandle].dataPtr);
+{$endif}
 
   imageRefs[imgHandle].width := 0;
   imageRefs[imgHandle].height := 0;

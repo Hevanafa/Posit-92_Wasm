@@ -15,7 +15,11 @@ function getLogBuffer: pointer; public name 'getLogBuffer';
 { Forwards logBuffer to JS }
 procedure flushLog; external 'env' name 'flushLog';
 {$endif}
+
 {$ifdef WIN64}
+procedure writeLogI32(const value: longint);
+procedure writeLogF32(const value: double);
+
 procedure initLogger;
 procedure closeLogger;
 {$endif}
@@ -29,7 +33,10 @@ implementation
 var
   logBuffer: array[0..255] of byte;
 {$endif}
+
 {$ifdef WIN64}
+uses CRT;
+
 const
   logFilename = 'LOG.TXT';
 var
@@ -37,6 +44,38 @@ var
   logOpened: boolean;
 {$endif}
 
+
+function getLogBuffer: pointer;
+begin
+{$ifdef WASM}
+  getLogBuffer := @logBuffer
+{$else}
+  getLogBuffer := nil
+{$endif}
+end;
+
+
+{$ifdef WASM}
+procedure writeLog(const msg: string);
+var
+  a: byte;
+  len: word;
+begin
+  len := length(msg);
+
+  { Cap length to 255 }
+  if len > 255 then len := 255;
+
+  logBuffer[0] := len;
+  for a:=1 to len do
+    logBuffer[a] := ord(msg[a]);
+
+  { JS will read logBuffer }
+  flushLog
+end;
+{$endif}
+
+{$ifdef WIN64}
 procedure initLogger;
 begin
   assign(logFile, logFilename);
@@ -57,45 +96,36 @@ begin
     close(logFile);
 end;
 
-function getLogBuffer: pointer;
-begin
-{$ifdef WASM}
-  getLogBuffer := @logBuffer
-{$else}
-  getLogBuffer := nil
-{$endif}
-end;
-
-
 procedure writeLog(const msg: string);
-{$ifdef WASM}
-var
-  a: byte;
-  len: word;
-{$endif}
-
 begin
-
-{$ifdef WASM}
-  len := length(msg);
-
-  { Cap length to 255 }
-  if len > 255 then len := 255;
-
-  logBuffer[0] := len;
-  for a:=1 to len do
-    logBuffer[a] := ord(msg[a]);
-
-  { JS will read logBuffer }
-  flushLog
-{$endif}
-{$ifdef WIN64}
+  textColor(white);
   writeln(msg);
+
   if not logOpened then exit;
   writeln(logFile, msg);
   flush(logFile)
-{$endif}
 end;
+
+procedure writeLogI32(const value: longint);
+begin
+  textColor(lightMagenta);
+  writeln(value);
+
+  if not logOpened then exit;
+  writeln(logFile, value);
+  flush(logFile)
+end;
+
+procedure writeLogF32(const value: double);
+begin
+  textColor(lightMagenta);
+  writeln(value);
+
+  if not logOpened then exit;
+  writeln(logFile, value);
+  flush(logFile)
+end;
+{$endif}
 
 
 end.

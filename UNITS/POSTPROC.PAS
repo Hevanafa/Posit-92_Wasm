@@ -25,6 +25,7 @@ procedure applyFullChromabe;
 function getFalloffName(const which: FalloffTypes): string;
 procedure applyFullVignette(const falloffType: FalloffTypes; const strength: double);
 
+procedure applyFullPhosphor(const radius: integer);
 
 implementation
 
@@ -36,8 +37,11 @@ var
   imgBlurPtr: PImageRef;
   imgChromabe: longint;
   imgChromabePtr: PImageRef;
+
   imgVignette: longint;
   imgVignettePtr: PImageRef;
+  imgPhosphor: longint;
+  imgPhosphorPtr: PImageRef;
 
 procedure applyGreyscale(const imgHandle: longint);
 var
@@ -291,6 +295,8 @@ begin
     imgVignettePtr := getImagePtr(imgVignette);
   end;
 
+  { writeLog('DEBUG applyFullVignette'); }
+
   for py:=0 to vgaHeight - 1 do 
   for px:=0 to vgaWidth - 1 do begin
     { Coordinate normalisation }
@@ -305,12 +311,23 @@ begin
 
     { Elliptical distance }
     dist := sqrt(normX * normX + normY * normY);
+{
+    writeLog('normX, normY, dist');
+    writeLogF32(normX);
+    writeLogF32(normY);
+    writeLogF32(dist);
+}
 
     { Vignette factor (falloff) }
     { t: gradient }
     t := 1.0 - dist;
     if t < 0.0 then t := 0.0;
     if t > 1.0 then t := 1.0;
+
+{
+    writeLog('t after clamp');
+    writeLogF32(t);
+}
 
     case falloffType of
       FalloffTypeLinear:
@@ -324,9 +341,18 @@ begin
       else { Default: FalloffTypeSmoothstep }
         factor := t * t * (3.0 - 2.0 * t);
     end;
+{
+    writeLog('factor after falloffType');
+    writeLogF32(factor);
+}
 
-    { Apply strength}
+    { Apply strength }
     factor := 1.0 - (1.0 - factor) * strength;
+
+{
+    writeLog('factor after apply strength');
+    writeLogF32(factor);
+}
 
     { Darken RGB channels with vignette factor }
     colour := unsafePget(px, py);
@@ -335,6 +361,12 @@ begin
     g := colour shr 8 and $FF;
     b := colour and $FF;
     a := colour shr 24 and $FF;
+{
+    writeLog('rgb with factor');
+    writeLogF32(r * factor);
+    writeLogF32(g * factor);
+    writeLogF32(b * factor);
+}
 
     r := trunc(r * factor);
     g := trunc(g * factor);
@@ -348,5 +380,100 @@ begin
   spr(imgVignette, 0, 0)
 end;
 
+{ Based on box blur }
+procedure applyFullPhosphor(const radius: integer);
+const
+  { blendAmount: double = 0.7; } { 70% original, 30% blur }
+  blendAmount: double = 0.3;  { 30% original, 70% blur }
+  brightnessMult: double = 1.2;
+var
+  a, b, c, d: integer;
+  colour: longword;
+  count: word;
+  red, green, blue: word;
+
+  origColour, blurColour: longword;
+  origR, origG, origB: byte;
+  blurR, blurG, blurB: byte;
+  finalR, finalG, finalB: word;
+begin
+  if radius <= 0 then exit;
+
+  if imgPhosphorPtr = nil then begin
+    imgPhosphor := newImage(vgaWidth, vgaHeight);
+    imgPhosphorPtr := getImagePtr(imgPhosphor);
+  end;
+
+  { Process from VGA (alpha channel is ignored) }
+  for b:=0 to vgaHeight - 1 do
+    for a:=0 to vgaWidth - 1 do begin
+      red := 0;
+      green := 0;
+      blue := 0;
+      count := 0;
+
+      for d := -radius to radius do
+        for c := -radius to radius do begin
+          if (a + c < 0) or (a + c >= vgaWidth)
+            or (b + d < 0) or (b + d >= vgaHeight) then continue;
+
+          colour := unsafePget(a + c, b + d);
+
+          inc(red, colour shr 16 and $FF);
+          inc(green, colour shr 8 and $FF);
+          inc(blue, colour and $FF);
+
+          inc(count)
+        end;
+
+      { Average this pixel }
+      red := red div count;
+      green := green div count;
+      blue := blue div count;
+
+      { Output to imgBlur }
+      colour := ($FF shl 24) or (red shl 16) or (green shl 8) or blue;
+      unsafeSprPset(imgPhosphorPtr, a, b, colour)
+    end;
+
+  { spr(imgPhosphor, 0, 0) }
+
+  { Blend back to VGA }
+  for b:=0 to vgaHeight - 1 do
+    for a:=0 to vgaWidth - 1 do begin
+      { Get original from VGA }
+      origColour := unsafePget(a, b);
+      origR := origColour shr 16 and $FF;
+      origG := origColour shr 8 and $FF;
+      origB := origColour and $FF;
+
+      { Get blurred pixel }
+      blurColour := unsafeSprPget(imgPhosphorPtr, a, b);
+      blurR := blurColour shr 16 and $FF;
+      blurG := blurColour shr 8 and $FF;
+      blurB := blurColour and $FF;
+
+      { Handle blending }
+      finalR := trunc(origR * blendAmount + blurR * (1.0 - blendAmount));
+      finalG := trunc(origG * blendAmount + blurG * (1.0 - blendAmount));
+      finalB := trunc(origB * blendAmount + blurB * (1.0 - blendAmount));
+
+      { Brighten logic }
+      finalR := trunc(finalR * brightnessMult);
+      finalG := trunc(finalG * brightnessMult);
+      finalB := trunc(finalB * brightnessMult);
+
+      { Clamp to 255 }
+      if finalR > $FF then finalR := $FF;
+      if finalG > $FF then finalG := $FF;
+      if finalB > $FF then finalB := $FF;
+
+      { Write back to VGA }
+      colour := ($FF shl 24) or (finalR shl 16) or (finalG shl 8) or finalB;
+      unsafePset(a, b, colour)
+    end;
+
+  { spr(imgPhosphor, 0, 0) }
+end;
 
 end.

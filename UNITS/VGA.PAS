@@ -23,7 +23,7 @@ const
 
 {$ifdef WASM}
 procedure toggleFullscreen; external 'env' name 'toggleFullscreen';
-procedure flush; external 'env' name 'flush';
+procedure vgaFlush; external 'env' name 'vgaFlush';
 {$endif}
 
 { Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
@@ -61,7 +61,7 @@ var
 
 procedure initBuffer;
 begin
-  writeLog('Attempting to call initBuffer');
+  { writeLog('Attempting to call initBuffer'); }
 
   if not bufferInitialised then begin
 {$ifdef WASM}
