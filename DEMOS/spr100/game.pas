@@ -83,7 +83,7 @@ begin
     defaultFont, defaultFontGlyphs,
     green);
 
-  flush
+  vgaFlush
 end;
 
 exports

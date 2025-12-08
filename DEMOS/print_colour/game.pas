@@ -142,7 +142,7 @@ begin
   end;
 
   drawMouse;
-  flush
+  vgaFlush
 end;
 
 exports

@@ -124,7 +124,7 @@ begin
   printDefault(s, vgaWidth - w - 10, vgaHeight - 20);
 
   drawMouse;
-  flush
+  vgaFlush
 end;
 
 exports

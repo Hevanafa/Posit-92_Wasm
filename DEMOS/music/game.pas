@@ -181,7 +181,7 @@ begin
   resetActiveWidget;
 
   drawMouse;
-  flush
+  vgaFlush
 end;
 
 exports

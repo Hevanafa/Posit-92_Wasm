@@ -84,7 +84,7 @@ begin
   { sprRef(imgCursorRef, 10, 10); }
 
   drawMouse;
-  flush
+  vgaFlush
 end;
 
 exports

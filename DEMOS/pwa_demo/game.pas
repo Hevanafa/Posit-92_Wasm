@@ -73,7 +73,7 @@ begin
   printDefault(s, (vgaWidth - w) div 2, 120);
 
   drawMouse;
-  flush
+  vgaFlush
 end;
 
 exports

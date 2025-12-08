@@ -69,7 +69,7 @@ begin
   applyFullPhosphor(1);
 
   drawMouse;
-  flush
+  vgaFlush
 end;
 
 exports

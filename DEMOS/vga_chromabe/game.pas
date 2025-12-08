@@ -75,7 +75,7 @@ begin
   printDefault('Spacebar - Toggle chromatic aberration', 10, vgaHeight - 20);
 
   drawMouse;
-  flush
+  vgaFlush
 end;
 
 exports

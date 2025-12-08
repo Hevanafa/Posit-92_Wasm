@@ -23,7 +23,7 @@ const
 
 {$ifdef WASM}
 procedure toggleFullscreen; external 'env' name 'toggleFullscreen';
-procedure vgaFlush; external 'env' name 'flush';
+procedure vgaFlush; external 'env' name 'vgaFlush';
 {$endif}
 
 { Ref: https://www.freepascal.org/docs-html/ref/refse22.html }

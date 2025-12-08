@@ -55,7 +55,7 @@ class Posit92 {
       getFullTimer: () => this.#getFullTimer(),
 
       // VGA
-      flush: () => this.#flush(),
+      vgaFlush: () => this.#vgaFlush(),
       toggleFullscreen: () => this.#toggleFullscreen()
     }
   };
@@ -472,7 +472,7 @@ class Posit92 {
 
 
   // VGA.PAS
-  #flush() {
+  #vgaFlush() {
     const surfacePtr = this.#wasm.exports.getSurfacePtr();
     const imageData = new Uint8ClampedArray(
       this.#wasm.exports.memory.buffer,

@@ -170,7 +170,7 @@ begin
 
   if showFPS.checked then drawFPS;
 
-  flush
+  vgaFlush
 end;
 
 exports

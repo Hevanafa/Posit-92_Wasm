@@ -74,7 +74,7 @@ begin
   applyFullSubtleScanlines;
 
   drawMouse;
-  flush
+  vgaFlush
 end;
 
 { Requires at least 1 `exports` item to use `public name` }

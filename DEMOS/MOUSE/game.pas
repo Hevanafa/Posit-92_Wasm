@@ -100,7 +100,7 @@ begin
   debugMouse;
   drawFPS;
 
-  flush
+  vgaFlush
 end;
 
 exports

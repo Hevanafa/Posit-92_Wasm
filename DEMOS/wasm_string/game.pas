@@ -110,7 +110,7 @@ begin
   drawMouse;
   drawFPS;
 
-  flush
+  vgaFlush
 end;
 
 exports

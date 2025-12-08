@@ -138,7 +138,7 @@ begin
   strength := 0.4 * brightness;
   applyFullVignette(FalloffTypeEaseOutQuad, strength);
 
-  flush
+  vgaFlush
 end;
 
 exports

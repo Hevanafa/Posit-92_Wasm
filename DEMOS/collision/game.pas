@@ -216,7 +216,7 @@ begin
   printDefault('to turn the zone yellow', 128, 170);
 
   drawMouse;
-  flush
+  vgaFlush
 end;
 
 exports
