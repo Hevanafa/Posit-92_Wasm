@@ -15,7 +15,11 @@ function getLogBuffer: pointer; public name 'getLogBuffer';
 { Forwards logBuffer to JS }
 procedure flushLog; external 'env' name 'flushLog';
 {$endif}
+
 {$ifdef WIN64}
+procedure writeLogI32(const value: longint);
+procedure writeLogF32(const value: double);
+
 procedure initLogger;
 procedure closeLogger;
 {$endif}
@@ -30,6 +34,8 @@ var
   logBuffer: array[0..255] of byte;
 {$endif}
 {$ifdef WIN64}
+uses CRT;
+
 const
   logFilename = 'LOG.TXT';
 var
@@ -67,16 +73,12 @@ begin
 end;
 
 
-procedure writeLog(const msg: string);
 {$ifdef WASM}
+procedure writeLog(const msg: string);
 var
   a: byte;
   len: word;
-{$endif}
-
 begin
-
-{$ifdef WASM}
   len := length(msg);
 
   { Cap length to 255 }
@@ -88,14 +90,40 @@ begin
 
   { JS will read logBuffer }
   flushLog
+end;
 {$endif}
+
 {$ifdef WIN64}
+procedure writeLog(const msg: string);
+begin
+  textColor(white);
   writeln(msg);
+
   if not logOpened then exit;
   writeln(logFile, msg);
   flush(logFile)
-{$endif}
 end;
+
+procedure writeLogI32(const value: longint);
+begin
+  textColor(lightMagenta);
+  writeln(value);
+
+  if not logOpened then exit;
+  writeln(logFile, value);
+  flush(logFile)
+end;
+
+procedure writeLogF32(const value: double);
+begin
+  textColor(lightMagenta);
+  writeln(value);
+
+  if not logOpened then exit;
+  writeln(logFile, value);
+  flush(logFile)
+end;
+{$endif}
 
 
 end.
