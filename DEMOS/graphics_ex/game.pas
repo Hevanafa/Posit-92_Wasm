@@ -71,17 +71,18 @@ begin
   cls($FF6495ED);
 
   { Benchmarking segment }
+  {
   startTick := getTimer;
 
   for a:=1 to 1000000 do
-    unsafePset2(random(vgaWidth), random(vgaHeight), $FFFF5555);
+    unsafePset(random(vgaWidth), random(vgaHeight), $FFFF5555);
 
   endTick := getTimer;
-  { printDefault('500k unsafePset2 calls done in ' + f32str(endTick - startTick) + ' s', 10, 10); }
-  printDefault('1M unsafePset2 calls done in ' + f32str(endTick - startTick) + ' s', 10, 10);
+  printDefault('1M unsafePset calls done in ' + f32str(endTick - startTick) + ' s', 10, 10);
   vgaFlush;
 
   exit;
+  }
 
   {
   if (trunc(gameTime * 4) and 1) > 0 then
