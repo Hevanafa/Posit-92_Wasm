@@ -44,24 +44,27 @@ async function main() {
   await game.init();
   game.afterInit();
 
-  function loop(currentTime) {
-    if (done) {
-      game.cleanup();
-      return;
-    }
+  game.update();
+  game.draw();
 
-    const elapsed = currentTime - lastFrameTime;
+  // function loop(currentTime) {
+  //   if (done) {
+  //     game.cleanup();
+  //     return;
+  //   }
 
-    if (elapsed >= FrameTime) {
-      lastFrameTime = currentTime - (elapsed % FrameTime);  // Carry over extra time
-      game.update();
-      game.draw();
-    }
+  //   const elapsed = currentTime - lastFrameTime;
 
-    requestAnimationFrame(loop)
-  }
+  //   if (elapsed >= FrameTime) {
+  //     lastFrameTime = currentTime - (elapsed % FrameTime);  // Carry over extra time
+  //     game.update();
+  //     game.draw();
+  //   }
 
-  requestAnimationFrame(loop)
+  //   requestAnimationFrame(loop)
+  // }
+
+  // requestAnimationFrame(loop)
 }
 
 function play() {
