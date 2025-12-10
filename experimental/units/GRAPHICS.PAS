@@ -542,8 +542,10 @@ begin
   if step > 0.1 then step := 0.1;
 
   angle := startRad;
-  prevX := x; prevY := y;
   first := true;
+  { Initialise anyway }
+  x := 0; y := 0;
+  prevX := x; prevY := y;
   
   while angle <= endRad do begin
     x := cx + round(cos(angle) * radius);
@@ -586,7 +588,7 @@ begin
   { Clamp radius }
   maxRadius := (x1 - x0) div 2;
   if (y1 - y0) div 2 < maxRadius then
-    maxRadius := (y1 = y0) div 2;
+    maxRadius := (y1 - y0) div 2;
 
   if radius > maxRadius then radius := maxRadius;
   if radius < 0 then radius := 0;
@@ -596,8 +598,18 @@ begin
     exit
   end;
 
-  { TODO: Handle edges }
-  { TODO: Handle corners}
+  { Handle edges }
+  hline(x0 + radius, x1 - radius, y0, solid);
+  hline(x0 + radius, x1 - radius, y1, solid);
+
+  vline(x0, y0 + radius, y1 - radius, solid);
+  vline(x1, y0 + radius, y1 - radius, solid);
+
+  { Handle corners }
+  arc(x0 + radius, y0 + radius, radius, pi, 3 / 2 * pi, solid);
+  arc(x1 - radius, y0 + radius, radius, 3 / 2 * pi, 2 * pi, solid);
+  arc(x0 + radius, y1 - radius, radius, pi / 2, pi, solid);
+  arc(x1 - radius, y1 - radius, radius, 0, pi / 2, solid);
 end;
 
 

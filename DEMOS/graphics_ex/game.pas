@@ -81,7 +81,8 @@ begin
   circ(50, 50, 10, $80FF5555);
   circfill(80, 50, 10, $80FFAA55);
 
-  rect(110, 50, 130, 70, $80FFFF55);
+  { rect(110, 50, 130, 70, $80FFFF55); }
+  rectRound(110, 50, 130, 70, 5, $80FFFF55);
   rectfill(140, 50, 160, 70, $8055FF55);
 
   ellipse(50, 80, 20, 10, $805555FF);
@@ -94,7 +95,7 @@ begin
 
   { endTick := getTimer; }
   { printDefault('10000 vline calls done in ' + f32str(endTick - startTick) + ' s', 10, 10); }
-  
+
   arc(160, 100, 50, 0, pi, $FFFF5555);
   arc(160, 100, 50, pi / 4, 3 * pi / 4, $FF55FF55);
 
