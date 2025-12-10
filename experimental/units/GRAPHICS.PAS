@@ -21,6 +21,7 @@ procedure vline(x, y0, y1: integer; const colour: longword);
 procedure line(x0, y0, x1, y1: integer; const colour: longword);
 
 procedure ellipse(const cx, cy, rx, ry: integer; const colour: longword);
+procedure ellipsefill(const cx, cy, rx, ry: integer; const colour: longword);
 
 
 implementation
@@ -276,6 +277,61 @@ begin
     pset(cx - x, cy + y, solid);
     pset(cx + x, cy - y, solid);
     pset(cx - x, cy - y, solid);
+
+    if p > 0 then
+      p := p - tworx2 * y + rx2
+    else begin
+      p := p + twory2 * x - tworx2 * y + rx2;
+      inc(x)
+    end;
+
+    dec(y)
+  end;
+end;
+
+
+procedure ellipsefill(const cx, cy, rx, ry: integer; const colour: longword);
+var
+  x, y: integer;
+  rx2, ry2, tworx2, twory2: integer;
+  p: integer;
+  solid: longword;
+begin
+  if getAlpha(colour) = 0 then exit;
+  solid := solidify(colour);
+
+  x := 0; y := ry;
+  rx2 := rx * rx;
+  ry2 := ry * ry;
+  tworx2 := 2 * rx2;
+  twory2 := 2 * ry2;
+
+  { Handle slope < -1 }
+  p := round(ry2 - (rx2 * ry) + (rx2 / 4));
+  
+  while (twory2 * x) <= (tworx2 * y) do begin
+    hline(cx - x, cx + x, cy + y, solid);
+    hline(cx - x, cx + x, cy - y, solid);
+
+    if p < 0 then
+      p := p + twory2 * x + ry2
+    else begin
+      p := p + twory2 * x - tworx2 * y + ry2;
+      dec(y)
+    end;
+
+    inc(x)
+  end;
+
+  { Handle slope >= -1}
+  p := round(
+    ry2 * (x + 0.5) * (x + 0.5)
+    + rx2 * (y - 1) * (y - 1)
+    - rx2 * ry2);
+
+  while y >= 0 do begin
+    hline(cx - x, cx + x, cy + y, solid);
+    hline(cx - x, cx + x, cy - y, solid);
 
     if p > 0 then
       p := p - tworx2 * y + rx2

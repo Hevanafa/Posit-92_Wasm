@@ -75,6 +75,8 @@ begin
   rectfill(140, 50, 160, 70, $8055FF55);
 
   ellipse(50, 80, 20, 10, $805555FF);
+  ellipsefill(80, 80, 20, 10, $8055AAFF);
+
 
   s := 'Hello world!';
   w := measureDefault(s);
