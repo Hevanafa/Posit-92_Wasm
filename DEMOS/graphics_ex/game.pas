@@ -64,12 +64,23 @@ procedure draw;
 var
   w: integer;
   s: string;
-  { startTick, endTick: double; }
+  startTick, endTick: double;
   { a: word; }
+  a: longword;
 begin
   cls($FF6495ED);
 
-  { startTick := getTimer; }
+  { Benchmarking segment }
+  startTick := getTimer;
+
+  for a:=1 to 500000 do
+    unsafePset(random(vgaWidth), random(vgaHeight), $FFFF5555);
+
+  endTick := getTimer;
+  printDefault('500k unsafePset calls done in ' + f32str(endTick - startTick) + ' s', 10, 10);
+  vgaFlush;
+
+  exit;
 
   {
   if (trunc(gameTime * 4) and 1) > 0 then
@@ -92,9 +103,6 @@ begin
   trifill(80, 110, 100, 120, 70, 130, $80FF55FF);
 
   polygonPtr(@testPoints[0], length(testPoints), $80FF5555);
-
-  { endTick := getTimer; }
-  { printDefault('10000 vline calls done in ' + f32str(endTick - startTick) + ' s', 10, 10); }
 
   arc(160, 100, 50, 0, pi, $FFFF5555);
   pie(160, 100, 50, pi / 4, 3 * pi / 4, $FF55FF55);
