@@ -20,6 +20,8 @@ procedure vline(x, y0, y1: integer; const colour: longword);
 
 procedure line(x0, y0, x1, y1: integer; const colour: longword);
 
+procedure ellipse(const cx, cy, rx, ry: integer; const colour: longword);
+
 
 implementation
 
@@ -226,5 +228,29 @@ begin
 
   pset(x0, y0, solid)
 end;
+
+
+procedure ellipse(const cx, cy, rx, ry: integer; const colour: longword);
+var
+  x, y: integer;
+  rx2, ry2, tworx2, twory2: integer;
+  p: integer;
+  solid: longword;
+begin
+  if getAlpha(colour) = 0 then exit;
+  solid := solidify(colour);
+
+  x := 0; y := ry;
+  rx2 := rx * rx;
+  ry2 := ry * ry;
+  tworx2 := 2 * rx2;
+  twory2 := 2 * ry2;
+
+  { TODO: Handle slope < -1 }
+  { TODO: Handle slope >= -1}
+  
+
+end;
+
 
 end.
