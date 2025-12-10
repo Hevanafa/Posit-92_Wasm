@@ -34,6 +34,11 @@ procedure trifill(x1, y1, x2, y2, x3, y3: integer; const colour: longword);
 procedure polygon(points: array of TPoint; const colour: longword);
 procedure polygonPtr(points: PPoint; const count: integer; const colour: longword);
 
+procedure arc(
+  const cx, cy, radius: integer;
+  const startRad, endRad: double;
+  const colour: longword);
+
 
 implementation
 
@@ -535,6 +540,7 @@ begin
   if step > 0.1 then step := 0.1;
 
   angle := startRad;
+  prevX := x; prevY := y;
   first := true;
   
   while angle <= endRad do begin
