@@ -37,6 +37,7 @@ procedure clsBlend(const colour: longword);
 function unsafePget(const x, y: integer): longword;
 
 procedure unsafePset(const x, y: integer; const colour: longword);
+procedure unsafePset2(const x, y: integer; const colour: longword);
 procedure pset(const x, y: integer; const colour: longword);
 
 procedure unsafePsetBlend(const x, y: integer; const colour: longword);
@@ -105,6 +106,16 @@ begin
   surface^[offset + 1] := colour shr 8 and $FF;
   surface^[offset + 2] := colour and $FF;
   surface^[offset + 3] := colour shr 24 and $FF;
+end;
+
+procedure unsafePset2(const x, y: integer; const colour: longword);
+begin
+  { ARGB to RGBA }
+  PLongWord(@surface^[(y * vgaWidth + x) * 4])^ :=
+    ((colour and $00FF0000) shr 16)
+    or ((colour and $0000FF00))
+    or ((colour and $000000FF) shl 16)
+    or ((colour and $FF000000))
 end;
 
 { colour: AARRGGBB }
