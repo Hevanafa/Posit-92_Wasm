@@ -414,7 +414,24 @@ begin
   if getAlpha(colour) = 0 then exit;
   solid := solidify(colour);
 
-  { TODO: Handle bubble sort }
+  { Handle bubble sort }
+  if y1 > y2 then begin
+    temp := y1; y1 := y2; y2 := temp;
+    temp := x1; x1 := x2; x2 := temp;
+  end;
+  if y2 > y3 then begin
+    temp := y2; y2 := y3; y3 := temp;
+    temp := x2; x2 := x3; x3 := temp;
+  end;
+  if y1 > y2 then begin
+    temp := y1; y1 := y2; y2 := temp;
+    temp := x1; x1 := x2; x2 := temp;
+  end;
+
+  MinY := y1; maxY := y3;
+
+  { Handle flat triangle / degenrate }
+  if minY = maxY then exit;
 
   { TODO: Draw top half }
   { TODO: Draw bottom half }
