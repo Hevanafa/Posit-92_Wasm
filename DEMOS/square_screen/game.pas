@@ -62,13 +62,13 @@ begin
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    spr(imgDosuEXE[1], 52, 52)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    spr(imgDosuEXE[0], 52, 52);
 
   s := 'Hello world!';
   w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  printDefault(s, (vgaWidth - w) div 2, 88);
 
   drawMouse;
   vgaFlush

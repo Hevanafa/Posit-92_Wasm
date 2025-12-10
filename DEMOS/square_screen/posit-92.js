@@ -3,8 +3,8 @@
 class Posit92 {
   #wasmSource = "game.wasm";
 
-  #vgaWidth = 320;
-  #vgaHeight = 200;
+  #vgaWidth = 128;
+  #vgaHeight = 128;
 
   /**
    * @type {HTMLCanvasElement}
