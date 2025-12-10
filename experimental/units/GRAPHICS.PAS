@@ -10,6 +10,8 @@ unit Graphics;
 
 interface
 
+uses Shapes;
+
 procedure circ(const cx, cy, radius: integer; const colour: longword);
 procedure circfill(const cx, cy, radius: integer; const colour: longword);
 
@@ -27,6 +29,8 @@ procedure ellipsefill(const cx, cy, rx, ry: integer; const colour: longword);
 
 procedure tri(x0, y0, x1, y1, x2, y2: integer; const colour: longword);
 procedure trifill(x1, y1, x2, y2, x3, y3: integer; const colour: longword);
+
+procedure polygon(points: array of TPoint; const colour: longword);
 
 
 implementation
@@ -461,6 +465,27 @@ begin
       xb := xb + dxb
     end;
   end;
+end;
+
+
+procedure polygon(points: array of TPoint; const colour: longword);
+var
+  a, last: integer;
+  solid: longword;
+begin
+  if getAlpha(colour) = 0 then exit;
+  solid := solidify(colour);
+
+  { Skip if it doesn't form at least a line }
+  if length(points) < 2 then exit;
+
+  last := high(points);
+  for a:=0 to last - 1 do
+    line(round(points[a].x), round(points[a].y),
+      round(points[a + 1].x), round(points[a + 1].y), solid);
+
+  line(round(points[last].x), round(points[last].y),
+    round(points[0].x), round(points[0].y), solid);
 end;
 
 

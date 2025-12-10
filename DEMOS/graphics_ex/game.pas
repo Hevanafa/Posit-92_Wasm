@@ -5,7 +5,7 @@ library Game;
 uses
   Conv, Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Graphics, Timing, VGA,
+  Graphics, Shapes, Timing, VGA,
   Assets;
 
 const
@@ -17,6 +17,7 @@ var
 
   { Init your game state here }
   gameTime: double;
+  testPoints: array [0..3] of TPoint;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -37,6 +38,11 @@ procedure afterInit;
 begin
   { Initialise game state here }
   hideCursor;
+
+  testPoints[0].x := 100; testPoints[0].y := 50;
+  testPoints[1].x := 150; testPoints[1].y := 100;
+  testPoints[2].x := 100; testPoints[2].y := 150;
+  testPoints[3].x := 50;  testPoints[3].y := 100;
 end;
 
 procedure update;
@@ -83,6 +89,8 @@ begin
 
   tri(50, 110, 70, 120, 40, 130, $80AA55AA);
   trifill(80, 110, 100, 120, 70, 130, $80FF55FF);
+
+  polygon(testPoints, $80AA55AA);
 
   { endTick := getTimer; }
   { printDefault('10000 vline calls done in ' + f32str(endTick - startTick) + ' s', 10, 10); }
