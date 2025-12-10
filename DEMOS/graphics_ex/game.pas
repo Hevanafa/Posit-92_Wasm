@@ -58,12 +58,12 @@ procedure draw;
 var
   w: integer;
   s: string;
-  startTick, endTick: double;
-  a: word;
+  { startTick, endTick: double; }
+  { a: word; }
 begin
   cls($FF6495ED);
 
-  startTick := getTimer;
+  { startTick := getTimer; }
 
   {
   if (trunc(gameTime * 4) and 1) > 0 then
@@ -72,7 +72,6 @@ begin
     spr(imgDosuEXE[0], 148, 88);
   }
 
-  {
   circ(50, 50, 10, $80FF5555);
   circfill(80, 50, 10, $80FFAA55);
 
@@ -81,19 +80,9 @@ begin
 
   ellipse(50, 80, 20, 10, $805555FF);
   ellipsefill(80, 80, 20, 10, $8055AAFF);
-  }
 
-  {
-  for a:=0 to 10000 do
-    hline(random(vgaWidth) - 20, random(vgaWidth) + 20, random(vgaHeight + 20) - 10, $FF0000AA);
-  }
-
-  for a:=0 to 10000 do
-    vline(random(vgaWidth + 20) - 10, random(vgaHeight + 20) - 10, random(vgaHeight + 20) - 10, $FF0000AA);
-
-  endTick := getTimer;
-
-  printDefault('10000 vline calls done in ' + f32str(endTick - startTick) + ' s', 10, 10);
+  { endTick := getTimer; }
+  { printDefault('10000 vline calls done in ' + f32str(endTick - startTick) + ' s', 10, 10); }
 
   drawMouse;
   vgaFlush
