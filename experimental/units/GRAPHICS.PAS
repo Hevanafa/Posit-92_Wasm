@@ -24,6 +24,7 @@ procedure vline(x, y0, y1: integer; const colour: longword);
 { procedure vline2(x, y0, y1: integer; const colour: longword); }
 
 procedure line(x0, y0, x1, y1: integer; const colour: longword);
+procedure lineThick(x0, y0, x1, y1, thickness: integer; const colour: longword);
 
 procedure ellipse(const cx, cy, rx, ry: integer; const colour: longword);
 procedure ellipsefill(const cx, cy, rx, ry: integer; const colour: longword);
@@ -294,6 +295,33 @@ begin
   end;
 
   pset(x0, y0, solid)
+end;
+
+procedure lineThick(x0, y0, x1, y1, thickness: integer; const colour: longword);
+var
+  dx, dy, len: double;
+  perpX, perpY: double;  { perpendicular }
+  offset: double;
+  i, halfThick: integer;
+  solid: longword;
+begin
+  if getAlpha(colour) = 0 then exit;
+  solid := solidify(colour);
+
+  if thickness <= 0 then exit;
+  if thickness = 1 then begin
+    line(x0, y0, x1, y1, solid);
+    exit
+  end;
+
+  { Calculate direction vector }
+  dx := x1 - x0;
+  dy := y1 - y0;
+  len := sqrt(dx * dx + dy * dy);  { line length }
+
+  if len = 0 then exit;
+
+  { TODO: Handle render logic }
 end;
 
 
