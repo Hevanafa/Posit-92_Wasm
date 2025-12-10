@@ -95,6 +95,19 @@ begin
     or surface^[offset + 2]
 end;
 
+{ Gets the colour of a pixel }
+function pget(const x, y: integer): longword;
+var
+  offset: longword;
+begin
+  if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then begin
+    pget := 0;
+    exit
+  end;
+
+  pget := unsafePget(x, y)
+end;
+
 procedure legacyUnsafePset(const x, y: integer; const colour: longword);
 var
   offset: longword;
@@ -125,23 +138,6 @@ begin
   unsafePset(x, y, colour)
 end;
 
-{ Gets the colour of a pixel }
-function pget(const x, y: integer): longword;
-var
-  offset: longword;
-begin
-  if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then begin
-    pget := 0;
-    exit
-  end;
-
-  offset := (y * vgaWidth + x) * 4;
-
-  pget := (surface^[offset + 3] shl 24) or
-    (surface^[offset] shl 16) or
-    (surface^[offset + 1] shl 8) or
-    surface^[offset + 2]
-end;
 
 procedure unsafePsetBlend(const x, y: integer; const colour: longword);
 var
