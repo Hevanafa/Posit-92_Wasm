@@ -18,7 +18,7 @@ procedure rectfill(x0, y0, x1, y1: integer; const colour: longword);
 procedure hline(x0, x1, y: integer; const colour: longword);
 { procedure hline2(x0, x1, y: integer; const colour: longword); }
 procedure vline(x, y0, y1: integer; const colour: longword);
-procedure vline2(x, y0, y1: integer; const colour: longword);
+{ procedure vline2(x, y0, y1: integer; const colour: longword); }
 
 procedure line(x0, y0, x1, y1: integer; const colour: longword);
 
@@ -189,7 +189,7 @@ begin
     unsafePset(x, y, solid);
 end;
 
-procedure vline(x, y0, y1: integer; const colour: longword);
+procedure legacyVline(x, y0, y1: integer; const colour: longword);
 var
   temp, a: integer;
   solid: longword;
@@ -210,7 +210,7 @@ begin
   end;
 end;
 
-procedure vline2(x, y0, y1: integer; const colour: longword);
+procedure vline(x, y0, y1: integer; const colour: longword);
 var
   y, temp: integer;
   solid: longword;
