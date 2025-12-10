@@ -38,6 +38,10 @@ procedure arc(
   const cx, cy, radius: integer;
   const startRad, endRad: double;
   const colour: longword);
+procedure pie(
+  const cx, cy, radius: integer;
+  const startRad, endRad: double;
+  const colour: longword);
 
 procedure rectRound(x0, y0, x1, y1, radius: integer; const colour: longword);
 
@@ -566,6 +570,52 @@ begin
 
   if not first then
     line(prevX, prevY, x, y, solid);
+end;
+
+procedure pie(
+  const cx, cy, radius: integer;
+  const startRad, endRad: double;
+  const colour: longword);
+var
+  angle, step: double;
+  x, y, prevX, prevY: integer;
+  first: boolean;
+  solid: longword;
+begin
+  if getAlpha(colour) = 0 then exit;
+  solid := solidify(colour);
+
+  if radius <= 0 then exit;
+
+  { Draw the arc }
+  step := 1.0 / radius;
+  if step > 0.1 then step := 0.1;
+
+  angle := startRad;
+  first := true;
+  { Initialise anyway }
+  x := 0; y := 0;
+  prevX := x; prevY := y;
+  
+  while angle <= endRad do begin
+    x := cx + round(cos(angle) * radius);
+    y := cy + round(sin(angle) * radius);
+
+    if not first then
+      trifill(cx, cy, prevX, prevY, x, y, solid)
+    else
+      first := false;
+
+    prevX := x; prevY := y;
+    angle := angle + step
+  end;
+
+  { Draw final segment }
+  x := cx + round(cos(endRad) * radius);
+  y := cy + round(sin(endRad) * radius);
+
+  if not first then
+    trifill(cx, cy, prevX, prevY, x, y, solid);
 end;
 
 

@@ -97,7 +97,7 @@ begin
   { printDefault('10000 vline calls done in ' + f32str(endTick - startTick) + ' s', 10, 10); }
 
   arc(160, 100, 50, 0, pi, $FFFF5555);
-  arc(160, 100, 50, pi / 4, 3 * pi / 4, $FF55FF55);
+  pie(160, 100, 50, pi / 4, 3 * pi / 4, $FF55FF55);
 
   drawMouse;
   vgaFlush
