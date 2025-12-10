@@ -39,6 +39,8 @@ procedure arc(
   const startRad, endRad: double;
   const colour: longword);
 
+procedure rectRound(x0, y0, x1, y1, radius: integer; const colour: longword);
+
 
 implementation
 
@@ -563,5 +565,19 @@ begin
   if not first then
     line(prevX, prevY, x, y, solid);
 end;
+
+
+procedure rectRound(x0, y0, x1, y1, radius: integer; const colour: longword);
+begin
+  if getAlpha(colour) = 0 then exit;
+  solid := solidify(colour);
+
+  { TODO: Handle coordinate sorting }
+  { TODO: Handle clamp radius }
+
+  { TODO: Handle edges }
+  { TODO: Handle corners}
+end;
+
 
 end.
