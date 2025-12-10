@@ -519,7 +519,38 @@ procedure arc(
   const cx, cy, radius: integer;
   const startRad, endRad: double;
   const colour: longword);
+var
+  angle, step: double;
+  x, y, prevX, prevY: integer;
+  first: boolean;
+  solid: longword;
 begin
+  if getAlpha(colour) = 0 then exit;
+  solid := solidify(colour);
+
+  if radius <= 0 then exit;
+
+  { Draw the arc }
+  step := 1.0 / radius;
+  if step > 0.1 then step := 0.1;
+
+  angle := startRad;
+  first := true;
+  
+  while angle <= endRad do begin
+    x := cx + round(cos(angle) * radius);
+    y := cy + round(sin(angle) * radius);
+
+    if not first then
+      line(prevX, prevY, x, y, solid)
+    else
+      first := false;
+
+    prevX := x; prevY := y;
+    angle := angle + step
+  end;
+
+  { TODO: Draw final segment }
 
 end;
 
