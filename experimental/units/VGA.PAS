@@ -139,7 +139,7 @@ begin
 end;
 
 
-procedure unsafePsetBlend(const x, y: integer; const colour: longword);
+procedure legacyUnsafePsetBlend(const x, y: integer; const colour: longword);
 var
   srcA, srcR, srcG, srcB: byte;
   destA, destR, destG, destB: byte;
@@ -185,6 +185,47 @@ begin
   surface^[offset + 1] := outG;
   surface^[offset + 2] := outB;
   surface^[offset + 3] := outA;
+end;
+
+procedure unsafePsetBlend(const x, y: integer; const colour: longword);
+var
+  srcA, srcR, srcG, srcB: byte;
+  destA, destR, destG, destB: byte;
+  outA, outR, outG, outB: byte;
+  offset: longword;
+  { inverted alpha }
+  alpha, invAlpha: single;
+begin
+  srcA := colour shr 24 and $FF;
+
+  if srcA = 0 then exit;
+
+  srcR := colour shr 16 and $FF;
+  srcG := colour shr 8 and $FF;
+  srcB := colour and $FF;
+  
+  offset := (x + y * vgaWidth) * 4;
+
+  { Handle opaque pixel }
+  if srcA = 255 then begin
+    unsafePset(x, y, colour);
+    exit
+  end;
+
+  destR := surface^[offset];
+  destG := surface^[offset + 1];
+  destB := surface^[offset + 2];
+  destA := surface^[offset + 3];
+  
+  { Handle alpha blending }
+  alpha := srcA / 255.0;
+  invAlpha := 1.0 - alpha;
+
+  PLongWord(@surface^[offset])^ :=
+    (round(srcR * alpha + destR * invAlpha))
+    or (round(srcG * alpha + destG * invAlpha) shl 8)
+    or (round(srcB * alpha + destB * invAlpha) shl 16)
+    or ((srcA + round(destA * invAlpha)) shl 24)
 end;
 
 procedure psetBlend(const x, y: integer; const colour: longword);
