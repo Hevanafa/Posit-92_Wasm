@@ -430,10 +430,22 @@ begin
 
   MinY := y1; maxY := y3;
 
-  { Handle flat triangle / degenrate }
+  { Handle flat triangle / degenerate }
   if minY = maxY then exit;
 
-  { TODO: Draw top half }
+  { Draw top half }
+  if y2 > y1 then begin
+    xa:=x1; xb:=x1;
+    dxa := (x3 - x1) / (y3 - y1);  { long edge }
+    dxb := (x2 - x1) / (y2 - y1);  { short edge }
+
+    for y:=y1 to y2 - 1 do begin
+      hline(round(xa), round(xb), y, solid);
+      xa := xa + dxa;
+      xb := xb + dxb
+    end;
+  end;
+
   { TODO: Draw bottom half }
 end;
 
