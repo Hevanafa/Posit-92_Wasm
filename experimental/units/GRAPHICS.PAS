@@ -568,12 +568,33 @@ end;
 
 
 procedure rectRound(x0, y0, x1, y1, radius: integer; const colour: longword);
+var
+  temp, maxRadius: integer;
+  solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
   solid := solidify(colour);
 
-  { TODO: Handle coordinate sorting }
-  { TODO: Handle clamp radius }
+  { Sort coordinates }
+  if x1 < x0 then begin
+    temp := x0; x0 := x1; x1 := temp
+  end;
+  if y1 < y0 then begin
+    temp := y0; y0 := y1; y1 := temp
+  end;
+
+  { Clamp radius }
+  maxRadius := (x1 - x0) div 2;
+  if (y1 - y0) div 2 < maxRadius then
+    maxRadius := (y1 = y0) div 2;
+
+  if radius > maxRadius then radius := maxRadius;
+  if radius < 0 then radius := 0;
+
+  if radius = 0 then begin
+    rect(x0, y0, x1, y1, colour);
+    exit
+  end;
 
   { TODO: Handle edges }
   { TODO: Handle corners}
