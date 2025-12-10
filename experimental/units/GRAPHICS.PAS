@@ -25,13 +25,23 @@ implementation
 
 uses VGA;
 
+function solidify(const colour: longword): longword;
+begin
+  if colour and $FF000000 > 0 then
+    solidify := (colour or $FF000000)
+  else
+    solidify := (colour and $00FFFFFF)
+end;
+
 procedure circ(const cx, cy, radius: integer; const colour: longword);
 var
   x, y, p: integer;
+  solid: longword;
 begin
   x := 0;
   y := radius;
   p := 3 - 2 * radius;
+  solid := solidify(colour);
 
   while x <= y do begin
     pset(cx + x, cy + y, colour);
