@@ -74,6 +74,8 @@ begin
   rect(110, 50, 130, 70, $80FFFF55);
   rectfill(140, 50, 160, 70, $8055FF55);
 
+  ellipse(50, 80, 20, 10, $805555FF);
+
   s := 'Hello world!';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);

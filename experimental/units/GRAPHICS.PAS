@@ -265,9 +265,27 @@ begin
     inc(x)
   end;
 
-  { TODO: Handle slope >= -1}
-  
+  { Handle slope >= -1}
+  p := round(
+    ry2 * (x + 0.5) * (x + 0.5)
+    + rx2 * (y - 1) * (y - 1)
+    - rx2 * ry2);
 
+  while y >= 0 do begin
+    pset(cx + x, cy + y, solid);
+    pset(cx - x, cy + y, solid);
+    pset(cx + x, cy - y, solid);
+    pset(cx - x, cy - y, solid);
+
+    if p > 0 then
+      p := p - tworx2 * y + rx2
+    else begin
+      p := p + twory2 * x - tworx2 * y + rx2;
+      inc(x)
+    end;
+
+    dec(y)
+  end;
 end;
 
 
