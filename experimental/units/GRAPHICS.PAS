@@ -25,6 +25,8 @@ procedure line(x0, y0, x1, y1: integer; const colour: longword);
 procedure ellipse(const cx, cy, rx, ry: integer; const colour: longword);
 procedure ellipsefill(const cx, cy, rx, ry: integer; const colour: longword);
 
+procedure tri(x0, y0, x1, y1, x2, y2: integer; const colour: longword);
+
 
 implementation
 
@@ -388,6 +390,18 @@ begin
 
     dec(y)
   end;
+end;
+
+procedure tri(x0, y0, x1, y1, x2, y2: integer; const colour: longword);
+var
+  solid: longword;
+begin
+  if getAlpha(colour) = 0 then exit;
+  solid := solidify(colour);
+
+  line(x0, y0, x1, y1, solid);
+  line(x1, y1, x2, y2, solid);
+  line(x0, y0, x2, y2, solid)
 end;
 
 
