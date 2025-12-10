@@ -404,5 +404,21 @@ begin
   line(x0, y0, x2, y2, solid)
 end;
 
+procedure trifill(x0, y0, x1, y1, x2, y2: integer; const colour: longword);
+var
+  temp, minY, maxY, y: integer;
+  xa, xb: single;
+  dxa, dxb: single;
+  solid: longword;
+begin
+  if getAlpha(colour) = 0 then exit;
+  solid := solidify(colour);
+
+  { TODO: Handle bubble sort }
+
+  { TODO: Draw top half }
+  { TODO: Draw bottom half }
+end;
+
 
 end.

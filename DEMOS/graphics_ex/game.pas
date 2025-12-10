@@ -82,6 +82,7 @@ begin
   ellipsefill(80, 80, 20, 10, $8055AAFF);
 
   tri(50, 110, 70, 120, 40, 130, $80AA55AA);
+  trifill(80, 110, 100, 120, 70, 130, $80FF55FF);
 
   { endTick := getTimer; }
   { printDefault('10000 vline calls done in ' + f32str(endTick - startTick) + ' s', 10, 10); }
