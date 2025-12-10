@@ -61,10 +61,18 @@ var
 begin
   cls($FF6495ED);
 
+  {
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
   else
     spr(imgDosuEXE[0], 148, 88);
+  }
+
+  circ(50, 50, 10, $80FF5555);
+  circfill(80, 50, 10, $80FFAA55);
+
+  rect(110, 50, 130, 70, $80FFFF55);
+  rectfill(140, 50, 160, 70, $8055FF55);
 
   s := 'Hello world!';
   w := measureDefault(s);
