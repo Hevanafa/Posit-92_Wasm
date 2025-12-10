@@ -515,4 +515,12 @@ begin
 end;
 
 
+procedure arc(
+  const cx, cy, radius: integer;
+  const startRad, endRad: double;
+  const colour: longword);
+begin
+
+end;
+
 end.
