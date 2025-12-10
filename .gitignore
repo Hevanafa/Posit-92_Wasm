@@ -59,6 +59,9 @@ DEMOS/crt_effect/*.ps1
 DEMOS/spr_shadow/*.ps1
 DEMOS/graphics_ex/*.ps1
 
+DEMOS/square_screen/*.ps1
+!DEMOS/square_screen/compile_demo.ps1
+
 # Snippets
 snippets/wasm_loader/build_dist.ps1
 snippets/wasm_loader/build_run.ps1
@@ -66,4 +69,3 @@ snippets/wasm_loader/compile.ps1
 snippets/wasm_loader/dist.ps1
 snippets/wasm_loader/start_server.ps1
 snippets/ts_wasm/index.js
-
