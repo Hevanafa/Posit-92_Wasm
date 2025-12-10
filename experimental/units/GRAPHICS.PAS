@@ -26,6 +26,7 @@ procedure ellipse(const cx, cy, rx, ry: integer; const colour: longword);
 procedure ellipsefill(const cx, cy, rx, ry: integer; const colour: longword);
 
 procedure tri(x0, y0, x1, y1, x2, y2: integer; const colour: longword);
+procedure trifill(x1, y1, x2, y2, x3, y3: integer; const colour: longword);
 
 
 implementation
@@ -404,7 +405,7 @@ begin
   line(x0, y0, x2, y2, solid)
 end;
 
-procedure trifill(x0, y0, x1, y1, x2, y2: integer; const colour: longword);
+procedure trifill(x1, y1, x2, y2, x3, y3: integer; const colour: longword);
 var
   temp, minY, maxY, y: integer;
   xa, xb: single;
@@ -446,7 +447,20 @@ begin
     end;
   end;
 
-  { TODO: Draw bottom half }
+  { Draw bottom half }
+  if y3 > y2 then begin
+    { Continue long edge }
+    xa := x1 + (x3 - x1) * ((y2 - y1) / (y3 - y1));
+    xb := x2;
+    dxa := (x3 - x1) / (y3 - y1);
+    dxb := (x3 - x2) / (y3 - y2);
+
+    for y:=y2 to y3 do begin
+      hline(round(xa), round(xb), y, solid);
+      xa := xa + dxa;
+      xb := xb + dxb
+    end;
+  end;
 end;
 
 
