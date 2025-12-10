@@ -6,6 +6,7 @@
 unit Graphics;
 
 {$Mode TP}
+{$PointerMath ON}
 {$B-}  { Enable boolean short-circuiting }
 
 interface
@@ -504,7 +505,7 @@ begin
   p := points;
   for a:=0 to count - 2 do begin
     line(round(p^.x), round(p^.y),
-      round(PPoint(longword(p) + 1)^.x), round(PPoint(longword(p) + 1)^.y), solid);
+      round((p + 1)^.x), round((p + 1)^.y), solid);
     inc(p)
   end;
 
