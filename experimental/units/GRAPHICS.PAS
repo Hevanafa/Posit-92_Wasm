@@ -31,6 +31,7 @@ procedure tri(x0, y0, x1, y1, x2, y2: integer; const colour: longword);
 procedure trifill(x1, y1, x2, y2, x3, y3: integer; const colour: longword);
 
 procedure polygon(points: array of TPoint; const colour: longword);
+procedure polygonPtr(points: PPoint; const count: integer; const colour: longword);
 
 
 implementation
@@ -486,6 +487,30 @@ begin
 
   line(round(points[last].x), round(points[last].y),
     round(points[0].x), round(points[0].y), solid);
+end;
+
+procedure polygonPtr(points: PPoint; const count: integer; const colour: longword);
+var
+  a: integer;
+  solid: longword;
+  p: PPoint;
+begin
+  if getAlpha(colour) = 0 then exit;
+  solid := solidify(colour);
+
+  { Skip if it doesn't form at least a line }
+  if count < 2 then exit;
+
+  p := points;
+  for a:=0 to count - 2 do begin
+    line(round(p^.x), round(p^.y),
+      round(PPoint(longword(p) + 1)^.x), round(PPoint(longword(p) + 1)^.y), solid);
+    inc(p)
+  end;
+
+  { Close the polygon }
+  line(round(p^.x), round(p^.y),
+    round(points^.x), round(points^.y), solid);
 end;
 
 

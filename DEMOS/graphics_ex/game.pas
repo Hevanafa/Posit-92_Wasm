@@ -90,7 +90,7 @@ begin
   tri(50, 110, 70, 120, 40, 130, $80AA55AA);
   trifill(80, 110, 100, 120, 70, 130, $80FF55FF);
 
-  polygon(testPoints, $80AA55AA);
+  polygonPtr(@testPoints[0], length(testPoints), $80FF5555);
 
   { endTick := getTimer; }
   { printDefault('10000 vline calls done in ' + f32str(endTick - startTick) + ' s', 10, 10); }

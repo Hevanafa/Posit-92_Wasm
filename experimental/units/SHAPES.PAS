@@ -6,6 +6,7 @@ unit Shapes;
 interface
 
 type
+  PPoint = ^TPoint;
   TPoint = record
     x, y: double;
   end;
