@@ -18,6 +18,7 @@ procedure rectfill(x0, y0, x1, y1: integer; const colour: longword);
 procedure hline(x0, x1, y: integer; const colour: longword);
 { procedure hline2(x0, x1, y: integer; const colour: longword); }
 procedure vline(x, y0, y1: integer; const colour: longword);
+procedure vline2(x, y0, y1: integer; const colour: longword);
 
 procedure line(x0, y0, x1, y1: integer; const colour: longword);
 
@@ -208,6 +209,28 @@ begin
     pset(x, a, solid)
   end;
 end;
+
+procedure vline2(x, y0, y1: integer; const colour: longword);
+var
+  y, temp: integer;
+  solid: longword;
+begin
+  if getAlpha(colour) = 0 then exit;
+  if (x < 0) or (x >= vgaWidth) then exit;
+  solid := solidify(colour);
+
+  if y1 < y0 then begin
+    temp := y0; y0 := y1; y1 := temp
+  end;
+
+  if y0 < 0 then y0 := 0;
+  if y1 >= vgaHeight then y1 := vgaHeight - 1;
+  if y0 > y1 then exit;
+
+  for y:=y0 to y1 do
+    unsafePset(x, y, solid);
+end;
+
 
 procedure line(x0, y0, x1, y1: integer; const colour: longword);
 var

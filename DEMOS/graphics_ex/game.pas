@@ -89,11 +89,11 @@ begin
   }
 
   for a:=0 to 10000 do
-    vline(random(vgaWidth + 20) - 10, random(vgaHeight + 20) - 10, random(vgaHeight + 20) - 10, $FF0000AA);
+    vline2(random(vgaWidth + 20) - 10, random(vgaHeight + 20) - 10, random(vgaHeight + 20) - 10, $FF0000AA);
 
   endTick := getTimer;
 
-  printDefault('10000 vline calls done in ' + f32str(endTick - startTick) + ' s', 10, 10);
+  printDefault('10000 vline2 calls done in ' + f32str(endTick - startTick) + ' s', 10, 10);
 
   drawMouse;
   vgaFlush
