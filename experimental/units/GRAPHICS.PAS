@@ -25,12 +25,17 @@ implementation
 
 uses VGA;
 
+function getAlpha(const colour: longword): byte;
+begin
+  getAlpha := colour shr 24 and $FF
+end;
+
 function solidify(const colour: longword): longword;
 begin
   if colour and $FF000000 > 0 then
     solidify := (colour or $FF000000)
   else
-    solidify := (colour and $00FFFFFF)
+    solidify := colour
 end;
 
 procedure circ(const cx, cy, radius: integer; const colour: longword);
@@ -38,20 +43,22 @@ var
   x, y, p: integer;
   solid: longword;
 begin
+  if getAlpha(colour) = 0 then exit;
+
   x := 0;
   y := radius;
   p := 3 - 2 * radius;
   solid := solidify(colour);
 
   while x <= y do begin
-    pset(cx + x, cy + y, colour);
-    pset(cx - x, cy + y, colour);
-    pset(cx + x, cy - y, colour);
-    pset(cx - x, cy - y, colour);
-    pset(cx + y, cy + x, colour);
-    pset(cx - y, cy + x, colour);
-    pset(cx + y, cy - x, colour);
-    pset(cx - y, cy - x, colour);
+    pset(cx + x, cy + y, solid);
+    pset(cx - x, cy + y, solid);
+    pset(cx + x, cy - y, solid);
+    pset(cx - x, cy - y, solid);
+    pset(cx + y, cy + x, solid);
+    pset(cx - y, cy + x, solid);
+    pset(cx + y, cy - x, solid);
+    pset(cx - y, cy - x, solid);
 
     if p < 0 then
       p := p+4 * x+6
@@ -67,19 +74,23 @@ procedure circfill(const cx, cy, radius: integer; const colour: longword);
 var
   x, y, p: integer;
   a: integer;
+  solid: longword;
 begin
+  if getAlpha(colour) = 0 then exit;
+
   x := 0;
   y := radius;
   p := 3 - 2 * radius;
+  solid := solidify(colour);
 
   while x <= y do begin
     for a:=cx-x to cx+x do begin
-      pset(a, cy + y, colour);
-      pset(a, cy - y, colour)
+      pset(a, cy + y, solid);
+      pset(a, cy - y, solid)
     end;
     for a:=cx-y to cx+y do begin
-      pset(a, cy + x, colour);
-      pset(a, cy - x, colour)
+      pset(a, cy + x, solid);
+      pset(a, cy - x, solid)
     end;
 
     if p < 0 then
@@ -96,7 +107,11 @@ end;
 procedure rect(x0, y0, x1, y1: integer; const colour: longword);
 var
   a, b, temp: integer;
+  solid: longword;
 begin
+  if getAlpha(colour) = 0 then exit;
+  solid := solidify(colour);
+
   if x0 > x1 then begin
     temp := x0; x0 := x1; x1 := temp
   end;
@@ -104,19 +119,23 @@ begin
     temp := y0; y0 := y1; y1 := temp
   end;
   for b:=y0 to y1 do begin
-    pset(x0, b, colour);
-    pset(x1, b, colour)
+    pset(x0, b, solid);
+    pset(x1, b, solid)
   end;
   for a:=x0 to x1 do begin
-    pset(a, y0, colour);
-    pset(a, y1, colour)
+    pset(a, y0, solid);
+    pset(a, y1, solid)
   end;
 end;
 
 procedure rectfill(x0, y0, x1, y1: integer; const colour: longword);
 var
   b, temp: integer;
+  solid: longword;
 begin
+  if getAlpha(colour) = 0 then exit;
+  solid := solidify(colour);
+
   if x0 > x1 then begin
     temp := x0; x0 := x1; x1 := temp
   end;
@@ -124,26 +143,33 @@ begin
     temp := y0; y0 := y1; y1 := temp
   end;
   for b:=y0 to y1 do
-    hline(x0, x1, b, colour);
+    hline(x0, x1, b, solid);
 end;
 
 procedure hline(x0, x1, y: integer; const colour: longword);
 var
   x: integer;
+  solid: longword;
 begin
+  if getAlpha(colour) = 0 then exit;
+  solid := solidify(colour);
+
   if x1 < x0 then begin
     x := x0; x0 := x1; x1 := x
   end;
 
   for x := x0 to x1 do
-    pset(x, y, colour);
+    pset(x, y, solid);
 end;
 
 procedure vline(x, y0, y1: integer; const colour: longword);
 var
   temp, a: integer;
+  solid: longword;
 begin
+  if getAlpha(colour) = 0 then exit;
   if (x < 0) or (x >= vgaWidth) then exit;
+  solid := solidify(colour);
 
   if y0 > y1 then begin
     temp := y0; y0 := y1; y1 := temp
@@ -153,21 +179,25 @@ begin
 
   for a:=y0 to y1 do begin
     if (a < 0) then continue;
-    pset(x, a, colour)
+    pset(x, a, solid)
   end;
 end;
 
 procedure line(x0, y0, x1, y1: integer; const colour: longword);
 var
   dx, dy, sx, sy, err, e2: integer;
+  solid: longword;
 begin
+  if getAlpha(colour) = 0 then exit;
+  solid := solidify(colour);
+
   if x0 = x1 then begin
-    vline(x0, y0, y1, colour);
+    vline(x0, y0, y1, solid);
     exit
   end;
 
   if y0 = y1 then begin
-    hline(x0, x1, y0, colour);
+    hline(x0, x1, y0, solid);
     exit
   end;
 
@@ -180,7 +210,7 @@ begin
   err := dx - dy;
 
   while (x0 <> x1) or (y0 <> y1) do begin
-    pset(x0, y0, colour);
+    pset(x0, y0, solid);
     e2 := 2 * err;
 
     if e2 > -dy then begin
@@ -194,7 +224,7 @@ begin
     end;
   end;
 
-  pset(x0, y0, colour)
+  pset(x0, y0, solid)
 end;
 
 end.
