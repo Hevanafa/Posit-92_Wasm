@@ -99,6 +99,8 @@ begin
   arc(160, 100, 50, 0, pi, $FFFF5555);
   pie(160, 100, 50, pi / 4, 3 * pi / 4, $FF55FF55);
 
+  lineThick(50, 50, 200, 150, 5, $FFFF5555);
+
   drawMouse;
   vgaFlush
 end;

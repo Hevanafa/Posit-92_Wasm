@@ -302,7 +302,7 @@ var
   dx, dy, len: double;
   perpX, perpY: double;  { perpendicular }
   offset: double;
-  i, halfThick: integer;
+  a, halfThick: integer;
   solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
@@ -321,7 +321,25 @@ begin
 
   if len = 0 then exit;
 
-  { TODO: Handle render logic }
+  { Render logic }
+  perpX := -dy / len;
+  perpY := dx / len;
+  halfThick := thickness div 2;
+
+  for a:=-halfThick to halfThick do begin
+    if ((thickness and 1) = 0) and (a = 0) then continue;
+
+    offset := a;
+    if ((thickness and 1) = 0) and (a > 0) then offset := a - 0.5;
+    if ((thickness and 1) = 0) and (a < 0) then offset := a + 0.5;
+
+    line(
+      round(x0 + perpX + offset),
+      round(y0 + perpY + offset),
+      round(x1 + perpX + offset),
+      round(y1 + perpY + offset),
+      solid)
+  end;
 end;
 
 
