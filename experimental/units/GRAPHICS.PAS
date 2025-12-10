@@ -550,8 +550,12 @@ begin
     angle := angle + step
   end;
 
-  { TODO: Draw final segment }
+  { Draw final segment }
+  x := cx + round(cos(endRad) * radius);
+  y := cy + round(sin(endRad) * radius);
 
+  if not first then
+    line(prevX, prevY, x, y, solid);
 end;
 
 end.
