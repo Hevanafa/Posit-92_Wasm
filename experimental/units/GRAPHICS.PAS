@@ -16,7 +16,7 @@ procedure circfill(const cx, cy, radius: integer; const colour: longword);
 procedure rect(x0, y0, x1, y1: integer; const colour: longword);
 procedure rectfill(x0, y0, x1, y1: integer; const colour: longword);
 procedure hline(x0, x1, y: integer; const colour: longword);
-procedure hline2(x0, x1, y: integer; const colour: longword);
+{ procedure hline2(x0, x1, y: integer; const colour: longword); }
 procedure vline(x, y0, y1: integer; const colour: longword);
 
 procedure line(x0, y0, x1, y1: integer; const colour: longword);
@@ -150,7 +150,7 @@ begin
     hline(x0, x1, b, solid);
 end;
 
-procedure hline(x0, x1, y: integer; const colour: longword);
+procedure legacyHline(x0, x1, y: integer; const colour: longword);
 var
   x: integer;
   solid: longword;
@@ -166,7 +166,7 @@ begin
     pset(x, y, solid);
 end;
 
-procedure hline2(x0, x1, y: integer; const colour: longword);
+procedure hline(x0, x1, y: integer; const colour: longword);
 var
   x: integer;
   solid: longword;
