@@ -246,7 +246,25 @@ begin
   tworx2 := 2 * rx2;
   twory2 := 2 * ry2;
 
-  { TODO: Handle slope < -1 }
+  { Handle slope < -1 }
+  p := round(ry2 - (rx2 * ry) + (rx2 / 4));
+  
+  while (twory2 * x) <= (tworx2 * y) do begin
+    pset(cx + x, cy + y, solid);
+    pset(cx - x, cy + y, solid);
+    pset(cx + x, cy - y, solid);
+    pset(cx - x, cy - y, solid);
+
+    if p < 0 then
+      p := p + twory2 * x + ry2
+    else begin
+      p := p + twory2 * x - tworx2 * y + ry2;
+      dec(y)
+    end;
+
+    inc(x)
+  end;
+
   { TODO: Handle slope >= -1}
   
 
