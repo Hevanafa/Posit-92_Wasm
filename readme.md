@@ -20,6 +20,8 @@ This is because the **Pascal** extension by Alessandro Fragnani is too difficult
 
 OmniPascal has a built-in code navigation, so it doesn't require GTags/CTags, GNU Global, or even Python installed
 
+**Planned:** PowerShell scripts will be rewritten with Bun with TypeScript, skipping the need to install Node.js and PowerShell 7
+
 
 ## Getting Started
 
