@@ -1,6 +1,9 @@
 library Game;
 
-{$Mode ObjFPC}
+{$Mode TP}
+{$Memory 1024, 0}  { Disable heap manager }
+{$SmartLink ON}  { Remove unused code }
+{$Optimization Level3}  { Aggressive optimisation }
 
 uses
   Keyboard, Mouse,
