@@ -9,7 +9,12 @@ const server = Bun.serve({
     const filepath = `.${url.pathname}`;
 
     try {
-      const file = Bun.file(filepath);
+      let file = Bun.file(filepath);
+
+      if (!(await file.exists()))
+        if (filepath.endsWith("/"))
+          file = Bun.file(`${filepath}index.html`);
+      
       return new Response(file)
     } catch (error) {
       return new Response("404 - File not found", { status: 404 });
