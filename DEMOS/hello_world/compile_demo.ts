@@ -10,7 +10,7 @@ const proc = Bun.spawn([
   "-Tembedded",
   "-Fu..\\..\\experimental\\units",
   "-dWASM",
-  "-o$outputFile",
+  `-o${outputFile}`,
   primaryUnit
 ], {
   stdout: "pipe",
@@ -24,6 +24,12 @@ const exitCode = await proc.exited;
 console.log(styleText("cyan", "(STDOUT)"));
 console.log(stdout.trim() || styleText("gray", "(No data)"));
 
+console.log(styleText("red", "(STDERR)"));
+console.log(stderr.trim() || styleText("gray", "(No data)"));
 
+if (exitCode != 0) {
+  console.log(styleText("red", `Compilation failed with exit code ${exitCode}`));
+  process.exit(exitCode)
+}
 
 export {}
