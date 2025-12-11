@@ -12,14 +12,8 @@ boilerplate/UNITS/
 boilerplate/posit-92.js
 
 # The only required script is setup.ps1
-boilerplate/build_run.ps1
-boilerplate/compile.ps1
-boilerplate/run.ps1
-boilerplate/start_server.ps1
-boilerplate/build_dist.ps1
-boilerplate/dist.ps1
-boilerplate/build_run_demo.ps1
-boilerplate/compile_demo.ps1
+boilerplate/*.ps1
+!boilerplate/setup.ps1
 
 boilerplate/*.ts
 !boilerplate/setup.ts
@@ -49,7 +43,6 @@ DEMOS/heap_demo/*.ps1
 DEMOS/collision/*.ps1
 DEMOS/spr_anim/*.ps1
 DEMOS/spr_dest/*.ps1
-DEMOS/spr_dest/*.pas
 DEMOS/spr_post_processing/*.ps1
 DEMOS/rainbow_screen/*.ps1
 DEMOS/scanlines/*.ps1
