@@ -1,3 +1,7 @@
+// Compile Script for Demo Projects
+// Part of Posit-92 framework
+// By Hevanafa, 12-12-2025
+
 import { styleText } from "node:util";
 
 const compilerPath = "E:\\fpc-wasm\\fpc\\bin\\x86_64-win64\\fpc.exe";
