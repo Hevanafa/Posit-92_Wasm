@@ -23,16 +23,18 @@ I'm using Windows 10 Home (64-bit, version 22H2, build 19045.6575) to build this
 
 4. Copy all the contents of the `boilerplate` folder except for `setup.ps1` to your new project
 
-## Building
+## Build Scripts
 
 I have prepared a few scripts to ease the build process
 
 - `build_run.ps1` - Build & run
 - `run.ps1` - Run without building
+
 - `build_dist.ps1` - Build & distribute
 - `compile.ps1` - Contains the command line to automatically delete the output file & compile the WebAssembly binary
 - `start_server.ps1` - Starts the `http-server`
 - `dist.ps1` - Gathers the key files required for distribution
+- `strip_wasm.ps1` - Strips unused functions (requires **Emscripten**)
 
 ### Scripts for Demos
 
