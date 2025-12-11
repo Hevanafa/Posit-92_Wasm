@@ -1,3 +1,8 @@
+# Strip Wasm Binary
+# By Hevanafa, 11-12-2025
+#
+# Requires Emscripten to be installed
+
 $wasmOpt = "E:\emsdk\upstream\bin\wasm-opt.exe"
 $infile = $args[0]
 $outfile = $infile -replace ".wasm", "_stripped.wasm"
