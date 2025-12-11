@@ -10,11 +10,16 @@ This project is a port of [POSIT-92](https://github.com/Hevanafa/POSIT-92) which
 2. **VSCode** with the **[OmniPascal](https://marketplace.visualstudio.com/items?itemName=Wosi.omnipascal)** extension by Wosi enabled
 3. Any version of **Node.js** to start the `http-server`
 4. Optional: **PowerShell 7** installed ([WinGet](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell-on-windows?view=powershell-7.5#winget))
-   - This is only necessary if you want to run any build scripts from outside VScode
+   - This is only necessary if you want to run any build scripts from outside VSCode
 
 I'm using Windows 10 Home (64-bit, version 22H2, build 19045.6575) to build this project
 
-**Update 11-12-2025:** Changed the extension used -- this is because the **Pascal** extension by Alessandro Fragnani is too difficult to get the "Go to definition" feature working, while **OmniPascal** can do it right out of the box
+**Update 11-12-2025:** Changed the extension used
+
+This is because the **Pascal** extension by Alessandro Fragnani is too difficult to get the "Go to definition" feature working, while **OmniPascal** can do it right out of the box
+
+OmniPascal has a built-in code navigation, so it doesn't require GTags/CTags, GNU Global, or even Python installed
+
 
 ## Getting Started
 
