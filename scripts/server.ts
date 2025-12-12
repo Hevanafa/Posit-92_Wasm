@@ -30,7 +30,16 @@ async function startServer(port: number, maxRetries: number): Promise<void> {
         }
       })
 
-      console.log(`Server is running at http://localhost:${server.port}`);
+      const url = `http://localhost:${server.port}`;
+      console.log(styleText("green", "Server is running at " + url));
+      
+      if (Bun.argv.includes("-o") || Bun.argv.includes("--open")) {
+        // Start process on Windows
+        Bun.spawn(["cmd", "/c", "start", url], { stdout: "inherit", stderr: "inherit" });
+
+        console.log("Opening browser...")
+      }
+
       return
 
     } catch (error) {
