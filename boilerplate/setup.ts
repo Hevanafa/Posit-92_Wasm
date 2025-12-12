@@ -22,6 +22,7 @@ while (true) {
     "Which version do you want to develop?\n" +
     "  1 - default\n" +
     "  2 - demo\n" +
+    "  0 - cancel setup\n" +
     "Choice (default: 1): "
   );
 
@@ -42,8 +43,18 @@ while (true) {
 
   } else if (answer == "2") {
     console.log("Setting up demo version...");
-    // TODO: Handle demo version
-  } else {
+    console.log(
+      "The demo version uses experimental\\units " +
+      "instead of the local UNITS folder");
+
+    const source = "..";
+    await Bun.$`cp ${source}/posit-92.js ./`;
+
+    const scripts = ["build_run_demo", "compile_demo", "start_server"];
+    for (const filename of scripts)
+      await Bun.$`cp ${source}/scripts/${filename}.ts ./`;
+
+  } else if (answer == "0") {
     console.log("Setup cancelled");
     break
   }
