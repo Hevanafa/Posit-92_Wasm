@@ -1,2 +1,2 @@
-await Bun.$`bun start_server.ts`
+await Bun.$`bun server.ts`
 export {}
