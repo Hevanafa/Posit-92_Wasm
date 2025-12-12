@@ -11,11 +11,13 @@ const server = Bun.serve({
     try {
       let file = Bun.file(filepath);
 
-      if (!(await file.exists()))
-        if (filepath.endsWith("/"))
-          file = Bun.file(`${filepath}index.html`);
+      if (filepath.endsWith("/"))
+        file = Bun.file(`${filepath}index.html`);
       
-      return new Response(file)
+      if (!(await file.exists()))
+        return new Response("404 - File not found", { status: 404 })
+      else
+        return new Response(file)
     } catch (error) {
       return new Response("404 - File not found", { status: 404 });
     }
