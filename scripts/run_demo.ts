@@ -1,2 +1,2 @@
-await Bun.$`bun ../../server.ts`
+await Bun.$`bun ../../scripts/server.ts`
 export {}

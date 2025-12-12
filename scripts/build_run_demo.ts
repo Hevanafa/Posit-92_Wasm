@@ -1,2 +1,2 @@
-await Bun.$`bun compile_demo.ts && bun start_server.ts`;
+await Bun.$`bun compile_demo.ts && bun run_demo.ts`;
 export {}
