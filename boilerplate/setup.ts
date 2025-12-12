@@ -6,13 +6,47 @@
 
 import { mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { stdin } from "node:process";
 
-const source = "..";
-if (!existsSync("UNITS"))
-  await mkdir("UNITS");
+async function prompt(question: string): Promise<string> {
+  process.stdout.write(question);
 
-await Bun.$`cp ${source}/UNITS/*.pas ./UNITS/`;
-await Bun.$`cp ${source}/scripts/*.ts ./`;
-await Bun.$`cp ${source}/posit-92.js ./`;
+  for await (const line of console)
+    return line.trim();
+
+  return ""
+}
+
+while (true) {
+  const answer = await prompt(
+    "Which version do you want to develop?\n" +
+    "  1 - default\n" +
+    "  2 - demo\n" +
+    "Choice (default: 1): "
+  );
+
+  if (answer == "" || answer == "1") {
+    // Default
+    console.log("Setting up default version...");
+
+    const source = "..";
+    if (!existsSync("UNITS"))
+      await mkdir("UNITS");
+
+    await Bun.$`cp ${source}/UNITS/*.pas ./UNITS/`;
+    await Bun.$`cp ${source}/posit-92.js ./`;
+
+    const scripts = ["build_run", "compile", "run", "start_server"];
+    for (const filename of scripts)
+      await Bun.$`cp ${source}/scripts/${filename}.ts ./`;
+
+  } else if (answer == "2") {
+    console.log("Setting up demo version...");
+    // TODO: Handle demo version
+  } else {
+    console.log("Setup cancelled");
+    break
+  }
+}
 
 export {}
