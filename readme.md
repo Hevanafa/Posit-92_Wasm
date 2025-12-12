@@ -14,6 +14,12 @@ This project is a port of [POSIT-92](https://github.com/Hevanafa/POSIT-92) which
 
 I'm using Windows 10 Home (64-bit, version 22H2, build 19045.6575) to build this project
 
+If you want to use **Bun** to handle the build scripts instead of PowerShell, install the dependencies first with
+
+```powershell
+bun install
+```
+
 **Update 11-12-2025:** Changed the extension used
 
 This is because the **Pascal** extension by Alessandro Fragnani is too difficult to get the "Go to definition" feature working, while **OmniPascal** can do it right out of the box
@@ -21,7 +27,6 @@ This is because the **Pascal** extension by Alessandro Fragnani is too difficult
 OmniPascal has a built-in code navigation, so it doesn't require GTags/CTags, GNU Global, or even Python installed
 
 **Planned:** PowerShell scripts will be rewritten with Bun with TypeScript, skipping the need to install Node.js and PowerShell 7
-
 
 ## Getting Started
 
