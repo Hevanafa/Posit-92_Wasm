@@ -1,3 +1,5 @@
+import { styleText } from "node:util";
+
 // Requires Bun to be installed
 if (Bun == null)
   throw new Error("This app requires Bun!");
@@ -40,4 +42,11 @@ async function startServer(port: number, maxRetries: number): Promise<void> {
   }
 }
 
-startServer(8008, 5)
+try {
+  await startServer(8008, 5)
+} catch (error) {
+  if (error instanceof Error)
+    console.log(styleText("red", `Error: ${error.message}`))
+  else
+    console.log(styleText("red", "Error: " + String(error)));
+}
