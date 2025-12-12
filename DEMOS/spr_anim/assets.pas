@@ -15,6 +15,7 @@ var
   imgDosuEXE: array[0..1] of longint;
   imgAppStartingCursor: longint;
   imgHourglass: longint;
+  imgCheetah: longint;
 
 { BMFont boilerplate }
 function defaultFontPtr: PBMFont; public name 'defaultFontPtr';
@@ -29,6 +30,7 @@ procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public na
 
 procedure setImgAppStartingCursor(const imgHandle: longint); public name 'setImgAppStartingCursor';
 procedure setImgHourglass(const imgHandle: longint); public name 'setImgHourglass';
+procedure setImgCheetah(const imgHandle: longint); public name 'setImgCheetah';
 
 
 implementation
@@ -78,6 +80,11 @@ end;
 procedure setImgHourglass(const imgHandle: longint);
 begin
   imgHourglass := imgHandle
+end;
+
+procedure setImgCheetah(const imgHandle: longint);
+begin
+  imgCheetah := imgHandle
 end;
 
 

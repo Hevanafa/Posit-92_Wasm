@@ -26,6 +26,10 @@ var
   cursorStartTick: double;
   sprAppStartingCursor: TSpriteAnim;
 
+  cheetahFrameIdx: integer;
+  cheetahStartTick: double;
+  sprCheetah: TSpriteAnim;
+
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
@@ -53,6 +57,9 @@ begin
 
   initSpriteAnim(sprAppStartingCursor, imgAppStartingCursor, 10, 32, 32, 0.2);
   rewindSpriteAnim(cursorStartTick, getTimer, cursorFrameIdx);
+
+  initSpriteAnim(sprCheetah, imgCheetah, 8, 133, 63, 0.05);
+  rewindSpriteAnim(cheetahStartTick, getTimer, cheetahFrameIdx);
 end;
 
 procedure update;
@@ -69,6 +76,8 @@ begin
 
   updateSpriteAnim(sprHourglass, getTimer, hourglassStartTick, hourglassFrameIdx);
   updateSpriteAnim(sprAppStartingCursor, getTimer, cursorStartTick, cursorFrameIdx);
+
+  updateSpriteAnim(sprCheetah, getTimer, cheetahStartTick, cheetahFrameIdx);
 
   gameTime := gameTime + dt
 end;
@@ -87,6 +96,8 @@ begin
 
   { spr(imgAppStartingCursor, 10, 10); }
   { spr(imgHourglass, 10, 60); }
+
+  drawSpriteAnim(sprCheetah, cheetahFrameIdx, 20, 20);
 
   drawSpriteAnim(sprHourglass, hourglassFrameIdx, 188, 80);
 

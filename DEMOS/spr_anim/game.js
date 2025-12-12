@@ -30,6 +30,8 @@ class Game extends Posit92 {
     this.wasmInstance.exports.setImgAppStartingCursor(handle);
     handle = await this.loadImage("assets/images/hourglass_sheet.png");
     this.wasmInstance.exports.setImgHourglass(handle);
+    handle = await this.loadImage("assets/images/fpc_running_logo.png");
+    this.wasmInstance.exports.setImgCheetah(handle);
 
     // Add more assets as necessary
   }
