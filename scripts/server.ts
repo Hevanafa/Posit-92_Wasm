@@ -2,32 +2,42 @@
 if (Bun == null)
   throw new Error("This app requires Bun!");
 
-async function startServer(port: number, maxRetries = 5): Promise<void> {
+async function startServer(port: number, maxRetries: number): Promise<void> {
   for (let attempt = 0; attempt < maxRetries; attempt++) {
-    const server = Bun.serve({
-      port: port + attempt,
+    try {
+      const server = Bun.serve({
+        port: port + attempt,
 
-      async fetch(req) {
-        const url = new URL(req.url);
-        const filepath = `.${url.pathname}`;
+        async fetch(req) {
+          const url = new URL(req.url);
+          const filepath = `.${url.pathname}`;
 
-        try {
-          let file = Bun.file(filepath);
+          try {
+            let file = Bun.file(filepath);
 
-          if (filepath.endsWith("/"))
-            file = Bun.file(`${filepath}index.html`);
-          
-          if (!(await file.exists()))
-            return new Response("404 - File not found", { status: 404 })
-          else
-            return new Response(file)
-        } catch (error) {
-          return new Response("404 - File not found", { status: 404 });
+            if (filepath.endsWith("/"))
+              file = Bun.file(`${filepath}index.html`);
+            
+            if (!(await file.exists()))
+              return new Response("404 - File not found", { status: 404 })
+            else
+              return new Response(file)
+          } catch (error) {
+            return new Response("404 - File not found", { status: 404 });
+          }
         }
-      }
-    })
+      })
 
-    console.log(`Server running at http://localhost:${server.port}`);
+      console.log(`Server is running at http://localhost:${server.port}`);
+      return
+
+    } catch (error) {
+      if (attempt < maxRetries - 1)
+        console.log(`Port ${port + attempt} is in use, trying ${port + attempt + 1}...`)
+      else
+        throw new Error("Failed to start server after " + maxRetries + " attempts");
+    }
   }
 }
 
+startServer(8008, 5)
