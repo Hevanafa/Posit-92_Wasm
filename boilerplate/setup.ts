@@ -41,6 +41,8 @@ while (true) {
     for (const filename of scripts)
       await Bun.$`cp ${source}/scripts/${filename}.ts ./`;
 
+    break
+
   } else if (answer == "2") {
     console.log("Setting up demo version...");
     console.log(
@@ -53,6 +55,8 @@ while (true) {
     const scripts = ["build_run_demo", "compile_demo", "start_server"];
     for (const filename of scripts)
       await Bun.$`cp ${source}/scripts/${filename}.ts ./`;
+
+    break
 
   } else if (answer == "0") {
     console.log("Setup cancelled");
