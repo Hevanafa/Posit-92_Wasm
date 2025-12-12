@@ -35,6 +35,8 @@ while (true) {
       await mkdir("UNITS");
 
     await Bun.$`cp ${source}/UNITS/*.pas ./UNITS/`;
+    await Bun.$`cp ${source}/UNITS/*.PAS ./UNITS/`;
+    
     await Bun.$`cp ${source}/posit-92.js ./`;
 
     const scripts = ["build_run", "compile", "run", "start_server"];
