@@ -37,6 +37,7 @@ while (true) {
     await Bun.$`cp ${source}/UNITS/*.pas ./UNITS/`;
     await Bun.$`cp ${source}/UNITS/*.PAS ./UNITS/`;
     
+    await Bun.$`cp ${source}/favicon.ico ./`;
     await Bun.$`cp ${source}/posit-92.js ./`;
 
     const scripts = ["build_run", "compile", "run", "start_server"];
@@ -52,6 +53,8 @@ while (true) {
       "instead of the local UNITS folder");
 
     const source = "..";
+    
+    await Bun.$`cp ${source}/favicon.ico ./`;
     await Bun.$`cp ${source}/posit-92.js ./`;
 
     const scripts = ["build_run_demo", "compile_demo", "start_server"];
