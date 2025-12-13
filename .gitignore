@@ -10,6 +10,7 @@ dist/
 # Boilerplate files
 boilerplate/UNITS/
 boilerplate/posit-92.js
+boilerplate/favicon.ico
 
 # The only required script is setup.ps1
 boilerplate/*.ps1
