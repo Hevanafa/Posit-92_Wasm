@@ -13,6 +13,9 @@ interface
 
 uses Shapes;
 
+function getAlpha(const colour: longword): byte;
+function solidify(const colour: longword): longword;
+
 procedure circ(const cx, cy, radius: integer; const colour: longword);
 procedure circfill(const cx, cy, radius: integer; const colour: longword);
 
