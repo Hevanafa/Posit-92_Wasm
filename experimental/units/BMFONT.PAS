@@ -30,25 +30,25 @@ type
   end;
 
 procedure printBMFont(
-  const text: string;
-  const x, y: integer;
-  const font: TBMFont;
-  const fontGlyphs: array of TBMFontGlyph);
-
-function measureBMFont(const text: string; const glyphs: array of TBMFontGlyph): integer;
-
-function printBMFontCharColour(
-  const ch: char;
-  const x, y: integer;
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
+  const text: string;
+  const x, y: integer);
+
+function measureBMFont(const glyphs: array of TBMFontGlyph; const text: string): integer;
+
+function printBMFontCharColour(
+  const font: TBMFont;
+  const fontGlyphs: array of TBMFontGlyph;
+  const ch: char;
+  const x, y: integer;
   const colour: longword): word;
 
 procedure printBMFontColour(
-  const text: string;
-  const x, y: integer;
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
+  const text: string;
+  const x, y: integer;
   const colour: longword);
 
 
@@ -57,10 +57,10 @@ implementation
 uses ImgRefFast, Conv, Logger;
 
 procedure printBMFont(
-  const text: string;
-  const x, y: integer;
   const font: TBMFont;
-  const fontGlyphs: array of TBMFontGlyph);
+  const fontGlyphs: array of TBMFontGlyph
+  const text: string;
+  const x, y: integer);
 var
   a: word;
   ch: char;
@@ -93,7 +93,7 @@ begin
   end;
 end;
 
-function measureBMFont(const text: string; const glyphs: array of TBMFontGlyph): integer;
+function measureBMFont(const glyphs: array of TBMFontGlyph; const text: string): integer;
 var
   a, result: word;
   glyphIdx: integer;
@@ -117,10 +117,10 @@ end;
 
 { Returns xadvance for the next char }
 function printBMFontCharColour(
-  const ch: char;
-  const x, y: integer;
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
+  const ch: char;
+  const x, y: integer;
   const colour: longword): word;
 var
   charcode: byte;
@@ -150,10 +150,10 @@ begin
 end;
 
 procedure printBMFontColour(
-  const text: string;
-  const x, y: integer;
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
+  const text: string;
+  const x, y: integer;
   const colour: longword);
 var
   a: word;
