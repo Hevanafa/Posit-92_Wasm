@@ -11,7 +11,12 @@ type
     x, y: double;
   end;
 
-  TRect = record
+  TZone = record
+    x, y: double;
+    width, height: double;
+  end;
+
+  TPhysicsBody = record
     x, y: double;
     width, height: double;
     vx, vy: double;
@@ -22,29 +27,43 @@ type
     vx, vy: double;
   end;
 
-procedure drawZone(const zone: TRect; const colour: longword);
+procedure drawZone(const zone: TZone; const colour: longword);
+procedure drawPhysicsBody(const body: TPhysicsBody; const colour: longword);
 procedure drawCircleZone(const zone: TCircle; const colour: longword);
 
-function getZoneCX(const zone: TRect): double;
-function getZoneCY(const zone: TRect): double;
-function getZoneDist(const a, b: TRect): double;
+function getDist(const a, b: TPoint): double;
+
+function getZoneCX(const zone: TZone): double;
+function getZoneCY(const zone: TZone): double;
+function getZoneDist(const a, b: TZone): double;
+
+function getPhysicsCPoint(const body: TPhysicsBody): TPoint;
+function getPhysicsBodyCX(const body: TPhysicsBody): double;
+function getPhysicsBodyCY(const body: TPhysicsBody): double;
 
 function newPoint(const x, y: double): TPoint;
-function newRect(const x, y, width, height: double): TRect;
+function newZone(const x, y, width, height: double): TZone;
+function physicsBodyToZone(const body: TPhysicsBody): TZone;
 
-function rectIntersects(const self, other: TRect): boolean;
+function rectIntersects(const self, other: TZone): boolean;
 function circleIntersects(const self, other: TCircle): boolean;
-function circleRectIntersects(const circ: TCircle; const rect: TRect): boolean;
-function pointCircleIntersects(const p: TPoint; const circ: TCircle): boolean;
-function pointRectIntersects(const p: TPoint; const rect: TRect): boolean;
+function circleRectIntersects(const circ: TCircle; const rect: TZone): boolean;
+function pointInCircle(const p: TPoint; const circ: TCircle): boolean;
+function pointInRect(const p: TPoint; const rect: TZone): boolean;
+
 
 implementation
 
 uses Maths, Graphics;
 
-procedure drawZone(const zone: TRect; const colour: longword);
+procedure drawZone(const zone: TZone; const colour: longword);
 begin
   rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), colour)
+end;
+
+procedure drawPhysicsBody(const body: TPhysicsBody; const colour: longword);
+begin
+  rect(trunc(body.x), trunc(body.y), trunc(body.x + body.width), trunc(body.y + body.height), colour)
 end;
 
 procedure drawCircleZone(const zone: TCircle; const colour: longword);
@@ -52,23 +71,52 @@ begin
   circ(trunc(zone.cx), trunc(zone.cy), trunc(zone.radius), colour)
 end;
 
-function getZoneCX(const zone: TRect): double;
+function getDist(const a, b: TPoint): double;
+var
+  dx, dy: double;
+begin
+  dx := b.x - a.x;
+  dy := b.y - a.y;
+  getDist := dx * dx + dy * dy
+end;
+
+function getZoneCX(const zone: TZone): double;
 begin
   getZoneCX := trunc(zone.x + zone.width / 2)
 end;
 
-function getZoneCY(const zone: TRect): double;
+function getZoneCY(const zone: TZone): double;
 begin
   getZoneCY := trunc(zone.y + zone.height / 2)
 end;
 
-function getZoneDist(const a, b: TRect): double;
+function getZoneDist(const a, b: TZone): double;
 var
   x, y: double;
 begin
   x := getZoneCX(b) - getZoneCX(a);
   y := getZoneCY(b) - getZoneCY(a);
   getZoneDist := x * x + y * y
+end;
+
+
+function getPhysicsCPoint(const body: TPhysicsBody): TPoint;
+var
+  result: TPoint;
+begin
+  result.x := getPhysicsBodyCX(body);
+  result.y := getPhysicsBodyCY(body);
+  getPhysicsCPoint := result
+end;
+
+function getPhysicsBodyCX(const body: TPhysicsBody): double;
+begin
+  getPhysicsBodyCX := trunc(body.x + body.width / 2)
+end;
+
+function getPhysicsBodyCY(const body: TPhysicsBody): double;
+begin
+  getPhysicsBodyCY := trunc(body.y + body.height / 2)
 end;
 
 function newPoint(const x, y: double): TPoint;
@@ -80,18 +128,30 @@ begin
   newPoint := result
 end;
 
-function newRect(const x, y, width, height: double): TRect;
+function newZone(const x, y, width, height: double): TZone;
 var
-  result: TRect;
+  result: TZone;
 begin
   result.x := x;
   result.y := y;
   result.width := width;
   result.height := height;
-  newRect := result
+  newZone := result
 end;
 
-function rectIntersects(const self, other: TRect): boolean;
+function physicsBodyToZone(const body: TPhysicsBody): TZone;
+var
+  result: TZone;
+begin
+  result.x := body.x;
+  result.y := body.y;
+  result.width := body.width;
+  result.height := body.height;
+
+  physicsBodyToZone := result
+end;
+
+function rectIntersects(const self, other: TZone): boolean;
 begin
   rectIntersects := (other.x < self.x + self.width)
     and (self.x < other.x + other.width)
@@ -114,7 +174,7 @@ begin
 end;
 
 { Distance isn't square rooted }
-function circleRectIntersects(const circ: TCircle; const rect: TRect): boolean;
+function circleRectIntersects(const circ: TCircle; const rect: TZone): boolean;
 var
   closestX, closestY: double;
   dx, dy, dist: double;
@@ -129,7 +189,7 @@ begin
   circleRectIntersects := dist < circ.radius * circ.radius
 end;
 
-function pointCircleIntersects(const p: TPoint; const circ: TCircle): boolean;
+function pointInCircle(const p: TPoint; const circ: TCircle): boolean;
 var
   dx, dy, dist: double;
 begin
@@ -137,12 +197,12 @@ begin
   dy := p.y - circ.cy;
   dist := dx * dx + dy * dy;
 
-  pointCircleIntersects := dist < circ.radius * circ.radius
+  pointInCircle := dist < circ.radius * circ.radius
 end;
 
-function pointRectIntersects(const p: TPoint; const rect: TRect): boolean;
+function pointInRect(const p: TPoint; const rect: TZone): boolean;
 begin
-  pointRectIntersects := (p.x >= rect.x)
+  pointInRect := (p.x >= rect.x)
     and (p.x < rect.x + rect.width)
     and (p.y >= rect.y)
     and (p.y < rect.y + rect.height)

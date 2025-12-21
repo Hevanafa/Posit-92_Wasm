@@ -51,45 +51,72 @@ procedure printBMFontColour(
   const x, y: integer;
   const colour: longword);
 
+function printBMFontCharToDest(
+  const font: TBMFont;
+  const fontGlyphs: array of TBMFontGlyph;
+  const destHandle: longint;
+  const ch: char;
+  const x, y: integer): integer;
+
+procedure printBMFontToDest(
+  const font: TBMFont;
+  const fontGlyphs: array of TBMFontGlyph;
+  const destHandle: longint;
+  const text: string;
+  const x, y: integer);
+
 
 implementation
 
-uses ImgRefFast, Conv, Logger;
+uses
+  Conv, Logger,
+  ImgRef, ImgRefFast;
+
+{ Returns glyph.xadvance }
+function printBMFontChar(
+  const font: TBMFont;
+  const fontGlyphs: array of TBMFontGlyph;
+  const ch: char;
+  const x, y: integer): integer;
+var
+  charcode: byte;
+  glyphIdx: integer;
+  glyph: TBMFontGlyph;
+begin
+  charcode := ord(ch);
+
+  { Assuming the starting charcode is always 32 }
+  glyphIdx := charcode - 32;
+
+  if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
+    glyph := fontGlyphs[glyphIdx];
+
+    sprRegion(
+      font.imgHandle,
+      glyph.x, glyph.y,
+      glyph.width, glyph.height,
+      x + glyph.xoffset, y + glyph.yoffset);
+    
+    printBMFontChar := glyph.xadvance
+  end else
+    printBMFontChar := 0;
+end;
 
 procedure printBMFont(
   const font: TBMFont;
-  const fontGlyphs: array of TBMFontGlyph
+  const fontGlyphs: array of TBMFontGlyph;
   const text: string;
   const x, y: integer);
 var
   a: word;
   ch: char;
-  charcode: byte;
   left: integer;
-
-  glyphIdx: integer;
-  glyph: TBMFontGlyph;
 begin
   left := 0;
 
   for a:=1 to length(text) do begin
     ch := text[a];
-    charcode := ord(ch);
-
-    { Assuming the starting charcode is always 32 }
-    glyphIdx := charcode - 32;
-
-    if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
-      glyph := fontGlyphs[glyphIdx];
-
-      sprRegion(
-        font.imgHandle,
-        glyph.x, glyph.y,
-        glyph.width, glyph.height,
-        x + left + glyph.xoffset, y + glyph.yoffset);
-
-      inc(left, glyph.xadvance)
-    end;
+    inc(left, printBMFontChar(font, fontGlyphs, ch, x + left, y))
   end;
 end;
 
@@ -164,9 +191,63 @@ begin
   for a:=1 to length(text) do
     inc(left,
       printBMFontCharColour(
+        font, fontGlyphs,
         text[a],
         x + left, y,
-        font, fontGlyphs, colour))
+        colour))
+end;
+
+
+function printBMFontCharToDest(
+  const font: TBMFont;
+  const fontGlyphs: array of TBMFontGlyph;
+  const destHandle: longint;
+  const ch: char;
+  const x, y: integer): integer;
+var
+  charcode: byte;
+  glyphIdx: integer;
+  glyph: TBMFontGlyph;
+begin
+  if not isImageSet(destHandle) then exit;
+
+  charcode := ord(ch);
+
+  { Assuming the starting charcode is always 32 }
+  glyphIdx := charcode - 32;
+
+  if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
+    glyph := fontGlyphs[glyphIdx];
+
+    sprRegionToDest(
+      font.imgHandle,
+      destHandle,
+      glyph.x, glyph.y,
+      glyph.width, glyph.height,
+      x + glyph.xoffset, y + glyph.yoffset);
+    
+    printBMFontCharToDest := glyph.xadvance
+  end else
+    printBMFontCharToDest := 0;
+end;
+
+procedure printBMFontToDest(
+  const font: TBMFont;
+  const fontGlyphs: array of TBMFontGlyph;
+  const destHandle: longint;
+  const text: string;
+  const x, y: integer);
+var
+  a: word;
+  ch: char;
+  left: integer;
+begin
+  left := 0;
+
+  for a:=1 to length(text) do begin
+    ch := text[a];
+    inc(left, printBMFontCharToDest(font, fontGlyphs, destHandle, ch, x + left, y))
+  end;
 end;
 
 end.
