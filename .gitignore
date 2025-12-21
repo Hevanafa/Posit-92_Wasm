@@ -62,7 +62,6 @@ DEMOS/square_screen/*.ps1
 
 DEMOS/hello_world/*.ts
 DEMOS/spr_anim/*.ts
-DEMOS/mfgj0/**/*.*
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
@@ -74,3 +73,6 @@ snippets/ts_wasm/index.js
 
 # Bun
 node_modules/
+
+# Games from different repos
+DEMOS/mfgj0/**/*.*
