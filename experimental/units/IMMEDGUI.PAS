@@ -257,7 +257,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
-    if pointInRect(mousePoint, zone) then begin
+    if pointInZone(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then activeWidget := thisWidgetID;
@@ -306,7 +306,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
-    if pointInRect(mousePoint, zone) then begin
+    if pointInZone(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then activeWidget := thisWidgetID;
@@ -362,7 +362,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then
-    if pointInRect(mousePoint, zone) then begin
+    if pointInZone(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then begin
@@ -411,7 +411,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
-    if pointInRect(mousePoint, zone) then begin
+    if pointInZone(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then activeWidget := thisWidgetID;
@@ -466,7 +466,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
-    if pointInRect(mousePoint, zone) then begin
+    if pointInZone(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then activeWidget := thisWidgetID;
@@ -521,7 +521,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
-    if pointInRect(mousePoint, zone) then begin
+    if pointInZone(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then
@@ -639,7 +639,7 @@ begin
   { PromptButton := ImageButton(x, y, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed); }
   inc(nextWidgetID);
 
-  if pointInRect(mousePoint, zone) then begin
+  if pointInZone(mousePoint, zone) then begin
     hotWidget := thisWidgetID;
     if mouseJustPressed then activeWidget := thisWidgetID;
   end;
