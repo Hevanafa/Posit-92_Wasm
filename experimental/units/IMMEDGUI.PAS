@@ -12,7 +12,7 @@ unit ImmedGui;
 
 interface
 
-uses BMFont;
+uses BMFont, Shapes;
 
 type
   TCheckboxState = record
@@ -38,9 +38,16 @@ type
 
 procedure initImmediateGUI;
 
+function getMousePoint: TPoint;
+function getMouseJustPressed: boolean;
+function getMouseJustReleased: boolean;
+
 function getHotWidget: integer;
+procedure setHotWidget(const widgetID: integer);
 function getActiveWidget: integer;
+procedure setActiveWidget(const widgetID: integer);
 function getNextWidgetID: integer;
+procedure incNextWidgetID;
 
 { Can be used with drawMouse }
 function hasHoveredWidget: boolean;
@@ -59,6 +66,8 @@ procedure resetActiveWidget;
 
 procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 function guiMeasureText(const text: string): word;
+
+procedure assertFontSet;
 
 { Widgets }
 procedure TextLabel(const text: string; const x, y: integer);
@@ -88,8 +97,9 @@ function PromptBox: TPromptResult;
 implementation
 
 uses
-  Conv, Graphics, ImgRef, ImgRefFast,
-  Maths, Mouse, Panic, Shapes, VGA;
+  Conv, Graphics,
+  ImgRef, ImgRefFast,
+  Maths, Mouse, Panic, VGA;
 
 const
   Black = $FF000000;
@@ -145,9 +155,29 @@ begin
   mousePoint.y := 0;
 end;
 
+function getMousePoint: TPoint;
+begin
+  getMousePoint := mousePoint
+end;
+
+function getMouseJustPressed: boolean;
+begin
+  getMouseJustPressed := mouseJustPressed
+end;
+
+function getMouseJustReleased: boolean;
+begin
+  getMouseJustReleased := mouseJustReleased
+end;
+
 function getHotWidget: integer;
 begin
   getHotWidget := hotWidget
+end;
+
+procedure setHotWidget(const widgetID: integer);
+begin
+  hotWidget := widgetID
 end;
 
 function getActiveWidget: integer;
@@ -155,16 +185,25 @@ begin
   getActiveWidget := activeWidget
 end;
 
+procedure setActiveWidget(const widgetID: integer);
+begin
+  activeWidget := widgetID
+end;
+
 function getNextWidgetID: integer;
 begin
   getNextWidgetID := nextWidgetID
+end;
+
+procedure incNextWidgetID;
+begin
+  inc(nextWidgetID)
 end;
 
 function hasHoveredWidget: boolean;
 begin
   hasHoveredWidget := hotWidget > -1
 end;
-
 
 procedure updateGUILastMouseButton;
 begin
