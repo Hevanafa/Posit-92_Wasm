@@ -16,6 +16,7 @@ type
     width, height: double;
   end;
 
+  { was TRect, split into 2: TZone and TPhysicsBody }
   TPhysicsBody = record
     x, y: double;
     width, height: double;
@@ -45,11 +46,11 @@ function newPoint(const x, y: double): TPoint;
 function newZone(const x, y, width, height: double): TZone;
 function physicsBodyToZone(const body: TPhysicsBody): TZone;
 
-function rectIntersects(const self, other: TZone): boolean;
+function zoneIntersects(const self, other: TZone): boolean;
 function circleIntersects(const self, other: TCircle): boolean;
-function circleRectIntersects(const circ: TCircle; const rect: TZone): boolean;
+function circleZoneIntersects(const circ: TCircle; const zone: TZone): boolean;
 function pointInCircle(const p: TPoint; const circ: TCircle): boolean;
-function pointInRect(const p: TPoint; const rect: TZone): boolean;
+function pointInZone(const p: TPoint; const zone: TZone): boolean;
 
 
 implementation
@@ -151,9 +152,9 @@ begin
   physicsBodyToZone := result
 end;
 
-function rectIntersects(const self, other: TZone): boolean;
+function zoneIntersects(const self, other: TZone): boolean;
 begin
-  rectIntersects := (other.x < self.x + self.width)
+  zoneIntersects := (other.x < self.x + self.width)
     and (self.x < other.x + other.width)
     and (other.y < self.y + self.height)
     and (self.y < other.y + other.height)
@@ -174,19 +175,19 @@ begin
 end;
 
 { Distance isn't square rooted }
-function circleRectIntersects(const circ: TCircle; const rect: TZone): boolean;
+function circleZoneIntersects(const circ: TCircle; const zone: TZone): boolean;
 var
   closestX, closestY: double;
   dx, dy, dist: double;
 begin
-  closestX := clamp(circ.cx, rect.x, rect.x + rect.width);
-  closestY := clamp(circ.cy, rect.y, rect.y + rect.height);
+  closestX := clamp(circ.cx, zone.x, zone.x + zone.width);
+  closestY := clamp(circ.cy, zone.y, zone.y + zone.height);
 
   dx := circ.cx - closestX;
   dy := circ.cy - closestY;
   dist := dx * dx + dy * dy;
 
-  circleRectIntersects := dist < circ.radius * circ.radius
+  circleZoneIntersects := dist < circ.radius * circ.radius
 end;
 
 function pointInCircle(const p: TPoint; const circ: TCircle): boolean;
@@ -200,12 +201,12 @@ begin
   pointInCircle := dist < circ.radius * circ.radius
 end;
 
-function pointInRect(const p: TPoint; const rect: TZone): boolean;
+function pointInZone(const p: TPoint; const zone: TZone): boolean;
 begin
-  pointInRect := (p.x >= rect.x)
-    and (p.x < rect.x + rect.width)
-    and (p.y >= rect.y)
-    and (p.y < rect.y + rect.height)
+  pointInZone := (p.x >= zone.x)
+    and (p.x < zone.x + zone.width)
+    and (p.y >= zone.y)
+    and (p.y < zone.y + zone.height)
 end;
 
 
