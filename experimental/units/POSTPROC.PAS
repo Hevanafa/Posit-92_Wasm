@@ -295,6 +295,8 @@ begin
     imgVignettePtr := getImagePtr(imgVignette);
   end;
 
+  if strength < 0.05 then exit;
+
   { writeLog('DEBUG applyFullVignette'); }
 
   for py:=0 to vgaHeight - 1 do 
