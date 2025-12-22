@@ -27,9 +27,9 @@ var
 
   { Init your game state here }
   gameTime: double;
-  imgTest: longint;
+  { imgTest: longint; }
   img100Sprites: longint;
-  layerZone: TRect;
+  layerZone: TZone;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';

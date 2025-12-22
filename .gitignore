@@ -70,6 +70,9 @@ DEMOS/collision/*.ts
 DEMOS/heap_demo/*.ts
 DEMOS/rainbow_screen/*.ts
 DEMOS/scanlines/*.ts
+DEMOS/spr_dest/*.ts
+DEMOS/spr_outline/*.ts
+DEMOS/spr_post_processing/*.ts
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
