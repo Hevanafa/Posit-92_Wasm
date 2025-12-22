@@ -65,13 +65,7 @@ begin
   { writeLog('Attempting to call initBuffer'); }
 
   if not bufferInitialised then begin
-{$ifdef WASM}
-    surface := PByteArray(WasmGetMem(bufferSize));
-{$endif}
-{$ifdef WIN64}
     surface := PByteArray(getmem(bufferSize));
-{$endif}
-
     fillchar(surface^, bufferSize, 0);
     bufferInitialised := true
   end;
