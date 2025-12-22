@@ -5,7 +5,7 @@ library Game;
 uses
   BMFont, Conv, Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Timing, VGA,
+  Timing, WasmMemMgr, VGA,
   Assets;
 
 const
@@ -35,6 +35,7 @@ end;
 
 procedure init;
 begin
+  initMemMgr;
   initBuffer;
   initDeltaTime;
 end;

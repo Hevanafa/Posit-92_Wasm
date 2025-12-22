@@ -6,7 +6,7 @@ uses
   BMFont, Conv, FPS,
   Logger, Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  PostProc, Timing, VGA, WasmHeap,
+  PostProc, Timing, VGA, WasmMemMgr, WasmHeap,
   Assets;
 
 const
@@ -38,6 +38,7 @@ end;
 
 procedure init;
 begin
+  initMemMgr;
   initBuffer;
   initDeltaTime;
   initFPSCounter;
