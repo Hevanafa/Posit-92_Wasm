@@ -23,7 +23,7 @@ function GetFreeHeapSize: longword;
 
 implementation
 
-uses Logger;
+{ uses Logger; }
 
 procedure initHeap(const startAddr, heapSize: longword);
 begin
@@ -31,10 +31,12 @@ begin
   heapEnd := PByte(startAddr + heapSize);
   heapCurrent := heapStart;
 
+{
   writeLog('Attempting to call initHeap');
   writeLogI32(longword(heapStart));
   writeLogI32(longword(heapEnd));
   writeLogI32(longword(heapCurrent));
+}
 end;
 
 

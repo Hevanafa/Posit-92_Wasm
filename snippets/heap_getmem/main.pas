@@ -9,7 +9,7 @@
 
 library Main;
 
-{$Mode TP}
+{$Mode ObjFPC}
 {$Memory 1024, 1048576}  { 1 KB stack, 1 MB heap }
 
 uses WasmHeap;
@@ -19,13 +19,13 @@ begin
   whGetMem := WasmGetMem(size)
 end;
 
-function whFreeMem(var p: pointer): ptruint;
+function whFreeMem(p: pointer): ptruint;
 begin
   WasmFreeMem(p);
   whFreeMem := 0
 end;
 
-function whFreeMemSize(var p: pointer; size: ptruint): ptruint;
+function whFreeMemSize(p: pointer; size: ptruint): ptruint;
 begin
   WasmFreeMem(p);
   whFreeMemSize := 0
@@ -62,8 +62,7 @@ end;
 procedure init;
 begin
   initCustomHeap;
-  
-  initHeap;
+  testHeap;
   helloWorld
 end;
 
