@@ -58,9 +58,6 @@ begin
 end;
 
 procedure draw;
-var
-  w: integer;
-  s: string;
 begin
   cls(Black);
 

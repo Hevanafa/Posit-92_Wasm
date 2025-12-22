@@ -77,6 +77,9 @@ DEMOS/spr_shadow/*.ts
 DEMOS/spr100/*.ts
 DEMOS/vga_blur/*.ts
 DEMOS/vga_chromabe/*.ts
+DEMOS/vga_phosphor/*.ts
+DEMOS/vga_tint/*.ts
+DEMOS/wasm_string/*.ts
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
