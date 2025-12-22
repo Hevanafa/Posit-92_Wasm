@@ -84,6 +84,9 @@ DEMOS/bigint_demo/*.ts
 DEMOS/fullscreen/*.ts
 DEMOS/image_ptr/*.ts
 DEMOS/immediate_gui/*.ts
+DEMOS/lerp/*.ts
+DEMOS/loading_demo/*.ts
+DEMOS/music/*.ts
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
@@ -98,4 +101,3 @@ node_modules/
 
 # Games from different repos
 DEMOS/mfgj0/**/*.*
-
