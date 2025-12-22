@@ -6,7 +6,7 @@ uses
   Conv, FPS, Graphics, ImgRef,
   ImgRefFast, ImgRefComp, Keyboard, Lerp,
   Logger, Maths, Mouse, Panic,
-  Timing, VGA,
+  Timing, WasmMemMgr, VGA,
   Assets;
 
 const
@@ -177,6 +177,7 @@ end;
 
 procedure init;
 begin
+  initMemMgr;
   initBuffer;
   initDeltaTime;
   initFPSCounter;

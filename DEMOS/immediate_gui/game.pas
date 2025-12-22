@@ -12,9 +12,10 @@ library Game;
 
 uses
   BMFont, Conv, FPS, Graphics,
-  ImgRef, ImgRefFast, ImmedGui, Keyboard, Logger,
-  Mouse, Panic, Shapes,
-  Timing, VGA,
+  ImgRef, ImgRefFast, ImmedGui,
+  Keyboard, Logger, Mouse,
+  Panic, Shapes, Timing,
+  WasmMemMgr, VGA,
   Assets;
 
 const
@@ -72,6 +73,7 @@ end;
 
 procedure init;
 begin
+  initMemMgr;
   initBuffer;
   initDeltaTime;
   initFPSCounter;
