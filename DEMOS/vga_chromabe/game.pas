@@ -63,9 +63,6 @@ begin
 end;
 
 procedure draw;
-var
-  w: integer;
-  s: string;
 begin
   cls($FF6495ED);
 

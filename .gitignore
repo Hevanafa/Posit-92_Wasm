@@ -73,6 +73,10 @@ DEMOS/scanlines/*.ts
 DEMOS/spr_dest/*.ts
 DEMOS/spr_outline/*.ts
 DEMOS/spr_post_processing/*.ts
+DEMOS/spr_shadow/*.ts
+DEMOS/spr100/*.ts
+DEMOS/vga_blur/*.ts
+DEMOS/vga_chromabe/*.ts
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1

@@ -78,9 +78,9 @@ begin
   spr(imgLayer, 0, 0);
 
   printBMFontColour(
+    defaultFont, defaultFontGlyphs,
     '1000 sprites rendered in ' + f32str(endTick - startTick) + ' seconds',
     10, 10,
-    defaultFont, defaultFontGlyphs,
     green);
 
   vgaFlush
