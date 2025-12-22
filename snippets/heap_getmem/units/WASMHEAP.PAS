@@ -1,3 +1,6 @@
+{ Low-level memory allocator
+  Part of Posit-92 game framework }
+
 unit WasmHeap;
 
 interface
