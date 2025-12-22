@@ -82,12 +82,12 @@ end;
 
 procedure printDefault(const text: string; const x, y: integer);
 begin
-  printBMFont(text, x, y, defaultFont, defaultFontGlyphs)
+  printBMFont(defaultFont, defaultFontGlyphs, text, x, y)
 end;
 
 function measureDefault(const text: string): word;
 begin
-  measureDefault := measureBMFont(text, defaultFontGlyphs)
+  measureDefault := measureBMFont(defaultFontGlyphs, text)
 end;
 
 

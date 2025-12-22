@@ -80,6 +80,10 @@ DEMOS/vga_chromabe/*.ts
 DEMOS/vga_phosphor/*.ts
 DEMOS/vga_tint/*.ts
 DEMOS/wasm_string/*.ts
+DEMOS/bigint_demo/*.ts
+DEMOS/fullscreen/*.ts
+DEMOS/image_ptr/*.ts
+DEMOS/immediate_gui/*.ts
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
@@ -94,3 +98,4 @@ node_modules/
 
 # Games from different repos
 DEMOS/mfgj0/**/*.*
+
