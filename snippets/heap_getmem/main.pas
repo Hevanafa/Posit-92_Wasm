@@ -53,9 +53,6 @@ var
 begin
   p := getmem(100);
   if p <> nil then;
-
-  helloWorld;
-  
   freemem(p)
 end;
 
