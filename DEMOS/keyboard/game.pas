@@ -26,7 +26,7 @@ var
 
   { Init your game state here }
   gameTime: double;
-  playerZone: TRect;
+  playerZone: TZone;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -55,7 +55,7 @@ begin
   { Initialise game state here }
   hideCursor;
 
-  playerZone := newRect(155, 95, 10, 10);
+  playerZone := newZone(155, 95, 10, 10);
 end;
 
 procedure update;

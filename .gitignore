@@ -60,8 +60,11 @@ DEMOS/square_screen/*.ps1
 !DEMOS/square_screen/compile_demo.ps1
 !DEMOS/square_screen/strip_wasm.ps1
 
+# Bun build scripts for demo projects
 DEMOS/hello_world/*.ts
 DEMOS/spr_anim/*.ts
+DEMOS/keyboard/*.ts
+DEMOS/mouse/*.ts
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1

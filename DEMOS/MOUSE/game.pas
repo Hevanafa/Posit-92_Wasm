@@ -90,7 +90,7 @@ begin
   spr(imgGasolineMaid, (vgaWidth - image^.width) div 2, (vgaHeight - image^.height) div 2);
 
   s := 'Clicks: ' + i32str(clicks);
-  w := measureBMFont(s, _defaultFontGlyphs);
+  w := measureBMFont(defaultFontGlyphs, s);
   printDefault(s, (vgaWidth - w) div 2, 160);
 
   { printDefault('getTimer: ' + f32str(getTimer), 0, 40); }
