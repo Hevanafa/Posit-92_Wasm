@@ -8,13 +8,11 @@ This project is a port of [POSIT-92](https://github.com/Hevanafa/POSIT-92) which
 
 1. **Free Pascal Compiler** which has been configured with `wasm32-embedded` as the target (read **Compiler Setup** section below to see how)
 2. **VSCode** with the **[OmniPascal](https://marketplace.visualstudio.com/items?itemName=Wosi.omnipascal)** extension by Wosi enabled
-3. Any version of **Node.js** to start the `http-server`
-4. Optional: **PowerShell 7** installed ([WinGet](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell-on-windows?view=powershell-7.5#winget))
-   - This is only necessary if you want to run any build scripts from outside VSCode
+3. **[Bun](https://bun.com/)** (at least v1.3.5) to handle both the build scripts (just like Perl) and also to start the HTTP server
 
 I'm using Windows 10 Home (64-bit, version 22H2, build 19045.6575) to build this project
 
-If you want to use **Bun** to handle the build scripts instead of PowerShell, install the dependencies first with
+If you want to edit the build scripts with **Bun**, install the dependencies first with
 
 ```powershell
 bun install
@@ -25,8 +23,6 @@ bun install
 This is because the **Pascal** extension by Alessandro Fragnani is too difficult to get the "Go to definition" feature working, while **OmniPascal** can do it right out of the box
 
 OmniPascal has a built-in code navigation, so it doesn't require GTags/CTags, GNU Global, or even Python installed
-
-**Planned:** PowerShell scripts will be rewritten with Bun with TypeScript, skipping the need to install Node.js and PowerShell 7
 
 ## Getting Started
 
@@ -47,6 +43,8 @@ I have prepared a few scripts to ease the build process
 
 - `compile.ts` - Contains the command line to automatically delete the output file & compile the WebAssembly binary
 - `start_server.ts` - Starts the `http-server`
+
+(Ongoing migration):
 
 - `build_dist.ps1` - Build & distribute
 - `dist.ps1` - Gathers the key files required for distribution
