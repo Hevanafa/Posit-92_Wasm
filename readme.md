@@ -32,22 +32,23 @@ OmniPascal has a built-in code navigation, so it doesn't require GTags/CTags, GN
 
 1. Open **PowerShell 7**
 2. cd to `boilerplate`
-3. Run `.\setup.ps1; .\compile.ps1`
+3. Run `bun .\setup.ts; .\compile.ts`
 
    This will make sure that all the units can be compiled & run
 
-4. Copy all the contents of the `boilerplate` folder except for `setup.ps1` to your new project
+4. Copy all the contents of the `boilerplate` folder except for `setup.ts` to your new project
 
 ## Build Scripts
 
 I have prepared a few scripts to ease the build process
 
-- `build_run.ps1` - Build & run
-- `run.ps1` - Run without building
+- `build_run.ts` - Build & run
+- `run.ts` - Run without building
+
+- `compile.ts` - Contains the command line to automatically delete the output file & compile the WebAssembly binary
+- `start_server.ts` - Starts the `http-server`
 
 - `build_dist.ps1` - Build & distribute
-- `compile.ps1` - Contains the command line to automatically delete the output file & compile the WebAssembly binary
-- `start_server.ps1` - Starts the `http-server`
 - `dist.ps1` - Gathers the key files required for distribution
 - `strip_wasm.ps1` - Strips unused functions (requires **Emscripten**)
 
@@ -55,9 +56,9 @@ I have prepared a few scripts to ease the build process
 
 The demo projects use a special units collection: `experimental\units`, so the scripts are different
 
-- `build_run_demo.ps1` - Build & run
-- `compile_demo.ps1` - Compile only (similar to `compile.ps1`)
-- `start_server.ps1` - Run without building (the same as above)
+- `build_run_demo.ts` - Build & run
+- `compile_demo.ts` - Compile only (similar to `compile.ts`)
+- `start_server.ts` - Run without building (the same as above)
 
 ## Compiler Setup
 
@@ -78,5 +79,5 @@ It took me a few retries until the compiler finally completed compiling
 
 Just in case you want to use a different installation folder, you can change `$compilerPath` in these scripts:
 
-- `compile.ps1` - Main compile script
-- Optional: `compile_demo.ps1` - Change this if you want to play around with the demos
+- `compile.ts` - Main compile script
+- Optional: `compile_demo.ts` - Change this if you want to play around with the demos
