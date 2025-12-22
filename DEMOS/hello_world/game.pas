@@ -5,7 +5,7 @@ library Game;
 uses
   Conv, FPS, Keyboard, Logger,
   Mouse, Timing, ImgRef, ImgRefFast,
-  PostProc, VGA,
+  PostProc, WasmMemMgr, VGA,
   Assets;
 
 const
@@ -34,6 +34,7 @@ end;
 
 procedure init;
 begin
+  initMemMgr;
   initBuffer;
   initDeltaTime;
   initFPSCounter;
