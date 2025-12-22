@@ -9,45 +9,11 @@
 
 library Main;
 
-{$Mode ObjFPC}
-{$Memory 1024, 1048576}  { 1 KB stack, 1 MB heap }
-
-uses WasmHeap;
-
-function whGetMem(size: ptruint): pointer;
-begin
-  whGetMem := WasmGetMem(size)
-end;
-
-function whFreeMem(p: pointer): ptruint;
-begin
-  WasmFreeMem(p);
-  whFreeMem := 0
-end;
-
-function whFreeMemSize(p: pointer; size: ptruint): ptruint;
-begin
-  WasmFreeMem(p);
-  whFreeMemSize := 0
-end;
-
-
-
-var
-  customMemMgr: TMemoryManager;
-
-procedure initCustomHeap;
-begin
-  customMemMgr.GetMem := @whGetMem;
-  customMemMgr.FreeMem := @whFreeMem;
-  customMemMgr.FreeMemSize := @whFreeMemSize;
-
-  SetMemoryManager(customMemMgr)
-end;
+uses WasmMemMgr;
 
 procedure helloWorld; external 'env' name 'helloWorld';
 
-procedure testHeap; public name 'testHeap';
+procedure testHeap;
 var
   p: pointer;
 begin
