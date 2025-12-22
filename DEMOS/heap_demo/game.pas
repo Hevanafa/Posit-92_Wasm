@@ -5,7 +5,7 @@ library Game;
 uses
   Conv, Keyboard, Mouse,
   ImgRef, ImgRefFast, Logger,
-  Timing, VGA, WasmHeap,
+  Timing, VGA, WasmHeap, WasmMemMgr,
   Assets;
 
 const
@@ -31,16 +31,17 @@ end;
 
 procedure init;
 begin
+  initMemMgr;
   initBuffer;
   initDeltaTime;
 
   { Test memory allocation & free memory }
-  ptr1 := WasmGetMem(100);
-  ptr2 := WasmGetMem(50);
+  ptr1 := getmem(100);
+  ptr2 := getmem(50);
 
   writeLog('Free heap: ' + i32str(GetFreeHeapSize));
 
-  WasmFreeMem(ptr1);
+  freemem(ptr1);
 
   writeLog('After free: ' + i32str(GetFreeHeapSize));
 end;
