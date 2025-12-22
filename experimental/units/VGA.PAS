@@ -97,8 +97,6 @@ end;
 
 { Gets the colour of a pixel }
 function pget(const x, y: integer): longword;
-var
-  offset: longword;
 begin
   if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then begin
     pget := 0;
@@ -191,7 +189,6 @@ procedure unsafePsetBlend(const x, y: integer; const colour: longword);
 var
   srcA, srcR, srcG, srcB: byte;
   destA, destR, destG, destB: byte;
-  outA, outR, outG, outB: byte;
   offset: longword;
   { inverted alpha }
   alpha, invAlpha: single;

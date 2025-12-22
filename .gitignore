@@ -65,6 +65,8 @@ DEMOS/hello_world/*.ts
 DEMOS/spr_anim/*.ts
 DEMOS/keyboard/*.ts
 DEMOS/mouse/*.ts
+DEMOS/vga_vignette/*.ts
+DEMOS/collision/*.ts
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
@@ -79,3 +81,4 @@ node_modules/
 
 # Games from different repos
 DEMOS/mfgj0/**/*.*
+

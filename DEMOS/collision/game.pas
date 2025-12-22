@@ -41,9 +41,9 @@ var
   actualDemoMode: integer;
 
   gameTime: double;
-  mapBounds: TRect;
+  mapBounds: TZone;
 
-  playerZone, npcZone: TRect;
+  playerZone, npcZone: TZone;
   playerCircleZone, npcCircleZone: TCircle;
 
 
@@ -81,10 +81,10 @@ begin
 
   actualDemoMode := DemoModeRect;
 
-  mapBounds := newRect(20, 20, 280, 160);
+  mapBounds := newZone(20, 20, 280, 160);
 
-  playerZone := newRect(155, 95, 24, 24);
-  npcZone := newRect(180, 55, 24, 24);
+  playerZone := newZone(155, 95, 24, 24);
+  npcZone := newZone(180, 55, 24, 24);
 
   playerCircleZone.cx := 155;
   playerCircleZone.cy := 95;
@@ -97,7 +97,7 @@ end;
 
 procedure update;
 var
-  tempZone: TRect;
+  tempZone: TZone;
   tempCircle: TCircle;
 begin
   updateDeltaTime;
@@ -160,22 +160,22 @@ begin
   { Rectangle intersection }
   case actualDemoMode of
     DemoModeRect: begin
-      if pointRectIntersects(mouseP, playerZone) then
+      if pointInZone(mouseP, playerZone) then
         drawZone(playerZone, yellow)
       else
         drawZone(
           playerZone,
-          u32Iif(rectIntersects(playerZone, npcZone),
+          u32Iif(zoneIntersects(playerZone, npcZone),
             green, white));
 
       drawZone(
         npcZone,
-        u32Iif(rectIntersects(playerZone, npcZone),
+        u32Iif(zoneIntersects(playerZone, npcZone),
           white, grey));
     end;
 
     DemoModeCircle: begin
-      if pointCircleIntersects(mouseP, playerCircleZone) then
+      if pointInCircle(mouseP, playerCircleZone) then
         drawCircleZone(playerCircleZone, yellow)
       else
         drawCircleZone(
@@ -187,12 +187,12 @@ begin
     end;
 
     DemoModeCircleRect: begin
-      if pointCircleIntersects(mouseP, playerCircleZone) then
+      if pointInCircle(mouseP, playerCircleZone) then
         drawCircleZone(playerCircleZone, yellow)
       else
         drawCircleZone(
           playerCircleZone,
-          u32Iif(circleRectIntersects(playerCircleZone, npcZone),
+          u32Iif(circleZoneIntersects(playerCircleZone, npcZone),
             green, white));
 
       drawZone(npcZone, grey);
