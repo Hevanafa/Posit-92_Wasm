@@ -24,7 +24,7 @@ end;
 
 procedure init;
 begin
-  initCustomHeap;
+  initMemMgr;
   testHeap;
   helloWorld
 end;
