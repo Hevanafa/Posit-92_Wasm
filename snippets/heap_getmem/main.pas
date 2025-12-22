@@ -12,15 +12,37 @@ library Main;
 {$Mode TP}
 {$Memory 1024, 1048576}  { 1 KB stack, 1 MB heap }
 
-uses HeapMgr;
+uses WasmHeap;
+
+function whGetMem(size: ptruint): pointer;
+begin
+  whGetMem := WasmGetMem(size)
+end;
+
+function whFreeMem(var p: pointer): ptruint;
+begin
+  WasmFreeMem(p);
+  whFreeMem := 0
+end;
+
+function whFreeMemSize(var p: pointer; size: ptruint): ptruint;
+begin
+  WasmFreeMem(p);
+  whFreeMemSize := 0
+end;
+
+
 
 var
-  memmgr: TMemoryManager;
+  customMemMgr: TMemoryManager;
 
-procedure initHeap;
+procedure initCustomHeap;
 begin
-  GetMemoryManager(memmgr);
-  SetMemoryManager(memmgr);
+  customMemMgr.GetMem := @whGetMem;
+  customMemMgr.FreeMem := @whFreeMem;
+  customMemMgr.FreeMemSize := @whFreeMemSize;
+
+  SetMemoryManager(customMemMgr)
 end;
 
 procedure helloWorld; external 'env' name 'helloWorld';
@@ -39,6 +61,8 @@ end;
 
 procedure init;
 begin
+  initCustomHeap;
+  
   initHeap;
   helloWorld
 end;
