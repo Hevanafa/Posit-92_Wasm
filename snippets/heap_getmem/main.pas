@@ -14,6 +14,15 @@ library Main;
 
 uses HeapMgr;
 
+var
+  memmgr: TMemoryManager;
+
+procedure initHeap;
+begin
+  GetMemoryManager(memmgr);
+  SetMemoryManager(memmgr);
+end;
+
 procedure helloWorld; external 'env' name 'helloWorld';
 
 procedure testHeap; public name 'testHeap';
@@ -22,11 +31,15 @@ var
 begin
   p := getmem(100);
   if p <> nil then;
+
+  helloWorld;
+  
   freemem(p)
 end;
 
 procedure init;
 begin
+  initHeap;
   helloWorld
 end;
 

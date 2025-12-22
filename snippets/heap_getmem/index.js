@@ -23,6 +23,7 @@ async function initWebAssembly() {
 async function main() {
   await initWebAssembly();
   wasm.exports.init();
+  wasm.exports.testHeap()
 }
 
 main()
