@@ -73,6 +73,18 @@ The optimisation flag `-Oz` (optimise for size) works well to reduce the size, s
 wasm-opt -Oz --strip-debug game.wasm -o game.wasm
 ```
 
+Here's the working command that is suitable with FPC's `wasm32-embedded` output
+
+```powershell
+E:\binaryen\bin\wasm-opt.exe -Oz --strip-debug --enable-bulk-memory game.wasm -o game.wasm
+```
+
+Without the bulk memory compiler switch, it will throw this compile error:
+
+```
+[wasm-validator error in function 118] unexpected false: memory.fill operations require bulk memory [--enable-bulk-memory-opt]
+```
+
 ## Compiler Setup
 
 1. Download **fpcupdeluxe-x86_64-win64.exe** from [LongDirtyAnimAlf/fpcupdeluxe](https://github.com/LongDirtyAnimAlf/fpcupdeluxe/releases/)
