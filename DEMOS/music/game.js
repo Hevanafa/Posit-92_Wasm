@@ -1,8 +1,7 @@
 "use strict";
 
 const
-  BgmPhonk = 1,
-  BgmCrystals = 2;
+  BgmClassic = 1;
 
 // Game < SoundsMixin < Posit92
 class Game extends SoundsMixin {
@@ -43,7 +42,7 @@ class Game extends SoundsMixin {
     this.wasmInstance.exports.setImgVolumeOff(
       await this.loadImage("assets/images/volume_off.png"));
 
-    await this.loadSound(BgmPhonk, "assets/bgm/CRYSTALS (Slowed) - PR1SVX.mp3");
+    await this.loadSound(BgmClassic, "assets/bgm/Georges Bizet - Les Toreadors from Carmen Suite No. 1.ogg");
 
     // Add more assets as necessary
   }

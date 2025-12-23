@@ -14,8 +14,7 @@ const
   SC_SPACE = $39;
 
   { Sound keys -- must be the same as on JS side }
-  BgmPhonk = 1;
-  BgmCrystals = 2;
+  BgmClassic = 1;
 
 var
   lastEsc: boolean;
@@ -107,7 +106,7 @@ begin
     setMusicVolume(volumeState.value / 100.0)
   end;
 
-  handleMusicRepeat(BgmPhonk);
+  handleMusicRepeat(BgmClassic);
 
   resetWidgetIndices
 end;
@@ -162,8 +161,8 @@ begin
     if ImageButton(129, 116, imgPlay, imgPlay, imgPlay) then begin
       if actualMusicKey < 0 then begin
         { Starting new }
-        actualMusicKey := BgmPhonk;
-        playMusic(BgmPhonk)
+        actualMusicKey := BgmClassic;
+        playMusic(BgmClassic)
       end else
         { Resuming }
         playMusic(actualMusicKey);
