@@ -1,14 +1,11 @@
 library Game;
 
 {$Mode TP}
-{$Memory 1024, 0}  { Disable heap manager }
-{$SmartLink ON}  { Remove unused code }
-{$Optimization Level3}  { Aggressive optimisation }
 
 uses
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Timing, VGA,
+  Timing, WasmMemMgr, VGA,
   Assets;
 
 const
@@ -32,6 +29,7 @@ end;
 
 procedure init;
 begin
+  initMemMgr;
   initBuffer;
   initDeltaTime;
 end;

@@ -5,7 +5,8 @@ library Game;
 uses
   Conv, Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Graphics, Shapes, Timing, VGA,
+  Graphics, Shapes, Timing,
+  WasmMemMgr, VGA,
   Assets;
 
 const
@@ -30,6 +31,7 @@ end;
 
 procedure init;
 begin
+  initMemMgr;
   initBuffer;
   initDeltaTime;
 end;
