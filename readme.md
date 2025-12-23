@@ -39,13 +39,12 @@ When all the steps above is done, you can copy all the files of the `boilerplate
 
 ## Build Scripts
 
-I have prepared a few scripts to ease the build process
+I have prepared a few scripts to ease the build process, which is located in `scripts` folder
 
 - `build_run.ts` - Build & run
-- `run.ts` - Run without building
-
 - `compile.ts` - Contains the command line to automatically delete the output file & compile the WebAssembly binary
-- `start_server.ts` - Starts the `http-server`
+- `run.ts` - Starts `server.ts`
+- `server.ts` - Starts the local HTTP server
 
 (Ongoing migration):
 
@@ -55,11 +54,12 @@ I have prepared a few scripts to ease the build process
 
 ### Scripts for Demos
 
-The demo projects use a special units collection: `experimental\units`, so the build scripts are different
+The demo projects use a special units collection: `experimental\units`, so the build scripts are slightly different
 
 - `build_run_demo.ts` - Build & run
 - `compile_demo.ts` - Compile only (similar to `compile.ts`)
-- `start_server.ts` - Run without building (the same as above)
+- `run_demo.ts` - Starts `server.ts`
+- `server.ts` - Starts the local HTTP server
 
 ## Compiler Setup
 
