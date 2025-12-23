@@ -61,7 +61,29 @@ The demo projects use a special units collection: `experimental\units`, so the b
 - `run_demo.ts` - Starts `server.ts`
 - `server.ts` - Starts the local HTTP server
 
-### Optimising Binary Size
+## Compiler Setup
+
+1. Download **fpcupdeluxe-x86_64-win64.exe** from [LongDirtyAnimAlf/fpcupdeluxe](https://github.com/LongDirtyAnimAlf/fpcupdeluxe/releases/)
+
+   The version that I used at the time of writing was **v2.4.0g**
+
+2. Install in `E:\fpc-wasm` or anywhere that's easy to reach
+3. Under the **Basic** tab, choose the **trunk** version above the FPC button, install **Only FPC**
+
+   ![Only FPC](./only_fpc_trunk.png)
+
+4. Under the **Cross** tab, choose CPU: **wasm32**, OS: **embedded**, then click **Install compiler**
+
+   ![wasm32-embedded](./wasm32_embedded.png)
+
+It took me a few retries until the compiler finally completed compiling
+
+Just in case you want to use a different installation folder, you can change `$compilerPath` in these scripts:
+
+- `compile.ts` - Main compile script
+- Optional: `compile_demo.ts` - Change this if you want to play around with the demos
+
+## Optimising Binary Size
 
 This requires:
 
@@ -92,25 +114,3 @@ Without the bulk memory compiler switch, it will throw this compile error:
 ```
 [wasm-validator error in function 118] unexpected false: memory.fill operations require bulk memory [--enable-bulk-memory-opt]
 ```
-
-## Compiler Setup
-
-1. Download **fpcupdeluxe-x86_64-win64.exe** from [LongDirtyAnimAlf/fpcupdeluxe](https://github.com/LongDirtyAnimAlf/fpcupdeluxe/releases/)
-
-   The version that I used at the time of writing was **v2.4.0g**
-
-2. Install in `E:\fpc-wasm` or anywhere that's easy to reach
-3. Under the **Basic** tab, choose the **trunk** version above the FPC button, install **Only FPC**
-
-   ![Only FPC](./only_fpc_trunk.png)
-
-4. Under the **Cross** tab, choose CPU: **wasm32**, OS: **embedded**, then click **Install compiler**
-
-   ![wasm32-embedded](./wasm32_embedded.png)
-
-It took me a few retries until the compiler finally completed compiling
-
-Just in case you want to use a different installation folder, you can change `$compilerPath` in these scripts:
-
-- `compile.ts` - Main compile script
-- Optional: `compile_demo.ts` - Change this if you want to play around with the demos
