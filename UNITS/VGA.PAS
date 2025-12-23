@@ -11,15 +11,13 @@ unit VGA;
 interface
 
 const
-  bufferSize = 256000; { 64000 * 4 }
+  vgaWidth = 320;
+  vgaHeight = 200;
+  bufferSize = vgaWidth * vgaHeight * 4;
 
 type
   PByteArray = ^TByteArray;
   TByteArray = array[0..bufferSize - 1] of byte;
-
-const
-  vgaWidth = 320;
-  vgaHeight = 200;
 
 {$ifdef WASM}
 procedure toggleFullscreen; external 'env' name 'toggleFullscreen';
@@ -35,6 +33,7 @@ procedure cls(const colour: longword);
 procedure clsBlend(const colour: longword);
 
 function unsafePget(const x, y: integer): longword;
+function pget(const x, y: integer): longword;
 
 procedure unsafePset(const x, y: integer; const colour: longword);
 procedure pset(const x, y: integer; const colour: longword);
@@ -64,13 +63,7 @@ begin
   { writeLog('Attempting to call initBuffer'); }
 
   if not bufferInitialised then begin
-{$ifdef WASM}
-    surface := PByteArray(WasmGetMem(bufferSize));
-{$endif}
-{$ifdef WIN64}
     surface := PByteArray(getmem(bufferSize));
-{$endif}
-
     fillchar(surface^, bufferSize, 0);
     bufferInitialised := true
   end;
@@ -94,7 +87,18 @@ begin
     or surface^[offset + 2]
 end;
 
-procedure unsafePset(const x, y: integer; const colour: longword);
+{ Gets the colour of a pixel }
+function pget(const x, y: integer): longword;
+begin
+  if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then begin
+    pget := 0;
+    exit
+  end;
+
+  pget := unsafePget(x, y)
+end;
+
+procedure legacyUnsafePset(const x, y: integer; const colour: longword);
 var
   offset: longword;
 begin
@@ -107,6 +111,16 @@ begin
   surface^[offset + 3] := colour shr 24 and $FF;
 end;
 
+procedure unsafePset(const x, y: integer; const colour: longword);
+begin
+  { ARGB to RGBA }
+  PLongWord(@surface^[(y * vgaWidth + x) * 4])^ :=
+    ((colour and $00FF0000) shr 16)
+    or ((colour and $0000FF00))
+    or ((colour and $000000FF) shl 16)
+    or ((colour and $FF000000))
+end;
+
 { colour: AARRGGBB }
 procedure pset(const x, y: integer; const colour: longword);
 begin
@@ -114,25 +128,8 @@ begin
   unsafePset(x, y, colour)
 end;
 
-{ Gets the colour of a pixel }
-function pget(const x, y: integer): longword;
-var
-  offset: longword;
-begin
-  if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then begin
-    pget := 0;
-    exit
-  end;
 
-  offset := (y * vgaWidth + x) * 4;
-
-  pget := (surface^[offset + 3] shl 24) or
-    (surface^[offset] shl 16) or
-    (surface^[offset + 1] shl 8) or
-    surface^[offset + 2]
-end;
-
-procedure unsafePsetBlend(const x, y: integer; const colour: longword);
+procedure legacyUnsafePsetBlend(const x, y: integer; const colour: longword);
 var
   srcA, srcR, srcG, srcB: byte;
   destA, destR, destG, destB: byte;
@@ -178,6 +175,46 @@ begin
   surface^[offset + 1] := outG;
   surface^[offset + 2] := outB;
   surface^[offset + 3] := outA;
+end;
+
+procedure unsafePsetBlend(const x, y: integer; const colour: longword);
+var
+  srcA, srcR, srcG, srcB: byte;
+  destA, destR, destG, destB: byte;
+  offset: longword;
+  { inverted alpha }
+  alpha, invAlpha: single;
+begin
+  srcA := colour shr 24 and $FF;
+
+  if srcA = 0 then exit;
+
+  srcR := colour shr 16 and $FF;
+  srcG := colour shr 8 and $FF;
+  srcB := colour and $FF;
+  
+  offset := (x + y * vgaWidth) * 4;
+
+  { Handle opaque pixel }
+  if srcA = 255 then begin
+    unsafePset(x, y, colour);
+    exit
+  end;
+
+  destR := surface^[offset];
+  destG := surface^[offset + 1];
+  destB := surface^[offset + 2];
+  destA := surface^[offset + 3];
+  
+  { Handle alpha blending }
+  alpha := srcA / 255.0;
+  invAlpha := 1.0 - alpha;
+
+  PLongWord(@surface^[offset])^ :=
+    (round(srcR * alpha + destR * invAlpha))
+    or (round(srcG * alpha + destG * invAlpha) shl 8)
+    or (round(srcB * alpha + destB * invAlpha) shl 16)
+    or ((srcA + round(destA * invAlpha)) shl 24)
 end;
 
 procedure psetBlend(const x, y: integer; const colour: longword);

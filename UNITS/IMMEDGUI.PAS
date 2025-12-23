@@ -12,7 +12,7 @@ unit ImmedGui;
 
 interface
 
-uses BMFont;
+uses BMFont, Shapes;
 
 type
   TCheckboxState = record
@@ -38,9 +38,16 @@ type
 
 procedure initImmediateGUI;
 
+function getMousePoint: TPoint;
+function getMouseJustPressed: boolean;
+function getMouseJustReleased: boolean;
+
 function getHotWidget: integer;
+procedure setHotWidget(const widgetID: integer);
 function getActiveWidget: integer;
+procedure setActiveWidget(const widgetID: integer);
 function getNextWidgetID: integer;
+procedure incNextWidgetID;
 
 { Can be used with drawMouse }
 function hasHoveredWidget: boolean;
@@ -59,6 +66,8 @@ procedure resetActiveWidget;
 
 procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 function guiMeasureText(const text: string): word;
+
+procedure assertFontSet;
 
 { Widgets }
 procedure TextLabel(const text: string; const x, y: integer);
@@ -88,8 +97,9 @@ function PromptBox: TPromptResult;
 implementation
 
 uses
-  Conv, Graphics, ImgRef, ImgRefFast,
-  Maths, Mouse, Panic, Shapes, VGA;
+  Conv, Graphics,
+  ImgRef, ImgRefFast,
+  Maths, Mouse, Panic, VGA;
 
 const
   Black = $FF000000;
@@ -145,9 +155,29 @@ begin
   mousePoint.y := 0;
 end;
 
+function getMousePoint: TPoint;
+begin
+  getMousePoint := mousePoint
+end;
+
+function getMouseJustPressed: boolean;
+begin
+  getMouseJustPressed := mouseJustPressed
+end;
+
+function getMouseJustReleased: boolean;
+begin
+  getMouseJustReleased := mouseJustReleased
+end;
+
 function getHotWidget: integer;
 begin
   getHotWidget := hotWidget
+end;
+
+procedure setHotWidget(const widgetID: integer);
+begin
+  hotWidget := widgetID
 end;
 
 function getActiveWidget: integer;
@@ -155,16 +185,25 @@ begin
   getActiveWidget := activeWidget
 end;
 
+procedure setActiveWidget(const widgetID: integer);
+begin
+  activeWidget := widgetID
+end;
+
 function getNextWidgetID: integer;
 begin
   getNextWidgetID := nextWidgetID
+end;
+
+procedure incNextWidgetID;
+begin
+  inc(nextWidgetID)
 end;
 
 function hasHoveredWidget: boolean;
 begin
   hasHoveredWidget := hotWidget > -1
 end;
-
 
 procedure updateGUILastMouseButton;
 begin
@@ -222,7 +261,7 @@ end;
 function guiMeasureText(const text: string): word;
 begin
   assertFontSet;
-  guiMeasureText := measureBMFont(text, activeFontGlyphs)
+  guiMeasureText := measureBMFont(activeFontGlyphs, text)
 end;
 
 
@@ -236,12 +275,12 @@ end;
 procedure TextLabel(const text: string; const x, y: integer);
 begin
   assertFontSet;
-  printBMFont(text, x, y, activeFont, activeFontGlyphs)
+  printBMFont(activeFont, activeFontGlyphs, text, x, y)
 end;
 
 function Button(const caption: string; const x, y, width, height: integer): boolean;
 var
-  zone: TRect;
+  zone: TZone;
   thisWidgetID: integer;
   buttonColour: longword;
 begin
@@ -257,7 +296,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
-    if pointRectIntersects(mousePoint, zone) then begin
+    if pointInZone(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then activeWidget := thisWidgetID;
@@ -290,7 +329,7 @@ end;
 
 function ImageButton(const x, y: integer; const imgNormal, imgHovered, imgPressed: longint): boolean;
 var
-  zone: TRect;
+  zone: TZone;
   thisWidgetID: integer;
   buttonImgHandle: longword;
 begin
@@ -306,7 +345,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
-    if pointRectIntersects(mousePoint, zone) then begin
+    if pointInZone(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then activeWidget := thisWidgetID;
@@ -343,7 +382,7 @@ var
   lineHeight: word;
   widgetWidth, widgetHeight: word;
   thisWidgetID: integer;
-  zone: TRect;
+  zone: TZone;
   clickedIndex: integer;
 begin
   assertFontSet;
@@ -362,7 +401,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then
-    if pointRectIntersects(mousePoint, zone) then begin
+    if pointInZone(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then begin
@@ -392,7 +431,7 @@ end;
 
 procedure Checkbox(const caption: string; const x, y: integer; var state: TCheckboxState);
 var
-  zone: TRect;
+  zone: TZone;
   w: integer;
   thisWidgetID: integer;
   checkboxColour: longword;
@@ -411,7 +450,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
-    if pointRectIntersects(mousePoint, zone) then begin
+    if pointInZone(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then activeWidget := thisWidgetID;
@@ -448,7 +487,7 @@ end;
 
 procedure Slider(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer);
 var
-  zone: TRect;
+  zone: TZone;
   thisWidgetID: integer;
   perc, range: double;
   pendingValue, thumbX: integer;
@@ -466,7 +505,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
-    if pointRectIntersects(mousePoint, zone) then begin
+    if pointInZone(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then activeWidget := thisWidgetID;
@@ -503,7 +542,7 @@ end;
 
 function SliderDrag(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer): TSliderDragState;
 var
-  zone: TRect;
+  zone: TZone;
   thisWidgetID: integer;
   perc, range: double;
   pendingValue, thumbX: integer;
@@ -521,7 +560,7 @@ begin
   inc(nextWidgetID);
 
   if allowWidgetInteraction then begin
-    if pointRectIntersects(mousePoint, zone) then begin
+    if pointInZone(mousePoint, zone) then begin
       hotWidget := thisWidgetID;
 
       if mouseJustPressed then
@@ -588,7 +627,7 @@ begin
   ProgressBar(x, y, width, height, perc);
   
   percStr := i32str(round(perc * 100)) + '%';
-  w := measureBMFont(percStr, activeFontGlyphs);
+  w := measureBMFont(activeFontGlyphs, percStr);
   TextLabel(percStr, x + (width - w) div 2, y + (height - activeFont.lineHeight) div 2);
 end;
 
@@ -617,7 +656,7 @@ end;
 
 function PromptButton(const text: string; const x, y: integer): boolean;
 var
-  zone: TRect;
+  zone: TZone;
   thisWidgetID: integer;
   buttonImgHandle: longword;
 
@@ -639,7 +678,7 @@ begin
   { PromptButton := ImageButton(x, y, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed); }
   inc(nextWidgetID);
 
-  if pointRectIntersects(mousePoint, zone) then begin
+  if pointInZone(mousePoint, zone) then begin
     hotWidget := thisWidgetID;
     if mouseJustPressed then activeWidget := thisWidgetID;
   end;
