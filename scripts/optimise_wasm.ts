@@ -10,13 +10,21 @@ if (!existsSync(wasmFile)) {
   process.exit(1)
 }
 
-const proc = Bun.spawn([
+const args = [
   wasmOptPath,
+  wasmFile,
+  `-o ${outputFile}`,
   "-Oz",
   "--strip-debug",
-  "--enable-bulk-memory",
-  wasmFile,
-  `-o ${outputFile}`
-])
+  "--enable-bulk-memory"
+];
 
-console.log(styleText("green", "Finished optimising " + wasmFile))
+const proc = Bun.spawn(args);
+const exitCode = await proc.exited;
+
+if (exitCode != 0) {
+  console.log(styleText("red", "Optimisation failed with exit code " + exitCode))
+  process.exit(exitCode)
+} else {
+  console.log(styleText("green", "Finished optimising " + wasmFile))
+}
