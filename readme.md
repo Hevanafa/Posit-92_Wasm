@@ -63,7 +63,8 @@ The demo projects use a special units collection: `experimental\units`, so the b
 
 ### Optimising Binary Size
 
-This requires
+This requires:
+
 - The tools from [WebAssembly/binaryen](https://github.com/WebAssembly/binaryen) installed
 - Assigned the bin folder of it to system PATH environment variable
 
@@ -77,6 +78,13 @@ Here's the working command that is suitable with FPC's `wasm32-embedded` output
 
 ```powershell
 E:\binaryen\bin\wasm-opt.exe -Oz --strip-debug --enable-bulk-memory game.wasm -o game.wasm
+```
+
+**Example size reduction:**
+
+```
+Before: 574405 bytes (560 KB)
+After : 391533 bytes (382 KB) (32% smaller)
 ```
 
 Without the bulk memory compiler switch, it will throw this compile error:
