@@ -47,18 +47,18 @@ end;
 
 procedure printDefault(const text: string; const x, y: integer);
 begin
-  printBMFont(text, x, y, defaultFont, defaultFontGlyphs)
+  printBMFont(defaultFont, defaultFontGlyphs, text, x, y)
 end;
 
 function measureDefault(const text: string): word;
 begin
-  measureDefault := measureBMFont(text, defaultFontGlyphs)
+  measureDefault := measureBMFont(defaultFontGlyphs, text)
 end;
 
 function printCharColour(const ch: char; const x, y: integer; const colour: longword): word;
 begin
   printCharColour := printBMFontCharColour(
-    ch, x, y, defaultFont, defaultFontGlyphs, colour)
+    defaultFont, defaultFontGlyphs, ch, x, y, colour)
 end;
 
 

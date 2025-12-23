@@ -7,7 +7,7 @@ uses
   BMFont, Conv, FPS,
   Graphics, Keyboard, Logger, Mouse,
   ImgRef, ImgRefFast, Panic, Shapes,
-  Timing, VGA,
+  Timing, WasmMemMgr, VGA,
   Assets;
 
 const
@@ -22,7 +22,7 @@ const
 type
   TParticle = record
     active: boolean;
-    zone: TRect;
+    body: TPhysicsBody;
     imgHandle: longint;
   end;
 
@@ -69,9 +69,14 @@ begin
 
   particles[idx].active := true;
   
-  particles[idx].zone := newRect(cx - 3, cy - 3, 7, 7);
-  particles[idx].zone.vx := (random - 0.5) * 50;
-  particles[idx].zone.vy := -random(100);
+  with particles[idx].body do begin
+    x := cx - 3;
+    y := cy - 3;
+    width := 7;
+    height := 7;
+    vx := (random - 0.5) * 50;
+    vy := -random(100);
+  end;
 
   particles[idx].imgHandle := imgParticles[random(high(imgParticles) + 1)];
 end;
@@ -97,6 +102,7 @@ end;
 
 procedure init;
 begin
+  initMemMgr;
   initBuffer;
   initDeltaTime;
   initFPSCounter;
@@ -157,13 +163,13 @@ begin
     if not particles[a].active then continue;
 
     { Velocity first, then position }
-    particles[a].zone.vy := particles[a].zone.vy + Gravity * dt;
+    particles[a].body.vy := particles[a].body.vy + Gravity * dt;
 
-    particles[a].zone.x := particles[a].zone.x + particles[a].zone.vx * dt;
-    particles[a].zone.y := particles[a].zone.y + particles[a].zone.vy * dt;
+    particles[a].body.x := particles[a].body.x + particles[a].body.vx * dt;
+    particles[a].body.y := particles[a].body.y + particles[a].body.vy * dt;
 
-    if (particles[a].zone.x < -10) or (particles[a].zone.x > vgaWidth)
-      or (particles[a].zone.y > vgaHeight) then
+    if (particles[a].body.x < -10) or (particles[a].body.x > vgaWidth)
+      or (particles[a].body.y > vgaHeight) then
       particles[a].active := false;
   end;
 end;
@@ -186,8 +192,8 @@ begin
 
     spr(
       particles[a].imgHandle,
-      trunc(particles[a].zone.x),
-      trunc(particles[a].zone.y))
+      trunc(particles[a].body.x),
+      trunc(particles[a].body.y))
   end;
 
   s := 'Click to spawn particles';

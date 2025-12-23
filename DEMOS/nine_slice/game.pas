@@ -14,7 +14,7 @@ uses
   BMFont, Conv, FPS, Graphics,
   ImgRef, ImgRefFast, ImmedGui, Keyboard, Logger,
   Mouse, Panic, Shapes,
-  Timing, VGA,
+  Timing, WasmMemMgr, VGA,
   Assets;
 
 type
@@ -127,6 +127,7 @@ end;
 
 procedure init;
 begin
+  initMemMgr;
   initBuffer;
   initDeltaTime;
   initFPSCounter;
@@ -195,7 +196,7 @@ begin
   );
 
   s := 'Clicks: ' + i32str(clicks);
-  w := measureBMFont(s, defaultFontGlyphs);
+  w := measureBMFont(defaultFontGlyphs, s);
   TextLabel(s, (vgaWidth - w) div 2, 120);
 
   resetActiveWidget;
