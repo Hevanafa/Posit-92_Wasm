@@ -1,6 +1,8 @@
 "use strict";
 
 class Posit92 {
+  static version = "0.1.0";
+
   #wasmSource = "game.wasm";
 
   #vgaWidth = 320;
