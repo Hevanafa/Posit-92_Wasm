@@ -26,13 +26,16 @@ OmniPascal has a built-in code navigation, so it doesn't require GTags/CTags, GN
 
 ## Getting Started
 
-1. Open **PowerShell 7**
-2. cd to `boilerplate`
-3. Run `bun .\setup.ts; .\compile.ts`
-
+1. Open VSCode terminal <kbd>Ctrl</kbd> + <kbd>~</kbd>
+2. `cd boilerplate`
+3. Run `bun .\setup.ts`
+4. Choose which project version that you want:
+   1. `default`
+   2. `demo` is for demo projects, for use within this repo
+5. Run `bun .\compile.ts`
    This will make sure that all the units can be compiled & run
 
-4. Copy all the contents of the `boilerplate` folder except for `setup.ts` to your new project
+When all the steps above is done, you can copy all the files of the `boilerplate` folder to your new project, except for `setup.ts`
 
 ## Build Scripts
 
@@ -52,7 +55,7 @@ I have prepared a few scripts to ease the build process
 
 ### Scripts for Demos
 
-The demo projects use a special units collection: `experimental\units`, so the scripts are different
+The demo projects use a special units collection: `experimental\units`, so the build scripts are different
 
 - `build_run_demo.ts` - Build & run
 - `compile_demo.ts` - Compile only (similar to `compile.ts`)
