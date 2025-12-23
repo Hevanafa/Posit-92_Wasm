@@ -2,7 +2,6 @@
 *.o
 *.wasm
 *.ppu
-*.code-workspace
 *.exe
 
 dist/

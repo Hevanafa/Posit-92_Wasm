@@ -1,0 +1,26 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"terminal.integrated.profiles.windows": {
+			"PowerShell": {
+				"source": "PowerShell",
+				"icon": "terminal-powershell",
+				"args": [
+					"-NoExit",
+					"-Command",
+					"function prompt { '> ' }"
+				]
+			},
+			"Git Bash": {
+				"source": "Git Bash",
+				"icon": "terminal-git-bash"
+			}
+		},
+		"omnipascal.defaultDevelopmentEnvironment": "FreePascal",
+		"omnipascal.searchPath": "UNITS"
+	}
+}
