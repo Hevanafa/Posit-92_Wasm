@@ -40,7 +40,7 @@ while (true) {
     await Bun.$`cp ${source}/favicon.ico ./`;
     await Bun.$`cp ${source}/posit-92.js ./`;
 
-    const scripts = ["build_run", "compile", "run", "server"];
+    const scripts = ["build_run", "compile", "run", "server", "dist"];
     for (const filename of scripts)
       await Bun.$`cp ${source}/scripts/${filename}.ts ./`;
 
