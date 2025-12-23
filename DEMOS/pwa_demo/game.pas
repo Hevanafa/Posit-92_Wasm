@@ -3,9 +3,10 @@ library Game;
 {$Mode ObjFPC}
 
 uses
-  Conv, FPS, ImgRef, ImgRefFast, Keyboard,
-  Mouse, Panic, Timing,
-  VGA,
+  Conv, FPS,
+  ImgRef, ImgRefFast,
+  Keyboard, Mouse, Panic, Timing,
+  WasmMemMgr, VGA,
   Assets;
 
 const
@@ -29,6 +30,7 @@ end;
 
 procedure init;
 begin
+  initMemMgr;
   initBuffer;
   initDeltaTime;
   initFPSCounter;
