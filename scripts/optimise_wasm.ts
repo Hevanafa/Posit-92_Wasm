@@ -13,7 +13,8 @@ if (!existsSync(wasmFile)) {
 const args = [
   wasmOptPath,
   wasmFile,
-  `-o ${outputFile}`,
+  "-o",
+  outputFile,
   "-Oz",
   "--strip-debug",
   "--enable-bulk-memory"
