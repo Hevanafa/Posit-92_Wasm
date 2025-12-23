@@ -12,7 +12,12 @@ async function startServer(port: number, maxRetries: number): Promise<void> {
 
         async fetch(req) {
           const url = new URL(req.url);
-          const filepath = `.${url.pathname}`;
+          const decoded = decodeURIComponent(url.pathname);
+          
+          console.log("decoded", decoded);
+
+          // const filepath = `.${url.pathname}`;
+          const filepath = `.${decoded}`;
 
           try {
             let file = Bun.file(filepath);
