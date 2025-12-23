@@ -11,15 +11,13 @@ unit VGA;
 interface
 
 const
-  bufferSize = 256000; { 64000 * 4 }
+  vgaWidth = 128;
+  vgaHeight = 128;
+  bufferSize = vgaWidth * vgaHeight * 4;
 
 type
   PByteArray = ^TByteArray;
   TByteArray = array[0..bufferSize - 1] of byte;
-
-const
-  vgaWidth = 320;
-  vgaHeight = 200;
 
 {$ifdef WASM}
 procedure toggleFullscreen; external 'env' name 'toggleFullscreen';
