@@ -10,6 +10,9 @@ class Posit92 {
    * @type {HTMLCanvasElement}
    */
   #canvas;
+  /**
+   * @type {CanvasRenderingContext2D}
+   */
   #ctx;
 
   /**
@@ -55,7 +58,7 @@ class Posit92 {
       getFullTimer: () => this.#getFullTimer(),
 
       // VGA
-      vgaFlush: () => this.#vgaFlush(),
+      flush: () => this.#flush(),
       toggleFullscreen: () => this.#toggleFullscreen()
     }
   };
@@ -472,7 +475,7 @@ class Posit92 {
 
 
   // VGA.PAS
-  #vgaFlush() {
+  #flush() {
     const surfacePtr = this.#wasm.exports.getSurfacePtr();
     const imageData = new Uint8ClampedArray(
       this.#wasm.exports.memory.buffer,
