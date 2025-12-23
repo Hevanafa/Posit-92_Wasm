@@ -1,11 +1,12 @@
 library Game;
 
-{$Mode ObjFPC}
+{$Mode TP}
 
 uses
   Conv, Keyboard, Mouse, ImmedGui,
   ImgRef, ImgRefFast, Logger,
-  Sounds, Strings, Timing, VGA,
+  Sounds, Strings, Timing,
+  WasmMemMgr, VGA,
   Assets;
 
 const
@@ -44,6 +45,7 @@ end;
 
 procedure init;
 begin
+  initMemMgr;
   initBuffer;
   initDeltaTime;
 end;
