@@ -61,6 +61,18 @@ The demo projects use a special units collection: `experimental\units`, so the b
 - `run_demo.ts` - Starts `server.ts`
 - `server.ts` - Starts the local HTTP server
 
+### Optimising Binary Size
+
+This requires
+- The tools from [WebAssembly/binaryen](https://github.com/WebAssembly/binaryen) installed
+- Assigned the bin folder of it to system PATH environment variable
+
+The optimisation flag `-Oz` (optimise for size) works well to reduce the size, similar to `-O3`
+
+```powershell
+wasm-opt -Oz --strip-debug game.wasm -o game.wasm
+```
+
 ## Compiler Setup
 
 1. Download **fpcupdeluxe-x86_64-win64.exe** from [LongDirtyAnimAlf/fpcupdeluxe](https://github.com/LongDirtyAnimAlf/fpcupdeluxe/releases/)
