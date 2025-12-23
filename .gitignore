@@ -20,76 +20,12 @@ boilerplate/*.ts
 !boilerplate/setup.ts
 
 # Demo Build Scripts
-DEMOS/hello_world/*.ps1
-DEMOS/keyboard/*.ps1
-DEMOS/wasm_string/*.ps1
-DEMOS/bigint/*.ps1
-DEMOS/sound/*.ps1
-DEMOS/immediate_gui/*.ps1
-DEMOS/sprites/*.ps1
-DEMOS/particles/*.ps1
-DEMOS/lerp/*.ps1
-DEMOS/prompt_demo/*.ps1
-DEMOS/nine_slice/*.ps1
-DEMOS/timing/*.ps1
-DEMOS/loading/*.ps1
-DEMOS/pwa_demo/*.ps1
-DEMOS/fullscreen/*.ps1
-DEMOS/mouse/*.ps1
-DEMOS/print_colour/*.ps1
-DEMOS/image_ptr/*.ps1
-DEMOS/music/*.ps1
-# DEMOS/webgl_demo/*.ps1
-DEMOS/heap_demo/*.ps1
-DEMOS/collision/*.ps1
-DEMOS/spr_anim/*.ps1
-DEMOS/spr_dest/*.ps1
-DEMOS/spr_post_processing/*.ps1
-DEMOS/rainbow_screen/*.ps1
-DEMOS/scanlines/*.ps1
-DEMOS/vga_tint/*.ps1
-DEMOS/vga_blur/*.ps1
-DEMOS/spr_outline/*.ps1
-DEMOS/vga_chromabe/*.ps1
-DEMOS/vga_phosphor/*.ps1
-DEMOS/crt_effect/*.ps1
-DEMOS/spr_shadow/*.ps1
-DEMOS/graphics_ex/*.ps1
-
-DEMOS/square_screen/*.ps1
-!DEMOS/square_screen/compile_demo.ps1
-!DEMOS/square_screen/strip_wasm.ps1
+DEMOS/*/*.ps1
+!DEMOS/webgl_demo/*.ps1
+!DEMOS/square_screen/*.ps1
 
 # Bun build scripts for demo projects
-DEMOS/hello_world/*.ts
-DEMOS/spr_anim/*.ts
-DEMOS/keyboard/*.ts
-DEMOS/mouse/*.ts
-DEMOS/vga_vignette/*.ts
-DEMOS/collision/*.ts
-DEMOS/heap_demo/*.ts
-DEMOS/rainbow_screen/*.ts
-DEMOS/scanlines/*.ts
-DEMOS/spr_dest/*.ts
-DEMOS/spr_outline/*.ts
-DEMOS/spr_post_processing/*.ts
-DEMOS/spr_shadow/*.ts
-DEMOS/spr100/*.ts
-DEMOS/vga_blur/*.ts
-DEMOS/vga_chromabe/*.ts
-DEMOS/vga_phosphor/*.ts
-DEMOS/vga_tint/*.ts
-DEMOS/wasm_string/*.ts
-DEMOS/bigint_demo/*.ts
-DEMOS/fullscreen/*.ts
-DEMOS/image_ptr/*.ts
-DEMOS/immediate_gui/*.ts
-DEMOS/lerp/*.ts
-DEMOS/loading_demo/*.ts
-DEMOS/music/*.ts
-DEMOS/nine_slice/*.ts
-DEMOS/particles/*.ts
-DEMOS/print_colour/*.ts
+DEMOS/*/*.ts
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
