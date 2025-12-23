@@ -6,7 +6,7 @@ library Game;
 uses
   Keyboard, Mouse,
   ImgRef, ImgRefFast, Logger,
-  Timing, VGA, WebGL,
+  Timing, VGA, WasmMemMgr, WebGL,
   Assets;
 
 const
@@ -31,6 +31,7 @@ end;
 
 procedure init;
 begin
+  initMemMgr;
   initBuffer;
   initDeltaTime;
 

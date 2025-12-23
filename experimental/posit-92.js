@@ -10,6 +10,9 @@ class Posit92 {
    * @type {HTMLCanvasElement}
    */
   #canvas;
+  /**
+   * @type {CanvasRenderingContext2D}
+   */
   #ctx;
 
   /**
