@@ -14,7 +14,8 @@ uses
   BMFont, Conv, FPS, Graphics,
   ImgRef, ImgRefFast, ImmedGui,
   Keyboard, Logger, Mouse,
-  Panic, Shapes, Timing, VGA,
+  Panic, Shapes, Timing, WasmMemMgr,
+  VGA,
   Assets;
 
 const
@@ -72,6 +73,7 @@ end;
 
 procedure init;
 begin
+  initMemMgr;
   initBuffer;
   initDeltaTime;
   initFPSCounter;
@@ -127,7 +129,7 @@ begin
     ShowPromptBox('Accept?', PromptTest);
 
   s := 'Clicks: ' + i32str(clicks);
-  w := measureBMFont(s, defaultFontGlyphs);
+  w := measureBMFont(defaultFontGlyphs, s);
   TextLabel(s, (vgaWidth - w) div 2, 120);
 
   case PromptBox of

@@ -7,7 +7,8 @@ uses
   Conv, FPS, ImgRef, ImgRefFast,
   ImgRefComp, ImmedGui,
   Keyboard, Lerp, Logger, Mouse,
-  Panic, Shapes, Timing, VGA,
+  Panic, Shapes, Timing, WasmMemMgr,
+  VGA,
   Assets;
 
 const
@@ -56,7 +57,7 @@ var
   gameTime: double;
   showDemoList, lastShowDemoList: boolean;
 
-  dosuZone: TRect;
+  dosuZone: TZone;
   demoListStartX, demoListEndX: double;
   demoListLerpTimer: TLerpTimer;
   demoListItems: array[0..DemoStateLast] of string;
@@ -157,6 +158,7 @@ end;
 
 procedure init;
 begin
+  initMemMgr;
   initBuffer;
   initDeltaTime;
   initFPSCounter;
