@@ -10,6 +10,7 @@ if (!existsSync(wasmFile)) {
   process.exit(1)
 }
 
+// E:\binaryen\bin\wasm-opt.exe game.wasm -o game.wasm -Oz --strip-debug --enable-bulk-memory
 const args = [
   wasmOptPath,
   wasmFile,
