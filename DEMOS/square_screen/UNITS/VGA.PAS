@@ -11,13 +11,15 @@ unit VGA;
 interface
 
 const
-  vgaWidth = 128;
-  vgaHeight = 128;
-  bufferSize = vgaWidth * vgaHeight * 4; { 64000 * 4 }
+  bufferSize = 256000; { 64000 * 4 }
 
 type
   PByteArray = ^TByteArray;
   TByteArray = array[0..bufferSize - 1] of byte;
+
+const
+  vgaWidth = 320;
+  vgaHeight = 200;
 
 {$ifdef WASM}
 procedure toggleFullscreen; external 'env' name 'toggleFullscreen';
@@ -63,13 +65,7 @@ begin
   { writeLog('Attempting to call initBuffer'); }
 
   if not bufferInitialised then begin
-{$ifdef WASM}
-    surface := PByteArray(WasmGetMem(bufferSize));
-{$endif}
-{$ifdef WIN64}
     surface := PByteArray(getmem(bufferSize));
-{$endif}
-
     fillchar(surface^, bufferSize, 0);
     bufferInitialised := true
   end;
@@ -95,8 +91,6 @@ end;
 
 { Gets the colour of a pixel }
 function pget(const x, y: integer): longword;
-var
-  offset: longword;
 begin
   if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then begin
     pget := 0;
@@ -189,7 +183,6 @@ procedure unsafePsetBlend(const x, y: integer; const colour: longword);
 var
   srcA, srcR, srcG, srcB: byte;
   destA, destR, destG, destB: byte;
-  outA, outR, outG, outB: byte;
   offset: longword;
   { inverted alpha }
   alpha, invAlpha: single;

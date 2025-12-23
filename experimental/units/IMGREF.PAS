@@ -112,14 +112,7 @@ begin
   if slot < 0 then panicHalt('Image ref pool is full!');
   
   allocSize := width * height * 4;
-
-{$ifdef WASM}
-  dataPtr := PByte(WasmGetMem(allocSize));
-{$endif}
-{$ifdef WIN64}
   dataPtr := PByte(getmem(allocSize));
-{$endif}
-
   fillchar(dataPtr^, allocSize, 0);
 
   imageRefs[slot].width := width;

@@ -45,24 +45,36 @@ procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotat
 
 
 procedure sprToDest(const src, dest: longint; const x, y: integer);
+procedure sprRegionToDest(
+  const src, dest: longint;
+  const srcX, srcY, srcW, srcH: integer;
+  const destX, destY: integer);
+procedure sprFlipInPlace(const imgHandle: longint; const flip: integer);
+
 
 implementation
 
-uses ImgRef, Maths, VGA;
+uses Logger, Conv, ImgRef, Maths, Panic, VGA;
 
 procedure spr(const imgHandle: longint; const x, y: integer);
 var
   image: PImageRef;
   px, py: integer;
   offset: longword;
-  data: PByte;
+  { data: PByte; }
   a: byte;
   colour: longword;
 begin
   if not isImageSet(imgHandle) then exit;
 
   image := getImagePtr(imgHandle);
-  data := PByte(image^.dataPtr);
+  { data := PByte(image^.dataPtr); }
+
+  { writeLog('offset: ' + i32str(offset)); }
+  if image^.allocSize = 0 then
+    panicHalt('imgHandle ' + i32str(imgHandle) + ' allocSize is 0!');
+  
+  { writeLog('allocSize: ' + i32str(image^.allocSize)); }
 
   for py:=0 to image^.height - 1 do
   for px:=0 to image^.width - 1 do begin
@@ -71,7 +83,8 @@ begin
 
     { offset to ImageData buffer }
     offset := (px + py * image^.width) * 4;
-    a := data[offset + 3];
+
+    a := image^.dataPtr[offset + 3];
     if a < 255 then continue;
 
     colour := unsafeSprPget(image, px, py);
@@ -339,8 +352,7 @@ var
   alpha: byte;
   colour: longword;
 begin
-  if not isImageSet(src) then exit;
-  if not isImageSet(dest) then exit;
+  if not isImageSet(src) or not isImageSet(dest) then exit;
 
   srcImage := getImagePtr(src);
   destImage := getImagePtr(dest);
@@ -360,5 +372,86 @@ begin
     unsafeSprPset(destImage, x + a, y + b, colour)
   end;
 end;
+
+procedure sprRegionToDest(
+  const src, dest: longint;
+  const srcX, srcY, srcW, srcH: integer;
+  const destX, destY: integer);
+var
+  srcImage, destImage: PImageRef;
+  px, py: integer;
+  sx, sy: integer;
+  srcPos: longint;
+  alpha: byte;
+  colour: longword;
+begin
+  if not isImageSet(src) or not isImageSet(dest) then exit;
+
+  srcImage := getImagePtr(src);
+  destImage := getImagePtr(dest);
+
+  for py:=0 to srcH - 1 do
+  for px:=0 to srcW - 1 do begin
+    if (destX + px >= destImage^.width) or (destX + px < 0)
+      or (destY + py >= destImage^.height) or (destY + py < 0) then continue;
+
+    sx := srcX + px;
+    sy := srcY + py;
+    srcPos := (sx + sy * srcImage^.width) * 4;
+
+    alpha := srcImage^.dataPtr[srcPos + 3];
+    if alpha < 255 then continue;
+
+    colour := unsafeSprPget(srcImage, sx, sy);
+    unsafeSprPset(destImage, destX + px, destY + py, colour);
+  end;
+end;
+
+procedure sprFlipInPlace(const imgHandle: longint; const flip: integer);
+var
+  image: PImageRef;
+  px, py: integer;
+  halfW, halfH: integer;
+  tempColour: longword;
+  pos1, pos2: longint;
+begin
+  if flip = SprFlipNone then exit;
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+
+  { Horizontal flip }
+  if (flip and SprFlipHorizontal) <> 0 then begin
+    halfW := image^.width div 2;
+
+    for py:=0 to image^.height - 1 do
+    for px:=0 to halfW - 1 do begin
+      pos1 := (px + py * image^.width) * 4;
+      pos2 := ((image^.width - 1 - px) + py * image^.width) * 4;
+
+      { Swap RGBA }
+      tempColour := PLongword(@image^.dataPtr[pos1])^;
+      PLongword(@image^.dataPtr[pos1])^ := PLongword(@image^.dataPtr[pos2])^;
+      PLongword(@image^.dataPtr[pos2])^ := tempColour
+    end;
+  end;
+
+  { Vertical flip }
+  if (flip and SprFlipVertical) <> 0 then begin
+    halfH := image^.height div 2;
+
+    for py:=0 to halfH - 1 do
+    for px:=0 to image^.width - 1 do begin
+      pos1 := (px + py * image^.width) * 4;
+      pos2 := (px + (image^.height - 1 - py) * image^.width) * 4;
+
+      { Swap RGBA }
+      tempColour := PLongword(@image^.dataPtr[pos1])^;
+      PLongword(@image^.dataPtr[pos1])^ := PLongword(@image^.dataPtr[pos2])^;
+      Plongword(@image^.dataPtr[pos2])^ := tempColour
+    end;
+  end;
+end;
+
 
 end.
