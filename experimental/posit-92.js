@@ -242,6 +242,7 @@ class Posit92 {
 
     const promises = entries.map(([key, path]) =>
       this.loadImage(path).then(handle => {
+        // On success
         this.#loadingActual++;
         return { key, path, handle }
       })
@@ -252,6 +253,7 @@ class Posit92 {
     const failures = results.filter(item => item.handle == 0);
     if (failures.length > 0) {
       console.error("Failed to load assets:");
+      
       for (const failure of failures)
         console.error("   " + failure.key + ": " + failure.path);
 
@@ -276,6 +278,16 @@ class Posit92 {
       actual: this.#loadingActual,
       total: this.#loadingTotal
     }
+  }
+
+  incLoadingActual() {
+    this.#loadingActual++;
+    if (this.#loadingActual > this.#loadingTotal)
+      this.#loadingActual = this.#loadingTotal;
+  }
+
+  incLoadingTotal(count) {
+    this.#loadingTotal += count
   }
 
 
