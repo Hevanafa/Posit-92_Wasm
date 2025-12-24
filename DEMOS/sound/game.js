@@ -38,6 +38,8 @@ class Game extends SoundsMixin {
   }
 
   async loadAssets() {
+    let handle = 0;
+    
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.wasmInstance.exports.defaultFontPtr(),
