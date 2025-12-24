@@ -237,8 +237,8 @@ class Posit92 {
   async loadImagesFromManifest(manifest) {
     const entries = Object.entries(manifest);
 
-    this.#loadingTotal = entries.length;
-    this.#loadingActual = 0;
+    // this.#loadingTotal = entries.length;
+    // this.#loadingActual = 0;
 
     const promises = entries.map(([key, path]) =>
       this.loadImage(path).then(handle => {
@@ -286,8 +286,34 @@ class Posit92 {
       this.#loadingActual = this.#loadingTotal;
   }
 
+  setLoadingActual(value) {
+    this.#assertNumber(value);
+    this.#loadingActual = value
+  }
+
   incLoadingTotal(count) {
     this.#loadingTotal += count
+  }
+
+  setLoadingTotal(value) {
+    this.#assertNumber(value);
+    this.#loadingTotal = value
+  }
+
+  setLoadingText(text) {
+    const div = document.querySelector("#loading-overlay > div");
+    div.innerHTML = text;
+  }
+
+  hideLoadingOverlay() {
+    const div = document.getElementById("loading-overlay");
+    // div.style.display = "none";
+    div.classList.add("hidden");
+    this.setLoadingText("");
+  }
+
+  async sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
   }
 
 
