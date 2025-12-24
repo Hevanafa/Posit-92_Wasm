@@ -1,6 +1,6 @@
 {
   "name": "posit-92-wasm",
-  "version": "0.1.0",
+  "version": "0.1.1_experimental",
   "devDependencies": {
     "@types/bun": "^1.3.4"
   }
