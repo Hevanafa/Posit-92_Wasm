@@ -177,7 +177,6 @@ class Posit92 {
   }
 
 
-  // BITMAP.PAS
   async loadImageFromURL(url) {
     if (url == null)
       throw new Error("loadImageFromURL: url is required");
@@ -228,6 +227,9 @@ class Posit92 {
     return handle
   }
 
+  #loadingActual = 0;
+  #loadingTotal = 0;
+
   /**
    * Load images from manifest in parallel
    * @param {Object.<string, string>} manifest - Key-value pairs of `"asset_key": "image_path"`
@@ -235,8 +237,15 @@ class Posit92 {
   async loadImagesFromManifest(manifest) {
     const entries = Object.entries(manifest);
 
+    this.#loadingTotal = entries.length;
+    this.#loadingActual = 0;
+
     const promises = entries.map(([key, path]) =>
-      this.loadImage(path).then(handle => ({ key, handle })));
+      this.loadImage(path).then(handle => {
+        this.#loadingActual++;
+        return { key, path, handle }
+      })
+    );
 
     const results = await Promise.all(promises);
 
@@ -259,6 +268,13 @@ class Posit92 {
         console.error("loadAssetsFromManifest: Missing setter", setterName, "for the asset key", key)
       else
         this.wasmInstance.exports[setterName](handle);
+    }
+  }
+
+  get loadingProgress() {
+    return {
+      actual: this.#loadingActual,
+      total: this.#loadingTotal
     }
   }
 
