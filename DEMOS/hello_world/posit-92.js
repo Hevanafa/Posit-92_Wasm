@@ -134,12 +134,12 @@ class Posit92 {
     
     this.#initKeyboard();
     this.#initMouse();
-
-    if (this.loadAssets)
-      await this.loadAssets();
   }
 
-  afterInit() {
+  async afterInit() {
+    if (this.loadAssets)
+      await this.loadAssets();
+
     this.#wasm.exports.afterInit();
     this.#addOutOfFocusFix()
   }
@@ -177,7 +177,6 @@ class Posit92 {
   }
 
 
-  // BITMAP.PAS
   async loadImageFromURL(url) {
     if (url == null)
       throw new Error("loadImageFromURL: url is required");
@@ -228,6 +227,9 @@ class Posit92 {
     return handle
   }
 
+  #loadingActual = 0;
+  #loadingTotal = 0;
+
   /**
    * Load images from manifest in parallel
    * @param {Object.<string, string>} manifest - Key-value pairs of `"asset_key": "image_path"`
@@ -235,14 +237,23 @@ class Posit92 {
   async loadImagesFromManifest(manifest) {
     const entries = Object.entries(manifest);
 
+    // this.#loadingTotal = entries.length;
+    // this.#loadingActual = 0;
+
     const promises = entries.map(([key, path]) =>
-      this.loadImage(path).then(handle => ({ key, handle })));
+      this.loadImage(path).then(handle => {
+        // On success
+        this.#loadingActual++;
+        return { key, path, handle }
+      })
+    );
 
     const results = await Promise.all(promises);
 
     const failures = results.filter(item => item.handle == 0);
     if (failures.length > 0) {
       console.error("Failed to load assets:");
+      
       for (const failure of failures)
         console.error("   " + failure.key + ": " + failure.path);
 
@@ -260,6 +271,49 @@ class Posit92 {
       else
         this.wasmInstance.exports[setterName](handle);
     }
+  }
+
+  get loadingProgress() {
+    return {
+      actual: this.#loadingActual,
+      total: this.#loadingTotal
+    }
+  }
+
+  incLoadingActual() {
+    this.#loadingActual++;
+    if (this.#loadingActual > this.#loadingTotal)
+      this.#loadingActual = this.#loadingTotal;
+  }
+
+  setLoadingActual(value) {
+    this.#assertNumber(value);
+    this.#loadingActual = value
+  }
+
+  incLoadingTotal(count) {
+    this.#loadingTotal += count
+  }
+
+  setLoadingTotal(value) {
+    this.#assertNumber(value);
+    this.#loadingTotal = value
+  }
+
+  setLoadingText(text) {
+    const div = document.querySelector("#loading-overlay > div");
+    div.innerHTML = text;
+  }
+
+  hideLoadingOverlay() {
+    const div = document.getElementById("loading-overlay");
+    // div.style.display = "none";
+    div.classList.add("hidden");
+    this.setLoadingText("");
+  }
+
+  async sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
   }
 
 

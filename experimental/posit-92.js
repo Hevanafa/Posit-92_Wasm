@@ -134,12 +134,12 @@ class Posit92 {
     
     this.#initKeyboard();
     this.#initMouse();
-
-    if (this.loadAssets)
-      await this.loadAssets();
   }
 
-  afterInit() {
+  async afterInit() {
+    if (this.loadAssets)
+      await this.loadAssets();
+
     this.#wasm.exports.afterInit();
     this.#addOutOfFocusFix()
   }

@@ -56,9 +56,13 @@ class Game extends Posit92 {
     // This is because loadAssets is called in `afterInit`
     this.hideLoadingOverlay();
 
+    this.wasmInstance.exports.renderLoadingScreen(
+      this.loadingProgress.actual,
+      this.loadingProgress.total);
+
     const t = window.setInterval(() => {
       const { actual, total } = this.loadingProgress;
-      this.wasmInstance.exports.renderLoadingScreen(actual, total)
+      this.wasmInstance.exports.renderLoadingScreen(actual, total);
       // console.log("loadingProgress", actual, total);
     }, 100);
 
