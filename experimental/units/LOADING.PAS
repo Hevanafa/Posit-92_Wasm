@@ -12,11 +12,14 @@ uses
 
 procedure renderLoadingScreen(const actual, total: integer);
 var
-  perc: double;
+  s: string;
+  w: word;
 begin
   cls($FF6495ED);
 
-  printDefault('Progress: ' + i32str(actual) + ' / ' + i32str(total), 10, 10);
+  s := 'Progress: ' + i32str(actual) + ' / ' + i32str(total);
+  w := measureDefault(s);
+  printDefault(s, (vgaWidth - w) div 2, vgaHeight div 2 - defaultFont.lineHeight);
 
   vgaFlush
 end;
