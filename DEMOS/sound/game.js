@@ -24,27 +24,33 @@ class Game extends SoundsMixin {
     // Add more scancodes as necessary
   };
 
+  #AssetManifest = {
+    images: {
+      cursor: "assets/images/cursor.png"
+    },
+    sounds: new Map([
+      [SfxBwonk, "assets/sfx/bwonk.ogg"],
+      [SfxBite, "assets/sfx/bite.ogg"],
+      [SfxBonk, "assets/sfx/bonk.ogg"],
+      [SfxStrum, "assets/sfx/strum.ogg"],
+      [SfxSlip, "assets/sfx/slip.ogg"]
+    ])
+  }
+
   async loadAssets() {
-    let handle = 0;
-
-    handle = await this.loadImage("assets/images/cursor.png");
-    this.wasmInstance.exports.setImgCursor(handle);
-
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.wasmInstance.exports.defaultFontPtr(),
       this.wasmInstance.exports.defaultFontGlyphsPtr());
+
+    await this.loadImagesFromManifest(this.#AssetManifest.images);
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
     handle = await this.loadImage("assets/images/dosu_2.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
 
-    await this.loadSound(SfxBwonk, "assets/sfx/bwonk.ogg");
-    await this.loadSound(SfxBite, "assets/sfx/bite.ogg");
-    await this.loadSound(SfxBonk, "assets/sfx/bonk.ogg");
-    await this.loadSound(SfxStrum, "assets/sfx/strum.ogg");
-    await this.loadSound(SfxSlip, "assets/sfx/slip.ogg");
+    await this.loadSoundsFromManifest(this.#AssetManifest.sounds);
 
     // Add more assets as necessary
   }
