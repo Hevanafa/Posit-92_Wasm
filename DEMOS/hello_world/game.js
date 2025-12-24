@@ -12,17 +12,29 @@ class Game extends Posit92 {
 
   #AssetManifest = {
     images: {
-      cursor: "assets/images/cursor.png",
-    }
+      cursor: "assets/images/cursor.png"
+      // Add more image assets here
+    },
+    sounds: new Map([
+      // Add sound assets here
+    ])
+  }
+
+  async loadDefaultFont() {
+    await this.loadBMFont(
+      "assets/fonts/nokia_cellphone_fc_8.txt",
+      this.wasmInstance.exports.defaultFontPtr(),
+      this.wasmInstance.exports.defaultFontGlyphsPtr());
   }
 
   async loadAssets() {
     let handle = 0;
 
-    await this.loadBMFont(
-      "assets/fonts/nokia_cellphone_fc_8.txt",
-      this.wasmInstance.exports.defaultFontPtr(),
-      this.wasmInstance.exports.defaultFontGlyphsPtr());
+    this.setLoadingActual(0);
+
+    const imageCount = Object.keys(this.#AssetManifest.images).length;
+    const soundCount = this.#AssetManifest.sounds.size;
+    this.setLoadingTotal(imageCount + soundCount);
 
     this.loadImagesFromManifest(this.#AssetManifest.images);
 
@@ -32,6 +44,27 @@ class Game extends Posit92 {
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
 
     // Add more assets as necessary
+  }
+
+  async init() {
+    this.setLoadingText("Loading WebAssembly...");
+    await super.init();
+  }
+
+  async afterInit() {
+    // Only applicable with an in-game loading screen
+    // This is because loadAssets is called in `afterInit`
+    this.hideLoadingOverlay();
+
+    const t = window.setInterval(() => {
+      const { actual, total } = this.loadingProgress;
+      this.wasmInstance.exports.renderLoadingScreen(actual, total)
+      // console.log("loadingProgress", actual, total);
+    }, 100);
+
+    await super.afterInit();
+
+    window.clearInterval(t);
   }
 }
 
@@ -47,7 +80,8 @@ var done = false;
 async function main() {
   const game = new Game("game");
   await game.init();
-  game.afterInit();
+  await game.loadDefaultFont();
+  await game.afterInit();
 
   function loop(currentTime) {
     if (done) {
