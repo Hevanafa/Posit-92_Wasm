@@ -220,6 +220,11 @@ begin
     incCursorTop;
 end;
 
+procedure textColour(const colour: byte);
+begin
+  currentColour := hi(currentColour) or (colour and $F)
+end;
+
 procedure print(const text: string);
 var
   a: word;
@@ -319,9 +324,20 @@ begin
           else if currentInput = 'DATE' then begin
             queryDate;
             printLn(strPtrToString(@stringBuffer, stringBufferLength))
+
           end else if currentInput = 'TIME' then begin
             queryTime;
             printLn(strPtrToString(@stringBuffer, stringBufferLength))
+
+          end else if currentInput = 'HELP' then begin
+            textColour(9);
+            printLn('Available commands');
+            printLn('');
+            printLn('  CLS  Clear screen');
+            printLn('  DATE  Display current date');
+            printLn('  TIME  Display current time');
+            printLn('  HELP  Show this help');
+
           end else
             printLn('Unknown command: ' + currentInput);
 
