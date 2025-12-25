@@ -4,12 +4,12 @@ unit Assets;
 
 interface
 
-uses BMFont;
-
 var
   { for use in loadBMFont }
+{
   defaultFont: TBMFont;
   defaultFontGlyphs: array[32..126] of TBMFontGlyph;
+}
 
   imgCursor: longint;
   {imgDosuEXE: array[0..1] of longint;}

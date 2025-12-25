@@ -6,7 +6,7 @@ uses
   Conv, FPS, Loading, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  PostProc, Timing, WasmMemMgr, VGA,
+  Timing, WasmMemMgr, VGA,
   Assets;
 
 const
