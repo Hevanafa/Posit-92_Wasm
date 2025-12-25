@@ -66,6 +66,26 @@ const
   LightGrey = $FFAAAAAA;
   White = $FFFFFFFF;
 
+  Palette: array of longword = (
+    $FF000000,
+    $FF0000AA,
+    $FF00AA00,
+    $FF00AAAA,
+    $FFAA0000,
+    $FFAA00AA,
+    $FFAA5500,
+    $FFAAAAAA,
+
+    $FF555555,
+    $FF5555FF,
+    $FF55FF55,
+    $FF55FFFF,
+    $FFFF5555,
+    $FFFF55FF,
+    $FFFFFF55,
+    $FFFFFFFF
+  );
+
 {type
   AllowedScancodes = (
     SC_Q, SC_W, SC_E, SC_R, SC_T, SC_Y, SC_U, SC_I, SC_O, SC_P,
@@ -335,6 +355,7 @@ var
 begin
   vgaCls(black);
 
+  { Render scanlines }
   timeOffset := frac(getTimer) * 2 * PI;
   for b:=0 to vgaHeight-1 do begin
     grey := trunc((sin(b - timeOffset) + 1.0) * 20.0);  { * 0.15 * 255 / 2.0, rounded up }
