@@ -17,5 +17,16 @@ for (const demoName of demoFolders) {
 
   console.log(styleText("yellow", "Setting up: " + demoName));
 
-  // TODO: Run setup_demo.ts
+  const result = Bun.spawnSync([
+    "bun",
+    join(scriptDir, "setup_demo.ts"),
+    demoName
+  ], { stdout: "inherit", stderr: "inherit" });
+
+  if (result.exitCode != 0) {
+    console.log(styleText("red", "Failed to setup " + demoName));
+    process.exit(1)
+  }
 }
+
+console.log(styleText("green", "\nAll demos updated successfully!"))
