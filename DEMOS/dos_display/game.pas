@@ -7,7 +7,8 @@ uses
   Conv, FPS, Graphics, Loading, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Strings, Timing, WasmMemMgr, VGA,
+  Strings, Timing, WasmMemMgr,
+  Version, VGA,
   Assets;
 
 const
@@ -382,9 +383,13 @@ begin
   currentInput := '';
   currentColour := makeColour(7, 0);
 
+  { Welcome message }
   cls;
-  printLn('Welcome to Posit-92 Wasm!');
-  printLn('Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit');
+  printLn('');
+  printLn('Posit-92 Wasm ' + Posit92_Version);
+  printLn('(C) 2025 Hevanafa');
+  printLn('');
+  printLn('Type HELP for help');
   printLn('');
   updatePromptLine
 end;
