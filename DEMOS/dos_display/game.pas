@@ -13,14 +13,22 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+  CharBufferSize = 80 * 25;
+
 var
   lastEsc: boolean;
 
   { Init your game state here }
   gameTime: double;
+  charBuffer: array[0..CharBufferSize - 1] of char;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+
+procedure cls;
+begin
+  fillchar(charBuffer, CharBufferSize, 0)
+end;
 
 procedure printChar(const c: char; const x, y: integer);
 var
