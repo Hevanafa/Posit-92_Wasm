@@ -57,7 +57,7 @@ const
 
   SC_SPACE = $39;
 
-  BufferWidth = 80;
+  BufferWidth = 40;
   BufferHeight = 25;
   CharBufferSize = BufferWidth * BufferHeight;
 
@@ -277,7 +277,7 @@ begin
   for b:=0 to getImageHeight(imgCGAFont) - 1 do
   for a:=0 to getImageWidth(imgCGAFont) - 1 do
     if unsafeSprGetAlpha(image, a, b) = 255 then
-      unsafeSprPset(image, a, b, $FFAAAAAA); { light grey }
+      unsafeSprPset(image, a, b, LightGrey);
 end;
 
 procedure afterInit; public name 'afterInit';
@@ -288,6 +288,7 @@ begin
   currentInput := '';
   cls;
   printLn('Welcome to Posit-92 Wasm!');
+  printLn('Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit');
   printLn('');
   printLn('');
   updatePromptLine
