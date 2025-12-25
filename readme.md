@@ -114,3 +114,9 @@ Without the bulk memory compiler switch, it will throw this compile error:
 ```
 [wasm-validator error in function 118] unexpected false: memory.fill operations require bulk memory [--enable-bulk-memory-opt]
 ```
+
+## Credits
+
+Default font: [Nokia Cellphone FC](https://www.dafont.com/nokia-cellphone.font)
+
+BMFont format: [AngelCode BMFont](https://www.angelcode.com/products/bmfont/)
