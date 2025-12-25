@@ -257,6 +257,32 @@ begin
   cursorLeft := length(currentInput) + 2
 end;
 
+procedure handleCommand(cmd: string);
+begin
+  cmd := trim(cmd);
+  
+  if cmd = 'CLS' then cls
+  else if cmd = 'DATE' then begin
+    queryDate;
+    printLn(strPtrToString(@stringBuffer, stringBufferLength))
+
+  end else if cmd = 'TIME' then begin
+    queryTime;
+    printLn(strPtrToString(@stringBuffer, stringBufferLength))
+
+  end else if cmd = 'HELP' then begin
+    textColour(9);
+    printLn('Available commands');
+    printLn('');
+    printLn('  CLS  Clear screen');
+    printLn('  DATE  Display current date');
+    printLn('  TIME  Display current time');
+    printLn('  HELP  Show this help');
+
+  end else
+    printLn('Unknown command: ' + cmd);
+end;
+
 procedure appendCurrentInput(const c: char);
 begin
   currentInput := currentInput + c;
@@ -318,29 +344,7 @@ begin
 
         SC_ENTER: begin
           incCursorTop;
-          currentInput := trim(currentInput);
-          
-          if currentInput = 'CLS' then cls
-          else if currentInput = 'DATE' then begin
-            queryDate;
-            printLn(strPtrToString(@stringBuffer, stringBufferLength))
-
-          end else if currentInput = 'TIME' then begin
-            queryTime;
-            printLn(strPtrToString(@stringBuffer, stringBufferLength))
-
-          end else if currentInput = 'HELP' then begin
-            textColour(9);
-            printLn('Available commands');
-            printLn('');
-            printLn('  CLS  Clear screen');
-            printLn('  DATE  Display current date');
-            printLn('  TIME  Display current time');
-            printLn('  HELP  Show this help');
-
-          end else
-            printLn('Unknown command: ' + currentInput);
-
+          handleCommand(currentInput);
           currentInput := '';
           updatePromptLine
         end
