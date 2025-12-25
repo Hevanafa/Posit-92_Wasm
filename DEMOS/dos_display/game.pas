@@ -61,8 +61,6 @@ const
   );}
 
 var
-  lastEsc: boolean;
-
   { Init your game state here }
   gameTime: double;
 
@@ -237,27 +235,16 @@ begin
 
   currentInput := '';
   cls;
-  printLn('Welcome to Posit-92 Wasm!')
+  printLn('Welcome to Posit-92 Wasm!');
+  printLn('');
+  printLn('');
 end;
 
 procedure update; public name 'update';
 begin
   updateDeltaTime;
   incrementFPS;
-
   updateMouse;
-
-  { Your update logic here }
-  {
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
-
-    if lastEsc then begin
-      writeLog('ESC is pressed!');
-      signalDone
-    end;
-  end;
-  }
   
   checkKeys;
 
@@ -282,7 +269,7 @@ begin
       cursorLeft * 8 + 7, cursorTop * 8 + 7,
       LightGrey);
 
-  blitText('> ' + currentInput, 30, 30);
+  { blitText('> ' + currentInput, 30, 30); }
 
   drawMouse;
   drawFPS;
