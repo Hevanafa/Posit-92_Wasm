@@ -73,8 +73,8 @@ var done = false;
 async function main() {
   const game = new Game("game");
   await game.init();
-  // await game.loadDefaultFont();
   await game.afterInit();
+  game.wasmInstance.exports.initDefaultFont();
 
   function loop(currentTime) {
     if (done) {

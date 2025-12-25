@@ -90,6 +90,11 @@ begin
 
   if idx < 0 then panicHalt('Image ref pool is full!');
 
+  writeLog('registerImageRef');
+  writeLogI32(w);
+  writeLogI32(h);
+  writeLogI32(w * h * 4);
+
   imageRefs[imgHandle].width := w;
   imageRefs[imgHandle].height := h;
   imageRefs[imgHandle].allocSize := w * h * 4;

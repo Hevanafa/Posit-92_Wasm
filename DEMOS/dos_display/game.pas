@@ -50,6 +50,11 @@ var
   a: word;
   left: integer;
 begin
+  if not isImageSet(imgCGAFont) then begin
+    writeLog('image is unset');
+    exit
+  end;
+  
   left := x;
 
   for a:=1 to length(text) do begin
@@ -95,6 +100,24 @@ begin
   initBuffer;
   initDeltaTime;
   initFPSCounter;
+end;
+
+procedure initDefaultFont; public name 'initDefaultFont';
+var
+  a, b: word;
+  image: PImageRef;
+begin
+  if not isImageSet(imgCGAFont) then begin
+    writeLog('image is unset');
+    exit
+  end;
+
+  image := getImagePtr(imgCGAFont);
+
+  for b:=0 to getImageHeight(imgCGAFont) - 1 do
+  for a:=0 to getImageWidth(imgCGAFont) - 1 do
+    if unsafeSprGetAlpha(image, a, b) = 255 then
+      unsafeSprPset(image, a, b, $FFAAAAAA); { light grey }
 end;
 
 procedure afterInit; public name 'afterInit';
