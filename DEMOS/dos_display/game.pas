@@ -7,7 +7,7 @@ uses
   Conv, FPS, Graphics, Loading, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Strings, Timing, WasmMemMgr,
+  Strings, Timing, WasmMemMgr, WasmHeap,
   Version, VGA,
   Assets;
 
@@ -376,6 +376,8 @@ begin
 end;
 
 procedure afterInit; public name 'afterInit';
+var
+  heapSize: longword;
 begin
   { Initialise game state here }
   hideCursor;
@@ -388,8 +390,12 @@ begin
   printLn('');
   printLn('Posit-92 Wasm ' + Posit92_Version);
   printLn('(C) 2025 Hevanafa');
+
+  heapSize := heapEnd - heapStart;
+  printLn(i32str(heapSize div 1024) + 'KB RAM OK');
+
   printLn('');
-  printLn('Type HELP for help');
+  printLn('Type HELP for available commands');
   printLn('');
   updatePromptLine
 end;
