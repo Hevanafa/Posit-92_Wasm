@@ -13,13 +13,17 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
 
-  CharBufferSize = 80 * 25;
+  BufferWidth = 80;
+  BufferHeight = 25;
+  CharBufferSize = BufferWidth * BufferHeight;
 
 var
   lastEsc: boolean;
 
   { Init your game state here }
   gameTime: double;
+
+  cursorLeft, cursorTop: integer;
   charBuffer: array[0..CharBufferSize - 1] of char;
 
 { Use this to set `done` to true }
@@ -54,6 +58,26 @@ begin
   end;
 end;
 
+procedure incCursorLeft;
+begin
+  inc(cursorLeft);
+  if cursorLeft >= BufferWidth then begin
+    cursorLeft := 0;
+    inc(cursorTop)
+  end;
+end;
+
+procedure print(const text: string);
+begin
+  for a:=1 to length(text) do begin
+    charBuffer[cursorTop * BufferWidth + cursorLeft] := text[a];
+    incCursorLeft
+  end;
+
+  { TODO: Flush buffer }
+end;
+
+
 procedure drawFPS;
 begin
   blitText('FPS:' + i32str(getLastFPS), 240, 0);
@@ -77,7 +101,10 @@ procedure afterInit; public name 'afterInit';
 begin
   { Initialise game state here }
   hideCursor;
-  { replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000); }
+
+  cls;
+  cursorLeft := 0;
+  cursorTop := 0;
 end;
 
 procedure update; public name 'update';
