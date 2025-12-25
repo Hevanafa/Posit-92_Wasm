@@ -72,8 +72,13 @@ class Game extends Posit92 {
     const bytes = encoder.encode(text);
 
     const bufferPtr = this.wasmInstance.exports.getStringBuffer();
-    const buffer = new Uint8Array(this.wasmInstance.exports.memory.buffer, bufferPtr, bytes.length);
+    const buffer = new Uint8Array(
+      this.wasmInstance.exports.memory.buffer,
+      bufferPtr,
+      bytes.length);
     buffer.set(bytes);
+
+    this.wasmInstance.exports.setStringBufferLength(bytes.length);
 
     return bytes.length
   }
