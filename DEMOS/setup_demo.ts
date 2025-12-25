@@ -30,10 +30,18 @@ const mixinMap: Record<string, string[]> = {
   webgl_demo: ["webgl.js"]
 };
 
+const demoScripts = [
+  "build_run_demo.ts",
+  "compile_demo.ts",
+  "run_demo.ts",
+  "server.ts"
+];
+
 const scriptDir = import.meta.dir;
 const demoPath = join(scriptDir, demoName);
 const canonicalPosit = join(scriptDir, "../experimental/posit-92.js");
 const mixinsDir = join(scriptDir, "../experimental/mixins");
+const scriptsDir = join(scriptDir, "../scripts");
 
 // Check if demo exists
 if (!existsSync(demoPath)) {
@@ -63,3 +71,13 @@ if (mixinMap[demoName]) {
   }
 } else
   console.log(styleText("cyan", "No mixins needed for " + demoName));
+
+// Handle copy build scripts
+for (const filename of demoScripts) {
+  const srcPath = join(scriptsDir, filename);
+  const destPath = join(demoPath, filename);
+
+  await copyFile(srcPath, destPath)
+}
+
+console.log(styleText("green", "Copied build scripts to " + demoName))
