@@ -47,12 +47,25 @@ body {
 }
 
 #loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 640px;
+  height: 400px;
+
   color: white;
   opacity: 1.0;
 }
 
 #loading-overlay.hidden {
   opacity: 0.0;
+  pointer-events: none;
+}
+
+#loading-overlay > div {
+  position: absolute;
+  inset: 0;
+  margin: auto;
 }
 
   </style>
