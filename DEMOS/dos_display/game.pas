@@ -3,7 +3,7 @@ library Game;
 {$Mode TP}
 
 uses
-  Conv, FPS, Loading, Logger,
+  Conv, FPS, Graphics, Loading, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
   Timing, WasmMemMgr, VGA,
@@ -16,6 +16,10 @@ const
   BufferWidth = 80;
   BufferHeight = 25;
   CharBufferSize = BufferWidth * BufferHeight;
+
+  Black = $FF000000;
+  LightGrey = $FFAAAAAA;
+  White = $FFFFFFFF;
 
 var
   lastEsc: boolean;
@@ -166,12 +170,18 @@ var
   a, b: integer;
   
 begin
-  vgaCls($FF000000);
+  vgaCls(black);
 
   { Your drawing code here }
   for b:=0 to BufferHeight - 1 do
   for a:=0 to BufferWidth - 1 do
     blitChar(charBuffer[a + b * BufferWidth], a * 8, b * 8);
+
+  if frac(getTimer) >= 0.5 then
+    rectfill(
+      cursorLeft * 8, cursorTop * 8,
+      cursorLeft * 8 + 7, cursorTop * 8 + 7,
+      LightGrey);
 
   drawMouse;
   drawFPS;
