@@ -335,7 +335,7 @@ begin
   vgaCls(black);
 
   for b:=0 to vgaHeight-1 do begin
-    grey := trunc((sin(b - getTimer) + 1.0) / 2.0 * 0.15 * 255);
+    grey := trunc((sin(b - frac(getTimer) * 2 * PI) + 1.0) * 20.0);  { * 0.15 * 255 / 2.0, rounded up }
     hline(0, vgaWidth-1, b, $FF000000 or (grey shl 16) or (grey shl 8) or grey)
   end;
 
