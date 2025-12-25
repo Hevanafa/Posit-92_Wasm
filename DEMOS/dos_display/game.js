@@ -64,6 +64,30 @@ class Game extends Posit92 {
     ])
   }
 
+  /**
+   * Pass a JS string to Pascal
+   */
+  #loadStringBuffer(text) {
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(text);
+
+    const bufferPtr = this.wasmInstance.exports.getStringBuffer();
+    const buffer = new Uint8Array(this.wasmInstance.exports.memory.buffer, bufferPtr, bytes.length);
+    buffer.set(bytes);
+
+    return bytes.length
+  }
+
+  #setupImportObject() {
+    const { env } = super._getWasmImportObject();
+
+    Object.assign(env, {
+      queryDate: () => {
+        this.#loadStringBuffer(new Date().toLocaleDateString("en-AU").replace(/\//g, "-"))
+      }
+    })
+  }
+
   async loadAssets() {
     let handle = 0;
 
@@ -80,6 +104,7 @@ class Game extends Posit92 {
 
   async init() {
     this.setLoadingText("Loading WebAssembly...");
+    this.#setupImportObject();
     await super.init();
   }
 

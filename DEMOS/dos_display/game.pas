@@ -7,7 +7,7 @@ uses
   Conv, FPS, Graphics, Loading, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Timing, WasmMemMgr, VGA,
+  Strings, Timing, WasmMemMgr, VGA,
   Assets;
 
 const
@@ -105,8 +105,16 @@ var
   lastKeyStates: set of byte;
   currentInput: string;
 
+  stringBuffer: array[0..255] of byte;
+
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+
+procedure queryDate; external 'env' name 'queryDate';
+function getStringBuffer: PByte; public name 'getStringBuffer';
+begin
+  getStringBuffer := @stringBuffer
+end;
 
 
 function makeColour(const fg, bg: byte): byte;
@@ -297,9 +305,14 @@ begin
         SC_ENTER: begin
           cursorLeft := 0;
           fillchar(charBuffer[cursorTop * BufferWidth], BufferWidth, 0);
+
+          currentInput := trim(currentInput);
           
           if currentInput = 'CLS' then cls
-          else
+          else if currentInput = 'DATE' then begin
+            queryDate;
+            printLn(strPtrToString(stringBuffer))
+          end else
             printLn('Unknown command: ' + currentInput);
 
           currentInput := '';
