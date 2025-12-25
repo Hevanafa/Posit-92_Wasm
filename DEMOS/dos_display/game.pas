@@ -1,6 +1,7 @@
 library Game;
 
 {$Mode TP}
+{$B-}
 
 uses
   Conv, FPS, Graphics, Loading, Logger,
@@ -306,14 +307,17 @@ end;
 procedure draw; public name 'draw';
 var
   a, b: integer;
-  
+  c: char;
 begin
   vgaCls(black);
 
   { Your drawing code here }
   for b:=0 to BufferHeight - 1 do
-  for a:=0 to BufferWidth - 1 do
-    blitChar(charBuffer[a + b * BufferWidth], a * 8, b * 8);
+  for a:=0 to BufferWidth - 1 do begin
+    c := charBuffer[a + b * BufferWidth];
+    if (c = ' ') or (c = chr(0)) then continue;
+    blitChar(c, a * 8, b * 8)
+  end;
 
   if frac(getTimer) >= 0.5 then
     rectfill(
