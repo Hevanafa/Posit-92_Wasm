@@ -125,21 +125,16 @@ procedure blitChar(const c: char; const x, y: integer; const colour: longword);
 var
   charcode: byte;
   row, col: word;
-  fg, bg: byte;
 
   image: PImageRef;
   a, b: integer;
   sx, sy: integer;
   srcPos: longint;
   alpha: byte;
-  colour: longword;
 begin
   charcode := ord(c);
   row := charcode div 16;
   col := charcode mod 16;
-
-  fg := lo(currentColour);
-  bg := hi(currentColour);
 
   { Inlined sprRegion
     sprRegion(imgCGAFont, col * 8, row * 8, 8, 8, x, y); }
@@ -155,11 +150,8 @@ begin
     srcPos := (sx + sy * image^.width) * 4;
 
     alpha := image^.dataPtr[srcPos + 3];
-    if alpha < 255 then continue;
-
-    { colour := unsafeSprPget(image, sx, sy); }
-    { colour := palette[fg]; }
-    unsafePset(x + a, y + b, colour);
+    if alpha = 255 then
+      unsafePset(x + a, y + b, colour);
   end;
 end;
 
@@ -232,8 +224,8 @@ procedure updatePromptLine;
 var
   a: word;
 begin
-  for a:=0 to BufferWidth - 1 do
-    charBuffer[a + cursorTop * BufferWidth] := ' ';
+  fillchar(charBuffer[cursorTop * BufferWidth], BufferWidth, 0);
+  fillchar(colourBuffer[cursorTop * BufferWidth], BufferWidth, currentColour);
 
   charBuffer[cursorTop * BufferWidth] := '>';
 
@@ -325,7 +317,7 @@ end;
 
 procedure drawFPS;
 begin
-  blitText('FPS:' + i32str(getLastFPS), 240, 0);
+  blitText('FPS:' + i32str(getLastFPS), 240, 0, palette[$0E]);
 end;
 
 procedure drawMouse;
@@ -408,7 +400,10 @@ begin
   for a:=0 to BufferWidth - 1 do begin
     c := charBuffer[a + b * BufferWidth];
     if (c = ' ') or (c = chr(0)) then continue;
-    blitChar(c, a * 8, b * 8)
+
+    blitChar(c,
+      a * 8, b * 8,
+      palette[lo(colourBuffer[a + b * BufferWidth])])
   end;
 
   { Blinking cursor }
