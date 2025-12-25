@@ -12,6 +12,7 @@ class Game extends Posit92 {
 
   #AssetManifest = {
     images: {
+      cga_font: "assets/images/CGA8x8.png",
       cursor: "assets/images/cursor.png"
       // Add more image assets here
     },
@@ -20,12 +21,12 @@ class Game extends Posit92 {
     ])
   }
 
-  async loadDefaultFont() {
-    await this.loadBMFont(
-      "assets/fonts/nokia_cellphone_fc_8.txt",
-      this.wasmInstance.exports.defaultFontPtr(),
-      this.wasmInstance.exports.defaultFontGlyphsPtr());
-  }
+  // async loadDefaultFont() {
+  //   await this.loadBMFont(
+  //     "assets/fonts/nokia_cellphone_fc_8.txt",
+  //     this.wasmInstance.exports.defaultFontPtr(),
+  //     this.wasmInstance.exports.defaultFontGlyphsPtr());
+  // }
 
   async loadAssets() {
     let handle = 0;
@@ -38,10 +39,10 @@ class Game extends Posit92 {
 
     this.loadImagesFromManifest(this.#AssetManifest.images);
 
-    handle = await this.loadImage("assets/images/dosu_1.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 0);
-    handle = await this.loadImage("assets/images/dosu_2.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 1);
+    // handle = await this.loadImage("assets/images/dosu_1.png");
+    // this.wasmInstance.exports.setImgDosuEXE(handle, 0);
+    // handle = await this.loadImage("assets/images/dosu_2.png");
+    // this.wasmInstance.exports.setImgDosuEXE(handle, 1);
 
     // Add more assets as necessary
   }
@@ -84,7 +85,7 @@ var done = false;
 async function main() {
   const game = new Game("game");
   await game.init();
-  await game.loadDefaultFont();
+  // await game.loadDefaultFont();
   await game.afterInit();
 
   function loop(currentTime) {

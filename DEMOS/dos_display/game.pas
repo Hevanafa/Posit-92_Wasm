@@ -24,7 +24,7 @@ procedure signalDone; external 'env' name 'signalDone';
 
 procedure drawFPS;
 begin
-  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
+  printDOS('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
 procedure drawMouse;
@@ -76,6 +76,7 @@ var
 begin
   cls($FF6495ED);
 
+{
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
   else
@@ -84,7 +85,7 @@ begin
   s := 'Hello world!';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
-
+}
   drawMouse;
   drawFPS;
 
