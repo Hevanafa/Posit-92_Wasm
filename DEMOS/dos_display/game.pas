@@ -258,6 +258,8 @@ begin
 end;
 
 procedure handleCommand(cmd: string);
+var
+  lastColour: byte;
 begin
   cmd := trim(cmd);
   
@@ -271,8 +273,11 @@ begin
     printLn(strPtrToString(@stringBuffer, stringBufferLength))
 
   end else if cmd = 'HELP' then begin
+    lastColour := currentColour;
     textColour(9);
     printLn('Available commands');
+
+    currentColour := lastColour;
     printLn('');
     printLn('  CLS  Clear screen');
     printLn('  DATE  Display current date');
