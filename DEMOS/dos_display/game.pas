@@ -14,6 +14,17 @@ const
   SC_BACKSPACE = $0E;
   SC_ENTER = $1C;
 
+  SC_1 = $02;
+  SC_2 = $03;
+  SC_3 = $04;
+  SC_4 = $05;
+  SC_5 = $06;
+  SC_6 = $07;
+  SC_7 = $08;
+  SC_8 = $09;
+  SC_9 = $0A;
+  SC_0 = $0B;
+
   SC_Q = $10;
   SC_W = $11;
   SC_E = $12;
@@ -49,7 +60,8 @@ const
   BufferHeight = 25;
   CharBufferSize = BufferWidth * BufferHeight;
 
-  Black = $FF000000;
+  {Black = $FF000000;}
+  Black = $FF202020;
   LightGrey = $FFAAAAAA;
   White = $FFFFFFFF;
 
@@ -194,10 +206,25 @@ begin
         SC_X: appendCurrentInput('X');
         SC_Y: appendCurrentInput('Y');
         SC_Z: appendCurrentInput('Z');
+        SC_SPACE: appendCurrentInput(' ');
+
+        SC_1: appendCurrentInput('1');
+        SC_2: appendCurrentInput('2');
+        SC_3: appendCurrentInput('3');
+        SC_4: appendCurrentInput('4');
+        SC_5: appendCurrentInput('5');
+        SC_6: appendCurrentInput('6');
+        SC_7: appendCurrentInput('7');
+        SC_8: appendCurrentInput('8');
+        SC_9: appendCurrentInput('9');
+        SC_0: appendCurrentInput('0');
 
         SC_BACKSPACE:
-          if length(currentInput) > 0 then
+          if length(currentInput) > 0 then begin
             currentInput := copy(currentInput, 1, length(currentInput) - 1);
+            updatePromptLine
+          end;
+
         SC_ENTER: begin
           cursorLeft := 0;
           fillchar(charBuffer[cursorTop * BufferWidth], BufferWidth, ord(' '));
