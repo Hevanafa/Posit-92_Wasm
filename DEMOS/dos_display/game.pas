@@ -13,6 +13,35 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+  SC_Q = $10;
+  SC_W = $11;
+  SC_E = $12;
+  SC_R = $13;
+  SC_T = $14;
+  SC_Y = $15;
+  SC_U = $16;
+  SC_I = $17;
+  SC_O = $18;
+  SC_P = $19;
+
+  SC_A = $1E;
+  SC_S = $1F;
+  SC_D = $20;
+  SC_F = $21;
+  SC_G = $22;
+  SC_H = $23;
+  SC_J = $24;
+  SC_K = $25;
+  SC_L = $26;
+
+  SC_Z = $2C;
+  SC_X = $2D;
+  SC_C = $2E;
+  SC_V = $2F;
+  SC_B = $30;
+  SC_N = $31;
+  SC_M = $32;
+
   BufferWidth = 80;
   BufferHeight = 25;
   CharBufferSize = BufferWidth * BufferHeight;
@@ -20,6 +49,13 @@ const
   Black = $FF000000;
   LightGrey = $FFAAAAAA;
   White = $FFFFFFFF;
+
+type
+  AllowedScancodes = (
+    SC_Q, SC_W, SC_E, SC_R, SC_T, SC_Y, SC_U, SC_I, SC_O, SC_P,
+    SC_A, SC_S, SC_D, SC_F, SC_G, SC_H, SC_J, SC_K, SC_L,
+    SC_Z, SC_X, SC_C, SC_V, SC_B, SC_N, SC_M,
+  );
 
 var
   lastEsc: boolean;
@@ -29,6 +65,9 @@ var
 
   cursorLeft, cursorTop: integer;
   charBuffer: array[0..CharBufferSize - 1] of char;
+
+  lastKeyStates: set of AllowedScancodes;
+  currentInput: string;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -141,6 +180,7 @@ begin
   { Initialise game state here }
   hideCursor;
 
+  currentInput := '';
   cls;
   printLn('Welcome to Posit-92 Wasm!')
 end;
@@ -153,6 +193,7 @@ begin
   updateMouse;
 
   { Your update logic here }
+  {
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
 
@@ -161,6 +202,10 @@ begin
       signalDone
     end;
   end;
+  }
+  
+  for a:=ord('a') to ord('z')
+  if isKeyDown()
 
   gameTime := gameTime + dt
 end;
