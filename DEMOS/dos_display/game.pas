@@ -157,7 +157,7 @@ var
   a, b: integer;
   
 begin
-  vgaCls($FF6495ED);
+  vgaCls($FF000000);
 
   { Your drawing code here }
   for b:=0 to BufferHeight - 1 do
