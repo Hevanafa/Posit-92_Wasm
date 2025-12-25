@@ -41,7 +41,9 @@ const scriptDir = import.meta.dir;
 const demoPath = join(scriptDir, demoName);
 const canonicalPosit = join(scriptDir, "../experimental/posit-92.js");
 const mixinsDir = join(scriptDir, "../experimental/mixins");
+
 const scriptsDir = join(scriptDir, "../scripts");
+const scriptsExcludes = ["square_screen"];
 
 // Check if demo exists
 if (!existsSync(demoPath)) {
@@ -73,11 +75,15 @@ if (mixinMap[demoName]) {
   console.log(styleText("cyan", "No mixins needed for " + demoName));
 
 // Handle copy build scripts
-for (const filename of demoScripts) {
-  const srcPath = join(scriptsDir, filename);
-  const destPath = join(demoPath, filename);
+if (scriptsExcludes.includes(demoName))
+  console.log(styleText("cyan", "Skipped copying build scripts to " + demoName))
+else {
+  for (const filename of demoScripts) {
+    const srcPath = join(scriptsDir, filename);
+    const destPath = join(demoPath, filename);
 
-  await copyFile(srcPath, destPath)
+    await copyFile(srcPath, destPath)
+  }
+
+  console.log(styleText("green", "Copied build scripts to " + demoName))
 }
-
-console.log(styleText("green", "Copied build scripts to " + demoName))
