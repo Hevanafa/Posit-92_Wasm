@@ -12,7 +12,7 @@ class Game extends Posit92 {
 
   #AssetManifest = {
     images: {
-      cga_font: "assets/images/CGA8x8.png",
+      CGA_font: "assets/images/CGA8x8.png",
       cursor: "assets/images/cursor.png"
       // Add more image assets here
     },

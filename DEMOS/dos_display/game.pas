@@ -1,6 +1,6 @@
 library Game;
 
-{$Mode ObjFPC}
+{$Mode TP}
 
 uses
   Conv, FPS, Loading, Logger,
@@ -21,6 +21,11 @@ var
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+
+procedure printDOS(const text: string; const x, y: integer);
+begin
+  spr(imgCGAFont, 10, 10)
+end;
 
 procedure drawFPS;
 begin

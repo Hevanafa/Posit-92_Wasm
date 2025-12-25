@@ -1,6 +1,6 @@
 unit Assets;
 
-{$Mode ObjFPC}
+{$Mode TP}
 
 interface
 
