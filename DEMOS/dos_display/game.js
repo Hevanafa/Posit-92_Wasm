@@ -30,7 +30,7 @@ class Game extends Posit92 {
     const soundCount = this.#AssetManifest.sounds.size;
     this.setLoadingTotal(imageCount + soundCount);
 
-    this.loadImagesFromManifest(this.#AssetManifest.images);
+    await this.loadImagesFromManifest(this.#AssetManifest.images);
 
     // Add more assets as necessary
   }
@@ -73,8 +73,9 @@ var done = false;
 async function main() {
   const game = new Game("game");
   await game.init();
-  await game.afterInit();
+  await game.loadAssets();
   game.wasmInstance.exports.initDefaultFont();
+  await game.afterInit();
 
   function loop(currentTime) {
     if (done) {

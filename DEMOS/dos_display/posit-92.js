@@ -140,8 +140,8 @@ class Posit92 {
   }
 
   async afterInit() {
-    if (this.loadAssets)
-      await this.loadAssets();
+    // if (this.loadAssets)
+    //   await this.loadAssets();
 
     this.#wasm.exports.afterInit();
     this.#addOutOfFocusFix()

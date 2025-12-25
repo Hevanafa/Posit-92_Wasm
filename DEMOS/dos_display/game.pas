@@ -51,10 +51,10 @@ var
   left: integer;
 begin
   if not isImageSet(imgCGAFont) then begin
-    writeLog('image is unset');
+    writeLog('blitText: image is unset');
     exit
   end;
-  
+
   left := x;
 
   for a:=1 to length(text) do begin
@@ -108,7 +108,7 @@ var
   image: PImageRef;
 begin
   if not isImageSet(imgCGAFont) then begin
-    writeLog('image is unset');
+    writeLog('initDefaultFont: image is unset');
     exit
   end;
 
