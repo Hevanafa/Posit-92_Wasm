@@ -50,12 +50,12 @@ const
   LightGrey = $FFAAAAAA;
   White = $FFFFFFFF;
 
-type
+{type
   AllowedScancodes = (
     SC_Q, SC_W, SC_E, SC_R, SC_T, SC_Y, SC_U, SC_I, SC_O, SC_P,
     SC_A, SC_S, SC_D, SC_F, SC_G, SC_H, SC_J, SC_K, SC_L,
     SC_Z, SC_X, SC_C, SC_V, SC_B, SC_N, SC_M,
-  );
+  );}
 
 var
   lastEsc: boolean;
@@ -66,11 +66,26 @@ var
   cursorLeft, cursorTop: integer;
   charBuffer: array[0..CharBufferSize - 1] of char;
 
-  lastKeyStates: set of AllowedScancodes;
+  lastKeyStates: set of byte;
   currentInput: string;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+
+procedure checkKeys;
+var
+  scancode: byte;
+begin
+  for scancode:=0 to 255 do
+    if isKeyDown(scancode) and not (scancode in lastKeyStates) then
+      handleKeyPress(scancode);
+
+  for scancode:=0 to 255 do
+    if isKeyDown(scancode) then
+      lastKeyStates := lastKeyStates + [scancode]
+    else
+      lastKeyStates := lastKeyStates - [scancode];
+end;
 
 procedure cls;
 begin
@@ -204,8 +219,7 @@ begin
   end;
   }
   
-  for a:=ord('a') to ord('z')
-  if isKeyDown()
+  checkKeys;
 
   gameTime := gameTime + dt
 end;
