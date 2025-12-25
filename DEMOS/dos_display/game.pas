@@ -222,7 +222,7 @@ end;
 
 procedure textColour(const colour: byte);
 begin
-  currentColour := hi(currentColour) or (colour and $F)
+  currentColour := (currentColour and $F0) or (colour and $0F)
 end;
 
 procedure print(const text: string);
@@ -460,7 +460,7 @@ begin
 
     blitChar(c,
       a * 8, b * 8,
-      palette[lo(colourBuffer[a + b * BufferWidth])])
+      palette[colourBuffer[a + b * BufferWidth] and $0F])
   end;
 
   { Blinking cursor }
