@@ -89,6 +89,14 @@ class Game extends Posit92 {
     Object.assign(env, {
       queryDate: () => {
         this.#loadStringBuffer(new Date().toLocaleDateString("en-AU").replace(/\//g, "-"))
+      },
+      queryTime: () => {
+        const now = new Date();
+        
+        this.#loadStringBuffer(
+          now.getHours().toString().padStart(2, "0") + ":" +
+          now.getMinutes().toString().padStart(2, "0") + ":" +
+          now.getSeconds().toString().padStart(2, "0"))
       }
     })
   }

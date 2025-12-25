@@ -112,6 +112,8 @@ var
 procedure signalDone; external 'env' name 'signalDone';
 
 procedure queryDate; external 'env' name 'queryDate';
+procedure queryTime; external 'env' name 'queryTime';
+
 function getStringBuffer: PByte; public name 'getStringBuffer';
 begin
   getStringBuffer := @stringBuffer
@@ -309,14 +311,15 @@ begin
           end;
 
         SC_ENTER: begin
-          cursorLeft := 0;
-          fillchar(charBuffer[cursorTop * BufferWidth], BufferWidth, 0);
-
+          incCursorTop;
           currentInput := trim(currentInput);
           
           if currentInput = 'CLS' then cls
           else if currentInput = 'DATE' then begin
             queryDate;
+            printLn(strPtrToString(@stringBuffer, stringBufferLength))
+          end else if currentInput = 'TIME' then begin
+            queryTime;
             printLn(strPtrToString(@stringBuffer, stringBufferLength))
           end else
             printLn('Unknown command: ' + currentInput);
