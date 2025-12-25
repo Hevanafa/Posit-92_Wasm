@@ -139,6 +139,27 @@ begin
   incCursorTop
 end;
 
+procedure updatePromptLine;
+var
+  a: word;
+begin
+  for a:=0 to BufferWidth - 1 do
+    charBuffer[a + cursorTop * BufferWidth] := ' ';
+
+  charBuffer[cursorTop * BufferWidth] := '>';
+
+  for a:=1 to length(currentInput) do
+    charBuffer[a + cursorTop * BufferWidth + 1] := currentInput[a];
+
+  cursorLeft := length(currentInput) + 2
+end;
+
+procedure appendCurrentInput(const c: char);
+begin
+  currentInput := currentInput + c;
+  updatePromptLine
+end;
+
 procedure checkKeys;
 var
   scancode: byte;
@@ -147,32 +168,32 @@ begin
     if isKeyDown(scancode) and not (scancode in lastKeyStates) then
       { handleKeyPress(scancode); }
       case scancode of
-        SC_A: currentInput:=currentInput + 'A';
-        SC_B: currentInput:=currentInput + 'B';
-        SC_C: currentInput:=currentInput + 'C';
-        SC_D: currentInput:=currentInput + 'D';
-        SC_E: currentInput:=currentInput + 'E';
-        SC_F: currentInput:=currentInput + 'F';
-        SC_G: currentInput:=currentInput + 'G';
-        SC_H: currentInput:=currentInput + 'H';
-        SC_I: currentInput:=currentInput + 'I';
-        SC_J: currentInput:=currentInput + 'J';
-        SC_K: currentInput:=currentInput + 'K';
-        SC_L: currentInput:=currentInput + 'L';
-        SC_M: currentInput:=currentInput + 'M';
-        SC_N: currentInput:=currentInput + 'N';
-        SC_O: currentInput:=currentInput + 'O';
-        SC_P: currentInput:=currentInput + 'P';
-        SC_Q: currentInput:=currentInput + 'Q';
-        SC_R: currentInput:=currentInput + 'R';
-        SC_S: currentInput:=currentInput + 'S';
-        SC_T: currentInput:=currentInput + 'T';
-        SC_U: currentInput:=currentInput + 'U';
-        SC_V: currentInput:=currentInput + 'V';
-        SC_W: currentInput:=currentInput + 'W';
-        SC_X: currentInput:=currentInput + 'X';
-        SC_Y: currentInput:=currentInput + 'Y';
-        SC_Z: currentInput:=currentInput + 'Z';
+        SC_A: appendCurrentInput('A');
+        SC_B: appendCurrentInput('B');
+        SC_C: appendCurrentInput('C');
+        SC_D: appendCurrentInput('D');
+        SC_E: appendCurrentInput('E');
+        SC_F: appendCurrentInput('F');
+        SC_G: appendCurrentInput('G');
+        SC_H: appendCurrentInput('H');
+        SC_I: appendCurrentInput('I');
+        SC_J: appendCurrentInput('J');
+        SC_K: appendCurrentInput('K');
+        SC_L: appendCurrentInput('L');
+        SC_M: appendCurrentInput('M');
+        SC_N: appendCurrentInput('N');
+        SC_O: appendCurrentInput('O');
+        SC_P: appendCurrentInput('P');
+        SC_Q: appendCurrentInput('Q');
+        SC_R: appendCurrentInput('R');
+        SC_S: appendCurrentInput('S');
+        SC_T: appendCurrentInput('T');
+        SC_U: appendCurrentInput('U');
+        SC_V: appendCurrentInput('V');
+        SC_W: appendCurrentInput('W');
+        SC_X: appendCurrentInput('X');
+        SC_Y: appendCurrentInput('Y');
+        SC_Z: appendCurrentInput('Z');
 
         SC_BACKSPACE:
           if length(currentInput) > 0 then
@@ -238,6 +259,7 @@ begin
   printLn('Welcome to Posit-92 Wasm!');
   printLn('');
   printLn('');
+  updatePromptLine
 end;
 
 procedure update; public name 'update';
