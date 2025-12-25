@@ -78,7 +78,10 @@ var
 begin
   for scancode:=0 to 255 do
     if isKeyDown(scancode) and not (scancode in lastKeyStates) then
-      handleKeyPress(scancode);
+      { handleKeyPress(scancode); }
+      case scancode of
+        SC_A: currentInput:=currentInput + 'a';
+      end;
 
   for scancode:=0 to 255 do
     if isKeyDown(scancode) then
@@ -241,6 +244,8 @@ begin
       cursorLeft * 8, cursorTop * 8,
       cursorLeft * 8 + 7, cursorTop * 8 + 7,
       LightGrey);
+
+  blitText('> ' + currentInput, 30, 30);
 
   drawMouse;
   drawFPS;

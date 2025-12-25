@@ -6,6 +6,36 @@ class Game extends Posit92 {
    */
   ScancodeMap = {
     "Escape": 0x01,
+
+    "KeyQ": 0x10,
+    "KeyW": 0x11,
+    "KeyE": 0x12,
+    "KeyR": 0x13,
+    "KeyT": 0x14,
+    "KeyY": 0x15,
+    "KeyU": 0x16,
+    "KeyI": 0x17,
+    "KeyO": 0x18,
+    "KeyP": 0x19,
+
+    "KeyA": 0x1E,
+    "KeyS": 0x1F,
+    "KeyD": 0x20,
+    "KeyF": 0x21,
+    "KeyG": 0x22,
+    "KeyH": 0x23,
+    "KeyJ": 0x24,
+    "KeyK": 0x25,
+    "KeyL": 0x26,
+
+    "KeyZ": 0x2C,
+    "KeyX": 0x2D,
+    "KeyC": 0x2E,
+    "KeyV": 0x2F,
+    "KeyB": 0x30,
+    "KeyN": 0x31,
+    "KeyM": 0x32,
+    
     "Space": 0x39
     // Add more scancodes as necessary
   };
