@@ -244,13 +244,13 @@ begin
           end;
 
         SC_ENTER: begin
+          cursorLeft := 0;
+          fillchar(charBuffer[cursorTop * BufferWidth], BufferWidth, 0);
+          
           if currentInput = 'CLS' then cls
           else
             printLn('Your last input was ' + currentInput);
 
-          cursorLeft := 0;
-          fillchar(charBuffer[cursorTop * BufferWidth], BufferWidth, 0);
-          
           currentInput := '';
           updatePromptLine
         end
@@ -341,6 +341,7 @@ begin
     blitChar(c, a * 8, b * 8)
   end;
 
+  { Blinking cursor }
   if frac(getTimer) >= 0.5 then
     rectfill(
       cursorLeft * 8, cursorTop * 8,
