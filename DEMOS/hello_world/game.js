@@ -84,6 +84,7 @@ var done = false;
 async function main() {
   const game = new Game("game");
   await game.init();
+  await game.loadAssets();
   await game.loadDefaultFont();
   await game.afterInit();
 
