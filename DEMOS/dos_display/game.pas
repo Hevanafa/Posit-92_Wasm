@@ -22,14 +22,33 @@ var
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
-procedure printDOS(const text: string; const x, y: integer);
+procedure printChar(const c: char; const x, y: integer);
+var
+  charcode: byte;
+  row, col: word;
 begin
-  spr(imgCGAFont, 10, 10)
+  charcode := ord(c);
+  row := charcode div 16;
+  col := charcode mod 16;
+  sprRegion(imgCGAFont, col * 8, row * 8, 8, 8, x, y)
+end;
+
+procedure print(const text: string; const x, y: integer);
+var
+  a: word;
+  left: integer;
+begin
+  left := x;
+
+  for a:=1 to length(text) do begin
+    printChar(text[a], left, y);
+    inc(left, 8)
+  end;
 end;
 
 procedure drawFPS;
 begin
-  printDOS('FPS:' + i32str(getLastFPS), 240, 0);
+  print('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
 procedure drawMouse;
