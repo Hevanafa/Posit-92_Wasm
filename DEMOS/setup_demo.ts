@@ -30,6 +30,19 @@ const demoPath = join(scriptDir, demoName);
 const canonicalPosit = join(scriptDir, "../experimental/posit-92.js");
 const mixinsDir = join(scriptDir, "../experimental/mixins");
 
-// TODO: Check if demo exists
-// TODO: Copy posit-92.js with header
+// Check if demo exists
+if (!existsSync(demoPath)) {
+  console.log(styleText("magenta", `Couldn't find ${demoName} demo project!`));
+  process.exit(1)
+}
+
+// Copy posit-92.js with header
+const today = new Date().toString().split("T")[0];
+const header = `// Copied from experimental/posit-92.js\n// Last synced: ${today}\n\n`;
+const content = await readFile(canonicalPosit, "utf-8");
+const destPath = join(demoPath, "posit-92.js");
+
+await writeFile(destPath, header + content, "utf-8");
+console.log(styleText("green", "Copied posit-92.js to " + demoName));
+
 // TODO: Handle mixins
