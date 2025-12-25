@@ -45,4 +45,16 @@ const destPath = join(demoPath, "posit-92.js");
 await writeFile(destPath, header + content, "utf-8");
 console.log(styleText("green", "Copied posit-92.js to " + demoName));
 
-// TODO: Handle mixins
+// Handle mixins
+if (mixinMap[demoName]) {
+  const required = mixinMap[demoName];
+
+  for (const mixin of required) {
+    const srcPath = join(mixinsDir, mixin);
+    const destPath = join(demoPath, mixin);
+
+    await copyFile(srcPath, destPath);
+    console.log(styleText("green", `Copied ${mixin} to ${demoName}`))
+  }
+} else
+  console.log(styleText("cyan", "No mixins needed for " + demoName));
