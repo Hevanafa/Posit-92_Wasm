@@ -90,6 +90,10 @@ This requires:
 - The tools from [WebAssembly/binaryen](https://github.com/WebAssembly/binaryen) installed
 - Assigned the bin folder of it to system PATH environment variable
 
+### How it works
+
+tl;dr Just use `optimise_wasm.ts` with `game.wasm` ready in the same folder
+
 The optimisation flag `-Oz` (optimise for size) works well to reduce the size, similar to `-O3`
 
 ```powershell
