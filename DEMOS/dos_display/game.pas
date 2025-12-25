@@ -99,6 +99,8 @@ var
 
   cursorLeft, cursorTop: integer;
   charBuffer: array[0..CharBufferSize - 1] of char;
+  colourBuffer: array[0..CharBufferSize - 1] of byte;
+  currentColour: byte;  { lo: fg, hi: bg }
 
   lastKeyStates: set of byte;
   currentInput: string;
@@ -106,6 +108,11 @@ var
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
+
+function makeColour(const fg, bg: byte): byte;
+begin
+  makeColour := (bg shl 4) or fg
+end;
 
 procedure cls;
 begin
