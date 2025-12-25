@@ -1,3 +1,5 @@
+# This script should be placed in the root DEMOS folder
+
 param(
   [parameter(mandatory=$true)]
   [string]$demoName
