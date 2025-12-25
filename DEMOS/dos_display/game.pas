@@ -121,7 +121,7 @@ begin
   cursorTop := 0
 end;
 
-procedure blitChar(const c: char; const x, y: integer);
+procedure blitChar(const c: char; const x, y: integer; const colour: longword);
 var
   charcode: byte;
   row, col: word;
@@ -157,12 +157,13 @@ begin
     alpha := image^.dataPtr[srcPos + 3];
     if alpha < 255 then continue;
 
-    colour := unsafeSprPget(image, sx, sy);
+    { colour := unsafeSprPget(image, sx, sy); }
+    { colour := palette[fg]; }
     unsafePset(x + a, y + b, colour);
   end;
 end;
 
-procedure blitText(const text: string; const x, y: integer);
+procedure blitText(const text: string; const x, y: integer; const colour: longword);
 var
   a: word;
   left: integer;
@@ -175,7 +176,7 @@ begin
   left := x;
 
   for a:=1 to length(text) do begin
-    blitChar(text[a], left, y);
+    blitChar(text[a], left, y, colour);
     inc(left, 8)
   end;
 end;
