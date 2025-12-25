@@ -68,13 +68,13 @@ begin
 end;
 
 procedure print(const text: string);
+var
+  a: word;
 begin
   for a:=1 to length(text) do begin
     charBuffer[cursorTop * BufferWidth + cursorLeft] := text[a];
     incCursorLeft
   end;
-
-  { TODO: Flush buffer }
 end;
 
 
@@ -105,6 +105,8 @@ begin
   cls;
   cursorLeft := 0;
   cursorTop := 0;
+
+  print('Welcome to Posit-92 Wasm!')
 end;
 
 procedure update; public name 'update';
@@ -128,13 +130,16 @@ begin
 end;
 
 procedure draw; public name 'draw';
-{var
-  w: integer;
-  s: string;}
+var
+  a, b: integer;
+  
 begin
   vgaCls($FF6495ED);
 
   { Your drawing code here }
+  for b:=0 to BufferHeight - 1 do
+  for a:=0 to BufferWidth - 1 do
+    blitChar(charBuffer[a + b * BufferWidth], a * 8, b * 8);
 
   drawMouse;
   drawFPS;
