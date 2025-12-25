@@ -125,11 +125,41 @@ procedure blitChar(const c: char; const x, y: integer);
 var
   charcode: byte;
   row, col: word;
+  fg, bg: byte;
+
+  image: PImageRef;
+  a, b: integer;
+  sx, sy: integer;
+  srcPos: longint;
+  alpha: byte;
+  colour: longword;
 begin
   charcode := ord(c);
   row := charcode div 16;
   col := charcode mod 16;
-  sprRegion(imgCGAFont, col * 8, row * 8, 8, 8, x, y)
+
+  fg := lo(currentColour);
+  bg := hi(currentColour);
+
+  { Inlined sprRegion
+    sprRegion(imgCGAFont, col * 8, row * 8, 8, 8, x, y); }
+  image := getImagePtr(imgCGAFont);
+
+  for b:=0 to 7 do
+  for a:=0 to 7 do begin
+    if (x + a >= vgaWidth) or (x + a < 0)
+      or (y + b >= vgaHeight) or (y + b < 0) then continue;
+
+    sx := col * 8 + a;
+    sy := row * 8 + b;
+    srcPos := (sx + sy * image^.width) * 4;
+
+    alpha := image^.dataPtr[srcPos + 3];
+    if alpha < 255 then continue;
+
+    colour := unsafeSprPget(image, sx, sy);
+    unsafePset(x + a, y + b, colour);
+  end;
 end;
 
 procedure blitText(const text: string; const x, y: integer);
