@@ -331,11 +331,13 @@ var
   a, b: integer;
   c: char;
   grey: byte;
+  timeOffset: double;
 begin
   vgaCls(black);
 
+  timeOffset := frac(getTimer) * 2 * PI;
   for b:=0 to vgaHeight-1 do begin
-    grey := trunc((sin(b - frac(getTimer) * 2 * PI) + 1.0) * 20.0);  { * 0.15 * 255 / 2.0, rounded up }
+    grey := trunc((sin(b - timeOffset) + 1.0) * 20.0);  { * 0.15 * 255 / 2.0, rounded up }
     hline(0, vgaWidth-1, b, $FF000000 or (grey shl 16) or (grey shl 8) or grey)
   end;
 
