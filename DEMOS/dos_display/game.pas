@@ -227,9 +227,13 @@ begin
           end;
 
         SC_ENTER: begin
+          if currentInput = 'CLS' then cls
+          else
+            printLn('Your last input was ' + currentInput);
+
           cursorLeft := 0;
           fillchar(charBuffer[cursorTop * BufferWidth], BufferWidth, ord(' '));
-          printLn('Your last input was ' + currentInput);
+          
           currentInput := '';
           updatePromptLine
         end
