@@ -186,6 +186,7 @@ var
 begin
   for a:=1 to length(text) do begin
     charBuffer[cursorTop * BufferWidth + cursorLeft] := text[a];
+    colourBuffer[cursorTop * BufferWidth + cursorLeft] := currentColour;
     incCursorLeft
   end;
 end;
@@ -334,6 +335,8 @@ begin
   hideCursor;
 
   currentInput := '';
+  currentColour := makeColour(7, 0);
+
   cls;
   printLn('Welcome to Posit-92 Wasm!');
   printLn('Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit');
