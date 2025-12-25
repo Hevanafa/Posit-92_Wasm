@@ -199,8 +199,11 @@ begin
           if length(currentInput) > 0 then
             currentInput := copy(currentInput, 1, length(currentInput) - 1);
         SC_ENTER: begin
+          cursorLeft := 0;
+          fillchar(charBuffer[cursorTop * BufferWidth], BufferWidth, ord(' '));
           printLn('Your last input was ' + currentInput);
           currentInput := '';
+          updatePromptLine
         end
       end;
 
