@@ -41,15 +41,14 @@ begin
   initFPSCounter;
 end;
 
-procedure afterInit;
+procedure afterInit; public name 'afterInit';
 begin
   { Initialise game state here }
   hideCursor;
-
-  replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
+  { replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000); }
 end;
 
-procedure update;
+procedure update; public name 'update';
 begin
   updateDeltaTime;
   incrementFPS;
@@ -69,35 +68,23 @@ begin
   gameTime := gameTime + dt
 end;
 
-procedure draw;
+procedure draw; public name 'draw';
 var
   w: integer;
   s: string;
 begin
   cls($FF6495ED);
 
-{
-  if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
-  else
-    spr(imgDosuEXE[0], 148, 88);
+  { Your drawing code here }
 
-  s := 'Hello world!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
-}
   drawMouse;
   drawFPS;
 
   vgaFlush
 end;
 
-exports
-  { Main game procedures }
-  init,
-  afterInit,
-  update,
-  draw;
+{ Requires at least 1 exported member }
+exports init;
 
 begin
 { Starting point is intentionally left empty }
