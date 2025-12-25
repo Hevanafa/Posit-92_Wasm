@@ -11,11 +11,11 @@ uses
   Assets;
 
 procedure renderLoadingScreen(const actual, total: integer);
-var
+{var
   s: string;
-  w: word;
+  w: word;}
 begin
-  cls($FF6495ED);
+  vgaCls($FF6495ED);
 {
   s := 'Progress: ' + i32str(actual) + ' / ' + i32str(total);
   w := measureDefault(s);

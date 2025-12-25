@@ -30,7 +30,7 @@ begin
   fillchar(charBuffer, CharBufferSize, 0)
 end;
 
-procedure printChar(const c: char; const x, y: integer);
+procedure blitChar(const c: char; const x, y: integer);
 var
   charcode: byte;
   row, col: word;
@@ -41,7 +41,7 @@ begin
   sprRegion(imgCGAFont, col * 8, row * 8, 8, 8, x, y)
 end;
 
-procedure print(const text: string; const x, y: integer);
+procedure blitText(const text: string; const x, y: integer);
 var
   a: word;
   left: integer;
@@ -49,14 +49,14 @@ begin
   left := x;
 
   for a:=1 to length(text) do begin
-    printChar(text[a], left, y);
+    blitChar(text[a], left, y);
     inc(left, 8)
   end;
 end;
 
 procedure drawFPS;
 begin
-  print('FPS:' + i32str(getLastFPS), 240, 0);
+  blitText('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
 procedure drawMouse;
@@ -101,11 +101,11 @@ begin
 end;
 
 procedure draw; public name 'draw';
-var
+{var
   w: integer;
-  s: string;
+  s: string;}
 begin
-  cls($FF6495ED);
+  vgaCls($FF6495ED);
 
   { Your drawing code here }
 

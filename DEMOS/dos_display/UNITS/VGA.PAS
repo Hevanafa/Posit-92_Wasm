@@ -29,7 +29,7 @@ procedure initBuffer;
 function getSurfacePtr: PByteArray; public name 'getSurfacePtr';
 
 { Colour format: $AARRGGBB }
-procedure cls(const colour: longword);
+procedure vgaCls(const colour: longword);
 procedure clsBlend(const colour: longword);
 
 function unsafePget(const x, y: integer): longword;
@@ -224,7 +224,7 @@ begin
   unsafePsetBlend(x, y, colour)
 end;
 
-procedure cls(const colour: longword);
+procedure vgaCls(const colour: longword);
 var
   x, y: word;
 begin
