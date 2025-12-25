@@ -43,7 +43,9 @@ const canonicalPosit = join(scriptDir, "../experimental/posit-92.js");
 const mixinsDir = join(scriptDir, "../experimental/mixins");
 
 const scriptsDir = join(scriptDir, "../scripts");
-const scriptsExcludes = ["square_screen"];
+const scriptsExcludes = [
+  "square_screen"  // Has custom UNITS for unusual resolutions: PICO-8 Clone, GameBoy Jam & Nokia Jam
+];
 
 // Check if demo exists
 if (!existsSync(demoPath)) {

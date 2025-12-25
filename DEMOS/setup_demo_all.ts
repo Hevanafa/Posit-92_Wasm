@@ -3,7 +3,9 @@ import { join } from "node:path";
 import { styleText } from "node:util";
 
 const scriptDir = import.meta.dir;
-const skip: Array<string> = ["webgl_demo"];
+const skip: Array<string> = [
+  "webgl_demo"  // This needs the default #ctx initialisation disabled
+];
 
 const demoFolders = readdirSync(scriptDir, { withFileTypes: true })
   .filter(dir => dir.isDirectory())
