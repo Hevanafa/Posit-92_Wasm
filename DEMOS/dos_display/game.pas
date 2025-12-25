@@ -31,7 +31,9 @@ procedure signalDone; external 'env' name 'signalDone';
 
 procedure cls;
 begin
-  fillchar(charBuffer, CharBufferSize, 0)
+  fillchar(charBuffer, CharBufferSize, 0);
+  cursorLeft := 0;
+  cursorTop := 0
 end;
 
 procedure blitChar(const c: char; const x, y: integer);
@@ -63,13 +65,17 @@ begin
   end;
 end;
 
+procedure incCursorTop;
+begin
+  cursorLeft := 0;
+  inc(cursorTop)
+end;
+
 procedure incCursorLeft;
 begin
   inc(cursorLeft);
-  if cursorLeft >= BufferWidth then begin
-    cursorLeft := 0;
-    inc(cursorTop)
-  end;
+  if cursorLeft >= BufferWidth then
+    incCursorTop;
 end;
 
 procedure print(const text: string);
@@ -80,6 +86,12 @@ begin
     charBuffer[cursorTop * BufferWidth + cursorLeft] := text[a];
     incCursorLeft
   end;
+end;
+
+procedure printLn(const text: string);
+begin
+  print(text);
+  incCursorTop
 end;
 
 
@@ -126,10 +138,7 @@ begin
   hideCursor;
 
   cls;
-  cursorLeft := 0;
-  cursorTop := 0;
-
-  print('Welcome to Posit-92 Wasm!')
+  printLn('Welcome to Posit-92 Wasm!')
 end;
 
 procedure update; public name 'update';
