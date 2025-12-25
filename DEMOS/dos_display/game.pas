@@ -300,7 +300,7 @@ begin
           
           if currentInput = 'CLS' then cls
           else
-            printLn('Your last input was ' + currentInput);
+            printLn('Unknown command: ' + currentInput);
 
           currentInput := '';
           updatePromptLine
@@ -363,7 +363,6 @@ begin
   cls;
   printLn('Welcome to Posit-92 Wasm!');
   printLn('Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit');
-  printLn('');
   printLn('');
   updatePromptLine
 end;
