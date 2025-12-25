@@ -1,3 +1,8 @@
+/**
+ * Migrated from the PowerShell version
+ * This script must be placed at the root DEMOS folder
+ */
+
 import { existsSync } from "node:fs";
 import { readFile, writeFile, copyFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -37,7 +42,7 @@ if (!existsSync(demoPath)) {
 }
 
 // Copy posit-92.js with header
-const today = new Date().toString().split("T")[0];
+const today = new Date().toISOString().split("T")[0];
 const header = `// Copied from experimental/posit-92.js\n// Last synced: ${today}\n\n`;
 const content = await readFile(canonicalPosit, "utf-8");
 const destPath = join(demoPath, "posit-92.js");
