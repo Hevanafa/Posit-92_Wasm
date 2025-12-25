@@ -123,10 +123,27 @@ begin
   end;
 end;
 
+procedure scrollBuffer;
+var
+  row, col: integer;
+begin
+  for row:=0 to BufferHeight - 2 do
+  for col:=0 to BufferWidth - 1 do
+    charBuffer[row * BufferWidth + col] :=
+      charBuffer[(row + 1) * BufferWidth + col];
+  
+  fillchar(charBuffer[(BufferHeight - 1) * BufferWidth], BufferWidth, 0);
+  cursorLeft := 0;
+  cursorTop := BufferHeight - 1
+end;
+
 procedure incCursorTop;
 begin
   cursorLeft := 0;
-  inc(cursorTop)
+  inc(cursorTop);
+
+  if cursorTop >= BufferHeight then
+    scrollBuffer;
 end;
 
 procedure incCursorLeft;
@@ -232,7 +249,7 @@ begin
             printLn('Your last input was ' + currentInput);
 
           cursorLeft := 0;
-          fillchar(charBuffer[cursorTop * BufferWidth], BufferWidth, ord(' '));
+          fillchar(charBuffer[cursorTop * BufferWidth], BufferWidth, 0);
           
           currentInput := '';
           updatePromptLine
