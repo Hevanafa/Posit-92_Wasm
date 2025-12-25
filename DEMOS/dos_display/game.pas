@@ -330,8 +330,14 @@ procedure draw; public name 'draw';
 var
   a, b: integer;
   c: char;
+  grey: byte;
 begin
   vgaCls(black);
+
+  for b:=0 to vgaHeight-1 do begin
+    grey := trunc((sin(b - getTimer) + 1.0) / 2.0 * 0.15 * 255);
+    hline(0, vgaWidth-1, b, $FF000000 or (grey shl 16) or (grey shl 8) or grey)
+  end;
 
   { Your drawing code here }
   for b:=0 to BufferHeight - 1 do
