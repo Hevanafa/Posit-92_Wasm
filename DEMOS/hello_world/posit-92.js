@@ -1,3 +1,6 @@
+// Copied from experimental/posit-92.js
+// Last synced: 2025-12-25
+
 "use strict";
 
 class Posit92 {

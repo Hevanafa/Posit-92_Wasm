@@ -101,8 +101,46 @@ class SoundsMixin extends Posit92 {
     const arrayBuffer = await response.arrayBuffer();
     const audioBuffer = await this.#audioContext.decodeAudioData(arrayBuffer);
 
+    console.log("loadSound", key, url);
+
     this.#sounds.set(key, audioBuffer);
     this.#setSoundVolume(key, 0.5)
+  }
+
+  /**
+   * Load sound files from manifest in parallel
+   * @param {Map<number, string>} manifest - Key-value pairs of `"asset_key": "sound_path"`
+   */
+  async loadSoundsFromManifest(manifest) {
+    const entries = Array.from(manifest.entries());
+
+    this.incLoadingTotal(manifest.size);
+
+    const promises = entries.map(([key, url]) =>
+      this.loadSound(key, url)
+        .then(() => {
+          // On success
+          return { key, url, success: true }
+        })
+        .catch(err => {
+          console.error("Failed to load sound: " + url, err);
+          return { key, url, success: false }
+        })
+        .finally(() => { this.incLoadingActual() })
+    );
+
+    const results = await Promise.all(promises);
+
+    // Error handling
+    const failures = results.filter(item => !item.success);
+    if (failures.length > 0) {
+      console.error("Failed to load sounds:");
+      
+      for (const failure of failures)
+        console.error("   " + failure.key + ": " + failure.path);
+
+      throw new Error("Failed to load some sounds")
+    }
   }
 
   #playSound(key) {

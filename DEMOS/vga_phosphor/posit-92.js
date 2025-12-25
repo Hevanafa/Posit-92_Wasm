@@ -1,6 +1,11 @@
+// Copied from experimental/posit-92.js
+// Last synced: 2025-12-25
+
 "use strict";
 
 class Posit92 {
+  static version = "0.1.1_experimental";
+
   #wasmSource = "game.wasm";
 
   #vgaWidth = 320;
@@ -10,6 +15,9 @@ class Posit92 {
    * @type {HTMLCanvasElement}
    */
   #canvas;
+  /**
+   * @type {CanvasRenderingContext2D}
+   */
   #ctx;
 
   /**
@@ -129,12 +137,12 @@ class Posit92 {
     
     this.#initKeyboard();
     this.#initMouse();
-
-    if (this.loadAssets)
-      await this.loadAssets();
   }
 
-  afterInit() {
+  async afterInit() {
+    if (this.loadAssets)
+      await this.loadAssets();
+
     this.#wasm.exports.afterInit();
     this.#addOutOfFocusFix()
   }
@@ -172,7 +180,6 @@ class Posit92 {
   }
 
 
-  // BITMAP.PAS
   async loadImageFromURL(url) {
     if (url == null)
       throw new Error("loadImageFromURL: url is required");
@@ -221,6 +228,95 @@ class Posit92 {
     this.#wasm.exports.registerImageRef(handle, wasmPtr, img.width, img.height);
 
     return handle
+  }
+
+  #loadingActual = 0;
+  #loadingTotal = 0;
+
+  /**
+   * Load images from manifest in parallel
+   * @param {Object.<string, string>} manifest - Key-value pairs of `"asset_key": "image_path"`
+   */
+  async loadImagesFromManifest(manifest) {
+    const entries = Object.entries(manifest);
+
+    // this.#loadingTotal = entries.length;
+    // this.#loadingActual = 0;
+
+    const promises = entries.map(([key, path]) =>
+      this.loadImage(path).then(handle => {
+        // On success
+        this.#loadingActual++;
+        return { key, path, handle }
+      })
+    );
+
+    const results = await Promise.all(promises);
+
+    const failures = results.filter(item => item.handle == 0);
+    if (failures.length > 0) {
+      console.error("Failed to load assets:");
+      
+      for (const failure of failures)
+        console.error("   " + failure.key + ": " + failure.path);
+
+      throw new Error("Failed to load some assets")
+    }
+
+    for (const { key, handle } of results) {
+      const caps = key
+        .replace(/^./, _ => _.toUpperCase())
+        .replace(/_(.)/g, (_, g1) => g1.toUpperCase());
+      const setterName = `setImg${caps}`;
+
+      if (typeof this.wasmInstance.exports[setterName] != "function")
+        console.error("loadAssetsFromManifest: Missing setter", setterName, "for the asset key", key)
+      else
+        this.wasmInstance.exports[setterName](handle);
+    }
+  }
+
+  get loadingProgress() {
+    return {
+      actual: this.#loadingActual,
+      total: this.#loadingTotal
+    }
+  }
+
+  incLoadingActual() {
+    this.#loadingActual++;
+    if (this.#loadingActual > this.#loadingTotal)
+      this.#loadingActual = this.#loadingTotal;
+  }
+
+  setLoadingActual(value) {
+    this.#assertNumber(value);
+    this.#loadingActual = value
+  }
+
+  incLoadingTotal(count) {
+    this.#loadingTotal += count
+  }
+
+  setLoadingTotal(value) {
+    this.#assertNumber(value);
+    this.#loadingTotal = value
+  }
+
+  setLoadingText(text) {
+    const div = document.querySelector("#loading-overlay > div");
+    div.innerHTML = text;
+  }
+
+  hideLoadingOverlay() {
+    const div = document.getElementById("loading-overlay");
+    // div.style.display = "none";
+    div.classList.add("hidden");
+    this.setLoadingText("");
+  }
+
+  async sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
   }
 
 
