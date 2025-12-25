@@ -7,6 +7,7 @@ class Game extends Posit92 {
   ScancodeMap = {
     "Escape": 0x01,
     "Backspace": 0x0E,
+    "Enter": 0x1C,
 
     "KeyQ": 0x10,
     "KeyW": 0x11,

@@ -12,6 +12,7 @@ uses
 const
   SC_ESC = $01;
   SC_BACKSPACE = $0E;
+  SC_ENTER = $1C;
 
   SC_Q = $10;
   SC_W = $11;
@@ -74,52 +75,6 @@ var
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
-procedure checkKeys;
-var
-  scancode: byte;
-begin
-  for scancode:=0 to 255 do
-    if isKeyDown(scancode) and not (scancode in lastKeyStates) then
-      { handleKeyPress(scancode); }
-      case scancode of
-        SC_A: currentInput:=currentInput + 'A';
-        SC_B: currentInput:=currentInput + 'B';
-        SC_C: currentInput:=currentInput + 'C';
-        SC_D: currentInput:=currentInput + 'D';
-        SC_E: currentInput:=currentInput + 'E';
-        SC_F: currentInput:=currentInput + 'F';
-        SC_G: currentInput:=currentInput + 'G';
-        SC_H: currentInput:=currentInput + 'H';
-        SC_I: currentInput:=currentInput + 'I';
-        SC_J: currentInput:=currentInput + 'J';
-        SC_K: currentInput:=currentInput + 'K';
-        SC_L: currentInput:=currentInput + 'L';
-        SC_M: currentInput:=currentInput + 'M';
-        SC_N: currentInput:=currentInput + 'N';
-        SC_O: currentInput:=currentInput + 'O';
-        SC_P: currentInput:=currentInput + 'P';
-        SC_Q: currentInput:=currentInput + 'Q';
-        SC_R: currentInput:=currentInput + 'R';
-        SC_S: currentInput:=currentInput + 'S';
-        SC_T: currentInput:=currentInput + 'T';
-        SC_U: currentInput:=currentInput + 'U';
-        SC_V: currentInput:=currentInput + 'V';
-        SC_W: currentInput:=currentInput + 'W';
-        SC_X: currentInput:=currentInput + 'X';
-        SC_Y: currentInput:=currentInput + 'Y';
-        SC_Z: currentInput:=currentInput + 'Z';
-        
-        SC_BACKSPACE:
-          if length(currentInput) > 0 then
-            currentInput := copy(currentInput, 1, length(currentInput) - 1);
-      end;
-
-  for scancode:=0 to 255 do
-    if isKeyDown(scancode) then
-      lastKeyStates := lastKeyStates + [scancode]
-    else
-      lastKeyStates := lastKeyStates - [scancode];
-end;
 
 procedure cls;
 begin
@@ -184,6 +139,57 @@ procedure printLn(const text: string);
 begin
   print(text);
   incCursorTop
+end;
+
+procedure checkKeys;
+var
+  scancode: byte;
+begin
+  for scancode:=0 to 255 do
+    if isKeyDown(scancode) and not (scancode in lastKeyStates) then
+      { handleKeyPress(scancode); }
+      case scancode of
+        SC_A: currentInput:=currentInput + 'A';
+        SC_B: currentInput:=currentInput + 'B';
+        SC_C: currentInput:=currentInput + 'C';
+        SC_D: currentInput:=currentInput + 'D';
+        SC_E: currentInput:=currentInput + 'E';
+        SC_F: currentInput:=currentInput + 'F';
+        SC_G: currentInput:=currentInput + 'G';
+        SC_H: currentInput:=currentInput + 'H';
+        SC_I: currentInput:=currentInput + 'I';
+        SC_J: currentInput:=currentInput + 'J';
+        SC_K: currentInput:=currentInput + 'K';
+        SC_L: currentInput:=currentInput + 'L';
+        SC_M: currentInput:=currentInput + 'M';
+        SC_N: currentInput:=currentInput + 'N';
+        SC_O: currentInput:=currentInput + 'O';
+        SC_P: currentInput:=currentInput + 'P';
+        SC_Q: currentInput:=currentInput + 'Q';
+        SC_R: currentInput:=currentInput + 'R';
+        SC_S: currentInput:=currentInput + 'S';
+        SC_T: currentInput:=currentInput + 'T';
+        SC_U: currentInput:=currentInput + 'U';
+        SC_V: currentInput:=currentInput + 'V';
+        SC_W: currentInput:=currentInput + 'W';
+        SC_X: currentInput:=currentInput + 'X';
+        SC_Y: currentInput:=currentInput + 'Y';
+        SC_Z: currentInput:=currentInput + 'Z';
+
+        SC_BACKSPACE:
+          if length(currentInput) > 0 then
+            currentInput := copy(currentInput, 1, length(currentInput) - 1);
+        SC_ENTER: begin
+          printLn('Your last input was ' + currentInput);
+          currentInput := '';
+        end
+      end;
+
+  for scancode:=0 to 255 do
+    if isKeyDown(scancode) then
+      lastKeyStates := lastKeyStates + [scancode]
+    else
+      lastKeyStates := lastKeyStates - [scancode];
 end;
 
 
