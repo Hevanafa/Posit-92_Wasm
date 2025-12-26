@@ -4,8 +4,9 @@ library Game;
 
 uses
   Conv, FPS, Graphics,
+  Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Keyboard, Logger, Mouse,
+  Loading, Logger,
   Panic, Timing, WasmMemMgr, VGA,
   Assets;
 

@@ -56,7 +56,7 @@ class Game extends Posit92 {
    * @override
    */
   async init() {
-    game.setLoadingText("Loading WebAssembly binary...");
+    this.setLoadingText("Loading WebAssembly binary...");
     await super.init()
   }
 
