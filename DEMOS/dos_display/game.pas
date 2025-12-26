@@ -540,12 +540,24 @@ begin
 end;
 
 procedure update;
+var
+  a: word;
 begin
   updateDeltaTime;
   incrementFPS;
   updateMouse;
   
   checkKeys;
+
+  for a:=0 to high(snowflakes) do begin
+    if not snowflakes[a].active then continue;
+
+    snowflakes[a].x := snowflakes[a].x + snowflakes[a].vx * dt;
+    snowflakes[a].y := snowflakes[a].y + snowflakes[a].vy * dt;
+    
+    if snowflakes[a].y >= vgaHeight then
+      snowflakes[a].active := false;
+  end;
 
   if getTimer >= nextSpawnTick then begin
     nextSpawnTick := getTimer + 0.1;
