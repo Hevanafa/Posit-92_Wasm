@@ -110,6 +110,8 @@ var
   stringBuffer: array[0..255] of byte;
   stringBufferLength: word;
 
+  renderSnow: boolean;
+
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 
@@ -351,7 +353,10 @@ begin
     printLn('  0 file(s)           0 bytes');
     printLn('  1 dir(s)      6942067 bytes free');
 
-  end else
+  end else if prog = 'SNOW' then
+    renderSnow := not renderSnow
+
+  else
     printLn('Unknown command: ' + prog);
 end;
 
@@ -476,6 +481,8 @@ var
 begin
   { Initialise game state here }
   hideCursor;
+
+  renderSnow := false;
 
   currentInput := '';
   currentColour := makeColour(7, 0);
