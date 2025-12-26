@@ -1,4 +1,8 @@
 /**
+ * Generate Assets Script
+ * Part of Posit-92 game framework
+ * By Hevanafa, 26-12-2025
+ * 
  * Automatically generates AddAssets.pas and add_assets.js
  * based on assets.json
  */
