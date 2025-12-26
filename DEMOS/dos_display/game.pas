@@ -341,6 +341,7 @@ begin
     printLn('  MEM  Show memory status');
     printLn('  FREE  Show free memory in bytes');
     printLn('  DIR  Show a list of files & dirs');
+    printLn('  SNOW  Toggle snow background');
 
   end else if prog = 'MEM' then begin
     heapSize := heapEnd - heapStart;
