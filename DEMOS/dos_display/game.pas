@@ -63,6 +63,7 @@ const
   CharBufferSize = BufferWidth * BufferHeight;
 
   {Black = $FF000000;}
+  Transparent = $00000000;
   Black = $FF202020;
   LightGrey = $FFAAAAAA;
   White = $FFFFFFFF;
@@ -172,7 +173,44 @@ begin
   end;
 end;
 
-procedure blitText(const text: string; const x, y: integer; const colour: longword);
+procedure blitCharBG(const c: char; const x, y: integer; const background: longword);
+var
+  charcode: byte;
+  row, col: word;
+
+  image: PImageRef;
+  a, b: integer;
+  sx, sy: integer;
+  srcPos: longint;
+  alpha: byte;
+begin
+  if getAlpha(background) < 255 then exit;
+
+  charcode := ord(c);
+  row := charcode div 16;
+  col := charcode mod 16;
+
+  { Inlined sprRegion
+    sprRegion(imgCGAFont, col * 8, row * 8, 8, 8, x, y); }
+  image := getImagePtr(imgCGAFont);
+
+  for b:=0 to 7 do
+  for a:=0 to 7 do begin
+    if (x + a >= vgaWidth) or (x + a < 0)
+      or (y + b >= vgaHeight) or (y + b < 0) then continue;
+
+    sx := col * 8 + a;
+    sy := row * 8 + b;
+    srcPos := (sx + sy * image^.width) * 4;
+
+    alpha := image^.dataPtr[srcPos + 3];
+    if alpha = 255 then
+      unsafePset(x + a, y + b, background);
+  end;
+end;
+
+
+procedure blitText(const text: string; const x, y: integer; const colour, background: longword);
 var
   a: word;
   left: integer;
@@ -185,6 +223,7 @@ begin
   left := x;
 
   for a:=1 to length(text) do begin
+    blitCharBG(text[a], left, y, background);
     blitChar(text[a], left, y, colour);
     inc(left, 8)
   end;
@@ -365,7 +404,10 @@ end;
 
 procedure drawFPS;
 begin
-  blitText('FPS:' + i32str(getLastFPS), 240, 0, palette[$0E]);
+  blitText(
+    'FPS:' + i32str(getLastFPS),
+    240, 0,
+    palette[$0E], transparent);
 end;
 
 procedure drawMouse;
