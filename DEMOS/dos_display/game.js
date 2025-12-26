@@ -53,6 +53,8 @@ class Game extends Posit92 {
     // Add more scancodes as necessary
   };
 
+  BgmJingle = 1;
+
   #AssetManifest = {
     images: {
       CGA_font: "assets/images/CGA8x8.png",
@@ -60,6 +62,7 @@ class Game extends Posit92 {
       // Add more image assets here
     },
     sounds: new Map([
+      [this.BgmJingle, "assets/ogg/Jingle Bells (Chiptune Version) - Chiptune Arcade.ogg"]
       // Add sound assets here
     ])
   }
@@ -111,6 +114,7 @@ class Game extends Posit92 {
     this.setLoadingTotal(imageCount + soundCount);
 
     await this.loadImagesFromManifest(this.#AssetManifest.images);
+    // TODO: Load the sounds
 
     // Add more assets as necessary
   }

@@ -62,6 +62,8 @@ const
   BufferHeight = 25;
   CharBufferSize = BufferWidth * BufferHeight;
 
+  BgmJingle = 1;
+
   {Black = $FF000000;}
   Transparent = $00000000;
   Black = $FF202020;
@@ -342,6 +344,7 @@ begin
     printLn('  FREE  Show free memory in bytes');
     printLn('  DIR  Show a list of files & dirs');
     printLn('  SNOW  Toggle snow background');
+    printLn('  JINGLE  Play Jingle Bells by Chiptune Arcade')
 
   end else if prog = 'MEM' then begin
     heapSize := heapEnd - heapStart;
@@ -366,7 +369,9 @@ begin
   end else if prog = 'SNOW' then
     renderSnow := not renderSnow
 
-  else
+  else if prog = 'JINGLE' then begin
+    
+  end else
     printLn('Unknown command: ' + prog);
 end;
 
