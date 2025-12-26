@@ -517,8 +517,8 @@ begin
   hideCursor;
 
   renderSnow := false;
-  for a:=0 to high(renderSnow) do
-    renderSnow.active := false;
+  for a:=0 to high(snowflakes) do
+    snowflakes[a].active := false;
 
   currentInput := '';
   currentColour := makeColour(7, 0);
@@ -554,7 +554,7 @@ begin
 
     snowflakes[a].x := snowflakes[a].x + snowflakes[a].vx * dt;
     snowflakes[a].y := snowflakes[a].y + snowflakes[a].vy * dt;
-    
+
     if snowflakes[a].y >= vgaHeight then
       snowflakes[a].active := false;
   end;
@@ -585,10 +585,10 @@ begin
           pset(
             trunc(x), trunc(y),
             $FF000000 or (brightness shl 16) or (brightness shl 8) or brightness);
-      else
+      end else begin
         with snowflakes[a] do
           circfill(
-            trunc(x), trunc(y), radius,
+            trunc(x), trunc(y), size,
             $FF000000 or (brightness shl 16) or (brightness shl 8) or brightness);
       end;
     end;
