@@ -88,15 +88,22 @@ const
     $FFFFFFFF
   );
 
-{type
-  AllowedScancodes = (
+type
+  {AllowedScancodes = (
     SC_Q, SC_W, SC_E, SC_R, SC_T, SC_Y, SC_U, SC_I, SC_O, SC_P,
     SC_A, SC_S, SC_D, SC_F, SC_G, SC_H, SC_J, SC_K, SC_L,
     SC_Z, SC_X, SC_C, SC_V, SC_B, SC_N, SC_M,
   );}
+  TSnowParticle = record
+    active: boolean;
+    x, y: double;
+    vx, vy: double;
+    size: integer;
+    alpha: byte;
+  end;
 
 var
-  { Init your game state here }
+  { Game state }
   gameTime: double;
 
   cursorLeft, cursorTop: integer;
@@ -111,6 +118,7 @@ var
   stringBufferLength: word;
 
   renderSnow: boolean;
+  snowflakes: array[0..49] of TSnowParticle;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -448,6 +456,11 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
+procedure spawnSnowflake;
+begin
+  
+end;
+
 
 procedure init;
 begin
@@ -477,12 +490,15 @@ end;
 
 procedure afterInit; public name 'afterInit';
 var
+  a: word;
   heapSize, freeHeapSize: longword;
 begin
   { Initialise game state here }
   hideCursor;
 
   renderSnow := false;
+  for a:=0 to high(renderSnow) do
+    renderSnow.active := false;
 
   currentInput := '';
   currentColour := makeColour(7, 0);
@@ -523,11 +539,15 @@ var
 begin
   vgaCls(black);
 
-  { Render scanlines }
-  timeOffset := frac(getTimer) * 2 * PI;
-  for b:=0 to vgaHeight-1 do begin
-    grey := trunc((sin(b - timeOffset) + 1.0) * 20.0);  { * 0.15 * 255 / 2.0, rounded up }
-    hline(0, vgaWidth-1, b, $FF000000 or (grey shl 16) or (grey shl 8) or grey)
+  if renderSnow then begin
+    
+  end else begin
+    { Render scanlines }
+    timeOffset := frac(getTimer) * 2 * PI;
+    for b:=0 to vgaHeight-1 do begin
+      grey := trunc((sin(b - timeOffset) + 1.0) * 20.0);  { * 0.15 * 255 / 2.0, rounded up }
+      hline(0, vgaWidth-1, b, $FF000000 or (grey shl 16) or (grey shl 8) or grey)
+    end;
   end;
 
   { Your drawing code here }
