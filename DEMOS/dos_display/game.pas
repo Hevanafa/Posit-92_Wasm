@@ -300,19 +300,23 @@ procedure handleCommand(cmd: string);
 var
   lastColour: byte;
   heapSize, freeHeapSize: longword;
+  words: array[0..3] of string;
+  prog: string;
 begin
   cmd := trim(cmd);
+  split(cmd, ' ', words);
+  prog := words[0];
   
-  if cmd = 'CLS' then cls
-  else if cmd = 'DATE' then begin
+  if prog = 'CLS' then cls
+  else if prog = 'DATE' then begin
     queryDate;
     printLn(strPtrToString(@stringBuffer, stringBufferLength))
 
-  end else if cmd = 'TIME' then begin
+  end else if prog = 'TIME' then begin
     queryTime;
     printLn(strPtrToString(@stringBuffer, stringBufferLength))
 
-  end else if cmd = 'HELP' then begin
+  end else if prog = 'HELP' then begin
     lastColour := currentColour;
     textColour(9);
     printLn('Available commands');
@@ -326,7 +330,7 @@ begin
     printLn('  MEM  Show memory status');
     printLn('  FREE  Show free memory in bytes');
 
-  end else if cmd = 'MEM' then begin
+  end else if prog = 'MEM' then begin
     heapSize := heapEnd - heapStart;
     freeHeapSize := GetFreeHeapSize;
 
@@ -335,10 +339,10 @@ begin
     printLn('Free: ' + i32str(freeHeapSize) + ' bytes');
     printLn('Heap usage: ' + toFixed((heapSize - freeHeapSize) / heapSize * 100.0, 0) + '%');
 
-  end else if cmd = 'FREE' then begin
+  end else if prog = 'FREE' then begin
     printLn(i32str(GetFreeHeapSize) + ' bytes free')
 
-  end else if cmd = 'DIR' then begin
+  end else if prog = 'DIR' then begin
     printLn('Volume in drive C is POSIT92');
     printLn('Directory of C:\');
     printLn('');
@@ -347,7 +351,7 @@ begin
     printLn('  1 dir(s)      6942067 bytes free');
 
   end else
-    printLn('Unknown command: ' + cmd);
+    printLn('Unknown command: ' + prog);
 end;
 
 procedure appendCurrentInput(const c: char);
