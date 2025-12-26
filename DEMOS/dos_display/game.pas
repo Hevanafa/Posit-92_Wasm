@@ -329,6 +329,7 @@ begin
     printLn('  HELP  Show this help');
     printLn('  MEM  Show memory status');
     printLn('  FREE  Show free memory in bytes');
+    printLn('  DIR  Show a list of files & dirs');
 
   end else if prog = 'MEM' then begin
     heapSize := heapEnd - heapStart;
