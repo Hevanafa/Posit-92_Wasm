@@ -1,7 +1,7 @@
 "use strict";
 
 class Posit92 {
-  static version = "0.1.1_experimental";
+  static version = "0.1.2_experimental";
 
   #wasmSource = "game.wasm";
 
