@@ -542,6 +542,7 @@ end;
 procedure update;
 var
   a: word;
+  drift: double;
 begin
   updateDeltaTime;
   incrementFPS;
@@ -553,11 +554,15 @@ begin
     for a:=0 to high(snowflakes) do begin
       if not snowflakes[a].active then continue;
 
-      snowflakes[a].x := snowflakes[a].x + snowflakes[a].vx * dt;
-      snowflakes[a].y := snowflakes[a].y + snowflakes[a].vy * dt;
+      with snowflakes[a] do begin
+        y := y + vy * dt;
 
-      if snowflakes[a].y >= vgaHeight then
-        snowflakes[a].active := false;
+        drift := sin(y * 0.1 + getTimer * 2.0) * 12.0;
+        x := x + (vx + drift) * dt;
+
+        if y >= vgaHeight then
+          active := false;
+      end;
     end;
 
     if getTimer >= nextSpawnTick then begin
@@ -579,6 +584,7 @@ begin
   vgaCls(black);
 
   if renderSnow then begin
+    { Render snowflakes }
     for a:=0 to high(snowflakes) do begin
       if not snowflakes[a].active then continue;
 
