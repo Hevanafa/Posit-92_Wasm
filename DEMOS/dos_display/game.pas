@@ -7,8 +7,8 @@ uses
   Conv, FPS, Graphics, Loading, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Strings, Timing, WasmMemMgr, WasmHeap,
-  Version, VGA,
+  Strings, Sounds, Timing,
+  Version, WasmMemMgr, WasmHeap, VGA,
   Assets;
 
 const
@@ -375,6 +375,12 @@ begin
       printLn('Playing Jingle Bells by Chiptune Arcade...')
     end;
     
+  end else if prog = 'STOP' then begin
+    if getMusicPlaying then begin
+      stopMusic;
+      printLn('Stopping playback...')
+    end;
+
   end else
     printLn('Unknown command: ' + prog);
 end;
@@ -580,6 +586,9 @@ begin
       spawnSnowflake;
     end;
   end;
+
+  if getMusicPlaying and (getMusicTime >= getMusicDuration - 0.05) then
+    stopMusic;
 
   gameTime := gameTime + dt
 end;
