@@ -444,7 +444,7 @@ end;
 
 procedure afterInit; public name 'afterInit';
 var
-  heapSize: longword;
+  heapSize, freeHeapSize: longword;
 begin
   { Initialise game state here }
   hideCursor;
@@ -459,7 +459,8 @@ begin
   printLn('(C) 2025 Hevanafa');
 
   heapSize := heapEnd - heapStart;
-  printLn(i32str(heapSize div 1024) + 'KB RAM OK');
+  freeHeapSize := GetFreeHeapSize;
+  printLn(i32str(heapSize div 1024) + 'KB OK  ' + i32str(freeHeapSize) + ' BYTES FREE');
 
   printLn('');
   printLn('Type HELP for available commands');
