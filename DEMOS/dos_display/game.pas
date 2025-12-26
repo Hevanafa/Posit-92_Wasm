@@ -323,12 +323,12 @@ begin
     printLn('  DATE  Display current date');
     printLn('  TIME  Display current time');
     printLn('  HELP  Show this help');
+    printLn('  MEM  Show memory status');
+    printLn('  FREE  Show free memory in bytes');
 
   end else if cmd = 'MEM' then begin
     heapSize := heapEnd - heapStart;
     freeHeapSize := GetFreeHeapSize;
-
-    { printLn(i32str(heapSize div 1024) + 'KB OK  ' + i32str(freeHeapSize) + ' BYTES FREE'); }
 
     printLn('Total heap: ' + i32str(heapSize div 1024) + 'KB');
     printLn('Used: ' + i32str(heapSize - freeHeapSize) + ' bytes');
@@ -336,7 +336,7 @@ begin
     printLn('Heap usage: ' + toFixed((heapSize - freeHeapSize) / heapSize * 100.0, 0) + '%');
 
   end else if cmd = 'FREE' then begin
-    printLn('?? bytes free')
+    printLn(i32str(GetFreeHeapSize) + ' bytes free')
 
   end else
     printLn('Unknown command: ' + cmd);
