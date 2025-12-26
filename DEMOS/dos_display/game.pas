@@ -344,7 +344,7 @@ begin
     printLn('  FREE  Show free memory in bytes');
     printLn('  DIR  Show a list of files & dirs');
     printLn('  SNOW  Toggle snow background');
-    printLn('  JINGLE  Play Jingle Bells by Chiptune Arcade')
+    printLn('  JINGLE  Play Jingle Bells')
 
   end else if prog = 'MEM' then begin
     heapSize := heapEnd - heapStart;
@@ -370,6 +370,10 @@ begin
     renderSnow := not renderSnow
 
   else if prog = 'JINGLE' then begin
+    if not getMusicPlaying then begin
+      playMusic(BgmJingle);
+      printLn('Playing Jingle Bells by Chiptune Arcade...')
+    end;
     
   end else
     printLn('Unknown command: ' + prog);
