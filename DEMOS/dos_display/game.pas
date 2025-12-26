@@ -118,7 +118,8 @@ var
   stringBufferLength: word;
 
   renderSnow: boolean;
-  snowflakes: array[0..49] of TSnowParticle;
+  snowflakes: array[0..99] of TSnowParticle;
+  nextSpawnTick: double;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -545,6 +546,11 @@ begin
   updateMouse;
   
   checkKeys;
+
+  if getTimer >= nextSpawnTick then begin
+    nextSpawnTick := getTimer + 0.1;
+    spawnSnowflake;
+  end;
 
   gameTime := gameTime + dt
 end;
