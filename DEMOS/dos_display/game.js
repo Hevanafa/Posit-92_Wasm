@@ -1,6 +1,6 @@
 "use strict";
 
-class Game extends Posit92 {
+class Game extends SoundsMixin {
   /**
    * KeyboardEvent.code to DOS scancode
    */
@@ -114,7 +114,7 @@ class Game extends Posit92 {
     this.setLoadingTotal(imageCount + soundCount);
 
     await this.loadImagesFromManifest(this.#AssetManifest.images);
-    // TODO: Load the sounds
+    await this.loadSoundsFromManifest(this.#AssetManifest.sounds);
 
     // Add more assets as necessary
   }
