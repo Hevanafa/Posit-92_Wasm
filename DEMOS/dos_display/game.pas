@@ -126,12 +126,12 @@ procedure signalDone; external 'env' name 'signalDone';
 procedure queryDate; external 'env' name 'queryDate';
 procedure queryTime; external 'env' name 'queryTime';
 
-function getStringBuffer: PByte; public name 'getStringBuffer';
+function getStringBuffer: PByte;
 begin
   getStringBuffer := @stringBuffer
 end;
 
-procedure setStringBufferLength(const value: word); public name 'setStringBufferLength';
+procedure setStringBufferLength(const value: word);
 begin
   stringBufferLength := value
 end;
@@ -457,8 +457,21 @@ begin
 end;
 
 procedure spawnSnowflake;
+var
+  a: word;
+  idx: integer;
 begin
-  
+  idx := -1;
+
+  for a:=0 to high(snowflakes) do
+    if not snowflakes[a].active then begin
+      idx := a;
+      break
+    end;
+
+  if idx < 0 then exit;
+
+  snowflakes[idx].active := true;
 end;
 
 
@@ -470,7 +483,7 @@ begin
   initFPSCounter;
 end;
 
-procedure initDefaultFont; public name 'initDefaultFont';
+procedure initDefaultFont;
 var
   a, b: word;
   image: PImageRef;
@@ -488,7 +501,7 @@ begin
       unsafeSprPset(image, a, b, LightGrey);
 end;
 
-procedure afterInit; public name 'afterInit';
+procedure afterInit;
 var
   a: word;
   heapSize, freeHeapSize: longword;
@@ -519,7 +532,7 @@ begin
   updatePromptLine
 end;
 
-procedure update; public name 'update';
+procedure update;
 begin
   updateDeltaTime;
   incrementFPS;
@@ -530,7 +543,7 @@ begin
   gameTime := gameTime + dt
 end;
 
-procedure draw; public name 'draw';
+procedure draw;
 var
   a, b: integer;
   c: char;
@@ -577,7 +590,14 @@ begin
 end;
 
 { Requires at least 1 exported member }
-exports init;
+exports
+  getStringBuffer,
+  setStringBufferLength,
+  initDefaultFont,
+  afterInit,
+  update,
+  draw,
+  init;
 
 begin
 { Starting point is intentionally left empty }
