@@ -5,14 +5,18 @@ let wasm;
 
 /**
  * Pass a JS string to Pascal
+ * This sets 2 variables: stringBuffer, stringBufferLength
  */
 function loadStringBuffer(text) {
   const encoder = new TextEncoder();
   const bytes = encoder.encode(text);
 
   const bufferPtr = wasm.exports.getStringBuffer();
-  const buffer = new Uint8Array(wasm.exports.memory.buffer, bufferPtr, bytes.length);
+  const buffer = new Uint8Array(
+    wasm.exports.memory.buffer, bufferPtr, bytes.length);
   buffer.set(bytes);
+
+  wasm.exports.setStringBufferLength(bytes.length);
 
   return bytes.length
 }

@@ -2,6 +2,7 @@ library StrBuffer;
 
 var
   stringBuffer: array[0..255] of byte;
+  stringBufferLength: word;
 
 procedure hello; external 'env' name 'hello';
 procedure documentWrite; external 'env' name 'documentWrite';
@@ -20,6 +21,11 @@ begin
 
   for a:=1 to length(str) do
     stringBuffer[a] := ord(str[a]);
+end;
+
+procedure setStringBufferLength(const length: word); public name 'setStringBufferLength';
+begin
+  stringBufferLength := length
 end;
 
 
