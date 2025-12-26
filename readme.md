@@ -119,6 +119,16 @@ Without the bulk memory compiler switch, it will throw this compile error:
 [wasm-validator error in function 118] unexpected false: memory.fill operations require bulk memory [--enable-bulk-memory-opt]
 ```
 
+## What To Do
+
+When there is a compiler error especially in the demo projects, something like this:
+
+```
+SHAPES.PAS(110,3) Fatal: Internal error 2010120506
+```
+
+Simply call the cleanup script in experimental, then rebuild
+
 ## Credits
 
 Default font: [Nokia Cellphone FC](https://www.dafont.com/nokia-cellphone.font)
