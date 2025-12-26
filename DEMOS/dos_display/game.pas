@@ -338,6 +338,14 @@ begin
   end else if cmd = 'FREE' then begin
     printLn(i32str(GetFreeHeapSize) + ' bytes free')
 
+  end else if cmd = 'DIR' then begin
+    printLn('Volume in drive C is POSIT92');
+    printLn('Directory of C:\');
+    printLn('');
+    printLn('SECRETS  <DIR>  26-12-2025  09:02');
+    printLn('  0 file(s)           0 bytes');
+    printLn('  1 dir(s)      6942067 bytes free');
+
   end else
     printLn('Unknown command: ' + cmd);
 end;
