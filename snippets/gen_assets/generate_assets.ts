@@ -1,3 +1,8 @@
+/**
+ * Automatically generates AddAssets.pas and add_assets.js
+ * based on assets.json
+ */
+
 import { existsSync } from "node:fs";
 import { styleText } from "node:util";
 
@@ -18,7 +23,7 @@ const
   pascalImplementation = [];
 
 for (const key in manifest.images) {
-  const path = manifest.images[key];
+  // const path = manifest.images[key];  // Unused for now
   // console.log(key, path);
 
   const pascalCaseKey = capitalise(key)
