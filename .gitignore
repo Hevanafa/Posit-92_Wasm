@@ -35,10 +35,11 @@ snippets/wasm_loader/compile.ps1
 snippets/wasm_loader/dist.ps1
 snippets/wasm_loader/start_server.ps1
 snippets/ts_wasm/index.js
+snippets/gen_assets/add_assets.js
+snippets/gen_assets/AddAssets.pas
 
 # Bun
 node_modules/
 
 # Games from different repos
 DEMOS/mfgj0/**/*.*
-
