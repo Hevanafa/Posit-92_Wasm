@@ -73,13 +73,16 @@ console.log(styleText("green", "Generated AddAssets.pas"));
 
 // Generate add_assets.js
 const jsAssetPairs = Object.entries(manifest.images)
-  .map(([key, path]) => `    ${key}: "${path}"`);
+  .map(([key, path]) => `      ${key}: "${path}"`);
 
 await Bun.write(jsAssetsFile,
 `
-#AssetManifest = {
-  images: {
+class Game extends Posit92 {
+  // Copy this to game.js
+  #AssetManifest = {
+    images: {
 ${jsAssetPairs.join(",\r\n")}
+    }
   }
 }
 `);
