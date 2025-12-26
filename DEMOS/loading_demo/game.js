@@ -1,6 +1,6 @@
 "use strict";
 
-class Game extends LoadingMixin {
+class Game extends Posit92 {
   /**
    * KeyboardEvent.code to DOS scancode
    */
@@ -10,19 +10,33 @@ class Game extends LoadingMixin {
     // Add more scancodes as necessary
   };
 
-  async loadAssets() {
-    let handle = 0;
+  #AssetManifest = {
+    images: {
+      cursor: "assets/images/cursor.png"
+    },
+    sounds: new Map([
+    ])
+  }
 
-    this.setLoadingText("Loading images & fonts...");
-    await this.sleep(300);
-
-    handle = await this.loadImage("assets/images/cursor.png");
-    this.wasmInstance.exports.setImgCursor(handle);
-
+  async loadDefaultFont() {
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.wasmInstance.exports.defaultFontPtr(),
       this.wasmInstance.exports.defaultFontGlyphsPtr());
+  }
+
+  async loadAssets() {
+    let handle = 0;
+
+    this.setLoadingText("Loading images & fonts...");
+    this.setLoadingActual(0);
+
+    const imageCount = Object.keys(this.#AssetManifest.images).length;
+    const soundCount = this.#AssetManifest.sounds.size;
+    this.setLoadingTotal(imageCount + soundCount);
+
+    await this.loadImagesFromManifest(this.#AssetManifest.images);
+    await this.sleep(300);
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
@@ -37,6 +51,34 @@ class Game extends LoadingMixin {
 
     // Add more assets as necessary
   }
+
+  /**
+   * @override
+   */
+  async init() {
+    game.setLoadingText("Loading WebAssembly binary...");
+    await super.init()
+  }
+
+  async afterInit() {
+    // Only applicable with an in-game loading screen
+    // This is because loadAssets is called in `afterInit`
+    this.hideLoadingOverlay();
+
+    this.wasmInstance.exports.renderLoadingScreen(
+      this.loadingProgress.actual,
+      this.loadingProgress.total);
+
+    const t = window.setInterval(() => {
+      const { actual, total } = this.loadingProgress;
+      this.wasmInstance.exports.renderLoadingScreen(actual, total);
+      // console.log("loadingProgress", actual, total);
+    }, 100);
+
+    await super.afterInit();
+
+    window.clearInterval(t);
+  }
 }
 
 const TargetFPS = 60;
@@ -50,11 +92,10 @@ var done = false;
 
 async function main() {
   const game = new Game("game");
-  game.setLoadingText("Loading WebAssembly binary...");
   await game.init();
-  game.afterInit();
-
-  game.hideLoadingOverlay();
+  await game.loadAssets();
+  await game.loadDefaultFont();
+  await game.afterInit();
 
   function loop(currentTime) {
     if (done) {
