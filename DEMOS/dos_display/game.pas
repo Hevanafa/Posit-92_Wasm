@@ -472,6 +472,12 @@ begin
   if idx < 0 then exit;
 
   snowflakes[idx].active := true;
+  snowflakes[idx].x := random(vgaWidth);
+  snowflakes[idx].y := -10;
+  snowflakes[idx].vx := 0;
+  snowflakes[idx].vy := random(30.0, 100.0);  { Pixels per second }
+  snowflakes[idx].size := 1 + random(3);
+  snowflakes[idx].alpha := trunc((0.5 + random / 2) * 255)
 end;
 
 
