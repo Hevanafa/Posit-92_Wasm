@@ -11,8 +11,14 @@ async function startServer(port: number, maxRetries: number): Promise<void> {
         port: port + attempt,
 
         async fetch(req) {
+          if (req.method != "GET")
+            return new Response("Method not allowed", { status: 405 });
+
           const url = new URL(req.url);
-          const filepath = `.${url.pathname}`;
+          const decoded = decodeURIComponent(url.pathname);
+          
+          console.log("GET", decoded);
+          const filepath = `.${decoded}`;
 
           try {
             let file = Bun.file(filepath);
