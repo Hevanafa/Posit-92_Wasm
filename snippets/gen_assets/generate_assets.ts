@@ -20,14 +20,18 @@ const
 for (const key in manifest.images) {
   const path = manifest.images[key];
 
-  const varname = "img" + capitalise(key)
+  const pascalCaseKey = capitalise(key)
     .replace(/_(.)/g, (_, g1) => g1.toUpperCase());
 
-  pascalVariables.push(varname)
+  const varname = "img" + pascalCaseKey;
+  pascalVariables.push(varname);
+
+  const procedureName = "setImg" + pascalCaseKey
+  pascalInterface.push(`procedure ${procedureName}(const imgHandle: longint); public name '${procedureName}';`)
   // console.log(key, path);
 }
 
-// TODO: Write everything in one go
+// Write everything in one go
 await Bun.write(
   "AddAssets.pas",
 `
@@ -35,6 +39,8 @@ interface
 
 var
 ${pascalVariables.map(item => "  " + item).join(",\r\n")}: longint;
+
+${pascalInterface.join("\r\n")}
 `);
 
 export {}
