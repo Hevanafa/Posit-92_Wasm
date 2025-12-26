@@ -21,6 +21,6 @@
 			}
 		},
 		"omnipascal.defaultDevelopmentEnvironment": "FreePascal",
-		"omnipascal.searchPath": "UNITS"
+		"omnipascal.searchPath": "UNITS;experimental/UNITS"
 	}
 }
