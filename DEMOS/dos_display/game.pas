@@ -299,6 +299,7 @@ end;
 procedure handleCommand(cmd: string);
 var
   lastColour: byte;
+  heapSize, freeHeapSize: longword;
 begin
   cmd := trim(cmd);
   
@@ -324,10 +325,15 @@ begin
     printLn('  HELP  Show this help');
 
   end else if cmd = 'MEM' then begin
-    printLn('Total heap: ??');
-    printLn('Used: ?? bytes');
-    printLn('Free: ?? bytes');
-    printLn('Heap usage: ??%');
+    heapSize := heapEnd - heapStart;
+    freeHeapSize := GetFreeHeapSize;
+
+    { printLn(i32str(heapSize div 1024) + 'KB OK  ' + i32str(freeHeapSize) + ' BYTES FREE'); }
+
+    printLn('Total heap: ' + i32str(heapSize div 1024) + 'KB');
+    printLn('Used: ' + i32str(heapSize - freeHeapSize) + ' bytes');
+    printLn('Free: ' + i32str(freeHeapSize) + ' bytes');
+    printLn('Heap usage: ' + toFixed((heapSize - freeHeapSize) / heapSize * 100.0, 0) + '%');
 
   end else if cmd = 'FREE' then begin
     printLn('?? bytes free')
