@@ -323,6 +323,15 @@ begin
     printLn('  TIME  Display current time');
     printLn('  HELP  Show this help');
 
+  end else if cmd = 'MEM' then begin
+    printLn('Total heap: ??');
+    printLn('Used: ?? bytes');
+    printLn('Free: ?? bytes');
+    printLn('Heap usage: ??%');
+
+  end else if cmd = 'FREE' then begin
+    printLn('?? bytes free')
+
   end else
     printLn('Unknown command: ' + cmd);
 end;
