@@ -19,7 +19,7 @@ if (!existsSync(manifestFile)) {
   process.exit(1)
 }
 
-function capitalise(text) { return text.replace(/^(.)/, (_, g1) => g1.toUpperCase()) }
+function capitalise(text: string) { return text.replace(/^(.)/, (_, g1) => g1.toUpperCase()) }
 
 const manifest = await Bun.file(manifestFile).json();
 

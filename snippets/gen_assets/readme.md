@@ -13,5 +13,6 @@ What it does:
 Input: `"slime_girl": "assets/images/slime_girl.png"`
 
 Output:
+
 - `imgSlimeGirl` variable
 - `setImgSlimeGirl` procedure
