@@ -99,7 +99,7 @@ type
     x, y: double;
     vx, vy: double;
     size: integer;
-    alpha: byte;
+    brightness: byte; { 0..255 }
   end;
 
 var
@@ -476,9 +476,9 @@ begin
   snowflakes[idx].x := random(vgaWidth);
   snowflakes[idx].y := -10;
   snowflakes[idx].vx := 0;
-  snowflakes[idx].vy := random(30.0, 100.0);  { Pixels per second }
+  snowflakes[idx].vy := 30.0 + random(70);  { Pixels per second }
   snowflakes[idx].size := 1 + random(3);
-  snowflakes[idx].alpha := trunc((0.5 + random / 2) * 255)
+  snowflakes[idx].brightness := trunc((0.5 + random / 2) * 255)
 end;
 
 
@@ -565,7 +565,21 @@ begin
   vgaCls(black);
 
   if renderSnow then begin
-    
+    for a:=0 to high(snowflakes) do begin
+      if not snowflakes[a].active then continue;
+
+      if snowflakes[a].size = 1 then begin
+        with snowflakes[a] do
+          pset(
+            trunc(x), trunc(y),
+            $FF000000 or (brightness shl 16) or (brightness shl 8) or brightness);
+      else
+        with snowflakes[a] do
+          circfill(
+            trunc(x), trunc(y), radius,
+            $FF000000 or (brightness shl 16) or (brightness shl 8) or brightness);
+      end;
+    end;
   end else begin
     { Render scanlines }
     timeOffset := frac(getTimer) * 2 * PI;
