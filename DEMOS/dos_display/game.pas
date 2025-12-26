@@ -246,10 +246,15 @@ procedure scrollBuffer;
 var
   row, col: integer;
 begin
+  { Shift buffer upwards 1 row }
   for row:=0 to BufferHeight - 2 do
-  for col:=0 to BufferWidth - 1 do
+  for col:=0 to BufferWidth - 1 do begin
     charBuffer[row * BufferWidth + col] :=
       charBuffer[(row + 1) * BufferWidth + col];
+      
+    colourBuffer[row * BufferWidth + col] :=
+      colourBuffer[(row + 1) * BufferWidth + col];
+  end;
   
   fillchar(charBuffer[(BufferHeight - 1) * BufferWidth], BufferWidth, 0);
   cursorLeft := 0;
