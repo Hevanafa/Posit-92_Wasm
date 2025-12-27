@@ -103,7 +103,7 @@ function WasmReallocMem(const ptr: pointer; const newBytes: longword): pointer;
 var
   oldBlock: PMemBlock;
   newPtr: pointer;
-
+  copySize: longword;
 begin
   if ptr = nil then begin
     WasmReallocMem := WasmGetMem(newBytes);
@@ -116,7 +116,24 @@ begin
     exit
   end;
 
-  { TODO: Handle allocate new block }
+  oldBlock := PMemBlock(PByte(ptr) - sizeof(TMemBlock));
+
+  { Allocate new block }
+  newPtr := WasmGetMem(newBytes);
+  if newPtr = nil then begin
+    WasmReallocMem := nil;
+    exit
+  end;
+
+  { Copy block }
+  if oldBlock^.size < newBytes then
+    copySize := oldBlock^.size
+  else
+    copySize := newBytes;
+
+  move(ptr^, newPtr^, copySize);
+  WasmFreeMem(ptr);
+  WasmReallocMem := newPtr
 end;
 
 
