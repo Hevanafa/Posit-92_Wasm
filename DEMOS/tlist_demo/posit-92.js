@@ -136,14 +136,18 @@ class Posit92 {
     const result = await WebAssembly.instantiate(bytes.buffer, this.#importObject);
     this.#wasm = result.instance;
 
+    this.#initWasmMemory();
+  }
+
+  #initWasmMemory() {
     /**
      * Grow Wasm memory size (DOS-style: fixed allocation)
      * Layout:
-     * * 0-1 MB: stack / globals
+     * * 256 KB: stack / globals
      * * 1MB-2MB: heap
      */
 
-    const heapStart = 1048576;  // 1 MB = 1024 * 1024 B
+    const heapStart = 256 * 1024;
     const heapSize = 1 * 1048576;
 
     // Wasm memory is in 64KB pages
