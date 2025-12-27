@@ -125,10 +125,15 @@ class Posit92 {
       this.setLoadingText("Loading WebAssembly (" + loadedKB + " KB / " + totalKB + " KB)")
     }
 
-    // TODO: Combine chunks
-    // const bytes = await response.arrayBuffer();
+    // Combine chunks
+    const bytes = new Uint8Array(loaded);
+    let pos = 0;
+    for (const chunk of chunks) {
+      bytes.set(chunk, pos);
+      pos += chunk.length
+    }
 
-    const result = await WebAssembly.instantiate(bytes, this.#importObject);
+    const result = await WebAssembly.instantiate(bytes.buffer, this.#importObject);
     this.#wasm = result.instance;
 
     /**
