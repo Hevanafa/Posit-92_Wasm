@@ -3,6 +3,7 @@ library Game;
 {$Mode ObjFPC}
 
 uses
+  SysUtils, FGL,
   Conv, FPS, Loading, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
@@ -13,11 +14,21 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+type
+  TEnemy = class
+    active: boolean;
+    x, y: integer;
+    health: integer;
+    enemyType: integer;
+  end;
+  TEnemyList = specialize TFPGList<TEnemy>;
+
 var
   lastEsc: boolean;
 
   { Init your game state here }
   gameTime: double;
+  enemies: TEnemyList;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -42,13 +53,27 @@ begin
 end;
 
 procedure afterInit;
+var
+  a: word;
+  enemy: TEnemy;
 begin
   hideCursor;
 
   { Initialise game state here }
   gameTime := 0.0;
   
-  replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
+  enemies := TEnemyList.create;
+
+  for a:=0 to 9 do begin
+    enemy := TEnemy.create;
+
+    enemy.active := true;
+    enemy.x := random(vgaWidth - 50);
+    enemy.y := random(vgaHeight - 50);
+    enemy.health := 100;
+
+    enemies.add(enemy)
+  end;
 end;
 
 procedure update;
