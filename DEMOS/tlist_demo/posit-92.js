@@ -174,7 +174,7 @@ class Posit92 {
     this.#initMouse();
   }
 
-  async afterInit() {
+  afterInit() {
     this.#wasm.exports.afterInit();
     this.#addOutOfFocusFix()
   }

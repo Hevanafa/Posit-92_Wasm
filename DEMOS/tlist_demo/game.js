@@ -90,8 +90,9 @@ async function main() {
 
   game.beginLoadingScreen();
     await game.loadAssets();
-    await game.afterInit();
   game.endLoadingScreen();
+
+  game.afterInit();
 
   function loop(currentTime) {
     if (done) {
