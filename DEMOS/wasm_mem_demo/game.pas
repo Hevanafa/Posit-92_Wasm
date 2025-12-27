@@ -120,7 +120,9 @@ begin
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
 
-  printDefault('Free mem: ' + i32str(GetFreeHeapSize) + ' B', 10, 10);
+  printDefault('Mem usage: ' + i32str(getHeapSize - getFreeHeapSize) + ' / ' + i32str(getHeapSize) + ' B', 10, 10);
+
+  printDefault('Item count: ' + i32str(itemCount), 10, 30);
 
   drawMouse;
   drawFPS;

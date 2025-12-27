@@ -19,7 +19,8 @@ function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
 procedure WasmFreeMem(const ptr: pointer); public name 'WasmFreeMem';
 function WasmReallocMem(const ptr: pointer; const newBytes: longword): pointer;
 
-function GetFreeHeapSize: longword;
+function getHeapSize: longword;
+function getFreeHeapSize: longword;
 
 
 implementation
@@ -139,7 +140,12 @@ begin
 end;
 
 
-function GetFreeHeapSize: longword;
+function getHeapSize: longword;
+begin
+  getHeapSize := heapEnd - heapStart
+end;
+
+function getFreeHeapSize: longword;
 var
   current: PByte;  { current memory offset }
   block: PMemBlock;
