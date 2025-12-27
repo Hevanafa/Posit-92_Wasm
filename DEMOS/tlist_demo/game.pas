@@ -17,9 +17,9 @@ const
 type
   TEnemy = class
     active: boolean;
-    x, y: integer;
-    health: integer;
-    enemyType: integer;
+    x, y: smallint;
+    health: smallint;
+    enemyType: smallint;
   end;
   TEnemyList = specialize TFPGList<TEnemy>;
 
