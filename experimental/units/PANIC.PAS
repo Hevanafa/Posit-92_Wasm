@@ -26,6 +26,8 @@ end;
 
 {$else}
 { Default: WASM }
+procedure jsPanicHalt(const textPtr: PByte; const textLen: integer); external 'env' name 'panicHalt';
+
 procedure panicHalt(const msg: string);
 var
   a: word;
