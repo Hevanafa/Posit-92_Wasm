@@ -64,8 +64,15 @@ end;
 
 procedure afterInit;
 begin
-  { Initialise game state here }
   hideCursor;
+
+  { Initialise game state here }
+  gameTime := 0.0;
+  for a:=0 to high(items) do items[a] := nil;
+  itemCount := 0;
+
+  buffer := nil;
+  bufferSize := 0;
 
   { replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000); }
 end;
@@ -131,7 +138,7 @@ begin
   if lastV then begin
     { Shrink or free }
     lastV := isKeyDown(SC_V);
-    
+
     if bufferSize > 10 then begin
       dec(bufferSize, 10);
       buffer := ReallocMem(buffer, bufferSize)

@@ -43,9 +43,11 @@ end;
 
 procedure afterInit;
 begin
-  { Initialise game state here }
   hideCursor;
 
+  { Initialise game state here }
+  gameTime := 0.0;
+  
   replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
 end;
 
