@@ -146,7 +146,7 @@ begin
     availableSpace := oldBlock^.size + sizeof(TMemBlock) + nextBlock^.size;
 
     if alignedSize <= availableSpace then begin
-      oldBlock^.size := availableSpace;
+      oldBlock^.size := alignedSize;
       WasmReAllocMem := ptr;
       exit
     end;
