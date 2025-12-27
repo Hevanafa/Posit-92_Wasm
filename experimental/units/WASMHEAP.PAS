@@ -132,8 +132,28 @@ begin
   alignedSize := (newBytes + 3) and not 3;
   oldBlock := PMemBlock(PByte(ptr) - sizeof(TMemBlock));
 
-  { TODO: Handle shrink in-place }
+  { Handle shrink in-place }
+  if alignedSize <= oldBlock^.size then begin
+    oldBlock^.size := alignedSize;
+    WasmReAllocMem := ptr;
+    exit
+  end;
+
   { TODO: Handle expand in-place }
+
+  { Can't expand in-place, do full realloc }
+  newPtr := WasmGetMem(newBytes);
+  if newPtr = nil then begin
+    WasmReAllocMem := nil;
+    exit
+  end;
+
+  copySize := oldBlock^.size;
+  if copySize > newBytes then copySize := newBytes;
+  move(ptr^, newPtr^, copySize);
+
+  WasmFreeMem(ptr);
+  WasmReAllocMem := newPtr
 end;
 
 
