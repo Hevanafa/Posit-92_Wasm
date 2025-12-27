@@ -105,7 +105,8 @@ class Posit92 {
   async #initWebAssembly() {
     const response = await fetch(this.#wasmSource);
 
-    const contentLength = response.headers.get("Content-Length");
+    const contentLength = response.headers.get("Content-Length");  // Assuming that this is always available
+    // in bytes:
     const total = Number(contentLength);
     let loaded = 0;
 
@@ -120,9 +121,13 @@ class Posit92 {
       loaded += value.length;
 
       const loadedKB = Math.ceil(loaded / 1024);
-      const totalKB = Math.ceil(total / 1024);
 
-      this.setLoadingText("Loading WebAssembly (" + loadedKB + " KB / " + totalKB + " KB)")
+      if (isNaN(total))
+        this.setLoadingText(`Loading WebAssembly (${ loadedKB } KB)`)
+      else {
+        const totalKB = Math.ceil(total / 1024);
+        this.setLoadingText(`Loading WebAssembly (${ loadedKB } KB / ${ totalKB } KB)`)
+      }
     }
 
     // Combine chunks
