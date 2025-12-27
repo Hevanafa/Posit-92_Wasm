@@ -104,7 +104,30 @@ class Posit92 {
 
   async #initWebAssembly() {
     const response = await fetch(this.#wasmSource);
-    const bytes = await response.arrayBuffer();
+
+    const contentLength = response.headers.get("Content-Length");
+    const total = Number(contentLength);
+    let loaded = 0;
+
+    const reader = response.body.getReader();
+    const chunks = [];
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      chunks.push(value);
+      loaded += value.length;
+
+      const loadedKB = Math.ceil(loaded / 1024);
+      const totalKB = Math.ceil(total / 1024);
+
+      this.setLoadingText("Loading WebAssembly (" + loadedKB + " KB / " + totalKB + " KB)")
+    }
+
+    // TODO: Combine chunks
+    // const bytes = await response.arrayBuffer();
+
     const result = await WebAssembly.instantiate(bytes, this.#importObject);
     this.#wasm = result.instance;
 
