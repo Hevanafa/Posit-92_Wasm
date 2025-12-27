@@ -51,7 +51,9 @@ class Game extends Posit92 {
     await super.init();
   }
 
-  async afterInit() {
+  #loadingInterval = 0;
+
+  beginLoadingScreen() {
     // Only applicable with an in-game loading screen
     // This is because loadAssets is called in `afterInit`
     this.hideLoadingOverlay();
@@ -59,16 +61,17 @@ class Game extends Posit92 {
     this.wasmInstance.exports.renderLoadingScreen(
       this.loadingProgress.actual,
       this.loadingProgress.total);
+    this.flush();
 
-    const t = window.setInterval(() => {
+    this.#loadingInterval = window.setInterval(() => {
       const { actual, total } = this.loadingProgress;
       this.wasmInstance.exports.renderLoadingScreen(actual, total);
       // console.log("loadingProgress", actual, total);
     }, 100);
+  }
 
-    await super.afterInit();
-
-    window.clearInterval(t);
+  endLoadingScreen() {
+    window.clearInterval(this.#loadingInterval);
   }
 }
 
@@ -84,9 +87,13 @@ var done = false;
 async function main() {
   const game = new Game("game");
   await game.init();
-  await game.loadAssets();
   await game.loadDefaultFont();
-  await game.afterInit();
+
+  game.beginLoadingScreen();
+    await game.loadAssets();
+  game.endLoadingScreen();
+
+  game.afterInit();
 
   function loop(currentTime) {
     if (done) {
