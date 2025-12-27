@@ -21,7 +21,7 @@ type
     health: smallint;
     enemyType: smallint;
   end;
-  TEnemyList = specialize TFPGList<TEnemy>;
+  TEnemyList = specialize TFPGObjectList<TEnemy>;
 
 var
   lastEsc: boolean;
@@ -65,6 +65,7 @@ begin
   writeLog('afterInit after gameTime');
   
   enemies := TEnemyList.create;
+  enemies.FreeObjects := true;
 
   for a:=0 to 9 do begin
     enemy := TEnemy.create;
@@ -77,6 +78,10 @@ begin
 
     enemies.add(enemy)
   end;
+
+  { Remove 1 enemy for an example }
+  enemies[1].free;
+  enemies.delete(1);
 
   writeLog('enemies[0]');
   writeLogI32(enemies[0].x);
@@ -110,6 +115,8 @@ end;
 procedure draw;
 var
   a: integer;
+  s: string;
+  w: word;
 begin
   cls($FF6495ED);
 
