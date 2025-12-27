@@ -13,20 +13,22 @@ type
     inUse: boolean;
   end;
 
-var
-  heapStart, heapEnd: PByte;
-  heapCurrent: PByte;  { where the next new block should go }
-
 procedure initHeap(const startAddr, heapSize: longword); public name 'initHeap';
 
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
 procedure WasmFreeMem(const ptr: pointer); public name 'WasmFreeMem';
+function WasmReallocMem(const ptr: pointer; const newBytes: longword): pointer;
+
 function GetFreeHeapSize: longword;
 
 
 implementation
 
 { uses Logger; }
+
+var
+  heapStart, heapEnd: PByte;
+  heapCurrent: PByte;  { where the next new block should go }
 
 procedure initHeap(const startAddr, heapSize: longword);
 begin
