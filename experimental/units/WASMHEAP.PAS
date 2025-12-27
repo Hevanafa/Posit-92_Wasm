@@ -17,7 +17,7 @@ procedure initHeap(const startAddr, heapSize: longword); public name 'initHeap';
 
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
 procedure WasmFreeMem(const ptr: pointer); public name 'WasmFreeMem';
-function WasmReallocMem(const ptr: pointer; const newBytes: longword): pointer;
+function WasmReAllocMem(const ptr: pointer; const newBytes: longword): pointer;
 
 function getHeapSize: longword;
 function getFreeHeapSize: longword;
@@ -102,20 +102,20 @@ begin
 end;
 
 
-function WasmReallocMem(const ptr: pointer; const newBytes: longword): pointer;
+function WasmReAllocMem(const ptr: pointer; const newBytes: longword): pointer;
 var
   oldBlock: PMemBlock;
   newPtr: pointer;
   copySize: longword;
 begin
   if ptr = nil then begin
-    WasmReallocMem := WasmGetMem(newBytes);
+    WasmReAllocMem := WasmGetMem(newBytes);
     exit
   end;
 
   if newBytes = 0 then begin
     WasmFreeMem(ptr);
-    WasmReallocMem := nil;
+    WasmReAllocMem := nil;
     exit
   end;
 
@@ -136,7 +136,7 @@ begin
 
   move(ptr^, newPtr^, copySize);
   WasmFreeMem(ptr);
-  WasmReallocMem := newPtr
+  WasmReAllocMem := newPtr
 end;
 
 

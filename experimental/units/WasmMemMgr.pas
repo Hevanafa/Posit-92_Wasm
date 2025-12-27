@@ -34,11 +34,17 @@ begin
   whFreeMemSize := 0
 end;
 
+function whReAllocMem(p: pointer; size: ptruint): pointer;
+begin
+  whReAllocMem := WasmReAllocMem(p, size)
+end;
+
 procedure initMemMgr;
 begin
   customMemMgr.GetMem := @whGetMem;
   customMemMgr.FreeMem := @whFreeMem;
   customMemMgr.FreeMemSize := @whFreeMemSize;
+  customMemMgr.ReAllocMem := @whReAllocMem;
 
   SetMemoryManager(customMemMgr)
 end;
