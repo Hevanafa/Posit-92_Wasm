@@ -1,6 +1,7 @@
 library Game;
 
 {$Mode TP}
+{$Notes OFF}
 
 uses
   Conv, FPS, Loading, Logger,
