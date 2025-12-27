@@ -61,6 +61,8 @@ begin
 
   { Initialise game state here }
   gameTime := 0.0;
+
+  writeLog('afterInit after gameTime');
   
   enemies := TEnemyList.create;
 
@@ -71,9 +73,18 @@ begin
     enemy.x := random(vgaWidth - 50);
     enemy.y := random(vgaHeight - 50);
     enemy.health := 100;
+    enemy.enemyType := 1;
 
     enemies.add(enemy)
   end;
+
+  writeLog('enemies[0]');
+  writeLogI32(enemies[0].x);
+  writeLogI32(enemies[0].y);
+  writeLogI32(enemies[0].health);
+  writeLogI32(enemies[0].enemyType);
+
+  writeLog('afterInit end');
 end;
 
 procedure update;
@@ -98,15 +109,12 @@ end;
 
 procedure draw;
 var
-  w: integer;
-  s: string;
+  a: integer;
 begin
   cls($FF6495ED);
 
-  if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
-  else
-    spr(imgDosuEXE[0], 148, 88);
+  for a:=0 to enemies.count-1 do
+    spr(imgDosuEXE[0], enemies[a].x, enemies[a].y);
 
   s := 'Hello world!';
   w := measureDefault(s);
