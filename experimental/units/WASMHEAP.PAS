@@ -99,6 +99,27 @@ begin
 end;
 
 
+function WasmReallocMem(const ptr: pointer; const newBytes: longword): pointer;
+var
+  oldBlock: PMemBlock;
+  newPtr: pointer;
+
+begin
+  if ptr = nil then begin
+    WasmReallocMem := WasmGetMem(newBytes);
+    exit
+  end;
+
+  if newBytes = 0 then begin
+    WasmFreeMem(ptr);
+    WasmReallocMem := nil;
+    exit
+  end;
+
+  { TODO: Handle allocate new block }
+end;
+
+
 function GetFreeHeapSize: longword;
 var
   current: PByte;  { current memory offset }
