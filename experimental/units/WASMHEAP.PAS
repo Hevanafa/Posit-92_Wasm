@@ -92,13 +92,19 @@ end;
 
 procedure WasmFreeMem(const ptr: pointer);
 var
-  block: PMemBlock;
+  block, nextBlock: PMemBlock;
 begin
   if ptr = nil then exit;
 
   { Find the block header & mark it as free }
   block := PMemBlock(PByte(ptr) - sizeof(TMemBlock));
-  block^.inUse := false
+  block^.inUse := false;
+
+  { Forward memory coalescing logic }
+  { Check if the next block exists and is free }
+  if (longword(nextBlock) < longword(heapCurrent))
+    and (not nextBlock^.inUse) then
+    inc(block^.size, sizeof(TMemBlock) + nextBlock^.size);
 end;
 
 
