@@ -85,8 +85,14 @@ begin
   if lastZ <> isKeyDown(SC_Z) then begin
     lastZ := isKeyDown(SC_Z);
     
-    if lastZ then begin
+    if lastZ and (itemCount < length(items)) then begin
+      { Push item }
       items[itemCount] := new(PItem);
+      with items[itemCount]^ do begin
+        active := false;
+        itemType := 0;
+        count := 0;
+      end;
       inc(itemCount)
     end;
   end;
@@ -95,6 +101,7 @@ begin
     lastX := isKeyDown(SC_X);
 
     if lastX and (itemCount > 0) then begin
+      { Pop item }
       dispose(items[itemCount-1]);
       items[itemCount-1] := nil;
       dec(itemCount)
