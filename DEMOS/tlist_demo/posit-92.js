@@ -140,8 +140,6 @@ class Posit92 {
 
     const result = await WebAssembly.instantiate(bytes.buffer, this.#importObject);
     this.#wasm = result.instance;
-
-    this.#initWasmMemory();
   }
 
   #initWasmMemory() {
@@ -151,7 +149,6 @@ class Posit92 {
      * * 256 KB: stack / globals
      * * 1MB-2MB: heap
      */
-
     const heapStart = 256 * 1024;
     const heapSize = 1 * 1048576;
 
@@ -170,6 +167,7 @@ class Posit92 {
 
     Object.freeze(this.#importObject);
     await this.#initWebAssembly();
+    this.#initWasmMemory();
     this.#wasm.exports.init();
     
     this.#initKeyboard();
