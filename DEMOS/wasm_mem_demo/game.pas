@@ -63,6 +63,8 @@ begin
 end;
 
 procedure afterInit;
+var
+  a: word;
 begin
   hideCursor;
 
@@ -125,6 +127,8 @@ begin
     lastC := isKeyDown(SC_C);
 
     if lastC then begin
+      writeLog('lastC');
+
       if buffer = nil then
         bufferSize := 10
       else
@@ -139,13 +143,17 @@ begin
     { Shrink or free }
     lastV := isKeyDown(SC_V);
 
-    if bufferSize > 10 then begin
-      dec(bufferSize, 10);
-      buffer := ReallocMem(buffer, bufferSize)
-    end else begin
-      buffer := ReallocMem(buffer, 0);
-      bufferSize := 0
-    end;;
+    if lastV then begin
+      writeLog('lastV');
+
+      if bufferSize > 10 then begin
+        dec(bufferSize, 10);
+        buffer := ReallocMem(buffer, bufferSize)
+      end else begin
+        buffer := ReallocMem(buffer, 0);
+        bufferSize := 0
+      end;
+    end;
   end;
 
   gameTime := gameTime + dt
