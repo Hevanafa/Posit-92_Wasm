@@ -139,7 +139,18 @@ begin
     exit
   end;
 
-  { TODO: Handle expand in-place }
+  { Handle expand in-place if available }
+  nextBlock := PMemBlock(PByte(oldBlock) + sizeof(TMemBlock) + oldBlock^.size);
+
+  if (longword(nextBlock) < longword(heapCurrent)) and not nextBlock^.inUse then begin
+    availableSpace := oldBlock^.size + sizeof(TMemBlock) + nextBlock^.size;
+
+    if alignedSize <= availableSpace then begin
+      oldBlock^.size := availableSpace;
+      WasmReAllocMem := ptr;
+      exit
+    end;
+  end;
 
   { Can't expand in-place, do full realloc }
   newPtr := WasmGetMem(newBytes);
