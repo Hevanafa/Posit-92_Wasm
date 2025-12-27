@@ -114,9 +114,9 @@ end;
 
 function WasmReAllocMem(const ptr: pointer; const newBytes: longword): pointer;
 var
-  oldBlock: PMemBlock;
+  oldBlock, nextBlock: PMemBlock;
   newPtr: pointer;
-  copySize: longword;
+  copySize, alignedSize, availableSpace: longword;
 begin
   if ptr = nil then begin
     WasmReAllocMem := WasmGetMem(newBytes);
@@ -129,24 +129,11 @@ begin
     exit
   end;
 
+  alignedSize := (newBytes + 3) and not 3;
   oldBlock := PMemBlock(PByte(ptr) - sizeof(TMemBlock));
 
-  { Allocate new block }
-  newPtr := WasmGetMem(newBytes);
-  if newPtr = nil then begin
-    WasmReallocMem := nil;
-    exit
-  end;
-
-  { Copy block }
-  if oldBlock^.size < newBytes then
-    copySize := oldBlock^.size
-  else
-    copySize := newBytes;
-
-  move(ptr^, newPtr^, copySize);
-  WasmFreeMem(ptr);
-  WasmReAllocMem := newPtr
+  { TODO: Handle shrink in-place }
+  { TODO: Handle expand in-place }
 end;
 
 
