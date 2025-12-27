@@ -18,6 +18,7 @@ procedure initHeap(const startAddr, heapSize: longword); public name 'initHeap';
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
 procedure WasmFreeMem(const ptr: pointer); public name 'WasmFreeMem';
 function WasmReAllocMem(const ptr: pointer; const newBytes: longword): pointer;
+function WasmAllocMem(const bytes: longword): pointer; public name 'WasmAllocMem';
 
 function getHeapSize: longword;
 function getFreeHeapSize: longword;
@@ -90,6 +91,7 @@ begin
   WasmGetMem := pointer(dataPtr)
 end;
 
+
 procedure WasmFreeMem(const ptr: pointer);
 var
   block, nextBlock: PMemBlock;
@@ -102,7 +104,7 @@ begin
 
   { Forward memory coalescing logic }
   nextBlock := PMemBlock(pbyte(block) + sizeof(TMemBlock) + block^.size);
-  
+
   { Check if the next block exists and is free }
   if (longword(nextBlock) < longword(heapCurrent))
     and (not nextBlock^.inUse) then
@@ -145,6 +147,14 @@ begin
   move(ptr^, newPtr^, copySize);
   WasmFreeMem(ptr);
   WasmReAllocMem := newPtr
+end;
+
+
+function WasmAllocMem(const bytes: longword): pointer;
+begin
+  WasmAllocMem := WasmGetMem(bytes);
+  if WasmAllocMem <> nil then
+    fillchar(WasmAllocMem^, bytes, 0)
 end;
 
 
