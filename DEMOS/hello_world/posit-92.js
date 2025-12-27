@@ -1,10 +1,7 @@
-// Copied from experimental/posit-92.js
-// Last synced: 2025-12-25
-
 "use strict";
 
 class Posit92 {
-  static version = "0.1.1_experimental";
+  static version = "0.1.3_experimental";
 
   #wasmSource = "game.wasm";
 
