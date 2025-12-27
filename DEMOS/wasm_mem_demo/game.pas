@@ -16,6 +16,8 @@ const
 
   SC_Z = $2C;
   SC_X = $2D;
+  SC_C = $2E;
+  SC_V = $2F;
 
 type
   PItem = ^TItem;
@@ -27,13 +29,16 @@ type
 
 var
   lastEsc: boolean;
-  lastZ, lastX: boolean;
+  lastZ, lastX, lastC, lastV: boolean;
 
   { Init your game state here }
   gameTime: double;
 
   items: array[0..9] of PItem;
   itemCount: integer;
+
+  buffer: PByte;
+  bufferSize: integer;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -108,6 +113,34 @@ begin
     end;
   end;
 
+  if lastC then begin
+    { Grow buffer size }
+    lastC := isKeyDown(SC_C);
+
+    if lastC then begin
+      if buffer = nil then
+        bufferSize := 10
+      else
+        bufferSize := bufferSize + 10;
+
+      buffer := ReallocMem(buffer, bufferSize)
+      { TODO: Fill with test data }
+    end;
+  end;
+
+  if lastV then begin
+    { Shrink or free }
+    lastV := isKeyDown(SC_V);
+    
+    if bufferSize > 10 then begin
+      dec(bufferSize, 10);
+      buffer := ReallocMem(buffer, bufferSize)
+    end else begin
+      buffer := ReallocMem(buffer, 0);
+      bufferSize := 0
+    end;;
+  end;
+
   gameTime := gameTime + dt
 end;
 
@@ -130,6 +163,8 @@ begin
   printDefault('Mem usage: ' + i32str(getHeapSize - getFreeHeapSize) + ' / ' + i32str(getHeapSize) + ' B', 10, 10);
 
   printDefault('Item count: ' + i32str(itemCount), 10, 30);
+
+  printDefault('Buffer size: ' + i32str(bufferSize), 10, 50);
 
   drawMouse;
   drawFPS;

@@ -9,7 +9,9 @@ class Game extends Posit92 {
     "Space": 0x39,
     
     "KeyZ": 0x2C,
-    "KeyX": 0x2D
+    "KeyX": 0x2D,
+    "KeyC": 0x2E,
+    "KeyV": 0x2F
     // Add more scancodes as necessary
   };
 
