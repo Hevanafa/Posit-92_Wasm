@@ -64,8 +64,7 @@ begin
 
   writeLog('afterInit after gameTime');
   
-  enemies := TEnemyList.create;
-  enemies.FreeObjects := true;
+  enemies := TEnemyList.create(true);  { `true` sets enemies.FreeObjects to true }
 
   for a:=0 to 9 do begin
     enemy := TEnemy.create;
