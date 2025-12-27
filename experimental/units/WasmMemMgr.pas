@@ -34,7 +34,7 @@ begin
   whFreeMemSize := 0
 end;
 
-function whReAllocMem(p: pointer; size: ptruint): pointer;
+function whReAllocMem(var p: pointer; size: ptruint): pointer;
 begin
   whReAllocMem := WasmReAllocMem(p, size)
 end;

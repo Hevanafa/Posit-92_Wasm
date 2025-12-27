@@ -122,7 +122,7 @@ begin
     end;
   end;
 
-  if lastC then begin
+  if lastC <> isKeyDown(SC_C) then begin
     { Grow buffer size }
     lastC := isKeyDown(SC_C);
 
@@ -139,7 +139,7 @@ begin
     end;
   end;
 
-  if lastV then begin
+  if lastV <> isKeyDown(SC_V) then begin
     { Shrink or free }
     lastV := isKeyDown(SC_V);
 
@@ -163,6 +163,9 @@ procedure draw;
 var
   w: integer;
   s: string;
+  byteIdx: word;
+  rows, cols: word;
+  a, b: word;
 begin
   cls($FF6495ED);
 
@@ -180,6 +183,16 @@ begin
   printDefault('Item count: ' + i32str(itemCount), 10, 30);
 
   printDefault('Buffer size: ' + i32str(bufferSize), 10, 50);
+
+  if bufferSize > 0 then
+    for byteIdx:=0 to bufferSize-1 do begin
+      rows := byteIdx div 8;
+      cols := byteIdx mod 8;
+
+      for b:=0 to rows do
+      for a:=0 to cols do
+        printDefault(i32str(buffer[a + b * 8]), a * 20, 70 + b * 10)
+    end;
 
   drawMouse;
   drawFPS;
