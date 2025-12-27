@@ -101,6 +101,8 @@ begin
   block^.inUse := false;
 
   { Forward memory coalescing logic }
+  nextBlock := PMemBlock(pbyte(block) + sizeof(TMemBlock) + block^.size);
+  
   { Check if the next block exists and is free }
   if (longword(nextBlock) < longword(heapCurrent))
     and (not nextBlock^.inUse) then
