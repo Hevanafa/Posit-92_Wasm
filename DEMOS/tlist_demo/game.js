@@ -61,6 +61,7 @@ class Game extends Posit92 {
     this.wasmInstance.exports.renderLoadingScreen(
       this.loadingProgress.actual,
       this.loadingProgress.total);
+    this.flush();
 
     this.#loadingInterval = window.setInterval(() => {
       const { actual, total } = this.loadingProgress;
