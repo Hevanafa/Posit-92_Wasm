@@ -17,11 +17,12 @@ procedure flushLog; external 'env' name 'flushLog';
 {$endif}
 
 {$ifdef WIN64}
-procedure writeLogI32(const value: longint);
-procedure writeLogF32(const value: double);
-
 procedure initLogger;
 procedure closeLogger;
+
+procedure writeLogI32(const value: longint);
+procedure writeLogF32(const value: double);
+procedure writeWarn(const msg: string);
 {$endif}
 
 procedure writeLog(const msg: string);
@@ -43,7 +44,6 @@ var
   logFile: Text;
   logOpened: boolean;
 {$endif}
-
 
 function getLogBuffer: pointer;
 begin
@@ -123,6 +123,16 @@ begin
 
   if not logOpened then exit;
   writeln(logFile, value);
+  flush(logFile)
+end;
+
+procedure writeWarn(const msg: string);
+begin
+  textColor(yellow);
+  writeln(msg);
+
+  if not logOpened then exit;
+  writeln(logFile, msg);
   flush(logFile)
 end;
 {$endif}
