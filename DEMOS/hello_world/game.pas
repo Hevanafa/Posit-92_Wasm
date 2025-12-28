@@ -25,8 +25,6 @@ const
 
   CornflowerBlue = $FF6495ED;
 
-  IntroSlides = 2;
-
 var
   lastEsc: boolean;
   lastSpacebar, lastEnter: boolean;
@@ -83,44 +81,6 @@ begin
   gameTime := 0.0;
   
   replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
-end;
-
-
-procedure printDefaultCentred(const text: string; const cx, y: smallint);
-var
-  w: word;
-begin
-  w := measureDefault(text);
-  printDefault(text, cx - w div 2, y)
-end;
-
-procedure renderIntro;
-begin
-  cls($FF000000);
-
-  case introSlide of
-    1: begin
-      spr(imgPosit92Logo, 144, 84);
-      printDefaultCentred('Made with Posit-92', vgaWidth div 2, 126)
-    end;
-
-    2: begin
-      printDefaultCentred('Made with', vgaWidth div 2, 44);
-
-      spr(imgFPCLogo, 75, 67);
-      spr(imgWasmLogo, 180, 67);
-
-      printDefaultCentred('Free Pascal', 108, 144);
-      printDefaultCentred('Compiler', 108, 154);
-      printDefaultCentred('WebAssembly', 212, 144);
-    end;
-  end;
-
-  { Debug intro state }
-  printDefault('(Intro slide ' + i32str(introSlide) + ')', 30, 30);
-  printDefault('Slide end tick: ' + f32str(introSlideEndTick), 30, 40);
-
-  vgaFlush
 end;
 
 
@@ -196,7 +156,13 @@ begin
   if actualGameState in [GameStateIntro, GameStateLoading] then
   case actualGameState of
     GameStateIntro: begin
-      renderIntro; exit
+      renderIntro(introSlide);
+
+      { Debug intro state }
+      printDefault('(Intro slide ' + i32str(introSlide) + ')', 30, 30);
+      printDefault('Slide end tick: ' + f32str(introSlideEndTick), 30, 40);
+
+      exit
     end;
     GameStateLoading: begin
       renderLoadingScreen; exit
