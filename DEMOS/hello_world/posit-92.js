@@ -187,9 +187,8 @@ class Posit92 {
     this.#initMouse();
   }
 
-  afterInit() {
-    this.#wasm.exports.afterInit();
-    this.#addOutOfFocusFix()
+  beginIntro() {
+    this.#wasm.exports.beginIntroState()
   }
 
   #addOutOfFocusFix() {
@@ -199,6 +198,9 @@ class Posit92 {
     })
   }
 
+  /**
+   * Called when `done` is `true`
+   */
   cleanup() {
     this.#showCursor();
   }
@@ -210,9 +212,15 @@ class Posit92 {
 
   async #loadAssets() {
     await this.loadAssets();
-    this.wasmInstance.exports.afterInit()
+    this.afterInit()
   }
 
+  afterInit() {
+    this.#wasm.exports.afterInit();
+    this.#addOutOfFocusFix()
+  }
+
+  
   #hideCursor() {
     this.#canvas.style.cursor = "none"
   }

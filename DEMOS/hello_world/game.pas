@@ -52,15 +52,21 @@ end;
 
 procedure beginIntroState;
 begin
-  actualGameState := GameStateIntro;
+  hideLoadingOverlay;
 
+  writeLog('beginIntroState');
+
+  actualGameState := GameStateIntro;
   introSlide := 1;
   introSlideEndTick := getTimer + 2.0;
-  hideLoadingOverlay
+
+  writeLogF32(introSlideEndTick);
 end;
 
 procedure beginLoadingState;
 begin
+  writeLog('beginLoadingState');
+
   actualGameState := GameStateLoading;
   loadAssets
 end;
@@ -82,6 +88,7 @@ begin
   cls($FF000000);
 
   printDefault('(Intro slide ' + i32str(introSlide) + ')', 30, 30);
+  printDefault('Slide end tick: ' + f32str(introSlideEndTick), 30, 40);
 
   vgaFlush
 end;
@@ -92,9 +99,7 @@ begin
   initMemMgr;
   initBuffer;
   initDeltaTime;
-  initFPSCounter;
-
-  beginIntroState
+  initFPSCounter
 end;
 
 procedure afterInit;
@@ -110,12 +115,14 @@ begin
   if actualGameState = GameStateIntro then begin
     { TODO: Handle inputs }
 
-    if getTimer >= introSlideEndTick then
+    if getTimer >= introSlideEndTick then begin
       writeLog('Next intro slide');
-      introSlideEndTick := introSlideEndTick + 2.0;
+      introSlideEndTick := getTimer + 2.0;
       inc(introSlide);
+    end;
 
-      if introSlide >= 3 then beginLoadingState;
+    if introSlide > 2 then beginLoadingState;
+
     exit
   end;
 
@@ -168,7 +175,7 @@ begin
 end;
 
 exports
-  { beginPlayingState, }
+  beginIntroState,
   init,
   afterInit,
   update,
