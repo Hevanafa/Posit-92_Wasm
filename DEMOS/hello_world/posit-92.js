@@ -203,11 +203,14 @@ class Posit92 {
     this.#showCursor();
   }
 
+  /**
+   * Overridden by the inherited `Game` class
+   */
   async loadAssets() {}
 
   async #loadAssets() {
     await this.loadAssets();
-    this.wasmInstance.exports.beginPlayingState()
+    this.wasmInstance.exports.afterInit()
   }
 
   #hideCursor() {

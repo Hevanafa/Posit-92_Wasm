@@ -26,8 +26,9 @@ const
 var
   lastEsc: boolean;
 
-  { Intro variables }
-  introEndTick: double;
+  { Intro state variables }
+  introSlide: integer;
+  introSlideEndTick: double;
 
   { Init your game state here }
   actualGameState: TGameStates;
@@ -52,7 +53,9 @@ end;
 procedure beginIntroState;
 begin
   actualGameState := GameStateIntro;
-  introEndTick := getTimer + 3.0;
+
+  introSlide := 1;
+  introSlideEndTick := getTimer + 2.0;
   hideLoadingOverlay
 end;
 
@@ -65,14 +68,20 @@ end;
 procedure beginPlayingState;
 begin
   actualGameState := GameStatePlaying;
-  hideCursor
+  
+  { Initialise game state here }
+  hideCursor;
+  actualGameState := GameStatePlaying;
+  gameTime := 0.0;
+  
+  replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
 end;
 
 procedure renderIntro;
 begin
   cls($FF000000);
 
-  printDefault('(Intro screen)', 30, 30);
+  printDefault('(Intro slide ' + i32str(introSlide) + ')', 30, 30);
 
   vgaFlush
 end;
@@ -90,13 +99,7 @@ end;
 
 procedure afterInit;
 begin
-  hideCursor;
-
-  { Initialise game state here }
-  actualGameState := GameStatePlaying;
-  gameTime := 0.0;
-  
-  replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
+  beginPlayingState;
 end;
 
 procedure update;
@@ -107,8 +110,12 @@ begin
   if actualGameState = GameStateIntro then begin
     { TODO: Handle inputs }
 
-    if getTimer >= introEndTick then 
-      beginLoadingState;
+    if getTimer >= introSlideEndTick then
+      writeLog('Next intro slide');
+      introSlideEndTick := introSlideEndTick + 2.0;
+      inc(introSlide);
+
+      if introSlide >= 3 then beginLoadingState;
     exit
   end;
 
@@ -161,7 +168,7 @@ begin
 end;
 
 exports
-  beginPlayingState,
+  { beginPlayingState, }
   init,
   afterInit,
   update,
