@@ -10,14 +10,24 @@ uses
   PostProc, Timing, WasmMemMgr, VGA,
   Assets;
 
+type
+  TGameStates = (
+    GameStateIntro = 1,
+    GameStateLoading = 2,
+    GameStatePlaying = 3
+  );
+
 const
   SC_ESC = $01;
   SC_SPACE = $39;
+
+  CornflowerBlue = $FF6495ED;
 
 var
   lastEsc: boolean;
 
   { Init your game state here }
+  actualGameState: TGameStates;
   gameTime: double;
 
 { Use this to set `done` to true }
@@ -40,6 +50,8 @@ begin
   initBuffer;
   initDeltaTime;
   initFPSCounter;
+
+  actualGameState := GameStateIntro
 end;
 
 procedure afterInit;
@@ -47,6 +59,7 @@ begin
   hideCursor;
 
   { Initialise game state here }
+  actualGameState := GameStatePlaying;
   gameTime := 0.0;
   
   replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
@@ -57,9 +70,9 @@ begin
   updateDeltaTime;
   incrementFPS;
 
+  { Handle inputs }
   updateMouse;
 
-  { Your update logic here }
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
 
@@ -69,6 +82,7 @@ begin
     end;
   end;
 
+  { Handle game state updates }
   gameTime := gameTime + dt
 end;
 
@@ -77,7 +91,7 @@ var
   w: integer;
   s: string;
 begin
-  cls($FF6495ED);
+  cls(CornflowerBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
