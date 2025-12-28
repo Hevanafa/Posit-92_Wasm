@@ -34,11 +34,7 @@ class Game extends Posit92 {
   async loadAssets() {
     let handle = 0;
 
-    this.setLoadingActual(0);
-
-    const imageCount = Object.keys(this.AssetManifest.images).length;
-    const soundCount = this.AssetManifest.sounds.size;
-    this.setLoadingTotal(imageCount + soundCount);
+    this.initLoadingScreen();
 
     await this.loadImagesFromManifest(this.AssetManifest.images);
     // Sounds can be loaded later
@@ -96,13 +92,6 @@ async function main() {
   game.beginIntro();
   
   // game.quickStart();
-
-  // game.initLoadingScreen();
-  // game.beginLoadingScreen();
-  //   await game.loadAssets();
-  // game.endLoadingScreen();
-
-  // game.afterInit();
 
   function loop(currentTime) {
     if (done) {
