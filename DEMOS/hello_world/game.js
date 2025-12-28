@@ -65,10 +65,6 @@ class Game extends Posit92 {
     this.wasmInstance.exports.setImgWasmLogo(
       await this.loadImage("assets/images/wasm_logo.png"));
   }
-
-  async showIntro() {
-    
-  }
 }
 
 const TargetFPS = 60;
@@ -84,16 +80,14 @@ async function main() {
   const game = new Game("game");
   await game.init();
   await game.loadDefaultFont();
-
   await game.loadIntro();
-  await game.showIntro();
 
-  game.initLoadingScreen();
-  game.beginLoadingScreen();
-    await game.loadAssets();
-  game.endLoadingScreen();
+  // game.initLoadingScreen();
+  // game.beginLoadingScreen();
+  //   await game.loadAssets();
+  // game.endLoadingScreen();
 
-  game.afterInit();
+  // game.afterInit();
 
   function loop(currentTime) {
     if (done) {

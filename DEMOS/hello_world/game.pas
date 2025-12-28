@@ -26,12 +26,16 @@ const
 var
   lastEsc: boolean;
 
+  { Intro variables }
+  introEndTick: double;
+
   { Init your game state here }
   actualGameState: TGameStates;
   gameTime: double;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure drawFPS;
 begin
@@ -43,6 +47,21 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
+procedure beginLoadingState;
+begin
+  actualGameState := GameStateLoading;
+  loadAssets
+end;
+
+procedure renderIntro;
+begin
+  cls($FF000000);
+
+  printDefault('(Intro screen)', 30, 30);
+
+  vgaFlush
+end;
+
 
 procedure init;
 begin
@@ -51,7 +70,8 @@ begin
   initDeltaTime;
   initFPSCounter;
 
-  actualGameState := GameStateIntro
+  actualGameState := GameStateIntro;
+  introEndTick := getTimer + 3.0
 end;
 
 procedure afterInit;
@@ -69,6 +89,14 @@ procedure update;
 begin
   updateDeltaTime;
   incrementFPS;
+
+  if actualGameState = GameStateIntro then begin
+    { TODO: Handle inputs }
+
+    if getTimer >= introEndTick then 
+      beginLoadingState;
+    exit
+  end;
 
   { Handle inputs }
   updateMouse;
@@ -91,6 +119,11 @@ var
   w: integer;
   s: string;
 begin
+  if actualGameState = GameStateIntro then begin
+    renderIntro;
+    exit
+  end;
+
   cls(CornflowerBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then

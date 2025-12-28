@@ -34,6 +34,7 @@ class Posit92 {
   #importObject = {
     env: {
       _haltproc: this.#handleHaltProc.bind(this),
+      loadAssets: () => { if (this.loadAssets) this.loadAssets() },
 
       hideCursor: () => this.#hideCursor(),
       showCursor: () => this.#showCursor(),
