@@ -348,6 +348,36 @@ class Posit92 {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
+  #loadingInterval = 0;
+
+  initLoadingScreen() {
+    const imageCount = Object.keys(this.AssetManifest.images).length;
+    const soundCount = this.AssetManifest.sounds.size;
+    this.setLoadingActual(0);
+    this.setLoadingTotal(imageCount + soundCount);
+  }
+
+  beginLoadingScreen() {
+    // Only applicable with an in-game loading screen
+    // This is because loadAssets is called in `afterInit`
+    this.hideLoadingOverlay();
+
+    this.wasmInstance.exports.renderLoadingScreen(
+      this.loadingProgress.actual,
+      this.loadingProgress.total);
+    this.flush();
+
+    this.#loadingInterval = window.setInterval(() => {
+      const { actual, total } = this.loadingProgress;
+      this.wasmInstance.exports.renderLoadingScreen(actual, total);
+      // console.log("loadingProgress", actual, total);
+    }, 100);
+  }
+
+  endLoadingScreen() {
+    window.clearInterval(this.#loadingInterval);
+  }
+
 
   // BMFONT.PAS
   #newBMFontGlyph() {

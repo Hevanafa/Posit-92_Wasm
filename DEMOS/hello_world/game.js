@@ -10,7 +10,7 @@ class Game extends Posit92 {
     // Add more scancodes as necessary
   };
 
-  #AssetManifest = {
+  AssetManifest = {
     images: {
       cursor: "assets/images/cursor.png"
       // Add more image assets here
@@ -30,7 +30,7 @@ class Game extends Posit92 {
   async loadAssets() {
     let handle = 0;
 
-    await this.loadImagesFromManifest(this.#AssetManifest.images);
+    await this.loadImagesFromManifest(this.AssetManifest.images);
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
@@ -43,36 +43,6 @@ class Game extends Posit92 {
   async init() {
     this.setLoadingText("Loading WebAssembly...");
     await super.init();
-  }
-
-  #loadingInterval = 0;
-
-  initLoadingScreen() {
-    const imageCount = Object.keys(this.#AssetManifest.images).length;
-    const soundCount = this.#AssetManifest.sounds.size;
-    this.setLoadingActual(0);
-    this.setLoadingTotal(imageCount + soundCount);
-  }
-
-  beginLoadingScreen() {
-    // Only applicable with an in-game loading screen
-    // This is because loadAssets is called in `afterInit`
-    this.hideLoadingOverlay();
-
-    this.wasmInstance.exports.renderLoadingScreen(
-      this.loadingProgress.actual,
-      this.loadingProgress.total);
-    this.flush();
-
-    this.#loadingInterval = window.setInterval(() => {
-      const { actual, total } = this.loadingProgress;
-      this.wasmInstance.exports.renderLoadingScreen(actual, total);
-      // console.log("loadingProgress", actual, total);
-    }, 100);
-  }
-
-  endLoadingScreen() {
-    window.clearInterval(this.#loadingInterval);
   }
 }
 
