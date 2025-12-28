@@ -59,14 +59,9 @@ procedure beginIntroState;
 begin
   hideLoadingOverlay;
 
-  writeLog('Free heap (intro)');
-  writelogi32(getFreeHeapSize);
-
   actualGameState := GameStateIntro;
   introSlide := 1;
   introSlideEndTick := getTimer + 2.0;
-
-  writeLogF32(introSlideEndTick);
 end;
 
 procedure beginLoadingState;
@@ -133,10 +128,7 @@ begin
 
     if introSlide > IntroSlides then begin
       unloadIntro;
-      writeLog('Heap after unloading');
-      writeLogI32(getFreeHeapSize);
-
-      beginLoadingState;
+      beginLoadingState
     end;
 
     exit
