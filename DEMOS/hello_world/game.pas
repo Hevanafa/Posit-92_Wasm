@@ -35,6 +35,7 @@ var
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
 procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure drawFPS;
@@ -45,6 +46,13 @@ end;
 procedure drawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
+end;
+
+procedure beginIntroState;
+begin
+  actualGameState := GameStateIntro;
+  introEndTick := getTimer + 3.0;
+  hideLoadingOverlay
 end;
 
 procedure beginLoadingState;
@@ -75,8 +83,7 @@ begin
   initDeltaTime;
   initFPSCounter;
 
-  actualGameState := GameStateIntro;
-  introEndTick := getTimer + 3.0
+  beginIntroState
 end;
 
 procedure afterInit;
