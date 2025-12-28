@@ -1,10 +1,10 @@
 // Copied from experimental/posit-92.js
-// Last synced: 2025-12-25
+// Last synced: 2025-12-28
 
 "use strict";
 
 class Posit92 {
-  static version = "0.1.1_experimental";
+  static version = "0.1.3_experimental";
 
   #wasmSource = "game.wasm";
 
@@ -104,18 +104,52 @@ class Posit92 {
 
   async #initWebAssembly() {
     const response = await fetch(this.#wasmSource);
-    const bytes = await response.arrayBuffer();
-    const result = await WebAssembly.instantiate(bytes, this.#importObject);
-    this.#wasm = result.instance;
 
+    const contentLength = response.headers.get("Content-Length");  // Assuming that this is always available
+    // in bytes:
+    const total = Number(contentLength);
+    let loaded = 0;
+
+    const reader = response.body.getReader();
+    const chunks = [];
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      chunks.push(value);
+      loaded += value.length;
+
+      const loadedKB = Math.ceil(loaded / 1024);
+
+      if (isNaN(total))
+        this.setLoadingText(`Loading WebAssembly (${ loadedKB } KB)`)
+      else {
+        const totalKB = Math.ceil(total / 1024);
+        this.setLoadingText(`Loading WebAssembly (${ loadedKB } KB / ${ totalKB } KB)`)
+      }
+    }
+
+    // Combine chunks
+    const bytes = new Uint8Array(loaded);
+    let pos = 0;
+    for (const chunk of chunks) {
+      bytes.set(chunk, pos);
+      pos += chunk.length
+    }
+
+    const result = await WebAssembly.instantiate(bytes.buffer, this.#importObject);
+    this.#wasm = result.instance;
+  }
+
+  #initWasmMemory() {
     /**
      * Grow Wasm memory size (DOS-style: fixed allocation)
      * Layout:
-     * * 0-1 MB: stack / globals
+     * * 256 KB: stack / globals
      * * 1MB-2MB: heap
      */
-
-    const heapStart = 1048576;  // 1 MB = 1024 * 1024 B
+    const heapStart = 256 * 1024;
     const heapSize = 1 * 1048576;
 
     // Wasm memory is in 64KB pages
@@ -133,16 +167,14 @@ class Posit92 {
 
     Object.freeze(this.#importObject);
     await this.#initWebAssembly();
+    this.#initWasmMemory();
     this.#wasm.exports.init();
     
     this.#initKeyboard();
     this.#initMouse();
   }
 
-  async afterInit() {
-    if (this.loadAssets)
-      await this.loadAssets();
-
+  afterInit() {
     this.#wasm.exports.afterInit();
     this.#addOutOfFocusFix()
   }
@@ -568,6 +600,8 @@ class Posit92 {
 
 
   // VGA.PAS
+  flush() { this.#vgaFlush() }
+  
   #vgaFlush() {
     const surfacePtr = this.#wasm.exports.getSurfacePtr();
     const imageData = new Uint8ClampedArray(

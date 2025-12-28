@@ -10,16 +10,33 @@ class Game extends Posit92 {
     // Add more scancodes as necessary
   };
 
-  async loadAssets() {
-    let handle = 0;
+  #AssetManifest = {
+    images: {
+      cursor: "assets/images/cursor.png"
+      // Add more image assets here
+    },
+    sounds: new Map([
+      // Add sound assets here
+    ])
+  }
 
-    handle = await this.loadImage("assets/images/cursor.png");
-    this.wasmInstance.exports.setImgCursor(handle);
-
+  async loadDefaultFont() {
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.wasmInstance.exports.defaultFontPtr(),
       this.wasmInstance.exports.defaultFontGlyphsPtr());
+  }
+
+  async loadAssets() {
+    let handle = 0;
+
+    this.setLoadingActual(0);
+
+    const imageCount = Object.keys(this.#AssetManifest.images).length;
+    const soundCount = this.#AssetManifest.sounds.size;
+    this.setLoadingTotal(imageCount + soundCount);
+
+    await this.loadImagesFromManifest(this.#AssetManifest.images);
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
@@ -27,6 +44,34 @@ class Game extends Posit92 {
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
 
     // Add more assets as necessary
+  }
+
+  async init() {
+    this.setLoadingText("Loading WebAssembly...");
+    await super.init();
+  }
+
+  #loadingInterval = 0;
+
+  beginLoadingScreen() {
+    // Only applicable with an in-game loading screen
+    // This is because loadAssets is called in `afterInit`
+    this.hideLoadingOverlay();
+
+    this.wasmInstance.exports.renderLoadingScreen(
+      this.loadingProgress.actual,
+      this.loadingProgress.total);
+    this.flush();
+
+    this.#loadingInterval = window.setInterval(() => {
+      const { actual, total } = this.loadingProgress;
+      this.wasmInstance.exports.renderLoadingScreen(actual, total);
+      // console.log("loadingProgress", actual, total);
+    }, 100);
+  }
+
+  endLoadingScreen() {
+    window.clearInterval(this.#loadingInterval);
   }
 }
 
@@ -42,6 +87,12 @@ var done = false;
 async function main() {
   const game = new Game("game");
   await game.init();
+  await game.loadDefaultFont();
+
+  game.beginLoadingScreen();
+    await game.loadAssets();
+  game.endLoadingScreen();
+
   game.afterInit();
 
   function loop(currentTime) {

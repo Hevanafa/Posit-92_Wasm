@@ -1,10 +1,12 @@
 library Game;
 
-{$Mode ObjFPC}
+{$Mode TP}
 
 uses
-  Conv, FPS, ImgRef, ImgRefFast, Keyboard,
-  Mouse, Panic, Timing,
+  Conv, FPS,
+  ImgRef, ImgRefFast,
+  Keyboard, Mouse,
+  Loading, Panic, Timing,
   WasmMemMgr, VGA,
   Assets;
 
