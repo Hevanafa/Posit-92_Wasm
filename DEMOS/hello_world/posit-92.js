@@ -140,10 +140,10 @@ class Posit92 {
     const loadedKB = Math.ceil(loaded / 1024);
 
     if (isNaN(total))
-      this.setLoadingText(`Loading WebAssembly (${ loadedKB } KB)`)
+      this.setLoadingText(`Downloading engine (${ loadedKB } KB)`)
     else {
       const totalKB = Math.ceil(total / 1024);
-      this.setLoadingText(`Loading WebAssembly (${ loadedKB } KB / ${ totalKB } KB)`)
+      this.setLoadingText(`Downloading engine (${ loadedKB } KB / ${ totalKB } KB)`)
     }
   }
 

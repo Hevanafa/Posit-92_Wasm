@@ -44,6 +44,16 @@ class Game extends Posit92 {
     this.setLoadingText("Loading WebAssembly...");
     await super.init();
   }
+
+  /**
+   * @override
+   */
+  onWasmProgress(loaded, total) {
+    const loadedKB = Math.ceil(loaded / 1024);
+    const totalKB = Math.ceil(total / 1024);
+
+    this.setLoadingText(`Downloading engine... ${loadedKB} / ${totalKB} KB`)
+  }
 }
 
 const TargetFPS = 60;
