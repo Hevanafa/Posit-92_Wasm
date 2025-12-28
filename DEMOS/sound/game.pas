@@ -6,9 +6,16 @@ uses
   Conv, FPS, Graphics,
   ImgRef, ImgRefFast,
   Keyboard, Mouse,
-  Logger, Panic, Sounds, Timing,
-  WasmMemMgr, VGA,
+  Loading, Logger, Panic, Sounds,
+  Timing, WasmMemMgr, VGA,
   Assets;
+
+type
+  TGameStates = (
+    GameStateIntro = 1,
+    GameStateLoading = 2,
+    GameStatePlaying = 3
+  );
 
 const
   SC_ESC = $01;
@@ -25,10 +32,14 @@ var
   lastD1, lastD2, lastD3, lastD4, lastD5: boolean;
 
   { Init your game state here }
+  actualGameState: TGameStates;
   gameTime: double;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+procedure hideCursor; external 'env' name 'hideCursor';
+procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
+procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure drawFPS;
 begin
@@ -39,6 +50,21 @@ procedure drawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
+
+procedure beginLoadingState;
+begin
+  actualGameState := GameStateLoading;
+  loadAssets
+end;
+
+procedure beginPlayingState;
+begin
+  { Initialise game state here }
+  hideCursor;
+  actualGameState := GameStatePlaying;
+  gameTime := 0.0;
+end;
+
 
 procedure playRandomSFX;
 begin
@@ -56,8 +82,7 @@ end;
 
 procedure afterInit;
 begin
-  { Initialise game state here }
-  hideCursor;
+  beginPlayingState
 end;
 
 procedure update;
@@ -116,6 +141,11 @@ var
   w: integer;
   s: string;
 begin
+  if actualGameState = GameStateLoading then begin
+    renderLoadingScreen;
+    exit
+  end;
+
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
@@ -139,6 +169,7 @@ end;
 
 exports
   { Main game procedures }
+  beginLoadingState,
   init,
   afterInit,
   update,

@@ -24,7 +24,7 @@ class Game extends SoundsMixin {
     // Add more scancodes as necessary
   };
 
-  #AssetManifest = {
+  AssetManifest = {
     images: {
       cursor: "assets/images/cursor.png"
     },
@@ -37,22 +37,24 @@ class Game extends SoundsMixin {
     ])
   }
 
-  async loadAssets() {
-    let handle = 0;
-    
+  async loadDefaultFont() {
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.wasmInstance.exports.defaultFontPtr(),
       this.wasmInstance.exports.defaultFontGlyphsPtr());
+  }
 
-    await this.loadImagesFromManifest(this.#AssetManifest.images);
+  async loadAssets() {
+    let handle = 0;
+    
+    this.initLoadingScreen();
+    await this.loadImagesFromManifest(this.AssetManifest.images);
+    await this.loadSoundsFromManifest(this.AssetManifest.sounds);
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
     handle = await this.loadImage("assets/images/dosu_2.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
-
-    await this.loadSoundsFromManifest(this.#AssetManifest.sounds);
 
     // Add more assets as necessary
   }
@@ -70,7 +72,8 @@ var done = false;
 async function main() {
   const game = new Game("game");
   await game.init();
-  game.afterInit();
+  await game.loadDefaultFont();
+  game.quickStart();
 
   function loop(currentTime) {
     if (done) {
