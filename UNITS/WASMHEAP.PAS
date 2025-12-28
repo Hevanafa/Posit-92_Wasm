@@ -13,20 +13,24 @@ type
     inUse: boolean;
   end;
 
-var
-  heapStart, heapEnd: PByte;
-  heapCurrent: PByte;  { where the next new block should go }
-
 procedure initHeap(const startAddr, heapSize: longword); public name 'initHeap';
 
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
 procedure WasmFreeMem(const ptr: pointer); public name 'WasmFreeMem';
-function GetFreeHeapSize: longword;
+function WasmReAllocMem(const ptr: pointer; const newBytes: longword): pointer;
+function WasmAllocMem(const bytes: longword): pointer; public name 'WasmAllocMem';
+
+function getHeapSize: longword;
+function getFreeHeapSize: longword;
 
 
 implementation
 
 { uses Logger; }
+
+var
+  heapStart, heapEnd: PByte;
+  heapCurrent: PByte;  { where the next new block should go }
 
 procedure initHeap(const startAddr, heapSize: longword);
 begin
@@ -87,19 +91,97 @@ begin
   WasmGetMem := pointer(dataPtr)
 end;
 
+
 procedure WasmFreeMem(const ptr: pointer);
 var
-  block: PMemBlock;
+  block, nextBlock: PMemBlock;
 begin
   if ptr = nil then exit;
 
   { Find the block header & mark it as free }
   block := PMemBlock(PByte(ptr) - sizeof(TMemBlock));
-  block^.inUse := false
+  block^.inUse := false;
+
+  { Forward memory coalescing logic }
+  nextBlock := PMemBlock(pbyte(block) + sizeof(TMemBlock) + block^.size);
+
+  { Check if the next block exists and is free }
+  if (longword(nextBlock) < longword(heapCurrent))
+    and (not nextBlock^.inUse) then
+    inc(block^.size, sizeof(TMemBlock) + nextBlock^.size);
 end;
 
 
-function GetFreeHeapSize: longword;
+function WasmReAllocMem(const ptr: pointer; const newBytes: longword): pointer;
+var
+  oldBlock, nextBlock: PMemBlock;
+  newPtr: pointer;
+  copySize, alignedSize, availableSpace: longword;
+begin
+  if ptr = nil then begin
+    WasmReAllocMem := WasmGetMem(newBytes);
+    exit
+  end;
+
+  if newBytes = 0 then begin
+    WasmFreeMem(ptr);
+    WasmReAllocMem := nil;
+    exit
+  end;
+
+  alignedSize := (newBytes + 3) and not 3;
+  oldBlock := PMemBlock(PByte(ptr) - sizeof(TMemBlock));
+
+  { Handle shrink in-place }
+  if alignedSize <= oldBlock^.size then begin
+    oldBlock^.size := alignedSize;
+    WasmReAllocMem := ptr;
+    exit
+  end;
+
+  { Handle expand in-place if available }
+  nextBlock := PMemBlock(PByte(oldBlock) + sizeof(TMemBlock) + oldBlock^.size);
+
+  if (longword(nextBlock) < longword(heapCurrent)) and not nextBlock^.inUse then begin
+    availableSpace := oldBlock^.size + sizeof(TMemBlock) + nextBlock^.size;
+
+    if alignedSize <= availableSpace then begin
+      oldBlock^.size := alignedSize;
+      WasmReAllocMem := ptr;
+      exit
+    end;
+  end;
+
+  { Can't expand in-place, do full realloc }
+  newPtr := WasmGetMem(newBytes);
+  if newPtr = nil then begin
+    WasmReAllocMem := nil;
+    exit
+  end;
+
+  copySize := oldBlock^.size;
+  if copySize > newBytes then copySize := newBytes;
+  move(ptr^, newPtr^, copySize);
+
+  WasmFreeMem(ptr);
+  WasmReAllocMem := newPtr
+end;
+
+
+function WasmAllocMem(const bytes: longword): pointer;
+begin
+  WasmAllocMem := WasmGetMem(bytes);
+  if WasmAllocMem <> nil then
+    fillchar(WasmAllocMem^, bytes, 0)
+end;
+
+
+function getHeapSize: longword;
+begin
+  getHeapSize := heapEnd - heapStart
+end;
+
+function getFreeHeapSize: longword;
 var
   current: PByte;  { current memory offset }
   block: PMemBlock;

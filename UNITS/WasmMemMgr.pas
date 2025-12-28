@@ -3,6 +3,7 @@
 unit WasmMemMgr;
 
 {$Mode ObjFPC}
+{$Notes OFF}
 {$Memory 1048576, 1048576}  { 1 MB stack, 1 MB heap }
 
 interface
@@ -34,11 +35,24 @@ begin
   whFreeMemSize := 0
 end;
 
+function whReAllocMem(var p: pointer; size: ptruint): pointer;
+begin
+  whReAllocMem := WasmReAllocMem(p, size)
+end;
+
+function whAllocMem(size: ptruint): pointer;
+begin
+  whAllocMem := WasmAllocMem(size)
+end;
+
+
 procedure initMemMgr;
 begin
   customMemMgr.GetMem := @whGetMem;
   customMemMgr.FreeMem := @whFreeMem;
   customMemMgr.FreeMemSize := @whFreeMemSize;
+  customMemMgr.ReAllocMem := @whReAllocMem;
+  customMemMgr.AllocMem := @whAllocMem;
 
   SetMemoryManager(customMemMgr)
 end;
