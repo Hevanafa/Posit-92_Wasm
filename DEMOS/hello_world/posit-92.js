@@ -34,7 +34,7 @@ class Posit92 {
   #importObject = {
     env: {
       _haltproc: this.#handleHaltProc.bind(this),
-      loadAssets: () => { if (this.loadAssets) this.loadAssets() },
+      loadAssets: () => this.#loadAssets.bind(this),
 
       hideCursor: () => this.#hideCursor(),
       showCursor: () => this.#showCursor(),
@@ -194,6 +194,13 @@ class Posit92 {
 
   cleanup() {
     this.#showCursor();
+  }
+
+  async loadAssets() {}
+
+  async #loadAssets() {
+    await this.loadAssets();
+    this.wasmInstance.exports.beginPlayingGameState()
   }
 
   #hideCursor() {

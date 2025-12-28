@@ -27,6 +27,9 @@ class Game extends Posit92 {
       this.wasmInstance.exports.defaultFontGlyphsPtr());
   }
 
+  /**
+   * @override
+   */
   async loadAssets() {
     let handle = 0;
 

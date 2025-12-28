@@ -53,6 +53,11 @@ begin
   loadAssets
 end;
 
+procedure beginPlayingState;
+begin
+  actualGameState := GameStatePlaying;
+end;
+
 procedure renderIntro;
 begin
   cls($FF000000);
@@ -147,7 +152,7 @@ begin
 end;
 
 exports
-  { Main game procedures }
+  beginPlayingState,
   init,
   afterInit,
   update,
