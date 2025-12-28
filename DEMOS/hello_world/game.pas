@@ -8,7 +8,8 @@ uses
   Conv, FPS, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  PostProc, Timing, WasmMemMgr, VGA,
+  PostProc, Timing, WasmHeap, WasmMemMgr,
+  VGA,
   Assets;
 
 type
@@ -57,6 +58,9 @@ end;
 procedure beginIntroState;
 begin
   hideLoadingOverlay;
+
+  writeLog('Free heap (intro)');
+  writelogi32(getFreeHeapSize);
 
   actualGameState := GameStateIntro;
   introSlide := 1;
@@ -127,7 +131,13 @@ begin
       inc(introSlide);
     end;
 
-    if introSlide > IntroSlides then beginLoadingState;
+    if introSlide > IntroSlides then begin
+      unloadIntro;
+      writeLog('Heap after unloading');
+      writeLogI32(getFreeHeapSize);
+
+      beginLoadingState;
+    end;
 
     exit
   end;

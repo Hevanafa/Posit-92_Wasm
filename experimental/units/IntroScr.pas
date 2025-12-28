@@ -16,12 +16,13 @@ procedure setImgFPCLogo(const imgHandle: longint); public name 'setImgFPCLogo';
 procedure setImgWasmLogo(const imgHandle: longint); public name 'setImgWasmLogo';
 
 procedure renderIntro(const introSlide: integer);
+procedure unloadIntro;
 
 
 implementation
 
 uses
-  Assets, ImgRefFast, VGA;
+  Assets, ImgRef, ImgRefFast, VGA;
 
 procedure setImgPosit92Logo(const imgHandle: longint);
 begin
@@ -61,6 +62,13 @@ begin
   end;
 
   vgaFlush
+end;
+
+procedure unloadIntro;
+begin
+  freeImage(imgPosit92Logo);
+  freeImage(imgFPCLogo);
+  freeImage(imgWasmLogo);
 end;
 
 end.
