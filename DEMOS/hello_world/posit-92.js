@@ -215,12 +215,22 @@ class Posit92 {
     this.afterInit()
   }
 
+  /**
+   * Should be used **without** the intro screen
+   */
+  async quickStart() {
+    this.hideLoadingOverlay();
+    this.#wasm.exports.beginLoadingState();
+    await this.loadAssets();
+    this.afterInit()
+  }
+
   afterInit() {
     this.#wasm.exports.afterInit();
     this.#addOutOfFocusFix()
   }
 
-  
+
   #hideCursor() {
     this.#canvas.style.cursor = "none"
   }

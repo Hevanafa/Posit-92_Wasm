@@ -60,8 +60,6 @@ procedure beginIntroState;
 begin
   hideLoadingOverlay;
 
-  writeLog('beginIntroState');
-
   actualGameState := GameStateIntro;
   introSlide := 1;
   introSlideEndTick := getTimer + 2.0;
@@ -216,6 +214,7 @@ end;
 
 exports
   beginIntroState,
+  beginLoadingState,
   init,
   afterInit,
   update,
