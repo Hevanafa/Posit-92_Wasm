@@ -2,7 +2,7 @@ unit Loading;
 
 interface
 
-procedure renderLoadingScreen(const actual, total: integer); public name 'renderLoadingScreen';
+procedure renderLoadingScreen;
 
 implementation
 
@@ -20,7 +20,7 @@ var
 begin
   cls($FF550000);
 
-  s := 'Progress: ' + i32str(actual) + ' / ' + i32str(total);
+  s := 'Progress: ' + i32str(getLoadingActual) + ' / ' + i32str(getLoadingTotal);
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, vgaHeight div 2 - defaultFont.lineHeight);
 

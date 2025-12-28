@@ -33,7 +33,14 @@ class Game extends Posit92 {
   async loadAssets() {
     let handle = 0;
 
+    this.setLoadingActual(0);
+
+    const imageCount = Object.keys(this.AssetManifest.images).length;
+    const soundCount = this.AssetManifest.sounds.size;
+    this.setLoadingTotal(imageCount + soundCount);
+
     await this.loadImagesFromManifest(this.AssetManifest.images);
+    // Sounds can be loaded later
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);

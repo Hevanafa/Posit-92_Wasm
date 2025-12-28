@@ -301,9 +301,6 @@ class Posit92 {
   async loadImagesFromManifest(manifest) {
     const entries = Object.entries(manifest);
 
-    // this.#loadingTotal = entries.length;
-    // this.#loadingActual = 0;
-
     const promises = entries.map(([key, path]) =>
       this.loadImage(path).then(handle => {
         // On success

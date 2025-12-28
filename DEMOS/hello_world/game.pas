@@ -139,7 +139,7 @@ begin
       renderIntro; exit
     end;
     GameStateLoading: begin
-      renderLoadingScreen(67, 69); exit
+      renderLoadingScreen; exit
     end else
   end;
 
