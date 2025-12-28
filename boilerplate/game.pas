@@ -4,11 +4,9 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  IntroScr, Loading,
-  Conv, FPS, Logger,
-  Keyboard, Mouse,
-  ImgRef, ImgRefFast,
-  PostProc, Timing, WasmHeap, WasmMemMgr,
+  IntroScr, Loading, Conv,
+  FPS, Logger, Keyboard, Mouse,
+  ImgRefFast, Timing, WasmMemMgr,
   VGA,
   Assets;
 
@@ -78,8 +76,6 @@ begin
   hideCursor;
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
-  
-  replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
 end;
 
 

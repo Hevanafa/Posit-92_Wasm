@@ -1,7 +1,7 @@
 "use strict";
 
 class Posit92 {
-  static version = "0.1.0";
+  static version = "0.1.3_experimental";
 
   #wasmSource = "game.wasm";
 
@@ -34,6 +34,14 @@ class Posit92 {
   #importObject = {
     env: {
       _haltproc: this.#handleHaltProc.bind(this),
+
+      // Intro
+      hideLoadingOverlay: this.hideLoadingOverlay.bind(this),
+      loadAssets: this.#loadAssets.bind(this),
+
+      // Loading
+      getLoadingActual: this.getLoadingActual.bind(this),
+      getLoadingTotal: this.getLoadingTotal.bind(this),
 
       hideCursor: () => this.#hideCursor(),
       showCursor: () => this.#showCursor(),
@@ -101,18 +109,60 @@ class Posit92 {
 
   async #initWebAssembly() {
     const response = await fetch(this.#wasmSource);
-    const bytes = await response.arrayBuffer();
-    const result = await WebAssembly.instantiate(bytes, this.#importObject);
-    this.#wasm = result.instance;
 
+    const contentLength = response.headers.get("Content-Length");  // Assuming that this is always available
+    // in bytes:
+    const total = Number(contentLength);
+    let loaded = 0;
+
+    const reader = response.body.getReader();
+    const chunks = [];
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      chunks.push(value);
+      loaded += value.length;
+
+      this.onWasmProgress(loaded, total)
+    }
+
+    // Combine chunks
+    const bytes = new Uint8Array(loaded);
+    let pos = 0;
+    for (const chunk of chunks) {
+      bytes.set(chunk, pos);
+      pos += chunk.length
+    }
+
+    const result = await WebAssembly.instantiate(bytes.buffer, this.#importObject);
+    this.#wasm = result.instance;
+  }
+
+  /**
+   * @param {number} loaded in bytes
+   * @param {number} total in bytes
+   */
+  onWasmProgress(loaded, total) {
+    const loadedKB = Math.ceil(loaded / 1024);
+
+    if (isNaN(total))
+      this.setLoadingText(`Downloading engine (${ loadedKB } KB)`)
+    else {
+      const totalKB = Math.ceil(total / 1024);
+      this.setLoadingText(`Downloading engine (${ loadedKB } KB / ${ totalKB } KB)`)
+    }
+  }
+
+  #initWasmMemory() {
     /**
      * Grow Wasm memory size (DOS-style: fixed allocation)
      * Layout:
-     * * 0-1 MB: stack / globals
+     * * 256 KB: stack / globals
      * * 1MB-2MB: heap
      */
-
-    const heapStart = 1048576;  // 1 MB = 1024 * 1024 B
+    const heapStart = 256 * 1024;
     const heapSize = 1 * 1048576;
 
     // Wasm memory is in 64KB pages
@@ -130,18 +180,15 @@ class Posit92 {
 
     Object.freeze(this.#importObject);
     await this.#initWebAssembly();
+    this.#initWasmMemory();
     this.#wasm.exports.init();
     
     this.#initKeyboard();
     this.#initMouse();
-
-    if (this.loadAssets)
-      await this.loadAssets();
   }
 
-  afterInit() {
-    this.#wasm.exports.afterInit();
-    this.#addOutOfFocusFix()
+  beginIntro() {
+    this.#wasm.exports.beginIntroState()
   }
 
   #addOutOfFocusFix() {
@@ -151,9 +198,40 @@ class Posit92 {
     })
   }
 
+  /**
+   * Called when `done` is `true`
+   */
   cleanup() {
     this.#showCursor();
   }
+
+  /**
+   * Overridden by the inherited `Game` class
+   */
+  async loadAssets() {}
+
+  async #loadAssets() {
+    await this.loadAssets();
+    this.afterInit()
+  }
+
+  /**
+   * Bypass intro sequence
+   * 
+   * Should be used **without** the intro screen
+   */
+  async quickStart() {
+    this.hideLoadingOverlay();
+    this.#wasm.exports.beginLoadingState();
+    // await this.#loadAssets();
+    // this.afterInit()
+  }
+
+  afterInit() {
+    this.#wasm.exports.afterInit();
+    this.#addOutOfFocusFix()
+  }
+
 
   #hideCursor() {
     this.#canvas.style.cursor = "none"
@@ -177,7 +255,6 @@ class Posit92 {
   }
 
 
-  // BITMAP.PAS
   async loadImageFromURL(url) {
     if (url == null)
       throw new Error("loadImageFromURL: url is required");
@@ -226,6 +303,109 @@ class Posit92 {
     this.#wasm.exports.registerImageRef(handle, wasmPtr, img.width, img.height);
 
     return handle
+  }
+
+  /**
+   * Used in asset counter
+   */
+  #loadingActual = 0;
+  getLoadingActual() { return this.#loadingActual }
+
+  /**
+   * Used in asset counter
+   */
+  #loadingTotal = 0;
+  getLoadingTotal() { return this.#loadingTotal }
+
+  /**
+   * Load images from manifest in parallel
+   * @param {Object.<string, string>} manifest - Key-value pairs of `"asset_key": "image_path"`
+   */
+  async loadImagesFromManifest(manifest) {
+    const entries = Object.entries(manifest);
+
+    const promises = entries.map(([key, path]) =>
+      this.loadImage(path).then(handle => {
+        // On success
+        this.incLoadingActual();
+        return { key, path, handle }
+      })
+    );
+
+    const results = await Promise.all(promises);
+
+    const failures = results.filter(item => item.handle == 0);
+    if (failures.length > 0) {
+      console.error("Failed to load assets:");
+      
+      for (const failure of failures)
+        console.error("   " + failure.key + ": " + failure.path);
+
+      throw new Error("Failed to load some assets")
+    }
+
+    for (const { key, handle } of results) {
+      const caps = key
+        .replace(/^./, _ => _.toUpperCase())
+        .replace(/_(.)/g, (_, g1) => g1.toUpperCase());
+      const setterName = `setImg${caps}`;
+
+      if (typeof this.wasmInstance.exports[setterName] != "function")
+        console.error("loadAssetsFromManifest: Missing setter", setterName, "for the asset key", key)
+      else
+        this.wasmInstance.exports[setterName](handle);
+    }
+  }
+
+  get loadingProgress() {
+    return {
+      actual: this.#loadingActual,
+      total: this.#loadingTotal
+    }
+  }
+
+  incLoadingActual() {
+    // console.trace("incLoadingActual");
+    this.#loadingActual++;
+    // if (this.#loadingActual > this.#loadingTotal)
+    //   this.#loadingActual = this.#loadingTotal;
+  }
+
+  setLoadingActual(value) {
+    this.#assertNumber(value);
+    this.#loadingActual = value
+  }
+
+  incLoadingTotal(count) {
+    this.#loadingTotal += count
+  }
+
+  setLoadingTotal(value) {
+    this.#assertNumber(value);
+    this.#loadingTotal = value
+  }
+
+  setLoadingText(text) {
+    const div = document.querySelector("#loading-overlay > div");
+    div.innerHTML = text;
+  }
+
+  hideLoadingOverlay() {
+    const div = document.getElementById("loading-overlay");
+    // div.style.display = "none";
+    div.classList.add("hidden");
+    this.setLoadingText("");
+  }
+
+  async sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  initLoadingScreen() {
+    const imageCount = Object.keys(this.AssetManifest.images).length;
+    const soundCount = this.AssetManifest.sounds.size;
+    this.setLoadingActual(0);
+    this.setLoadingTotal(imageCount + soundCount);
   }
 
 
@@ -477,6 +657,8 @@ class Posit92 {
 
 
   // VGA.PAS
+  flush() { this.#vgaFlush() }
+  
   #vgaFlush() {
     const surfacePtr = this.#wasm.exports.getSurfacePtr();
     const imageData = new Uint8ClampedArray(

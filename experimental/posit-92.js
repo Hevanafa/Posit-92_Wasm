@@ -35,6 +35,14 @@ class Posit92 {
     env: {
       _haltproc: this.#handleHaltProc.bind(this),
 
+      // Intro
+      hideLoadingOverlay: this.hideLoadingOverlay.bind(this),
+      loadAssets: this.#loadAssets.bind(this),
+
+      // Loading
+      getLoadingActual: this.getLoadingActual.bind(this),
+      getLoadingTotal: this.getLoadingTotal.bind(this),
+
       hideCursor: () => this.#hideCursor(),
       showCursor: () => this.#showCursor(),
 
@@ -117,14 +125,7 @@ class Posit92 {
       chunks.push(value);
       loaded += value.length;
 
-      const loadedKB = Math.ceil(loaded / 1024);
-
-      if (isNaN(total))
-        this.setLoadingText(`Loading WebAssembly (${ loadedKB } KB)`)
-      else {
-        const totalKB = Math.ceil(total / 1024);
-        this.setLoadingText(`Loading WebAssembly (${ loadedKB } KB / ${ totalKB } KB)`)
-      }
+      this.onWasmProgress(loaded, total)
     }
 
     // Combine chunks
@@ -137,6 +138,21 @@ class Posit92 {
 
     const result = await WebAssembly.instantiate(bytes.buffer, this.#importObject);
     this.#wasm = result.instance;
+  }
+
+  /**
+   * @param {number} loaded in bytes
+   * @param {number} total in bytes
+   */
+  onWasmProgress(loaded, total) {
+    const loadedKB = Math.ceil(loaded / 1024);
+
+    if (isNaN(total))
+      this.setLoadingText(`Downloading engine (${ loadedKB } KB)`)
+    else {
+      const totalKB = Math.ceil(total / 1024);
+      this.setLoadingText(`Downloading engine (${ loadedKB } KB / ${ totalKB } KB)`)
+    }
   }
 
   #initWasmMemory() {
@@ -171,9 +187,8 @@ class Posit92 {
     this.#initMouse();
   }
 
-  afterInit() {
-    this.#wasm.exports.afterInit();
-    this.#addOutOfFocusFix()
+  beginIntro() {
+    this.#wasm.exports.beginIntroState()
   }
 
   #addOutOfFocusFix() {
@@ -183,9 +198,40 @@ class Posit92 {
     })
   }
 
+  /**
+   * Called when `done` is `true`
+   */
   cleanup() {
     this.#showCursor();
   }
+
+  /**
+   * Overridden by the inherited `Game` class
+   */
+  async loadAssets() {}
+
+  async #loadAssets() {
+    await this.loadAssets();
+    this.afterInit()
+  }
+
+  /**
+   * Bypass intro sequence
+   * 
+   * Should be used **without** the intro screen
+   */
+  async quickStart() {
+    this.hideLoadingOverlay();
+    this.#wasm.exports.beginLoadingState();
+    // await this.#loadAssets();
+    // this.afterInit()
+  }
+
+  afterInit() {
+    this.#wasm.exports.afterInit();
+    this.#addOutOfFocusFix()
+  }
+
 
   #hideCursor() {
     this.#canvas.style.cursor = "none"
@@ -259,8 +305,17 @@ class Posit92 {
     return handle
   }
 
+  /**
+   * Used in asset counter
+   */
   #loadingActual = 0;
+  getLoadingActual() { return this.#loadingActual }
+
+  /**
+   * Used in asset counter
+   */
   #loadingTotal = 0;
+  getLoadingTotal() { return this.#loadingTotal }
 
   /**
    * Load images from manifest in parallel
@@ -269,13 +324,10 @@ class Posit92 {
   async loadImagesFromManifest(manifest) {
     const entries = Object.entries(manifest);
 
-    // this.#loadingTotal = entries.length;
-    // this.#loadingActual = 0;
-
     const promises = entries.map(([key, path]) =>
       this.loadImage(path).then(handle => {
         // On success
-        this.#loadingActual++;
+        this.incLoadingActual();
         return { key, path, handle }
       })
     );
@@ -313,9 +365,10 @@ class Posit92 {
   }
 
   incLoadingActual() {
+    // console.trace("incLoadingActual");
     this.#loadingActual++;
-    if (this.#loadingActual > this.#loadingTotal)
-      this.#loadingActual = this.#loadingTotal;
+    // if (this.#loadingActual > this.#loadingTotal)
+    //   this.#loadingActual = this.#loadingTotal;
   }
 
   setLoadingActual(value) {
@@ -346,6 +399,13 @@ class Posit92 {
 
   async sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  initLoadingScreen() {
+    const imageCount = Object.keys(this.AssetManifest.images).length;
+    const soundCount = this.AssetManifest.sounds.size;
+    this.setLoadingActual(0);
+    this.setLoadingTotal(imageCount + soundCount);
   }
 
 
