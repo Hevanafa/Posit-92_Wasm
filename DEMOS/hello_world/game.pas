@@ -24,6 +24,8 @@ const
 
   CornflowerBlue = $FF6495ED;
 
+  IntroSlides = 2;
+
 var
   lastEsc: boolean;
   lastSpacebar, lastEnter: boolean;
@@ -158,7 +160,7 @@ begin
       inc(introSlide);
     end;
 
-    if introSlide > 2 then beginLoadingState;
+    if introSlide > IntroSlides then beginLoadingState;
 
     exit
   end;
