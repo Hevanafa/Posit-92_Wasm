@@ -72,8 +72,6 @@ end;
 
 procedure beginPlayingState;
 begin
-  actualGameState := GameStatePlaying;
-  
   { Initialise game state here }
   hideCursor;
   actualGameState := GameStatePlaying;

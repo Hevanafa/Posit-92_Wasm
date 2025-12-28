@@ -24,13 +24,22 @@ class Game extends Posit92 {
     // Add more scancodes as necessary
   };
 
+  AssetManifest = {
+    images: {
+      cursor: "assets/images/cursor.png",
+      hand_cursor: "assets/images/hand.png",
+      // Add more image assets here
+    },
+    sounds: new Map([
+      // Add sound assets here
+    ])
+  }
+
   async loadAssets() {
     let handle = 0;
 
-    handle = await this.loadImage("assets/images/cursor.png");
-    this.wasmInstance.exports.setImgCursor(handle);
-    handle = await this.loadImage("assets/images/hand.png");
-    this.wasmInstance.exports.setImgHandCursor(handle);
+    this.initLoadingScreen();
+    await this.loadImagesFromManifest(this.AssetManifest.images);
 
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
@@ -64,6 +73,8 @@ async function main() {
   const game = new Game("game");
   await game.init();
   game.afterInit();
+
+  game.quickStart();
 
   function loop(currentTime) {
     if (done) {

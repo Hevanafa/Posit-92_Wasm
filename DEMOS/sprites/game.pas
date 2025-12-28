@@ -1,15 +1,23 @@
 library Game;
 
-{$Mode TP}
-{$B-}
+{$Mode ObjFPC}
+{$J-}
 
 uses
   Conv, FPS, ImgRef, ImgRefFast,
   ImgRefComp, ImmedGui,
-  Keyboard, Lerp, Logger, Mouse,
-  Panic, Shapes, Timing, WasmMemMgr,
+  Keyboard, Mouse,
+  Lerp, Loading, Logger, Panic,
+  PostProc, Shapes, Timing, WasmMemMgr,
   VGA,
   Assets;
+
+type
+  TGameStates = (
+    GameStateIntro = 1,
+    GameStateLoading = 2,
+    GameStatePlaying = 3
+  );
 
 const
   SC_ESC = $01;
@@ -53,6 +61,7 @@ var
   lastTab, lastPageUp, lastPageDown: boolean;
 
   { Init your game state here }
+  actualGameState: TGameStates;
   { actualDemoState: integer; }
   gameTime: double;
   showDemoList, lastShowDemoList: boolean;
@@ -71,6 +80,9 @@ var
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+procedure hideCursor; external 'env' name 'hideCursor';
+procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
+procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure drawFPS;
 begin
@@ -81,6 +93,24 @@ procedure drawMouse;
 begin
   { spr(imgCursor, mouseX, mouseY) }
   spr(imgHandCursor, mouseX - 5, mouseY - 1)
+end;
+
+procedure beginLoadingState;
+begin
+  actualGameState := GameStateLoading;
+  loadAssets
+end;
+
+procedure beginPlayingState;
+begin
+  actualGameState := GameStatePlaying;
+  
+  { Initialise game state here }
+  hideCursor;
+  actualGameState := GameStatePlaying;
+  gameTime := 0.0;
+  
+  replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
 end;
 
 procedure resetHeldKeys;
@@ -130,8 +160,6 @@ begin
 end;
 
 function getDemoStateName(const state: integer): string;
-var
-  result: string;
 begin
   case state of
     DemoStateFullSprite:
@@ -151,8 +179,6 @@ begin
     else
       result := 'Unknown DemoState: ' + i32str(state);
   end;
-
-  getDemoStateName := result
 end;
 
 
@@ -334,6 +360,11 @@ procedure draw;
 var
   perc, x: double;
 begin
+  if actualGameState = GameStateLoading then begin
+    renderLoadingScreen;
+    exit
+  end;
+
   cls($FF6495ED);
 
   { writeLogF32(gameTime * 4); }
@@ -428,6 +459,7 @@ end;
 
 exports
   { Main game procedures }
+  beginLoadingState,
   init,
   afterInit,
   update,
