@@ -365,8 +365,7 @@ class Posit92 {
   }
 
   incLoadingActual() {
-    console.trace("incLoadingActual");
-
+    // console.trace("incLoadingActual");
     this.#loadingActual++;
     // if (this.#loadingActual > this.#loadingTotal)
     //   this.#loadingActual = this.#loadingTotal;
