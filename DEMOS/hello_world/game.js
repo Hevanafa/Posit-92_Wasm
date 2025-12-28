@@ -48,7 +48,7 @@ class Game extends Posit92 {
   }
 
   async init() {
-    this.setLoadingText("Loading WebAssembly...");
+    this.setLoadingText("Downloading engine...");
     await super.init();
   }
 
@@ -115,7 +115,7 @@ async function main() {
 
 function play() {
   const overlay = document.getElementById("play-overlay");
-  overlay.parentNode.removeChild(overlay)
-
+  overlay.parentNode.removeChild(overlay);
+  
   main()
 }
