@@ -35,8 +35,13 @@ class Posit92 {
     env: {
       _haltproc: this.#handleHaltProc.bind(this),
 
+      // Intro
       hideLoadingOverlay: this.hideLoadingOverlay.bind(this),
       loadAssets: this.#loadAssets.bind(this),
+
+      // Loading
+      getLoadingActual: this.getLoadingActual.bind(this),
+      getLoadingTotal: this.getLoadingTotal.bind(this),
 
       hideCursor: () => this.#hideCursor(),
       showCursor: () => this.#showCursor(),
@@ -277,8 +282,17 @@ class Posit92 {
     return handle
   }
 
+  /**
+   * Used in asset counter
+   */
   #loadingActual = 0;
+  getLoadingActual() { return this.#loadingActual }
+
+  /**
+   * Used in asset counter
+   */
   #loadingTotal = 0;
+  getLoadingTotal() { return this.#loadingTotal }
 
   /**
    * Load images from manifest in parallel

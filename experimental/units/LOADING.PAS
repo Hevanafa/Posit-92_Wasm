@@ -10,12 +10,15 @@ uses
   Conv, VGA,
   Assets;
 
-procedure renderLoadingScreen(const actual, total: integer);
+function getLoadingActual: integer; external 'env' name 'getLoadingActual';
+function getLoadingTotal: integer; external 'env' name 'getLoadingTotal';
+
+procedure renderLoadingScreen;
 var
   s: string;
   w: word;
 begin
-  cls($FF6495ED);
+  cls($FF550000);
 
   s := 'Progress: ' + i32str(actual) + ' / ' + i32str(total);
   w := measureDefault(s);
