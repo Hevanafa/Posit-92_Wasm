@@ -54,6 +54,14 @@ class Game extends Posit92 {
 
     this.setLoadingText(`Downloading engine... ${loadedKB} / ${totalKB} KB`)
   }
+
+  async loadIntro() {
+    
+  }
+
+  async showIntro() {
+    
+  }
 }
 
 const TargetFPS = 60;
@@ -69,6 +77,9 @@ async function main() {
   const game = new Game("game");
   await game.init();
   await game.loadDefaultFont();
+
+  await game.loadIntro();
+  await game.showIntro();
 
   game.initLoadingScreen();
   game.beginLoadingScreen();
