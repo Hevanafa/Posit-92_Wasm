@@ -117,14 +117,7 @@ class Posit92 {
       chunks.push(value);
       loaded += value.length;
 
-      const loadedKB = Math.ceil(loaded / 1024);
-
-      if (isNaN(total))
-        this.setLoadingText(`Loading WebAssembly (${ loadedKB } KB)`)
-      else {
-        const totalKB = Math.ceil(total / 1024);
-        this.setLoadingText(`Loading WebAssembly (${ loadedKB } KB / ${ totalKB } KB)`)
-      }
+      this.onWasmProgress(loaded, total)
     }
 
     // Combine chunks
@@ -137,6 +130,21 @@ class Posit92 {
 
     const result = await WebAssembly.instantiate(bytes.buffer, this.#importObject);
     this.#wasm = result.instance;
+  }
+
+  /**
+   * @param {number} loaded in bytes
+   * @param {number} total in bytes
+   */
+  onWasmProgress(loaded, total) {
+    const loadedKB = Math.ceil(loaded / 1024);
+
+    if (isNaN(total))
+      this.setLoadingText(`Loading WebAssembly (${ loadedKB } KB)`)
+    else {
+      const totalKB = Math.ceil(total / 1024);
+      this.setLoadingText(`Loading WebAssembly (${ loadedKB } KB / ${ totalKB } KB)`)
+    }
   }
 
   #initWasmMemory() {
