@@ -56,7 +56,14 @@ class Game extends Posit92 {
   }
 
   async loadIntro() {
-    
+    this.wasmInstance.exports.setImgPosit92Logo(
+      await this.loadImage("assets/images/posit-92_32px.png"));
+
+    this.wasmInstance.exports.setImgFPCLogo(
+      await this.loadImage("assets/images/fpc_logo.png"));
+
+    this.wasmInstance.exports.setImgWasmLogo(
+      await this.loadImage("assets/images/wasm_logo.png"));
   }
 
   async showIntro() {
