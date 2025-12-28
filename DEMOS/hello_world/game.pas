@@ -69,8 +69,6 @@ end;
 
 procedure beginLoadingState;
 begin
-  writeLog('beginLoadingState');
-
   actualGameState := GameStateLoading;
   loadAssets
 end;
@@ -87,24 +85,34 @@ begin
   replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
 end;
 
-procedure renderIntro;
+
+procedure printDefaultCentred(const text: string; const cx, y: smallint);
 var
-  s: string;
   w: word;
+begin
+  w := measureDefault(text);
+  printDefault(text, cx - w div 2, y)
+end;
+
+procedure renderIntro;
 begin
   cls($FF000000);
 
   case introSlide of
     1: begin
       spr(imgPosit92Logo, 144, 84);
-
-      s := 'Made with Posit-92';
-      w := measureDefault(s);
-      printDefault(s, (vgaWidth - w) div 2, 126);
+      printDefaultCentred('Made with Posit-92', vgaWidth div 2, 126)
     end;
 
     2: begin
-      printDefault('Slide 2', 50, 50)
+      printDefaultCentred('Made with', vgaWidth div 2, 44);
+
+      spr(imgFPCLogo, 75, 67);
+      spr(imgWasmLogo, 180, 67);
+
+      printDefaultCentred('Free Pascal', 108, 144);
+      printDefaultCentred('Compiler', 108, 154);
+      printDefaultCentred('WebAssembly', 212, 144);
     end;
   end;
 

@@ -92,10 +92,10 @@ async function main() {
   await game.init();
   await game.loadDefaultFont();
 
-  // await game.loadIntro();
-  // game.beginIntro();
+  await game.loadIntro();
+  game.beginIntro();
   
-  game.quickStart();
+  // game.quickStart();
 
   // game.initLoadingScreen();
   // game.beginLoadingScreen();
