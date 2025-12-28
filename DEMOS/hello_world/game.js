@@ -116,6 +116,6 @@ async function main() {
 function play() {
   const overlay = document.getElementById("play-overlay");
   overlay.parentNode.removeChild(overlay);
-  
+
   main()
 }

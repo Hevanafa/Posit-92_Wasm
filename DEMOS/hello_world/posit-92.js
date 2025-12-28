@@ -216,15 +216,15 @@ class Posit92 {
   }
 
   /**
-   * Skip intro
+   * Bypass intro sequence
    * 
    * Should be used **without** the intro screen
    */
   async quickStart() {
     this.hideLoadingOverlay();
     this.#wasm.exports.beginLoadingState();
-    await this.loadAssets();
-    this.afterInit()
+    // await this.#loadAssets();
+    // this.afterInit()
   }
 
   afterInit() {
@@ -327,7 +327,7 @@ class Posit92 {
     const promises = entries.map(([key, path]) =>
       this.loadImage(path).then(handle => {
         // On success
-        this.#loadingActual++;
+        this.incLoadingActual();
         return { key, path, handle }
       })
     );
@@ -365,6 +365,8 @@ class Posit92 {
   }
 
   incLoadingActual() {
+    console.trace("incLoadingActual");
+
     this.#loadingActual++;
     // if (this.#loadingActual > this.#loadingTotal)
     //   this.#loadingActual = this.#loadingTotal;
