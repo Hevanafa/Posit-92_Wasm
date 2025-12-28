@@ -84,9 +84,27 @@ begin
 end;
 
 procedure renderIntro;
+var
+  s: string;
+  w: word;
 begin
   cls($FF000000);
 
+  case introSlide of
+    1: begin
+      spr(imgPosit92Logo, 144, 84);
+
+      s := 'Made with Posit-92';
+      w := measureDefault(s);
+      printDefault(s, (vgaWidth - w) div 2, 126);
+    end;
+
+    2: begin
+      printDefault('Slide 2', 50, 50)
+    end;
+  end;
+
+  { Debug intro state }
   printDefault('(Intro slide ' + i32str(introSlide) + ')', 30, 30);
   printDefault('Slide end tick: ' + f32str(introSlideEndTick), 30, 40);
 
@@ -116,7 +134,6 @@ begin
     { TODO: Handle inputs }
 
     if getTimer >= introSlideEndTick then begin
-      writeLog('Next intro slide');
       introSlideEndTick := getTimer + 2.0;
       inc(introSlide);
     end;
