@@ -20,11 +20,13 @@ type
 const
   SC_ESC = $01;
   SC_SPACE = $39;
+  SC_ENTER = $1C;
 
   CornflowerBlue = $FF6495ED;
 
 var
   lastEsc: boolean;
+  lastSpacebar, lastEnter: boolean;
 
   { Intro state variables }
   introSlide: integer;
@@ -33,6 +35,7 @@ var
   { Init your game state here }
   actualGameState: TGameStates;
   gameTime: double;
+
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -126,14 +129,31 @@ begin
 end;
 
 procedure update;
+var
+  shouldSkip: boolean;
 begin
   updateDeltaTime;
   incrementFPS;
 
   if actualGameState = GameStateIntro then begin
-    { TODO: Handle inputs }
+    shouldSkip := false;
 
-    if getTimer >= introSlideEndTick then begin
+    { Handle inputs }
+    if lastSpacebar <> isKeyDown(SC_SPACE) then begin
+      lastSpacebar := isKeyDown(SC_SPACE);
+      if lastSpacebar then shouldSkip := true
+    end;
+
+    if lastEnter <> isKeyDown(SC_ENTER) then begin
+      lastEnter := isKeyDown(SC_ENTER);
+      if lastEnter then shouldSkip := true
+    end;
+
+    { Handle next slide }
+    if getTimer >= introSlideEndTick then
+      shouldSkip := true;
+
+    if shouldSkip then begin
       introSlideEndTick := getTimer + 2.0;
       inc(introSlide);
     end;
