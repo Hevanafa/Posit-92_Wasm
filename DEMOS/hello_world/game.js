@@ -30,12 +30,6 @@ class Game extends Posit92 {
   async loadAssets() {
     let handle = 0;
 
-    this.setLoadingActual(0);
-
-    const imageCount = Object.keys(this.#AssetManifest.images).length;
-    const soundCount = this.#AssetManifest.sounds.size;
-    this.setLoadingTotal(imageCount + soundCount);
-
     await this.loadImagesFromManifest(this.#AssetManifest.images);
 
     handle = await this.loadImage("assets/images/dosu_1.png");
@@ -52,6 +46,13 @@ class Game extends Posit92 {
   }
 
   #loadingInterval = 0;
+
+  initLoadingScreen() {
+    const imageCount = Object.keys(this.#AssetManifest.images).length;
+    const soundCount = this.#AssetManifest.sounds.size;
+    this.setLoadingActual(0);
+    this.setLoadingTotal(imageCount + soundCount);
+  }
 
   beginLoadingScreen() {
     // Only applicable with an in-game loading screen
@@ -89,6 +90,7 @@ async function main() {
   await game.init();
   await game.loadDefaultFont();
 
+  game.initLoadingScreen();
   game.beginLoadingScreen();
     await game.loadAssets();
   game.endLoadingScreen();
