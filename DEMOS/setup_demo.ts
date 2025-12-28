@@ -3,6 +3,11 @@
  * This script must be placed at the root DEMOS folder
  */
 
+const scriptsExcludes = [
+  "square_screen",  // Has custom UNITS for unusual resolutions: PICO-8 Clone, GameBoy Jam & Nokia Jam
+  "dos_display"  // Has custom UNITS
+];
+
 import { existsSync } from "node:fs";
 import { readFile, writeFile, copyFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -43,9 +48,6 @@ const canonicalPosit = join(scriptDir, "../experimental/posit-92.js");
 const mixinsDir = join(scriptDir, "../experimental/mixins");
 
 const scriptsDir = join(scriptDir, "../scripts");
-const scriptsExcludes = [
-  "square_screen"  // Has custom UNITS for unusual resolutions: PICO-8 Clone, GameBoy Jam & Nokia Jam
-];
 
 // Check if demo exists
 if (!existsSync(demoPath)) {
