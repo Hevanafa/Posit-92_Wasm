@@ -119,9 +119,14 @@ var
   w: integer;
   s: string;
 begin
-  if actualGameState = GameStateIntro then begin
-    renderIntro;
-    exit
+  if actualGameState in [GameStateIntro, GameStateLoading] then
+  case actualGameState of
+    GameStateIntro: begin
+      renderIntro; exit
+    end;
+    GameStateLoading: begin
+      renderLoadingScreen(67, 69); exit
+    end else
   end;
 
   cls(CornflowerBlue);
