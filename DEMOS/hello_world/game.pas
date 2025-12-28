@@ -1,6 +1,7 @@
 library Game;
 
 {$Mode ObjFPC}
+{$J-}  { Switch off assignments to typed constants }
 
 uses
   IntroScr, Loading,
