@@ -35,6 +35,7 @@ var
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+procedure hideCursor; external 'env' name 'hideCursor';
 procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
 procedure loadAssets; external 'env' name 'loadAssets';
 
@@ -64,6 +65,7 @@ end;
 procedure beginPlayingState;
 begin
   actualGameState := GameStatePlaying;
+  hideCursor
 end;
 
 procedure renderIntro;

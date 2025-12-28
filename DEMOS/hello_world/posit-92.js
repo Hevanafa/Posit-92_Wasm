@@ -202,7 +202,7 @@ class Posit92 {
 
   async #loadAssets() {
     await this.loadAssets();
-    this.wasmInstance.exports.beginPlayingGameState()
+    this.wasmInstance.exports.beginPlayingState()
   }
 
   #hideCursor() {
