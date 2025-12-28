@@ -55,6 +55,12 @@ body {
 
   color: white;
   opacity: 1.0;
+
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 #loading-overlay.hidden {
@@ -63,9 +69,6 @@ body {
 }
 
 #loading-overlay > div {
-  position: absolute;
-  inset: 0;
-  margin: auto;
   width: fit-content;
   height: fit-content;
 }
@@ -76,6 +79,7 @@ body {
   <canvas id="game" width="320" height="200"></canvas>
 
   <div id="loading-overlay">
+    <img src="assets/posit-92_64px.png" alt="Posit-92 logo" />
     <div>Now loading...</div>
   </div>
 
