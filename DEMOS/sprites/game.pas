@@ -95,37 +95,26 @@ begin
   spr(imgHandCursor, mouseX - 5, mouseY - 1)
 end;
 
-procedure beginLoadingState;
+function getDemoStateName(const state: integer): string;
 begin
-  actualGameState := GameStateLoading;
-  loadAssets
-end;
-
-procedure beginPlayingState;
-begin
-  actualGameState := GameStatePlaying;
-  
-  { Initialise game state here }
-  hideCursor;
-  actualGameState := GameStatePlaying;
-  gameTime := 0.0;
-  
-  replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
-end;
-
-procedure resetHeldKeys;
-begin
-  lastEsc := false;
-  lastSpacebar := false;
-  
-  lastUp := false;
-  lastRight := false;
-  lastDown := false;
-  lastLeft := false;
-
-  lastTab := false;
-  lastPageUp := false;
-  lastPageDown := false;
+  case state of
+    DemoStateFullSprite:
+      result := 'Full sprite';
+    DemoStateRegion:
+      result := 'Sprite region';
+    DemoStateBlend:
+      result := 'Alpha blending';
+    DemoStateScaling:
+      result := 'Sprite scaling';
+    DemoStateRegionScaling:
+      result := 'Region scaling';
+    DemoStateFlip:
+      result := 'Sprite flipping';
+    DemoStateRotation:
+      result := 'Sprite rotation';
+    else
+      result := 'Unknown DemoState: ' + i32str(state);
+  end;
 end;
 
 { demoState: use DemoStates }
@@ -159,43 +148,20 @@ begin
   spriteRotation := 0.0;
 end;
 
-function getDemoStateName(const state: integer): string;
+
+procedure beginLoadingState;
 begin
-  case state of
-    DemoStateFullSprite:
-      result := 'Full sprite';
-    DemoStateRegion:
-      result := 'Sprite region';
-    DemoStateBlend:
-      result := 'Alpha blending';
-    DemoStateScaling:
-      result := 'Sprite scaling';
-    DemoStateRegionScaling:
-      result := 'Region scaling';
-    DemoStateFlip:
-      result := 'Sprite flipping';
-    DemoStateRotation:
-      result := 'Sprite rotation';
-    else
-      result := 'Unknown DemoState: ' + i32str(state);
-  end;
+  actualGameState := GameStateLoading;
+  loadAssets
 end;
 
-
-procedure init;
-begin
-  initMemMgr;
-  initBuffer;
-  initDeltaTime;
-  initFPSCounter;
-end;
-
-procedure afterInit;
+procedure beginPlayingState;
 var
   a: word;
 begin
   { Initialise game state here }
   hideCursor;
+  actualGameState := GameStatePlaying;
   initImmediateGUI;
 
   guiSetFont(defaultFont, defaultFontGlyphs);
@@ -210,6 +176,35 @@ begin
   demoListState.selectedIndex := 0;
 
   initDemoState(demoListState.selectedIndex);
+end;
+
+procedure resetHeldKeys;
+begin
+  lastEsc := false;
+  lastSpacebar := false;
+  
+  lastUp := false;
+  lastRight := false;
+  lastDown := false;
+  lastLeft := false;
+
+  lastTab := false;
+  lastPageUp := false;
+  lastPageDown := false;
+end;
+
+
+procedure init;
+begin
+  initMemMgr;
+  initBuffer;
+  initDeltaTime;
+  initFPSCounter;
+end;
+
+procedure afterInit;
+begin
+  beginPlayingState
 end;
 
 procedure printCentred(const text: string; const y: integer);
