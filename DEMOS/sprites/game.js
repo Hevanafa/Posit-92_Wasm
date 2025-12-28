@@ -28,6 +28,8 @@ class Game extends Posit92 {
     images: {
       cursor: "assets/images/cursor.png",
       hand_cursor: "assets/images/hand.png",
+      img_slime_girl: "assets/images/piyo_0426_slime_girl.png",
+      blue_enemy: "assets/images/blue_enemy.png"
       // Add more image assets here
     },
     sounds: new Map([
@@ -35,26 +37,26 @@ class Game extends Posit92 {
     ])
   }
 
+  async loadDefaultFont() {
+    await this.loadBMFont(
+      "assets/fonts/nokia_cellphone_fc_8.txt",
+      this.wasmInstance.exports.defaultFontPtr(),
+      this.wasmInstance.exports.defaultFontGlyphsPtr());
+  }
+
+  /**
+   * @override
+   */
   async loadAssets() {
     let handle = 0;
 
     this.initLoadingScreen();
     await this.loadImagesFromManifest(this.AssetManifest.images);
 
-    await this.loadBMFont(
-      "assets/fonts/nokia_cellphone_fc_8.txt",
-      this.wasmInstance.exports.defaultFontPtr(),
-      this.wasmInstance.exports.defaultFontGlyphsPtr());
-
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
     handle = await this.loadImage("assets/images/dosu_2.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
-
-    handle = await this.loadImage("assets/images/piyo_0426_slime_girl.png");
-    this.wasmInstance.exports.setImgSlimeGirl(handle);
-    handle = await this.loadImage("assets/images/blue_enemy.png");
-    this.wasmInstance.exports.setImgBlueEnemy(handle);
 
     // Add more assets as necessary
   }
@@ -72,7 +74,7 @@ var done = false;
 async function main() {
   const game = new Game("game");
   await game.init();
-  game.afterInit();
+  await game.loadDefaultFont();
 
   game.quickStart();
 
