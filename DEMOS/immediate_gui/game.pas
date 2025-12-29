@@ -194,7 +194,8 @@ begin
   Checkbox('Show FPS', 10, 60, showFPS);
   ListView(listItems, listState);
 
-  TextLabelWrap('This is a very long text!', 10, 160, 100);
+  { TextLabelWrap('This is a very long text!', 10, 160, 100); }
+  TextLabelWrap('This is a very long supercalifragilisticexpialidocious third line!', 10, 160, 100);
 
   resetActiveWidget;
 
