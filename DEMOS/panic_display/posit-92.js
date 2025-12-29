@@ -1,3 +1,6 @@
+// Copied from experimental/posit-92.js
+// Last synced: 2025-12-29
+
 "use strict";
 
 class Posit92 {
@@ -402,8 +405,13 @@ class Posit92 {
   }
 
   initLoadingScreen() {
-    const imageCount = Object.keys(this.AssetManifest.images).length;
-    const soundCount = this.AssetManifest.sounds.size;
+    const imageCount = this.AssetManifest.images != null
+      ? Object.keys(this.AssetManifest.images).length
+      : 0;
+    const soundCount = this.AssetManifest.sounds != null
+      ? this.AssetManifest.sounds.size
+      : 0;
+    
     this.setLoadingActual(0);
     this.setLoadingTotal(imageCount + soundCount);
   }
