@@ -6,6 +6,7 @@
 unit ImmedGui;
 
 {$Mode TP}
+{$J-}
 {$B-}
 
 interface
@@ -63,8 +64,9 @@ procedure resetWidgetIndices;
 procedure resetActiveWidget;
 
 procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
+
 function guiMeasureText(const text: string): word;
-function guiMeasureTextWrap(const text: string): word;
+function guiMeasureTextWrapHeight(text: string; const maxWidth: integer): word;
 
 procedure assertFontSet;
 
@@ -266,7 +268,7 @@ begin
   guiMeasureText := measureBMFont(activeFontGlyphs, text)
 end;
 
-function guiMeasureTextWrapHeight(const text: string; const maxWidth: integer): word;
+function guiMeasureTextWrapHeight(text: string; const maxWidth: integer): word;
 var
   result: word;
   lines: array[0..9] of string;
@@ -277,7 +279,7 @@ var
   run: string;  { in the sense of something continuous / sequential }
   spaceWidth: word;
   wordWidth, runWidth: word;
-  left, top: word;
+  { left, top: word; }
 begin
   assertFontSet;
 
@@ -287,13 +289,13 @@ begin
   { Process each line }
   text := replaceAll(text, #13#10, #10);
   lineCount := split(text, #10, lines);
-  top := y;
+  { top := y; }
 
   for row:=0 to lineCount - 1 do begin
     { Process each word }
     run := '';
     runWidth := 0;
-    left := x;
+    { left := x; }
 
     spaceWidth := guiMeasureText(' ');
     wordCount := split(lines[row], ' ', words);
@@ -309,9 +311,9 @@ begin
         run := words[a] + ' ';
         runWidth := wordWidth + spaceWidth;
 
-        left := x;
+        { left := 0; }
         inc(result, activeFont.lineHeight);
-        inc(top, activeFont.lineHeight)
+        { inc(top, activeFont.lineHeight) }
       end;
     end;
 
@@ -321,7 +323,7 @@ begin
     }
 
     inc(result, activeFont.lineHeight);
-    inc(top, activeFont.lineHeight)
+    { inc(top, activeFont.lineHeight) }
   end;
 
   guiMeasureTextWrapHeight := result

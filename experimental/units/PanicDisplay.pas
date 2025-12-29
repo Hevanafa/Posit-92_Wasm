@@ -15,14 +15,16 @@ procedure panicHaltWithDisplay(const msg: string);
 var
   a: word;
   msgBuffer: array[0..255] of byte;
+  height: word;
 begin
   cls($FF550000);
-  { TODO: Handle display }
 
   TextLabel('PANIC', 10, 10);
 
+  height := guiMeasureTextWrapHeight(msg, vgaWidth - 20);
   TextLabelWrap(msg, 10, 30, vgaWidth - 20);
 
+  TextLabel('Check Console for details', 10, 40 + height);
 
   vgaFlush;
 
