@@ -283,9 +283,10 @@ end;
 procedure TextLabelWrap(text: string; const x, y, maxWidth: integer);
 var
   lines: array[0..9] of string;
+  lineCount: integer;
   words: array[0..9] of string;
   wordCount: integer;
-  a: word;
+  row, a: word;
   line: string;
   spaceWidth: word;
   wordWidth, runWidth: word;
@@ -294,35 +295,40 @@ begin
   assertFontSet;
   if maxWidth <= 0 then exit;
 
-  { TODO: Process each line }
+  { Process each line }
+  text := replaceAll(text, #13#10, #10);
+  lineCount := split(text, #10, lines);
 
-  { Process each word }
+  for row:=0 to lineCount - 1 do begin
+    { Process each word }
+    line := '';
+    runWidth := 0;
+    left := x; top := y;
 
-  line := '';
-  runWidth := 0;
-  left := x; top := y;
+    spaceWidth := guiMeasureText(' ');
+    wordCount := split(lines[row], ' ', words);
 
-  spaceWidth := guiMeasureText(' ');
-  wordCount := split(text, ' ', words);
+    for a:=0 to wordCount - 1 do begin
+      wordWidth := guiMeasureText(words[a]);
 
-  for a:=0 to wordCount - 1 do begin
-    wordWidth := guiMeasureText(words[a]);
+      if runWidth + wordWidth <= maxWidth then begin
+        line := line + words[a] + ' ';
+        inc(runWidth, wordWidth + spaceWidth)
+      end else begin
+        printBMFont(activeFont, activeFontGlyphs, trimEnd(line), left, top);
+        line := words[a];
+        runWidth := wordWidth + spaceWidth;
 
-    if runWidth + wordWidth <= maxWidth then begin
-      line := line + words[a] + ' ';
-      inc(runWidth, wordWidth + spaceWidth)
-    end else begin
-      printBMFont(activeFont, activeFontGlyphs, trimEnd(line), left, top);
-      line := words[a];
-      runWidth := wordWidth + spaceWidth;
-
-      left := x;
-      inc(top, activeFont.lineHeight)
+        left := x;
+        inc(top, activeFont.lineHeight)
+      end;
     end;
-  end;
 
-  if length(line) > 0 then
-    printBMFont(activeFont, activeFontGlyphs, line, left, top);
+    if length(line) > 0 then
+      printBMFont(activeFont, activeFontGlyphs, line, left, top);
+    left := x;
+    inc(top, activeFont.lineHeight)
+  end;
 end;
 
 

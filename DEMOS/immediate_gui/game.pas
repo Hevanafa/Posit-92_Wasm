@@ -195,7 +195,8 @@ begin
   ListView(listItems, listState);
 
   { TextLabelWrap('This is a very long text!', 10, 160, 100); }
-  TextLabelWrap('This is a very long supercalifragilisticexpialidocious third line!', 10, 160, 100);
+  { TextLabelWrap('This is a very long supercalifragilisticexpialidocious third line!', 10, 160, 100); }
+  TextLabelWrap('1st line'#13#10'2nd line'#10'3rd longer line', 10, 160, 100);
 
   resetActiveWidget;
 
