@@ -49,6 +49,10 @@ class Posit92 {
       hideCursor: () => this.#hideCursor(),
       showCursor: () => this.#showCursor(),
 
+      // Fullscreen
+      toggleFullscreen: () => this.#toggleFullscreen(),
+      getFullscreenState: () => this.#getFullscreenState(),
+
       // Keyboard
       isKeyDown: this.#isKeyDown.bind(this),
       signalDone: this.#signalDone.bind(this),
@@ -71,8 +75,7 @@ class Posit92 {
       getFullTimer: () => this.#getFullTimer(),
 
       // VGA
-      vgaFlush: () => this.#vgaFlush(),
-      toggleFullscreen: () => this.#toggleFullscreen()
+      vgaFlush: () => this.#vgaFlush()
     }
   };
 
@@ -680,11 +683,16 @@ class Posit92 {
     this.#ctx.putImageData(imgData, 0, 0);
   }
 
+  // Fullscreen.pas
   #toggleFullscreen() {
-    if (!document.fullscreenElement)
+    if (document.fullscreenElement == null)
       this.#canvas.requestFullscreen()
     else
       document.exitFullscreen();
+  }
+
+  #getFullscreenState() {
+    return document.fullscreenElement != null
   }
 
 

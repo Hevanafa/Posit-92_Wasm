@@ -121,6 +121,8 @@ begin
     imgFullscreen, imgFullscreen, imgFullscreen) then
     toggleFullscreen;
 
+  printDefault('Fullscreen? ' + boolStr(getFullscreenState), 10, 30);
+
   resetActiveWidget;
   drawMouse;
   vgaFlush
