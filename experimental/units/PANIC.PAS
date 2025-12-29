@@ -8,8 +8,13 @@
 unit Panic;
 
 {$Mode TP}
+{$Define WASM}
 
 interface
+
+{$ifdef WASM}
+procedure jsPanicHalt(const textPtr: PByte; const textLen: integer); external 'env' name 'panicHalt';
+{$endif}
 
 procedure panicHalt(const msg: string);
 
@@ -33,8 +38,6 @@ end;
 
 {$else}
 { Default: WASM }
-procedure jsPanicHalt(const textPtr: PByte; const textLen: integer); external 'env' name 'panicHalt';
-
 procedure panicHalt(const msg: string);
 var
   a: word;
