@@ -28,11 +28,6 @@ const
 
 var
   lastEsc: boolean;
-  lastSpacebar, lastEnter: boolean;
-
-  { Intro state variables }
-  introSlide: integer;
-  introSlideEndTick: double;
 
   { Init your game state here }
   actualGameState: TGameStates;
@@ -84,42 +79,9 @@ begin
 end;
 
 procedure update;
-var
-  shouldSkip: boolean;
 begin
   updateDeltaTime;
   incrementFPS;
-
-  if actualGameState = GameStateIntro then begin
-    shouldSkip := false;
-
-    { Handle inputs }
-    if lastSpacebar <> isKeyDown(SC_SPACE) then begin
-      lastSpacebar := isKeyDown(SC_SPACE);
-      if lastSpacebar then shouldSkip := true
-    end;
-
-    if lastEnter <> isKeyDown(SC_ENTER) then begin
-      lastEnter := isKeyDown(SC_ENTER);
-      if lastEnter then shouldSkip := true
-    end;
-
-    { Handle next slide }
-    if getTimer >= introSlideEndTick then
-      shouldSkip := true;
-
-    if shouldSkip then begin
-      introSlideEndTick := getTimer + 2.0;
-      inc(introSlide);
-    end;
-
-    if introSlide > IntroSlides then begin
-      unloadIntro;
-      beginLoadingState
-    end;
-
-    exit
-  end;
 
   { Handle inputs }
   updateMouse;
@@ -142,20 +104,9 @@ var
   w: integer;
   s: string;
 begin
-  if actualGameState in [GameStateIntro, GameStateLoading] then
-  case actualGameState of
-    GameStateIntro: begin
-      renderIntro(introSlide);
-
-      { Debug intro state }
-      printDefault('(Intro slide ' + i32str(introSlide) + ')', 30, 30);
-      printDefault('Slide end tick: ' + f32str(introSlideEndTick), 30, 40);
-
-      exit
-    end;
-    GameStateLoading: begin
-      renderLoadingScreen; exit
-    end else
+  if actualGameState = GameStateLoading then begin
+    renderLoadingScreen;
+    exit
   end;
 
   cls(CornflowerBlue);
