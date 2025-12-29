@@ -67,6 +67,8 @@ begin
   initImmediateGUI;
   guiSetFont(defaultFont, defaultFontGlyphs);
 
+  { De finibus bonorum et malorum
+    https://archive.org/details/definibusbonoru02cicegoog/page/34/mode/2up }
   panicHaltWithDisplay(
     'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium' +
     ' doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo' +
