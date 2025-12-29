@@ -9,8 +9,11 @@ procedure panicHaltWithDisplay(const msg: string);
 
 implementation
 
+uses Panic;
+
 procedure panicHaltWithDisplay(const msg: string);
 var
+  a: word;
   msgBuffer: array[0..255] of byte;
 begin
   { TODO: Handle display }
@@ -22,4 +25,4 @@ begin
   jsPanicHalt(@msgBuffer, length(msg));
 end;
 
-end;
+end.

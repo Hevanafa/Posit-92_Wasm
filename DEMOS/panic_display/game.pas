@@ -7,7 +7,7 @@ uses
   Loading,
   Conv, FPS, Logger,
   Keyboard, Mouse,
-  ImgRef, ImgRefFast,
+  ImmedGUI, ImgRef, ImgRefFast,
   PanicDisplay, Timing, WasmHeap, WasmMemMgr,
   VGA,
   Assets;
@@ -61,8 +61,12 @@ procedure beginPlayingState;
 begin
   { Initialise game state here }
   hideCursor;
+
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
+
+  initImmediateGUI;
+  guiSetFont(defaultFont, defaultFontGlyphs);
 end;
 
 
@@ -80,8 +84,6 @@ begin
 end;
 
 procedure update;
-var
-  shouldSkip: boolean;
 begin
   updateDeltaTime;
   incrementFPS;
@@ -130,7 +132,6 @@ begin
 end;
 
 exports
-  beginIntroState,
   beginLoadingState,
   init,
   afterInit,
