@@ -17,7 +17,10 @@ if (existsSync(distDir))
 await mkdir(distDir);
 
 // Copy base files
-const filesToCopy = ["game.js", wasmFile, "posit-92.js", "index.html"];
+const filesToCopy = [
+  "game.js", wasmFile, "posit-92.js", "index.html",
+  "favicon.ico"
+];
 
 for (const file of filesToCopy)
   await copyFile(file, join(distDir, file));
