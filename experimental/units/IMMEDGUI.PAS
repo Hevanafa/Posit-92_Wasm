@@ -64,6 +64,7 @@ procedure resetActiveWidget;
 
 procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 function guiMeasureText(const text: string): word;
+function guiMeasureTextWrap(const text: string): word;
 
 procedure assertFontSet;
 
@@ -263,6 +264,67 @@ function guiMeasureText(const text: string): word;
 begin
   assertFontSet;
   guiMeasureText := measureBMFont(activeFontGlyphs, text)
+end;
+
+function guiMeasureTextWrapHeight(const text: string; const maxWidth: integer): word;
+var
+  result: word;
+  lines: array[0..9] of string;
+  lineCount: integer;
+  words: array[0..99] of string;
+  wordCount: integer;
+  row, a: word;
+  run: string;  { in the sense of something continuous / sequential }
+  spaceWidth: word;
+  wordWidth, runWidth: word;
+  left, top: word;
+begin
+  assertFontSet;
+
+  result := 0;
+  if maxWidth <= 0 then exit;
+
+  { Process each line }
+  text := replaceAll(text, #13#10, #10);
+  lineCount := split(text, #10, lines);
+  top := y;
+
+  for row:=0 to lineCount - 1 do begin
+    { Process each word }
+    run := '';
+    runWidth := 0;
+    left := x;
+
+    spaceWidth := guiMeasureText(' ');
+    wordCount := split(lines[row], ' ', words);
+
+    for a:=0 to wordCount - 1 do begin
+      wordWidth := guiMeasureText(words[a]);
+
+      if runWidth + wordWidth <= maxWidth then begin
+        run := run + words[a] + ' ';
+        inc(runWidth, wordWidth + spaceWidth)
+      end else begin
+        { TextLabel(trimEnd(run), left, top); }
+        run := words[a] + ' ';
+        runWidth := wordWidth + spaceWidth;
+
+        left := x;
+        inc(result, activeFont.lineHeight);
+        inc(top, activeFont.lineHeight)
+      end;
+    end;
+
+    {
+    if length(run) > 0 then
+      TextLabel(run, left, top);
+    }
+
+    inc(result, activeFont.lineHeight);
+    inc(top, activeFont.lineHeight)
+  end;
+
+  guiMeasureTextWrapHeight := result
 end;
 
 
