@@ -91,6 +91,8 @@ var
 begin
   { Initialise game state here }
   hideCursor;
+  
+  actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
   initImmediateGUI;

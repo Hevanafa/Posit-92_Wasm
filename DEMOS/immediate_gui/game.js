@@ -13,7 +13,12 @@ class Game extends Posit92 {
   AssetManifest = {
     images: {
       cursor: "assets/images/cursor.png",
-      hand_cursor: "assets/images/hand.png"
+      hand_cursor: "assets/images/hand.png",
+      
+      win_normal: "assets/images/btn_normal.png",
+      win_hovered: "assets/images/btn_hovered.png",
+      win_pressed: "assets/images/btn_pressed.png"
+
     }
   }
 
@@ -44,15 +49,6 @@ class Game extends Posit92 {
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
     handle = await this.loadImage("assets/images/dosu_2.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
-
-    this.wasmInstance.exports.setImgWinNormal(
-      await this.loadImage("assets/images/btn_normal.png"));
-
-    this.wasmInstance.exports.setImgWinHovered(
-      await this.loadImage("assets/images/btn_hovered.png"));
-
-    this.wasmInstance.exports.setImgWinPressed(
-      await this.loadImage("assets/images/btn_pressed.png"));
 
     // Add more assets as necessary
   }
