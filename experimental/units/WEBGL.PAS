@@ -1,7 +1,6 @@
 {
-  WebGL unit
-  Part of Posit-92 framework
-  By Hevanafa, 30-11-2025
+  WebGL unit - Part of Posit-92 game engine
+  Hevanafa
 
   A thin 1:1 wrapper around WebGL
 }

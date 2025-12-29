@@ -1,7 +1,6 @@
 {
-  SprComp unit
-  Part of Posit-92 framework
-  By Hevanafa, 26-11-2025
+  SprComp - Part of Posit-92 game engine
+  Hevanafa
 
   An extension of Bitmap unit to handle alpha compositing
   Deprecated in favour of ImgRefComp

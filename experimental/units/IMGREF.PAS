@@ -1,6 +1,6 @@
 {
   ImgRef unit
-  Part of Posit-92 framework
+  Part of Posit-92 game engine
   By Hevanafa, 28-11-2025
 
   Most of the procedures & functions here are based on Bitmap and SprFast units

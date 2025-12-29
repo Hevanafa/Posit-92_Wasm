@@ -1,4 +1,9 @@
-{ Trimmed down version of LOGGER.PAS from POSIT-92 }
+{
+  Logger - Part of Posit-92 game engine
+  Hevanafa
+
+  Trimmed down version of LOGGER.PAS from Posit-92
+}
 
 unit Logger;
 

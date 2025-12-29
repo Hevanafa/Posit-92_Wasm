@@ -1,8 +1,6 @@
 {
   Immediate GUI unit
-  Part of Posit-92 framework
-  By Hevanafa, 23-11-2025
-  Update: 23-11-2025
+  Part of Posit-92 game engine
 }
 
 unit ImmedGui;

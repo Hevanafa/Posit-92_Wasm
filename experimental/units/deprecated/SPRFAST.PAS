@@ -1,7 +1,6 @@
 {
-  SprFast unit
-  Part of Posit-92 framework
-  By Hevanafa, 26-11-2025
+  SprFast - Part of Posit-92 game engine
+  Hevanafa
 
   An extension of Bitmap unit
   Deprecated in favour of SprFast

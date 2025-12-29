@@ -1,6 +1,6 @@
 {
-  VGA unit
-  Part of POSIT-92 Framework
+  VGA unit - Part of Posit-92 game engine
+  Hevanafa
 }
 
 unit VGA;

@@ -1,6 +1,5 @@
 {
-  Sounds unit
-  Part of Posit-92 framework
+  Sounds unit - Part of Posit-92 game engine
   By Hevanafa
 
   Requires SoundsMixin class

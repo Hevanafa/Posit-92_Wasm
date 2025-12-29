@@ -1,5 +1,8 @@
-{ Low-level memory allocator
-  Part of Posit-92 game framework }
+{ 
+  Wasm Heap - Part of Posit-92 game engine
+  Hevanafa
+  Low-level memory allocator
+}
 
 unit WasmHeap;
 

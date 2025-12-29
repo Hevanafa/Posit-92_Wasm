@@ -1,7 +1,6 @@
 {
-  BMFont unit
-  Part of POSIT-92 Framework
-  This unit contains only a subset of the DOS version
+  BMFont - Part of Posit-92 game engine
+  Hevanafa
 }
 
 unit BMFont;

@@ -1,7 +1,6 @@
 {
-  Lerp unit
-  Part of Posit-92 framework
-  By Hevanafa, 23-11-2025
+  Lerp unit - Part of Posit-92 game engine
+  Hevanafa
 
   Generic unit that contains easing functions
   All the time / tick units are in seconds

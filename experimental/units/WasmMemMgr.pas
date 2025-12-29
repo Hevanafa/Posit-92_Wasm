@@ -1,4 +1,9 @@
-{ High-level wrapper for WasmHeap }
+{
+  Wasm Memory Manager - Part of Posit-92 game engine
+  Hevanafa
+  
+  High-level wrapper for WasmHeap
+}
 
 unit WasmMemMgr;
 
