@@ -1,7 +1,6 @@
 {
   Immediate GUI Implementation
   Part of Posit-92 framework
-  By Hevanafa, 22-11-2025
 
   Based on my QB64 Immediate GUI implementation
 }
@@ -13,20 +12,27 @@ library Game;
 uses
   BMFont, Conv, FPS, Graphics,
   ImgRef, ImgRefFast, ImmedGui,
-  Keyboard, Logger, Mouse,
+  Keyboard, Loading, Logger, Mouse,
   Panic, Shapes, Timing,
   WasmMemMgr, VGA,
   Assets;
+
+type
+  TGameStates = (
+    GameStateIntro = 1,
+    GameStateLoading = 2,
+    GameStatePlaying = 3
+  );
 
 const
   SC_ESC = $01;
   SC_SPACE = $39;
 
-
 var
   lastEsc: boolean;
 
   { Init your game state here }
+  actualGameState: TGameStates;
   gameTime: double;
   clicks: word;
   showFPS: TCheckboxState;
@@ -38,6 +44,9 @@ var
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+procedure hideCursor; external 'env' name 'hideCursor';
+procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
+procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure drawFPS;
 begin
@@ -50,6 +59,12 @@ begin
     spr(imgHandCursor, mouseX - 5, mouseY - 1)
   else
     spr(imgCursor, mouseX, mouseY);
+end;
+
+procedure beginLoadingState;
+begin
+  actualGameState := GameStateLoading;
+  loadAssets
 end;
 
 procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
@@ -70,21 +85,13 @@ begin
       unsafeSprPset(image, a, b, newColour);
 end;
 
-
-procedure init;
-begin
-  initMemMgr;
-  initBuffer;
-  initDeltaTime;
-  initFPSCounter;
-end;
-
-procedure afterInit;
+procedure beginPlayingState;
 var
-  a: integer;
+  a: word;
 begin
   { Initialise game state here }
   hideCursor;
+  gameTime := 0.0;
 
   initImmediateGUI;
   guiSetFont(defaultFont, defaultFontGlyphs);
@@ -99,6 +106,20 @@ begin
   listState.x := 10;
   listState.y := 10;
   listState.selectedIndex := 0;
+end;
+
+
+procedure init;
+begin
+  initMemMgr;
+  initBuffer;
+  initDeltaTime;
+  initFPSCounter;
+end;
+
+procedure afterInit;
+begin
+  beginPlayingState
 end;
 
 procedure update;
@@ -130,6 +151,11 @@ var
   w: integer;
   s: string;
 begin
+  if actualGameState = GameStateLoading then begin
+    renderLoadingScreen;
+    exit
+  end;
+
   cls($FF6495ED);
 
   guiSetFont(blackFont, blackFontGlyphs);
@@ -177,6 +203,7 @@ end;
 
 exports
   { Main game procedures }
+  beginLoadingState,
   init,
   afterInit,
   update,

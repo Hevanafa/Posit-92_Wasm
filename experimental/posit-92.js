@@ -402,8 +402,13 @@ class Posit92 {
   }
 
   initLoadingScreen() {
-    const imageCount = Object.keys(this.AssetManifest.images).length;
-    const soundCount = this.AssetManifest.sounds.size;
+    const imageCount = this.AssetManifest.images != null
+      ? Object.keys(this.AssetManifest.images).length
+      : 0;
+    const soundCount = this.AssetManifest.sounds != null
+      ? this.AssetManifest.sounds.size
+      : 0;
+    
     this.setLoadingActual(0);
     this.setLoadingTotal(imageCount + soundCount);
   }

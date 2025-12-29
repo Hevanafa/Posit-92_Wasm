@@ -10,18 +10,26 @@ class Game extends Posit92 {
     // Add more scancodes as necessary
   };
 
-  async loadAssets() {
-    let handle = 0;
+  AssetManifest = {
+    images: {
+      cursor: "assets/images/cursor.png",
+      hand_cursor: "assets/images/hand.png"
+    }
+  }
 
-    handle = await this.loadImage("assets/images/cursor.png");
-    this.wasmInstance.exports.setImgCursor(handle);
-    handle = await this.loadImage("assets/images/hand.png");
-    this.wasmInstance.exports.setImgHandCursor(handle);
-
+  async loadDefaultFont() {
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.wasmInstance.exports.defaultFontPtr(),
       this.wasmInstance.exports.defaultFontGlyphsPtr());
+  }
+
+  async loadAssets() {
+    let handle = 0;
+
+    this.initLoadingScreen();
+    await this.loadImagesFromManifest(this.AssetManifest.images);
+
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.wasmInstance.exports.blackFontPtr(),
@@ -62,7 +70,9 @@ var done = false;
 async function main() {
   const game = new Game("game");
   await game.init();
-  game.afterInit();
+  await game.loadDefaultFont();
+
+  game.quickStart();
 
   function loop(currentTime) {
     if (done) {
