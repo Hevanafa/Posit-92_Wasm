@@ -52,6 +52,7 @@ class Posit92 {
       // Fullscreen
       toggleFullscreen: () => this.#toggleFullscreen(),
       getFullscreenState: () => this.#getFullscreenState(),
+      fitCanvas: () => this.#fitCanvas(),
 
       // Keyboard
       isKeyDown: this.#isKeyDown.bind(this),
@@ -693,6 +694,27 @@ class Posit92 {
 
   #getFullscreenState() {
     return document.fullscreenElement != null
+  }
+
+  #fitCanvas() {
+    const aspectRatio = this.#vgaWidth / this.#vgaHeight;
+
+    const [windowWidth, windowHeight] = [window.innerWidth, window.innerHeight];
+    const windowRatio = windowWidth / windowHeight;
+
+    let w = 0, h = 0;
+    if (windowRatio > aspectRatio) {
+      h = windowHeight;
+      w = h * aspectRatio
+    } else {
+      w = windowWidth;
+      h = w / aspectRatio
+    }
+
+    if (this.#canvas != null) {
+      this.#canvas.style.width = w + "px";
+      this.#canvas.style.height = h + "px";
+    }
   }
 
 

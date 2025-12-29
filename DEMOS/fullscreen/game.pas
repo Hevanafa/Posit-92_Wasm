@@ -7,7 +7,7 @@ uses
   Conv, FPS,
   ImgRef, ImgRefFast,
   Keyboard, Mouse,
-  ImmedGui, Loading, Panic, Timing,
+  ImmedGui, Loading, Logger, Panic, Timing,
   WasmMemMgr, VGA, Fullscreen,
   Assets;
 
@@ -68,7 +68,9 @@ end;
 
 procedure afterInit;
 begin
-  beginPlayingState
+  beginPlayingState;
+  fitCanvas;
+  writeLog('afterInit end')
 end;
 
 procedure update;
