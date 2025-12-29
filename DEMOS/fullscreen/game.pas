@@ -20,11 +20,10 @@ type
 
 const
   SC_ESC = $01;
-  SC_F11 = $57;
   SC_SPACE = $39;
 
 var
-  lastEsc, lastF11, lastSpacebar: boolean;
+  lastEsc, lastSpacebar: boolean;
 
   { Init your game state here }
   actualGameState: TGameStates;
@@ -85,16 +84,6 @@ begin
   updateGUIMousePoint;
 
   { Your update logic here }
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
-    if lastEsc then endFullscreen;
-  end;
-
-  if lastF11 <> isKeyDown(SC_F11) then begin
-    lastF11 := isKeyDown(SC_F11);
-    if lastF11 then detectFullscreen;
-  end;
-
   if lastSpacebar <> isKeyDown(SC_SPACE) then begin
     lastSpacebar := isKeyDown(SC_SPACE);
     if lastSpacebar then toggleFullscreen;
