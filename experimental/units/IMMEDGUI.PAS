@@ -287,7 +287,7 @@ var
   a: word;
   line: string;
   spaceWidth: word;
-  width, runWidth: word;
+  wordWidth, runWidth: word;
   left, top: word;
 begin
   assertFontSet;
@@ -301,15 +301,15 @@ begin
   wordCount := split(text, ' ', words);
 
   for a:=0 to wordCount - 1 do begin
-    width := measureBMFont(activeFontGlyphs, words[a]);
+    wordWidth := measureBMFont(activeFontGlyphs, words[a]);
 
-    if runWidth + width <= maxWidth then begin
+    if runWidth + wordWidth <= maxWidth then begin
       line := line + words[a] + ' ';
-      inc(runWidth, width + spaceWidth)
+      inc(runWidth, wordWidth + spaceWidth)
     end else begin
       printBMFont(activeFont, activeFontGlyphs, trimEnd(line), left, top);
       line := words[a];
-      runWidth := runWidth - maxWidth + width + spaceWidth;
+      runWidth := wordWidth + spaceWidth;
 
       left := x;
       inc(top, activeFont.lineHeight)
