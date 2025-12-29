@@ -1,6 +1,7 @@
 { 
-  ImgRefFast unit
-  Part of Posit-92 game engine
+  ImgRefFast unit - Part of Posit-92 game engine
+  Hevanafa
+  
   Based on SprFast unit
 }
 

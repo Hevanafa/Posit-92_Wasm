@@ -1,6 +1,6 @@
 {
-  Immediate GUI unit
-  Part of Posit-92 game engine
+  Immediate GUI unit - Part of Posit-92 game engine
+  Hevanafa
 }
 
 unit ImmedGui;

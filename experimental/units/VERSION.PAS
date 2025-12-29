@@ -1,3 +1,10 @@
+{
+  Version unit - Part of Posit-92 game engine
+  Hevanafa
+
+  Contains only the version information
+}
+
 unit Version;
 
 interface

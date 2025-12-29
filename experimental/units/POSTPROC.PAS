@@ -1,3 +1,8 @@
+{
+  Post-processing unit - Part of Posit-92 game engine
+  Hevanafa
+}
+
 unit PostProc;
 
 {$Mode TP}

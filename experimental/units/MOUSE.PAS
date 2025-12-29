@@ -1,3 +1,10 @@
+{
+  Mouse - Part of Posit-92 game engine
+  Hevanafa
+
+  Contains a subset of the DOS version
+}
+
 unit Mouse;
 
 {$Mode TP}

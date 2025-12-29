@@ -1,3 +1,10 @@
+{
+  FPS unit - Part of Posit-92 game engine
+  Hevanafa
+
+  Mandatory for FPS (frames per second) counting
+}
+
 unit FPS;
 
 {$Mode TP}

@@ -1,6 +1,6 @@
 {
-  Graphics Primitives
-  Part of Posit-92 game engine
+  Graphics Primitives - Part of Posit-92 game engine
+  Hevanafa
 }
 
 unit Graphics;

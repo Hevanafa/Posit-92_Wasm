@@ -1,3 +1,8 @@
+{
+  Timing unit - Part of Posit-92 game engine
+  Hevanafa
+}
+
 unit Timing;
 
 {$Mode TP}

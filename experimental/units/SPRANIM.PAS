@@ -1,3 +1,8 @@
+{
+  Sprite Animation - Part of Posit-92 game engine
+  Hevanafa
+}
+
 unit SprAnim;
 
 {$Mode TP}

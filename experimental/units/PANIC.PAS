@@ -1,3 +1,10 @@
+{
+  Panic unit - Part of Posit-92 game engine
+  Hevanafa
+
+  Mainly used to halt the program immediately & output an error message to the console
+}
+
 unit Panic;
 
 {$Mode TP}

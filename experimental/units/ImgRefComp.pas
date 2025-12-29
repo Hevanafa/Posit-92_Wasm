@@ -1,3 +1,10 @@
+{
+  Composite Blitting unit - Part of Posit-92 game engine
+  Hevanafa
+
+  Similar to ImgRefFast but with a proper alpha blending logic
+}
+
 unit ImgRefComp;
 
 interface

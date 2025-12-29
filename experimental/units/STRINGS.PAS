@@ -1,3 +1,10 @@
+{
+  Strings unit - Part of Posit-92 game engine
+  Hevanafa
+
+  Contains a subset of what SysUtils has for string manipulation
+}
+
 unit Strings;
 
 {$Mode TP}
@@ -16,6 +23,7 @@ function lower(const txt: string): string;
 function upper(const txt: string): string;
 function padStart(text: string; const targetLength: integer; const padString: string): string;
 function padEnd(text: string; const targetLength: integer; const padString: string): string;
+
 
 implementation
 

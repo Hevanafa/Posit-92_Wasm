@@ -1,3 +1,10 @@
+{
+  Intro Screen unit - Part of Posit-92 game engine
+  Hevanafa
+
+  Mandatory for intro screens
+}
+
 unit IntroScr;
 
 {$Mode TP}
