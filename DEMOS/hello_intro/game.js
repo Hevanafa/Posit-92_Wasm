@@ -1,5 +1,8 @@
 "use strict";
 
+/**
+ * Experimental boilerplate (full)
+ */
 class Game extends Posit92 {
   /**
    * KeyboardEvent.code to DOS scancode
@@ -90,8 +93,6 @@ async function main() {
 
   await game.loadIntro();
   game.beginIntro();
-  
-  // game.quickStart();
 
   function loop(currentTime) {
     if (done) {

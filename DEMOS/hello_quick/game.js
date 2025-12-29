@@ -1,5 +1,8 @@
 "use strict";
 
+/**
+ * Experimental boilerplate without the intro
+ */
 class Game extends Posit92 {
   /**
    * KeyboardEvent.code to DOS scancode
@@ -46,32 +49,6 @@ class Game extends Posit92 {
 
     // Add more assets as necessary
   }
-
-  async init() {
-    this.setLoadingText("Downloading engine...");
-    await super.init();
-  }
-
-  /**
-   * @override
-   */
-  onWasmProgress(loaded, total) {
-    const loadedKB = Math.ceil(loaded / 1024);
-    const totalKB = Math.ceil(total / 1024);
-
-    this.setLoadingText(`Downloading engine... ${loadedKB} / ${totalKB} KB`)
-  }
-
-  async loadIntro() {
-    this.wasmInstance.exports.setImgPosit92Logo(
-      await this.loadImage("assets/images/posit-92_32px.png"));
-
-    this.wasmInstance.exports.setImgFPCLogo(
-      await this.loadImage("assets/images/fpc_logo.png"));
-
-    this.wasmInstance.exports.setImgWasmLogo(
-      await this.loadImage("assets/images/wasm_logo.png"));
-  }
 }
 
 const TargetFPS = 60;
@@ -88,10 +65,7 @@ async function main() {
   await game.init();
   await game.loadDefaultFont();
 
-  await game.loadIntro();
-  game.beginIntro();
-  
-  // game.quickStart();
+  game.quickStart();
 
   function loop(currentTime) {
     if (done) {

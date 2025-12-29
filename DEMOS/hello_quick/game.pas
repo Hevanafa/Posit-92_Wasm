@@ -8,7 +8,7 @@ uses
   Conv, FPS, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  PostProc, Timing, WasmHeap, WasmMemMgr,
+  Timing, WasmHeap, WasmMemMgr,
   VGA,
   Assets;
 
@@ -55,15 +55,6 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure beginIntroState;
-begin
-  hideLoadingOverlay;
-
-  actualGameState := GameStateIntro;
-  introSlide := 1;
-  introSlideEndTick := getTimer + 2.0;
-end;
-
 procedure beginLoadingState;
 begin
   actualGameState := GameStateLoading;
@@ -76,8 +67,6 @@ begin
   hideCursor;
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
-  
-  replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
 end;
 
 
@@ -91,7 +80,7 @@ end;
 
 procedure afterInit;
 begin
-  beginPlayingState;
+  beginPlayingState
 end;
 
 procedure update;
@@ -187,7 +176,6 @@ begin
 end;
 
 exports
-  beginIntroState,
   beginLoadingState,
   init,
   afterInit,
