@@ -51,6 +51,7 @@ class Posit92 {
 
       // Fullscreen
       toggleFullscreen: () => this.#toggleFullscreen(),
+      endFullscreen: () => this.#endFullscreen(),
       getFullscreenState: () => this.#getFullscreenState(),
       fitCanvas: () => this.#fitCanvas(),
 
@@ -690,6 +691,13 @@ class Posit92 {
       this.#canvas.requestFullscreen()
     else
       document.exitFullscreen();
+  }
+
+  #endFullscreen() {
+    if (this.#getFullscreenState())
+      document.exitFullscreen();
+
+    this.#fitCanvas()
   }
 
   #getFullscreenState() {

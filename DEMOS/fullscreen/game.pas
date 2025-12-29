@@ -85,7 +85,7 @@ begin
   { Your update logic here }
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
-    if lastEsc then signalDone;
+    if lastEsc then endFullscreen;
   end;
 
   if lastSpacebar <> isKeyDown(SC_SPACE) then begin

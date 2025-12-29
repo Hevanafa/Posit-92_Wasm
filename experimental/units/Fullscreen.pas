@@ -7,6 +7,8 @@ function getFullscreenState: boolean; external 'env' name 'getFullscreenState';
 procedure fitCanvas; external 'env' name 'fitCanvas';
 
 
+procedure endFullscreen; external 'env' name 'endFullscreen';
+
 implementation
 
 end.
