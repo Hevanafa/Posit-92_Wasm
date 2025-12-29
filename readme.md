@@ -46,12 +46,6 @@ I have prepared a few scripts to ease the build process, which is located in `sc
 - `run.ts` - Starts `server.ts`
 - `server.ts` - Starts the local HTTP server
 
-(Ongoing migration):
-
-- `build_dist.ps1` - Build & distribute
-- `dist.ps1` - Gathers the key files required for distribution
-- `strip_wasm.ps1` - Strips unused functions (requires **Emscripten**)
-
 ### Scripts for Demos
 
 The demo projects use a special units collection: `experimental\units`, so the build scripts are slightly different
@@ -60,6 +54,13 @@ The demo projects use a special units collection: `experimental\units`, so the b
 - `compile_demo.ts` - Compile only (similar to `compile.ts`)
 - `run_demo.ts` - Starts `server.ts`
 - `server.ts` - Starts the local HTTP server
+
+### Distribution Scripts
+
+- `build_dist.ts` - Build & distribute
+- `dist.ts` - Gathers the key files required for distribution
+- `optimise_wasm.ts` - Strips unused functions with `wasm-opt` (requires **Emscripten**)
+- `dump_wasm.ts` - Dumps a WebAssembly binary file to `analysis.txt` (requires **Emscripten**)
 
 ## Compiler Setup
 
