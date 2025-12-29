@@ -298,12 +298,13 @@ begin
   { Process each line }
   text := replaceAll(text, #13#10, #10);
   lineCount := split(text, #10, lines);
+  top := y;
 
   for row:=0 to lineCount - 1 do begin
     { Process each word }
     run := '';
     runWidth := 0;
-    left := x; top := y;
+    left := x;
 
     spaceWidth := guiMeasureText(' ');
     wordCount := split(lines[row], ' ', words);
@@ -326,8 +327,7 @@ begin
 
     if length(run) > 0 then
       TextLabel(run, left, top);
-      
-    left := x;
+
     inc(top, activeFont.lineHeight)
   end;
 end;
