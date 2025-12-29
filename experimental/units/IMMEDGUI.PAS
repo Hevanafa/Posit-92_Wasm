@@ -279,7 +279,6 @@ var
   run: string;  { in the sense of something continuous / sequential }
   spaceWidth: word;
   wordWidth, runWidth: word;
-  { left, top: word; }
 begin
   assertFontSet;
 
@@ -289,13 +288,11 @@ begin
   { Process each line }
   text := replaceAll(text, #13#10, #10);
   lineCount := split(text, #10, lines);
-  { top := y; }
 
   for row:=0 to lineCount - 1 do begin
     { Process each word }
     run := '';
     runWidth := 0;
-    { left := x; }
 
     spaceWidth := guiMeasureText(' ');
     wordCount := split(lines[row], ' ', words);
@@ -307,23 +304,13 @@ begin
         run := run + words[a] + ' ';
         inc(runWidth, wordWidth + spaceWidth)
       end else begin
-        { TextLabel(trimEnd(run), left, top); }
         run := words[a] + ' ';
         runWidth := wordWidth + spaceWidth;
-
-        { left := 0; }
         inc(result, activeFont.lineHeight);
-        { inc(top, activeFont.lineHeight) }
       end;
     end;
 
-    {
-    if length(run) > 0 then
-      TextLabel(run, left, top);
-    }
-
     inc(result, activeFont.lineHeight);
-    { inc(top, activeFont.lineHeight) }
   end;
 
   guiMeasureTextWrapHeight := result
