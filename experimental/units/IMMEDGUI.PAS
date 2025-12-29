@@ -286,6 +286,7 @@ var
   wordCount: integer;
   a: word;
   line: string;
+  spaceWidth: word;
   width, runWidth: word;
   left, top: word;
 begin
@@ -296,6 +297,7 @@ begin
   runWidth := 0;
   left := x; top := y;
 
+  spaceWidth := measureBMFont(activeFontGlyphs, ' ');
   wordCount := split(text, ' ', words);
 
   for a:=0 to wordCount - 1 do begin
@@ -303,11 +305,11 @@ begin
 
     if runWidth + width <= maxWidth then begin
       line := line + words[a] + ' ';
-      inc(runWidth, width)
+      inc(runWidth, width + spaceWidth)
     end else begin
       printBMFont(activeFont, activeFontGlyphs, trimEnd(line), left, top);
       line := words[a];
-      width := width - maxWidth;
+      runWidth := runWidth - maxWidth + width + spaceWidth;
 
       left := x;
       inc(top, activeFont.lineHeight)
