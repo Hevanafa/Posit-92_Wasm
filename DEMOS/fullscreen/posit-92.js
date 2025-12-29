@@ -51,7 +51,7 @@ class Posit92 {
 
       // Fullscreen
       toggleFullscreen: () => this.#toggleFullscreen(),
-      detectFullscreen: () => this.detectFullscreen(),
+      detectFullscreen: this.#detectFullscreen.bind(this),
       endFullscreen: () => this.#endFullscreen(),
       getFullscreenState: () => this.#getFullscreenState(),
       fitCanvas: () => this.#fitCanvas(),
@@ -238,7 +238,8 @@ class Posit92 {
 
   afterInit() {
     this.#wasm.exports.afterInit();
-    this.#addOutOfFocusFix()
+    this.#addOutOfFocusFix();
+    this.#addFullscreenListener()
   }
 
 
@@ -687,8 +688,13 @@ class Posit92 {
   }
 
   // Fullscreen.pas
+  #addFullscreenListener() {
+    window.addEventListener("fullscreenchange", this.#detectFullscreen);
+    window.addEventListener("resize", this.#handleResize.bind(this))
+  }
+
   #toggleFullscreen() {
-    if (document.fullscreenElement == null)
+    if (!this.#getFullscreenState())
       this.#canvas.requestFullscreen()
     else
       document.exitFullscreen();
@@ -707,6 +713,11 @@ class Posit92 {
 
   #getFullscreenState() {
     return document.fullscreenElement != null
+  }
+
+  #handleResize() {
+    console.log(window.innerWidth, window.innerHeight);
+    this.#fitCanvas()
   }
 
   #fitCanvas() {
