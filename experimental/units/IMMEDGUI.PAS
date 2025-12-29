@@ -283,7 +283,7 @@ procedure TextLabelWrap(text: string; const x, y, maxWidth: integer);
 var
   lines: array[0..9] of string;
   lineCount: integer;
-  words: array[0..9] of string;
+  words: array[0..99] of string;
   wordCount: integer;
   row, a: word;
   run: string;  { in the sense of something continuous / sequential }
@@ -316,7 +316,7 @@ begin
         inc(runWidth, wordWidth + spaceWidth)
       end else begin
         TextLabel(trimEnd(run), left, top);
-        run := words[a];
+        run := words[a] + ' ';
         runWidth := wordWidth + spaceWidth;
 
         left := x;
