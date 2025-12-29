@@ -44,14 +44,16 @@ end;
 procedure beginLoadingState;
 begin
   actualGameState := GameStateLoading;
+  fitCanvas;
   loadAssets
 end;
 
 procedure beginPlayingState;
 begin
   { Initialise game state here }
-  hideCursor;
   actualGameState := GameStatePlaying;
+  hideCursor;
+  fitCanvas;
   gameTime := 0.0;
 
   initImmediateGUI;
@@ -70,7 +72,6 @@ end;
 procedure afterInit;
 begin
   beginPlayingState;
-  fitCanvas;
   writeLog('afterInit end')
 end;
 
