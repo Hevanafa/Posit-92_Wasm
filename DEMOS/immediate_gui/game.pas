@@ -91,7 +91,7 @@ var
 begin
   { Initialise game state here }
   hideCursor;
-  
+
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
@@ -193,6 +193,8 @@ begin
   ProgressBarLabelled(10, 100, 80, 10, 0.75);
   Checkbox('Show FPS', 10, 60, showFPS);
   ListView(listItems, listState);
+
+  TextLabelWrap('This is a very long text!', 10, 160, 100);
 
   resetActiveWidget;
 

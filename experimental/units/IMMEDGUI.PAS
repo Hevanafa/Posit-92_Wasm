@@ -71,6 +71,7 @@ procedure assertFontSet;
 
 { Widgets }
 procedure TextLabel(const text: string; const x, y: integer);
+procedure TextLabelWrap(const text: string; const x, y, maxWidth: integer);
 
 function Button(const caption: string; const x, y, width, height: integer): boolean;
 function ImageButton(const x, y: integer; const imgNormal, imgHovered, imgPressed: longint): boolean;
@@ -99,7 +100,8 @@ implementation
 uses
   Conv, Graphics,
   ImgRef, ImgRefFast,
-  Maths, Mouse, Panic, VGA;
+  Maths, Mouse, Panic, Strings,
+  VGA;
 
 const
   Black = $FF000000;
@@ -277,6 +279,45 @@ begin
   assertFontSet;
   printBMFont(activeFont, activeFontGlyphs, text, x, y)
 end;
+
+procedure TextLabelWrap(const text: string; const x, y, maxWidth: integer);
+var
+  words: array[0..99] of string;
+  wordCount: integer;
+  a: word;
+  line: string;
+  width, runWidth: word;
+  left, top: word;
+begin
+  assertFontSet;
+  if maxWidth <= 0 then exit;
+
+  line := '';
+  runWidth := 0;
+  left := x; top := y;
+
+  wordCount := split(text, ' ', words);
+
+  for a:=0 to wordCount - 1 do begin
+    width := measureBMFont(activeFontGlyphs, words[a]);
+
+    if runWidth + width <= maxWidth then begin
+      line := line + words[a] + ' ';
+      inc(runWidth, width)
+    end else begin
+      printBMFont(activeFont, activeFontGlyphs, trimEnd(line), left, top);
+      line := words[a];
+      width := width - maxWidth;
+
+      left := x;
+      inc(top, activeFont.lineHeight)
+    end;
+  end;
+
+  if length(line) > 0 then
+    printBMFont(activeFont, activeFontGlyphs, line, left, top);
+end;
+
 
 function Button(const caption: string; const x, y, width, height: integer): boolean;
 var

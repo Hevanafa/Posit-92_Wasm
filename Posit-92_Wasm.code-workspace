@@ -21,6 +21,6 @@
 			}
 		},
 		"omnipascal.defaultDevelopmentEnvironment": "FreePascal",
-		"omnipascal.searchPath": "UNITS;experimental/UNITS;E:\\fpc-wasm\\fpcsrc\\rtl\\objpas;E:\\fpc-wasm\\fpcsrc\\rtl\\embedded"
+		"omnipascal.searchPath": "experimental\\units;E:\\fpc-wasm\\fpcsrc\\rtl\\objpas;E:\\fpc-wasm\\fpcsrc\\rtl\\embedded"
 	}
 }
