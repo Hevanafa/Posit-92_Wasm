@@ -12,7 +12,8 @@ class Game extends Posit92 {
 
   #AssetManifest = {
     images: {
-      cursor: "assets/images/cursor.png"
+      cursor: "assets/images/cursor.png",
+      fullscreen: "assets/images/fullscreen.png"
       // Add more image assets here
     },
     sounds: new Map([
@@ -45,34 +46,6 @@ class Game extends Posit92 {
 
     // Add more assets as necessary
   }
-
-  async init() {
-    this.setLoadingText("Loading WebAssembly...");
-    await super.init();
-  }
-
-  #loadingInterval = 0;
-
-  beginLoadingScreen() {
-    // Only applicable with an in-game loading screen
-    // This is because loadAssets is called in `afterInit`
-    this.hideLoadingOverlay();
-
-    this.wasmInstance.exports.renderLoadingScreen(
-      this.loadingProgress.actual,
-      this.loadingProgress.total);
-    this.flush();
-
-    this.#loadingInterval = window.setInterval(() => {
-      const { actual, total } = this.loadingProgress;
-      this.wasmInstance.exports.renderLoadingScreen(actual, total);
-      // console.log("loadingProgress", actual, total);
-    }, 100);
-  }
-
-  endLoadingScreen() {
-    window.clearInterval(this.#loadingInterval);
-  }
 }
 
 const TargetFPS = 60;
@@ -89,11 +62,7 @@ async function main() {
   await game.init();
   await game.loadDefaultFont();
 
-  game.beginLoadingScreen();
-    await game.loadAssets();
-  game.endLoadingScreen();
-
-  game.afterInit();
+  game.quickStart();
 
   function loop(currentTime) {
     if (done) {

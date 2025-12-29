@@ -11,7 +11,7 @@ var
   defaultFont: TBMFont;
   defaultFontGlyphs: array[32..126] of TBMFontGlyph;
 
-  imgCursor: longint;
+  imgCursor, imgFullscreen: longint;
   imgDosuEXE: array[0..1] of longint;
 
 { BMFont boilerplate }
@@ -23,6 +23,7 @@ function measureDefault(const text: string): word;
 
 { Asset boilerplate }
 procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
+procedure setImgFullscreen(const imgHandle: longint); public name 'setImgFullscreen';
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
 
 
@@ -58,6 +59,11 @@ end;
 procedure setImgCursor(const imgHandle: longint);
 begin
   imgCursor := imgHandle
+end;
+
+procedure setImgFullscreen(const imgHandle: longint);
+begin
+  imgFullscreen := imgHandle
 end;
 
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer);
