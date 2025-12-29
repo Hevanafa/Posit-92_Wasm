@@ -91,7 +91,8 @@ begin
     if lastSpacebar then toggleFullscreen;
   end;
 
-  gameTime := gameTime + dt
+  gameTime := gameTime + dt;
+  resetWidgetIndices
 end;
 
 procedure draw;
@@ -114,6 +115,11 @@ begin
   s := 'Press Spacebar to toggle fullscreen';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
+
+  if ImageButton(
+    vgaWidth - 30, vgaHeight - 30,
+    imgFullscreen, imgFullscreen, imgFullscreen) then
+    toggleFullscreen;
 
   resetActiveWidget;
   drawMouse;
