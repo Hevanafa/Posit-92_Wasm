@@ -7,8 +7,8 @@ uses
   Conv, FPS,
   ImgRef, ImgRefFast,
   Keyboard, Mouse,
-  Loading, Panic, Timing,
-  WasmMemMgr, VGA,
+  ImmedGui, Loading, Panic, Timing,
+  WasmMemMgr, VGA, Fullscreen,
   Assets;
 
 type
@@ -52,6 +52,9 @@ begin
   hideCursor;
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
+
+  initImmediateGUI;
+  guiSetFont(defaultFont, defaultFontGlyphs);
 end;
 
 
@@ -73,7 +76,9 @@ begin
   updateDeltaTime;
   incrementFPS;
 
+  updateGUILastMouseButton;
   updateMouse;
+  updateGUIMousePoint;
 
   { Your update logic here }
   if lastEsc <> isKeyDown(SC_ESC) then begin
@@ -110,6 +115,7 @@ begin
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
 
+  resetActiveWidget;
   drawMouse;
   vgaFlush
 end;

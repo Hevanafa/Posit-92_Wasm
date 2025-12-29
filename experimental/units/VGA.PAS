@@ -21,7 +21,6 @@ type
   TByteArray = array[0..bufferSize - 1] of byte;
 
 {$ifdef WASM}
-procedure toggleFullscreen; external 'env' name 'toggleFullscreen';
 procedure vgaFlush; external 'env' name 'vgaFlush';
 {$endif}
 
