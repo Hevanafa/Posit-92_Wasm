@@ -13,11 +13,20 @@ uses ImmedGUI, Panic, VGA;
 
 procedure panicHaltWithDisplay(const msg: string);
 var
-  a: word;
+  a, b: word;
   msgBuffer: array[0..255] of byte;
   height: word;
 begin
   cls($FF550000);
+
+  { Scanlines }
+  b:=0;
+  while b<vgaHeight do begin
+    for a:=0 to vgaWidth-1 do
+      unsafePset(a, b, $FF2A0000);
+
+    inc(b, 3)
+  end;
 
   TextLabel('PANIC', 10, 10);
 
