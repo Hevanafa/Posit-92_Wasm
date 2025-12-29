@@ -287,7 +287,7 @@ var
   words: array[0..9] of string;
   wordCount: integer;
   row, a: word;
-  line: string;
+  run: string;  { in the sense of something continuous / sequential }
   spaceWidth: word;
   wordWidth, runWidth: word;
   left, top: word;
@@ -301,7 +301,7 @@ begin
 
   for row:=0 to lineCount - 1 do begin
     { Process each word }
-    line := '';
+    run := '';
     runWidth := 0;
     left := x; top := y;
 
@@ -312,11 +312,11 @@ begin
       wordWidth := guiMeasureText(words[a]);
 
       if runWidth + wordWidth <= maxWidth then begin
-        line := line + words[a] + ' ';
+        run := run + words[a] + ' ';
         inc(runWidth, wordWidth + spaceWidth)
       end else begin
-        printBMFont(activeFont, activeFontGlyphs, trimEnd(line), left, top);
-        line := words[a];
+        TextLabel(trimEnd(run), left, top);
+        run := words[a];
         runWidth := wordWidth + spaceWidth;
 
         left := x;
@@ -324,8 +324,9 @@ begin
       end;
     end;
 
-    if length(line) > 0 then
-      printBMFont(activeFont, activeFontGlyphs, line, left, top);
+    if length(run) > 0 then
+      TextLabel(run, left, top);
+      
     left := x;
     inc(top, activeFont.lineHeight)
   end;
