@@ -1,6 +1,6 @@
 # Demo Projects
 
-Here, you can find how to make use of most of the features in this framework
+Here, you can find how to make use of most of the features in this game engine
 
 Mostly the changes are in `game.pas`
 

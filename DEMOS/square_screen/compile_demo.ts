@@ -1,5 +1,5 @@
 // Compile Script for Demo Projects
-// Part of Posit-92 framework
+// Part of Posit-92 game engine
 // By Hevanafa, 12-12-2025
 
 // Special case for square_screen

@@ -1,6 +1,6 @@
 {
   Immediate GUI Implementation
-  Part of Posit-92 framework
+  Part of Posit-92 game engine
 
   Based on my QB64 Immediate GUI implementation
 }

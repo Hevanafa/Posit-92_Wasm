@@ -1,7 +1,7 @@
 {
   "name": "Posit-92 PWA Demo",
   "short_name": "Posit-92",
-  "description": "WebAssembly game framework demo",
+  "description": "Posit-92 game engine demo",
   "start_url": "./index.html",
 
   "display": "standalone",

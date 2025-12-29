@@ -1,6 +1,5 @@
-// Setup Boilerplate
-// By Hevanafa, 12-12-2025
-// Part of Posit-92 framework
+// Setup Boilerplate script - Part of Posit-92 game engine
+// Hevanafa
 
 // This script should be executed before copying as a new demo
 

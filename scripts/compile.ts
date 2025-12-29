@@ -1,6 +1,6 @@
 // Compile Script
-// Part of Posit-92 framework
-// By Hevanafa, 12-12-2025
+// Part of Posit-92 game engine
+// Hevanafa
 
 import { styleText } from "node:util";
 
