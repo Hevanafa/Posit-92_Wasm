@@ -8,8 +8,8 @@ uses
   Conv, FPS, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  ImmedGUI, Timing, WasmHeap, WasmMemMgr,
-  VGA,
+  Lerp, ImmedGUI, Timing, WasmHeap, WasmMemMgr,
+  PostProc, VGA,
   Assets;
 
 type
@@ -33,6 +33,10 @@ var
   actualGameState: TGameStates;
   gameTime: double;
   clicks: integer;
+
+  startX, endX: integer;
+  chainIdx: integer;
+  xLerpTimer: TLerpTimer;
 
 
 { Use this to set `done` to true }
@@ -68,7 +72,17 @@ begin
   gameTime := 0.0;
 
   initImmediateGUI;
-  guiSetFont(defaultFont, defaultFontGlyphs)
+  guiSetFont(defaultFont, defaultFontGlyphs);
+
+  replaceColour(defaultFont.imgHandle, $FFFFFFFF, $FF000000)
+end;
+
+procedure beginChainEasing;
+begin
+  startX := 100;
+  endX := 150;
+  chainIdx := 0;
+  initLerp(xLerpTimer, getTimer, 1.0)
 end;
 
 
@@ -86,6 +100,9 @@ begin
 end;
 
 procedure update;
+var
+  perc: double;
+  x: double;
 begin
   updateDeltaTime;
   incrementFPS;
@@ -106,6 +123,32 @@ begin
   { Handle game state updates }
   gameTime := gameTime + dt;
 
+  if isLerpComplete(xLerpTimer, getTimer) then begin
+    case chainIdx of
+    0: begin
+      perc := getLerpPerc(xLerpTimer, getTimer);
+      x := lerpEaseOutSine(startX, endX, perc);  { current X }
+
+      startX := trunc(x);
+      endX := endX - 50;
+      initLerp(xLerpTimer, getTimer, 1.0);
+
+      inc(chainIdx)
+    end;
+    1: begin
+      perc := getLerpPerc(xLerpTimer, getTimer);
+      x := lerpEaseOutSine(startX, endX, perc);  { current X }
+      
+      startX := trunc(x);
+      endX := endX + 100;
+      initLerp(xLerpTimer, getTimer, 2.0);
+
+      inc(chainIdx)
+    end
+    else
+    end;
+  end;
+
   resetWidgetIndices
 end;
 
@@ -113,6 +156,8 @@ procedure draw;
 var
   w: integer;
   s: string;
+  perc: double;
+  x: double;
 begin
   if actualGameState = GameStateLoading then begin
     renderLoadingScreen;
@@ -121,19 +166,19 @@ begin
 
   cls(CornflowerBlue);
 
-  if Button('Clicks: ' + i32str(clicks), 50, 50, 100, 30) then
-    inc(clicks);
-
-  spr(imgBlinky, 100, 100);
+  if Button('Start Lerp', 50, 50, 80, 20) then
+    beginChainEasing;
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  s := 'Hello world!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  CentredLabel('Hello world!', vgaWidth div 2, 120);
+
+  perc := getLerpPerc(xLerpTimer, getTimer);
+  x := lerpEaseOutSine(startX, endX, perc);
+  spr(imgBlinky, trunc(x), 100);
 
   resetActiveWidget;
 
