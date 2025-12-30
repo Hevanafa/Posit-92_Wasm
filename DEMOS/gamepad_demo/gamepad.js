@@ -8,6 +8,16 @@ class GamepadMixin extends Posit92 {
     })
   }
 
+  #initGamepad() {
+    window.addEventListener("gamepadconnected", e => {
+      console.log("Gamepad connected:", e.gamepad);
+    });
+
+    window.addEventListener("gamepaddisconnected", e => {
+      console.log("Gamepad disconnected:", e.gamepad);
+    });
+  }
+
   #gamepadButton() {}
   #gamepadAxis() {}
 
@@ -15,6 +25,7 @@ class GamepadMixin extends Posit92 {
    * @override
    */
   async init() {
+    this.#initGamepad();
     this.#setupImportObject();
     await super.init();
   }
