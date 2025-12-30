@@ -58,6 +58,7 @@ end;
 procedure beginIntroState;
 begin
   hideLoadingOverlay;
+  fitCanvas;
 
   actualGameState := GameStateIntro;
   introSlide := 1;
@@ -67,13 +68,16 @@ end;
 procedure beginLoadingState;
 begin
   actualGameState := GameStateLoading;
+  fitCanvas;
   loadAssets
 end;
 
 procedure beginPlayingState;
 begin
-  { Initialise game state here }
   hideCursor;
+  fitCanvas;
+  
+  { Initialise game state here }
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
   

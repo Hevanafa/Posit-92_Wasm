@@ -49,10 +49,11 @@ end;
 
 procedure beginPlayingState;
 begin
-  { Initialise game state here }
-  actualGameState := GameStatePlaying;
   hideCursor;
   fitCanvas;
+  
+  { Initialise game state here }
+  actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
   initImmediateGUI;
