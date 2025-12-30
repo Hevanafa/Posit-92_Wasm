@@ -57,6 +57,10 @@ The demo projects use a special units collection: `experimental\units`, so the b
 
 ### Distribution Scripts
 
+Usually what you need are `optimise_wasm.ts` and `dist.ts`
+
+The scripts are as follows:
+
 - `build_dist.ts` - Build & distribute
 - `dist.ts` - Gathers the key files required for distribution
 - `optimise_wasm.ts` - Strips unused functions with `wasm-opt` (requires **Emscripten**)
@@ -109,14 +113,14 @@ E:\binaryen\bin\wasm-opt.exe -Oz --strip-debug --enable-bulk-memory game.wasm -o
 
 **Example size reduction:**
 
-```
+```text
 Before: 574405 bytes (560 KB)
 After : 391533 bytes (382 KB) (32% smaller)
 ```
 
 Without the bulk memory compiler switch, it will throw this compile error:
 
-```
+```text
 [wasm-validator error in function 118] unexpected false: memory.fill operations require bulk memory [--enable-bulk-memory-opt]
 ```
 
@@ -124,7 +128,7 @@ Without the bulk memory compiler switch, it will throw this compile error:
 
 When there is a compiler error especially in the demo projects, something like this:
 
-```
+```text
 SHAPES.PAS(110,3) Fatal: Internal error 2010120506
 ```
 
