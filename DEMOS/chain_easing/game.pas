@@ -147,7 +147,8 @@ begin
       initLerp(xLerpTimer, getTimer, 2.0);
 
       inc(chainIdx)
-    end
+    end;
+    2: inc(chainIdx);
     else
     end;
   end;
@@ -179,7 +180,9 @@ begin
 
   CentredLabel('Hello world!', vgaWidth div 2, 120);
 
-  if chainIdx = 2 then begin
+  if chainIdx = 3 then begin
+    spr(imgBlinky, endX, 100);
+  end else if chainIdx = 2 then begin
     perc := getLerpPerc(xLerpTimer, getTimer);
     x := lerpEaseOutSine(startX, endX, perc);
     angle := lerpEaseOutSine(startAngle, endAngle, perc);
@@ -189,6 +192,8 @@ begin
     x := lerpEaseOutSine(startX, endX, perc);
     spr(imgBlinky, trunc(x), 100);
   end;
+
+  CentredLabel('chainIdx ' + i32str(chainIdx), vgaWidth div 2, 180);
 
   resetActiveWidget;
 
