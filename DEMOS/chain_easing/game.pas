@@ -32,13 +32,14 @@ var
   { Init your game state here }
   actualGameState: TGameStates;
   gameTime: double;
-  clicks: integer;
 
+  { Easing chain state variables }
+  isChainStarted, isChainComplete: boolean;
+  chainIdx: integer;
+  
   startX, endX: integer;
   startAngle, endAngle: double;
   xLerpTimer: TLerpTimer;
-  chainIdx: integer;
-  isChainStarted, isChainComplete: boolean;
 
 
 { Use this to set `done` to true }
@@ -165,8 +166,6 @@ end;
 
 procedure draw;
 var
-  w: integer;
-  s: string;
   perc: double;
   x, angle: double;
 begin
