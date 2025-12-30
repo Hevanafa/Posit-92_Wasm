@@ -118,7 +118,10 @@ class Posit92 {
   async #initWebAssembly() {
     const response = await fetch(this.#wasmSource);
 
-    const contentLength = response.headers.get("Content-Length");  // Assuming that this is always available
+    const contentLength =
+      response.headers.get("x-goog-stored-content-length")
+      ?? response.headers.get("content-length");
+
     // in bytes:
     const total = Number(contentLength);
     let loaded = 0;
