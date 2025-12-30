@@ -8,7 +8,7 @@ uses
   Conv, FPS, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Timing, WasmHeap, WasmMemMgr,
+  ImmedGUI, Timing, WasmHeap, WasmMemMgr,
   VGA,
   Assets;
 
@@ -32,6 +32,7 @@ var
   { Init your game state here }
   actualGameState: TGameStates;
   gameTime: double;
+  clicks: integer;
 
 
 { Use this to set `done` to true }
@@ -65,6 +66,9 @@ begin
   { Initialise game state here }
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
+
+  initImmediateGUI;
+  guiSetFont(defaultFont, defaultFontGlyphs)
 end;
 
 
@@ -86,8 +90,9 @@ begin
   updateDeltaTime;
   incrementFPS;
 
-  { Handle inputs }
+  updateGUILastMouseButton;
   updateMouse;
+  updateGUIMousePoint;
 
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
@@ -99,7 +104,9 @@ begin
   end;
 
   { Handle game state updates }
-  gameTime := gameTime + dt
+  gameTime := gameTime + dt;
+
+  resetWidgetIndices
 end;
 
 procedure draw;
@@ -114,6 +121,9 @@ begin
 
   cls(CornflowerBlue);
 
+  if Button('Clicks: ' + i32str(clicks), 50, 50, 100, 30) then
+    inc(clicks);
+
   spr(imgBlinky, 100, 100);
 
   if (trunc(gameTime * 4) and 1) > 0 then
@@ -124,6 +134,8 @@ begin
   s := 'Hello world!';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
+
+  resetActiveWidget;
 
   drawMouse;
   drawFPS;
