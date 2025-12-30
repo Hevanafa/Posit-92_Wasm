@@ -20,7 +20,7 @@ type FalloffTypes = (
 );
 
 procedure applyGreyscale(const imgHandle: longint);
-procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
+procedure replaceColour(const imgHandle: longint; const oldColour, newColour: longword);
 procedure applyFullScanlines;
 procedure applyFullSubtleScanlines;
 procedure applyFullTint(const tint: longword);
@@ -75,7 +75,7 @@ begin
   end;
 end;
 
-procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
+procedure replaceColour(const imgHandle: longint; const oldColour, newColour: longword);
 var
   a, b: word;
   image: PImageRef;
