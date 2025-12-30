@@ -39,7 +39,7 @@ var
   
   startX, endX: integer;
   startAngle, endAngle: double;
-  xLerpTimer: TLerpTimer;
+  chainLerpTimer: TLerpTimer;
 
 
 { Use this to set `done` to true }
@@ -88,7 +88,7 @@ begin
 
   startX := 100;
   endX := 150;
-  initLerp(xLerpTimer, getTimer, 1.0)
+  initLerp(chainLerpTimer, getTimer, 1.0)
 end;
 
 
@@ -130,27 +130,27 @@ begin
   gameTime := gameTime + dt;
 
   if isChainStarted and not isChainComplete then begin
-    if isLerpComplete(xLerpTimer, getTimer) then begin
+    if isLerpComplete(chainLerpTimer, getTimer) then begin
       case chainIdx of
       0: begin
-        perc := getLerpPerc(xLerpTimer, getTimer);
+        perc := getLerpPerc(chainLerpTimer, getTimer);
         x := lerpEaseOutSine(startX, endX, perc);  { current X }
 
         startX := trunc(x);
         endX := endX - 50;
-        initLerp(xLerpTimer, getTimer, 1.0);
+        initLerp(chainLerpTimer, getTimer, 1.0);
 
         inc(chainIdx)
       end;
       1: begin
-        perc := getLerpPerc(xLerpTimer, getTimer);
+        perc := getLerpPerc(chainLerpTimer, getTimer);
         x := lerpEaseOutSine(startX, endX, perc);  { current X }
         
         startX := trunc(x);
         endX := endX + 100;
         startAngle := 0.0;
         endAngle := 2 * PI;
-        initLerp(xLerpTimer, getTimer, 2.0);
+        initLerp(chainLerpTimer, getTimer, 2.0);
 
         inc(chainIdx)
       end;
@@ -189,7 +189,7 @@ begin
   case chainIdx of
     2: begin
       { Current state --> apply easing --> handle rendering }
-      perc := getLerpPerc(xLerpTimer, getTimer);
+      perc := getLerpPerc(chainLerpTimer, getTimer);
 
       x := lerpEaseOutSine(startX, endX, perc);
       angle := lerpEaseOutSine(startAngle, endAngle, perc);
@@ -199,7 +199,7 @@ begin
     3: spr(imgBlinky, endX, 100);
 
     else begin
-      perc := getLerpPerc(xLerpTimer, getTimer);
+      perc := getLerpPerc(chainLerpTimer, getTimer);
       x := lerpEaseOutSine(startX, endX, perc);
       spr(imgBlinky, trunc(x), 100);
     end
