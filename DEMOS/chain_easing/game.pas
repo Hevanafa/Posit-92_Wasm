@@ -35,6 +35,7 @@ var
   clicks: integer;
 
   startX, endX: integer;
+  startAngle, endAngle: double;
   chainIdx: integer;
   xLerpTimer: TLerpTimer;
 
@@ -141,6 +142,8 @@ begin
       
       startX := trunc(x);
       endX := endX + 100;
+      startAngle := 0.0;
+      endAngle := 2 * PI;
       initLerp(xLerpTimer, getTimer, 2.0);
 
       inc(chainIdx)
@@ -157,7 +160,7 @@ var
   w: integer;
   s: string;
   perc: double;
-  x: double;
+  x, angle: double;
 begin
   if actualGameState = GameStateLoading then begin
     renderLoadingScreen;
@@ -176,9 +179,16 @@ begin
 
   CentredLabel('Hello world!', vgaWidth div 2, 120);
 
-  perc := getLerpPerc(xLerpTimer, getTimer);
-  x := lerpEaseOutSine(startX, endX, perc);
-  spr(imgBlinky, trunc(x), 100);
+  if chainIdx = 2 then begin
+    perc := getLerpPerc(xLerpTimer, getTimer);
+    x := lerpEaseOutSine(startX, endX, perc);
+    angle := lerpEaseOutSine(startAngle, endAngle, perc);
+    sprRotate(imgBlinky, trunc(x) + 8, 108, angle);
+  end else begin
+    perc := getLerpPerc(xLerpTimer, getTimer);
+    x := lerpEaseOutSine(startX, endX, perc);
+    spr(imgBlinky, trunc(x), 100);
+  end;
 
   resetActiveWidget;
 
