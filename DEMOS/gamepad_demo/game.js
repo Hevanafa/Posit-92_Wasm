@@ -3,7 +3,7 @@
 /**
  * Experimental boilerplate without the intro
  */
-class Game extends Posit92 {
+class Game extends GamepadMixin {
   /**
    * KeyboardEvent.code to DOS scancode
    */
