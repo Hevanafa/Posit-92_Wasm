@@ -79,11 +79,14 @@ begin
   replaceColour(defaultFont.imgHandle, $FFFFFFFF, $FF000000)
 end;
 
-procedure beginChainEasing;
+procedure beginEasingChain;
 begin
+  isChainStarted := true;
+  isChainComplete := false;
+  chainIdx := 0;
+
   startX := 100;
   endX := 150;
-  chainIdx := 0;
   initLerp(xLerpTimer, getTimer, 1.0)
 end;
 
@@ -125,32 +128,35 @@ begin
   { Handle game state updates }
   gameTime := gameTime + dt;
 
-  if isLerpComplete(xLerpTimer, getTimer) then begin
-    case chainIdx of
-    0: begin
-      perc := getLerpPerc(xLerpTimer, getTimer);
-      x := lerpEaseOutSine(startX, endX, perc);  { current X }
+  if isChainStarted and not isChainComplete then begin
+    if isLerpComplete(xLerpTimer, getTimer) then begin
+      case chainIdx of
+      0: begin
+        perc := getLerpPerc(xLerpTimer, getTimer);
+        x := lerpEaseOutSine(startX, endX, perc);  { current X }
 
-      startX := trunc(x);
-      endX := endX - 50;
-      initLerp(xLerpTimer, getTimer, 1.0);
+        startX := trunc(x);
+        endX := endX - 50;
+        initLerp(xLerpTimer, getTimer, 1.0);
 
-      inc(chainIdx)
-    end;
-    1: begin
-      perc := getLerpPerc(xLerpTimer, getTimer);
-      x := lerpEaseOutSine(startX, endX, perc);  { current X }
-      
-      startX := trunc(x);
-      endX := endX + 100;
-      startAngle := 0.0;
-      endAngle := 2 * PI;
-      initLerp(xLerpTimer, getTimer, 2.0);
+        inc(chainIdx)
+      end;
+      1: begin
+        perc := getLerpPerc(xLerpTimer, getTimer);
+        x := lerpEaseOutSine(startX, endX, perc);  { current X }
+        
+        startX := trunc(x);
+        endX := endX + 100;
+        startAngle := 0.0;
+        endAngle := 2 * PI;
+        initLerp(xLerpTimer, getTimer, 2.0);
 
-      inc(chainIdx)
-    end;
-    2: inc(chainIdx);
-    else
+        inc(chainIdx)
+      end;
+      2: inc(chainIdx);
+      else
+        isChainComplete := true
+      end;
     end;
   end;
 
@@ -172,7 +178,7 @@ begin
   cls(CornflowerBlue);
 
   if Button('Start Lerp', 50, 50, 80, 20) then
-    beginChainEasing;
+    beginEasingChain;
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
