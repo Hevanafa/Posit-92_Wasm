@@ -23,6 +23,13 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
   SC_ENTER = $1C;
+  
+  SC_W = $11;
+  SC_A = $1E;
+  SC_S = $1F;
+  SC_D = $20;
+
+  Velocity = 100;
 
   CornflowerBlue = $FF6495ED;
 
@@ -40,6 +47,8 @@ var
   startX, endX: integer;
   startAngle, endAngle: double;
   chainLerpTimer: TLerpTimer;
+
+  blinkyX, blinkyY: double;
 
 
 { Use this to set `done` to true }
@@ -76,6 +85,9 @@ begin
 
   initImmediateGUI;
   guiSetFont(defaultFont, defaultFontGlyphs);
+
+  blinkyX := 100;
+  blinkyY := 50;
 
   replaceColour(defaultFont.imgHandle, $FFFFFFFF, $FF000000)
 end;
@@ -126,10 +138,19 @@ begin
     end;
   end;
 
+  if not isChainStarted then begin
+    if isKeyDown(SC_W) then blinkyY := blinkyY - Velocity * dt;
+    if isKeyDown(SC_S) then blinkyY := blinkyY + Velocity * dt;
+
+    if isKeyDown(SC_A) then blinkyX := blinkyX - Velocity * dt;
+    if isKeyDown(SC_D) then blinkyX := blinkyX + Velocity * dt;
+  end;
+
   { Handle game state updates }
   gameTime := gameTime + dt;
 
   if isChainStarted and not isChainComplete then begin
+    { Handle state transition }
     if isLerpComplete(chainLerpTimer, getTimer) then begin
       case chainIdx of
       0: begin
@@ -155,8 +176,14 @@ begin
         inc(chainIdx)
       end;
       2: inc(chainIdx);
-      else
+      3: begin
+        perc := getLerpPerc(chainLerpTimer, getTimer);
+        x := lerpEaseOutSine(startX, endX, perc);  { current X }
+        blinkyX := x;
+
+        isChainStarted := false;
         isChainComplete := true
+      end
       end;
     end;
   end;
@@ -186,24 +213,27 @@ begin
 
   CentredLabel('Hello world!', vgaWidth div 2, 120);
 
-  case chainIdx of
-    2: begin
-      { Current state --> apply easing --> handle rendering }
-      perc := getLerpPerc(chainLerpTimer, getTimer);
+  if isChainStarted then begin
+    case chainIdx of
+      2: begin
+        { Current state --> apply easing --> handle rendering }
+        perc := getLerpPerc(chainLerpTimer, getTimer);
 
-      x := lerpEaseOutSine(startX, endX, perc);
-      angle := lerpEaseOutSine(startAngle, endAngle, perc);
+        x := lerpEaseOutSine(startX, endX, perc);
+        angle := lerpEaseOutSine(startAngle, endAngle, perc);
 
-      sprRotate(imgBlinky, trunc(x) + 8, 108, angle);
+        sprRotate(imgBlinky, trunc(x) + 8, trunc(blinkyY) + 8, angle);
+      end;
+      3: spr(imgBlinky, endX, trunc(blinkyY));
+
+      else begin
+        perc := getLerpPerc(chainLerpTimer, getTimer);
+        x := lerpEaseOutSine(startX, endX, perc);
+        spr(imgBlinky, trunc(x), trunc(blinkyY));
+      end
     end;
-    3: spr(imgBlinky, endX, 100);
-
-    else begin
-      perc := getLerpPerc(chainLerpTimer, getTimer);
-      x := lerpEaseOutSine(startX, endX, perc);
-      spr(imgBlinky, trunc(x), 100);
-    end
-  end;
+  end else
+    spr(imgBlinky, trunc(blinkyX), trunc(blinkyY));
 
   CentredLabel('chainIdx ' + i32str(chainIdx), vgaWidth div 2, 180);
 
