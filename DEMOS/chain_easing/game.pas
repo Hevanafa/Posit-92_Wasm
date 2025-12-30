@@ -86,8 +86,8 @@ begin
   initImmediateGUI;
   guiSetFont(defaultFont, defaultFontGlyphs);
 
-  blinkyX := 100;
-  blinkyY := 50;
+  blinkyX := 160;
+  blinkyY := 144;
 
   replaceColour(defaultFont.imgHandle, $FFFFFFFF, $FF000000)
 end;
@@ -211,7 +211,10 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  CentredLabel('Hello world!', vgaWidth div 2, 120);
+  if not isChainStarted then
+    CentredLabel('WASD to move', vgaWidth div 2, 120)
+  else
+    CentredLabel('Easing chain is in progress...', vgaWidth div 2, 120);
 
   if isChainStarted then begin
     case chainIdx of
@@ -224,8 +227,6 @@ begin
 
         sprRotate(imgBlinky, trunc(x) + 8, trunc(blinkyY) + 8, angle);
       end;
-      3: spr(imgBlinky, endX, trunc(blinkyY));
-
       else begin
         perc := getLerpPerc(chainLerpTimer, getTimer);
         x := lerpEaseOutSine(startX, endX, perc);
