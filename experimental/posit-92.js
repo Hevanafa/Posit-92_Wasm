@@ -46,6 +46,12 @@ class Posit92 {
       hideCursor: () => this.#hideCursor(),
       showCursor: () => this.#showCursor(),
 
+      // Fullscreen
+      toggleFullscreen: () => this.#toggleFullscreen(),
+      endFullscreen: () => this.#endFullscreen(),
+      getFullscreenState: () => this.#getFullscreenState(),
+      fitCanvas: () => this.#fitCanvas(),
+
       // Keyboard
       isKeyDown: this.#isKeyDown.bind(this),
       signalDone: this.#signalDone.bind(this),
@@ -68,8 +74,7 @@ class Posit92 {
       getFullTimer: () => this.#getFullTimer(),
 
       // VGA
-      vgaFlush: () => this.#vgaFlush(),
-      toggleFullscreen: () => this.#toggleFullscreen()
+      vgaFlush: () => this.#vgaFlush()
     }
   };
 
@@ -110,7 +115,10 @@ class Posit92 {
   async #initWebAssembly() {
     const response = await fetch(this.#wasmSource);
 
-    const contentLength = response.headers.get("Content-Length");  // Assuming that this is always available
+    const contentLength =
+      response.headers.get("x-goog-stored-content-length")
+      ?? response.headers.get("content-length");
+
     // in bytes:
     const total = Number(contentLength);
     let loaded = 0;
@@ -229,7 +237,8 @@ class Posit92 {
 
   afterInit() {
     this.#wasm.exports.afterInit();
-    this.#addOutOfFocusFix()
+    this.#addOutOfFocusFix();
+    this.#addResizeListener()
   }
 
 
@@ -677,11 +686,50 @@ class Posit92 {
     this.#ctx.putImageData(imgData, 0, 0);
   }
 
+  // Fullscreen.pas
+  #addResizeListener() {
+    window.addEventListener("resize", this.#handleResize.bind(this))
+  }
+
+  #getFullscreenState() {
+    return document.fullscreenElement != null
+  }
+
   #toggleFullscreen() {
-    if (!document.fullscreenElement)
+    if (!this.#getFullscreenState())
       this.#canvas.requestFullscreen()
     else
       document.exitFullscreen();
+  }
+
+  #endFullscreen() {
+    if (this.#getFullscreenState())
+      document.exitFullscreen();
+  }
+
+  #handleResize() {
+    this.#fitCanvas()
+  }
+
+  #fitCanvas() {
+    const aspectRatio = this.#vgaWidth / this.#vgaHeight;
+
+    const [windowWidth, windowHeight] = [window.innerWidth, window.innerHeight];
+    const windowRatio = windowWidth / windowHeight;
+
+    let w = 0, h = 0;
+    if (windowRatio > aspectRatio) {
+      h = windowHeight;
+      w = h * aspectRatio
+    } else {
+      w = windowWidth;
+      h = w / aspectRatio
+    }
+
+    if (this.#canvas != null) {
+      this.#canvas.style.width = w + "px";
+      this.#canvas.style.height = h + "px";
+    }
   }
 
 
