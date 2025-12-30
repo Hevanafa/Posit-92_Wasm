@@ -36,8 +36,9 @@ var
 
   startX, endX: integer;
   startAngle, endAngle: double;
-  chainIdx: integer;
   xLerpTimer: TLerpTimer;
+  chainIdx: integer;
+  isChainStarted, isChainComplete: boolean;
 
 
 { Use this to set `done` to true }
@@ -180,17 +181,23 @@ begin
 
   CentredLabel('Hello world!', vgaWidth div 2, 120);
 
-  if chainIdx = 3 then begin
-    spr(imgBlinky, endX, 100);
-  end else if chainIdx = 2 then begin
-    perc := getLerpPerc(xLerpTimer, getTimer);
-    x := lerpEaseOutSine(startX, endX, perc);
-    angle := lerpEaseOutSine(startAngle, endAngle, perc);
-    sprRotate(imgBlinky, trunc(x) + 8, 108, angle);
-  end else begin
-    perc := getLerpPerc(xLerpTimer, getTimer);
-    x := lerpEaseOutSine(startX, endX, perc);
-    spr(imgBlinky, trunc(x), 100);
+  case chainIdx of
+    2: begin
+      { Current state --> apply easing --> handle rendering }
+      perc := getLerpPerc(xLerpTimer, getTimer);
+
+      x := lerpEaseOutSine(startX, endX, perc);
+      angle := lerpEaseOutSine(startAngle, endAngle, perc);
+
+      sprRotate(imgBlinky, trunc(x) + 8, 108, angle);
+    end;
+    3: spr(imgBlinky, endX, 100);
+
+    else begin
+      perc := getLerpPerc(xLerpTimer, getTimer);
+      x := lerpEaseOutSine(startX, endX, perc);
+      spr(imgBlinky, trunc(x), 100);
+    end
   end;
 
   CentredLabel('chainIdx ' + i32str(chainIdx), vgaWidth div 2, 180);
