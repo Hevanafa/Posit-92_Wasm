@@ -35,13 +35,29 @@ body {
   image-rendering: pixelated;
   scale: 2;
   transform-origin: top left;
-  /* cursor: none; */
   border: none;
 }
 
 #game:focus {
   outline: none
 }
+
+/* Use this for fullscreen */
+#game.scale-fit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  scale: 1;
+}
+
+#game.scale-stretch {
+  width: 100vw;
+  height: 100vh;
+  object-fit: fill;
+  scale: 1;
+}
+
 
 #loading-overlay {
   position: absolute;
@@ -73,7 +89,7 @@ body {
   </style>
 </head>
 <body>
-  <canvas id="game" width="320" height="200"></canvas>
+  <canvas id="game" class="scale-fit" width="320" height="200"></canvas>
 
   <div id="loading-overlay">
     <img src="assets/posit-92_64px.png" alt="Posit-92 logo" />
