@@ -130,20 +130,20 @@ begin
   end;
 
   if gamepadConnected then begin
-    if gamepadButton(BTN_X) then printDefault('X', 10, 20);
-    if gamepadButton(BTN_Y) then printDefault('Y', 20, 10);
-    if gamepadButton(BTN_A) then printDefault('A', 20, 30);
-    if gamepadButton(BTN_B) then printDefault('B', 30, 20);
+    if gamepadButton(BTN_DPAD_UP) then printDefault('UP', 105, 100 - 10);
+    if gamepadButton(BTN_DPAD_DOWN) then printDefault('DOWN', 105, 100 + 10);
+    if gamepadButton(BTN_DPAD_LEFT) then printDefault('LEFT', 105 - 10, 100);
+    if gamepadButton(BTN_DPAD_RIGHT) then printDefault('RIGHT', 105 + 10, 100);
 
-    if gamepadButton(BTN_LB) then printDefault('LB', 10, 50);
-    if gamepadButton(BTN_RB) then printDefault('RB', 30, 50);
-    if gamepadButton(BTN_LT) then printDefault('LT', 10, 60);
-    if gamepadButton(BTN_RT) then printDefault('RT', 30, 60);
+    if gamepadButton(BTN_X) then printDefault('X', 200 - 10, 100);
+    if gamepadButton(BTN_Y) then printDefault('Y', 200, 100 - 10);
+    if gamepadButton(BTN_A) then printDefault('A', 200, 100 + 10);
+    if gamepadButton(BTN_B) then printDefault('B', 200 + 10, 100);
 
-    if gamepadButton(BTN_DPAD_UP) then printDefault('UP', 10, 80);
-    if gamepadButton(BTN_DPAD_DOWN) then printDefault('DOWN', 10, 90);
-    if gamepadButton(BTN_DPAD_LEFT) then printDefault('LEFT', 10, 100);
-    if gamepadButton(BTN_DPAD_RIGHT) then printDefault('RIGHT', 10, 110);
+    if gamepadButton(BTN_LB) then printDefault('LB', 145, 50);
+    if gamepadButton(BTN_RB) then printDefault('RB', 175, 50);
+    if gamepadButton(BTN_LT) then printDefault('LT', 145, 60);
+    if gamepadButton(BTN_RT) then printDefault('RT', 175, 60);
 
     if gamepadButton(BTN_START) then printDefault('START', 10, 80);
     if gamepadButton(BTN_BACK) then printDefault('BACK', 10, 80);
