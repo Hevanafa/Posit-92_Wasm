@@ -21,6 +21,11 @@ const
   BTN_DPAD_LEFT = 14;
   BTN_DPAD_RIGHT = 15;
 
+  AXIS_LEFT_X = 0;
+  AXIS_LEFT_Y = 1;
+  AXIS_RIGHT_X = 2;
+  AXIS_RIGHT_Y = 3;
+
 
 function gamepadButton(const button: byte): boolean; external 'env' name 'gamepadButton';
 function gamepadAxis(const axis: byte): single; external 'env' name 'gamepadAxis';

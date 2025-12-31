@@ -141,6 +141,12 @@ begin
   if gamepadButton(BTN_START) then printDefault('START', 10, 80);
   if gamepadButton(BTN_BACK) then printDefault('BACK', 10, 80);
 
+  printDefault('LX: ' + f32str(gamepadAxis(AXIS_LEFT_X)), 10, 100);
+  printDefault('LY: ' + f32str(gamepadAxis(AXIS_LEFT_Y)), 10, 110);
+
+  printDefault('RX: ' + f32str(gamepadAxis(AXIS_RIGHT_X)), 10, 120);
+  printDefault('RY: ' + f32str(gamepadAxis(AXIS_RIGHT_Y)), 10, 130);
+
   drawMouse;
   drawFPS;
 
