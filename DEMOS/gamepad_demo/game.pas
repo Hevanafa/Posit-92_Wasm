@@ -4,7 +4,7 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  IntroScr, Loading, Fullscreen,
+  BMFont, IntroScr, Loading, Fullscreen,
   Conv, FPS, Logger,
   Keyboard, Mouse, Gamepad,
   ImgRef, ImgRefFast,
@@ -71,6 +71,14 @@ begin
   replaceColour(greyFont.imgHandle, $FFFFFFFF, $FFAAAAAA)
 end;
 
+procedure StateLabel(const text: string; const x, y: integer; const enabled: boolean);
+begin
+  if enabled then
+    printDefault(text, x, y)
+  else
+    printBMFont(greyFont, defaultFontGlyphs, text, x, y);
+end;
+
 
 procedure init;
 begin
@@ -134,7 +142,9 @@ begin
   end;
 
   if gamepadConnected then begin
-    if gamepadButton(BTN_DPAD_UP) then printDefault('UP', 105, 100 - 10);
+    { if gamepadButton(BTN_DPAD_UP) then printDefault('UP', 105, 100 - 10); }
+    StateLabel('UP', 105, 100 - 10, gamepadButton(BTN_DPAD_UP));
+
     if gamepadButton(BTN_DPAD_DOWN) then printDefault('DOWN', 105, 100 + 10);
     if gamepadButton(BTN_DPAD_LEFT) then printDefault('LEFT', 105 - 10, 100);
     if gamepadButton(BTN_DPAD_RIGHT) then printDefault('RIGHT', 105 + 10, 100);
