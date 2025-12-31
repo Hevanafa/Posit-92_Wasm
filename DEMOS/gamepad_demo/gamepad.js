@@ -37,6 +37,9 @@ class GamepadMixin extends Posit92 {
     });
   }
 
+  /**
+   * @param {number} button 
+   */
   #gamepadButton(button) {
     if (this.#gamepadIndex < 0) return false;
 
@@ -47,8 +50,20 @@ class GamepadMixin extends Posit92 {
 
     return gamepad.buttons[button].pressed
   }
-  
-  #gamepadAxis() {}
+
+  /**
+   * @param {number} axis 
+   */
+  #gamepadAxis(axis) {
+    if (this.#gamepadIndex < 0) return false;
+
+    const gamepads = navigator.getGamepads();
+    const gamepad = gamepads[this.#gamepadIndex];
+
+    if (gamepad == null) return 0.0;
+
+    return gamepad.axes[axis]
+  }
 
   /**
    * @override
