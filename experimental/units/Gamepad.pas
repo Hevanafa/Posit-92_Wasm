@@ -9,9 +9,9 @@ const
   BTN_Y = 3;
 
   BTN_LB = 4;
-  BTN_RB = 4;
-  BTN_LT = 4;
-  BTN_RT = 4;
+  BTN_RB = 5;
+  BTN_LT = 6;
+  BTN_RT = 7;
 
   BTN_BACK = 8;
   BTN_START = 9;

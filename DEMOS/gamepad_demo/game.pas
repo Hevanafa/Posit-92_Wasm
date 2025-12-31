@@ -6,7 +6,7 @@ library Game;
 uses
   IntroScr, Loading, Fullscreen,
   Conv, FPS, Logger,
-  Keyboard, Mouse,
+  Keyboard, Mouse, Gamepad,
   ImgRef, ImgRefFast,
   Timing, WasmHeap, WasmMemMgr,
   VGA,
@@ -122,6 +122,16 @@ begin
   s := 'Hello world!';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
+
+  if gamepadButton(BTN_X) then printDefault('X', 10, 20);
+  if gamepadButton(BTN_Y) then printDefault('Y', 10, 10);
+  if gamepadButton(BTN_A) then printDefault('A', 20, 30);
+  if gamepadButton(BTN_B) then printDefault('B', 30, 30);
+
+  if gamepadButton(BTN_LB) then printDefault('LB', 10, 50);
+  if gamepadButton(BTN_RB) then printDefault('RB', 10, 60);
+  if gamepadButton(BTN_LT) then printDefault('LT', 10, 70);
+  if gamepadButton(BTN_RT) then printDefault('RT', 10, 80);
 
   drawMouse;
   drawFPS;

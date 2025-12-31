@@ -37,7 +37,17 @@ class GamepadMixin extends Posit92 {
     });
   }
 
-  #gamepadButton() {}
+  #gamepadButton(button) {
+    if (this.#gamepadIndex < 0) return false;
+
+    const gamepads = navigator.getGamepads();
+    const gamepad = gamepads[this.#gamepadIndex];
+
+    if (gamepad == null) return false;
+
+    return gamepad.buttons[button].pressed
+  }
+  
   #gamepadAxis() {}
 
   /**
