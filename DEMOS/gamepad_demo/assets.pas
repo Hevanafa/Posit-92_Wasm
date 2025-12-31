@@ -10,6 +10,7 @@ var
   { for use in loadBMFont }
   defaultFont: TBMFont;
   defaultFontGlyphs: array[32..126] of TBMFontGlyph;
+  greyFont: TBMFont;
 
   imgCursor: longint;
   imgDosuEXE: array[0..1] of longint;

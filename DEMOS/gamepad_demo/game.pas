@@ -9,7 +9,7 @@ uses
   Keyboard, Mouse, Gamepad,
   ImgRef, ImgRefFast,
   Timing, WasmHeap, WasmMemMgr,
-  VGA,
+  PostProc, VGA,
   Assets;
 
 type
@@ -65,6 +65,10 @@ begin
   { Initialise game state here }
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
+
+  greyFont := defaultFont;
+  greyFont.imgHandle := copyImage(defaultFont.imgHandle);
+  replaceColour(greyFont.imgHandle, $FFFFFFFF, $FFAAAAAA)
 end;
 
 
