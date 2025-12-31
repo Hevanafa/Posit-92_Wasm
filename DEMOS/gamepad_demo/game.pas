@@ -4,7 +4,7 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  BMFont, IntroScr, Loading, Fullscreen,
+  BMFont, Graphics, Loading, Fullscreen,
   Conv, FPS, Logger,
   Keyboard, Mouse, Gamepad,
   ImgRef, ImgRefFast,
@@ -25,6 +25,8 @@ const
   SC_ENTER = $1C;
 
   CornflowerBlue = $FF6495ED;
+  LightGrey = $FFAAAAAA;
+  White = $FFFFFFFF;
 
 var
   lastEsc: boolean;
@@ -68,7 +70,7 @@ begin
 
   greyFont := defaultFont;
   greyFont.imgHandle := copyImage(defaultFont.imgHandle);
-  replaceColour(greyFont.imgHandle, $FFFFFFFF, $FFAAAAAA)
+  replaceColour(greyFont.imgHandle, white, lightgrey)
 end;
 
 procedure StateLabel(const text: string; const x, y: integer; const enabled: boolean);
@@ -118,6 +120,7 @@ procedure draw;
 var
   w: integer;
   s: string;
+  leftX, leftY, rightX, rightY: single;
 begin
   if actualGameState = GameStateLoading then begin
     renderLoadingScreen;
@@ -134,19 +137,16 @@ begin
   if not gamepadConnected then begin
     s := 'Plug in a controller';
     w := measureDefault(s);
-    printDefault(s, (vgaWidth - w) div 2, 160);
-  end else begin
-    s := 'Press any gamepad key';
-    w := measureDefault(s);
-    printDefault(s, (vgaWidth - w) div 2, 160);
+    printDefault(s, (vgaWidth - w) div 2, 120);
   end;
 
+  { Debug buttons }
   if gamepadConnected then begin
     { if gamepadButton(BTN_DPAD_UP) then printDefault('UP', 105, 100 - 10); }
-    StateLabel('UP', 105, 100 - 10, gamepadButton(BTN_DPAD_UP));
-    StateLabel('DOWN', 105, 100 + 10, gamepadButton(BTN_DPAD_DOWN));
-    StateLabel('LEFT', 105 - 10, 100, gamepadButton(BTN_DPAD_LEFT));
-    StateLabel('RIGHT', 105 + 10, 100, gamepadButton(BTN_DPAD_RIGHT));
+    StateLabel('UP', 95, 100 - 10, gamepadButton(BTN_DPAD_UP));
+    StateLabel('DOWN', 95, 100 + 10, gamepadButton(BTN_DPAD_DOWN));
+    StateLabel('LEFT', 95 - 15, 100, gamepadButton(BTN_DPAD_LEFT));
+    StateLabel('RIGHT', 95 + 15, 100, gamepadButton(BTN_DPAD_RIGHT));
 
     StateLabel('X', 200 - 10, 100, gamepadButton(BTN_X));
     StateLabel('Y', 200, 100 - 10, gamepadButton(BTN_Y));
@@ -160,15 +160,27 @@ begin
 
     StateLabel('START', 165, 80, gamepadButton(BTN_START));
     StateLabel('BACK', 135, 80, gamepadButton(BTN_BACK));
+  end;
 
-    StateLabel('LSTICK', 75, 100, gamepadButton(BTN_LSTICK));
-    StateLabel('RSTICK', 75, 120, gamepadButton(BTN_RSTICK));
+  { Debug analogue sticks }
+  if gamepadConnected then begin
+    circ(130, 150, 20, white);
+    circ(190, 150, 20, white);
 
-    printDefault('LX: ' + f32str(gamepadAxis(AXIS_LEFT_X)), 10, 100);
-    printDefault('LY: ' + f32str(gamepadAxis(AXIS_LEFT_Y)), 10, 110);
+    leftX := gamepadAxis(AXIS_LEFT_X);
+    leftY := gamepadAxis(AXIS_LEFT_Y);
+    rightX := gamepadAxis(AXIS_RIGHT_X);
+    rightY := gamepadAxis(AXIS_RIGHT_Y);
+    circfill(130 + round(20 * leftX), 150 + round(20 * leftY), 5, white);
+    circfill(190 + round(20 * rightX), 150 + round(20 * rightY), 5, white);
 
-    printDefault('RX: ' + f32str(gamepadAxis(AXIS_RIGHT_X)), 10, 120);
-    printDefault('RY: ' + f32str(gamepadAxis(AXIS_RIGHT_Y)), 10, 130);
+    StateLabel('LSTICK', 120, 180, gamepadButton(BTN_LSTICK));
+    StateLabel('RSTICK', 170, 180, gamepadButton(BTN_RSTICK));
+
+    printDefault('LX: ' + f32str(leftX), 40, 150);
+    printDefault('LY: ' + f32str(leftY), 40, 160);
+    printDefault('RX: ' + f32str(rightX), 220, 150);
+    printDefault('RY: ' + f32str(rightY), 220, 160);
   end;
 
   drawMouse;
