@@ -30,6 +30,7 @@ const
   AXIS_RIGHT_Y = 3;
 
 
+function gamepadConnected: boolean; external 'env' name 'gamepadConnected';
 function gamepadButton(const button: byte): boolean; external 'env' name 'gamepadButton';
 function gamepadAxis(const axis: byte): single; external 'env' name 'gamepadAxis';
 

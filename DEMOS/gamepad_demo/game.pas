@@ -119,36 +119,44 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  s := 'Hello world!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  if not gamepadConnected then begin
+    s := 'Plug in a controller';
+    w := measureDefault(s);
+    printDefault(s, (vgaWidth - w) div 2, 120);
+  end else begin
+    s := 'Press any gamepad key';
+    w := measureDefault(s);
+    printDefault(s, (vgaWidth - w) div 2, 120);
+  end;
 
-  if gamepadButton(BTN_X) then printDefault('X', 10, 20);
-  if gamepadButton(BTN_Y) then printDefault('Y', 20, 10);
-  if gamepadButton(BTN_A) then printDefault('A', 20, 30);
-  if gamepadButton(BTN_B) then printDefault('B', 30, 20);
+  if gamepadConnected then begin
+    if gamepadButton(BTN_X) then printDefault('X', 10, 20);
+    if gamepadButton(BTN_Y) then printDefault('Y', 20, 10);
+    if gamepadButton(BTN_A) then printDefault('A', 20, 30);
+    if gamepadButton(BTN_B) then printDefault('B', 30, 20);
 
-  if gamepadButton(BTN_LB) then printDefault('LB', 10, 50);
-  if gamepadButton(BTN_RB) then printDefault('RB', 30, 50);
-  if gamepadButton(BTN_LT) then printDefault('LT', 10, 60);
-  if gamepadButton(BTN_RT) then printDefault('RT', 30, 60);
+    if gamepadButton(BTN_LB) then printDefault('LB', 10, 50);
+    if gamepadButton(BTN_RB) then printDefault('RB', 30, 50);
+    if gamepadButton(BTN_LT) then printDefault('LT', 10, 60);
+    if gamepadButton(BTN_RT) then printDefault('RT', 30, 60);
 
-  if gamepadButton(BTN_DPAD_UP) then printDefault('UP', 10, 80);
-  if gamepadButton(BTN_DPAD_DOWN) then printDefault('DOWN', 10, 90);
-  if gamepadButton(BTN_DPAD_LEFT) then printDefault('LEFT', 10, 100);
-  if gamepadButton(BTN_DPAD_RIGHT) then printDefault('RIGHT', 10, 110);
+    if gamepadButton(BTN_DPAD_UP) then printDefault('UP', 10, 80);
+    if gamepadButton(BTN_DPAD_DOWN) then printDefault('DOWN', 10, 90);
+    if gamepadButton(BTN_DPAD_LEFT) then printDefault('LEFT', 10, 100);
+    if gamepadButton(BTN_DPAD_RIGHT) then printDefault('RIGHT', 10, 110);
 
-  if gamepadButton(BTN_START) then printDefault('START', 10, 80);
-  if gamepadButton(BTN_BACK) then printDefault('BACK', 10, 80);
+    if gamepadButton(BTN_START) then printDefault('START', 10, 80);
+    if gamepadButton(BTN_BACK) then printDefault('BACK', 10, 80);
 
-  if gamepadButton(BTN_LSTICK) then printDefault('LSTICK', 75, 100);
-  if gamepadButton(BTN_RSTICK) then printDefault('RSTICK', 75, 120);
+    if gamepadButton(BTN_LSTICK) then printDefault('LSTICK', 75, 100);
+    if gamepadButton(BTN_RSTICK) then printDefault('RSTICK', 75, 120);
 
-  printDefault('LX: ' + f32str(gamepadAxis(AXIS_LEFT_X)), 10, 100);
-  printDefault('LY: ' + f32str(gamepadAxis(AXIS_LEFT_Y)), 10, 110);
+    printDefault('LX: ' + f32str(gamepadAxis(AXIS_LEFT_X)), 10, 100);
+    printDefault('LY: ' + f32str(gamepadAxis(AXIS_LEFT_Y)), 10, 110);
 
-  printDefault('RX: ' + f32str(gamepadAxis(AXIS_RIGHT_X)), 10, 120);
-  printDefault('RY: ' + f32str(gamepadAxis(AXIS_RIGHT_Y)), 10, 130);
+    printDefault('RX: ' + f32str(gamepadAxis(AXIS_RIGHT_X)), 10, 120);
+    printDefault('RY: ' + f32str(gamepadAxis(AXIS_RIGHT_Y)), 10, 130);
+  end;
 
   drawMouse;
   drawFPS;

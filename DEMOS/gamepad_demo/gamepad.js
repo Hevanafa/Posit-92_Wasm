@@ -6,6 +6,7 @@ class GamepadMixin extends Posit92 {
     const { env } = super._getWasmImportObject();
 
     Object.assign(env, {
+      gamepadConnected: this.#gamepadConnected.bind(this),
       gamepadButton: this.#gamepadButton.bind(this),
       gamepadAxis: this.#gamepadAxis.bind(this)
     })
@@ -36,6 +37,8 @@ class GamepadMixin extends Posit92 {
       }
     });
   }
+
+  #gamepadConnected() { return this.#gamepadIndex >= 0 }
 
   /**
    * @param {number} button 
