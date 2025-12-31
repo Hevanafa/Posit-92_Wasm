@@ -27,6 +27,7 @@ const
   CornflowerBlue = $FF6495ED;
   LightGrey = $FFAAAAAA;
   White = $FFFFFFFF;
+  Green = $FF55FF55;
 
 var
   lastEsc: boolean;
@@ -164,13 +165,21 @@ begin
 
   { Debug analogue sticks }
   if gamepadConnected then begin
-    circ(130, 150, 20, white);
-    circ(190, 150, 20, white);
+    if gamepadButton(BTN_LSTICK) then
+      circfill(130, 150, 20, green)
+    else
+      circ(130, 150, 20, white);
+
+    if gamepadButton(BTN_RSTICK) then
+      circfill(190, 150, 20, green)
+    else
+      circ(190, 150, 20, white);
 
     leftX := gamepadAxis(AXIS_LEFT_X);
     leftY := gamepadAxis(AXIS_LEFT_Y);
     rightX := gamepadAxis(AXIS_RIGHT_X);
     rightY := gamepadAxis(AXIS_RIGHT_Y);
+
     circfill(130 + round(20 * leftX), 150 + round(20 * leftY), 5, white);
     circfill(190 + round(20 * rightX), 150 + round(20 * rightY), 5, white);
 
