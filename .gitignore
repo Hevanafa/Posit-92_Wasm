@@ -27,6 +27,7 @@ DEMOS/*/*.ps1
 DEMOS/*/*.ts
 !DEMOS/square_screen/*.ts
 !DEMOS/dos_display/*.ts
+!DEMOS/gamepad_demo/dist.ts
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1

@@ -139,6 +139,10 @@ begin
     s := 'Plug in a controller';
     w := measureDefault(s);
     printDefault(s, (vgaWidth - w) div 2, 120);
+
+    s := 'Press any key when ready';
+    w := measureDefault(s);
+    printDefault(s, (vgaWidth - w) div 2, 130);
   end;
 
   { Debug buttons }
