@@ -4,7 +4,7 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  IntroScr, Loading, Fullscreen,
+  Loading, Fullscreen,
   Conv, FPS, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
