@@ -141,6 +141,9 @@ begin
   if gamepadButton(BTN_START) then printDefault('START', 10, 80);
   if gamepadButton(BTN_BACK) then printDefault('BACK', 10, 80);
 
+  if gamepadButton(BTN_LSTICK) then printDefault('LSTICK', 75, 100);
+  if gamepadButton(BTN_RSTICK) then printDefault('RSTICK', 75, 120);
+
   printDefault('LX: ' + f32str(gamepadAxis(AXIS_LEFT_X)), 10, 100);
   printDefault('LY: ' + f32str(gamepadAxis(AXIS_LEFT_Y)), 10, 110);
 

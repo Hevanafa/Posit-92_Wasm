@@ -16,6 +16,9 @@ const
   BTN_BACK = 8;
   BTN_START = 9;
 
+  BTN_LSTICK = 10;
+  BTN_RSTICK = 11;
+
   BTN_DPAD_UP = 12;
   BTN_DPAD_DOWN = 13;
   BTN_DPAD_LEFT = 14;
