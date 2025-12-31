@@ -4,6 +4,10 @@
   By Hevanafa, 25-11-2025
 }
 
+unit Scancodes;
+
+interface
+
 const
   SC_ESCAPE = $01;
   SC_1 = $02;
@@ -115,3 +119,7 @@ const
   { $55 and $56 are unused }
   SC_F11 = $57;
   SC_F12 = $58;
+
+implementation
+
+end.
