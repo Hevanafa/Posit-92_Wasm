@@ -76,7 +76,7 @@ begin
   substr := '';
   reader := 1;
   leftOffset := 0;
-  while reader < length(text) do begin
+  while reader <= length(text) do begin
     { writeLog(text[reader]); }
 
     if text[reader] <> '\' then begin
@@ -94,20 +94,20 @@ begin
         skipSeq := true;
       end;
 
-      if not skipSeq then begin
+      { TODO: Handle range check }
+      {if not skipSeq then begin
         controlSeq := copy(text, reader, 4);
 
-        { TODO: Handle range check }
         if controlSeq = '\cf1' then
           colour := colourTable[1]
         else if controlSeq = '\cf0' then
           colour := colourTable[0];
 
         skipSeq := true;
-      end;
+      end;}
 
+      { TODO: Parse b0 and i0 }
       if not skipSeq then begin
-        { TODO: Parse b0 and i0 }
         controlSeq := copy(text, reader, 2);
 
         if controlSeq = '\b' then
