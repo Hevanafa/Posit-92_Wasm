@@ -42,6 +42,11 @@ class Game extends Posit92 {
     await this.loadImagesFromManifest(this.AssetManifest.images);
     // Sounds can be loaded later
 
+    await this.loadBMFont(
+      "assets/fonts/ms_sans_serif_10px_bold.txt",
+      this.wasmInstance.exports.boldFontPtr(),
+      this.wasmInstance.exports.boldFontGlyphsPtr());
+
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
     handle = await this.loadImage("assets/images/dosu_2.png");
