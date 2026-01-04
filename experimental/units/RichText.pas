@@ -98,6 +98,7 @@ begin
       if not skipSeq then begin
         controlSeq := copy(text, reader, 4);
 
+        { \cf0, \cf1, \cf2 and so on }
         if startsWith(controlSeq, '\cf') then begin
           digitChar := controlSeq[4];
 
@@ -168,12 +169,6 @@ begin
   { Commit leftover string buffer }
   if length(substr) > 0 then
     printBMFontColour(regularFont, regularFontGlyphs, substr, x + leftOffset, y, colour);
-
-  {
-  colour := colourTable[1];
-  printBMFontColour(regularFont, regularFontGlyphs, text, x, y + regularFont.lineHeight * 2, colour);
-  }
-
 end;
 
 end.

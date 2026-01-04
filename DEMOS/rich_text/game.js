@@ -47,6 +47,16 @@ class Game extends Posit92 {
       this.wasmInstance.exports.boldFontPtr(),
       this.wasmInstance.exports.boldFontGlyphsPtr());
 
+    await this.loadBMFont(
+      "assets/fonts/ms_sans_serif_10px_italic.txt",
+      this.wasmInstance.exports.italicFontPtr(),
+      this.wasmInstance.exports.italicFontGlyphsPtr());
+
+    await this.loadBMFont(
+      "assets/fonts/ms_sans_serif_10px_bold_italic.txt",
+      this.wasmInstance.exports.boldItalicFontPtr(),
+      this.wasmInstance.exports.boldItalicFontGlyphsPtr());
+
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
     handle = await this.loadImage("assets/images/dosu_2.png");
