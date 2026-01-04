@@ -129,8 +129,9 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  RichTextLabel('Hello \bworld!\plain Regular text', 20, 120, palette);
+  RichTextLabel('\bBold:\plain Regular text', 20, 120, palette);
   RichTextLabel('Black text\cf1 Red text \cf0Black text', 20, 140, palette);
+  RichTextLabel('\bBold,\b0\i Italic,\i0\b\i Bold italic');
   RichTextLabel('\cf1Colour 1 \cf2Colour 2 \cf3 Colour 3', 20, 150, palette);
 
   drawMouse;
