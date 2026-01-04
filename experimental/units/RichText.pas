@@ -18,7 +18,7 @@ procedure RichTextLabel(
 
 implementation
 
-uses Panic;
+uses Logger, Panic;
 
 var
   isFontSet: boolean;
@@ -52,25 +52,43 @@ var
   bold, italic: boolean;
   colour: cardinal;
   reader: integer;
+  
+  leftOffset: integer;
   substr: string;
 begin
   if not isFontSet then panicHalt('RichTextLabel: font is unset!');
 
+  { init internal state }
   bold := false;
   italic := false;
   colour := colourTable[0];
 
-  substr := text;
-
-  reader := 0;
+  { reader + renderer }
+  substr := '';
+  reader := 1;
   while reader < length(text) do begin
-    printBMFontColour(regularFont, regularFontGlyphs, substr, x, y, colour);
-    inc(reader, length(substr))
+    writeLog(text[reader]);
+
+    if text[reader] <> '\' then begin
+      substr := substr + text[reader];
+      inc(reader)
+    end else begin
+      { TODO: Begin parsing control sequence }
+
+      { Commit buffer }
+      printBMFontColour(regularFont, regularFontGlyphs, substr, x + leftOffset, y, colour);
+      inc(leftOffset, measureBMFont(regularFontGlyphs, substr));
+      substr := '';
+
+      inc(reader)
+    end;
   end;
 
-  {  
-  printBMFontColour(boldFont, boldFontGlyphs, text, x, y + boldFont.lineHeight, colour);
+  { Commit leftover string buffer }
+  if length(substr) > 0 then
+    printBMFontColour(regularFont, regularFontGlyphs, substr, x, y, colour);
 
+  {
   colour := colourTable[1];
   printBMFontColour(regularFont, regularFontGlyphs, text, x, y + regularFont.lineHeight * 2, colour);
   }

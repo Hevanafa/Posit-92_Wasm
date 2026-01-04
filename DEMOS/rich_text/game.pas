@@ -124,9 +124,7 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  s := 'Hello world!';
-  w := measureDefault(s);
-  RichTextLabel(s, (vgaWidth - w) div 2, 120, palette);
+  RichTextLabel('Hello \bworld!\b0 Regular text', 20, 120, palette);
 
   drawMouse;
   drawFPS;
