@@ -262,6 +262,8 @@ begin
     panicHalt(varName + ' is unset!');
 end;
 
+{ Returns the width of the text
+  to measure the height, use `font.lineHeight` }
 function guiMeasureText(const text: string): word;
 begin
   assertFontSet;
