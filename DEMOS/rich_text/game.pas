@@ -124,7 +124,7 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  RichTextLabel('Hello \bworld!\b0 Regular text', 20, 120, palette);
+  RichTextLabel('Hello \bworld!\plain Regular text', 20, 120, palette);
 
   drawMouse;
   drawFPS;

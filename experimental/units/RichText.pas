@@ -50,11 +50,16 @@ procedure RichTextLabel(
   const colourTable: array of longword);
 var
   bold, italic: boolean;
-  colour: cardinal;
+  colour: longword;
+  lastBold, lastItalic: boolean;
+  lastColour: longword;
+
   reader: integer;
   
   leftOffset: integer;
   substr: string;
+
+  controlSeq: string;
 begin
   if not isFontSet then panicHalt('RichTextLabel: font is unset!');
 
@@ -62,11 +67,14 @@ begin
   bold := false;
   italic := false;
   colour := colourTable[0];
-  leftOffset := 0;
+  lastBold := bold;
+  lastItalic := italic;
+  lastColour := colour;
 
   { reader + renderer }
   substr := '';
   reader := 1;
+  leftOffset := 0;
   while reader < length(text) do begin
     writeLog(text[reader]);
 
@@ -74,14 +82,38 @@ begin
       substr := substr + text[reader];
       inc(reader)
     end else begin
-      { TODO: Begin parsing control sequence }
+      { Parse control sequence }
+      if copy(text, reader, 6) = '\plain' then begin
+        controlSeq := copy(text, reader, 6);
+        bold := false;
+        italic := false;
+        colour := colourTable[0]
+      end else begin
+        controlSeq := copy(text, reader, 2);
+
+        if controlSeq = '\b' then
+          bold := true
+        else if controlSeq = '\i' then
+          italic := true;
+      end;
 
       { Commit buffer }
-      printBMFontColour(regularFont, regularFontGlyphs, substr, x + leftOffset, y, colour);
-      inc(leftOffset, measureBMFont(regularFontGlyphs, substr));
-      substr := '';
+      if length(substr) > 0 then begin
+        if lastBold then begin
+          printBMFontColour(boldFont, boldFontGlyphs, substr, x + leftOffset, y, colour);
+          inc(leftOffset, measureBMFont(boldFontGlyphs, substr));
+        end else begin
+          printBMFontColour(regularFont, regularFontGlyphs, substr, x + leftOffset, y, colour);
+          inc(leftOffset, measureBMFont(regularFontGlyphs, substr));
+        end;
 
-      inc(reader)
+        substr := '';
+      end;
+      
+      lastBold := bold;
+      lastItalic := italic;
+      lastColour := colour;
+      inc(reader, length(controlSeq))
     end;
   end;
 
