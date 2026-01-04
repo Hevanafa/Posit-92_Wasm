@@ -74,7 +74,10 @@ begin
   gameTime := 0.0;
 
   rtfSetFont(defaultFont, defaultFontGlyphs);
-  rtfSetBoldFont(boldFont, boldFontGlyphs)
+
+  rtfSetBoldFont(boldFont, boldFontGlyphs);
+  rtfSetItalicFont(italicFont, italicFontGlyphs);
+  rtfSetBoldItalicFont(boldItalicFont, boldItalicFontGlyphs);
 end;
 
 
@@ -113,9 +116,6 @@ begin
 end;
 
 procedure draw;
-var
-  w: integer;
-  s: string;
 begin
   if actualGameState = GameStateLoading then begin
     renderLoadingScreen;
@@ -129,10 +129,10 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  RichTextLabel('\bBold:\plain Regular text', 20, 120, palette);
+  RichTextLabel('\bBold text,\plain Regular text', 20, 120, palette);
   RichTextLabel('Black text\cf1 Red text \cf0Black text', 20, 140, palette);
-  RichTextLabel('\bBold,\b0\i Italic,\i0\b\i Bold italic');
-  RichTextLabel('\cf1Colour 1 \cf2Colour 2 \cf3 Colour 3', 20, 150, palette);
+  RichTextLabel('\bBold,\b0\i Italic,\i0\b\i Bold italic', 20, 150, palette);
+  RichTextLabel('\cf1Colour 1 \cf2Colour 2 \cf3 Colour 3', 20, 160, palette);
 
   drawMouse;
   drawFPS;

@@ -7,8 +7,11 @@ interface
 
 uses BMFont;
 
+procedure rtfSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 procedure rtfSetRegularFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 procedure rtfSetBoldFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
+procedure rtfSetItalicFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
+procedure rtfSetBoldItalicFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 
 procedure RichTextLabel(
   const text: string;
@@ -23,32 +26,22 @@ uses Conv, Logger, Strings, Panic;
 var
   isFontSet: boolean;
   regularFont, boldFont, italicFont, boldItalicFont: TBMFont;
-  regularFontGlyphs, boldFontGlyphs: array[32..126] of TBMFontGlyph;
+  regularFontGlyphs, boldFontGlyphs, italicFontGlyphs, boldItalicFontGlyphs: array[32..126] of TBMFontGlyph;
 
-procedure rtfSetFont(const font: TBMFont; const glyphs array of TBMFontGlyph);
-var
-  a: word;
+procedure rtfSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 begin
   isFontSet := true;
 
-  regularFont := font;
-  for a := 32 to 126 do regularFontGlyphs[a] := glyphs[a - 32];
-  
-  boldFont := font;
-  for a := 32 to 126 do boldFontGlyphs[a] := glyphs[a - 32];
-
-  italicFont := font;
-  for a := 32 to 126 do italicFontGlyphs[a] := glyphs[a - 32];
-  
-  boldItalicFont := font;
-  for a := 32 to 126 do boldItalicFontGlyphs[a] := glyphs[a - 32];
+  rtfSetRegularFont(font, glyphs);
+  rtfSetBoldFont(font, glyphs);
+  rtfSetItalicFont(font, glyphs);
+  rtfSetBoldItalicFont(font, glyphs);
 end;
 
 procedure rtfSetRegularFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 var
   a: word;
 begin
-  isFontSet := true;
   regularFont := font;
   for a := 32 to 126 do regularFontGlyphs[a] := glyphs[a - 32];
 end;
@@ -57,9 +50,24 @@ procedure rtfSetBoldFont(const font: TBMFont; const glyphs: array of TBMFontGlyp
 var
   a: word;
 begin
-  isFontSet := true;
   boldFont := font;
   for a := 32 to 126 do boldFontGlyphs[a] := glyphs[a - 32];
+end;
+
+procedure rtfSetItalicFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
+var
+  a: word;
+begin
+  italicFont := font;
+  for a := 32 to 126 do italicFontGlyphs[a] := glyphs[a - 32];
+end;
+
+procedure rtfSetBoldItalicFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
+var
+  a: word;
+begin
+  boldItalicFont := font;
+  for a := 32 to 126 do boldItalicFontGlyphs[a] := glyphs[a - 32];
 end;
 
 
