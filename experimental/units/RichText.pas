@@ -106,7 +106,18 @@ begin
         skipSeq := true;
       end;}
 
-      { TODO: Parse b0 and i0 }
+      if not skipSeq then begin
+        controlSeq := copy(text, reader, 3);
+        
+        if controlSeq = '\b0' then begin
+          bold := false;
+          skipSeq := true
+        end else if controlSeq = '\i0' then begin
+          italic := false;
+          skipSeq := true
+        end;
+      end;
+
       if not skipSeq then begin
         controlSeq := copy(text, reader, 2);
 
