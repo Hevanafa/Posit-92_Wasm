@@ -18,7 +18,7 @@ procedure RichTextLabel(
 
 implementation
 
-uses Logger, Panic;
+uses Conv, Logger, Strings, Panic;
 
 var
   isFontSet: boolean;
@@ -55,9 +55,10 @@ var
   lastColour: longword;
 
   reader: integer;
-  
   leftOffset: integer;
   substr: string;
+  digitChar: char;
+  colourIdx: integer;
 
   controlSeq: string;
   skipSeq: boolean;
@@ -97,15 +98,19 @@ begin
       if not skipSeq then begin
         controlSeq := copy(text, reader, 4);
 
-        { TODO: Handle range check }
         if startsWith(controlSeq, '\cf') then begin
-          if controlSeq = '\cf1' then begin
-            colour := colourTable[1];
-            skipSeq := true
-          end else if controlSeq = '\cf0' then begin
-            colour := colourTable[0];
-            skipSeq := true
-          end;
+          digitChar := controlSeq[4];
+
+          if digitChar in ['0'..'9'] then begin
+            colourIdx := ord(digitChar) - ord('0');
+
+            if colourIdx <= high(colourTable) then begin
+              colour := colourTable[colourIdx];
+              skipSeq := true
+            end else
+              panicHalt('RichTextLabel: Colour index out of bounds ' + i32str(colourIdx));
+          end else
+            panicHalt('RichTextLabel: Invalid colour code format ' + controlSeq);
         end;
       end;
 

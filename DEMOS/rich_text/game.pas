@@ -131,6 +131,7 @@ begin
 
   RichTextLabel('Hello \bworld!\plain Regular text', 20, 120, palette);
   RichTextLabel('Black text\cf1 Red text \cf0Black text', 20, 140, palette);
+  RichTextLabel('\cf1Colour 1 \cf2Colour 2 \cf3 Colour 3', 20, 150, palette);
 
   drawMouse;
   drawFPS;
