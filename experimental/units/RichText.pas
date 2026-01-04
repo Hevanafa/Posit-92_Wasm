@@ -77,7 +77,7 @@ begin
   reader := 1;
   leftOffset := 0;
   while reader < length(text) do begin
-    writeLog(text[reader]);
+    { writeLog(text[reader]); }
 
     if text[reader] <> '\' then begin
       substr := substr + text[reader];
@@ -100,7 +100,7 @@ begin
         { TODO: Handle range check }
         if controlSeq = '\cf1' then
           colour := colourTable[1]
-        else
+        else if controlSeq = '\cf0' then
           colour := colourTable[0];
 
         skipSeq := true;
