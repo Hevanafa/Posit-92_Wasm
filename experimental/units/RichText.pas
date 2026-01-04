@@ -60,6 +60,7 @@ var
   substr: string;
 
   controlSeq: string;
+  skipSeq: boolean;
 begin
   if not isFontSet then panicHalt('RichTextLabel: font is unset!');
 
@@ -83,12 +84,30 @@ begin
       inc(reader)
     end else begin
       { Parse control sequence }
+      skipSeq := false;
       if copy(text, reader, 6) = '\plain' then begin
         controlSeq := copy(text, reader, 6);
         bold := false;
         italic := false;
-        colour := colourTable[0]
-      end else begin
+        colour := colourTable[0];
+
+        skipSeq := true;
+      end;
+
+      if not skipSeq then begin
+        controlSeq := copy(text, reader, 4);
+
+        { TODO: Handle range check }
+        if controlSeq = '\cf1' then
+          colour := colourTable[1]
+        else
+          colour := colourTable[0];
+
+        skipSeq := true;
+      end;
+
+      if not skipSeq then begin
+        { TODO: Parse b0 and i0 }
         controlSeq := copy(text, reader, 2);
 
         if controlSeq = '\b' then
@@ -100,10 +119,10 @@ begin
       { Commit buffer }
       if length(substr) > 0 then begin
         if lastBold then begin
-          printBMFontColour(boldFont, boldFontGlyphs, substr, x + leftOffset, y, colour);
+          printBMFontColour(boldFont, boldFontGlyphs, substr, x + leftOffset, y, lastColour);
           inc(leftOffset, measureBMFont(boldFontGlyphs, substr));
         end else begin
-          printBMFontColour(regularFont, regularFontGlyphs, substr, x + leftOffset, y, colour);
+          printBMFontColour(regularFont, regularFontGlyphs, substr, x + leftOffset, y, lastColour);
           inc(leftOffset, measureBMFont(regularFontGlyphs, substr));
         end;
 
@@ -113,7 +132,8 @@ begin
       lastBold := bold;
       lastItalic := italic;
       lastColour := colour;
-      inc(reader, length(controlSeq))
+      inc(reader, length(controlSeq));
+      controlSeq := ''
     end;
   end;
 
