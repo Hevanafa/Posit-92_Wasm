@@ -211,7 +211,7 @@ begin
           substr, x, y,
           lastBold, lastItalic, lastColour,
           leftOffset);
-          
+
         substr := '';
       end;
       
@@ -225,7 +225,10 @@ begin
 
   { Commit leftover string buffer }
   if length(substr) > 0 then
-    printBMFontColour(regularFont, regularFontGlyphs, substr, x + leftOffset, y, colour);
+    rtfPrintWithFormat(
+      substr, x, y,
+      lastBold, lastItalic, lastColour,
+      leftOffset);
 end;
 
 end.
