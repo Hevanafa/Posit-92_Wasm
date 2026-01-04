@@ -71,6 +71,48 @@ begin
 end;
 
 
+procedure rtfPrintWithFormat(
+  const text: string;
+  const x, y: integer;
+  const bold, italic: boolean;
+  const colour: longword;
+  var leftOffset: integer);
+begin
+  if bold and italic then begin
+    printBMFontColour(
+      boldItalicFont, boldItalicFontGlyphs,
+      text,
+      x + leftOffset, y, colour);
+
+    inc(leftOffset, measureBMFont(boldItalicFontGlyphs, text));
+    
+  end else if bold then begin
+    printBMFontColour(
+      boldFont, boldFontGlyphs,
+      text,
+      x + leftOffset, y, colour);
+
+    inc(leftOffset, measureBMFont(boldFontGlyphs, text));
+
+  end else if italic then begin
+    printBMFontColour(
+      italicFont, italicFontGlyphs,
+      text,
+      x + leftOffset, y, colour);
+
+    inc(leftOffset, measureBMFont(italicFontGlyphs, text));
+
+  end else begin
+    printBMFontColour(
+      regularFont, regularFontGlyphs,
+      text,
+      x + leftOffset, y, colour);
+
+    inc(leftOffset, measureBMFont(regularFontGlyphs, text));
+  end;
+end;
+
+
 procedure RichTextLabel(
   const text: string;
   const x, y: integer;
@@ -165,39 +207,11 @@ begin
 
       { Commit buffer }
       if length(substr) > 0 then begin
-        if lastBold and lastItalic then begin
-          printBMFontColour(
-            boldItalicFont, boldItalicFontGlyphs,
-            substr,
-            x + leftOffset, y, lastColour);
-
-          inc(leftOffset, measureBMFont(boldItalicFontGlyphs, substr));
+        rtfPrintWithFormat(
+          substr, x, y,
+          lastBold, lastItalic, lastColour,
+          leftOffset);
           
-        end else if lastBold then begin
-          printBMFontColour(
-            boldFont, boldFontGlyphs,
-            substr,
-            x + leftOffset, y, lastColour);
-
-          inc(leftOffset, measureBMFont(boldFontGlyphs, substr));
-
-        end else if lastItalic then begin
-          printBMFontColour(
-            italicFont, italicFontGlyphs,
-            substr,
-            x + leftOffset, y, lastColour);
-
-          inc(leftOffset, measureBMFont(italicFontGlyphs, substr));
-
-        end else begin
-          printBMFontColour(
-            regularFont, regularFontGlyphs,
-            substr,
-            x + leftOffset, y, lastColour);
-
-          inc(leftOffset, measureBMFont(regularFontGlyphs, substr));
-        end;
-
         substr := '';
       end;
       
