@@ -8,7 +8,7 @@ uses
   Conv, FPS, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Timing, WasmHeap, WasmMemMgr,
+  RichText, Timing, WasmHeap, WasmMemMgr,
   VGA,
   Assets;
 
@@ -25,6 +25,8 @@ const
   SC_ENTER = $1C;
 
   CornflowerBlue = $FF6495ED;
+
+  palette: array of longword = ($FF000000, $FFFF5555);
 
 var
   lastEsc: boolean;
@@ -65,6 +67,8 @@ begin
   { Initialise game state here }
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
+
+  rtfSetRegularFont(defaultFont, defaultFontGlyphs)
 end;
 
 
@@ -121,7 +125,7 @@ begin
 
   s := 'Hello world!';
   w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  TestRichTextLabel(s, (vgaWidth - w) div 2, 120, palette);
 
   drawMouse;
   drawFPS;
