@@ -62,6 +62,7 @@ begin
   bold := false;
   italic := false;
   colour := colourTable[0];
+  leftOffset := 0;
 
   { reader + renderer }
   substr := '';
@@ -86,7 +87,7 @@ begin
 
   { Commit leftover string buffer }
   if length(substr) > 0 then
-    printBMFontColour(regularFont, regularFontGlyphs, substr, x, y, colour);
+    printBMFontColour(regularFont, regularFontGlyphs, substr, x + leftOffset, y, colour);
 
   {
   colour := colourTable[1];
