@@ -126,7 +126,7 @@ begin
 
   s := 'Hello world!';
   w := measureDefault(s);
-  TestRichTextLabel(s, (vgaWidth - w) div 2, 120, palette);
+  RichTextLabel(s, (vgaWidth - w) div 2, 120, palette);
 
   drawMouse;
   drawFPS;
