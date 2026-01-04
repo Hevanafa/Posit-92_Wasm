@@ -22,8 +22,27 @@ uses Conv, Logger, Strings, Panic;
 
 var
   isFontSet: boolean;
-  regularFont, boldFont: TBMFont;
+  regularFont, boldFont, italicFont, boldItalicFont: TBMFont;
   regularFontGlyphs, boldFontGlyphs: array[32..126] of TBMFontGlyph;
+
+procedure rtfSetFont(const font: TBMFont; const glyphs array of TBMFontGlyph);
+var
+  a: word;
+begin
+  isFontSet := true;
+
+  regularFont := font;
+  for a := 32 to 126 do regularFontGlyphs[a] := glyphs[a - 32];
+  
+  boldFont := font;
+  for a := 32 to 126 do boldFontGlyphs[a] := glyphs[a - 32];
+
+  italicFont := font;
+  for a := 32 to 126 do italicFontGlyphs[a] := glyphs[a - 32];
+  
+  boldItalicFont := font;
+  for a := 32 to 126 do boldItalicFontGlyphs[a] := glyphs[a - 32];
+end;
 
 procedure rtfSetRegularFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 var
@@ -138,13 +157,29 @@ begin
 
       { Commit buffer }
       if length(substr) > 0 then begin
-        if lastBold then begin
+        if lastBold and lastItalic then begin
+          printBMFontColour(
+            boldItalicFont, boldItalicFontGlyphs,
+            substr,
+            x + leftOffset, y, lastColour);
+
+          inc(leftOffset, measureBMFont(boldItalicFontGlyphs, substr));
+          
+        end else if lastBold then begin
           printBMFontColour(
             boldFont, boldFontGlyphs,
             substr,
             x + leftOffset, y, lastColour);
 
           inc(leftOffset, measureBMFont(boldFontGlyphs, substr));
+
+        end else if lastItalic then begin
+          printBMFontColour(
+            italicFont, italicFontGlyphs,
+            substr,
+            x + leftOffset, y, lastColour);
+
+          inc(leftOffset, measureBMFont(italicFontGlyphs, substr));
 
         end else begin
           printBMFontColour(

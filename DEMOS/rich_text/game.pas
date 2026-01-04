@@ -73,7 +73,7 @@ begin
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
-  rtfSetRegularFont(defaultFont, defaultFontGlyphs);
+  rtfSetFont(defaultFont, defaultFontGlyphs);
   rtfSetBoldFont(boldFont, boldFontGlyphs)
 end;
 
