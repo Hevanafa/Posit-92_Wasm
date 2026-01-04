@@ -94,17 +94,20 @@ begin
         skipSeq := true;
       end;
 
-      { TODO: Handle range check }
-      {if not skipSeq then begin
+      if not skipSeq then begin
         controlSeq := copy(text, reader, 4);
 
-        if controlSeq = '\cf1' then
-          colour := colourTable[1]
-        else if controlSeq = '\cf0' then
-          colour := colourTable[0];
-
-        skipSeq := true;
-      end;}
+        { TODO: Handle range check }
+        if startsWith(controlSeq, '\cf') then begin
+          if controlSeq = '\cf1' then begin
+            colour := colourTable[1];
+            skipSeq := true
+          end else if controlSeq = '\cf0' then begin
+            colour := colourTable[0];
+            skipSeq := true
+          end;
+        end;
+      end;
 
       if not skipSeq then begin
         controlSeq := copy(text, reader, 3);
@@ -130,10 +133,19 @@ begin
       { Commit buffer }
       if length(substr) > 0 then begin
         if lastBold then begin
-          printBMFontColour(boldFont, boldFontGlyphs, substr, x + leftOffset, y, lastColour);
+          printBMFontColour(
+            boldFont, boldFontGlyphs,
+            substr,
+            x + leftOffset, y, lastColour);
+
           inc(leftOffset, measureBMFont(boldFontGlyphs, substr));
+
         end else begin
-          printBMFontColour(regularFont, regularFontGlyphs, substr, x + leftOffset, y, lastColour);
+          printBMFontColour(
+            regularFont, regularFontGlyphs,
+            substr,
+            x + leftOffset, y, lastColour);
+
           inc(leftOffset, measureBMFont(regularFontGlyphs, substr));
         end;
 

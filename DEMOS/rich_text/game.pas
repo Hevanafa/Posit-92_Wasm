@@ -26,7 +26,12 @@ const
 
   CornflowerBlue = $FF6495ED;
 
-  palette: array of longword = ($FF000000, $FFFF5555);
+  palette: array of longword = (
+    $FF000000,
+    $FFFF5555,
+    $FF55FF55,
+    $FF5555FF
+  );
 
 var
   lastEsc: boolean;
@@ -125,6 +130,7 @@ begin
     spr(imgDosuEXE[0], 148, 88);
 
   RichTextLabel('Hello \bworld!\plain Regular text', 20, 120, palette);
+  RichTextLabel('Black text\cf1 Red text \cf0Black text', 20, 140, palette);
 
   drawMouse;
   drawFPS;
