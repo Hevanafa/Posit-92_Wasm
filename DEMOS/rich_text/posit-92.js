@@ -10,6 +10,8 @@ class Posit92 {
 
   #vgaWidth = 320;
   #vgaHeight = 200;
+  
+  #autoResize = false;
 
   /**
    * @type {HTMLCanvasElement}
@@ -241,7 +243,9 @@ class Posit92 {
   afterInit() {
     this.#wasm.exports.afterInit();
     this.#addOutOfFocusFix();
-    this.#addResizeListener()
+
+    if (this.#autoResize)
+      this.#addResizeListener()
   }
 
 

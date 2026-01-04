@@ -60,14 +60,14 @@ end;
 procedure beginLoadingState;
 begin
   actualGameState := GameStateLoading;
-  fitCanvas;
+  { fitCanvas; }
   loadAssets
 end;
 
 procedure beginPlayingState;
 begin
   hideCursor;
-  fitCanvas;
+  { fitCanvas; }
 
   { Initialise game state here }
   actualGameState := GameStatePlaying;
