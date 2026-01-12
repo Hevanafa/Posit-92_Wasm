@@ -59,16 +59,7 @@
       </Options>
     </Linking>
     <Other>
-      <Verbosity>
-        <ShowLineNum Value="True"/>
-        <ShowAll Value="True"/>
-        <ShowDebugInfo Value="True"/>
-        <ShowUsedFiles Value="True"/>
-        <ShowTriedFiles Value="True"/>
-        <ShowCompProc Value="True"/>
-        <ShowCond Value="True"/>
-        <ShowExecInfo Value="True"/>
-      </Verbosity>
+      <WriteFPCLogo Value="False"/>
       <CustomOptions Value="-dWASM"/>
       <ExecuteAfter>
         <Command Value="cmd /c ren game_wasm game.wasm"/>
