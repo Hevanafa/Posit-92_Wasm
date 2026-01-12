@@ -38,12 +38,14 @@ end;
 
 function min(const a, b: double): double;
 begin
+  min := 0.0;
   if a<=b then min:=a
   else if a>b then min:=b
 end;
 
 function max(const a, b: double): double;
 begin
+  max := 0.0;
   if a<b then max:=b
   else if a>=b then max:=a
 end;

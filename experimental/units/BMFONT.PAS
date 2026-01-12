@@ -208,6 +208,8 @@ var
   glyphIdx: integer;
   glyph: TBMFontGlyph;
 begin
+  printBMFontCharToDest := 0;
+
   if not isImageSet(destHandle) then exit;
 
   charcode := ord(ch);

@@ -46,6 +46,8 @@ node_modules/
 DEMOS/mfgj0/**/*.*
 
 # Lazarus
+experimental/units/backup/
+
 DEMOS/hello_lazarus/*.lps
 DEMOS/hello_lazarus/*.compiled
 DEMOS/hello_lazarus/backup/
