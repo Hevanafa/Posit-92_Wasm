@@ -62,7 +62,7 @@
       <WriteFPCLogo Value="False"/>
       <CustomOptions Value="-dWASM"/>
       <ExecuteAfter>
-        <Command Value="cmd /c ren game_wasm game.wasm"/>
+        <Command Value="cmd /c move /Y game_wasm game.wasm"/>
       </ExecuteAfter>
     </Other>
   </CompilerOptions>
