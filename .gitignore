@@ -44,3 +44,9 @@ node_modules/
 
 # Games from different repos
 DEMOS/mfgj0/**/*.*
+
+# Lazarus
+DEMOS/hello_lazarus/*.lps
+DEMOS/hello_lazarus/*.compiled
+DEMOS/hello_lazarus/backup/
+DEMOS/hello_lazarus/lib/
