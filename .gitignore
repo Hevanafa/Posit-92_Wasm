@@ -50,3 +50,4 @@ DEMOS/hello_lazarus/*.lps
 DEMOS/hello_lazarus/*.compiled
 DEMOS/hello_lazarus/backup/
 DEMOS/hello_lazarus/lib/
+!DEMOS/hello_lazarus/compile_demo.ts
