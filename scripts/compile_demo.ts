@@ -3,9 +3,10 @@
 // By Hevanafa, 12-12-2025
 
 import { styleText } from "node:util";
+import { existsSync } from "node:fs";
 
 const compilerPath = "E:\\fpc-wasm\\fpc\\bin\\x86_64-win64\\fpc.exe";
-const primaryUnit = ".\\game.pas";
+const primaryUnit = existsSync("game.lpr") ? ".\\game.lpr" : ".\\game.pas";
 const outputFile = "game.wasm";
 
 const proc = Bun.spawn([
