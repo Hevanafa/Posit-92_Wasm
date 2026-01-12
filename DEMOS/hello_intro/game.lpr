@@ -81,7 +81,7 @@ begin
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
   
-  replaceColours(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
+  replaceColour(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
 end;
 
 
