@@ -36,7 +36,7 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="game.wasm" ApplyConventions="False"/>
+      <Filename Value="game_wasm" ApplyConventions="False"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
@@ -51,12 +51,28 @@
       </Optimizations>
     </CodeGeneration>
     <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="False"/>
+      </Debugging>
       <Options>
         <ExecutableType Value="Library"/>
       </Options>
     </Linking>
     <Other>
+      <Verbosity>
+        <ShowLineNum Value="True"/>
+        <ShowAll Value="True"/>
+        <ShowDebugInfo Value="True"/>
+        <ShowUsedFiles Value="True"/>
+        <ShowTriedFiles Value="True"/>
+        <ShowCompProc Value="True"/>
+        <ShowCond Value="True"/>
+        <ShowExecInfo Value="True"/>
+      </Verbosity>
       <CustomOptions Value="-dWASM"/>
+      <ExecuteAfter>
+        <Command Value="cmd /c ren game_wasm game.wasm"/>
+      </ExecuteAfter>
     </Other>
   </CompilerOptions>
   <Debugging>

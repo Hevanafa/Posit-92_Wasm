@@ -12,6 +12,8 @@ const proc = Bun.spawn([
   compilerPath,
   "-Pwasm32",
   "-Tembedded",
+  // "-vd",  // Makes it verbose
+  // "-vx",
   "-Fu..\\..\\experimental\\units",
   "-dWASM",
   `-o${outputFile}`,
