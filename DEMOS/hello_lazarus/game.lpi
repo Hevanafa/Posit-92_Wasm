@@ -28,6 +28,7 @@
       <Unit>
         <Filename Value="game.lpr"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="Game"/>
       </Unit>
     </Units>
   </ProjectOptions>
@@ -54,6 +55,9 @@
         <ExecutableType Value="Library"/>
       </Options>
     </Linking>
+    <Other>
+      <CustomOptions Value="-dWASM"/>
+    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions>

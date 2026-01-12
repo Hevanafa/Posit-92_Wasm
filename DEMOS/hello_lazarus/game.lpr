@@ -9,7 +9,7 @@ uses
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
   Timing, WasmHeap, WasmMemMgr,
-  VGA,
+  Panic, VGA,
   Assets;
 
 type
