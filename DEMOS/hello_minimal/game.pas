@@ -23,7 +23,6 @@ end;
 procedure draw;
 begin
   cls($FF101010);
-
   vgaFlush
 end;
 
@@ -36,5 +35,3 @@ exports
 begin
 { Starting point is intentionally left empty }
 end.
-
-
