@@ -4,7 +4,7 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  WasmMemMgr, VGA;
+  Logger, WasmMemMgr, VGA;
 
 procedure init;
 begin
@@ -14,6 +14,7 @@ end;
 
 procedure afterInit;
 begin
+  writeLog('Hello from hello_minimal!')
 end;
 
 procedure update;
