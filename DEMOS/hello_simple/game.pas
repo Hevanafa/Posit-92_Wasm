@@ -7,22 +7,13 @@ uses
   Loading, Fullscreen,
   Conv, FPS, Logger,
   Keyboard, Mouse,
-  ImgRef, ImgRefFast,
-  Timing, WasmHeap, WasmMemMgr,
-  Panic, VGA,
+  ImgRefFast,
+  Timing, WasmMemMgr,
+  VGA,
   Assets;
-
-type
-  TGameStates = (
-    GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
-  );
 
 const
   SC_ESC = $01;
-  SC_SPACE = $39;
-  SC_ENTER = $1C;
 
   CornflowerBlue = $FF6495ED;
 
@@ -30,7 +21,6 @@ var
   lastEsc: boolean;
 
   { Game state variables }
-  actualGameState: TGameStates;
   gameTime: double;
 
 
@@ -50,24 +40,6 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure beginLoadingState;
-begin
-  actualGameState := GameStateLoading;
-  fitCanvas;
-  loadAssets
-end;
-
-procedure beginPlayingState;
-begin
-  hideCursor;
-  fitCanvas;
-
-  { Initialise game state here }
-  actualGameState := GameStatePlaying;
-  gameTime := 0.0;
-end;
-
-
 procedure init;
 begin
   initMemMgr;
@@ -78,7 +50,11 @@ end;
 
 procedure afterInit;
 begin
-  beginPlayingState
+  hideCursor;
+  fitCanvas;
+
+  { Initialise game state here }
+  gameTime := 0.0;
 end;
 
 procedure update;
@@ -107,11 +83,6 @@ var
   w: integer;
   s: string;
 begin
-  if actualGameState = GameStateLoading then begin
-    renderLoadingScreen;
-    exit
-  end;
-
   cls(CornflowerBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
@@ -130,7 +101,6 @@ begin
 end;
 
 exports
-  beginLoadingState,
   init,
   afterInit,
   update,
