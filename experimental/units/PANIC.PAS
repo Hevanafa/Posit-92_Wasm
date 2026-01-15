@@ -47,6 +47,7 @@ begin
     msgBuffer[a-1] := ord(msg[a]);
 
   jsPanicHalt(@msgBuffer, length(msg));
+  halt(1)
 end;
 {$endif}
 
