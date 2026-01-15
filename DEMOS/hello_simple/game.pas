@@ -4,10 +4,8 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  Fullscreen,
-  ImgRefFast,
-  Timing, WasmMemMgr,
-  VGA,
+  Fullscreen, ImgRefFast, Timing,
+  WasmMemMgr, VGA,
   Assets;
 
 var
@@ -24,6 +22,7 @@ end;
 procedure afterInit;
 begin
   fitCanvas;
+
   { Initialise game state here }
   gameTime := 0.0;
 end;

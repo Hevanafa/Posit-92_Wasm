@@ -29,7 +29,7 @@ const
 var
   lastEsc: boolean;
 
-  { Init your game state here }
+  { Game state variables }
   actualGameState: TGameStates;
   gameTime: double;
 
