@@ -1,7 +1,7 @@
 "use strict";
 
 /**
- * Experimental boilerplate without the intro
+ * Simpler Boilerplate
  */
 class Game extends Posit92 {
   /**
@@ -13,16 +13,6 @@ class Game extends Posit92 {
     "Enter": 0x1C,
     // Add more scancodes as necessary
   };
-
-  AssetManifest = {
-    images: {
-      cursor: "assets/images/cursor.png"
-      // Add more image assets here
-    },
-    sounds: new Map([
-      // Add sound assets here
-    ])
-  }
 
   async loadDefaultFont() {
     await this.loadBMFont(
@@ -37,10 +27,8 @@ class Game extends Posit92 {
   async loadAssets() {
     let handle = 0;
 
-    this.initLoadingScreen();
-
-    await this.loadImagesFromManifest(this.AssetManifest.images);
-    // Sounds can be loaded later
+    this.wasmInstance.exports.setImgCursor(
+      await this.loadImage("assets/images/cursor.png"));
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
@@ -64,8 +52,9 @@ async function main() {
   const game = new Game("game");
   await game.init();
   await game.loadDefaultFont();
-
-  game.quickStart();
+  await game.loadAssets();
+  game.hideLoadingOverlay();
+  game.wasmInstance.exports.afterInit();
 
   function loop(currentTime) {
     if (done) {
