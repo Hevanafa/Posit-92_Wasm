@@ -561,6 +561,11 @@ class Posit92 {
   #initKeyboard() {
     const ScancodeMap = this.ScancodeMap;
     
+    if (ScancodeMap == null) {
+      console.warn("ScancodeMap is unavailable");
+      return
+    }
+    
     window.addEventListener("keydown", e => {
       if (e.repeat) return;
 
