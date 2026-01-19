@@ -1,5 +1,9 @@
 Unit List;
 
+{$Mode TP}
+{$J-}
+{$Notes Off}
+
 interface
 
 type
@@ -27,6 +31,8 @@ type
 
 
 implementation
+
+uses Panic;
 
 procedure TList.Init;
 begin
@@ -80,6 +86,22 @@ begin
   pop := PPointer(PByte(items) + count * sizeof(pointer))^
 end;
 
+function TList.Get(index: longint): pointer;
+begin
+  if index in [0..count - 1] then
+    get := PPointer(PByte(items) + index * sizeof(pointer))^
+  else
+    panicHalt('TList index out of bounds');
+end;
 
+function TList.Length: longint;
+begin
+  length := count
+end;
+
+procedure TList.Clear;
+begin
+  count := 0
+end;
 
 end.
