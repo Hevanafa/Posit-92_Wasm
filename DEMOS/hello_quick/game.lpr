@@ -69,7 +69,7 @@ end;
 
 procedure init;
 begin
-  initMemMgr;
+  initHeapMgr;
   initDeltaTime;
   initFPSCounter
 end;

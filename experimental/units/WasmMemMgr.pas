@@ -9,11 +9,11 @@ unit WasmMemMgr;
 
 {$Mode ObjFPC}
 {$Notes OFF}
-{$Memory 1048576, 1048576}  { 1 MB stack, 1 MB heap }
+{Memory 1048576, 1048576}  { 1 MB stack, 1 MB heap }
 
 interface
 
-procedure initMemMgr;
+procedure initHeapMgr;
 
 
 implementation
@@ -51,7 +51,7 @@ begin
 end;
 
 
-procedure initMemMgr;
+procedure initHeapMgr;
 begin
   customMemMgr.GetMem := @whGetMem;
   customMemMgr.FreeMem := @whFreeMem;
