@@ -88,8 +88,11 @@ begin
   writeLog('f.x' + f32str(f^.x));
   writeLog('f.y' + f32str(f^.y));
 
-  if fireflyList = nil then
-    writeLog('fireflyList is nil');
+  new(f);
+  fireflyList.insert(1, f);
+  fireflyList.delete(1);
+
+  fireflyList.done;
 end;
 
 

@@ -25,6 +25,9 @@ type
     function Pop: pointer;
     function Get(index: longint): pointer;
 
+    procedure Delete(index: longint);
+    procedure Insert(index: longint; item: pointer);
+
     function Length: longint;
     procedure Clear;
   end;
@@ -110,12 +113,29 @@ var
 begin
   if index in [0..count - 1] then begin
     for a:=index to count - 2 do
-      PPointer(PByte(items) + i * sizeof(pointer))^ :=
-        PPointer(PByte(items) + (i + 1) * sizeof(pointer))^;
+      PPointer(PByte(items) + a * sizeof(pointer))^ :=
+        PPointer(PByte(items) + (a + 1) * sizeof(pointer))^;
 
     dec(count)
   end else
     panicHalt('TList.Delete: index out of bounds');
+end;
+
+procedure TList.Insert(index: longint; item: pointer);
+var
+  a: longint;
+begin
+  if index in [0..count] then begin
+    if count >= capacity then grow;
+
+    for a:=count downto index + 1 do
+      PPointer(PByte(items) + a * sizeof(pointer))^ :=
+        PPointer(PByte(items) + (a - 1) * sizeof(pointer))^;
+
+    PPointer(PByte(items) + index * sizeof(pointer))^ := item;
+    inc(count)
+  end else
+    panicHalt('TList.Insert: index out of bounds');
 end;
 
 end.
