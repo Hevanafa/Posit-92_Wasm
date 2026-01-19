@@ -7,7 +7,7 @@ uses
   Loading, Fullscreen,
   Conv, FPS, Logger,
   Keyboard, Mouse,
-  ImgRef, ImgRefFast,
+  ImgRef, ImgRefFast, List,
   Timing, WasmMemMgr, VGA,
   Assets;
 
