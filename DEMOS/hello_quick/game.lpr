@@ -8,8 +8,7 @@ uses
   Conv, FPS, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Timing, WasmHeap, WasmMemMgr,
-  Panic, VGA,
+  Timing, WasmMemMgr, VGA,
   Assets;
 
 type
@@ -71,7 +70,6 @@ end;
 procedure init;
 begin
   initMemMgr;
-  { initBuffer; }
   initDeltaTime;
   initFPSCounter
 end;
@@ -131,10 +129,7 @@ end;
 
 exports
   beginLoadingState,
-  init,
-  afterInit,
-  update,
-  draw;
+  init, afterInit, update, draw;
 
 begin
 { Starting point is intentionally left empty }
