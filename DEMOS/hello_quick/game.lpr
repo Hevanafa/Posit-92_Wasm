@@ -71,7 +71,7 @@ end;
 procedure init;
 begin
   initMemMgr;
-  initBuffer;
+  { initBuffer; }
   initDeltaTime;
   initFPSCounter
 end;

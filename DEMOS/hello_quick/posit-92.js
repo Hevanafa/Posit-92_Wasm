@@ -1,7 +1,7 @@
 "use strict";
 
 class Posit92 {
-  static version = "0.1.3_experimental";
+  static version = "0.1.4_experimental";
 
   #wasmSource = "game.wasm";
 
@@ -31,11 +31,11 @@ class Posit92 {
   /**
    * Must be a multiple of 64
    */
-  #stackSize = 64 * 1024;
+  #stackSize = 128 * 1024;
   /**
    * Must be a multiple of 64
    */
-  #heapSize = 960 * 1024;
+  #heapSize = 896 * 1024;
 
   /**
    * @type {WebAssembly.Imports}
@@ -173,6 +173,8 @@ class Posit92 {
   }
 
   #initWasmMemory() {
+    // console.log("Default mem size", this.#wasm.exports.memory.buffer.byteLength);
+
     // Wasm memory is in 64KB pages
     const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
     const requiredPages = Math.ceil((this.#stackSize + this.#heapSize) / 65536);
@@ -190,6 +192,8 @@ class Posit92 {
     await this.#initWebAssembly();
     this.#initWasmMemory();
     this.#wasm.exports.init();
+
+    console.log("Video memory start", this.#wasm.exports.getSurfacePtr());
     
     this.#initKeyboard();
     this.#initMouse();
