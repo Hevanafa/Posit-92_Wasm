@@ -24,9 +24,10 @@ type
     procedure Push(item: pointer);
     function Pop: pointer;
     function Get(index: longint): pointer;
-
     procedure Delete(index: longint);
     procedure Insert(index: longint; item: pointer);
+    procedure Unshift(item: pointer);
+    function Shift: pointer;
 
     function Length: longint;
     procedure Clear;
@@ -136,6 +137,22 @@ begin
     inc(count)
   end else
     panicHalt('TList.Insert: index out of bounds');
+end;
+
+procedure TList.Unshift(item: pointer);
+begin
+  Insert(0, item)
+end;
+
+function TList.Shift: pointer;
+begin
+  if count = 0 then begin
+    shift := nil;
+    exit
+  end;
+
+  shift := get(0);
+  delete(0)
 end;
 
 end.
