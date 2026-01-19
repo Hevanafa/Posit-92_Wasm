@@ -1,6 +1,3 @@
-// Copied from experimental/posit-92.js
-// Last synced: 2025-12-30
-
 "use strict";
 
 class Posit92 {
@@ -30,6 +27,15 @@ class Posit92 {
    * Used in getTimer
    */
   #midnightOffset = 0;
+
+  /**
+   * Must be a multiple of 64
+   */
+  #stackSize = 64 * 1024;
+  /**
+   * Must be a multiple of 64
+   */
+  #heapSize = 960 * 1024;
 
   /**
    * @type {WebAssembly.Imports}
@@ -167,23 +173,14 @@ class Posit92 {
   }
 
   #initWasmMemory() {
-    /**
-     * Grow Wasm memory size (DOS-style: fixed allocation)
-     * Layout:
-     * * 256 KB: stack / globals
-     * * 1MB-2MB: heap
-     */
-    const heapStart = 256 * 1024;
-    const heapSize = 1 * 1048576;
-
     // Wasm memory is in 64KB pages
     const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
-    const requiredPages = Math.ceil((heapStart + heapSize) / 65536);
+    const requiredPages = Math.ceil((this.#stackSize + this.#heapSize) / 65536);
 
     if (pages < requiredPages)
       this.#wasm.exports.memory.grow(requiredPages - pages);
 
-    this.#wasm.exports.initHeap(heapStart, heapSize);
+    this.#wasm.exports.initHeap(this.#stackSize, this.#heapSize);
   }
 
   async init() {
