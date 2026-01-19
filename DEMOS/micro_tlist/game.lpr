@@ -126,6 +126,16 @@ begin
     end;
   end;
 
+  if lastBackspace <> isKeyDown(SC_BACKSPACE) then begin
+    lastBackspace := isKeyDown(SC_BACKSPACE);
+
+    if lastBackspace then begin
+      f := fireflyList.pop;
+
+      if f <> nil then dispose(f);
+    end;
+  end;
+
   { Handle game state updates }
   gameTime := gameTime + dt
 end;
