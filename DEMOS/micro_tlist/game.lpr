@@ -28,11 +28,13 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
   SC_ENTER = $1C;
+  SC_BACKSPACE = $0E;
 
   CornflowerBlue = $FF6495ED;
 
 var
   lastEsc: boolean;
+  lastSpacebar, lastBackspace: boolean;
 
   { Game state variables }
   actualGameState: TGameStates;
@@ -65,8 +67,6 @@ begin
 end;
 
 procedure beginPlayingState;
-var
-  f: PFirefly;
 begin
   hideCursor;
   fitCanvas;
@@ -75,24 +75,9 @@ begin
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
+  randseed := trunc(getTimer);
+
   fireflyList.init;
-  new(f);
-  fireflyList.push(f);
-
-  f^.alive := true;
-  f^.x := 10;
-  f^.y := 20;
-
-  writeLog('Count: ' + i32str(fireflyList.length));
-
-  writeLog('f.x' + f32str(f^.x));
-  writeLog('f.y' + f32str(f^.y));
-
-  new(f);
-  fireflyList.insert(1, f);
-  fireflyList.delete(1);
-
-  fireflyList.done;
 end;
 
 
@@ -109,6 +94,8 @@ begin
 end;
 
 procedure update;
+var
+  f: PFirefly;
 begin
   updateDeltaTime;
   incrementFPS;
@@ -125,6 +112,20 @@ begin
     end;
   end;
 
+  if lastSpacebar <> isKeyDown(SC_SPACE) then begin
+    lastSpacebar := isKeyDown(SC_SPACE);
+
+    if lastSpacebar then begin
+      new(f);
+
+      f^.alive := true;
+      f^.x := 20 + random(vgaWidth - 40);
+      f^.y := 20 + random(vgaHeight - 40);
+
+      fireflyList.push(f)
+    end;
+  end;
+
   { Handle game state updates }
   gameTime := gameTime + dt
 end;
@@ -133,6 +134,8 @@ procedure draw;
 var
   w: integer;
   s: string;
+  a: word;
+  f: PFirefly;
 begin
   if actualGameState = GameStateLoading then begin
     renderLoadingScreen;
@@ -146,7 +149,15 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  s := 'Hello world!';
+  if fireflyList.length > 0 then
+    for a:=0 to fireflyList.length - 1 do begin
+      f := fireflyList.get(a);
+      if not f^.alive then continue;
+
+      spr(imgDosuEXE[0], trunc(f^.x), trunc(f^.y))
+    end;
+
+  s := 'Spacebar - Spawn more | Backspace - Remove last';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
 
