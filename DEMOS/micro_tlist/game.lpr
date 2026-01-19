@@ -131,7 +131,6 @@ begin
 
     if lastBackspace then begin
       f := fireflyList.pop;
-
       if f <> nil then dispose(f);
     end;
   end;

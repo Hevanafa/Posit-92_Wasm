@@ -30,7 +30,7 @@ type
     function Shift: pointer;
 
     function Length: longint;
-    procedure Clear;
+    procedure Clear;  { This doesn't free the pointers }
   end;
 
 
