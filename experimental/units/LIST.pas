@@ -91,7 +91,7 @@ begin
   if index in [0..count - 1] then
     get := PPointer(PByte(items) + index * sizeof(pointer))^
   else
-    panicHalt('TList index out of bounds');
+    panicHalt('TList.Get: index out of bounds');
 end;
 
 function TList.Length: longint;
@@ -102,6 +102,20 @@ end;
 procedure TList.Clear;
 begin
   count := 0
+end;
+
+procedure TList.Delete(index: longint);
+var
+  a: longint;
+begin
+  if index in [0..count - 1] then begin
+    for a:=index to count - 2 do
+      PPointer(PByte(items) + i * sizeof(pointer))^ :=
+        PPointer(PByte(items) + (i + 1) * sizeof(pointer))^;
+
+    dec(count)
+  end else
+    panicHalt('TList.Delete: index out of bounds');
 end;
 
 end.

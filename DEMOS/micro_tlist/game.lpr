@@ -18,6 +18,12 @@ type
     GameStatePlaying = 3
   );
 
+  PFirefly = ^TFirefly;
+  TFirefly = record
+    alive: boolean;
+    x, y: double;
+  end;
+
 const
   SC_ESC = $01;
   SC_SPACE = $39;
@@ -31,6 +37,8 @@ var
   { Game state variables }
   actualGameState: TGameStates;
   gameTime: double;
+
+  fireflyList: TList;
 
 
 { Use this to set `done` to true }
@@ -57,6 +65,8 @@ begin
 end;
 
 procedure beginPlayingState;
+var
+  f: PFirefly;
 begin
   hideCursor;
   fitCanvas;
@@ -64,6 +74,22 @@ begin
   { Initialise game state here }
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
+
+  fireflyList.init;
+  new(f);
+  fireflyList.push(f);
+
+  f^.alive := true;
+  f^.x := 10;
+  f^.y := 20;
+
+  writeLog('Count: ' + i32str(fireflyList.length));
+
+  writeLog('f.x' + f32str(f^.x));
+  writeLog('f.y' + f32str(f^.y));
+
+  if fireflyList = nil then
+    writeLog('fireflyList is nil');
 end;
 
 
