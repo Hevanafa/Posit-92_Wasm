@@ -24,13 +24,7 @@ class Posit92 {
   get wasmInstance() { return this.#wasm }
 
   #wasmMemSize = 2 * 1048576; // 2 MB
-  /**
-   * Must be a multiple of 64
-   */
   #stackSize = 128 * 1024;
-  /**
-   * Must be a multiple of 64
-   */
   #videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
 
 
@@ -626,9 +620,9 @@ class Posit92 {
       this.#updateMouseButton();
     });
 
-    this.#canvas.addEventListener("contextmenu", e => {
-      e.preventDefault()
-    });
+    // this.#canvas.addEventListener("contextmenu", e => {
+    //   e.preventDefault()
+    // });
   }
 
   #getMouseX() { return this.#mouseX }

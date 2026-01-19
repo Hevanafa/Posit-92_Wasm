@@ -8,8 +8,7 @@ uses
 
 procedure init;
 begin
-  initMemMgr;
-  initBuffer;
+  initHeapMgr;
 end;
 
 procedure afterInit;
