@@ -7,7 +7,7 @@ unit VGA;
 
 {$Mode TP}
 {$Notes OFF}
-{$B-}  { Enable boolean short-circuiting }
+{$J-}
 
 interface
 
@@ -18,6 +18,9 @@ type
 {$ifdef WASM}
 procedure vgaFlush; external 'env' name 'vgaFlush';
 {$endif}
+
+function vgaWidth: smallint;
+function vgaHeight: smallint;
 
 { Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
 procedure initVideoMem(const width, height: smallint; const startAddr: PByteArray); public name 'initVideoMem';
@@ -50,16 +53,26 @@ uses
 {$endif}
 
 var
-  vgaWidth, vgaHeight: smallint;
+  _vgaWidth, _vgaHeight: smallint;
   bufferSize: longword;
   surface: PByteArray;
+
+function vgaWidth: smallint;
+begin
+  vgaWidth := _vgaWidth
+end;
+
+function vgaHeight: smallint;
+begin
+  vgaHeight := _vgaHeight
+end;
 
 procedure initVideoMem(const width, height: smallint; const startAddr: PByteArray);
 begin
   { writeLog('Attempting to call initVideoMem'); }
-  vgaWidth := width;
-  vgaHeight := height;
-  bufferSize := vgaWidth * vgaHeight * 4;
+  _vgaWidth := width;
+  _vgaHeight := height;
+  bufferSize := _vgaWidth * _vgaHeight * 4;
 
   surface := startAddr;
   fillchar(surface^, bufferSize, 0);
@@ -74,7 +87,7 @@ function unsafePget(const x, y: integer): longword;
 var
   offset: longword;
 begin
-  offset := (x + y * vgaWidth) * 4;
+  offset := (x + y * _vgaWidth) * 4;
 
   { RGBA to ARGB }
   unsafePget := surface^[offset + 3] shl 24
