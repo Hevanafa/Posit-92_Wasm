@@ -28,10 +28,7 @@ begin
 end;
 
 exports
-  init,
-  afterInit,
-  update,
-  draw;
+  init, afterInit, update, draw;
 
 begin
 { Starting point is intentionally left empty }
