@@ -218,21 +218,17 @@ end;
 
 procedure cls(const colour: longword);
 var
-  x, y: word;
+  a, b: word;
 begin
-  if not bufferInitialised then exit;
-
-  for y:=0 to vgaHeight - 1 do
-    for x:=0 to vgaWidth - 1 do
-      unsafePset(x, y, colour);
+  for b:=0 to vgaHeight - 1 do
+  for a:=0 to vgaWidth - 1 do
+    unsafePset(a, b, colour);
 end;
 
 procedure clsBlend(const colour: longword);
 var
   a, b: integer;
 begin
-  if not bufferInitialised then exit;
-  
   for b:=0 to vgaHeight - 1 do
   for a:=0 to vgaWidth - 1 do
     unsafePsetBlend(a, b, colour);
