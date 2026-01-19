@@ -1,10 +1,7 @@
-// Copied from experimental/posit-92.js
-// Last synced: 2025-12-30
-
 "use strict";
 
 class Posit92 {
-  static version = "0.1.3_experimental";
+  static version = "0.1.4_experimental";
 
   #wasmSource = "game.wasm";
 
@@ -25,6 +22,17 @@ class Posit92 {
    */
   #wasm;
   get wasmInstance() { return this.#wasm }
+
+  #wasmMemSize = 2 * 1048576; // 2 MB
+  /**
+   * Must be a multiple of 64
+   */
+  #stackSize = 128 * 1024;
+  /**
+   * Must be a multiple of 64
+   */
+  #videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
+
 
   /**
    * Used in getTimer
@@ -167,22 +175,20 @@ class Posit92 {
   }
 
   #initWasmMemory() {
-    /**
-     * Grow Wasm memory size (DOS-style: fixed allocation)
-     * Layout:
-     * * 256 KB: stack / globals
-     * * 1MB-2MB: heap
-     */
-    const heapStart = 256 * 1024;
-    const heapSize = 1 * 1048576;
+    // console.log("Default mem size", this.#wasm.exports.memory.buffer.byteLength);
+
+    const videoMemStart = this.#stackSize;
+    const heapStart = this.#stackSize + this.#videoMemSize;
+    const heapSize = this.#wasmMemSize - heapStart;
 
     // Wasm memory is in 64KB pages
     const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
-    const requiredPages = Math.ceil((heapStart + heapSize) / 65536);
+    const requiredPages = Math.ceil(this.#wasmMemSize / 65536);
 
     if (pages < requiredPages)
       this.#wasm.exports.memory.grow(requiredPages - pages);
 
+    this.#wasm.exports.initVideoMem(this.#vgaWidth, this.#vgaHeight, videoMemStart);
     this.#wasm.exports.initHeap(heapStart, heapSize);
   }
 

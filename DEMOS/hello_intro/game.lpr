@@ -8,7 +8,7 @@ uses
   Conv, FPS, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  PostProc, Timing, WasmHeap, WasmMemMgr,
+  PostProc, Timing, WasmMemMgr,
   VGA,
   Assets;
 
@@ -87,8 +87,7 @@ end;
 
 procedure init;
 begin
-  initMemMgr;
-  initBuffer;
+  initHeapMgr;
   initDeltaTime;
   initFPSCounter
 end;
