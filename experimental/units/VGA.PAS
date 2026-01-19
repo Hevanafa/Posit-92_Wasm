@@ -11,13 +11,17 @@ unit VGA;
 
 interface
 
+type
+  PByteArray = ^TByteArray;
+  TByteArray = array[0..0] of byte;
+
 {$ifdef WASM}
 procedure vgaFlush; external 'env' name 'vgaFlush';
 {$endif}
 
 { Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
-procedure initVideoMem(const width, height: smallint; const startAddr: PByte); public name 'initVideoMem';
-function getSurfacePtr: PByte; public name 'getSurfacePtr';
+procedure initVideoMem(const width, height: smallint; const startAddr: PByteArray); public name 'initVideoMem';
+function getSurfacePtr: PByteArray; public name 'getSurfacePtr';
 
 { Colour format: $AARRGGBB }
 procedure cls(const colour: longword);
@@ -48,9 +52,9 @@ uses
 var
   vgaWidth, vgaHeight: smallint;
   bufferSize: longword;
-  surface: PByte;
+  surface: PByteArray;
 
-procedure initVideoMem(const width, height: smallint; const startAddr: PByte);
+procedure initVideoMem(const width, height: smallint; const startAddr: PByteArray);
 begin
   { writeLog('Attempting to call initVideoMem'); }
   vgaWidth := width;
@@ -61,7 +65,7 @@ begin
   fillchar(surface^, bufferSize, 0);
 end;
 
-function getSurfacePtr: PByte;
+function getSurfacePtr: PByteArray;
 begin
   getSurfacePtr := surface
 end;
