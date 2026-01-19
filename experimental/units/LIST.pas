@@ -44,6 +44,23 @@ begin
   capacity := 0
 end;
 
+procedure TList.Grow;
+var
+  newCapacity: longint;
+  newItems: PPointer;
+begin
+  newCapacity := capacity + 16;
+  getmem(newItems, newCapacity * sizeof(pointer));
+
+  if items <> nil then begin
+    move(items^, newItems^, count * sizeof(pointer));
+    freemem(items)
+  end;
+
+  items := newItems;
+  capacity := newCapacity
+end;
+
 procedure TList.Push(item: pointer);
 begin
   if count >= capacity then grow;
@@ -51,5 +68,18 @@ begin
   PPointer(PByte(items) + count * sizeof(pointer))^ := item;
   inc(count)
 end;
+
+function TList.Pop: pointer;
+begin
+  if count = 0 then begin
+    pop := nil;
+    exit
+  end;
+
+  dec(count);
+  pop := PPointer(PByte(items) + count * sizeof(pointer))^
+end;
+
+
 
 end.
