@@ -334,6 +334,11 @@ class Posit92 {
 
   /**
    * Load images from manifest in parallel
+   * 
+   * The setter must have this pattern: `"img" + "AssetName"` in camelCase
+   * 
+   * For example: `imgCursor, imgHandCursor`
+   * 
    * @param {Object.<string, string>} manifest - Key-value pairs of `"asset_key": "image_path"`
    */
   async loadImagesFromManifest(manifest) {
