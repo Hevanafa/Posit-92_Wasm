@@ -1,15 +1,15 @@
 // Copied from experimental/posit-92.js
-// Last synced: 2025-12-25
+// Last synced: 2026-01-20
 
 "use strict";
 
 class Posit92 {
-  static version = "0.1.1_experimental";
+  static version = "0.1.4_experimental";
 
   #wasmSource = "game.wasm";
 
-  #vgaWidth = 320;
-  #vgaHeight = 200;
+  #vgaWidth = 128;
+  #vgaHeight = 128;
 
   /**
    * @type {HTMLCanvasElement}
@@ -26,6 +26,11 @@ class Posit92 {
   #wasm;
   get wasmInstance() { return this.#wasm }
 
+  #wasmMemSize = 2 * 1048576; // 2 MB
+  #stackSize = 128 * 1024;
+  #videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
+
+
   /**
    * Used in getTimer
    */
@@ -38,8 +43,22 @@ class Posit92 {
     env: {
       _haltproc: this.#handleHaltProc.bind(this),
 
+      // Intro
+      hideLoadingOverlay: this.hideLoadingOverlay.bind(this),
+      loadAssets: this.#loadAssets.bind(this),
+
+      // Loading
+      getLoadingActual: this.getLoadingActual.bind(this),
+      getLoadingTotal: this.getLoadingTotal.bind(this),
+
       hideCursor: () => this.#hideCursor(),
       showCursor: () => this.#showCursor(),
+
+      // Fullscreen
+      toggleFullscreen: () => this.#toggleFullscreen(),
+      endFullscreen: () => this.#endFullscreen(),
+      getFullscreenState: () => this.#getFullscreenState(),
+      fitCanvas: () => this.#fitCanvas(),
 
       // Keyboard
       isKeyDown: this.#isKeyDown.bind(this),
@@ -63,8 +82,7 @@ class Posit92 {
       getFullTimer: () => this.#getFullTimer(),
 
       // VGA
-      vgaFlush: () => this.#vgaFlush(),
-      toggleFullscreen: () => this.#toggleFullscreen()
+      vgaFlush: () => this.#vgaFlush()
     }
   };
 
@@ -104,27 +122,70 @@ class Posit92 {
 
   async #initWebAssembly() {
     const response = await fetch(this.#wasmSource);
-    const bytes = await response.arrayBuffer();
-    const result = await WebAssembly.instantiate(bytes, this.#importObject);
+
+    const contentLength =
+      response.headers.get("x-goog-stored-content-length")
+      ?? response.headers.get("content-length");
+
+    // in bytes:
+    const total = Number(contentLength);
+    let loaded = 0;
+
+    const reader = response.body.getReader();
+    const chunks = [];
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      chunks.push(value);
+      loaded += value.length;
+
+      this.onWasmProgress(loaded, total)
+    }
+
+    // Combine chunks
+    const bytes = new Uint8Array(loaded);
+    let pos = 0;
+    for (const chunk of chunks) {
+      bytes.set(chunk, pos);
+      pos += chunk.length
+    }
+
+    const result = await WebAssembly.instantiate(bytes.buffer, this.#importObject);
     this.#wasm = result.instance;
+  }
 
-    /**
-     * Grow Wasm memory size (DOS-style: fixed allocation)
-     * Layout:
-     * * 0-1 MB: stack / globals
-     * * 1MB-2MB: heap
-     */
+  /**
+   * @param {number} loaded in bytes
+   * @param {number} total in bytes
+   */
+  onWasmProgress(loaded, total) {
+    const loadedKB = Math.ceil(loaded / 1024);
 
-    const heapStart = 1048576;  // 1 MB = 1024 * 1024 B
-    const heapSize = 1 * 1048576;
+    if (isNaN(total))
+      this.setLoadingText(`Downloading engine (${ loadedKB } KB)`)
+    else {
+      const totalKB = Math.ceil(total / 1024);
+      this.setLoadingText(`Downloading engine (${ loadedKB } KB / ${ totalKB } KB)`)
+    }
+  }
+
+  #initWasmMemory() {
+    // console.log("Default mem size", this.#wasm.exports.memory.buffer.byteLength);
+
+    const videoMemStart = this.#stackSize;
+    const heapStart = this.#stackSize + this.#videoMemSize;
+    const heapSize = this.#wasmMemSize - heapStart;
 
     // Wasm memory is in 64KB pages
     const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
-    const requiredPages = Math.ceil((heapStart + heapSize) / 65536);
+    const requiredPages = Math.ceil(this.#wasmMemSize / 65536);
 
     if (pages < requiredPages)
       this.#wasm.exports.memory.grow(requiredPages - pages);
 
+    this.#wasm.exports.initVideoMem(this.#vgaWidth, this.#vgaHeight, videoMemStart);
     this.#wasm.exports.initHeap(heapStart, heapSize);
   }
 
@@ -133,18 +194,15 @@ class Posit92 {
 
     Object.freeze(this.#importObject);
     await this.#initWebAssembly();
+    this.#initWasmMemory();
     this.#wasm.exports.init();
-    
+
     this.#initKeyboard();
     this.#initMouse();
   }
 
-  async afterInit() {
-    if (this.loadAssets)
-      await this.loadAssets();
-
-    this.#wasm.exports.afterInit();
-    this.#addOutOfFocusFix()
+  beginIntro() {
+    this.#wasm.exports.beginIntroState()
   }
 
   #addOutOfFocusFix() {
@@ -154,9 +212,41 @@ class Posit92 {
     })
   }
 
+  /**
+   * Called when `done` is `true`
+   */
   cleanup() {
     this.#showCursor();
   }
+
+  /**
+   * Overridden by the inherited `Game` class
+   */
+  async loadAssets() {}
+
+  async #loadAssets() {
+    await this.loadAssets();
+    this.afterInit()
+  }
+
+  /**
+   * Bypass intro sequence
+   * 
+   * Should be used **without** the intro screen
+   */
+  async quickStart() {
+    this.hideLoadingOverlay();
+    this.#wasm.exports.beginLoadingState();
+    // await this.#loadAssets();
+    // this.afterInit()
+  }
+
+  afterInit() {
+    this.#wasm.exports.afterInit();
+    this.#addOutOfFocusFix();
+    this.#addResizeListener()
+  }
+
 
   #hideCursor() {
     this.#canvas.style.cursor = "none"
@@ -230,8 +320,17 @@ class Posit92 {
     return handle
   }
 
+  /**
+   * Used in asset counter
+   */
   #loadingActual = 0;
+  getLoadingActual() { return this.#loadingActual }
+
+  /**
+   * Used in asset counter
+   */
   #loadingTotal = 0;
+  getLoadingTotal() { return this.#loadingTotal }
 
   /**
    * Load images from manifest in parallel
@@ -240,13 +339,10 @@ class Posit92 {
   async loadImagesFromManifest(manifest) {
     const entries = Object.entries(manifest);
 
-    // this.#loadingTotal = entries.length;
-    // this.#loadingActual = 0;
-
     const promises = entries.map(([key, path]) =>
       this.loadImage(path).then(handle => {
         // On success
-        this.#loadingActual++;
+        this.incLoadingActual();
         return { key, path, handle }
       })
     );
@@ -284,9 +380,10 @@ class Posit92 {
   }
 
   incLoadingActual() {
+    // console.trace("incLoadingActual");
     this.#loadingActual++;
-    if (this.#loadingActual > this.#loadingTotal)
-      this.#loadingActual = this.#loadingTotal;
+    // if (this.#loadingActual > this.#loadingTotal)
+    //   this.#loadingActual = this.#loadingTotal;
   }
 
   setLoadingActual(value) {
@@ -317,6 +414,18 @@ class Posit92 {
 
   async sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  initLoadingScreen() {
+    const imageCount = this.AssetManifest.images != null
+      ? Object.keys(this.AssetManifest.images).length
+      : 0;
+    const soundCount = this.AssetManifest.sounds != null
+      ? this.AssetManifest.sounds.size
+      : 0;
+    
+    this.setLoadingActual(0);
+    this.setLoadingTotal(imageCount + soundCount);
   }
 
 
@@ -399,7 +508,7 @@ class Posit92 {
       }
     }
 
-    console.log("Loaded", glyphCount, "glyphs");
+    // console.log("Loaded", glyphCount, "glyphs");
 
     // Load font bitmap
     imgHandle = await this.loadImage(filename);
@@ -448,7 +557,7 @@ class Posit92 {
       glyphsMem.setInt16(glyphOffset + 14, glyph.xadvance, true);
     }
 
-    console.log("loadBMFont completed");
+    // console.log("loadBMFont completed");
   }
 
 
@@ -568,6 +677,8 @@ class Posit92 {
 
 
   // VGA.PAS
+  flush() { this.#vgaFlush() }
+  
   #vgaFlush() {
     const surfacePtr = this.#wasm.exports.getSurfacePtr();
     const imageData = new Uint8ClampedArray(
@@ -581,11 +692,50 @@ class Posit92 {
     this.#ctx.putImageData(imgData, 0, 0);
   }
 
+  // Fullscreen.pas
+  #addResizeListener() {
+    window.addEventListener("resize", this.#handleResize.bind(this))
+  }
+
+  #getFullscreenState() {
+    return document.fullscreenElement != null
+  }
+
   #toggleFullscreen() {
-    if (!document.fullscreenElement)
+    if (!this.#getFullscreenState())
       this.#canvas.requestFullscreen()
     else
       document.exitFullscreen();
+  }
+
+  #endFullscreen() {
+    if (this.#getFullscreenState())
+      document.exitFullscreen();
+  }
+
+  #handleResize() {
+    this.#fitCanvas()
+  }
+
+  #fitCanvas() {
+    const aspectRatio = this.#vgaWidth / this.#vgaHeight;
+
+    const [windowWidth, windowHeight] = [window.innerWidth, window.innerHeight];
+    const windowRatio = windowWidth / windowHeight;
+
+    let w = 0, h = 0;
+    if (windowRatio > aspectRatio) {
+      h = windowHeight;
+      w = h * aspectRatio
+    } else {
+      w = windowWidth;
+      h = w / aspectRatio
+    }
+
+    if (this.#canvas != null) {
+      this.#canvas.style.width = w + "px";
+      this.#canvas.style.height = h + "px";
+    }
   }
 
 

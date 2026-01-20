@@ -14,7 +14,8 @@ const proc = Bun.spawn([
   compilerPath,
   "-Pwasm32",
   "-Tembedded",
-  "-Fuunits",
+  // "-Fuunits",
+  "-Fu..\\..\\experimental\\units",
   "-dWASM",
   `-o${outputFile}`,
   primaryUnit

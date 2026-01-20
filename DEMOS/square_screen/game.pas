@@ -1,12 +1,21 @@
 library Game;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$J-}
 
 uses
+  Fullscreen, Loading,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
   Timing, WasmMemMgr, VGA,
   Assets;
+
+type
+  TGameStates = (
+    GameStateIntro = 1,
+    GameStateLoading = 2,
+    GameStatePlaying = 3
+  );
 
 const
   SC_ESC = $01;
@@ -16,28 +25,44 @@ var
   lastEsc: boolean;
 
   { Init your game state here }
+  actualGameState: TGameStates;
   gameTime: double;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure drawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
+procedure beginLoadingState;
+begin
+  actualGameState := GameStateLoading;
+  { fitCanvas; }
+  loadAssets
+end;
+
+procedure beginPlayingState;
+begin
+  hideCursor;
+  { fitCanvas; }
+  
+  { Initialise game state here }
+  actualGameState := GameStatePlaying;
+  gameTime := 0.0;
+end;
 
 procedure init;
 begin
-  initMemMgr;
-  initBuffer;
+  initHeapMgr;
   initDeltaTime;
 end;
 
 procedure afterInit;
 begin
-  { Initialise game state here }
-  hideCursor;
+  beginPlayingState
 end;
 
 procedure update;
@@ -60,6 +85,11 @@ var
   w: integer;
   s: string;
 begin
+  if actualGameState = GameStateLoading then begin
+    renderLoadingScreen;
+    exit
+  end;
+
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
@@ -77,10 +107,8 @@ end;
 
 exports
   { Main game procedures }
-  init,
-  afterInit,
-  update,
-  draw;
+  beginLoadingState,
+  init, afterInit, update, draw;
 
 begin
 { Starting point is intentionally left empty }
