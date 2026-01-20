@@ -24,10 +24,15 @@ If there are assets involved, you can take a look into both `assets.pas` and `lo
 - **collision** -- Demonstrates how to implement simple arcade collisions: rectangle and circle
 - **easings** -- Shows how to implement easing
 - **fullscreen** -- Shows how to approach the fullscreen feature
+- **gamepad_demo**
+- **graphics_demo**
+- **micro_tlist** -- Demonstrates how to use the built-in `TList` (without the RTL bloat)
 - **music** -- Shows a music player that can handle repeat song
   - **Sounds** mixin is used here
 - **particles**
 - **print_colour**
+- **rainbow_screen** -- Demonstrates how to use the `Colour` unit
+- **square_screen** -- Demonstrates how to use a custom screen size
 - **sound**
   - **Sounds** mixin is used here
 - **sprites** -- Sprite loading & various rendering techniques
@@ -35,19 +40,24 @@ If there are assets involved, you can take a look into both `assets.pas` and `lo
 - **webgl_demo** -- Shows how to setup WebGL with Posit-92
   - **WebGLMixin** mixin is used here
 
+### Advanced
+
+- chase_game
+- dos_display
+
 ### Immediate GUI
 
 - **immediate_gui**
-- **nine_slice**
-- **prompt_demo**
+- **immedgui_nine_slice**
+- **immedgui_prompt**
 
 The string interop from Pascal to JS is already demonstrated in `writeLog` mechanism in `LOGGER.PAS` unit
 
-### Post-Processing
+### Sprite Effects
 
-- **spr_post_processing**
-- **scanlines**
-- **vga_tint**
+### Screen Effects
+
+- **vga_crt_effect**
 
 ### Progressive Web App (PWA)
 
