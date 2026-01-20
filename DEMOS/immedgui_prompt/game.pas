@@ -11,12 +11,20 @@ library Game;
 {$Mode ObjFPC}
 
 uses
-  BMFont, Conv, FPS, Graphics,
+  BMFont, Conv, FPS, Fullscreen,
+  Graphics, Loading,
   ImgRef, ImgRefFast, ImmedGui,
   Keyboard, Logger, Mouse,
-  Panic, Shapes, Timing, WasmMemMgr,
-  VGA,
+  Panic, Shapes, SprEffects, Timing,
+  WasmMemMgr, VGA,
   Assets;
+
+type
+  TGameStates = (
+    GameStateIntro = 1,
+    GameStateLoading = 2,
+    GameStatePlaying = 3
+  );
 
 const
   SC_ESC = $01;
@@ -31,13 +39,15 @@ const
 var
   lastEsc: boolean;
 
-  { Init your game state here }
+  { Game state variables }
+  actualGameState: TGameStates;
   gameTime: double;
   clicks: word;
   showFPS: TCheckboxState;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure drawFPS;
 begin
@@ -52,46 +62,43 @@ begin
     spr(imgCursor, mouseX, mouseY);
 end;
 
-procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
-var
-  a, b: word;
-  image: PImageRef;
+procedure beginLoadingState;
 begin
-  if not isImageSet(imgHandle) then begin
-    writeLog('replaceColours: Unset imgHandle: ' + i32str(imgHandle));
-    exit
-  end;
+  actualGameState := GameStateLoading;
+  fitCanvas;
+  loadAssets
+end;
 
-  image := getImagePtr(imgHandle);
+procedure beginPlayingState;
+begin
+  hideCursor;
+  fitCanvas;
 
-  for b:=0 to image^.height - 1 do
-  for a:=0 to image^.width - 1 do
-    if unsafeSprPget(image, a, b) = oldColour then
-      unsafeSprPset(image, a, b, newColour);
+  { Initialise game state here }
+  actualGameState := GameStatePlaying;
+  gameTime := 0.0;
+
+  initImmediateGUI;
+  guiSetFont(defaultFont, defaultFontGlyphs);
+  setPromptBoxAssets(imgPromptBG, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
+
+  replaceColour(blackFont.imgHandle, $FFFFFFFF, $FF000000);
+
+  clicks := 0;
+  showFPS.checked := true;
 end;
 
 
 procedure init;
 begin
-  initMemMgr;
-  initBuffer;
+  initHeapMgr;
   initDeltaTime;
   initFPSCounter;
 end;
 
 procedure afterInit;
 begin
-  { Initialise game state here }
-  hideCursor;
-
-  initImmediateGUI;
-  guiSetFont(defaultFont, defaultFontGlyphs);
-  setPromptBoxAssets(imgPromptBG, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
-
-  replaceColours(blackFont.imgHandle, $FFFFFFFF, $FF000000);
-
-  clicks := 0;
-  showFPS.checked := true;
+  beginPlayingState
 end;
 
 procedure update;
@@ -123,6 +130,11 @@ var
   w: integer;
   s: string;
 begin
+  if actualGameState = GameStateLoading then begin
+    renderLoadingScreen;
+    exit
+  end;
+  
   cls(CornflowerBlue);
 
   if ImageButton((vgaWidth - getImageWidth(imgWinNormal)) div 2, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
@@ -151,10 +163,8 @@ end;
 
 exports
   { Main game procedures }
-  init,
-  afterInit,
-  update,
-  draw;
+  beginLoadingState,
+  init, afterInit, update, draw;
 
 begin
 { Starting point is intentionally left empty }

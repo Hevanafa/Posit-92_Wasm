@@ -10,18 +10,33 @@ class Game extends Posit92 {
     // Add more scancodes as necessary
   };
 
-  async loadAssets() {
-    let handle = 0;
+  AssetManifest = {
+    images: {
+      cursor: "assets/images/cursor.png",
+      hand: "assets/images/hand.png",
 
-    handle = await this.loadImage("assets/images/cursor.png");
-    this.wasmInstance.exports.setImgCursor(handle);
-    handle = await this.loadImage("assets/images/hand.png");
-    this.wasmInstance.exports.setImgHandCursor(handle);
+      win_normal: "assets/images/win_normal.png",
+      win_hovered: "assets/images/win_hovered.png",
+      win_pressed: "assets/images/win_pressed.png",
+      prompt_bg: "assets/images/prompt_bg.png",
+      btn_prompt_normal: "assets/images/btn_prompt_normal.png",
+      btn_prompt_pressed: "assets/images/btn_prompt_pressed.png"
+    }
+  }
 
+  async loadDefaultFont() {
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.wasmInstance.exports.defaultFontPtr(),
       this.wasmInstance.exports.defaultFontGlyphsPtr());
+  }
+
+  async loadAssets() {
+    let handle = 0;
+
+    this.initLoadingScreen();
+    this.loadImagesFromManifest(this.AssetManifest.images);
+
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.wasmInstance.exports.blackFontPtr(),
@@ -37,30 +52,12 @@ class Game extends Posit92 {
     handle = await this.loadImage("assets/images/dosu_2.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
 
-    this.wasmInstance.exports.setImgWinNormal(
-      await this.loadImage("assets/images/btn_normal.png"));
-
-    this.wasmInstance.exports.setImgWinHovered(
-      await this.loadImage("assets/images/btn_hovered.png"));
-
-    this.wasmInstance.exports.setImgWinPressed(
-      await this.loadImage("assets/images/btn_pressed.png"));
-
-    this.wasmInstance.exports.setImgPromptBG(
-      await this.loadImage("assets/images/prompt_bg.png"));
-
-    this.wasmInstance.exports.setImgPromptNormal(
-      await this.loadImage("assets/images/btn_prompt_normal.png"));
-
-    this.wasmInstance.exports.setImgPromptPressed(
-      await this.loadImage("assets/images/btn_prompt_pressed.png"));
-
     // Add more assets as necessary
   }
 }
 
 const TargetFPS = 60;
-const FrameTime = 1000 / 60.0;
+const FrameTime = 1000 / TargetFPS;
 /**
  * in milliseconds
  */
@@ -71,7 +68,9 @@ var done = false;
 async function main() {
   const game = new Game("game");
   await game.init();
-  game.afterInit();
+  await game.loadDefaultFont();
+
+  game.quickStart();
 
   function loop(currentTime) {
     if (done) {

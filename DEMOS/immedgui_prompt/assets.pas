@@ -35,16 +35,16 @@ function measureDefault(const text: string): word;
 
 { Asset boilerplate }
 procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
-procedure setImgHandCursor(const imgHandle: longint); public name 'setImgHandCursor';
+procedure setImgHand(const imgHandle: longint); public name 'setImgHand';
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
 
 procedure setImgWinNormal(const imgHandle: longint); public name 'setImgWinNormal';
 procedure setImgWinHovered(const imgHandle: longint); public name 'setImgWinHovered';
 procedure setImgWinPressed(const imgHandle: longint); public name 'setImgWinPressed';
 
-procedure setImgPromptBG(const imgHandle: longint); public name 'setImgPromptBG';
-procedure setImgPromptNormal(const imgHandle: longint); public name 'setImgPromptNormal';
-procedure setImgPromptPressed(const imgHandle: longint); public name 'setImgPromptPressed';
+procedure setImgPromptBg(const imgHandle: longint); public name 'setImgPromptBg';
+procedure setImgBtnPromptNormal(const imgHandle: longint); public name 'setImgBtnPromptNormal';
+procedure setImgBtnPromptPressed(const imgHandle: longint); public name 'setImgBtnPromptPressed';
 
 
 implementation
@@ -103,7 +103,7 @@ begin
   imgCursor := imgHandle
 end;
 
-procedure setImgHandCursor(const imgHandle: longint);
+procedure setImgHand(const imgHandle: longint);
 begin
   imgHandCursor := imgHandle
 end;
@@ -128,17 +128,17 @@ begin
   imgWinPressed := imgHandle
 end;
 
-procedure setImgPromptBG(const imgHandle: longint);
+procedure setImgPromptBg(const imgHandle: longint);
 begin
   imgPromptBG := imgHandle
 end;
 
-procedure setImgPromptNormal(const imgHandle: longint);
+procedure setImgBtnPromptNormal(const imgHandle: longint);
 begin
   imgPromptButtonNormal := imgHandle
 end;
 
-procedure setImgPromptPressed(const imgHandle: longint);
+procedure setImgBtnPromptPressed(const imgHandle: longint);
 begin
   imgPromptButtonPressed := imgHandle
 end;
