@@ -12,7 +12,10 @@ class Game extends Posit92 {
 
   AssetManifest = {
     images: {
-      cursor: "assets/images/cursor.png"
+      cursor: "assets/images/cursor.png",
+      app_starting_cursor: "assets/images/appstarting_sheet.png",
+      cheetah: "assets/images/fpc_running_logo.png",
+      hourglass: "assets/images/hourglass_sheet.png"
     }
   }
 
@@ -33,13 +36,6 @@ class Game extends Posit92 {
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
     handle = await this.loadImage("assets/images/dosu_2.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
-
-    handle = await this.loadImage("assets/images/appstarting_sheet.png");
-    this.wasmInstance.exports.setImgAppStartingCursor(handle);
-    handle = await this.loadImage("assets/images/hourglass_sheet.png");
-    this.wasmInstance.exports.setImgHourglass(handle);
-    handle = await this.loadImage("assets/images/fpc_running_logo.png");
-    this.wasmInstance.exports.setImgCheetah(handle);
 
     // Add more assets as necessary
   }
