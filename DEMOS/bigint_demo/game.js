@@ -13,16 +13,27 @@ class Game extends BigIntMixin {
     // Add more scancodes as necessary
   };
 
-  async loadAssets() {
-    let handle = 0;
+  AssetManifest = {
+    images: {
+      cursor: "assets/images/cursor.png"
+      // Add more image assets here
+    },
+    sounds: new Map([
+      // Add sound assets here
+    ])
+  }
 
-    handle = await this.loadImage("assets/images/cursor.png");
-    this.wasmInstance.exports.setImgCursor(handle);
-
+  async loadDefaultFont() {
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.wasmInstance.exports.defaultFontPtr(),
       this.wasmInstance.exports.defaultFontGlyphsPtr());
+  }
+
+  async loadAssets() {
+    let handle = 0;
+
+    this.initLoadingScreen();
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
@@ -34,7 +45,7 @@ class Game extends BigIntMixin {
 }
 
 const TargetFPS = 60;
-const FrameTime = 1000 / 60.0;
+const FrameTime = 1000 / TargetFPS;
 /**
  * in milliseconds
  */
@@ -45,7 +56,9 @@ var done = false;
 async function main() {
   const game = new Game("game");
   await game.init();
-  game.afterInit();
+  await game.loadDefaultFont();
+
+  game.quickStart();
 
   function loop(currentTime) {
     if (done) {

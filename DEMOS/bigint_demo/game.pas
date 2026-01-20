@@ -3,10 +3,18 @@ library Game;
 {$Mode ObjFPC}
 
 uses
-  Conv, FPS, Graphics, ImgRef, ImgRefFast,
-  Keyboard, Logger, Mouse, Panic,
+  Conv, FPS, Fullscreen,
+  ImgRef, ImgRefFast,
+  Loading, Keyboard, Logger, Mouse,
   Timing, WasmMemMgr, VGA,
   Assets, BigInt;
+
+type
+  TGameStates = (
+    GameStateIntro = 1,
+    GameStateLoading = 2,
+    GameStatePlaying = 3
+  );
 
 const
   SC_ESC = $01;
@@ -15,7 +23,6 @@ const
   SC_LEFT = $4B;
   SC_RIGHT = $4D;
 
-
 var
   lastEsc: boolean;
   lastLeft, lastRight: boolean;
@@ -23,12 +30,14 @@ var
   { Used by BigInt }
   stringBuffer: array[0..255] of byte;
 
-  { Init your game state here }
+  { Game state variables }
+  actualGameState: TGameStates;
   gameTime: double;
   points: string; { BigInt }
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure drawFPS;
 begin
@@ -40,25 +49,21 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-{ Used by BigInt }
-function getStringBuffer: pointer; public name 'getStringBuffer';
+procedure beginLoadingState;
 begin
-  getStringBuffer := @stringBuffer
+  actualGameState := GameStateLoading;
+  fitCanvas;
+  loadAssets
 end;
 
-
-procedure init;
+procedure beginPlayingState;
 begin
-  initMemMgr;
-  initBuffer;
-  initDeltaTime;
-  initFPSCounter;
-end;
-
-procedure afterInit;
-begin
-  { Initialise game state here }
   hideCursor;
+  fitCanvas;
+
+  { Initialise game state here }
+  actualGameState := GameStatePlaying;
+  gameTime := 0.0;
 
   points := '123';
 
@@ -97,6 +102,25 @@ begin
   writeLog('a = ' + BigIntA);
   writeLog('b = ' + BigIntB);
   writeLog('compare(a, b) = ' + BigIntResult);
+end;
+
+{ Used by BigInt }
+function getStringBuffer: pointer;
+begin
+  getStringBuffer := @stringBuffer
+end;
+
+
+procedure init;
+begin
+  initHeapMgr;
+  initDeltaTime;
+  initFPSCounter
+end;
+
+procedure afterInit;
+begin
+  beginPlayingState
 end;
 
 
@@ -161,6 +185,11 @@ procedure draw;
 var
   formattedPoints: string;
 begin
+  if actualGameState = GameStateLoading then begin
+    renderLoadingScreen;
+    exit
+  end;
+
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
@@ -189,11 +218,10 @@ begin
 end;
 
 exports
+  getStringBuffer,
+  beginLoadingState,
   { Main game procedures }
-  init,
-  afterInit,
-  update,
-  draw;
+  init, afterInit, update, draw;
 
 begin
 { Starting point is intentionally left empty }
