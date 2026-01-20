@@ -1,6 +1,3 @@
-// Copied from experimental/posit-92.js
-// Last synced: 2026-01-20
-
 "use strict";
 
 class Posit92 {
@@ -195,8 +192,11 @@ class Posit92 {
     Object.freeze(this.#importObject);
     await this.#initWebAssembly();
     this.#initWasmMemory();
+    
     this.#wasm.exports.init();
 
+    console.log("Video memory start", this.#wasm.exports.getSurfacePtr());
+    
     this.#initKeyboard();
     this.#initMouse();
   }
@@ -620,9 +620,9 @@ class Posit92 {
       this.#updateMouseButton();
     });
 
-    this.#canvas.addEventListener("contextmenu", e => {
-      e.preventDefault()
-    });
+    // this.#canvas.addEventListener("contextmenu", e => {
+    //   e.preventDefault()
+    // });
   }
 
   #getMouseX() { return this.#mouseX }

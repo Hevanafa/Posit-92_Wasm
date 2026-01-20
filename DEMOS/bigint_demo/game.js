@@ -34,6 +34,7 @@ class Game extends BigIntMixin {
     let handle = 0;
 
     this.initLoadingScreen();
+    this.loadImagesFromManifest(this.AssetManifest.images);
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
