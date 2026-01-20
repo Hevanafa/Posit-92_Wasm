@@ -4,7 +4,7 @@
  */
 
 const scriptsExcludes = [
-  "square_screen",  // Has custom UNITS for unusual resolutions: PICO-8 Clone, GameBoy Jam & Nokia Jam
+  // "square_screen",  // Has custom UNITS for unusual resolutions: PICO-8 Clone, GameBoy Jam & Nokia Jam
   "dos_display"  // Has custom UNITS
 ];
 
