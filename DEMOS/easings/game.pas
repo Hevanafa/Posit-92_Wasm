@@ -1,13 +1,23 @@
 library Game;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$J-}
+{$H-}
 
 uses
-  Conv, FPS, Graphics, ImgRef,
-  ImgRefFast, ImgRefComp, Keyboard, Lerp,
-  Logger, Maths, Mouse, Panic,
+  Conv, FPS, Fullscreen,
+  Graphics, ImgRef, ImgRefFast, ImgRefComp,
+  Keyboard, Lerp, Loading, Logger,
+  Maths, Mouse,
   Timing, WasmMemMgr, VGA,
   Assets;
+
+type
+  TGameStates = (
+    GameStateIntro = 1,
+    GameStateLoading = 2,
+    GameStatePlaying = 3
+  );
 
 const
   SC_ESC = $01;
@@ -39,7 +49,8 @@ var
   lastEsc, lastSpacebar: boolean;
   lastPageUp, lastPageDown: boolean;
 
-  { Init your game state here }
+  { Game state variables }
+  actualGameState: TGameStates;
   gameTime: double;
   actualDemoState: integer;
   subDemoNames: array[0..DemoStateInOutSine - 1] of string;
@@ -49,6 +60,7 @@ var
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure drawFPS;
 begin
@@ -60,20 +72,14 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure changeState(const state: integer);
+procedure beginLoadingState;
 begin
-  actualDemoState := state;
-
-  gameTime := 0.0;
-
-  startX := 120;
-  endX := vgaWidth - 25;
-  initLerp(xLerpTimer, gameTime, 2.0);
+  actualGameState := GameStateLoading;
+  fitCanvas;
+  loadAssets
 end;
 
 function getDemoStateName(const state: integer): string;
-var
-  result: string;
 begin
   result := '';
 
@@ -91,6 +97,35 @@ begin
 
   getDemoStateName := result
 end;
+
+procedure changeState(const state: integer);
+begin
+  actualDemoState := state;
+
+  gameTime := 0.0;
+
+  startX := 120;
+  endX := vgaWidth - 25;
+  initLerp(xLerpTimer, gameTime, 2.0);
+end;
+
+procedure beginPlayingState;
+var
+  a: word;
+begin
+  hideCursor;
+  fitCanvas;
+
+  { Initialise game state here }
+  actualGameState := GameStatePlaying;
+  gameTime := 0.0;
+
+  changeState(DemoStateInOutQuad);
+
+  for a:=0 to high(subDemoNames) do
+    subDemoNames[a] := getDemoStateName(a + 1);
+end;
+
 
 procedure ListView(
   const x, y: integer;
@@ -177,22 +212,14 @@ end;
 
 procedure init;
 begin
-  initMemMgr;
-  initBuffer;
+  initHeapMgr;
   initDeltaTime;
   initFPSCounter;
 end;
 
 procedure afterInit;
-var
-  a: integer;
 begin
-  { Initialise game state here }
-  hideCursor;
-  changeState(DemoStateInOutQuad);
-
-  for a:=0 to high(subDemoNames) do
-    subDemoNames[a] := getDemoStateName(a + 1);
+  beginPlayingState
 end;
 
 procedure update;
@@ -251,6 +278,11 @@ var
   perc: double;
   x: integer;
 begin
+  if actualGameState = GameStateLoading then begin
+    renderLoadingScreen;
+    exit
+  end;
+
   cls(DarkBlue);
 
   line(startX, 100, endX, 100, Cyan);
@@ -309,10 +341,8 @@ end;
 
 exports
   { Main game procedures }
-  init,
-  afterInit,
-  update,
-  draw;
+  beginLoadingState,
+  init, afterInit, update, draw;
 
 begin
 { Starting point is intentionally left empty }

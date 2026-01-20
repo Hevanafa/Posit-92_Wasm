@@ -13,11 +13,24 @@ class Game extends Posit92 {
     // Add more scancodes as necessary
   };
 
+  AssetManifest = {
+    images: {
+      cursor: "assets/images/cursor.png"
+      // Add more image assets here
+    }
+  }
+
+  async loadDefaultFont() {
+    await this.loadBMFont(
+      "assets/fonts/nokia_cellphone_fc_8.txt",
+      this.wasmInstance.exports.defaultFontPtr(),
+      this.wasmInstance.exports.defaultFontGlyphsPtr());
+  }
+
   async loadAssets() {
     let handle = 0;
 
-    handle = await this.loadImage("assets/images/cursor.png");
-    this.wasmInstance.exports.setImgCursor(handle);
+    this.initLoadingScreen();
 
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
@@ -34,7 +47,7 @@ class Game extends Posit92 {
 }
 
 const TargetFPS = 60;
-const FrameTime = 1000 / 60.0;
+const FrameTime = 1000 / TargetFPS;
 /**
  * in milliseconds
  */
@@ -45,7 +58,9 @@ var done = false;
 async function main() {
   const game = new Game("game");
   await game.init();
-  game.afterInit();
+  await game.loadDefaultFont();
+
+  game.quickStart();
 
   function loop(currentTime) {
     if (done) {

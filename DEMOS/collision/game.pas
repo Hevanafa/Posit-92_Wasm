@@ -4,10 +4,18 @@ library Game;
 {$H-}
 
 uses
-  Conv, Graphics, Keyboard, Mouse,
+  Conv, Fullscreen, Graphics, IIF,
+  Loading, Keyboard, Mouse,
   ImgRef, ImgRefFast,
   Shapes, Timing, WasmMemMgr, VGA,
   Assets;
+
+type
+  TGameStates = (
+    GameStateIntro = 1,
+    GameStateLoading = 2,
+    GameStatePlaying = 3
+  );
 
 const
   SC_ESC = $01;
@@ -37,10 +45,12 @@ const
 var
   lastEsc, lastTab: boolean;
 
-  { Init your game state here }
+  { Game state variables }
+  actualGameState: TGameStates;
+  gameTime: double;
+
   actualDemoMode: integer;
 
-  gameTime: double;
   mapBounds: TZone;
 
   playerZone, npcZone: TZone;
@@ -49,6 +59,7 @@ var
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure drawMouse;
 begin
@@ -67,18 +78,21 @@ begin
   getDemoModeName := result
 end;
 
-
-procedure init;
+procedure beginLoadingState;
 begin
-  initMemMgr;
-  initBuffer;
-  initDeltaTime;
+  actualGameState := GameStateLoading;
+  fitCanvas;
+  loadAssets
 end;
 
-procedure afterInit;
+procedure beginPlayingState;
 begin
-  { Initialise game state here }
   hideCursor;
+  fitCanvas;
+
+  { Initialise game state here }
+  actualGameState := GameStatePlaying;
+  gameTime := 0.0;
 
   actualDemoMode := DemoModeRect;
 
@@ -94,6 +108,18 @@ begin
   npcCircleZone.cx := getZoneCX(npcZone);
   npcCircleZone.cy := getZoneCY(npcZone);
   npcCircleZone.radius := 30;
+end;
+
+
+procedure init;
+begin
+  initHeapMgr;
+  initDeltaTime
+end;
+
+procedure afterInit;
+begin
+  beginPlayingState
 end;
 
 procedure update;
@@ -153,6 +179,11 @@ procedure draw;
 var
   mouseP: TPoint;
 begin
+  if actualGameState = GameStateLoading then begin
+    renderLoadingScreen;
+    exit
+  end;
+
   cls($FF6495ED);
 
   mouseP.x := mouseX;
@@ -221,11 +252,8 @@ begin
 end;
 
 exports
-  { Main game procedures }
-  init,
-  afterInit,
-  update,
-  draw;
+  beginLoadingState,
+  init, afterInit, update, draw;
 
 begin
 { Starting point is intentionally left empty }

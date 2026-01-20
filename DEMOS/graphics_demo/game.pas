@@ -1,13 +1,22 @@
 library Game;
 
 {$Mode ObjFPC}
+{$J-}
 
 uses
-  Conv, Keyboard, Mouse,
+  Conv, Fullscreen,
+  Loading, Keyboard, Mouse,
   ImgRef, ImgRefFast,
   Graphics, Shapes, Timing,
   WasmMemMgr, VGA,
   Assets;
+
+type
+  TGameStates = (
+    GameStateIntro = 1,
+    GameStateLoading = 2,
+    GameStatePlaying = 3
+  );
 
 const
   SC_ESC = $01;
@@ -16,35 +25,51 @@ const
 var
   lastEsc: boolean;
 
-  { Init your game state here }
+  { Game state variables }
+  actualGameState: TGameStates;
   gameTime: double;
   testPoints: array [0..3] of TPoint;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure drawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-
-procedure init;
+procedure beginLoadingState;
 begin
-  initMemMgr;
-  initBuffer;
-  initDeltaTime;
+  actualGameState := GameStateLoading;
+  fitCanvas;
+  loadAssets
 end;
 
-procedure afterInit;
+procedure beginPlayingState;
 begin
-  { Initialise game state here }
   hideCursor;
+  fitCanvas;
 
+  { Initialise game state here }
+  actualGameState := GameStatePlaying;
+  gameTime := 0.0;
+  
   testPoints[0].x := 100; testPoints[0].y := 50;
   testPoints[1].x := 150; testPoints[1].y := 100;
   testPoints[2].x := 100; testPoints[2].y := 150;
   testPoints[3].x := 50;  testPoints[3].y := 100;
+end;
+
+procedure init;
+begin
+  initHeapMgr;
+  initDeltaTime
+end;
+
+procedure afterInit;
+begin
+  beginPlayingState
 end;
 
 procedure update;
@@ -70,6 +95,11 @@ var
   { a: word; }
   a: longword;
 begin
+  if actualGameState = GameStateLoading then begin
+    renderLoadingScreen;
+    exit
+  end;
+
   cls($FF6495ED);
 
   { Benchmarking segment }
@@ -119,10 +149,8 @@ end;
 
 exports
   { Main game procedures }
-  init,
-  afterInit,
-  update,
-  draw;
+  beginLoadingState,
+  init, afterInit, update, draw;
 
 begin
 { Starting point is intentionally left empty }
