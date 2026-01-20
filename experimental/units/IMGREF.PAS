@@ -134,7 +134,7 @@ begin
   slot := newImage(src^.width, src^.height);
   dest := getImagePtr(slot);
 
-  move(src^.dataPtr^, dest^.dataPtr^, src^.width * src^.height * 4);
+  move(src^.dataPtr^, dest^.dataPtr^, src^.allocSize);
   copyImage := slot
 end;
 
