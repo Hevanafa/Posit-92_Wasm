@@ -10,31 +10,37 @@ class Game extends Posit92 {
     // Add more scancodes as necessary
   };
 
-  async loadAssets() {
-    let handle = 0;
+  AssetManifest = {
+    images: {
+      cursor: "assets/images/cursor.png",
+      particle: "assets/images/particle.png"
+      // Add more image assets here
+    }
+  }
 
-    handle = await this.loadImage("assets/images/cursor.png");
-    this.wasmInstance.exports.setImgCursor(handle);
-
+  async loadDefaultFont() {
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.wasmInstance.exports.defaultFontPtr(),
       this.wasmInstance.exports.defaultFontGlyphsPtr());
+  }
+
+  async loadAssets() {
+    let handle = 0;
+
+    this.initLoadingScreen();
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
     handle = await this.loadImage("assets/images/dosu_2.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
 
-    handle = await this.loadImage("assets/images/particle.png");
-    this.wasmInstance.exports.setImgParticle(handle);
-
     // Add more assets as necessary
   }
 }
 
 const TargetFPS = 60;
-const FrameTime = 1000 / 60.0;
+const FrameTime = 1000 / TargetFPS;
 /**
  * in milliseconds
  */
@@ -45,7 +51,9 @@ var done = false;
 async function main() {
   const game = new Game("game");
   await game.init();
-  game.afterInit();
+  await game.loadDefaultFont();
+
+  game.quickStart();
 
   function loop(currentTime) {
     if (done) {

@@ -18,7 +18,6 @@ class Game extends Posit92 {
       win_normal: "assets/images/btn_normal.png",
       win_hovered: "assets/images/btn_hovered.png",
       win_pressed: "assets/images/btn_pressed.png"
-
     }
   }
 
@@ -33,7 +32,6 @@ class Game extends Posit92 {
     let handle = 0;
 
     this.initLoadingScreen();
-    await this.loadImagesFromManifest(this.AssetManifest.images);
 
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",

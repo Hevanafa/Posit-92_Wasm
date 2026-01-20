@@ -113,8 +113,7 @@ end;
 
 procedure init;
 begin
-  initMemMgr;
-  initBuffer;
+  initHeapMgr;
   initDeltaTime;
   initFPSCounter;
 end;
@@ -157,6 +156,8 @@ begin
     renderLoadingScreen;
     exit
   end;
+
+  spr(imgCursor, 10, 100);
 
   cls($FF6495ED);
 
@@ -210,10 +211,7 @@ end;
 exports
   { Main game procedures }
   beginLoadingState,
-  init,
-  afterInit,
-  update,
-  draw;
+  init, afterInit, update, draw;
 
 begin
 { Starting point is intentionally left empty }

@@ -7,6 +7,7 @@ interface
 
 procedure sprOutline(const imgHandle: longint; const x, y: integer; const colour: longword);
 procedure sprShadow(const imgHandle: longint; const x, y: integer; const offsetX, offsetY: integer; const colour: longword);
+procedure replaceColour(const imgHandle: longint; const oldColour, newColour: longword);
 
 
 implementation
@@ -90,6 +91,21 @@ begin
   end;
   
   spr(imgHandle, x, y)
+end;
+
+procedure replaceColour(const imgHandle: longint; const oldColour, newColour: longword);
+var
+  a, b: word;
+  image: PImageRef;
+begin
+  if not isImageSet(imgHandle) then exit;
+
+  image := getImagePtr(imgHandle);
+
+  for b:=0 to image^.height - 1 do
+  for a:=0 to image^.width - 1 do
+    if unsafeSprPget(image, a, b) = oldColour then
+      unsafeSprPset(image, a, b, newColour);
 end;
 
 

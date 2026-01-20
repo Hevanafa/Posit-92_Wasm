@@ -1,14 +1,21 @@
 library Game;
 
 {$Mode ObjFPC}
-{$B-}
+{$J-}
 
 uses
-  BMFont, Conv, FPS,
-  Graphics, Keyboard, Logger, Mouse,
+  BMFont, Conv, FPS, Fullscreen,
+  Loading, Keyboard, Logger, Mouse,
   ImgRef, ImgRefFast, Panic, Shapes,
-  Timing, WasmMemMgr, VGA,
+  SprEffects, Timing, WasmHeap, WasmMemMgr, VGA,
   Assets;
+
+type
+  TGameStates = (
+    GameStateIntro = 1,
+    GameStateLoading = 2,
+    GameStatePlaying = 3
+  );
 
 const
   SC_ESC = $01;
@@ -30,13 +37,15 @@ var
   lastEsc: boolean;
   lastMouseLeft: boolean;
 
-  { Init your game state here }
+  { Game state variables }
+  actualGameState: TGameStates;
   gameTime: double;
   particles: array[0..99] of TParticle;
   palette: array[0..4] of longword;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure drawFPS;
 begin
@@ -46,6 +55,41 @@ end;
 procedure drawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
+end;
+
+procedure beginLoadingState;
+begin
+  actualGameState := GameStateLoading;
+  fitCanvas;
+  loadAssets
+end;
+
+procedure beginPlayingState;
+var
+  a: word;
+begin
+  hideCursor;
+  fitCanvas;
+
+  { Initialise game state here }
+  actualGameState := GameStatePlaying;
+  gameTime := 0.0;
+
+  { Default: cyan }
+  palette[0] := $FF00BEFF;
+  { red, green, yellow, magenta }
+  palette[1] := $FFFF5555;
+  palette[2] := $FF55FF55;
+  palette[3] := $FFFFFF55;
+  palette[4] := $FFFF55FF;
+
+  writeLogI32(getFreeHeapSize);
+
+  imgParticles[0] := imgParticle;
+  for a:=1 to high(palette) do begin
+    imgParticles[a] := copyImage(imgParticle);
+    replaceColour(imgParticles[a], palette[0], palette[a])
+  end;
 end;
 
 function EnumHasFlag(const value, flag: integer): boolean;
@@ -81,53 +125,17 @@ begin
   particles[idx].imgHandle := imgParticles[random(high(imgParticles) + 1)];
 end;
 
-procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
-var
-  a, b: word;
-  image: PImageRef;
-begin
-  if not isImageSet(imgHandle) then begin
-    writeLog('replaceColours: Unset imgHandle: ' + i32str(imgHandle));
-    exit
-  end;
-
-  image := getImagePtr(imgHandle);
-
-  for b:=0 to image^.height - 1 do
-  for a:=0 to image^.width - 1 do
-    if unsafeSprPget(image, a, b) = oldColour then
-      unsafeSprPset(image, a, b, newColour);
-end;
-
 
 procedure init;
 begin
-  initMemMgr;
-  initBuffer;
+  initHeapMgr;
   initDeltaTime;
   initFPSCounter;
 end;
 
 procedure afterInit;
-var
-  a: integer;
 begin
-  { Initialise game state here }
-  hideCursor;
-
-  { Default: cyan }
-  palette[0] := $FF00BEFF;
-  { red, green, yellow, magenta }
-  palette[1] := $FFFF5555;
-  palette[2] := $FF55FF55;
-  palette[3] := $FFFFFF55;
-  palette[4] := $FFFF55FF;
-
-  imgParticles[0] := imgParticle;
-  for a:=1 to high(palette) do begin
-    imgParticles[a] := copyImage(imgParticle);
-    replaceColours(imgParticles[a], palette[0], palette[a])
-  end;
+  beginPlayingState
 end;
 
 procedure update;
@@ -180,6 +188,11 @@ var
   w: integer;
   s: string;
 begin
+  if actualGameState = GameStateLoading then begin
+    renderLoadingScreen;
+    exit
+  end;
+
   cls(DarkBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
@@ -208,10 +221,8 @@ end;
 
 exports
   { Main game procedures }
-  init,
-  afterInit,
-  update,
-  draw;
+  beginLoadingState,
+  init, afterInit, update, draw;
 
 begin
 { Starting point is intentionally left empty }

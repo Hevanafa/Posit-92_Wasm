@@ -1,7 +1,10 @@
+// Copied from experimental/posit-92.js
+// Last synced: 2026-01-20
+
 "use strict";
 
 class Posit92 {
-  static version = "0.1.3_experimental";
+  static version = "0.1.4_experimental";
 
   #wasmSource = "game.wasm";
 
@@ -22,6 +25,11 @@ class Posit92 {
    */
   #wasm;
   get wasmInstance() { return this.#wasm }
+
+  #wasmMemSize = 2 * 1048576; // 2 MB
+  #stackSize = 128 * 1024;
+  #videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
+
 
   /**
    * Used in getTimer
@@ -46,6 +54,12 @@ class Posit92 {
       hideCursor: () => this.#hideCursor(),
       showCursor: () => this.#showCursor(),
 
+      // Fullscreen
+      toggleFullscreen: () => this.#toggleFullscreen(),
+      endFullscreen: () => this.#endFullscreen(),
+      getFullscreenState: () => this.#getFullscreenState(),
+      fitCanvas: () => this.#fitCanvas(),
+
       // Keyboard
       isKeyDown: this.#isKeyDown.bind(this),
       signalDone: this.#signalDone.bind(this),
@@ -68,8 +82,7 @@ class Posit92 {
       getFullTimer: () => this.#getFullTimer(),
 
       // VGA
-      vgaFlush: () => this.#vgaFlush(),
-      toggleFullscreen: () => this.#toggleFullscreen()
+      vgaFlush: () => this.#vgaFlush()
     }
   };
 
@@ -110,7 +123,10 @@ class Posit92 {
   async #initWebAssembly() {
     const response = await fetch(this.#wasmSource);
 
-    const contentLength = response.headers.get("Content-Length");  // Assuming that this is always available
+    const contentLength =
+      response.headers.get("x-goog-stored-content-length")
+      ?? response.headers.get("content-length");
+
     // in bytes:
     const total = Number(contentLength);
     let loaded = 0;
@@ -156,22 +172,20 @@ class Posit92 {
   }
 
   #initWasmMemory() {
-    /**
-     * Grow Wasm memory size (DOS-style: fixed allocation)
-     * Layout:
-     * * 256 KB: stack / globals
-     * * 1MB-2MB: heap
-     */
-    const heapStart = 256 * 1024;
-    const heapSize = 1 * 1048576;
+    // console.log("Default mem size", this.#wasm.exports.memory.buffer.byteLength);
+
+    const videoMemStart = this.#stackSize;
+    const heapStart = this.#stackSize + this.#videoMemSize;
+    const heapSize = this.#wasmMemSize - heapStart;
 
     // Wasm memory is in 64KB pages
     const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
-    const requiredPages = Math.ceil((heapStart + heapSize) / 65536);
+    const requiredPages = Math.ceil(this.#wasmMemSize / 65536);
 
     if (pages < requiredPages)
       this.#wasm.exports.memory.grow(requiredPages - pages);
 
+    this.#wasm.exports.initVideoMem(this.#vgaWidth, this.#vgaHeight, videoMemStart);
     this.#wasm.exports.initHeap(heapStart, heapSize);
   }
 
@@ -182,7 +196,7 @@ class Posit92 {
     await this.#initWebAssembly();
     this.#initWasmMemory();
     this.#wasm.exports.init();
-    
+
     this.#initKeyboard();
     this.#initMouse();
   }
@@ -229,7 +243,8 @@ class Posit92 {
 
   afterInit() {
     this.#wasm.exports.afterInit();
-    this.#addOutOfFocusFix()
+    this.#addOutOfFocusFix();
+    this.#addResizeListener()
   }
 
 
@@ -677,11 +692,50 @@ class Posit92 {
     this.#ctx.putImageData(imgData, 0, 0);
   }
 
+  // Fullscreen.pas
+  #addResizeListener() {
+    window.addEventListener("resize", this.#handleResize.bind(this))
+  }
+
+  #getFullscreenState() {
+    return document.fullscreenElement != null
+  }
+
   #toggleFullscreen() {
-    if (!document.fullscreenElement)
+    if (!this.#getFullscreenState())
       this.#canvas.requestFullscreen()
     else
       document.exitFullscreen();
+  }
+
+  #endFullscreen() {
+    if (this.#getFullscreenState())
+      document.exitFullscreen();
+  }
+
+  #handleResize() {
+    this.#fitCanvas()
+  }
+
+  #fitCanvas() {
+    const aspectRatio = this.#vgaWidth / this.#vgaHeight;
+
+    const [windowWidth, windowHeight] = [window.innerWidth, window.innerHeight];
+    const windowRatio = windowWidth / windowHeight;
+
+    let w = 0, h = 0;
+    if (windowRatio > aspectRatio) {
+      h = windowHeight;
+      w = h * aspectRatio
+    } else {
+      w = windowWidth;
+      h = w / aspectRatio
+    }
+
+    if (this.#canvas != null) {
+      this.#canvas.style.width = w + "px";
+      this.#canvas.style.height = h + "px";
+    }
   }
 
 
