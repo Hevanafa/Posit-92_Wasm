@@ -83,8 +83,6 @@ begin
   palette[3] := $FFFFFF55;
   palette[4] := $FFFF55FF;
 
-  writeLogI32(getFreeHeapSize);
-
   imgParticles[0] := imgParticle;
   for a:=1 to high(palette) do begin
     imgParticles[a] := copyImage(imgParticle);

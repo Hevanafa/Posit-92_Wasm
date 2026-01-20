@@ -195,7 +195,7 @@ class Posit92 {
     
     this.#wasm.exports.init();
 
-    console.log("Video memory start", this.#wasm.exports.getSurfacePtr());
+    // console.log("Video memory start", this.#wasm.exports.getSurfacePtr());
     
     this.#initKeyboard();
     this.#initMouse();

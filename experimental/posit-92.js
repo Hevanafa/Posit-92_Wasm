@@ -505,7 +505,7 @@ class Posit92 {
       }
     }
 
-    console.log("Loaded", glyphCount, "glyphs");
+    // console.log("Loaded", glyphCount, "glyphs");
 
     // Load font bitmap
     imgHandle = await this.loadImage(filename);
@@ -554,7 +554,7 @@ class Posit92 {
       glyphsMem.setInt16(glyphOffset + 14, glyph.xadvance, true);
     }
 
-    console.log("loadBMFont completed");
+    // console.log("loadBMFont completed");
   }
 
 
