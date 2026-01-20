@@ -8,13 +8,22 @@ If there are assets involved, you can take a look into both `assets.pas` and `lo
 
 ##
 
+### Boilerplates
+
+- **hello_intro** -- The full boilerplate including the intro sequence and 2 other game states: loading & playing
+- **hello_quick** -- Similar to `hello_intro` but without the intro sequence
+- **hello_simple** -- Minimal boilerplate without the opinionated game states
+- **hello_minimal** -- The bare minimum example without the asset loader and the rest of the boilerplate features
+
+
 ### Basics
 
-- **hello_world** -- Contains most of the basic stuff covered: BMFont text, sprites, cursor rendering
-- **fullscreen**
-- **image_ptr** -- Shows sprite loading with TImageRef instead of TBitmap
-- **lerp** -- Shows how to implement easing
-- **loading** -- Loading screen with simulated delays
+- **bigint_demo** -- Shows how big integers are handled via browser API
+  - **BigIntMixin** mixin is used here
+- **chain_easing** -- Demonstrates how to chain easings
+- **collision** -- Demonstrates how to implement simple arcade collisions: rectangle and circle
+- **easings** -- Shows how to implement easing
+- **fullscreen** -- Shows how to approach the fullscreen feature
 - **music** -- Shows a music player that can handle repeat song
   - **Sounds** mixin is used here
 - **particles**
@@ -26,22 +35,11 @@ If there are assets involved, you can take a look into both `assets.pas` and `lo
 - **webgl_demo** -- Shows how to setup WebGL with Posit-92
   - **WebGLMixin** mixin is used here
 
-### Input Handling
-
-- **keyboard** -- Keyboard input (WASD movement)
-- **mouse** -- Simple clicker to demonstrate mouse input
-
 ### Immediate GUI
 
 - **immediate_gui**
 - **nine_slice**
 - **prompt_demo**
-
-### Interop
-
-- **bigint** -- Shows how big integers are handled
-  - **BigIntMixin** mixin is used here
-- **wasm_string** -- Shows how string interop (JS to Pascal) is done
 
 The string interop from Pascal to JS is already demonstrated in `writeLog` mechanism in `LOGGER.PAS` unit
 
