@@ -46,8 +46,8 @@ class Game extends Posit92 {
 
   async loadAssets() {
     this.initLoadingScreen();
-    this.loadImagesFromManifest(this.AssetManifest.images);
-    this.loadBMFontFromManifest(this.AssetManifest.bmfonts);
+    await this.loadImagesFromManifest(this.AssetManifest.images);
+    await this.loadBMFontFromManifest(this.AssetManifest.bmfonts);
 
     // handle = await this.loadImage("assets/images/dosu_2.png");
     // this.wasmInstance.exports.setImgDosuEXE(handle, 1);

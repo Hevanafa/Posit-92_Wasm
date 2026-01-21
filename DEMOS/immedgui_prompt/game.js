@@ -35,7 +35,7 @@ class Game extends Posit92 {
     let handle = 0;
 
     this.initLoadingScreen();
-    this.loadImagesFromManifest(this.AssetManifest.images);
+    await this.loadImagesFromManifest(this.AssetManifest.images);
 
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
