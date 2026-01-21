@@ -439,7 +439,7 @@ class Posit92 {
 
       const [setterPtr, glyphSetterPtr] = [setter(), glyphSetter()];
 
-      this.loadBMFont(params.path, setterPtr, glyphSetterPtr).then(() => {
+      return this.loadBMFont(params.path, setterPtr, glyphSetterPtr).then(() => {
         // On success
         this.incLoadingActual();
         return { key, path: params.path, setterPtr, glyphSetterPtr }
@@ -448,8 +448,9 @@ class Posit92 {
 
     const results = await Promise.all(promises);
 
-    const failures = results.filter(item => item != null);
-      // item.setterPtr == 0 || item.glyphSetterPtr == 0);
+    // console.log("BMFont results", results);
+
+    const failures = results.filter(item => item.setterPtr == 0 || item.glyphSetterPtr == 0);
 
     if (failures.length > 0) {
       console.error(
@@ -458,6 +459,8 @@ class Posit92 {
       
       throw new Error("Failed to load some assets")
     }
+
+    for (const item of results) ;
   }
 
   get loadingProgress() {
