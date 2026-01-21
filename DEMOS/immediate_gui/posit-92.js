@@ -332,6 +332,30 @@ class Posit92 {
   #loadingTotal = 0;
   getLoadingTotal() { return this.#loadingTotal }
 
+  #loadSingleImage(key, path) {
+    return this.loadImage(path).then(handle => {
+      // On success
+      this.incLoadingActual();
+      return { key, path, handle }
+    })
+  }
+
+  /**
+   * 
+   * @param {string} key 
+   * @param {Array<string>} paths 
+   * @returns 
+   */
+  #loadImageArray(key, paths) {
+    return paths.map((path, index) => 
+      this.loadImage(path).then(handle => {
+        // On success
+        this.incLoadingActual();
+        return { key, path, handle, index }
+      })
+    )
+  }
+
   /**
    * Load images from manifest in parallel
    * 
@@ -339,20 +363,20 @@ class Posit92 {
    * 
    * For example: `setImgCursor, setImgHandCursor`
    * 
-   * @param {Object.<string, string>} manifest - Key-value pairs of `"asset_key": "image_path"`
+   * @param {Object.<string, string & string[]>} manifest - Key-value pairs of `"asset_key": "image_path"`
    */
   async loadImagesFromManifest(manifest) {
     const entries = Object.entries(manifest);
 
-    const promises = entries.map(([key, path]) =>
-      this.loadImage(path).then(handle => {
-        // On success
-        this.incLoadingActual();
-        return { key, path, handle }
-      })
+    const promises = entries.map(([key, pathOrArray]) =>
+      Array.isArray(pathOrArray)
+      ? this.#loadImageArray(key, pathOrArray)
+      : this.#loadSingleImage(key, pathOrArray)
     );
 
-    const results = await Promise.all(promises);
+    // console.log("promises", promises.flat(1));
+
+    const results = await Promise.all(promises.flat(1));
 
     const failures = results.filter(item => item.handle == 0);
     if (failures.length > 0) {

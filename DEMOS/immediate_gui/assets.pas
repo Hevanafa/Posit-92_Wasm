@@ -35,7 +35,7 @@ function measureDefault(const text: string): word;
 { Asset boilerplate }
 procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
 procedure setImgHandCursor(const imgHandle: longint); public name 'setImgHandCursor';
-procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
+procedure setImgDosu(const imgHandle: longint; const idx: integer); public name 'setImgDosu';
 
 procedure setImgWinNormal(const imgHandle: longint); public name 'setImgWinNormal';
 procedure setImgWinHovered(const imgHandle: longint); public name 'setImgWinHovered';
@@ -103,7 +103,7 @@ begin
   imgHandCursor := imgHandle
 end;
 
-procedure setImgDosuEXE(const imgHandle: longint; const idx: integer);
+procedure setImgDosu(const imgHandle: longint; const idx: integer);
 begin
   imgDosuEXE[idx] := imgHandle
 end;

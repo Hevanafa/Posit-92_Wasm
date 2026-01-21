@@ -13,6 +13,10 @@ class Game extends Posit92 {
   AssetManifest = {
     images: {
       cursor: "assets/images/cursor.png",
+      dosu: [
+        "assets/images/dosu_1.png",
+        "assets/images/dosu_2.png"
+      ],
       hand_cursor: "assets/images/hand.png",
       
       win_normal: "assets/images/btn_normal.png",
@@ -41,26 +45,12 @@ class Game extends Posit92 {
   }
 
   async loadAssets() {
-    let handle = 0;
-
     this.initLoadingScreen();
     this.loadImagesFromManifest(this.AssetManifest.images);
     this.loadBMFontFromManifest(this.AssetManifest.bmfonts);
 
-    // await this.loadBMFont(
-    //   "assets/fonts/nokia_cellphone_fc_8.txt",
-    //   this.wasmInstance.exports.blackFontPtr(),
-    //   this.wasmInstance.exports.blackFontGlyphsPtr());
-
-    // await this.loadBMFont(
-    //   "assets/fonts/picotron_8px.txt",
-    //   this.wasmInstance.exports.picotronFontPtr(),
-    //   this.wasmInstance.exports.picotronFontGlyphsPtr());
-
-    handle = await this.loadImage("assets/images/dosu_1.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 0);
-    handle = await this.loadImage("assets/images/dosu_2.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 1);
+    // handle = await this.loadImage("assets/images/dosu_2.png");
+    // this.wasmInstance.exports.setImgDosuEXE(handle, 1);
 
     // Add more assets as necessary
   }
