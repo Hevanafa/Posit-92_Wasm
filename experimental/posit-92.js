@@ -329,19 +329,48 @@ class Posit92 {
   #loadingTotal = 0;
   getLoadingTotal() { return this.#loadingTotal }
 
+  async #loadSingleImage(key, path) {
+    return this.loadImage(path).then(handle => {
+      // On success
+      this.incLoadingActual();
+      return { key, path, handle }
+    })
+  }
+
+  /**
+   * 
+   * @param {string} key 
+   * @param {Array<string>} paths 
+   * @returns 
+   */
+  async #loadImageArray(key, paths) {
+    const promises = paths.map((path, index) => 
+      this.loadImage(path).then(handle => {
+        // On success
+        this.incLoadingActual();
+        return { key, path, handle, index }
+      })
+    );
+
+    return Promise.all(promises)
+  }
+
   /**
    * Load images from manifest in parallel
-   * @param {Object.<string, string>} manifest - Key-value pairs of `"asset_key": "image_path"`
+   * 
+   * The setter must have this pattern: `"setImg" + "[AssetName]"` in camelCase
+   * 
+   * For example: `setImgCursor, setImgHandCursor`
+   * 
+   * @param {Object.<string, string & string[]>} manifest - Key-value pairs of `"asset_key": "image_path"`
    */
   async loadImagesFromManifest(manifest) {
     const entries = Object.entries(manifest);
 
-    const promises = entries.map(([key, path]) =>
-      this.loadImage(path).then(handle => {
-        // On success
-        this.incLoadingActual();
-        return { key, path, handle }
-      })
+    const promises = entries.map(([key, pathOrArray]) =>
+      Array.isArray(pathOrArray)
+      ? this.#loadImageArray(key, pathOrArray)
+      : this.#loadSingleImage(key, pathOrArray)
     );
 
     const results = await Promise.all(promises);
@@ -356,17 +385,79 @@ class Posit92 {
       throw new Error("Failed to load some assets")
     }
 
-    for (const { key, handle } of results) {
-      const caps = key
-        .replace(/^./, _ => _.toUpperCase())
-        .replace(/_(.)/g, (_, g1) => g1.toUpperCase());
-      const setterName = `setImg${caps}`;
+    for (const item of results) {
+      if (Array.isArray(item)) {
+        for (const subitem of item) {
+          const { key, handle, index } = subitem;
+          
+          const caps = key
+            .replace(/^./, _ => _.toUpperCase())
+            .replace(/_(.)/g, (_, g1) => g1.toUpperCase());
+          const setterName = `setImg${caps}`;
 
-      if (typeof this.wasmInstance.exports[setterName] != "function")
-        console.error("loadAssetsFromManifest: Missing setter", setterName, "for the asset key", key)
-      else
-        this.wasmInstance.exports[setterName](handle);
+          if (typeof this.wasmInstance.exports[setterName] != "function")
+            console.error("loadAssetsFromManifest: Missing setter", setterName, "for the asset key", key)
+          else
+            this.wasmInstance.exports[setterName](handle, index);
+        }
+
+      } else {
+        const { key, handle } = item;
+        
+        const caps = key
+          .replace(/^./, _ => _.toUpperCase())
+          .replace(/_(.)/g, (_, g1) => g1.toUpperCase());
+        const setterName = `setImg${caps}`;
+
+        if (typeof this.wasmInstance.exports[setterName] != "function")
+          console.error("loadAssetsFromManifest: Missing setter", setterName, "for the asset key", key)
+        else
+          this.wasmInstance.exports[setterName](handle);
+      }
     }
+  }
+
+  async loadBMFontFromManifest(manifest) {
+    const entries = Object.entries(manifest);
+    // console.log(entries);
+
+    const promises = entries.map(([key, params]) => {
+      const setter = this.wasmInstance.exports[params.setter];
+      if (typeof setter != "function") {
+        console.error("loadBMFontFromManifest: Missing setter", setter);
+        return { key, setterPtr: 0 }
+      }
+
+      const glyphSetter = this.wasmInstance.exports[params.glyphSetter];
+      if (typeof glyphSetter != "function") {
+        console.error("loadBMFontFromManifest: Missing glyphSetter", params.glyphSetter);
+        return { key, glyphSetterPtr: 0 }
+      }
+
+      const [setterPtr, glyphSetterPtr] = [setter(), glyphSetter()];
+
+      return this.loadBMFont(params.path, setterPtr, glyphSetterPtr).then(() => {
+        // On success
+        this.incLoadingActual();
+        return { key, path: params.path, setterPtr, glyphSetterPtr }
+      })
+    });
+
+    const results = await Promise.all(promises);
+
+    // console.log("BMFont results", results);
+
+    const failures = results.filter(item => item.setterPtr == 0 || item.glyphSetterPtr == 0);
+
+    if (failures.length > 0) {
+      console.error(
+        "Failed to load assets:",
+        failures.map(item => item.key).join(", "));
+      
+      throw new Error("Failed to load some assets")
+    }
+
+    for (const item of results) ;
   }
 
   get loadingProgress() {
@@ -377,10 +468,7 @@ class Posit92 {
   }
 
   incLoadingActual() {
-    // console.trace("incLoadingActual");
-    this.#loadingActual++;
-    // if (this.#loadingActual > this.#loadingTotal)
-    //   this.#loadingActual = this.#loadingTotal;
+    this.#loadingActual++
   }
 
   setLoadingActual(value) {
@@ -420,9 +508,12 @@ class Posit92 {
     const soundCount = this.AssetManifest.sounds != null
       ? this.AssetManifest.sounds.size
       : 0;
+    const bmfontCount = this.AssetManifest.bmfonts != null
+      ? Object.keys(this.AssetManifest.bmfonts).length
+      : 0;
     
     this.setLoadingActual(0);
-    this.setLoadingTotal(imageCount + soundCount);
+    this.setLoadingTotal(imageCount + soundCount + bmfontCount);
   }
 
 
@@ -505,7 +596,7 @@ class Posit92 {
       }
     }
 
-    // console.log("Loaded", glyphCount, "glyphs");
+    console.log("Loaded", glyphCount, "glyphs");
 
     // Load font bitmap
     imgHandle = await this.loadImage(filename);
@@ -554,7 +645,7 @@ class Posit92 {
       glyphsMem.setInt16(glyphOffset + 14, glyph.xadvance, true);
     }
 
-    // console.log("loadBMFont completed");
+    console.log("loadBMFont completed");
   }
 
 
