@@ -376,8 +376,6 @@ class Posit92 {
       : this.#loadSingleImage(key, pathOrArray)
     );
 
-    // console.log("promises", promises.flat(1));
-
     const results = await Promise.all(promises);
 
     const failures = results.filter(item => item.handle == 0);
@@ -390,23 +388,35 @@ class Posit92 {
       throw new Error("Failed to load some assets")
     }
 
-    console.log("results");
     for (const item of results) {
-      console.log(item);
+      if (Array.isArray(item)) {
+        for (const subitem of item) {
+          const { key, handle, index } = subitem;
+          
+          const caps = key
+            .replace(/^./, _ => _.toUpperCase())
+            .replace(/_(.)/g, (_, g1) => g1.toUpperCase());
+          const setterName = `setImg${caps}`;
 
-      // TODO: Handle the array setter
+          if (typeof this.wasmInstance.exports[setterName] != "function")
+            console.error("loadAssetsFromManifest: Missing setter", setterName, "for the asset key", key)
+          else
+            this.wasmInstance.exports[setterName](handle, index);
+        }
 
-      const { key, handle } = item;
-      
-      const caps = key
-        .replace(/^./, _ => _.toUpperCase())
-        .replace(/_(.)/g, (_, g1) => g1.toUpperCase());
-      const setterName = `setImg${caps}`;
+      } else {
+        const { key, handle } = item;
+        
+        const caps = key
+          .replace(/^./, _ => _.toUpperCase())
+          .replace(/_(.)/g, (_, g1) => g1.toUpperCase());
+        const setterName = `setImg${caps}`;
 
-      if (typeof this.wasmInstance.exports[setterName] != "function")
-        console.error("loadAssetsFromManifest: Missing setter", setterName, "for the asset key", key)
-      else
-        this.wasmInstance.exports[setterName](handle);
+        if (typeof this.wasmInstance.exports[setterName] != "function")
+          console.error("loadAssetsFromManifest: Missing setter", setterName, "for the asset key", key)
+        else
+          this.wasmInstance.exports[setterName](handle);
+      }
     }
   }
 
