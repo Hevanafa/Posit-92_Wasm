@@ -332,7 +332,7 @@ class Posit92 {
   #loadingTotal = 0;
   getLoadingTotal() { return this.#loadingTotal }
 
-  #loadSingleImage(key, path) {
+  async #loadSingleImage(key, path) {
     return this.loadImage(path).then(handle => {
       // On success
       this.incLoadingActual();
@@ -346,14 +346,16 @@ class Posit92 {
    * @param {Array<string>} paths 
    * @returns 
    */
-  #loadImageArray(key, paths) {
-    return paths.map((path, index) => 
+  async #loadImageArray(key, paths) {
+    const promises = paths.map((path, index) => 
       this.loadImage(path).then(handle => {
         // On success
         this.incLoadingActual();
         return { key, path, handle, index }
       })
-    )
+    );
+
+    return Promise.all(promises)
   }
 
   /**
@@ -376,7 +378,7 @@ class Posit92 {
 
     // console.log("promises", promises.flat(1));
 
-    const results = await Promise.all(promises.flat(1));
+    const results = await Promise.all(promises);
 
     const failures = results.filter(item => item.handle == 0);
     if (failures.length > 0) {
@@ -388,7 +390,14 @@ class Posit92 {
       throw new Error("Failed to load some assets")
     }
 
-    for (const { key, handle } of results) {
+    console.log("results");
+    for (const item of results) {
+      console.log(item);
+
+      // TODO: Handle the array setter
+
+      const { key, handle } = item;
+      
       const caps = key
         .replace(/^./, _ => _.toUpperCase())
         .replace(/_(.)/g, (_, g1) => g1.toUpperCase());
