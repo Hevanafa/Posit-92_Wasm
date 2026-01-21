@@ -18,6 +18,18 @@ class Game extends Posit92 {
       win_normal: "assets/images/btn_normal.png",
       win_hovered: "assets/images/btn_hovered.png",
       win_pressed: "assets/images/btn_pressed.png"
+    },
+    bmfonts: {
+      blackFont: {
+        path: "assets/fonts/nokia_cellphone_fc_8.txt",
+        setter: "blackFontPtr",
+        glyphSetter: "blackFontGlyphsPtr"
+      },
+      picotron: {
+        path: "assets/fonts/picotron_8px.txt",
+        setter: "picotronFontPtr",
+        glyphSetter: "picotronFontGlyphsPtr"
+      }
     }
   }
 
@@ -33,16 +45,17 @@ class Game extends Posit92 {
 
     this.initLoadingScreen();
     this.loadImagesFromManifest(this.AssetManifest.images);
+    this.loadBMFontFromManifest(this.AssetManifest.bmfonts);
 
-    await this.loadBMFont(
-      "assets/fonts/nokia_cellphone_fc_8.txt",
-      this.wasmInstance.exports.blackFontPtr(),
-      this.wasmInstance.exports.blackFontGlyphsPtr());
+    // await this.loadBMFont(
+    //   "assets/fonts/nokia_cellphone_fc_8.txt",
+    //   this.wasmInstance.exports.blackFontPtr(),
+    //   this.wasmInstance.exports.blackFontGlyphsPtr());
 
-    await this.loadBMFont(
-      "assets/fonts/picotron_8px.txt",
-      this.wasmInstance.exports.picotronFontPtr(),
-      this.wasmInstance.exports.picotronFontGlyphsPtr());
+    // await this.loadBMFont(
+    //   "assets/fonts/picotron_8px.txt",
+    //   this.wasmInstance.exports.picotronFontPtr(),
+    //   this.wasmInstance.exports.picotronFontGlyphsPtr());
 
     handle = await this.loadImage("assets/images/dosu_1.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);

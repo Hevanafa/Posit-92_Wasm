@@ -335,9 +335,9 @@ class Posit92 {
   /**
    * Load images from manifest in parallel
    * 
-   * The setter must have this pattern: `"img" + "AssetName"` in camelCase
+   * The setter must have this pattern: `"setImg" + "[AssetName]"` in camelCase
    * 
-   * For example: `imgCursor, imgHandCursor`
+   * For example: `setImgCursor, setImgHandCursor`
    * 
    * @param {Object.<string, string>} manifest - Key-value pairs of `"asset_key": "image_path"`
    */
@@ -377,6 +377,46 @@ class Posit92 {
     }
   }
 
+  async loadBMFontFromManifest(manifest) {
+    const entries = Object.entries(manifest);
+    // console.log(entries);
+
+    const promises = entries.map(([key, params]) => {
+      const setter = this.wasmInstance.exports[params.setter];
+      if (typeof setter != "function") {
+        console.error("loadBMFontFromManifest: Missing setter", setter);
+        return { key, setterPtr: 0 }
+      }
+
+      const glyphSetter = this.wasmInstance.exports[params.glyphSetter];
+      if (typeof glyphSetter != "function") {
+        console.error("loadBMFontFromManifest: Missing glyphSetter", params.glyphSetter);
+        return { key, glyphSetterPtr: 0 }
+      }
+
+      const [setterPtr, glyphSetterPtr] = [setter(), glyphSetter()];
+
+      this.loadBMFont(params.path, setterPtr, glyphSetterPtr).then(() => {
+        // On success
+        this.incLoadingActual();
+        return { key, path: params.path, setterPtr, glyphSetterPtr }
+      })
+    });
+
+    const results = await Promise.all(promises);
+
+    const failures = results.filter(item => item != null);
+      // item.setterPtr == 0 || item.glyphSetterPtr == 0);
+
+    if (failures.length > 0) {
+      console.error(
+        "Failed to load assets:",
+        failures.map(item => item.key).join(", "));
+      
+      throw new Error("Failed to load some assets")
+    }
+  }
+
   get loadingProgress() {
     return {
       actual: this.#loadingActual,
@@ -385,10 +425,7 @@ class Posit92 {
   }
 
   incLoadingActual() {
-    // console.trace("incLoadingActual");
-    this.#loadingActual++;
-    // if (this.#loadingActual > this.#loadingTotal)
-    //   this.#loadingActual = this.#loadingTotal;
+    this.#loadingActual++
   }
 
   setLoadingActual(value) {
@@ -428,9 +465,12 @@ class Posit92 {
     const soundCount = this.AssetManifest.sounds != null
       ? this.AssetManifest.sounds.size
       : 0;
+    const bmfontCount = this.AssetManifest.bmfonts != null
+      ? Object.keys(this.AssetManifest.bmfonts).length
+      : 0;
     
     this.setLoadingActual(0);
-    this.setLoadingTotal(imageCount + soundCount);
+    this.setLoadingTotal(imageCount + soundCount + bmfontCount);
   }
 
 
