@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "lib": ["DOM", "ESNext"],
+    "removeComments": true,
+    "module": "ES2022",
+    "target": "ES2022"
+  }
+}
