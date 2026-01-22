@@ -4,6 +4,10 @@ type ImageManifest = Record<string, string | string[]>;
 type SoundManifest = Map<number, string>;
 type BMFontManifest = Map<string, { path: string, setter: string, glyphSetter: string }>;
 
+interface WasmExports {
+  memory: WebAssembly.Memory
+};
+
 class Posit92 {
   static version = "0.1.4_experimental";
 
@@ -20,7 +24,7 @@ class Posit92 {
   #canvas: HTMLCanvasElement;
   #ctx: CanvasRenderingContext2D;
 
-  #wasm: WebAssembly.Instance = null;
+  #wasm: WebAssembly.Instance & { exports: WasmExports } = null;
   get wasmInstance() { return this.#wasm }
 
   /**
@@ -99,11 +103,11 @@ class Posit92 {
 
     this.#assertString(canvasID);
 
-    this.#canvas = document.getElementById(canvasID);
-    if (this.#canvas == null)
+    if (document.getElementById(canvasID) == null)
       throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
 
-    this.#ctx = this.#canvas.getContext("2d");
+    this.#canvas = document.getElementById(canvasID);
+    this.#ctx = this.#canvas.getContext("2d")!;
   }
 
   #loadMidnightOffset() {
@@ -122,6 +126,9 @@ class Posit92 {
     // in bytes:
     const total = Number(contentLength);
     let loaded = 0;
+
+    if (response.body == null)
+      throw new Error("Missing response.body");
 
     const reader = response.body.getReader();
     const chunks = [];
@@ -606,7 +613,7 @@ class Posit92 {
       }
     }
 
-    console.log("Loaded", glyphCount, "glyphs");
+    // console.log("Loaded", glyphCount, "glyphs");
 
     // Load font bitmap
     imgHandle = await this.loadImage(filename);
@@ -655,16 +662,22 @@ class Posit92 {
       glyphsMem.setInt16(glyphOffset + 14, glyph.xadvance, true);
     }
 
-    console.log("loadBMFont completed");
+    // console.log("loadBMFont completed");
   }
 
 
   // KEYBOARD.PAS
+  ScancodeMap: {[string]: string} | null = null;
   heldScancodes = new Set();
 
   #initKeyboard() {
+    if (this.ScancodeMap == null) {
+      console.warn("Missing ScancodeMap in " + this.constructor.name);
+      return
+    }
+
     const ScancodeMap = this.ScancodeMap;
-    
+
     window.addEventListener("keydown", e => {
       if (e.repeat) return;
 
@@ -681,7 +694,7 @@ class Posit92 {
     })
   }
 
-  #isKeyDown(scancode) {
+  #isKeyDown(scancode: number) {
     return this.heldScancodes.has(scancode)
   }
 
