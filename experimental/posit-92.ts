@@ -17,7 +17,21 @@ type WasmImports = Record<string, {
   
 }>;
 
+type StringPair = [string, string];
+
 type WebAssemblyInstance = WebAssembly.Instance & { exports: WasmExports };
+
+type TBMFontGlyph = {
+  id: number,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  xoffset: number,
+  yoffset: number,
+  xadvance: number,
+  lineHeight: number
+}
 
 class Posit92 {
   static version = "0.1.4_experimental";
@@ -537,7 +551,7 @@ class Posit92 {
 
 
   // BMFONT.PAS
-  #newBMFontGlyph() {
+  #newBMFontGlyph(): TBMFontGlyph {
     return {
       id: 0,
       x: 0,
@@ -562,10 +576,7 @@ class Posit92 {
     const lines = text.endsWith("\r\n") ? text.split("\r\n") : text.split("\n");
 
     let txtLine = "";
-    /**
-     * @type {Array<[string, string]>}
-     */
-    let pairs;
+    let pairs: Array<StringPair>;
     let k = "", v = "";
 
     let lineHeight = 0;
@@ -578,7 +589,7 @@ class Posit92 {
     for (const line of lines) {
       txtLine = line.replaceAll(/\s+/g, " ");
       
-      pairs = txtLine.split(" ").map(part => part.split("="));
+      pairs = txtLine.split(" ").map(part => <StringPair>part.split("="));
 
       if (txtLine.startsWith("info")) {
         [k, v] = pairs.find(pair => pair[0] == "face");
@@ -666,7 +677,7 @@ class Posit92 {
 
 
   // KEYBOARD.PAS
-  ScancodeMap: {[string]: string} | null = null;
+  ScancodeMap: Record<string, number> = null!;
   heldScancodes = new Set();
 
   #initKeyboard() {
@@ -765,7 +776,7 @@ class Posit92 {
 
 
   // PANIC.PAS
-  #panicHalt(textPtr, textLen) {
+  #panicHalt(textPtr: number, textLen: number) {
     const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, textPtr, textLen);
     const msg = new TextDecoder().decode(buffer);
 
