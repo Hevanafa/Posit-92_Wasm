@@ -168,11 +168,13 @@ class Posit92 {
   #handleHaltProc(exitcode: number) {
     console.log("Programme halted with code:", exitcode);
     this.cleanup();
+    //@ts-ignore
     done = true
   }
 
   #signalDone() {
     this.cleanup();
+    //@ts-ignore
     done = true
   }
 
@@ -475,8 +477,10 @@ class Posit92 {
         console.error("loadAssetsFromManifest: Missing setter", setterName, "for the asset key", key)
       else {
         if (index == null)
+          //@ts-ignore
           this.wasmInstance.exports[setterName](handle);
         else
+          //@ts-ignore
           this.wasmInstance.exports[setterName](handle, index);
       }
     }
@@ -827,6 +831,7 @@ class Posit92 {
     const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, textPtr, textLen);
     const msg = new TextDecoder().decode(buffer);
 
+    //@ts-ignore
     done = true;
     this.cleanup();
 
