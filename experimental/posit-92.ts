@@ -10,22 +10,25 @@ type BMFontManifest = Map<string, { path: string, setter: string, glyphSetter: s
 type WasmExports = {
   memory: WebAssembly.Memory,
 
+  // LOGGER.PAS
   getLogBuffer: () => number,
 
+  // VGA.PAS
   getSurfacePtr: () => number,
-  initVideoMem: (a: number, b: number, c: number) => void,
+  initVideoMem: (width: number, height: number, startAddr: number) => void,
   initHeap: (startAddr: number, heapSize: number) => void,
   WasmGetMem: (bytes: number) => number,
 
+  // IMGREF.PAS
   registerImageRef: (imgHandle: number, dataPtr: number, width: number, height: number) => void;
 
+  // Primary unit
+  beginIntroState: () => void,
   beginLoadingState: () => void,
-
-  init: () => number,
-  afterInit: () => number,
-  beginIntroState: () => number,
-  update: () => number,
-  draw: () => number
+  init: () => void,
+  afterInit: () => void,
+  update: () => void,
+  draw: () => void
 };
 
 type WasmImports = {
