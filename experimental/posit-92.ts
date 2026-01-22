@@ -1,5 +1,9 @@
 "use strict";
 
+type ImageManifest = Record<string, string | string[]>;
+type SoundManifest = Map<number, string>;
+type BMFontManifest = Map<string, { path: string, setter: string, glyphSetter: string }>;
+
 class Posit92 {
   static version = "0.1.4_experimental";
 
@@ -273,7 +277,7 @@ class Posit92 {
   }
 
   // Used in loadImage
-  #images = [];
+  #images: Array<ImageData | null> = [];
 
   async loadImage(url) {
     if (url == null)
@@ -291,7 +295,7 @@ class Posit92 {
     const tempCtx = tempCanvas.getContext("2d");
     if (tempCtx == null)
       throw new Error("Error getting 2D canvas context");
-    
+
     tempCtx.drawImage(img, 0, 0);
 
     const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
@@ -324,7 +328,7 @@ class Posit92 {
   #loadingTotal = 0;
   getLoadingTotal() { return this.#loadingTotal }
 
-  async #loadSingleImage(key, path) {
+  async #loadSingleImage(key: string, path: string) {
     return this.loadImage(path).then(handle => {
       // On success
       this.incLoadingActual();
@@ -332,13 +336,7 @@ class Posit92 {
     })
   }
 
-  /**
-   * 
-   * @param {string} key 
-   * @param {Array<string>} paths 
-   * @returns 
-   */
-  async #loadImageArray(key, paths) {
+  async #loadImageArray(key: string, paths: Array<string>) {
     const promises = paths.map((path, index) => 
       this.loadImage(path).then(handle => {
         // On success
@@ -357,9 +355,9 @@ class Posit92 {
    * 
    * For example: `setImgCursor, setImgHandCursor`
    * 
-   * @param {Object.<string, string & string[]>} manifest - Key-value pairs of `"asset_key": "image_path"`
+   * @param manifest - Key-value pairs of `"asset_key": "image_path"`
    */
-  async loadImagesFromManifest(manifest) {
+  async loadImagesFromManifest(manifest: ImageManifest) {
     const entries = Object.entries(manifest);
 
     const promises = entries.map(([key, pathOrArray]) =>
@@ -418,12 +416,14 @@ class Posit92 {
 
     const promises = entries.map(([key, params]) => {
       const setter = this.wasmInstance.exports[params.setter];
+
       if (typeof setter != "function") {
         console.error("loadBMFontFromManifest: Missing setter", setter);
         return { key, setterPtr: 0 }
       }
 
       const glyphSetter = this.wasmInstance.exports[params.glyphSetter];
+
       if (typeof glyphSetter != "function") {
         console.error("loadBMFontFromManifest: Missing glyphSetter", params.glyphSetter);
         return { key, glyphSetterPtr: 0 }
@@ -482,21 +482,36 @@ class Posit92 {
 
   setLoadingText(text) {
     const div = document.querySelector("#loading-overlay > div");
+    if (div == null) return;
     div.innerHTML = text;
   }
 
   hideLoadingOverlay() {
     const div = document.getElementById("loading-overlay");
-    // div.style.display = "none";
+    if (div == null) return;
     div.classList.add("hidden");
     this.setLoadingText("");
   }
 
-  async sleep(ms) {
+  async sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
+  /**
+   * Overridable from `game.js`
+   */
+  AssetManifest: {
+    images: ImageManifest | null,
+    sounds: SoundManifest | null,
+    bmfonts: BMFontManifest | null
+  } | null = null;
+
   initLoadingScreen() {
+    if (this.AssetManifest == null) {
+      console.warn("Missing AssetManifest in " + this.constructor.name);
+      return
+    }
+
     const imageCount = this.AssetManifest.images != null
       ? Object.keys(this.AssetManifest.images).length
       : 0;
