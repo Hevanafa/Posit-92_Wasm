@@ -5,31 +5,22 @@ class Posit92 {
 
   #wasmSource = "game.wasm";
 
-  #vgaWidth = 320;
-  #vgaHeight = 200;
-
-  /**
-   * @type {HTMLCanvasElement}
-   */
-  #canvas;
-  /**
-   * @type {CanvasRenderingContext2D}
-   */
-  #ctx;
-
-  /**
-   * @type {WebAssembly.Instance}
-   */
-  #wasm;
-  get wasmInstance() { return this.#wasm }
-
+  // Engine configs
   #wasmMemSize = 2 * 1048576; // 2 MB
   #stackSize = 128 * 1024;
   #videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
 
+  #vgaWidth = 320;
+  #vgaHeight = 200;
+
+  #canvas: HTMLCanvasElement;
+  #ctx: CanvasRenderingContext2D;
+
+  #wasm: WebAssembly.Instance = null;
+  get wasmInstance() { return this.#wasm }
 
   /**
-   * Used in getTimer
+   * Used in `getTimer`
    */
   #midnightOffset = 0;
 
@@ -72,7 +63,7 @@ class Posit92 {
       getMouseButton: () => this.#getMouseButton(),
 
       // Panic
-      panicHalt: this.#panicHalt.bind(this),
+      jsPanicHalt: this.#panicHalt.bind(this),
 
       // Timing
       getTimer: () => this.#getTimer(),
@@ -87,7 +78,7 @@ class Posit92 {
     return this.#importObject
   }
   
-  #handleHaltProc(exitcode) {
+  #handleHaltProc(exitcode: number) {
     console.log("Programme halted with code:", exitcode);
     this.cleanup();
     done = true
@@ -154,10 +145,10 @@ class Posit92 {
   }
 
   /**
-   * @param {number} loaded in bytes
-   * @param {number} total in bytes
+   * @param loaded in bytes
+   * @param total in bytes
    */
-  onWasmProgress(loaded, total) {
+  onWasmProgress(loaded: number, total: number) {
     const loadedKB = Math.ceil(loaded / 1024);
 
     if (isNaN(total))
@@ -267,7 +258,7 @@ class Posit92 {
   }
 
 
-  async loadImageFromURL(url) {
+  async loadImageFromURL(url): Promise<HTMLImageElement> {
     if (url == null)
       throw new Error("loadImageFromURL: url is required");
 
@@ -296,7 +287,11 @@ class Posit92 {
     const tempCanvas = document.createElement("canvas");
     tempCanvas.width = img.width;
     tempCanvas.height = img.height;
+    
     const tempCtx = tempCanvas.getContext("2d");
+    if (tempCtx == null)
+      throw new Error("Error getting 2D canvas context");
+    
     tempCtx.drawImage(img, 0, 0);
 
     const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
