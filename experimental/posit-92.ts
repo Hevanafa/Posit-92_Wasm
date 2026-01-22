@@ -455,34 +455,22 @@ class Posit92 {
       throw new Error("Failed to load some assets")
     }
 
-    for (const item of results) {
-      if (Array.isArray(item)) {
-        for (const subitem of item) {
-          const { key, handle, index } = subitem;
-          
-          const caps = key
-            .replace(/^./, _ => _.toUpperCase())
-            .replace(/_(.)/g, (_, g1) => g1.toUpperCase());
-          const setterName = `setImg${caps}`;
+    for (const item of results.flat(1)) {
+      type ResultItem = { key: string, handle: number, index?: number };
+      const { key, handle, index } = <ResultItem>item;
+      
+      const caps = key
+        .replace(/^./, _ => _.toUpperCase())
+        .replace(/_(.)/g, (_, g1) => g1.toUpperCase());
+      const setterName = `setImg${caps}`;
 
-          if (typeof this.wasmInstance.exports[setterName] != "function")
-            console.error("loadAssetsFromManifest: Missing setter", setterName, "for the asset key", key)
-          else
-            this.wasmInstance.exports[setterName](handle, index);
-        }
-
-      } else {
-        const { key, handle } = item;
-        
-        const caps = key
-          .replace(/^./, _ => _.toUpperCase())
-          .replace(/_(.)/g, (_, g1) => g1.toUpperCase());
-        const setterName = `setImg${caps}`;
-
-        if (typeof this.wasmInstance.exports[setterName] != "function")
-          console.error("loadAssetsFromManifest: Missing setter", setterName, "for the asset key", key)
-        else
+      if (typeof this.wasmInstance.exports[setterName] != "function")
+        console.error("loadAssetsFromManifest: Missing setter", setterName, "for the asset key", key)
+      else {
+        if (index == null)
           this.wasmInstance.exports[setterName](handle);
+        else
+          this.wasmInstance.exports[setterName](handle, index);
       }
     }
   }
