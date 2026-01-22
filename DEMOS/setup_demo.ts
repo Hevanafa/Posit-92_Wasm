@@ -44,8 +44,9 @@ const demoScripts = [
 
 const scriptDir = import.meta.dir;
 const demoPath = join(scriptDir, demoName);
-const canonicalPosit = join(scriptDir, "../experimental/posit-92.js");
-const mixinsDir = join(scriptDir, "../experimental/mixins");
+const experimentalDir = join(scriptDir, "../experimental")
+const canonicalPosit = join(experimentalDir, "posit-92.js");
+const mixinsDir = join(experimentalDir, "mixins");
 
 const scriptsDir = join(scriptDir, "../scripts");
 
@@ -54,6 +55,28 @@ if (!existsSync(demoPath)) {
   console.log(styleText("magenta", `Couldn't find ${demoName} demo project!`));
   process.exit(1)
 }
+
+// Copy posit-92.js derivatives
+const missing = [];
+for (const filename of [
+  "posit-92.d.ts",
+  "posit-92.js.map"
+]) {
+  const srcPath = join(experimentalDir, filename);
+  const destPath = join(demoPath, filename);
+
+  if (!existsSync(srcPath)) {
+    missing.push(srcPath);
+    continue
+  }
+
+  await copyFile(srcPath, destPath)
+}
+
+if (missing.length > 0)
+  console.log(styleText("magenta", "Missing " + filename))
+else
+  console.log(styleText("green", "Copied derived Posit92 files"));
 
 // Copy posit-92.js with header
 const today = new Date().toISOString().split("T")[0];
