@@ -33,6 +33,11 @@ procedure cloneBMFont(
   const srcFont: TBMFont; const srcFontGlyphs: array of TBMFontGlyph;
   const destFont: TBMFont; const destFontGlyphs: array of TBMFontGlyph);
 
+procedure freeBMFont(
+  const font: TBMFont;
+  const fontGlyphs: array of TBMFontGlyph;
+  const freeImgHandle: boolean);
+
 procedure printBMFont(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
@@ -114,10 +119,23 @@ var
 begin
   destFont := srcFont;
 
-  for a:=0 to high(srcFontGlyphs)
+  for a:=0 to high(srcFontGlyphs) do
     destFontGlyphs[a] := srcFontGlyphs[a];
 
   destFont.imgHandle := copyImage(srcFont.imgHandle)
+end;
+
+procedure freeBMFont(
+  const font: TBMFont;
+  const fontGlyphs: array of TBMFontGlyph;
+  const freeImgHandle: boolean);
+begin
+  if freeImgHandle then
+    freeImage(font.imgHandle);
+
+  fillchar(font, sizeof(TBMFont), 0);
+  for a:=0 to high(fontGlyphs) do
+    fillchar(fontGlyphs[a], sizeof(TBMFontGlyph), 0);
 end;
 
 procedure printBMFont(
