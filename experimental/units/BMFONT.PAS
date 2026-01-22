@@ -28,6 +28,11 @@ type
     imgHandle: longint;  { 84th byte }
   end;
 
+{ This procedure creates a new ImgRef instance }
+procedure cloneBMFont(
+  const srcFont: TBMFont; const srcFontGlyphs: array of TBMFontGlyph;
+  const destFont: TBMFont; const destFontGlyphs: array of TBMFontGlyph);
+
 procedure printBMFont(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
@@ -99,6 +104,20 @@ begin
     printBMFontChar := glyph.xadvance
   end else
     printBMFontChar := 0;
+end;
+
+procedure cloneBMFont(
+  const srcFont: TBMFont; const srcFontGlyphs: array of TBMFontGlyph;
+  const destFont: TBMFont; const destFontGlyphs: array of TBMFontGlyph);
+var
+  a: word;
+begin
+  destFont := srcFont;
+
+  for a:=0 to high(srcFontGlyphs)
+    destFontGlyphs[a] := srcFontGlyphs[a];
+
+  destFont.imgHandle := copyImage(srcFont.imgHandle)
 end;
 
 procedure printBMFont(
