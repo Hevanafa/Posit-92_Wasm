@@ -4,15 +4,20 @@ type ImageManifest = Record<string, string | string[]>;
 type SoundManifest = Map<number, string>;
 type BMFontManifest = Map<string, { path: string, setter: string, glyphSetter: string }>;
 
-interface WasmExports {
+/**
+ * The type definitions here are copied from Pascal except for `memory`
+ */
+type WasmExports = {
   memory: WebAssembly.Memory,
 
   getLogBuffer: () => number,
 
   getSurfacePtr: () => number,
   initVideoMem: (a: number, b: number, c: number) => void,
-  initHeap: (a: number, b: number) => void,
-  WasmGetMem: (a: number) => number,
+  initHeap: (startAddr: number, heapSize: number) => void,
+  WasmGetMem: (bytes: number) => number,
+
+  registerImageRef: (imgHandle: number, dataPtr: number, width: number, height: number) => void;
 
   beginLoadingState: () => void,
 
@@ -600,9 +605,8 @@ class Posit92 {
     let k = "", v = "";
 
     let lineHeight = 0;
-    // font bitmap URL
     let filename = "";
-    const fontGlyphs = {};
+    const fontGlyphs: Map<number, TBMFontGlyph> = new Map();
     let glyphCount = 0;
     let imgHandle = 0;
 
@@ -612,14 +616,14 @@ class Posit92 {
       pairs = txtLine.split(" ").map(part => <StringPair>part.split("="));
 
       if (txtLine.startsWith("info")) {
-        [k, v] = pairs.find(pair => pair[0] == "face");
+        [k, v] = <StringPair>(pairs.find(pair => pair[0] == "face"));
 
       } else if (txtLine.startsWith("common")) {
-        [k, v] = pairs.find(pair => pair[0] == "lineHeight");
+        [k, v] = <StringPair>(pairs.find(pair => pair[0] == "lineHeight"));
         lineHeight = parseInt(v);
 
       } else if (txtLine.startsWith("page")) {
-        [k, v] = pairs.find(pair => pair[0] == "file");
+        [k, v] = <StringPair>(pairs.find(pair => pair[0] == "file"));
         filename = v.replaceAll(/"/g, "");
 
       } else if (txtLine.startsWith("char") && !txtLine.startsWith("chars")) {
@@ -638,7 +642,7 @@ class Posit92 {
           }
         }
 
-        fontGlyphs[tempGlyph.id] = tempGlyph;
+        fontGlyphs.set(tempGlyph.id, tempGlyph);
         glyphCount++
       }
     }
@@ -670,15 +674,14 @@ class Posit92 {
     // Write glyphs
     const glyphsMem = new DataView(this.#wasm.exports.memory.buffer, glyphsPtr);
 
-    for (const charID in fontGlyphs) {
-      const glyph = fontGlyphs[charID];
-      const id = parseInt(charID);
+    for (const charID of fontGlyphs.keys()) {
+      const glyph = fontGlyphs.get(charID)!;
 
       // Range check
-      if (id < 32 || id > 126) continue;
+      if (charID < 32 || charID > 126) continue;
 
       // 16 is from the 8 fields of TBMFontGlyph, all 2 bytes
-      const glyphOffset = (id - 32) * 16;
+      const glyphOffset = (charID - 32) * 16;
 
       glyphsMem.setUint16(glyphOffset + 0, glyph.id, true);
 
