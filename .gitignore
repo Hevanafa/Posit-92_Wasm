@@ -58,3 +58,5 @@ DEMOS/*/lib/
 experimental/*.d.ts
 experimental/*.js
 experimental/*.js.map
+DEMOS/*/*.d.ts
+DEMOS/*/*.js.map
