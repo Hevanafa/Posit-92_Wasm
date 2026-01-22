@@ -5,8 +5,19 @@ type SoundManifest = Map<number, string>;
 type BMFontManifest = Map<string, { path: string, setter: string, glyphSetter: string }>;
 
 interface WasmExports {
-  memory: WebAssembly.Memory
+  memory: WebAssembly.Memory,
+
+  getLogBuffer: () => number,
+  getSurfacePtr: () => number,
+  update: () => number,
+  draw: () => number
 };
+
+type WasmImports = Record<string, {
+  
+}>;
+
+type WebAssemblyInstance = WebAssembly.Instance & { exports: WasmExports };
 
 class Posit92 {
   static version = "0.1.4_experimental";
@@ -16,7 +27,7 @@ class Posit92 {
   // Engine configs
   #wasmMemSize = 2 * 1048576; // 2 MB
   #stackSize = 128 * 1024;
-  #videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
+  #videoMemSize = 0;
 
   #vgaWidth = 320;
   #vgaHeight = 200;
@@ -24,7 +35,7 @@ class Posit92 {
   #canvas: HTMLCanvasElement;
   #ctx: CanvasRenderingContext2D;
 
-  #wasm: WebAssembly.Instance & { exports: WasmExports } = null;
+  #wasm: WebAssemblyInstance = null!;
   get wasmInstance() { return this.#wasm }
 
   /**
@@ -32,10 +43,7 @@ class Posit92 {
    */
   #midnightOffset = 0;
 
-  /**
-   * @type {WebAssembly.Imports}
-   */
-  #importObject = {
+  #importObject: WasmImports = {
     env: {
       _haltproc: this.#handleHaltProc.bind(this),
 
@@ -108,6 +116,8 @@ class Posit92 {
 
     this.#canvas = document.getElementById(canvasID);
     this.#ctx = this.#canvas.getContext("2d")!;
+
+    this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4
   }
 
   #loadMidnightOffset() {
@@ -152,7 +162,7 @@ class Posit92 {
     }
 
     const result = await WebAssembly.instantiate(bytes.buffer, this.#importObject);
-    this.#wasm = result.instance;
+    this.#wasm = <WebAssemblyInstance>result.instance;
   }
 
   /**
@@ -236,8 +246,6 @@ class Posit92 {
   async quickStart() {
     this.hideLoadingOverlay();
     this.#wasm.exports.beginLoadingState();
-    // await this.#loadAssets();
-    // this.afterInit()
   }
 
   afterInit() {
@@ -255,7 +263,7 @@ class Posit92 {
     this.#canvas.style.removeProperty("cursor")
   }
 
-  #assertNumber(value) {
+  #assertNumber(value: any) {
     if (typeof value != "number")
       throw new Error(`Expected a number, but received ${typeof value}`);
 
@@ -263,16 +271,13 @@ class Posit92 {
       throw new Error("Expected a number, but received NaN");
   }
 
-  #assertString(value) {
+  #assertString(value: any) {
     if (typeof value != "string")
       throw new Error(`Expected a string, but received ${typeof value}`);
   }
 
 
-  async loadImageFromURL(url): Promise<HTMLImageElement> {
-    if (url == null)
-      throw new Error("loadImageFromURL: url is required");
-
+  async loadImageFromURL(url: string): Promise<HTMLImageElement> {
     this.#assertString(url);
 
     return new Promise((resolve, reject) => {
@@ -286,10 +291,7 @@ class Posit92 {
   // Used in loadImage
   #images: Array<ImageData | null> = [];
 
-  async loadImage(url) {
-    if (url == null)
-      throw new Error("loadImage: url is required");
-
+  async loadImage(url: string) {
     this.#assertString(url);
 
     const img = await this.loadImageFromURL(url);
@@ -417,7 +419,7 @@ class Posit92 {
     }
   }
 
-  async loadBMFontFromManifest(manifest) {
+  async loadBMFontFromManifest(manifest: BMFontManifest) {
     const entries = Object.entries(manifest);
     // console.log(entries);
 
@@ -473,21 +475,21 @@ class Posit92 {
     this.#loadingActual++
   }
 
-  setLoadingActual(value) {
+  setLoadingActual(value: number) {
     this.#assertNumber(value);
     this.#loadingActual = value
   }
 
-  incLoadingTotal(count) {
+  incLoadingTotal(count: number) {
     this.#loadingTotal += count
   }
 
-  setLoadingTotal(value) {
+  setLoadingTotal(value: number) {
     this.#assertNumber(value);
     this.#loadingTotal = value
   }
 
-  setLoadingText(text) {
+  setLoadingText(text: string) {
     const div = document.querySelector("#loading-overlay > div");
     if (div == null) return;
     div.innerHTML = text;
@@ -549,10 +551,7 @@ class Posit92 {
     }
   }
 
-  async loadBMFont(url, fontPtrRef, fontGlyphsPtrRef) {
-    if (url == null)
-      throw new Error("loadBMFont: url is required");
-
+  async loadBMFont(url: string, fontPtrRef: number, fontGlyphsPtrRef: number) {
     this.#assertString(url);
     this.#assertNumber(fontPtrRef);
     this.#assertNumber(fontGlyphsPtrRef);
@@ -851,11 +850,6 @@ class Posit92 {
 
 
   // Game loop
-  update() {
-    this.#wasm.exports.update()
-  }
-
-  draw() {
-    this.#wasm.exports.draw()
-  }
+  update() { this.#wasm.exports.update() }
+  draw() { this.#wasm.exports.draw() }
 }
