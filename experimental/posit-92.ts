@@ -39,9 +39,38 @@ type WasmImports = {
     getLoadingActual: () => number,
     getLoadingTotal: () => number,
 
+    hideCursor: () => void,
+    showCursor: () => void,
+
+    // Fullscreen
+    toggleFullscreen: () => void,
+    endFullscreen: () => void,
+    getFullscreenState: () => boolean,
+    fitCanvas: () => void,
+
+    // Keyboard
+    isKeyDown: (scancode: number) => boolean,
+    signalDone: () => void,
+
     // Logger
     writeLogF32: (value: number) => void,
-    writeLogI32: (value: number) => void
+    writeLogI32: (value: number) => void,
+    flushLog: () => void,
+
+    // Mouse
+    getMouseX: () => number,
+    getMouseY: () => number,
+    getMouseButton: () => number,
+
+    // Panic
+    jsPanicHalt: (textPtr: number, textLen: number) => void,
+
+    // Timing
+    getTimer: () => number,
+    getFullTimer: () => number,
+
+    // VGA
+    vgaFlush: () => void
   }
 }
 
