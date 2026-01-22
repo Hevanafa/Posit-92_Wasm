@@ -74,7 +74,8 @@ for (const filename of [
 }
 
 if (missing.length > 0)
-  console.log(styleText("magenta", "Missing " + filename))
+  for (const filename of missing)
+    console.log(styleText("magenta", "Missing " + filename));
 else
   console.log(styleText("green", "Copied derived Posit92 files"));
 
