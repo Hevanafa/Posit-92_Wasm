@@ -445,7 +445,14 @@ class Posit92 {
 
     const results = await Promise.all(promises);
 
-    const failures = results.filter(item => item.handle == 0);
+    type FailureItem = {
+      key: string,
+      path: string,
+      handle: number,
+      index?: number
+    };
+    const failures = <Array<FailureItem>>results.flat(1).filter(item => item.handle == 0);
+
     if (failures.length > 0) {
       console.error("Failed to load assets:");
       
