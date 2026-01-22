@@ -53,3 +53,8 @@ DEMOS/*/*.compiled
 DEMOS/*/backup/
 DEMOS/*/lib/
 !DEMOS/hello_lazarus/compile_demo.ts
+
+# Canonical Posit92
+experimental/*.d.ts
+experimental/*.js
+experimental/*.js.map
