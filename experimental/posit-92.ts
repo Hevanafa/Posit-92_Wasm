@@ -8,14 +8,37 @@ interface WasmExports {
   memory: WebAssembly.Memory,
 
   getLogBuffer: () => number,
+
   getSurfacePtr: () => number,
+  initVideoMem: (a: number, b: number, c: number) => void,
+  initHeap: (a: number, b: number) => void,
+  WasmGetMem: (a: number) => number,
+
+  beginLoadingState: () => void,
+
+  init: () => number,
+  afterInit: () => number,
+  beginIntroState: () => number,
   update: () => number,
   draw: () => number
 };
 
-type WasmImports = Record<string, {
-  
-}>;
+type WasmImports = {
+  env: {
+    _haltproc: (n: number) => void,
+
+    hideLoadingOverlay: () => void,
+    loadAssets: () => void,
+
+    // Loading
+    getLoadingActual: () => number,
+    getLoadingTotal: () => number,
+
+    // Logger
+    writeLogF32: (value: number) => void,
+    writeLogI32: (value: number) => void
+  }
+}
 
 type StringPair = [string, string];
 
@@ -119,16 +142,13 @@ class Posit92 {
     done = true
   }
 
-  constructor(canvasID) {
-    if (canvasID == null)
-      throw new Error("canvasID is required!");
-
+  constructor(canvasID: string) {
     this.#assertString(canvasID);
 
     if (document.getElementById(canvasID) == null)
       throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
 
-    this.#canvas = document.getElementById(canvasID);
+    this.#canvas = <HTMLCanvasElement>document.getElementById(canvasID);
     this.#ctx = this.#canvas.getContext("2d")!;
 
     this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4
