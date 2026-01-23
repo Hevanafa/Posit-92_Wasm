@@ -20,22 +20,21 @@ type
   end;
 
   PBMFont = ^TBMFont;
-  TBMFont = packed record
+  TBMFont = record
     face: string[15];  { 16 bytes }
     filename: string[63];  { 64 bytes }
     lineHeight: word;  { 2 bytes }
-    { (N/A with packed record) + automatic 2-byte padding }
     imgHandle: longint;  { 84th byte }
   end;
 
 { This procedure creates a new ImgRef instance }
 procedure cloneBMFont(
   const srcFont: TBMFont; const srcFontGlyphs: array of TBMFontGlyph;
-  const destFont: TBMFont; const destFontGlyphs: array of TBMFontGlyph);
+  var destFont: TBMFont; var destFontGlyphs: array of TBMFontGlyph);
 
 procedure freeBMFont(
-  const font: TBMFont;
-  const fontGlyphs: array of TBMFontGlyph;
+  var font: TBMFont;
+  var fontGlyphs: array of TBMFontGlyph;
   const freeImgHandle: boolean);
 
 procedure printBMFont(
@@ -113,7 +112,7 @@ end;
 
 procedure cloneBMFont(
   const srcFont: TBMFont; const srcFontGlyphs: array of TBMFontGlyph;
-  const destFont: TBMFont; const destFontGlyphs: array of TBMFontGlyph);
+  var destFont: TBMFont; var destFontGlyphs: array of TBMFontGlyph);
 var
   a: word;
 begin
@@ -126,9 +125,11 @@ begin
 end;
 
 procedure freeBMFont(
-  const font: TBMFont;
-  const fontGlyphs: array of TBMFontGlyph;
+  var font: TBMFont;
+  var fontGlyphs: array of TBMFontGlyph;
   const freeImgHandle: boolean);
+var
+  a: Word;
 begin
   if freeImgHandle then
     freeImage(font.imgHandle);
