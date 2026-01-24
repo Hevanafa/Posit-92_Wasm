@@ -580,9 +580,9 @@ class Posit92 {
    * Overridable from `game.js`
    */
   AssetManifest: {
-    images: ImageManifest | null,
-    sounds: SoundManifest | null,
-    bmfonts: BMFontManifest | null
+    images?: ImageManifest,
+    sounds?: SoundManifest,
+    bmfonts?: BMFontManifest
   } | null = null;
 
   initLoadingScreen() {
@@ -635,8 +635,10 @@ class Posit92 {
     let pairs: Array<StringPair>;
     let k = "", v = "";
 
-    let lineHeight = 0;
+    let fontface = "";
     let filename = "";
+    let lineHeight = 0;
+
     const fontGlyphs: Map<number, TBMFontGlyph> = new Map();
     let glyphCount = 0;
     let imgHandle = 0;
@@ -647,7 +649,12 @@ class Posit92 {
       pairs = txtLine.split(" ").map(part => <StringPair>part.split("="));
 
       if (txtLine.startsWith("info")) {
-        [k, v] = <StringPair>(pairs.find(pair => pair[0] == "face"));
+        // [k, v] = <StringPair>(pairs.find(pair => pair[0] == "face"));
+
+        const result = txtLine.match(/face=\"(.*?)\"/);
+        fontface = result?.[1] ?? "";
+
+        console.log("Loading BMFont ", fontface);
 
       } else if (txtLine.startsWith("common")) {
         [k, v] = <StringPair>(pairs.find(pair => pair[0] == "lineHeight"));
@@ -678,29 +685,26 @@ class Posit92 {
       }
     }
 
-    // console.log("Loaded", glyphCount, "glyphs");
+    console.log("Loaded", glyphCount, "glyphs");
 
     // Load font bitmap
     imgHandle = await this.loadImage(filename);
-    // console.log("loadBMFont imgHandle:", imgHandle);
 
     const fontPtr = fontPtrRef;
     const glyphsPtr = fontGlyphsPtrRef;
 
-    // Write font data
+    // Load TBMFont
     const fontMem = new DataView(this.#wasm.exports.memory.buffer, fontPtr);
 
     let offset = 0;
-    // Skip face string
-    offset += 16;  // was 256
-    // Skip filename string
-    offset += 64;  // was 256
+    offset += 16;  // Skip fontface string
+    offset += 64;  // Skip filename string
 
     // true makes it little-endian
     fontMem.setUint16(offset, lineHeight, true);
     fontMem.setInt32(offset + 4, imgHandle, true);
 
-    // Write glyphs
+    // Load glyphs
     const glyphsMem = new DataView(this.#wasm.exports.memory.buffer, glyphsPtr);
 
     for (const charID of fontGlyphs.keys()) {
@@ -724,7 +728,7 @@ class Posit92 {
       glyphsMem.setInt16(glyphOffset + 14, glyph.xadvance, true);
     }
 
-    // console.log("loadBMFont completed");
+    console.log("loadBMFont", fontface, "completed");
   }
 
 
