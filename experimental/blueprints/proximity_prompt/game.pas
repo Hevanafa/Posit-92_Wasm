@@ -1,3 +1,12 @@
+{
+  Proximity Prompt Blueprint
+  Part of Posit-92 Engine
+
+  This demonstrates how to:
+  - Implement hold duration
+  - Closest object search throttling (18 Hz)
+}
+
 library Game;
 
 {$Mode ObjFPC}
