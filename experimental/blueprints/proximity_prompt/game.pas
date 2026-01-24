@@ -12,37 +12,6 @@ var
   lastClosestObject: integer;  { index of map object }
   nextClosestObjectTick: double;  { use gameTime }
 
-{ This requires TMapObject }
-procedure ProximityPrompt(
-  const letter: char;
-  const cx, cy: integer;
-  perc: double);
-var
-  s: string;
-  w: word;
-  x, y: double;
-  endAngle: double;
-begin
-  perc := clamp(perc, 0.0, 1.0);
-  circfillBlend(cx, cy, 7, $80454545);
-
-  if perc > 0.0 then begin
-    endAngle := lerpEaseOutQuad(0.0, 2 * pi, perc);
-
-    arc(
-      cx, cy, 7,
-      -piOver2, endAngle - piOver2,
-      white);
-  end;
-
-  s := letter;
-  w := measureDefault(s);
-  x := cx - w / 2;
-  y := cy - defaultFont.lineHeight / 2;
-
-  printDefault(s, round(x), round(y))
-end;
-
 
 procedure initPlayingState;
 begin
@@ -107,12 +76,19 @@ procedure draw;
 var
   x, y: double;
 begin
-  y := getZoneCY(mapObjects[lastClosestObject].zone) - 25;
-  x := getZoneCX(mapObjects[lastClosestObject].zone);
+  if lastClosestObject <> -1 then begin
+    { TODO: Fill x & y to where you want your prompt }
 
-  perc := holdDuration / ExpectedHoldDuration;
+    { Show prompt }
+    printDefault('E', trunc(x), trunc(y));
 
-  ProximityPrompt('E', trunc(x + 8), trunc(y), perc);
+    { Optional: show progress }
+    if holdDuration > 0 then begin
+      perc := holdDuration / ExpectedHoldDuration;
+
+      { Render your progress indicator }
+    end;
+  end;
 end;
 
 end.
