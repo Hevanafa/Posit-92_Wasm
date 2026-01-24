@@ -21,6 +21,10 @@ type
     imgHandle: longword;
   end;
 
+{ 
+  NOTE: These are customisable depending on your game
+  You can also copy the EnumHasFlag snippet
+}
 const
   { MapObjectFlags enum }
   MapObjectFlagBlocking = 1;
@@ -28,6 +32,8 @@ const
   { Only applicable for collectible items }
   MapObjectFlagCollectible = 2;
   MapObjectFlagRareItem = 4;
+
+  MapObjectFlagBroken = 8;
 
 
 { Game state }
@@ -132,6 +138,19 @@ begin
 
   mapObjects[idx].imgHandle := imgHandle
 end;
+
+
+procedure draw;
+var
+  a: word;
+begin
+  for a:=0 to high(mapObjects) do
+    spr(mapObjects[a].imgHandle,
+      trunc(mapObjects[a].zone.x),
+      trunc(mapObjects[a].zone.y));
+end;
+
+
 
 begin
 end.
