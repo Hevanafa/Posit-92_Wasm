@@ -5,9 +5,10 @@ const
 
 { Game state variables }
 var
-  mapObjects: array[0..4] of PMapObject;
+  mapObjects: array[0..4] of TMapObject;
 
-function getClosestTMapObject: SmallInt;
+{ Use this }
+function getClosestMapObject: SmallInt;
 var
   a: word;
 begin
@@ -23,6 +24,7 @@ begin
   end;
 end;
 
+{ Optional: Use this if you prefer using a PMapObject }
 function getClosestPMapObject: smallint;
 var
   a: word;
@@ -49,9 +51,11 @@ begin
     lastE := isKeyDown(SC_E);
 
     if lastE then begin
-      closestMapObject := @mapObjects[closestMapObjectIdx];
+      if closestMapObjectIdx >= 0 then begin
+        closestMapObject := @mapObjects[closestMapObjectIdx];
 
-      { Do something }
+        { Do something }
+      end;
     end;
   end;
 end;
@@ -61,16 +65,16 @@ var
   a: word;
 begin
   for a:=0 to high(mapObjects) do begin
-    if not mapObjects[a]^.active then continue;
+    if not mapObjects[a].active then continue;
 
     if a = getClosestPMapObject then
-      sprOutline(mapObjects[a]^.imgHandle,
-        trunc(mapObjects[a]^.zone.x),
-        trunc(mapObjects[a]^.zone.y), white)
+      sprOutline(mapObjects[a].imgHandle,
+        trunc(mapObjects[a].zone.x),
+        trunc(mapObjects[a].zone.y), white)
     else
-      spr(mapObject^.imgHandle,
-        trunc(mapObjects[a]^.zone.x),
-        trunc(mapObjects[a]^.zone.y));
+      spr(mapObjects[a].imgHandle,
+        trunc(mapObjects[a].zone.x),
+        trunc(mapObjects[a].zone.y));
   end;
 end;
 
