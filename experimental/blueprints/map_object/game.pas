@@ -21,6 +21,15 @@ type
     imgHandle: longword;
   end;
 
+const
+  { MapObjectFlags enum }
+  MapObjectFlagBlocking = 1;
+
+  { Only applicable for collectible items }
+  MapObjectFlagCollectible = 2;
+  MapObjectFlagRareItem = 4;
+
+
 { Game state }
 var
   mapObjects: array[0..9] of TMapObject;
@@ -57,6 +66,7 @@ begin
   mapObjects[idx].itemType := TCollectibleItems(0);
 
   case objectType of
+    { Example initialisation }
     MapObjectSlimeWall: begin
       mapObjects[idx].zone.x := cx - 7;
       mapObjects[idx].zone.y := cy - 3.5;
