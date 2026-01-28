@@ -13,6 +13,7 @@ const proc = Bun.spawn([
   "-Pwasm32",
   "-Tembedded",
   "-FuUNITS",
+  "-Fu..\\..\\experimental\\units",
   "-dWASM",
   `-o${outputFile}`,
   primaryUnit
