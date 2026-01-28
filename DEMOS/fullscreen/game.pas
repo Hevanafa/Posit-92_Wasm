@@ -1,7 +1,7 @@
 library Game;
 
 {$Mode ObjFPC}
-{$J-}
+{$J-}  { Switch off assignments to typed constants }
 
 uses
   Conv, FPS,
@@ -63,16 +63,14 @@ end;
 
 procedure init;
 begin
-  initMemMgr;
-  initBuffer;
+  initHeapMgr;
   initDeltaTime;
   initFPSCounter;
 end;
 
 procedure afterInit;
 begin
-  beginPlayingState;
-  writeLog('afterInit end')
+  beginPlayingState
 end;
 
 procedure update;
@@ -128,12 +126,8 @@ begin
 end;
 
 exports
-  { Main game procedures }
   beginLoadingState,
-  init,
-  afterInit,
-  update,
-  draw;
+  init, afterInit, update, draw;
 
 begin
 { Starting point is intentionally left empty }

@@ -11,10 +11,14 @@ class Game extends Posit92 {
     // Add more scancodes as necessary
   };
 
-  #AssetManifest = {
+  AssetManifest = {
     images: {
       cursor: "assets/images/cursor.png",
-      fullscreen: "assets/images/fullscreen.png"
+      fullscreen: "assets/images/fullscreen.png",
+      dosu_exe: [
+        "assets/images/dosu_1.png",
+        "assets/images/dosu_2.png"
+      ]
       // Add more image assets here
     },
     sounds: new Map([
@@ -30,27 +34,13 @@ class Game extends Posit92 {
   }
 
   async loadAssets() {
-    let handle = 0;
-
-    this.setLoadingActual(0);
-
-    const imageCount = Object.keys(this.#AssetManifest.images).length;
-    const soundCount = this.#AssetManifest.sounds.size;
-    this.setLoadingTotal(imageCount + soundCount);
-
-    await this.loadImagesFromManifest(this.#AssetManifest.images);
-
-    handle = await this.loadImage("assets/images/dosu_1.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 0);
-    handle = await this.loadImage("assets/images/dosu_2.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 1);
-
-    // Add more assets as necessary
+    this.initLoadingScreen();
+    await this.loadImagesFromManifest(this.AssetManifest.images);
   }
 }
 
 const TargetFPS = 60;
-const FrameTime = 1000 / 60.0;
+const FrameTime = 1000 / TargetFPS;
 /**
  * in milliseconds
  */
