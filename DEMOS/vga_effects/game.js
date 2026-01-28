@@ -13,7 +13,8 @@ class Game extends Posit92 {
   AssetManifest = {
     images: {
       cursor: "assets/images/cursor.png",
-      dreamscape_crossing: "assets/images/741277_320px.png"
+      dreamscape_crossing: "assets/images/741277_320px.png",
+      ark_road: "assets/images/ark_road.png"
       // Add more image assets here
     }
   }

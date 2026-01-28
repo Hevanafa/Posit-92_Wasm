@@ -13,7 +13,7 @@ var
 
   imgCursor: longint;
   imgDosuEXE: array[0..1] of longint;
-  imgDreamscapeCrossing: longint;
+  imgDreamscapeCrossing, imgArkRoad: longint;
 
 { BMFont boilerplate }
 function defaultFontPtr: PBMFont; public name 'defaultFontPtr';
@@ -27,6 +27,7 @@ function measureDefault(const text: string): word;
 procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
 procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
 procedure setImgDreamscapeCrossing(const imgHandle: longint); public name 'setImgDreamscapeCrossing';
+procedure setImgArkRoad(const imgHandle: longint); public name 'setImgArkRoad';
 
 implementation
 
@@ -77,6 +78,11 @@ end;
 procedure setImgDreamscapeCrossing(const imgHandle: longint);
 begin
   imgDreamscapeCrossing := imgHandle
+end;
+
+procedure setImgArkRoad(const imgHandle: longint);
+begin
+  imgArkRoad := imgHandle
 end;
 
 
