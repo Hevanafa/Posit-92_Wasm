@@ -5,16 +5,10 @@
 			"label": "Compile Demo",
 			"type": "shell",
 			"command": "bun",
-			"args": ["run", "compile_demo.ts"],
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
+			"args": ["run", "${workspaceFolder}/scripts/compile_demo.ts"],
+			"group": { "kind": "build", "isDefault": true },
 			"presentation": {
-				"echo": true,
 				"reveal": "always",
-				"focus": true,
-				"panel": "shared",
 				"showReuseMessage": false,
 				"clear": true
 			},
@@ -24,8 +18,7 @@
 					"executable": "cmd.exe",
 					"args": ["/d", "/c"]
 				}
-			},
-			"problemMatcher": []
+			}
 		}
 	]
 }
