@@ -60,14 +60,14 @@ end;
 procedure beginLoadingState;
 begin
   actualGameState := GameStateLoading;
-  { fitCanvas; }
+  fitCanvas;
   loadAssets
 end;
 
 procedure beginPlayingState;
 begin
   hideCursor;
-  { fitCanvas; }
+  fitCanvas;
 
   { Initialise game state here }
   actualGameState := GameStatePlaying;
@@ -83,8 +83,7 @@ end;
 
 procedure init;
 begin
-  initMemMgr;
-  initBuffer;
+  initHeapMgr;
   initDeltaTime;
   initFPSCounter
 end;
@@ -142,10 +141,7 @@ end;
 
 exports
   beginLoadingState,
-  init,
-  afterInit,
-  update,
-  draw;
+  init, afterInit, update, draw;
 
 begin
 { Starting point is intentionally left empty }

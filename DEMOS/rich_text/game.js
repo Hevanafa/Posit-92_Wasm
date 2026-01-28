@@ -16,13 +16,13 @@ class Game extends Posit92 {
 
   AssetManifest = {
     images: {
-      cursor: "assets/images/cursor.png"
-      // Add more image assets here
-    },
-    sounds: new Map([
-      // Add sound assets here
-    ])
-  }
+      cursor: "assets/images/cursor.png",
+      dosu_exe: [
+        "assets/images/dosu_1.png",
+        "assets/images/dosu_2.png"
+      ]
+    }
+  };
 
   async loadDefaultFont() {
     await this.loadBMFont(
@@ -35,12 +35,10 @@ class Game extends Posit92 {
    * @override
    */
   async loadAssets() {
-    let handle = 0;
 
     this.initLoadingScreen();
 
     await this.loadImagesFromManifest(this.AssetManifest.images);
-    // Sounds can be loaded later
 
     await this.loadBMFont(
       "assets/fonts/ms_sans_serif_10px_bold.txt",
@@ -56,18 +54,11 @@ class Game extends Posit92 {
       "assets/fonts/ms_sans_serif_10px_bold_italic.txt",
       this.wasmInstance.exports.boldItalicFontPtr(),
       this.wasmInstance.exports.boldItalicFontGlyphsPtr());
-
-    handle = await this.loadImage("assets/images/dosu_1.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 0);
-    handle = await this.loadImage("assets/images/dosu_2.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 1);
-
-    // Add more assets as necessary
   }
 }
 
 const TargetFPS = 60;
-const FrameTime = 1000 / 60.0;
+const FrameTime = 1000 / TargetFPS;
 /**
  * in milliseconds
  */
