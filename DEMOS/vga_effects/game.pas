@@ -196,9 +196,14 @@ begin
     else
   end;
 
-  s := 'Art by [Unknown Artist]';
+  case TDemoStates(demoListState.selectedIndex) of
+    DemoStateBlur:
+      s := 'Art by [Unknown Artist]';
+    DemoStateChromaticAberration:
+      s := 'Art by Kevin Hong';
+  end;
   w := measureDefault(s);
-  printBlack(s, (vgaWidth - w) - 10, vgaHeight - 20);
+  printBlack(s, (vgaWidth - w) - 10, vgaHeight - 30);
 
   resetActiveWidget;
 
