@@ -22,9 +22,9 @@ type
     procedure Done;
 
     procedure Push(item: pointer);
-    function Pop: pointer;
+    function Pop: pointer;  { This doesn't free the pointer }
     function Get(index: longint): pointer;
-    procedure Delete(index: longint);
+    procedure Delete(index: longint);  { This doesn't free the pointer }
     procedure Insert(index: longint; item: pointer);
     procedure Unshift(item: pointer);
     function Shift: pointer;
