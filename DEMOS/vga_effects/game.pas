@@ -1,29 +1,42 @@
 library Game;
 
 {$Mode ObjFPC}
+{$J-}
 
 uses
-  BMFont, Conv, FPS,
-  Logger, Keyboard, Mouse,
+  BMFont, Conv, FPS, Fullscreen,
+  Loading, Logger, Keyboard, Mouse,
   ImgRef, ImgRefFast,
   PostProc, Timing, VGA, WasmMemMgr, WasmHeap,
   Assets;
+
+type
+  TGameStates = (
+    GameStateIntro = 1,
+    GameStateLoading = 2,
+    GameStatePlaying = 3
+  );
 
 const
   SC_ESC = $01;
   SC_SPACE = $39;
 
+  CornflowerBlue = $FF6495ED;
   Black = $FF000000;
 
 var
   lastEsc, lastSpacebar: boolean;
 
-  { Init your game state here }
+  { Game state variables }
+  actualGameState: TGameStates;
   gameTime: double;
   applyBlur: boolean;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+procedure hideCursor; external 'env' name 'hideCursor';
+procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
+procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure drawMouse;
 begin
@@ -35,21 +48,23 @@ begin
   printDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
-
-procedure init;
+procedure beginLoadingState;
 begin
-  initMemMgr;
-  initBuffer;
-  initDeltaTime;
-  initFPSCounter;
+  actualGameState := GameStateLoading;
+  fitCanvas;
+  loadAssets
 end;
 
-procedure afterInit;
+procedure beginPlayingState;
 var
   tempImg: longint;
 begin
-  { Initialise game state here }
   hideCursor;
+  fitCanvas;
+
+  { Initialise game state here }
+  actualGameState := GameStatePlaying;
+  gameTime := 0.0;
 
   applyBlur := true;
 
@@ -59,6 +74,19 @@ begin
 
   freeImage(tempImg);
   writeLogI32(GetFreeHeapSize);
+end;
+
+
+procedure init;
+begin
+  initHeapMgr;
+  initDeltaTime;
+  initFPSCounter;
+end;
+
+procedure afterInit;
+begin
+  beginPlayingState
 end;
 
 procedure update;
@@ -88,7 +116,12 @@ var
   w: integer;
   s: string;
 begin
-  cls($FF6495ED);
+  if actualGameState = GameStateLoading then begin
+    renderLoadingScreen;
+    exit
+  end;
+
+  cls(CornflowerBlue);
 
   spr(imgDreamscapeCrossing, 0, 0);
 
@@ -107,11 +140,8 @@ begin
 end;
 
 exports
-  { Main game procedures }
-  init,
-  afterInit,
-  update,
-  draw;
+  beginLoadingState,
+  init, afterInit, update, draw;
 
 begin
 { Starting point is intentionally left empty }
