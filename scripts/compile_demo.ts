@@ -5,6 +5,11 @@
 import { styleText } from "node:util";
 import { existsSync } from "node:fs";
 
+if (!process.cwd().toUpperCase().includes("DEMOS")) {
+  console.log(styleText("red", "Run this from within a demo folder!"));
+  process.exit(1)
+}
+
 const compilerPath = "E:\\fpc-wasm\\fpc\\bin\\x86_64-win64\\fpc.exe";
 const primaryUnit = existsSync("game.lpr") ? ".\\game.lpr" : ".\\game.pas";
 const outputFile = "game.wasm";
