@@ -50,7 +50,6 @@ class Game extends SoundsMixin {
     "KeyM": 0x32,
 
     "Space": 0x39
-    // Add more scancodes as necessary
   };
 
   BgmJingle = 1;
@@ -59,11 +58,9 @@ class Game extends SoundsMixin {
     images: {
       CGA_font: "assets/images/CGA8x8.png",
       cursor: "assets/images/cursor.png"
-      // Add more image assets here
     },
     sounds: new Map([
       [this.BgmJingle, "assets/ogg/Jingle Bells (Chiptune Version) - Chiptune Arcade.ogg"]
-      // Add sound assets here
     ])
   }
 
@@ -125,29 +122,9 @@ class Game extends SoundsMixin {
     this.#setupImportObject();
     await super.init();
   }
-
-  // async afterInit() {
-  //   // Only applicable with an in-game loading screen
-  //   // This is because loadAssets is called in `afterInit`
-  //   this.hideLoadingOverlay();
-
-  //   this.wasmInstance.exports.renderLoadingScreen(
-  //     this.loadingProgress.actual,
-  //     this.loadingProgress.total);
-
-  //   const t = window.setInterval(() => {
-  //     const { actual, total } = this.loadingProgress;
-  //     this.wasmInstance.exports.renderLoadingScreen(actual, total);
-  //     // console.log("loadingProgress", actual, total);
-  //   }, 100);
-
-  //   await super.afterInit();
-
-  //   window.clearInterval(t);
-  // }
 }
 
-const TargetFPS = 60;
+const TargetFPS = 30;
 const FrameTime = 1000 / TargetFPS;
 /**
  * in milliseconds
@@ -161,7 +138,6 @@ async function main() {
   await game.init();
   await game.loadAssets();
   game.wasmInstance.exports.initDefaultFont();
-  // await game.afterInit();
 
   game.quickStart();
 
@@ -188,6 +164,5 @@ async function main() {
 function play() {
   const overlay = document.getElementById("play-overlay");
   overlay.parentNode.removeChild(overlay)
-
   main()
 }
