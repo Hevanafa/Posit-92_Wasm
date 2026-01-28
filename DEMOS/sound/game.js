@@ -26,7 +26,11 @@ class Game extends SoundsMixin {
 
   AssetManifest = {
     images: {
-      cursor: "assets/images/cursor.png"
+      cursor: "assets/images/cursor.png",
+      dosu_exe: [
+        "assets/images/dosu_1.png",
+        "assets/images/dosu_2.png"
+      ]
     },
     sounds: new Map([
       [SfxBwonk, "assets/sfx/bwonk.ogg"],
@@ -45,18 +49,9 @@ class Game extends SoundsMixin {
   }
 
   async loadAssets() {
-    let handle = 0;
-    
     this.initLoadingScreen();
     await this.loadImagesFromManifest(this.AssetManifest.images);
     await this.loadSoundsFromManifest(this.AssetManifest.sounds);
-
-    handle = await this.loadImage("assets/images/dosu_1.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 0);
-    handle = await this.loadImage("assets/images/dosu_2.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 1);
-
-    // Add more assets as necessary
   }
 }
 
