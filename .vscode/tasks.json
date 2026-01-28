@@ -4,17 +4,27 @@
 		{
 			"label": "Compile Demo",
 			"type": "shell",
-			"command": "bun",
-			"args": ["run", "compile_demo.ts"],
-			"group": "build"
+			"command": "bun run compile_demo.ts",
+			"args": [],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			},
+			"options": {
+				"shell": {
+					"executable": "cmd.exe",
+					"args": ["/d", "/c"]
+				}
+			},
+			"problemMatcher": []
 		}
-	],
-	"presentation": {
-		"echo": true,
-		"reveal": "always",
-		"focus": false,
-		"panel": "shared",
-		"showReuseMessage": false,
-		"clear": true
-	}
+	]
 }
