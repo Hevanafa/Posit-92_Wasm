@@ -78,7 +78,7 @@ class Game extends Posit92 {
 }
 
 const TargetFPS = 60;
-const FrameTime = 1000 / 60.0;
+const FrameTime = 1000 / TargetFPS;
 /**
  * in milliseconds
  */
