@@ -67,6 +67,14 @@ begin
   end;
 end;
 
+function getDemoStateName(const state: TDemoStates): string;
+begin
+  case state of
+  DemoStateBlur: result := 'Blur';
+  else result := 'Unknown state: ' + i32str(ord(state));
+  end;
+end;
+
 procedure beginLoadingState;
 begin
   actualGameState := GameStateLoading;
@@ -90,8 +98,12 @@ begin
 
   lastTab := false;
 
+  demoListState.x := 10;
+  demoListState.y := 10;
+  demoListState.selectedIndex := 0;
+
   for a:=0 to ord(DemoStateCount) - 1 do
-    demoListItems[a] := i32str(a);
+    demoListItems[a] := getDemoStateName(TDemoStates(a));
 
   beginDemoState(TDemoStates(0))
 end;
