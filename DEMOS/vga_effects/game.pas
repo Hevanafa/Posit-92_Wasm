@@ -37,8 +37,9 @@ var
   { Game state variables }
   actualGameState: TGameStates;
   gameTime: double;
-  applyBlur, showFilter: boolean;
-
+  applyFilter: boolean;
+  
+  showDemoList: boolean;
   demoListState: TListViewState;
   demoListItems: array[0..ord(DemoStateCount) - 1] of string;
 
@@ -62,12 +63,12 @@ procedure beginDemoState(const which: TDemoStates);
 begin
   demoListState.selectedIndex := ord(which);
 
-  case which of
+  { case which of
     DemoStateBlur: applyBlur := true;
-    DemoStateChromaticAberration:
-      showFilter := true;
-    else
-  end;
+    DemoStateChromaticAberration: }
+      applyFilter := true;
+    { else
+  end; }
 end;
 
 function getDemoStateName(const state: TDemoStates): string;
@@ -104,6 +105,7 @@ begin
 
   lastTab := false;
 
+  showDemoList := true;
   demoListState.x := 10;
   demoListState.y := 10;
 
@@ -143,13 +145,14 @@ begin
 
   if lastSpacebar <> isKeyDown(SC_SPACE) then begin
     lastSpacebar := isKeyDown(SC_SPACE);
+
     if lastSpacebar then
-      applyBlur := not applyBlur;
+      applyFilter := not applyFilter;
   end;
 
   if lastTab <> isKeyDown(SC_TAB) then begin
     lastTab := isKeyDown(SC_TAB);
-    { TODO: Toggle list view }
+    if lastTab then showDemoList := not showDemoList;
   end;
 
   gameTime := gameTime + dt;
@@ -169,23 +172,28 @@ begin
   cls(CornflowerBlue);
 
   case TDemoStates(demoListState.selectedIndex) of
-    DemoStateBlur:
+    DemoStateBlur: begin
       spr(imgDreamscapeCrossing, 0, 0);
-    DemoStateChromaticAberration:
+      if applyFilter then applyFullBoxBlur(1);
+    end;
+    DemoStateChromaticAberration: begin
       spr(imgArkRoad, 0, 0);
+      if applyFilter then applyFullChromabe;
+    end;
+    else
   end;
 
-  if applyBlur then applyFullBoxBlur(1);
-  if showFilter then applyFullChromabe;
-
   { Begin HUD }
-  ListView(demoListItems, demoListState);
+
+  if showDemoList then
+    ListView(demoListItems, demoListState);
 
   case TDemoStates(demoListState.selectedIndex) of
     DemoStateBlur:
       printBlack('Spacebar - Toggle blur', 10, vgaHeight - 20);
     DemoStateChromaticAberration:
       printDefault('Spacebar - Toggle chromatic aberration', 10, vgaHeight - 20);
+    else
   end;
 
   s := 'Art by [Unknown Artist]';
