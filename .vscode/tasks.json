@@ -4,8 +4,8 @@
 		{
 			"label": "Compile Demo",
 			"type": "shell",
-			"command": "bun run compile_demo.ts",
-			"args": [],
+			"command": "bun",
+			"args": ["run", "compile_demo.ts"],
 			"group": {
 				"kind": "build",
 				"isDefault": true
@@ -19,6 +19,7 @@
 				"clear": true
 			},
 			"options": {
+				"cwd": "${fileDirname}",
 				"shell": {
 					"executable": "cmd.exe",
 					"args": ["/d", "/c"]
