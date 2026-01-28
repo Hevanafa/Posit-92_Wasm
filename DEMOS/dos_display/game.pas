@@ -1,15 +1,23 @@
 library Game;
 
-{$Mode TP}
-{$B-}
+{$Mode ObjFPC}
+{$J-}  { Switch off assignments to typed constants }
 
 uses
-  Conv, FPS, Graphics, Loading, Logger,
+  Conv, FPS, Fullscreen, Graphics,
+  Loading, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
   Strings, Sounds, Timing,
   Version, WasmMemMgr, WasmHeap, VGA,
   Assets;
+
+type
+  TGameStates = (
+    GameStateIntro = 1,
+    GameStateLoading = 2,
+    GameStatePlaying = 3
+  );
 
 const
   SC_ESC = $01;
@@ -106,6 +114,7 @@ type
 
 var
   { Game state }
+  actualGameState: TGameStates;
   gameTime: double;
 
   cursorLeft, cursorTop: integer;
@@ -125,6 +134,9 @@ var
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+procedure hideCursor; external 'env' name 'hideCursor';
+procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
+procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure queryDate; external 'env' name 'queryDate';
 procedure queryTime; external 'env' name 'queryTime';
@@ -138,7 +150,6 @@ procedure setStringBufferLength(const value: word);
 begin
   stringBufferLength := value
 end;
-
 
 function makeColour(const fg, bg: byte): byte;
 begin
@@ -503,6 +514,49 @@ begin
 end;
 
 
+
+procedure beginLoadingState;
+begin
+  actualGameState := GameStateLoading;
+  fitCanvas;
+  loadAssets
+end;
+
+procedure beginPlayingState;
+var
+  a: word;
+  heapSize, freeHeapSize: longword;
+begin
+  hideCursor;
+  fitCanvas;
+
+  { Initialise game state here }
+  actualGameState := GameStatePlaying;
+  gameTime := 0.0;
+
+  renderSnow := false;
+  for a:=0 to high(snowflakes) do
+    snowflakes[a].active := false;
+
+  currentInput := '';
+  currentColour := makeColour(7, 0);
+
+  { Welcome message }
+  cls;
+  printLn('');
+  printLn('Posit-92 Wasm ' + Posit92_Version);
+  printLn('(C) 2025 Hevanafa');
+
+  heapSize := heapEnd - heapStart;
+  freeHeapSize := GetFreeHeapSize;
+  printLn(i32str(heapSize div 1024) + 'KB OK  ' + i32str(freeHeapSize) + ' BYTES FREE');
+
+  printLn('');
+  printLn('Type HELP for available commands');
+  printLn('');
+  updatePromptLine
+end;
+
 procedure init;
 begin
   initHeapMgr;
@@ -529,34 +583,8 @@ begin
 end;
 
 procedure afterInit;
-var
-  a: word;
-  heapSize, freeHeapSize: longword;
 begin
-  { Initialise game state here }
-  hideCursor;
-
-  renderSnow := false;
-  for a:=0 to high(snowflakes) do
-    snowflakes[a].active := false;
-
-  currentInput := '';
-  currentColour := makeColour(7, 0);
-
-  { Welcome message }
-  cls;
-  printLn('');
-  printLn('Posit-92 Wasm ' + Posit92_Version);
-  printLn('(C) 2025 Hevanafa');
-
-  heapSize := heapEnd - heapStart;
-  freeHeapSize := GetFreeHeapSize;
-  printLn(i32str(heapSize div 1024) + 'KB OK  ' + i32str(freeHeapSize) + ' BYTES FREE');
-
-  printLn('');
-  printLn('Type HELP for available commands');
-  printLn('');
-  updatePromptLine
+  beginPlayingState
 end;
 
 procedure update;
@@ -604,6 +632,10 @@ var
   grey: byte;
   timeOffset: double;
 begin
+  if actualGameState = GameStateLoading then begin
+    renderLoadingScreen; exit
+  end;
+
   vgaCls(black);
 
   if renderSnow then begin
@@ -663,10 +695,8 @@ exports
   getStringBuffer,
   setStringBufferLength,
   initDefaultFont,
-  afterInit,
-  update,
-  draw,
-  init;
+  beginLoadingState,
+  afterInit, update, draw, init;
 
 begin
 { Starting point is intentionally left empty }

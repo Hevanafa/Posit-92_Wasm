@@ -16,6 +16,10 @@ type
     inUse: boolean;
   end;
 
+var
+  heapStart, heapEnd: PByte;
+  heapCurrent: PByte;  { where the next new block should go }
+
 procedure initHeap(const startAddr, heapSize: longword); public name 'initHeap';
 
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
@@ -30,10 +34,6 @@ function getFreeHeapSize: longword;
 implementation
 
 { uses Logger; }
-
-var
-  heapStart, heapEnd: PByte;
-  heapCurrent: PByte;  { where the next new block should go }
 
 procedure initHeap(const startAddr, heapSize: longword);
 begin

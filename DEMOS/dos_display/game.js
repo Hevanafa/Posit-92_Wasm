@@ -55,7 +55,7 @@ class Game extends SoundsMixin {
 
   BgmJingle = 1;
 
-  #AssetManifest = {
+  AssetManifest = {
     images: {
       CGA_font: "assets/images/CGA8x8.png",
       cursor: "assets/images/cursor.png"
@@ -107,41 +107,44 @@ class Game extends SoundsMixin {
   async loadAssets() {
     this.setLoadingActual(0);
 
-    const imageCount = Object.keys(this.#AssetManifest.images).length;
-    const soundCount = this.#AssetManifest.sounds.size;
+    const imageCount = Object.keys(this.AssetManifest.images).length;
+    const soundCount = this.AssetManifest.sounds.size;
     this.setLoadingTotal(imageCount + soundCount);
 
-    await this.loadImagesFromManifest(this.#AssetManifest.images);
-    await this.loadSoundsFromManifest(this.#AssetManifest.sounds);
+    await this.loadImagesFromManifest(this.AssetManifest.images);
+    await this.loadSoundsFromManifest(this.AssetManifest.sounds);
 
     // Add more assets as necessary
   }
 
+  /**
+   * @override
+   */
   async init() {
     this.setLoadingText("Loading WebAssembly...");
     this.#setupImportObject();
     await super.init();
   }
 
-  async afterInit() {
-    // Only applicable with an in-game loading screen
-    // This is because loadAssets is called in `afterInit`
-    this.hideLoadingOverlay();
+  // async afterInit() {
+  //   // Only applicable with an in-game loading screen
+  //   // This is because loadAssets is called in `afterInit`
+  //   this.hideLoadingOverlay();
 
-    this.wasmInstance.exports.renderLoadingScreen(
-      this.loadingProgress.actual,
-      this.loadingProgress.total);
+  //   this.wasmInstance.exports.renderLoadingScreen(
+  //     this.loadingProgress.actual,
+  //     this.loadingProgress.total);
 
-    const t = window.setInterval(() => {
-      const { actual, total } = this.loadingProgress;
-      this.wasmInstance.exports.renderLoadingScreen(actual, total);
-      // console.log("loadingProgress", actual, total);
-    }, 100);
+  //   const t = window.setInterval(() => {
+  //     const { actual, total } = this.loadingProgress;
+  //     this.wasmInstance.exports.renderLoadingScreen(actual, total);
+  //     // console.log("loadingProgress", actual, total);
+  //   }, 100);
 
-    await super.afterInit();
+  //   await super.afterInit();
 
-    window.clearInterval(t);
-  }
+  //   window.clearInterval(t);
+  // }
 }
 
 const TargetFPS = 60;

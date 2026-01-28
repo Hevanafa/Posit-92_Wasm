@@ -106,8 +106,7 @@ var
   s: string;
 begin
   if actualGameState = GameStateLoading then begin
-    renderLoadingScreen;
-    exit
+    renderLoadingScreen; exit
   end;
 
   cls(CornflowerBlue);
