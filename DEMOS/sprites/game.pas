@@ -4,9 +4,9 @@ library Game;
 {$J-}
 
 uses
-  Conv, FPS, ImgRef, ImgRefFast,
-  ImgRefComp, ImmedGui,
-  Keyboard, Mouse,
+  Conv, FPS, Fullscreen,
+  ImgRef, ImgRefFast, ImgRefComp,
+  ImmedGui, Keyboard, Mouse,
   Lerp, Loading, Logger, Panic,
   PostProc, Shapes, Timing, WasmMemMgr,
   VGA,
@@ -91,8 +91,10 @@ end;
 
 procedure drawMouse;
 begin
-  { spr(imgCursor, mouseX, mouseY) }
-  spr(imgHandCursor, mouseX - 5, mouseY - 1)
+  if getHotWidget > -1 then
+    spr(imgHandCursor, mouseX - 5, mouseY - 1)
+  else
+    spr(imgCursor, mouseX, mouseY);
 end;
 
 function getDemoStateName(const state: integer): string;
@@ -152,6 +154,7 @@ end;
 procedure beginLoadingState;
 begin
   actualGameState := GameStateLoading;
+  fitCanvas;
   loadAssets
 end;
 
@@ -159,8 +162,10 @@ procedure beginPlayingState;
 var
   a: word;
 begin
-  { Initialise game state here }
   hideCursor;
+  fitCanvas;
+
+  { Initialise game state here }
   actualGameState := GameStatePlaying;
   initImmediateGUI;
 
@@ -196,8 +201,7 @@ end;
 
 procedure init;
 begin
-  initMemMgr;
-  initBuffer;
+  initHeapMgr;
   initDeltaTime;
   initFPSCounter;
 end;

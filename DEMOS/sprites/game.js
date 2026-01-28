@@ -30,11 +30,7 @@ class Game extends Posit92 {
       hand_cursor: "assets/images/hand.png",
       slime_girl: "assets/images/piyo_0426_slime_girl.png",
       blue_enemy: "assets/images/blue_enemy.png"
-      // Add more image assets here
-    },
-    sounds: new Map([
-      // Add sound assets here
-    ])
+    }
   }
 
   async loadDefaultFont() {
@@ -57,8 +53,6 @@ class Game extends Posit92 {
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
     handle = await this.loadImage("assets/images/dosu_2.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
-
-    // Add more assets as necessary
   }
 }
 
