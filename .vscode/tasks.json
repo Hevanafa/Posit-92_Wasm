@@ -60,10 +60,20 @@
 				"cwd": "${fileDirname}",
 				"shell": {
 					"executable": "cmd.exe",
-					"args": [
-						"/d",
-						"/c"
-					]
+					"args": ["/d", "/c" ]
+				}
+			}
+		},
+		{
+			"label": "Rebuild Glue Code",
+			"type": "shell",
+			"command": "tsc",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/experimental",
+				"shell": {
+					"executable": "cmd.exe",
+					"args": ["/d", "/c" ]
 				}
 			}
 		}
