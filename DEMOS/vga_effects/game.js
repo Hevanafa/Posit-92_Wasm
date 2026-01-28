@@ -15,7 +15,8 @@ class Game extends Posit92 {
     images: {
       cursor: "assets/images/cursor.png",
       dreamscape_crossing: "assets/images/741277_320px.png",
-      ark_road: "assets/images/ark_road.png"
+      ark_road: "assets/images/ark_road.png",
+      pip_boy: "assets/images/pip-boy_320px.png"
       // Add more image assets here
     }
   }

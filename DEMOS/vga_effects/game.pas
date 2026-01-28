@@ -20,6 +20,7 @@ type
   TDemoStates = (
     DemoStateBlur,
     DemoStateChromaticAberration,
+    DemoStatePhosphor,
     DemoStateCount
   );
 
@@ -78,6 +79,8 @@ begin
       result := 'Blur';
     DemoStateChromaticAberration:
       result := 'Chromatic Aberration';
+    DemoStatePhosphor:
+      result := 'Phosphor';
     else result := 'Unknown state: ' + i32str(ord(state));
   end;
 end;
@@ -113,7 +116,7 @@ begin
     demoListItems[a] := getDemoStateName(TDemoStates(a));
 
   { beginDemoState(TDemoStates(0)) }
-  beginDemoState(DemoStateChromaticAberration)
+  beginDemoState(DemoStatePhosphor)
 
 end;
 
@@ -169,7 +172,10 @@ begin
     exit
   end;
 
-  cls(CornflowerBlue);
+  if demoListState.selectedIndex = ord(DemoStatePhosphor) then
+    cls(black)
+  else
+    cls(CornflowerBlue);
 
   case TDemoStates(demoListState.selectedIndex) of
     DemoStateBlur: begin
@@ -179,6 +185,10 @@ begin
     DemoStateChromaticAberration: begin
       spr(imgArkRoad, 0, 0);
       if applyFilter then applyFullChromabe;
+    end;
+    DemoStatePhosphor: begin
+      spr(imgPipBoy, 0, 0);
+      if applyFilter then applyFullPhosphor(1);
     end;
     else
   end;
@@ -193,6 +203,8 @@ begin
       printBlack('Spacebar - Toggle blur', 10, vgaHeight - 20);
     DemoStateChromaticAberration:
       printDefault('Spacebar - Toggle chromatic aberration', 10, vgaHeight - 20);
+    DemoStatePhosphor:
+      printDefault('Spacebar - Toggle phosphor effect', 10, vgaHeight - 20);
     else
   end;
 
@@ -201,6 +213,7 @@ begin
       s := 'Art by [Unknown Artist]';
     DemoStateChromaticAberration:
       s := 'Art by Kevin Hong';
+    else s := ''
   end;
   w := measureDefault(s);
   printBlack(s, (vgaWidth - w) - 10, vgaHeight - 30);
