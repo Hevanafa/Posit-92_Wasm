@@ -1,31 +1,29 @@
 {
-  VGA unit
-  Part of POSIT-92 Framework
+  VGA unit - Part of Posit-92 game engine
+  Hevanafa
 }
 
 unit VGA;
 
 {$Mode TP}
-{$B-}  { Enable boolean short-circuiting }
+{$Notes OFF}
+{$J-}
 
 interface
 
-const
-  vgaWidth = 320;
-  vgaHeight = 200;
-  bufferSize = vgaWidth * vgaHeight * 4;
-
 type
   PByteArray = ^TByteArray;
-  TByteArray = array[0..bufferSize - 1] of byte;
+  TByteArray = array[0..0] of byte;
 
 {$ifdef WASM}
-procedure toggleFullscreen; external 'env' name 'toggleFullscreen';
 procedure vgaFlush; external 'env' name 'vgaFlush';
 {$endif}
 
+function vgaWidth: smallint;
+function vgaHeight: smallint;
+
 { Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
-procedure initBuffer;
+procedure initVideoMem(const width, height: smallint; const startAddr: PByteArray); public name 'initVideoMem';
 function getSurfacePtr: PByteArray; public name 'getSurfacePtr';
 
 { Colour format: $AARRGGBB }
@@ -55,18 +53,29 @@ uses
 {$endif}
 
 var
-  bufferInitialised: boolean;
+  _vgaWidth, _vgaHeight: smallint;
+  bufferSize: longword;
   surface: PByteArray;
 
-procedure initBuffer;
+function vgaWidth: smallint;
 begin
-  { writeLog('Attempting to call initBuffer'); }
+  vgaWidth := _vgaWidth
+end;
 
-  if not bufferInitialised then begin
-    surface := PByteArray(getmem(bufferSize));
-    fillchar(surface^, bufferSize, 0);
-    bufferInitialised := true
-  end;
+function vgaHeight: smallint;
+begin
+  vgaHeight := _vgaHeight
+end;
+
+procedure initVideoMem(const width, height: smallint; const startAddr: PByteArray);
+begin
+  { writeLog('Attempting to call initVideoMem'); }
+  _vgaWidth := width;
+  _vgaHeight := height;
+  bufferSize := _vgaWidth * _vgaHeight * 4;
+
+  surface := startAddr;
+  fillchar(surface^, bufferSize, 0);
 end;
 
 function getSurfacePtr: PByteArray;
@@ -78,7 +87,7 @@ function unsafePget(const x, y: integer): longword;
 var
   offset: longword;
 begin
-  offset := (x + y * vgaWidth) * 4;
+  offset := (x + y * _vgaWidth) * 4;
 
   { RGBA to ARGB }
   unsafePget := surface^[offset + 3] shl 24
@@ -226,21 +235,17 @@ end;
 
 procedure vgaCls(const colour: longword);
 var
-  x, y: word;
+  a, b: word;
 begin
-  if not bufferInitialised then exit;
-
-  for y:=0 to vgaHeight - 1 do
-    for x:=0 to vgaWidth - 1 do
-      unsafePset(x, y, colour);
+  for b:=0 to vgaHeight - 1 do
+  for a:=0 to vgaWidth - 1 do
+    unsafePset(a, b, colour);
 end;
 
 procedure clsBlend(const colour: longword);
 var
   a, b: integer;
 begin
-  if not bufferInitialised then exit;
-  
   for b:=0 to vgaHeight - 1 do
   for a:=0 to vgaWidth - 1 do
     unsafePsetBlend(a, b, colour);
