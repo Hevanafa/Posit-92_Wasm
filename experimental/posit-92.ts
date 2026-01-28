@@ -654,7 +654,7 @@ class Posit92 {
         const result = txtLine.match(/face=\"(.*?)\"/);
         fontface = result?.[1] ?? "";
 
-        console.log("Loading BMFont ", fontface);
+        console.log("Loading BMFont", fontface);
 
       } else if (txtLine.startsWith("common")) {
         [k, v] = <StringPair>(pairs.find(pair => pair[0] == "lineHeight"));

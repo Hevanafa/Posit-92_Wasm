@@ -67,13 +67,13 @@
 		{
 			"label": "Rebuild Glue Code",
 			"type": "shell",
-			"command": "tsc",
+			"command": "",
 			"group": "build",
 			"options": {
 				"cwd": "${workspaceFolder}/experimental",
 				"shell": {
-					"executable": "cmd.exe",
-					"args": ["/d", "/c" ]
+					"executable": "tsc",
+					"args": ""
 				}
 			}
 		},
