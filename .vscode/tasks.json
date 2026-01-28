@@ -4,11 +4,7 @@
 		{
 			"label": "Compile Demo",
 			"type": "shell",
-			"command": "bun",
-			"args": [
-				"run",
-				"${workspaceFolder}/scripts/compile_demo.ts"
-			],
+			"command": "",
 			"group": "build",
 			"presentation": {
 				"reveal": "always",
@@ -18,10 +14,10 @@
 			"options": {
 				"cwd": "${fileDirname}",
 				"shell": {
-					"executable": "cmd.exe",
+					"executable": "bun",
 					"args": [
-						"/d",
-						"/c"
+						"run",
+						"${workspaceFolder}/scripts/compile_demo.ts"
 					]
 				}
 			}
@@ -29,27 +25,20 @@
 		{
 			"label": "Cleanup Experimental",
 			"type": "shell",
-			"command": "bun cleanup.ts",
+			"command": "",
 			"group": "build",
 			"options": {
 				"cwd": "${workspaceFolder}/experimental",
 				"shell": {
-					"executable": "cmd.exe",
-					"args": [
-						"/d",
-						"/c"
-					]
+					"executable": "bun",
+					"args": ["cleanup.ts"]
 				}
 			}
 		},
 		{
 			"label": "Start Server",
 			"type": "shell",
-			"command": "bun",
-			"args": [
-				"run",
-				"${workspaceFolder}/scripts/server.ts"
-			],
+			"command": "",
 			"group": "none",
 			"presentation": {
 				"group": "server-group",
@@ -59,8 +48,11 @@
 			"options": {
 				"cwd": "${fileDirname}",
 				"shell": {
-					"executable": "cmd.exe",
-					"args": ["/d", "/c" ]
+					"executable": "bun",
+					"args": [
+						"run",
+						"${workspaceFolder}/scripts/server.ts"
+					]
 				}
 			}
 		},
@@ -71,10 +63,7 @@
 			"group": "build",
 			"options": {
 				"cwd": "${workspaceFolder}/experimental",
-				"shell": {
-					"executable": "tsc",
-					"args": ""
-				}
+				"shell": { "executable": "tsc" }
 			}
 		},
 		{
