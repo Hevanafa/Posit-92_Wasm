@@ -37,7 +37,16 @@ OmniPascal has a built-in code navigation, so it doesn't require GTags/CTags, GN
 
 When all the steps above is done, you can copy all the files of the `boilerplate` folder to your new project, except for `setup.ts`
 
-## Build Scripts
+## Build Tasks
+
+I added build tasks in `tasks.json`, a few of them are:
+
+- **Compile demo**
+- **Start server** - This starts a new instance of the localhost server
+- **Cleanup experimental** - This is essential for when there's internal compiler errors in demo projects
+- **Rebuild glue code**
+
+### Build Scripts
 
 I have prepared a few scripts to ease the build process, which is located in `scripts` folder
 
