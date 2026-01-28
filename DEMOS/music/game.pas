@@ -1,17 +1,28 @@
 library Game;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$J-}
 
 uses
-  Conv, Keyboard, Mouse, ImmedGui,
+  Conv, Fullscreen, Loading,
+  Keyboard, Mouse, ImmedGui,
   ImgRef, ImgRefFast, Logger,
   Sounds, Strings, Timing,
   WasmMemMgr, VGA,
   Assets;
 
+type
+  TGameStates = (
+    GameStateIntro = 1,
+    GameStateLoading = 2,
+    GameStatePlaying = 3
+  );
+
 const
   SC_ESC = $01;
   SC_SPACE = $39;
+
+  CornflowerBlue = $FF6495ED;
 
   { Sound keys -- must be the same as on JS side }
   BgmClassic = 1;
@@ -19,7 +30,8 @@ const
 var
   lastEsc: boolean;
 
-  { Init your game state here }
+  { Game state variables }
+  actualGameState: TGameStates;
   gameTime: double;
   { Use sound keys }
   actualMusicKey: integer;
@@ -35,23 +47,29 @@ var
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
+procedure hideCursor; external 'env' name 'hideCursor';
+procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
+procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure drawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-
-procedure init;
+procedure beginLoadingState;
 begin
-  initMemMgr;
-  initBuffer;
-  initDeltaTime;
+  actualGameState := GameStateLoading;
+  fitCanvas;
+  loadAssets
 end;
 
-procedure afterInit;
+procedure beginPlayingState;
 begin
+  hideCursor;
+  fitCanvas;
+
   { Initialise game state here }
+  actualGameState := GameStatePlaying;
   hideCursor;
 
   initImmediateGUI;
@@ -68,6 +86,18 @@ begin
   volumeState.value := 25;
   lastVolume := volumeState.value;
   setMusicVolume(volumeState.value / 100.0)
+end;
+
+
+procedure init;
+begin
+  initHeapMgr;
+  initDeltaTime;
+end;
+
+procedure afterInit;
+begin
+  beginPlayingState
 end;
 
 function getMusicTimeStr: string;
@@ -118,7 +148,12 @@ var
   duration, actualTime, seekTime: double;
   dragState: TSliderDragState;
 begin
-  cls($FF6495ED);
+  if actualGameState = GameStateLoading then begin
+    renderLoadingScreen;
+    exit
+  end;
+
+  cls(CornflowerBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 48)
@@ -186,11 +221,8 @@ begin
 end;
 
 exports
-  { Main game procedures }
-  init,
-  afterInit,
-  update,
-  draw;
+  beginLoadingState,
+  init, afterInit, update, draw;
 
 begin
 { Starting point is intentionally left empty }
