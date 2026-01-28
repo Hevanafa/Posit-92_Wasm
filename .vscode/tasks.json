@@ -1,0 +1,20 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Compile Demo",
+			"type": "shell",
+			"command": "bun",
+			"args": ["run", "compile_demo.ts"],
+			"group": "build"
+		}
+	],
+	"presentation": {
+		"echo": true,
+		"reveal": "always",
+		"focus": false,
+		"panel": "shared",
+		"showReuseMessage": false,
+		"clear": true
+	}
+}
