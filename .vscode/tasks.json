@@ -6,7 +6,7 @@
 			"type": "shell",
 			"command": "bun",
 			"args": ["run", "${workspaceFolder}/scripts/compile_demo.ts"],
-			"group": { "kind": "build", "isDefault": true },
+			"group": "build",
 			"presentation": {
 				"reveal": "always",
 				"showReuseMessage": false,
@@ -14,6 +14,19 @@
 			},
 			"options": {
 				"cwd": "${fileDirname}",
+				"shell": {
+					"executable": "cmd.exe",
+					"args": ["/d", "/c"]
+				}
+			}
+		},
+		{
+			"label": "Cleanup Experimental",
+			"type": "shell",
+			"command": "bun cleanup.ts",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/experimental",
 				"shell": {
 					"executable": "cmd.exe",
 					"args": ["/d", "/c"]
