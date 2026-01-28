@@ -505,8 +505,7 @@ end;
 
 procedure init;
 begin
-  initMemMgr;
-  initBuffer;
+  initHeapMgr;
   initDeltaTime;
   initFPSCounter;
 end;

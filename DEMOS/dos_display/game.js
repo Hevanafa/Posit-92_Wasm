@@ -105,8 +105,6 @@ class Game extends SoundsMixin {
   }
 
   async loadAssets() {
-    let handle = 0;
-
     this.setLoadingActual(0);
 
     const imageCount = Object.keys(this.#AssetManifest.images).length;
@@ -160,7 +158,9 @@ async function main() {
   await game.init();
   await game.loadAssets();
   game.wasmInstance.exports.initDefaultFont();
-  await game.afterInit();
+  // await game.afterInit();
+
+  game.quickStart();
 
   function loop(currentTime) {
     if (done) {
