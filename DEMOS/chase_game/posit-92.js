@@ -5,8 +5,8 @@ class Posit92 {
     #wasmMemSize = 2 * 1048576;
     #stackSize = 128 * 1024;
     #videoMemSize = 0;
-    #vgaWidth = 320;
-    #vgaHeight = 200;
+    #vgaWidth = 240;
+    #vgaHeight = 160;
     #canvas;
     #ctx;
     #wasm = null;

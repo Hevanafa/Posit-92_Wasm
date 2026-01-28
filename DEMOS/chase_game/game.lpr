@@ -246,7 +246,8 @@ begin
   if not isCaught and (gameTime >= 60.0) then
     isWin := true;
 
-  gameTime := gameTime + dt
+  if not isCaught then
+    gameTime := gameTime + dt;
 end;
 
 
