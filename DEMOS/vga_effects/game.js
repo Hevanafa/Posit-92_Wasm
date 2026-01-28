@@ -12,7 +12,8 @@ class Game extends Posit92 {
 
   AssetManifest = {
     images: {
-      cursor: "assets/images/cursor.png"
+      cursor: "assets/images/cursor.png",
+      dreamscape_crossing: "assets/images/741277_320px.png"
       // Add more image assets here
     }
   }
@@ -35,9 +36,6 @@ class Game extends Posit92 {
     this.wasmInstance.exports.setImgDosuEXE(handle, 0);
     handle = await this.loadImage("assets/images/dosu_2.png");
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
-
-    handle = await this.loadImage("assets/images/741277_320px.png");
-    this.wasmInstance.exports.setImgDreamscapeCrossing(handle);
 
     // Add more assets as necessary
   }

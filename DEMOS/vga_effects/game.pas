@@ -1,12 +1,13 @@
 library Game;
 
 {$Mode ObjFPC}
+{$H-}
 {$J-}
 
 uses
   BMFont, Conv, FPS, Fullscreen,
   Loading, Logger, Keyboard, Mouse,
-  ImgRef, ImgRefFast,
+  ImgRef, ImgRefFast, ImmedGui,
   PostProc, Timing, VGA, WasmMemMgr, WasmHeap,
   Assets;
 
@@ -16,21 +17,29 @@ type
     GameStateLoading = 2,
     GameStatePlaying = 3
   );
+  TDemoStates = (
+    DemoStateBlur,
+    DemoStateCount
+  );
 
 const
   SC_ESC = $01;
   SC_SPACE = $39;
+  SC_TAB = $0F;
 
   CornflowerBlue = $FF6495ED;
   Black = $FF000000;
 
 var
-  lastEsc, lastSpacebar: boolean;
+  lastEsc, lastSpacebar, lastTab: boolean;
 
   { Game state variables }
   actualGameState: TGameStates;
   gameTime: double;
   applyBlur: boolean;
+
+  demoListState: TListViewState;
+  demoListItems: array[0..ord(DemoStateCount) - 1] of string;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -48,6 +57,16 @@ begin
   printDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
+procedure beginDemoState(const which: TDemoStates);
+begin
+  demoListState.selectedIndex := ord(which);
+
+  case which of
+  DemoStateBlur: applyBlur := true;
+  else
+  end;
+end;
+
 procedure beginLoadingState;
 begin
   actualGameState := GameStateLoading;
@@ -57,23 +76,24 @@ end;
 
 procedure beginPlayingState;
 var
-  tempImg: longint;
+  a: word;
 begin
   hideCursor;
   fitCanvas;
+
+  initImmediateGUI;
+  guiSetFont(defaultFont, defaultFontGlyphs);
 
   { Initialise game state here }
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
-  applyBlur := true;
+  lastTab := false;
 
-  writeLog('Free heap');
-  tempImg := newImage(10, 10);
-  writeLogI32(GetFreeHeapSize);
+  for a:=0 to ord(DemoStateCount) - 1 do
+    demoListItems[a] := i32str(a);
 
-  freeImage(tempImg);
-  writeLogI32(GetFreeHeapSize);
+  beginDemoState(TDemoStates(0))
 end;
 
 
@@ -108,7 +128,13 @@ begin
       applyBlur := not applyBlur;
   end;
 
-  gameTime := gameTime + dt
+  if lastTab <> isKeyDown(SC_TAB) then begin
+    lastTab := isKeyDown(SC_TAB);
+    { TODO: Toggle list view }
+  end;
+
+  gameTime := gameTime + dt;
+  resetWidgetIndices
 end;
 
 procedure draw;
@@ -128,11 +154,16 @@ begin
   if applyBlur then
     applyFullBoxBlur(1);
 
+  { Begin HUD }
+  ListView(demoListItems, demoListState);
+
   printBlack('Press Spacebar to toggle blur', 10, vgaHeight - 20);
 
   s := 'Art by [Unknown Artist]';
   w := measureDefault(s);
   printBlack(s, (vgaWidth - w) - 10, vgaHeight - 20);
+
+  resetActiveWidget;
 
   drawFPS;
   drawMouse;
