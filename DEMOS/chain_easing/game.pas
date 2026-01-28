@@ -9,7 +9,7 @@ uses
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
   Lerp, ImmedGUI, Timing, WasmHeap, WasmMemMgr,
-  PostProc, VGA,
+  SprEffects, PostProc, VGA,
   Assets;
 
 type
@@ -106,8 +106,7 @@ end;
 
 procedure init;
 begin
-  initMemMgr;
-  initBuffer;
+  initHeapMgr;
   initDeltaTime;
   initFPSCounter
 end;
@@ -210,7 +209,7 @@ begin
     spr(imgDosuEXE[1], 148, 88)
   else
     spr(imgDosuEXE[0], 148, 88);
-
+ 
   if not isChainStarted then
     CentredLabel('WASD to move', vgaWidth div 2, 120)
   else
