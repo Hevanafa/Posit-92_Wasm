@@ -16,7 +16,11 @@ class Game extends Posit92 {
 
   AssetManifest = {
     images: {
-      cursor: "assets/images/cursor.png"
+      cursor: "assets/images/cursor.png",
+      dosu_exe: [
+        "assets/images/dosu_1.png",
+        "assets/images/dosu_2.png"
+      ]
       // Add more image assets here
     },
     sounds: new Map([
@@ -35,19 +39,10 @@ class Game extends Posit92 {
    * @override
    */
   async loadAssets() {
-    let handle = 0;
-
     this.initLoadingScreen();
 
     await this.loadImagesFromManifest(this.AssetManifest.images);
     // Sounds can be loaded later
-
-    handle = await this.loadImage("assets/images/dosu_1.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 0);
-    handle = await this.loadImage("assets/images/dosu_2.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 1);
-
-    // Add more assets as necessary
   }
 }
 
