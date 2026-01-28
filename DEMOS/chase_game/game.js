@@ -14,18 +14,17 @@ class Game extends Posit92 {
     "KeyW": 0x11,
     "KeyA": 0x1E,
     "KeyS": 0x1F,
-    "KeyD": 0x20,
-    // Add more scancodes as necessary
+    "KeyD": 0x20
   };
 
   AssetManifest = {
     images: {
-      cursor: "assets/images/cursor.png"
-      // Add more image assets here
+      cursor: "assets/images/cursor.png",
+      dosu_exe: [
+        "assets/images/dosu_1.png",
+        "assets/images/dosu_2.png"
+      ]
     },
-    sounds: new Map([
-      // Add sound assets here
-    ])
   }
 
   async loadDefaultFont() {
@@ -39,19 +38,8 @@ class Game extends Posit92 {
    * @override
    */
   async loadAssets() {
-    let handle = 0;
-
     this.initLoadingScreen();
-
     await this.loadImagesFromManifest(this.AssetManifest.images);
-    // Sounds can be loaded later
-
-    handle = await this.loadImage("assets/images/dosu_1.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 0);
-    handle = await this.loadImage("assets/images/dosu_2.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 1);
-
-    // Add more assets as necessary
   }
 }
 

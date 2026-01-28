@@ -8,7 +8,7 @@ uses
   Conv, FPS, Graphics, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Maths, Timing, WasmHeap, WasmMemMgr,
+  Maths, Timing, WasmMemMgr,
   Shapes, Panic, VGA,
   Assets;
 
@@ -161,8 +161,7 @@ end;
 
 procedure init;
 begin
-  initMemMgr;
-  initBuffer;
+  initHeapMgr;
   initDeltaTime;
   initFPSCounter
 end;
@@ -316,10 +315,7 @@ end;
 
 exports
   beginLoadingState,
-  init,
-  afterInit,
-  update,
-  draw;
+  init, afterInit, update, draw;
 
 begin
 { Starting point is intentionally left empty }
