@@ -76,6 +76,22 @@
 					"args": ["/d", "/c" ]
 				}
 			}
+		},
+		{
+			"label": "Copy Glue Code",
+			"type": "shell",
+			"command": "",
+			"options": {
+				"shell": {
+					"executable": "powershell",
+					"args": [
+						"-command",
+						"copy-item",
+						"${workspaceFolder}/experimental/posit-92.js",
+						"${fileDirname}/posit-92.js"
+					]
+				}
+			}
 		}
 	]
 }
