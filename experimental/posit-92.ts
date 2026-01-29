@@ -103,8 +103,8 @@ class Posit92 {
   #stackSize = 128 * 1024;
   #videoMemSize = 0;
 
-  #vgaWidth = 320;
-  #vgaHeight = 200;
+  #vgaWidth: number;
+  #vgaHeight: number;
 
   #canvas: HTMLCanvasElement;
   #ctx: CanvasRenderingContext2D;
@@ -181,14 +181,19 @@ class Posit92 {
     done = true
   }
 
-  constructor(canvasID: string) {
+  constructor(canvasID: string, vgaWidth = 320, vgaHeight = 200) {
     this.#assertString(canvasID);
+    this.#assertNumber(vgaWidth);
+    this.#assertNumber(vgaHeight);
 
     if (document.getElementById(canvasID) == null)
       throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
 
     this.#canvas = <HTMLCanvasElement>document.getElementById(canvasID);
     this.#ctx = this.#canvas.getContext("2d")!;
+
+    this.#vgaWidth = vgaWidth;
+    this.#vgaHeight = vgaHeight;
 
     this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4
   }

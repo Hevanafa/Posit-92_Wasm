@@ -5,8 +5,8 @@ class Posit92 {
     #wasmMemSize = 2 * 1048576;
     #stackSize = 128 * 1024;
     #videoMemSize = 0;
-    #vgaWidth = 240;
-    #vgaHeight = 160;
+    #vgaWidth;
+    #vgaHeight;
     #canvas;
     #ctx;
     #wasm = null;
@@ -51,12 +51,14 @@ class Posit92 {
         this.cleanup();
         done = true;
     }
-    constructor(canvasID) {
+    constructor(canvasID, vgaWidth = 320, vgaHeight = 200) {
         this.#assertString(canvasID);
         if (document.getElementById(canvasID) == null)
             throw new Error(`Couldn't find canvasID \"${canvasID}\"`);
         this.#canvas = document.getElementById(canvasID);
         this.#ctx = this.#canvas.getContext("2d");
+        this.#vgaWidth = vgaWidth;
+        this.#vgaHeight = vgaHeight;
         this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
     }
     #loadMidnightOffset() {
