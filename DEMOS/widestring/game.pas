@@ -33,6 +33,26 @@ begin
   end;
 end;
 
+{ dest is automatically freed, src remains }
+procedure StrCat(var dest: TGameString; const src: TGameString);
+var
+  newLen: word;
+  newData: PWideChar;
+begin
+  newLen := dest.len + src.len;
+  newData := getmem(newLen + sizeof(widechar));
+
+  if dest.len > 0 then
+    move(dest.data^, newData^, dest.len * sizeof(widechar));
+
+  if src.len > 0 then
+    move(src.data^, (newData + dest.len)^, src.len * sizeof(widechar));
+
+  FreeStr(dest);
+  dest.data := newData;
+  dest.len := newLen
+end;
+
 procedure init;
 var
   ws: WideString;
