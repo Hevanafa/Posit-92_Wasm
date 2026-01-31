@@ -39,11 +39,20 @@ var
   testNewLen: longword;
   newLen: word;
   newData: PWideChar;
+  tempSrc: TGameString;
 begin
   testNewLen := dest.len + src.len;
   if testNewLen > high(word) then panicHalt('StrConcat overflow');
 
-  newLen := dest.len + src.len;
+  { Edge case: self-concatenation }
+  if @dest = @src then begin
+    StrCopy(tempSrc, WideString(src.data));
+    StrConcat(dest, tempSrc);
+    FreeStr(tempSrc);
+    exit
+  end;
+
+  newLen := testNewLen;
   newData := getmem(newLen + sizeof(widechar));
 
   if dest.len > 0 then
