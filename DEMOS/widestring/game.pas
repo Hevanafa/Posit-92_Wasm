@@ -56,11 +56,16 @@ end;
 procedure init;
 var
   ws: WideString;
+  s2: TGameString;
 begin
-  ws := 'Hello!';
+  ws := 'Hello';
   initHeapMgr;
 
   StrCopy(gs, ws);
+  StrCopy(s2, ' world!');
+  StrCat(gs, s2);
+  
+  FreeStr(s2)
 end;
 
 procedure afterInit;
