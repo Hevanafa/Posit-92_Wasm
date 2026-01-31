@@ -5,7 +5,7 @@ library Game;
 {$Notes OFF}
 
 uses
-  Logger, WasmMemMgr, VGA;
+  Logger, Panic, WasmMemMgr, VGA;
 
 type
   TGameString = record
@@ -51,6 +51,12 @@ begin
     FreeStr(tempSrc);
     exit
   end;
+
+  { Edge case: nil pointers }
+  if (dest.data = nil) and (dest.len > 0) then
+    panicHalt('StrConcat: dest.data is nil but len > 0');
+  if (src.data = nil) and (src.len > 0) then
+    panicHalt('StrConcat: src.data is nil but len > 0');
 
   newLen := testNewLen;
   newData := getmem(newLen + sizeof(widechar));
