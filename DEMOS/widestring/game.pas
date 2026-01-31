@@ -2,6 +2,7 @@ library Game;
 
 {$Mode ObjFPC}
 {$J-}  { Switch off assignments to typed constants }
+{$Notes OFF}
 
 uses
   Logger, WasmMemMgr, VGA;
@@ -16,6 +17,13 @@ type
 var
   gs: TGameString;
 
+procedure StrCopy(var dest: TGameString; const src: WideString);
+begin
+  dest.len := length(src);
+  dest.data := getmem(dest.len * sizeof(widechar));
+  move(PWideChar(src)^, dest.data^, dest.len * sizeof(widechar))
+end;
+
 procedure init;
 var
   ws: WideString;
@@ -23,8 +31,7 @@ begin
   ws := 'Hello!';
   initHeapMgr;
 
-  gs.data := PWideChar(ws);
-  gs.len := length(ws);
+  StrCopy(gs, ws)
 end;
 
 procedure afterInit;
