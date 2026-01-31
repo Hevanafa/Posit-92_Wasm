@@ -36,9 +36,13 @@ end;
 { dest is automatically freed, src remains }
 procedure StrConcat(var dest: TGameString; const src: TGameString);
 var
+  testNewLen: longword;
   newLen: word;
   newData: PWideChar;
 begin
+  testNewLen := dest.len + src.len;
+  if testNewLen > high(word) then panicHalt('StrConcat overflow');
+
   newLen := dest.len + src.len;
   newData := getmem(newLen + sizeof(widechar));
 
