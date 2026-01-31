@@ -34,7 +34,7 @@ begin
 end;
 
 { dest is automatically freed, src remains }
-procedure StrCat(var dest: TGameString; const src: TGameString);
+procedure StrConcat(var dest: TGameString; const src: TGameString);
 var
   newLen: word;
   newData: PWideChar;
@@ -63,8 +63,8 @@ begin
 
   StrCopy(gs, ws);
   StrCopy(s2, ' world!');
-  StrCat(gs, s2);
-  
+  StrConcat(gs, s2);
+
   FreeStr(s2)
 end;
 
