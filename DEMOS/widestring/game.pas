@@ -24,6 +24,15 @@ begin
   move(PWideChar(src)^, dest.data^, dest.len * sizeof(widechar))
 end;
 
+procedure FreeStr(var gs: TGameString);
+begin
+  if gs.data <> nil then begin
+    freemem(gs.data);
+    gs.data := nil;
+    gs.len := 0
+  end;
+end;
+
 procedure init;
 var
   ws: WideString;
@@ -31,7 +40,7 @@ begin
   ws := 'Hello!';
   initHeapMgr;
 
-  StrCopy(gs, ws)
+  StrCopy(gs, ws);
 end;
 
 procedure afterInit;
@@ -43,6 +52,11 @@ begin
 
   for a:=0 to gs.len - 1 do
     writeLogI32(ord(gs.data[a]));
+
+  FreeStr(gs);
+
+  if gs.data = nil then
+    writeLog('gs.data is nil!')
 end;
 
 procedure update;
