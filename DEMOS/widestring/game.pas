@@ -19,7 +19,6 @@ var
 procedure init;
 var
   ws: WideString;
-  
 begin
   ws := 'Hello!';
   initHeapMgr;
@@ -29,8 +28,14 @@ begin
 end;
 
 procedure afterInit;
+var
+  a: word;
 begin
-  writeLog('Hello from hello_minimal!')
+  writeLog('gs.len');
+  writeLogI32(gs.len);
+
+  for a:=0 to gs.len - 1 do
+    writeLogI32(ord(gs.data[a]));
 end;
 
 procedure update;
