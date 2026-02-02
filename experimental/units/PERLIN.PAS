@@ -15,6 +15,8 @@ function noise2D(var p: TPerlin; const x, y: double): double;
 
 implementation
 
+uses Maths;
+
 procedure initPerlin(var p: TPerlin; const seed: longword);
 var
   a, b, temp: smallint;
@@ -86,11 +88,11 @@ var
   xf, yf, u, v: double;
   x1, x2, y1: double;
 begin
-  xi := trunc(x) and $FF;
-  yi := trunc(y) and $FF;
+  xi := floor(x) and $FF;
+  yi := floor(y) and $FF;
 
-  xf := x - trunc(x);
-  yf := y - trunc(y);
+  xf := x - floor(x);
+  yf := y - floor(y);
 
   u := fade(xf);  v := fade(yf);
 
