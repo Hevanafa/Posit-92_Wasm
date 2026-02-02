@@ -1,6 +1,3 @@
-// Copied from experimental/posit-92.js
-// Last synced: 2026-01-23
-
 "use strict";
 class Posit92 {
     static version = "0.1.4_experimental";
@@ -8,8 +5,8 @@ class Posit92 {
     #wasmMemSize = 2 * 1048576;
     #stackSize = 128 * 1024;
     #videoMemSize = 0;
-    #vgaWidth = 320;
-    #vgaHeight = 200;
+    #vgaWidth;
+    #vgaHeight;
     #canvas;
     #ctx;
     #wasm = null;
@@ -54,12 +51,14 @@ class Posit92 {
         this.cleanup();
         done = true;
     }
-    constructor(canvasID) {
+    constructor(canvasID, vgaWidth = 320, vgaHeight = 200) {
         this.#assertString(canvasID);
         if (document.getElementById(canvasID) == null)
             throw new Error(`Couldn't find canvasID \"${canvasID}\"`);
         this.#canvas = document.getElementById(canvasID);
         this.#ctx = this.#canvas.getContext("2d");
+        this.#vgaWidth = vgaWidth;
+        this.#vgaHeight = vgaHeight;
         this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
     }
     #loadMidnightOffset() {
@@ -348,8 +347,9 @@ class Posit92 {
         let txtLine = "";
         let pairs;
         let k = "", v = "";
-        let lineHeight = 0;
+        let fontface = "";
         let filename = "";
+        let lineHeight = 0;
         const fontGlyphs = new Map();
         let glyphCount = 0;
         let imgHandle = 0;
@@ -357,7 +357,9 @@ class Posit92 {
             txtLine = line.replaceAll(/\s+/g, " ");
             pairs = txtLine.split(" ").map(part => part.split("="));
             if (txtLine.startsWith("info")) {
-                [k, v] = (pairs.find(pair => pair[0] == "face"));
+                const result = txtLine.match(/face=\"(.*?)\"/);
+                fontface = result?.[1] ?? "";
+                console.log("Loading BMFont", fontface);
             }
             else if (txtLine.startsWith("common")) {
                 [k, v] = (pairs.find(pair => pair[0] == "lineHeight"));
@@ -401,6 +403,7 @@ class Posit92 {
                 glyphCount++;
             }
         }
+        console.log("Loaded", glyphCount, "glyphs");
         imgHandle = await this.loadImage(filename);
         const fontPtr = fontPtrRef;
         const glyphsPtr = fontGlyphsPtrRef;
@@ -425,6 +428,7 @@ class Posit92 {
             glyphsMem.setInt16(glyphOffset + 12, glyph.yoffset, true);
             glyphsMem.setInt16(glyphOffset + 14, glyph.xadvance, true);
         }
+        console.log("loadBMFont", fontface, "completed");
     }
     ScancodeMap = null;
     heldScancodes = new Set();

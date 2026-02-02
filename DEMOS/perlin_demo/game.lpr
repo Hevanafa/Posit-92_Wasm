@@ -33,6 +33,7 @@ var
   gameTime: double;
 
   gamePerlin: TPerlin;
+  noiseCache: longint;
 
 
 { Use this to set `done` to true }
@@ -59,6 +60,14 @@ begin
 end;
 
 procedure beginPlayingState;
+const
+  scale: double = 0.05;  { Smaller = more zoomed out }
+var
+  a, b: smallint;
+
+  imgNoiseCache: PImageRef;
+  noiseValue: double;
+  grey: byte;
 begin
   hideCursor;
   fitCanvas;
@@ -67,7 +76,23 @@ begin
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
-  initPerlin(gamePerlin, trunc(getTimer))
+  initPerlin(gamePerlin, trunc(getTimer));
+  noiseCache := newImage(vgaWidth div 2, vgaHeight div 2);
+  imgNoiseCache := getImagePtr(noiseCache);
+
+  for b:=0 to vgaHeight div 2 - 1 do
+  for a:=0 to vgaWidth div 2 - 1 do begin
+    noiseValue := noise2D(gamePerlin, a * scale, b * scale);
+
+    grey := round(noiseValue * 255);
+
+    unsafeSprPset(imgNoiseCache,
+      a, b,
+      $FF000000
+      or (grey shl 16)
+      or (grey shl 8)
+      or grey);
+  end;
 end;
 
 
@@ -105,14 +130,9 @@ begin
 end;
 
 procedure draw;
-const
-  scale: double = 0.05;  { Smaller = more zoomed out }
 var
   w: integer;
   s: string;
-  a, b: word;
-  noiseValue: double;
-  grey: byte;
 begin
   if actualGameState = GameStateLoading then begin
     renderLoadingScreen; exit
@@ -120,18 +140,8 @@ begin
 
   cls(CornflowerBlue);
 
-  for b:=0 to vgaHeight - 1 do
-  for a:=0 to vgaWidth - 1 do begin
-    noiseValue := noise2D(gamePerlin, a * scale, b * scale);
-
-    grey := round(noiseValue * 255);
-
-    unsafePset(a, b,
-      $FF000000
-      or (grey shl 16)
-      or (grey shl 8)
-      or grey);
-  end;
+  { spr(noiseCache, 0, 0); }
+  sprStretch(noiseCache, 0, 0, vgaWidth, vgaHeight);
 
 
   if (trunc(gameTime * 4) and 1) > 0 then
