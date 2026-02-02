@@ -49,7 +49,10 @@ function grad(const hash: byte; const x, y: double): double;
 var
   h: byte;
   u, v: double;
+  result: double;
 begin
+  result := 0.0;
+
   h := hash and $F;
   if h < 8 then u := x else u := y;
 
@@ -61,14 +64,16 @@ begin
     v := 0;
 
   if (h and 1) = 0 then
-    grad := u
+    result := u
   else
-    grad := -u;
+    result := -u;
 
   if (h and 2) = 0 then
-    grad := grad + v
+    result := result + v
   else
-    grad := grad - v;
+    result := result - v;
+
+  grad := result
 end;
 
 function noise2D(var p: TPerlin; const x, y: double): double;
