@@ -19,8 +19,9 @@ type
   );
 
   TDemoStates = (
-    DemoState2D = 1,
-    DemoState1D = 2
+    DemoStateStatic2D = 1,
+    DemoStateDynamic2D = 2,
+    DemoState1D = 3
   );
 
 const
@@ -219,7 +220,7 @@ begin
 
   cls(TurboPascalBlue);
 
-  if actualDemoState = DemoState2D then
+  if actualDemoState = DemoStateStatic2D then
     { spr(noiseCache, 0, 0); }
     sprStretch(noiseCache, 0, 0, vgaWidth, vgaHeight);
 
@@ -233,14 +234,15 @@ begin
     end;
   end;
 
-  if actualDemoState = DemoState2D then
+  if actualDemoState = DemoStateStatic2D then
     buttonColour := orange
   else buttonColour := white;
 
   if DemoButton('2D',
     10, vgaHeight - 30, 20, 16,
     buttonColour, lightOrange, red) then
-    actualDemoState := DemoState2D;
+    actualDemoState := DemoStateStatic2D;
+
 
   if actualDemoState = DemoState1D then
     buttonColour := orange
@@ -250,6 +252,17 @@ begin
     40, vgaHeight - 30, 70, 16,
     buttonColour, LightOrange, red) then
     actualDemoState := DemoState1D;
+
+
+  if actualDemoState = DemoStateDynamic2D then
+    buttonColour := orange
+  else buttonColour := white;
+
+  if DemoButton('2D (dynamic)',
+    120, vgaHeight - 30, 70, 16,
+    buttonColour, lightOrange, red) then
+    actualDemoState := DemoStateDynamic2D;
+
 
 
   if (trunc(gameTime * 4) and 1) > 0 then
