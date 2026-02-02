@@ -98,9 +98,10 @@ begin
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
-  actualDemoState := DemoState1D;
-
+  actualDemoState := DemoStateDynamic2D;
   initPerlin(gamePerlin, trunc(getTimer));
+
+  { Only used in the static 2D demo }
   noiseCache := newImage(vgaWidth div 2, vgaHeight div 2);
   imgNoiseCache := getImagePtr(noiseCache);
 
@@ -217,7 +218,7 @@ var
   a, b: smallint;
   buttonColour: longword;
   image: PImageRef;
-  offsetX: double;
+  offsetX, offsetY: double;
 begin
   if actualGameState = GameStateLoading then begin
     renderLoadingScreen; exit
@@ -242,17 +243,23 @@ begin
   if actualDemoState = DemoStateDynamic2D then begin
     sprClear(imgSmallNoise, $00000000);
     image := getImagePtr(imgSmallNoise);
-    offsetX := getTimer;
+
+    offsetX := getTimer * 2.0;
+    offsetY := getTimer * 1.5;
 
     for b:=0 to vgaHeight div 4 - 1 do
     for a:=0 to vgaWidth div 4 - 1 do begin
       { Using `scale = 0.05` }
-      noiseValue := noise2D(gamePerlin, (a + offsetX) * 0.05, b * 0.05);
+      noiseValue := noise2D(
+        gamePerlin,
+        (a + offsetX) * 0.05,
+        (b + offsetY) * 0.05);
+
       grey := round(noiseValue * 255);
       unsafeSprPset(image, a, b, $FF000000 or (grey shl 16) or (grey shl 8) or grey)
     end;
 
-    spr(imgSmallNoise, 0, 0);
+    sprStretch(imgSmallNoise, 0, 0, vgaWidth, vgaHeight);
   end;
 
 
