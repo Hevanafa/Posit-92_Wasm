@@ -9,7 +9,7 @@ uses
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
   Timing, WasmMemMgr, VGA,
-  Assets;
+  Assets, Perlin;
 
 type
   TGameStates = (
@@ -32,6 +32,8 @@ var
   actualGameState: TGameStates;
   gameTime: double;
 
+  gamePerlin: TPerlin;
+
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -41,7 +43,7 @@ procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure drawFPS;
 begin
-  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
+  printDefault('FPS:' + i32str(getLastFPS), 160, 0);
 end;
 
 procedure drawMouse;
@@ -64,6 +66,8 @@ begin
   { Initialise game state here }
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
+
+  initPerlin(gamePerlin, trunc(getTimer))
 end;
 
 
@@ -101,15 +105,34 @@ begin
 end;
 
 procedure draw;
+const
+  scale: double = 0.05;  { Smaller = more zoomed out }
 var
   w: integer;
   s: string;
+  a, b: word;
+  noiseValue: double;
+  grey: byte;
 begin
   if actualGameState = GameStateLoading then begin
     renderLoadingScreen; exit
   end;
 
   cls(CornflowerBlue);
+
+  for b:=0 to vgaHeight - 1 do
+  for a:=0 to vgaWidth - 1 do begin
+    noiseValue := noise2D(gamePerlin, a * scale, b * scale);
+
+    grey := round(noiseValue * 255);
+
+    unsafePset(a, b,
+      $FF000000
+      or (grey shl 16)
+      or (grey shl 8)
+      or grey);
+  end;
+
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
