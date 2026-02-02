@@ -82,7 +82,7 @@ begin
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
-  actualDemoState := DemoState2D;
+  actualDemoState := DemoState1D;
 
   initPerlin(gamePerlin, trunc(getTimer));
   noiseCache := newImage(vgaWidth div 2, vgaHeight div 2);
@@ -141,6 +141,8 @@ procedure draw;
 var
   w: integer;
   s: string;
+  noiseValue: double;
+  a, b: smallint;
 begin
   if actualGameState = GameStateLoading then begin
     renderLoadingScreen; exit
@@ -151,6 +153,16 @@ begin
   if actualDemoState = DemoState2D then
     { spr(noiseCache, 0, 0); }
     sprStretch(noiseCache, 0, 0, vgaWidth, vgaHeight);
+
+  if actualDemoState = DemoState1D then begin
+    for a:=0 to vgaWidth-1 do begin
+      { Using `scale = 0.05` }
+      noiseValue := noise1D(gamePerlin, (a + gameTime * 10) * 0.05);
+      b := round(noiseValue * 40) + 20;
+
+      pset(a, b, $FFFFFFFF);
+    end;
+  end;
 
 
   if (trunc(gameTime * 4) and 1) > 0 then
