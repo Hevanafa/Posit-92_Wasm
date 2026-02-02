@@ -10,6 +10,7 @@ interface
   end;
 
 procedure initPerlin(var p: TPerlin; const seed: longword);
+function noise2D(var p: TPerlin; const x, y: double): double;
 
 
 implementation
@@ -68,6 +69,32 @@ begin
     grad := grad + v
   else
     grad := grad - v;
+end;
+
+function noise2D(var p: TPerlin; const x, y: double): double;
+var
+  xi, yi, aa, ab, ba, bb: integer;
+  xf, yf, u, v: double;
+  x1, x2, y1: double;
+begin
+  xi := trunc(x) and $FF;
+  yi := trunc(y) and $FF;
+
+  xf := x - trunc(x);
+  yf := y - trunc(y);
+
+  u := fade(xf);  v := fade(yf);
+
+  aa := p.permutation[p.permutation[xi] + yi];
+  ab := p.permutation[p.permutation[xi] + yi + 1];
+  ba := p.permutation[p.permutation[xi + 1] + yi];
+  bb := p.permutation[p.permutation[xi + 1] + yi + 1];
+
+  x1 := lerpLinear(grad(aa, xf, yf), grad(ba, xf - 1, yf), u);
+  x2 := lerpLinear(grad(ab, xf, yf - 1), grad(bb, xf - 1, yf - 1), u);
+  y1 := lerpLinear(x1, x2, v);
+
+  noise2D := (y1 + 1) / 2
 end;
 
 end.
