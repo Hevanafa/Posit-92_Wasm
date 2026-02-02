@@ -91,7 +91,10 @@ end;
 
 function floor(const value: double): integer;
 begin
-  floor := trunc(value)
+  if (value >= 0) or (frac(value) = 0) then
+    floor := trunc(value)
+  else
+    floor := trunc(value) - 1;
 end;
 
 function ceil(const value: double): integer;
