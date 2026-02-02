@@ -4,10 +4,10 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  Loading, Fullscreen, Graphics,
+  BMFont, Loading, Fullscreen, Graphics,
   Conv, FPS, Logger,
   Keyboard, Mouse,
-  ImgRef, ImgRefFast, ImmedGUI,
+  ImgRef, ImgRefFast, ImmedGUI, SprEffects,
   Shapes, Timing, WasmMemMgr, VGA,
   Assets, Perlin;
 
@@ -35,6 +35,7 @@ const
   Orange = $FFFF8200;
   LightOrange = $FFFFBE00;
   Red = $FFFF5555;
+  Black = $FF000000;
 
 var
   lastEsc: boolean;
@@ -46,6 +47,7 @@ var
 
   gamePerlin: TPerlin;
   noiseCache: longint;
+  blackFont: TBMFont;
 
 
 { Use this to set `done` to true }
@@ -86,6 +88,10 @@ begin
 
   initImmediateGUI;
   guiSetFont(defaultFont, defaultFontGlyphs);
+
+  blackFont := defaultFont;
+  blackFont.imgHandle := copyImage(defaultFont.imgHandle);
+  replaceColour(blackFont.imgHandle, white, black);
 
   { Initialise game state here }
   actualGameState := GameStatePlaying;
@@ -148,7 +154,11 @@ begin
 
   rectfill(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), buttonColour);
   rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), white);
-  TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
+
+  if (getActiveWidget <> thisWidgetID) and (getHotWidget <> thisWidgetID) then
+    printBMFont(blackFont, defaultFontGlyphs, caption, trunc(zone.x + 4), trunc(zone.y + 4))
+  else
+    TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
 
   if getMouseJustReleased and (getHotWidget = thisWidgetID) and (getActiveWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
@@ -247,9 +257,9 @@ begin
   else
     spr(imgDosuEXE[0], (vgaWidth - getImageWidth(imgDosuEXE[0])) div 2, (vgaHeight - getImageHeight(imgDosuEXE[0])) div 2);
 
-  s := 'Hello world!';
+  s := 'Perlin noise in Posit-92!';
   w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  printDefault(s, (vgaWidth - w) div 2, 100);
 
   drawMouse;
   drawFPS;
