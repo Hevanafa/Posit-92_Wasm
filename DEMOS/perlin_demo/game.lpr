@@ -8,7 +8,7 @@ uses
   Conv, FPS, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Timing, WasmMemMgr, VGA,
+  ImmedGUI, Timing, WasmMemMgr, VGA,
   Assets, Perlin;
 
 type
@@ -30,7 +30,9 @@ const
 
   CornflowerBlue = $FF6495ED;
   TurboPascalBlue = $FF0000AA;
+  White = $FFFFFFFF;
   Cyan = $FF55FFFF;
+  Orange = $FFFF8200;
 
 var
   lastEsc: boolean;
@@ -80,6 +82,9 @@ begin
   hideCursor;
   fitCanvas;
 
+  initImmediateGUI;
+  guiSetFont(defaultFont, defaultFontGlyphs);
+
   { Initialise game state here }
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
@@ -124,7 +129,9 @@ begin
   incrementFPS;
 
   { Handle inputs }
+  updateGUILastMouseButton;
   updateMouse;
+  updateGUIMousePoint;
 
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
@@ -136,7 +143,9 @@ begin
   end;
 
   { Handle game state updates }
-  gameTime := gameTime + dt
+  gameTime := gameTime + dt;
+
+  resetWidgetIndices
 end;
 
 procedure draw;
@@ -166,6 +175,9 @@ begin
     end;
   end;
 
+  Button('2D', 10, vgaHeight - 30, 20, 20);
+  Button('1D waveform', 50, vgaHeight - 30, 60, 20);
+
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], (vgaWidth - getImageWidth(imgDosuEXE[1])) div 2, (vgaHeight - getImageHeight(imgDosuEXE[0])) div 2)
@@ -178,6 +190,8 @@ begin
 
   drawMouse;
   drawFPS;
+
+  resetActiveWidget;
 
   vgaFlush
 end;
