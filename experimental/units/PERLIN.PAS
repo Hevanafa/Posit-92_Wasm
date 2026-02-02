@@ -10,7 +10,9 @@ interface
   end;
 
 procedure initPerlin(var p: TPerlin; const seed: longword);
+
 function noise2D(var p: TPerlin; const x, y: double): double;
+function noise1D(var p: TPerlin; const x: double): double;
 
 
 implementation
@@ -106,6 +108,34 @@ begin
   y1 := lerp(v, x1, x2);
 
   noise2D := (y1 + 1) / 2
+end;
+
+function noise1D(var p: TPerlin; const x: double): double;
+var
+  xi, a, b: integer;
+  xf, u: double;
+  g1, g2: double;
+begin
+  xi := floor(x) and $FF;
+  xf := x - floor(x);
+
+  u := fade(xf);
+  
+  a := p.permutation[xi];
+  b := p.permutation[xi + 1];
+
+  { Simple gradient: +1 or -1 }
+  if (a and 1) = 0 then
+    g1 := xf
+  else
+    g1 := -xf;
+
+  if (b and 1) = 0 then
+    g2 := xf - 1
+  else
+    g2 := -(xf - 1);
+
+  noise1D := (lerp(u, g1, g2) + 1) / 2
 end;
 
 end.
