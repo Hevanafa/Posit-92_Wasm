@@ -40,7 +40,7 @@ end;
 
 function fade(const t: double): double;
 begin
-  fade := t * t * t * (t * (t * 6 - 15) - 10)
+  fade := t * t * t * (t * (t * 6 - 15) + 10)
 end;
 
 function grad(const hash: byte; const x, y: double): double;
