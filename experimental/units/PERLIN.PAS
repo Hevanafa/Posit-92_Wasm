@@ -24,9 +24,17 @@ begin
   for a:=0 to 255 do
     p.permutation[a] := a;
   
-  { TODO: Shuffle }
+  { Shuffle }
+  for a:=255 downto 1 do begin
+    b := random(a + 1);
+    temp := p.permutation[a];
+    p.permutation[a] := p.permutation[b];
+    p.permutation[b] := temp
+  end;
 
-  { TODO: Duplicate permutation to handle overflow }
+  { Duplicate permutation to handle overflow }
+  for a:=0 to 255 do
+    p.permutation[256 + a] := p.permutation[a];
 end;
 
 end.
