@@ -18,6 +18,11 @@ type
     GameStatePlaying = 3
   );
 
+  TDemoStates = (
+    DemoState2D = 1,
+    DemoState1D = 2
+  );
+
 const
   SC_ESC = $01;
   SC_SPACE = $39;
@@ -31,6 +36,7 @@ var
   { Game state variables }
   actualGameState: TGameStates;
   gameTime: double;
+  actualDemoState: TDemoStates;
 
   gamePerlin: TPerlin;
   noiseCache: longint;
@@ -75,6 +81,8 @@ begin
   { Initialise game state here }
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
+
+  actualDemoState := DemoState2D;
 
   initPerlin(gamePerlin, trunc(getTimer));
   noiseCache := newImage(vgaWidth div 2, vgaHeight div 2);
@@ -140,8 +148,9 @@ begin
 
   cls(CornflowerBlue);
 
-  { spr(noiseCache, 0, 0); }
-  sprStretch(noiseCache, 0, 0, vgaWidth, vgaHeight);
+  if actualDemoState = DemoState2D then
+    { spr(noiseCache, 0, 0); }
+    sprStretch(noiseCache, 0, 0, vgaWidth, vgaHeight);
 
 
   if (trunc(gameTime * 4) and 1) > 0 then
