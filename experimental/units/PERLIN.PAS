@@ -15,8 +15,6 @@ function noise2D(var p: TPerlin; const x, y: double): double;
 
 implementation
 
-uses Lerp;
-
 procedure initPerlin(var p: TPerlin; const seed: longword);
 var
   a, b, temp: smallint;
@@ -76,6 +74,12 @@ begin
   grad := result
 end;
 
+{ The same as lerpLinear with a different parameter order }
+function lerp(const t, a, b: double): double;
+begin
+  lerp := a + t * (b - a)
+end;
+
 function noise2D(var p: TPerlin; const x, y: double): double;
 var
   xi, yi, aa, ab, ba, bb: integer;
@@ -95,9 +99,9 @@ begin
   ba := p.permutation[p.permutation[xi + 1] + yi];
   bb := p.permutation[p.permutation[xi + 1] + yi + 1];
 
-  x1 := lerpLinear(grad(aa, xf, yf), grad(ba, xf - 1, yf), u);
-  x2 := lerpLinear(grad(ab, xf, yf - 1), grad(bb, xf - 1, yf - 1), u);
-  y1 := lerpLinear(x1, x2, v);
+  x1 := lerp(u, grad(aa, xf, yf), grad(ba, xf - 1, yf));
+  x2 := lerp(u, grad(ab, xf, yf - 1), grad(bb, xf - 1, yf - 1));
+  y1 := lerp(v, x1, x2);
 
   noise2D := (y1 + 1) / 2
 end;
