@@ -33,6 +33,8 @@ const
   White = $FFFFFFFF;
   Cyan = $FF55FFFF;
   Orange = $FFFF8200;
+  LightOrange = $FFFFBE00;
+  Red = $FFFF5555;
 
 var
   lastEsc: boolean;
@@ -199,6 +201,7 @@ var
   s: string;
   noiseValue: double;
   a, b: smallint;
+  buttonColour: longword;
 begin
   if actualGameState = GameStateLoading then begin
     renderLoadingScreen; exit
@@ -220,8 +223,23 @@ begin
     end;
   end;
 
-  DemoButton('2D', 10, vgaHeight - 30, 20, 20);
-  DemoButton('1D waveform', 50, vgaHeight - 30, 60, 20);
+  if actualDemoState = DemoState2D then
+    buttonColour := orange
+  else buttonColour := white;
+
+  if DemoButton('2D',
+    10, vgaHeight - 30, 20, 16,
+    buttonColour, lightOrange, red) then
+    actualDemoState := DemoState2D;
+
+  if actualDemoState = DemoState1D then
+    buttonColour := orange
+  else buttonColour := white;
+
+  if DemoButton('1D waveform',
+    40, vgaHeight - 30, 70, 16,
+    buttonColour, LightOrange, red) then
+    actualDemoState := DemoState1D;
 
 
   if (trunc(gameTime * 4) and 1) > 0 then
