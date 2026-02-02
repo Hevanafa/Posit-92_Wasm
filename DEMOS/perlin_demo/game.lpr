@@ -47,7 +47,7 @@ var
   actualDemoState: TDemoStates;
 
   gamePerlin: TPerlin;
-  noiseCache: longint;
+  noiseCache, imgSmallNoise: longint;  { image handle }
   blackFont: TBMFont;
 
 
@@ -117,6 +117,8 @@ begin
       or (grey shl 8)
       or grey);
   end;
+
+  imgSmallNoise := newImage(vgaWidth div 4, vgaHeight div 4);
 end;
 
 function DemoButton(
@@ -211,8 +213,11 @@ var
   w: integer;
   s: string;
   noiseValue: double;
+  grey: byte;
   a, b: smallint;
   buttonColour: longword;
+  image: PImageRef;
+  offsetX: double;
 begin
   if actualGameState = GameStateLoading then begin
     renderLoadingScreen; exit
@@ -234,6 +239,24 @@ begin
     end;
   end;
 
+  if actualDemoState = DemoStateDynamic2D then begin
+    sprClear(imgSmallNoise, $00000000);
+    image := getImagePtr(imgSmallNoise);
+    offsetX := getTimer;
+
+    for b:=0 to vgaHeight div 4 - 1 do
+    for a:=0 to vgaWidth div 4 - 1 do begin
+      { Using `scale = 0.05` }
+      noiseValue := noise2D(gamePerlin, (a + offsetX) * 0.05, b * 0.05);
+      grey := round(noiseValue * 255);
+      unsafeSprPset(image, a, b, $FF000000 or (grey shl 16) or (grey shl 8) or grey)
+    end;
+
+    spr(imgSmallNoise, 0, 0);
+  end;
+
+
+  { Begin HUD }
   if actualDemoState = DemoStateStatic2D then
     buttonColour := orange
   else buttonColour := white;
