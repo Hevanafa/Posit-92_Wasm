@@ -11,6 +11,7 @@ interface
 
 procedure initPerlin(var p: TPerlin; const seed: longword);
 
+{ Both these functions return [0.0 .. 1.0] }
 function noise2D(var p: TPerlin; const x, y: double): double;
 function noise1D(var p: TPerlin; const x: double): double;
 
