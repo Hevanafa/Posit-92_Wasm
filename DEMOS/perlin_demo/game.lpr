@@ -29,6 +29,8 @@ const
   SC_ENTER = $1C;
 
   CornflowerBlue = $FF6495ED;
+  TurboPascalBlue = $FF0000AA;
+  Cyan = $FF55FFFF;
 
 var
   lastEsc: boolean;
@@ -148,7 +150,7 @@ begin
     renderLoadingScreen; exit
   end;
 
-  cls(CornflowerBlue);
+  cls(TurboPascalBlue);
 
   if actualDemoState = DemoState2D then
     { spr(noiseCache, 0, 0); }
@@ -158,9 +160,9 @@ begin
     for a:=0 to vgaWidth-1 do begin
       { Using `scale = 0.05` }
       noiseValue := noise1D(gamePerlin, (a + gameTime * 10) * 0.05);
-      b := round(noiseValue * 40) + 20;
+      b := round(noiseValue * 40) - 20 + vgaHeight div 2;
 
-      pset(a, b, $FFFFFFFF);
+      pset(a, b, cyan);
     end;
   end;
 
