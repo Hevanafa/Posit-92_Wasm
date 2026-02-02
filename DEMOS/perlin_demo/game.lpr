@@ -4,11 +4,11 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  Loading, Fullscreen,
+  Loading, Fullscreen, Graphics,
   Conv, FPS, Logger,
   Keyboard, Mouse,
-  ImgRef, ImgRefFast,
-  ImmedGUI, Timing, WasmMemMgr, VGA,
+  ImgRef, ImgRefFast, ImmedGUI,
+  Shapes, Timing, WasmMemMgr, VGA,
   Assets, Perlin;
 
 type
@@ -110,6 +110,51 @@ begin
   end;
 end;
 
+function DemoButton(
+  const caption: string;
+  const x, y, width, height: integer;
+  const colour, hoveredColour, pressedColour: longword): boolean;
+var
+  zone: TZone;
+  thisWidgetID: integer;
+  buttonColour: longword;
+begin
+  assertFontSet;
+
+  zone.x := x;
+  zone.y := y;
+  zone.width := width;
+  zone.height := height;
+
+  { Update logic }
+  thisWidgetID := getNextWidgetID;
+  incNextWidgetID;
+
+  if pointInZone(getMousePoint, zone) then begin
+    setHotWidget(thisWidgetID);
+
+    if getMouseJustPressed then setActiveWidget(thisWidgetID);
+  end;
+
+  { Render logic }
+  if getActiveWidget = thisWidgetID then
+    buttonColour := pressedColour
+  else if getHotWidget = thisWidgetID then
+    buttonColour := hoveredColour
+  else 
+    buttonColour := colour;
+
+  rectfill(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), buttonColour);
+  rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), white);
+  TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
+
+  if getMouseJustReleased and (getHotWidget = thisWidgetID) and (getActiveWidget = thisWidgetID) then
+    { activeWidget = -1 }  { Index reset is handled at the end of draw }
+    DemoButton := true
+  else
+    DemoButton := false;
+end;
+
 
 procedure init;
 begin
@@ -175,8 +220,8 @@ begin
     end;
   end;
 
-  Button('2D', 10, vgaHeight - 30, 20, 20);
-  Button('1D waveform', 50, vgaHeight - 30, 60, 20);
+  DemoButton('2D', 10, vgaHeight - 30, 20, 20);
+  DemoButton('1D waveform', 50, vgaHeight - 30, 60, 20);
 
 
   if (trunc(gameTime * 4) and 1) > 0 then
