@@ -99,10 +99,12 @@ end;
 
 function ceil(const value: double): integer;
 begin
-  if trunc(value) = value then
+  if frac(value) = 0 then
     ceil := trunc(value)
-  else
-    ceil := trunc(value + 1);
+  else if value > 0 then
+    ceil := trunc(value) + 1
+  else  { negative numbers }
+    ceil := trunc(value);
 end;
 
 { Ref: https://en.wikipedia.org/wiki/Atan2#Definition_and_computation }
