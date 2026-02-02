@@ -2,7 +2,7 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "Compile Demo",
+			"label": "Make Demo",
 			"type": "shell",
 			"command": "",
 			"group": "build",
@@ -31,7 +31,7 @@
 				"cwd": "${workspaceFolder}/experimental",
 				"shell": {
 					"executable": "bun",
-					"args": ["cleanup.ts"]
+					"args": ["run", "cleanup.ts"]
 				}
 			}
 		},
