@@ -102,7 +102,7 @@ implementation
 uses
   Conv, Graphics,
   ImgRef, ImgRefFast,
-  Maths, Mouse, Panic, Strings,
+  Maths, Mouse, Panic, UStrings,
   VGA;
 
 const

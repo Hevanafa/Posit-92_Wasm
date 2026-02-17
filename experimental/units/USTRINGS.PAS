@@ -5,7 +5,7 @@
   Contains a subset of what SysUtils has for string manipulation
 }
 
-unit Strings;
+unit UStrings;
 
 {$Mode TP}
 

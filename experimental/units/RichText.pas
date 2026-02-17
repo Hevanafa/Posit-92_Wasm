@@ -21,7 +21,7 @@ procedure RichTextLabel(
 
 implementation
 
-uses Conv, Logger, Strings, Panic;
+uses Conv, Logger, UStrings, Panic;
 
 var
   isFontSet: boolean;
