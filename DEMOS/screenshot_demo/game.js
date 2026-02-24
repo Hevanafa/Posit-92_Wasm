@@ -41,9 +41,17 @@ class Game extends Posit92 {
          * @type {HTMLCanvasElement}
          */
         const canvas = document.getElementById(this.canvasID);
+
+        const timestampStr =
+          new Date().toISOString().split("T")[0]
+          + "_"
+          + new Date().toISOString().split("T")[1].split(".")[0].replace(/:/g,".");
+
+        console.log("timestampStr", timestampStr);
+
         const anchor = document.createElement("a");
         anchor.href = canvas.toDataURL();
-        anchor.download = "test_image.png";
+        anchor.download = timestampStr + ".png";
         anchor.click();
       }
     })
