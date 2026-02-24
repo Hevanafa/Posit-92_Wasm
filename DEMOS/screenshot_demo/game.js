@@ -33,8 +33,37 @@ class Game extends Posit92 {
     const { env } = super._getWasmImportObject();
 
     Object.assign(env, {
-      takeScreenshot: () => { console.log("takeScreenshot call") }
+      takeScreenshot: () => {
+        console.log("takeScreenshot call")
+        console.log("canvasID", this.canvasID);
+
+        /**
+         * @type {HTMLCanvasElement}
+         */
+        const canvas = document.getElementById(this.canvasID);
+        // const ctx = canvas.getContext("2d");
+
+        const anchor = document.createElement("a");
+        anchor.href = canvas.toDataURL();
+        anchor.download = "test_image.png";
+        document.body.appendChild(anchor);
+
+        anchor.click();
+
+        document.body.removeChild(anchor);
+      }
     })
+  }
+
+  canvasID = "";
+
+  /**
+   * @override
+   */
+  constructor(canvasID, vgaWidth = 320, vgaHeight = 200) {
+    super(canvasID, vgaWidth, vgaHeight);
+
+    this.canvasID = canvasID;
   }
 
   /**
