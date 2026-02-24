@@ -22,6 +22,7 @@ const
   SC_ESC = $01;
   SC_SPACE = $39;
   SC_ENTER = $1C;
+  SC_F2 = $3C;
 
   CornflowerBlue = $FF6495ED;
 
@@ -38,6 +39,8 @@ procedure signalDone; external 'env' name 'signalDone';
 procedure hideCursor; external 'env' name 'hideCursor';
 procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
 procedure loadAssets; external 'env' name 'loadAssets';
+
+procedure takeScreenshot; external 'env' name 'takeScreenshot';
 
 procedure drawFPS;
 begin
@@ -94,6 +97,12 @@ begin
       writeLog('ESC is pressed!');
       signalDone
     end;
+  end;
+
+  if lastF2 <> isKeyDown(SC_F2) then begin
+    lastF2 := isKeyDown(SC_F2);
+
+    if lastF2 then takeScreenshot;
   end;
 
   { Handle game state updates }

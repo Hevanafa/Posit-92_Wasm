@@ -11,6 +11,7 @@ class Game extends Posit92 {
     "Escape": 0x01,
     "Space": 0x39,
     "Enter": 0x1C,
+    "F2": 0x3C,
     // Add more scancodes as necessary
   };
 
@@ -26,6 +27,22 @@ class Game extends Posit92 {
     sounds: new Map([
       // Add sound assets here
     ])
+  }
+
+  #setupImportObject() {
+    const { env } = super._getWasmImportObject();
+
+    Object.assign(env, {
+      takeScreenshot: () => { console.log("takeScreenshot call") }
+    })
+  }
+
+  /**
+   * @override
+   */
+  async init() {
+    this.#setupImportObject();
+    await super.init()
   }
 
   async loadDefaultFont() {
