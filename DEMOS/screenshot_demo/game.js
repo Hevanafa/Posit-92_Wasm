@@ -42,10 +42,12 @@ class Game extends Posit92 {
          */
         const canvas = document.getElementById(this.canvasID);
 
+        const now = new Date();
+
         const timestampStr =
-          new Date().toISOString().split("T")[0]
+          now.toISOString().split("T")[0]
           + "_"
-          + new Date().toISOString().split("T")[1].split(".")[0].replace(/:/g,".");
+          + now.toISOString().split("T")[1].split(".")[0].replace(/:/g,".");
 
         console.log("timestampStr", timestampStr);
 
