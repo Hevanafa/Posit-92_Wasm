@@ -41,16 +41,10 @@ class Game extends Posit92 {
          * @type {HTMLCanvasElement}
          */
         const canvas = document.getElementById(this.canvasID);
-        // const ctx = canvas.getContext("2d");
-
         const anchor = document.createElement("a");
         anchor.href = canvas.toDataURL();
         anchor.download = "test_image.png";
-        document.body.appendChild(anchor);
-
         anchor.click();
-
-        document.body.removeChild(anchor);
       }
     })
   }
