@@ -5,11 +5,12 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
+  SysUtils,
   Loading, Fullscreen,
   Conv, FPS, Logger,
   Keyboard, Mouse,
   ImgRef, ImgRefFast,
-  Timing, WasmMemMgr, VGA,
+  Timing, WasmMemMgr, WasmHeap, VGA,
   Assets;
 
 type
@@ -116,6 +117,9 @@ begin
     spr(imgDosuEXE[1], 148, 88)
   else
     spr(imgDosuEXE[0], 148, 88);
+
+  printDefault(format('Heap start: %d', [getHeapStart]), 10, 10);
+  printDefault(format('Heap current: %d', [getHeapCurrent]), 10, 20);
 
   s := 'Hello world!';
   w := measureDefault(s);
