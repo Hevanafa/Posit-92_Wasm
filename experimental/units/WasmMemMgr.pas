@@ -9,7 +9,6 @@ unit WasmMemMgr;
 
 {$Mode ObjFPC}
 {$Notes OFF}
-{Memory 1048576, 1048576}  { 1 MB stack, 1 MB heap }
 
 interface
 

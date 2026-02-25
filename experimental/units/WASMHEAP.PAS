@@ -4,6 +4,14 @@
   Low-level memory allocator
 }
 
+{
+  Memory layout (2MB default)
+  0x000000..0x02FFFF	Pascal stack	(192KB)
+  0x030000..0x06E7FF	Video memory	(320x200x4, depending on vgaWidth and vgaHeight)
+  0x06E800..0x0EE7FF	Pool region	(512KB, two-tier tier 1)
+  0x0EE800..0x200000	Heap region	(~1MB, two-tier tier 2)
+}
+
 {$Mode ObjFPC}
 {$J-}
 
