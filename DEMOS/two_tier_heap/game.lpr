@@ -1,6 +1,7 @@
 library Game;
 
 {$Mode ObjFPC}
+{$H+}
 {$J-}  { Switch off assignments to typed constants }
 
 uses
