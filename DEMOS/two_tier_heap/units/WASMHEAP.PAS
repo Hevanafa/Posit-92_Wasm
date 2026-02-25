@@ -54,13 +54,47 @@ const
 
   BucketSizes: array[0..5] of longword = (16, 32, 64, 128, 256, 512);
   BucketCount = 6;
-  BucketWeights: array[0..5] of longword = (25, 25, 20, 15, 10, 5);
   PoolSizeClassMax = 512;
+
+  BucketWeights: array[0..5] of longword = (25, 25, 20, 15, 10, 5);
+  TotalWeights = 100;
 
 var
   poolStart, poolEnd: PByte;
   heapStart, heapEnd: PByte;
   heapCurrent: PByte;  { where the next new block should go }
+
+  buckets: array[0..TotalWeights-1] of TBucket;  { The range is obtained from BucketWeights: 25+25+20 and so on }
+
+procedure initPool(const poolSize: longword);
+var
+  b: smallint; { bucket index }
+  rollingPtr: PByte;
+  regionStart: PByte;  { bucket region start }
+  slotCount: longword;
+  regionSize: longword;
+  i: smallint;
+begin
+  rollingPtr := poolStart;
+
+  for b:=0 to BucketCount-1 do begin
+    regionSize := (poolSize * BucketWeights[b]) div 100;
+    regionStart := rollingPtr;
+    slotCount := regionSize div BucketSizes[b];
+
+    buckets[b].slotSize := BucketSizes[b];
+    buckets[b].freeHead := PPoolSlot(regionStart);
+
+    for i:=0 to slotCount - 2 do begin
+      PPoolSlot(rollingPtr)^.next := PPoolSlot(rollingPtr + BucketSizes[b]);
+      inc(rollingPtr, BucketSizes[b])
+    end;
+
+    { Last slot points to nil }
+    PPoolSlot(rollingPtr)^.next := nil;
+    inc(rollingPtr, BucketSizes[b])
+  end;
+end;
 
 procedure initHeapRegion(const startAddr, poolSize, heapSize: longword);
 begin
@@ -69,7 +103,9 @@ begin
 
   heapStart := poolEnd;
   heapEnd := PByte(longword(heapStart) + heapSize);
-  heapCurrent := heapStart
+  heapCurrent := heapStart;
+
+  initPool(poolSize)
 end;
 
 
