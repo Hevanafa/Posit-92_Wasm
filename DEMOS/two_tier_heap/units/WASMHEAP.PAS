@@ -52,6 +52,10 @@ const
   HeapAlignment = 8;
   BlockHeaderSize = sizeof(TMemBlock);
 
+  BucketSizes: array[0..5] of longword = (16, 32, 64, 128, 256, 512);
+  BucketCount = 6;
+  PoolSizeClassMax = 512;
+
 var
   poolStart, poolEnd: PByte;
   heapStart, heapEnd: PByte;
@@ -65,6 +69,20 @@ begin
   heapStart := poolEnd;
   heapEnd := PByte(longword(heapStart) + heapSize);
   heapCurrent := heapStart
+end;
+
+
+function findBucket(const bytes: longword): smallint;
+var
+  a: word;
+begin
+  result := -1;
+
+  for a:=0 to BucketCount-1 do
+    if BucketSizes[a] >= bytes then begin
+      result := a;
+      exit
+    end;
 end;
 
 
