@@ -117,11 +117,11 @@ function findBucket(const bytes: longword): smallint;
 var
   a: word;
 begin
-  result := -1;
+  findBucket := -1;
 
   for a:=0 to BucketCount-1 do
     if BucketSizes[a] >= bytes then begin
-      result := a;
+      findBucket := a;
       exit
     end;
 end;
@@ -130,12 +130,12 @@ function findBucketByPtr(const ptr: pointer): smallint;
 var
   b: smallint;
 begin
-  result := -1;
+  findBucketByPtr := -1;
 
   for b:=0 to BucketCount-1 do
     if (LongWord(ptr) >= longword(buckets[b].regionStart))
       and (longword(ptr) < longword(buckets[b].regionEnd)) then begin
-        result := b;
+        findBucketByPtr := b;
         exit
       end;
 end;
@@ -155,7 +155,7 @@ begin
 
   slot := buckets[b].freeHead;
   buckets[b].freeHead := slot^.next;
-  result := Pointer(slot)
+  poolAlloc := pointer(slot)
 end;
 
 procedure poolFree(const ptr: pointer);
@@ -180,7 +180,7 @@ var
   alignedSize: longword;
 begin
   if bytes <= PoolSizeClassMax then begin
-    result := poolAlloc(bytes);
+    WasmGetMem := poolAlloc(bytes);
     exit
   end;
 
