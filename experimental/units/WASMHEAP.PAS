@@ -65,13 +65,47 @@ type
   end;
 
 const
+{ Alignment boundary for all heap allocations,
+  which has the same value as TMemBlock above }
   HeapAlignment = 8;
+
+
+{ Byte size of TMemBlock header, cached just for clarity
+
+  Every heap block is preceded by this header in memory:
+  [ TMemBlock ][ Usable data ]
+}
   BlockHeaderSize = sizeof(TMemBlock);
 
+
+{ Fixed slot sizes for tier 1 pool buckets, in bytes
+
+  Covers typical small FPC allocations:
+  * 16: object headers, VMT pointers
+  * 32: typical AnsiString headers & small list nodes
+  * 64: small class instances or short string buffers
+  * 128: medium objects
+  * 256: larger objects
+  * 512: upper boundary before routing to tier 2 heap
+}
   BucketSizes: array[0..5] of longword = (16, 32, 64, 128, 256, 512);
   BucketCount = 6;
+
+
+{ Allocations at or below this size go to tier 1 pool
+
+  Anything above this goes to tier 2 free-list heap
+
+  This must match the largest value in BucketSizes }
   PoolSizeClassMax = 512;
 
+
+{ Weight distribution across buckets
+
+  Weighted toward smaller buckets since the engine profile is
+  many of small objects rather than few large ones
+
+  The sum must match to TotalWeights }
   BucketWeights: array[0..5] of longword = (25, 25, 20, 15, 10, 5);
   TotalWeights = 100;
 
