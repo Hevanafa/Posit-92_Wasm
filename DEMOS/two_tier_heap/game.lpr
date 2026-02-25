@@ -73,7 +73,16 @@ procedure init;
 begin
   initHeapMgr;
   initDeltaTime;
-  initFPSCounter
+  initFPSCounter;
+
+  writeLog('Pool:');
+  writeLogI32(getPoolStart);
+  writeLogI32(getPoolEnd);
+
+  writeLog('Heap:');
+  writeLogI32(getHeapStart);
+  writeLogI32(getHeapEnd);
+  writeLogI32(getHeapCurrent);
 end;
 
 procedure afterInit;
@@ -118,8 +127,8 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  printDefault(format('Heap start: %d', [getHeapStart]), 10, 10);
-  printDefault(format('Heap current: %d', [getHeapCurrent]), 10, 20);
+  { printDefault(format('Heap start: %d', [getHeapStart]), 10, 10);
+  printDefault(format('Heap current: %d', [getHeapCurrent]), 10, 20); }
 
   s := 'Hello world!';
   w := measureDefault(s);
