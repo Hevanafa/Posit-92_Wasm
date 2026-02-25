@@ -64,6 +64,7 @@ type
     regionEnd: pbyte;
   end;
 
+
 const
 { Alignment boundary for all heap allocations,
   which has the same value as TMemBlock above }
@@ -245,18 +246,18 @@ begin
 
     if (not block^.inUse) and (block^.size >= alignedSize) then begin
       block^.inUse := true;
-      WasmGetMem := pointer(current + sizeof(TMemBlock));
+      WasmGetMem := pointer(current + BlockHeaderSize);
       exit
     end;
 
     { Find where the next block starts }
-    inc(current, sizeof(TMemBlock) + block^.size)
+    inc(current, BlockHeaderSize + block^.size)
   end;
 
   { Allocate a new block at heapCurrent }
   block := PMemBlock(heapCurrent);
 
-  if longword(heapCurrent) + sizeof(TMemBlock) + alignedSize > longword(heapEnd) then begin
+  if longword(heapCurrent) + BlockHeaderSize + alignedSize > longword(heapEnd) then begin
     { out of memory }
     WasmGetMem := nil;
     exit
@@ -266,7 +267,7 @@ begin
   block^.size := alignedSize;
   block^.inUse := true;
 
-  dataPtr := heapCurrent + sizeof(TMemBlock);
+  dataPtr := heapCurrent + BlockHeaderSize;
   heapCurrent := dataPtr + alignedSize;
 
   WasmGetMem := pointer(dataPtr)
@@ -293,7 +294,7 @@ begin
   end;
 
   { Find the block header & mark it as free }
-  block := PMemBlock(PByte(ptr) - sizeof(TMemBlock));
+  block := PMemBlock(PByte(ptr) - BlockHeaderSize);
   block^.inUse := false;
 
   { Backward coalescing logic }
@@ -321,7 +322,7 @@ begin
   { Check if the next block exists and is free }
   if (longword(nextBlock) < longword(heapEnd))
     and (not nextBlock^.inUse) then
-    inc(block^.size, sizeof(TMemBlock) + nextBlock^.size);
+    inc(block^.size, BlockHeaderSize + nextBlock^.size);
 end;
 
 
@@ -355,7 +356,7 @@ begin
   end;
 
   alignedSize := (newBytes + (HeapAlignment - 1)) and not (HeapAlignment - 1);
-  oldBlock := PMemBlock(PByte(ptr) - sizeof(TMemBlock));
+  oldBlock := PMemBlock(PByte(ptr) - BlockHeaderSize);
 
   { Handle shrink in-place }
   if alignedSize <= oldBlock^.size then begin
@@ -365,10 +366,10 @@ begin
   end;
 
   { Handle expand in-place if available }
-  nextBlock := PMemBlock(PByte(oldBlock) + sizeof(TMemBlock) + oldBlock^.size);
+  nextBlock := PMemBlock(PByte(oldBlock) + BlockHeaderSize + oldBlock^.size);
 
   if (longword(nextBlock) < longword(heapCurrent)) and not nextBlock^.inUse then begin
-    availableSpace := oldBlock^.size + sizeof(TMemBlock) + nextBlock^.size;
+    availableSpace := oldBlock^.size + BlockHeaderSize + nextBlock^.size;
 
     if alignedSize <= availableSpace then begin
       oldBlock^.size := alignedSize;
@@ -421,7 +422,7 @@ begin
     if not block^.inUse then
       inc(freeBytes, block^.size);
 
-    inc(current, sizeof(TMemBlock) + block^.size)
+    inc(current, BlockHeaderSize + block^.size)
   end;
 
   inc(freeBytes, longword(heapEnd) - longword(heapCurrent));
