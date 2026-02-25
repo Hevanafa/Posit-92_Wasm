@@ -179,6 +179,11 @@ var
   dataPtr: PByte;
   alignedSize: longword;
 begin
+  if bytes <= PoolSizeClassMax then begin
+    result := poolAlloc(bytes);
+    exit
+  end;
+
   alignedSize := (bytes + (HeapAlignment - 1)) and not (HeapAlignment - 1);
 
   { First-fit search }
@@ -222,6 +227,11 @@ var
   block, nextBlock: PMemBlock;
 begin
   if ptr = nil then exit;
+
+  if (ptr >= poolStart) and (ptr < poolEnd) then begin
+    poolFree(ptr);
+    exit
+  end;
 
   { Find the block header & mark it as free }
   block := PMemBlock(PByte(ptr) - sizeof(TMemBlock));
