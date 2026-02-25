@@ -37,6 +37,17 @@ implementation
 
 uses Logger, Panic;
 
+type
+  PPoolSlot = ^TPoolSlot;
+  TPoolSlot = record
+    next: PPoolSlot;
+  end;
+
+  TBucket = record
+    slotSize: longword;
+    freeHead: PPoolSlot
+  end;
+
 const
   HeapAlignment = 8;
   BlockHeaderSize = sizeof(TMemBlock);
