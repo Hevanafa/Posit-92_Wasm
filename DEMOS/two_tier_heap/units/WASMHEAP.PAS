@@ -224,9 +224,16 @@ begin
 end;
 
 
+{
+  Order:
+  * Mark block as free
+  * Check backward: if the previous block is free, merge into it
+  * Check forward: merge into it if the next block is free
+}
 procedure WasmFreeMem(const ptr: pointer);
 var
-  block, nextBlock: PMemBlock;
+  block, prevBlock, nextBlock: PMemBlock;
+  scanPtr: PMemBlock;
 begin
   if ptr = nil then exit;
 
@@ -239,7 +246,20 @@ begin
   block := PMemBlock(PByte(ptr) - sizeof(TMemBlock));
   block^.inUse := false;
 
-  { Forward memory coalescing logic }
+  { Backward coalescing logic }
+  prevBlock := nil;
+  scanPtr := PMemBlock(heapStart);
+
+  while scanPtr < block do begin
+    prevBlock := scanPtr;
+    inc(scanPtr, BlockHeaderSize + scanPtr^.size)
+  end;
+
+  if (prevBlock <> nil) and (not prevBlock^.inUse) then
+    inc(prevBlock^.size, BlockHeaderSize + block^.size);
+
+  { TODO: Forward coalescing logic
+    It should operate on the surviving block after the backward pass }
   nextBlock := PMemBlock(pbyte(block) + sizeof(TMemBlock) + block^.size);
 
   { Check if the next block exists and is free }
