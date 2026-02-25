@@ -54,6 +54,7 @@ const
 
   BucketSizes: array[0..5] of longword = (16, 32, 64, 128, 256, 512);
   BucketCount = 6;
+  BucketWeights: array[0..5] of longword = (25, 25, 20, 15, 10, 5);
   PoolSizeClassMax = 512;
 
 var
