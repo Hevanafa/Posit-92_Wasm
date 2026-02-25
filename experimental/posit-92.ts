@@ -100,7 +100,7 @@ class Posit92 {
 
   // Engine configs
   #wasmMemSize = 2 * 1048576; // 2 MB
-  #stackSize = 128 * 1024;
+  #stackSize = 192 * 1024;
   #videoMemSize = 0;
   #poolSize = 512 * 1024;
 
