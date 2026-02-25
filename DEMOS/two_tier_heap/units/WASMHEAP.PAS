@@ -35,7 +35,7 @@ function getFreeHeapSize: longword;
 
 implementation
 
-uses Logger, Panic;
+uses Logger, Conv, Panic;
 
 type
   PPoolSlot = ^TPoolSlot;
@@ -137,6 +137,20 @@ begin
   slot := buckets[b].freeHead;
   buckets[b].freeHead := slot^.next;
   result := Pointer(slot)
+end;
+
+procedure poolFree(const ptr: pointer);
+var
+  b: smallint;
+  slot: PPoolSlot;
+begin
+  b := findBucketByPtr(ptr);
+
+  if b = -1 then panicHalt('poolFree: ' + i32str(longword(ptr)) + 'doesn''t belong to the pool region!');
+
+  slot := PPoolSlot(ptr);
+  slot^.next := buckets[b].freeHead;
+  buckets[b].freeHead := slot
 end;
 
 function WasmGetMem(const bytes: longword): pointer;
