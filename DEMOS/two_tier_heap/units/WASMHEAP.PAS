@@ -64,7 +64,7 @@ var
   heapStart, heapEnd: PByte;
   heapCurrent: PByte;  { where the next new block should go }
 
-  buckets: array[0..TotalWeights-1] of TBucket;  { The range is obtained from BucketWeights: 25+25+20 and so on }
+  buckets: array[0..BucketCount-1] of TBucket;
 
 procedure initPool(const poolSize: longword);
 var
@@ -78,7 +78,7 @@ begin
   rollingPtr := poolStart;
 
   for b:=0 to BucketCount-1 do begin
-    regionSize := (poolSize * BucketWeights[b]) div 100;
+    regionSize := (poolSize * BucketWeights[b]) div TotalWeights;
     regionStart := rollingPtr;
     slotCount := regionSize div BucketSizes[b];
 
