@@ -11,17 +11,6 @@ unit WasmHeap;
 
 interface
 
-type
-  { Memory block header }
-  PMemBlock = ^TMemBlock;
-  {$Push}
-  {$Align 8}
-  TMemBlock = record
-    size: longword;
-    inUse: boolean;
-  end;
-  {$Pop}
-
 procedure initHeapRegion(const startAddr, poolSize, heapSize: longword); public name 'initHeapRegion';
 
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
@@ -38,6 +27,16 @@ implementation
 uses Logger, Conv, Panic;
 
 type
+  { Memory block header }
+  PMemBlock = ^TMemBlock;
+  {$Push}
+  {$Align 8}
+  TMemBlock = record
+    size: longword;
+    inUse: boolean;
+  end;
+  {$Pop}
+
   PPoolSlot = ^TPoolSlot;
   TPoolSlot = record
     next: PPoolSlot;
@@ -45,7 +44,9 @@ type
 
   TBucket = record
     slotSize: longword;
-    freeHead: PPoolSlot
+    freeHead: PPoolSlot;
+    regionStart: pbyte;
+    regionEnd: pbyte;
   end;
 
 const
@@ -85,6 +86,9 @@ begin
     buckets[b].slotSize := BucketSizes[b];
     buckets[b].freeHead := PPoolSlot(regionStart);
 
+    buckets[b].regionStart := regionStart;
+    buckets[b].regionEnd := pbyte(longword(regionStart) + regionSize);
+
     for i:=0 to slotCount - 2 do begin
       PPoolSlot(rollingPtr)^.next := PPoolSlot(rollingPtr + BucketSizes[b]);
       inc(rollingPtr, BucketSizes[b])
@@ -121,6 +125,21 @@ begin
       exit
     end;
 end;
+
+function findBucketByPtr(const ptr: pointer): smallint;
+var
+  b: smallint;
+begin
+  result := -1;
+
+  for b:=0 to BucketCount-1 do
+    if (LongWord(ptr) >= longword(buckets[b].regionStart))
+      and (longword(ptr) < longword(buckets[b].regionEnd)) then begin
+        result := b;
+        exit
+      end;
+end;
+
 
 function poolAlloc(const bytes: LongWord): pointer;
 var
