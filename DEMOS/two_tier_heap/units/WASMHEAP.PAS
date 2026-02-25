@@ -21,6 +21,12 @@ function WasmAllocMem(const bytes: longword): pointer; public name 'WasmAllocMem
 function getHeapSize: longword;
 function getFreeHeapSize: longword;
 
+function getPoolStart: longword;
+function getPoolEnd: longword;
+function getHeapStart: longword;
+function getHeapCurrent: longword;
+function getHeapEnd: longword;
+
 
 implementation
 
@@ -380,4 +386,30 @@ begin
   GetFreeHeapSize := freeBytes
 end;
 
+function getPoolStart: longword;
+begin
+  getPoolStart := longword(poolStart)
+end;
+
+function getPoolEnd: longword;
+begin
+  getPoolEnd := longword(poolEnd)
+end;
+
+function getHeapStart: longword;
+begin
+  getHeapStart := longword(heapStart)
+end;
+
+function getHeapCurrent: longword;
+begin
+  getHeapCurrent := longword(heapCurrent)
+end;
+
+function getHeapEnd: longword;
+begin
+  getHeapEnd := longword(heapEnd)
+end;
+
 end.
+
