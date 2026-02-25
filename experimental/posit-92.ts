@@ -94,7 +94,7 @@ type TBMFontGlyph = {
 }
 
 class Posit92 {
-  static version = "0.1.4_experimental";
+  static version = "0.1.5_experimental";
 
   #wasmSource = "game.wasm";
 
