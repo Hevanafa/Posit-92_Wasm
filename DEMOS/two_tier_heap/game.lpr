@@ -127,8 +127,8 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  { printDefault(format('Heap start: %d', [getHeapStart]), 10, 10);
-  printDefault(format('Heap current: %d', [getHeapCurrent]), 10, 20); }
+  { printDefault(format('Heap start: %d', [getHeapStart]), 10, 10); }
+  printDefault(format('Heap current: %d', [getHeapCurrent]), 10, 20);
 
   s := 'Hello world!';
   w := measureDefault(s);

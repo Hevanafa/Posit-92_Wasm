@@ -30,7 +30,7 @@ function getHeapEnd: longword;
 
 implementation
 
-uses Logger, Conv, Panic;
+uses Conv, Panic;
 
 type
   { Memory block header }
@@ -187,22 +187,17 @@ var
   dataPtr: PByte;
   alignedSize: longword;
 begin
-  writeLog('WasmGetMem: ' + i32str(bytes));
-
   if bytes <= PoolSizeClassMax then begin
-    writeLog('Attempting poolAlloc');
     WasmGetMem := poolAlloc(bytes);
     exit
   end;
 
-  writeLog('Above alignedSize');
   alignedSize := (bytes + (HeapAlignment - 1)) and not (HeapAlignment - 1);
 
   { First-fit search }
   current := heapStart;
 
   while longword(current) < longword(heapCurrent) do begin
-    writeLogI32(longword(current));
     block := PMemBlock(current);
 
     if (not block^.inUse) and (block^.size >= alignedSize) then begin
@@ -215,20 +210,14 @@ begin
     inc(current, sizeof(TMemBlock) + block^.size)
   end;
 
-  writeLog('Before PMemBlock allocation');
-
   { Allocate a new block at heapCurrent }
   block := PMemBlock(heapCurrent);
 
   if longword(heapCurrent) + sizeof(TMemBlock) + alignedSize > longword(heapEnd) then begin
-    writeLog('Out of memory??');
-
     { out of memory }
     WasmGetMem := nil;
     exit
   end;
-
-  writeLog('Before creating a new block');
 
   { Create a new block }
   block^.size := alignedSize;
@@ -237,9 +226,6 @@ begin
   dataPtr := heapCurrent + sizeof(TMemBlock);
   heapCurrent := dataPtr + alignedSize;
 
-  writeLog('end of WasmGetMem');
-  writeLog('heapCurrent: ' + i32str(longword(heapCurrent)));
-  writeLogI32(longword(dataPtr));
   WasmGetMem := pointer(dataPtr)
 end;
 
@@ -255,8 +241,6 @@ var
   block, prevBlock, nextBlock: PMemBlock;
   scanPtr: PMemBlock;
 begin
-  writeLog('WasmFreeMem: ' + i32str(longword(ptr)));
-
   if ptr = nil then exit;
 
   if (longword(ptr) >= longword(poolStart))
@@ -304,8 +288,6 @@ var
   newPtr: pointer;
   copySize, alignedSize, availableSpace: longword;
 begin
-  writeLog('WasmReAllocMem: ' + i32str(longword(ptr)) + ', ' + i32str(newBytes));
-
   if (longword(ptr) >= longword(poolStart))
     and (longword(ptr) < longword(poolEnd)) then begin
       WasmReAllocMem := poolAlloc(newBytes);

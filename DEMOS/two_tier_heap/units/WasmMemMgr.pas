@@ -18,14 +18,13 @@ procedure initHeapMgr;
 
 implementation
 
-uses Logger, Conv, WasmHeap;
+uses WasmHeap;
 
 var
   customMemMgr: TMemoryManager;
 
 function whGetMem(size: ptruint): pointer;
 begin
-  writeLog('whGetMem: ' + i32str(longword(size)));
   whGetMem := WasmGetMem(size)
 end;
 

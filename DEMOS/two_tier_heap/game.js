@@ -42,6 +42,7 @@ class Game extends Posit92 {
     this.initLoadingScreen();
 
     await this.loadImagesFromManifest(this.AssetManifest.images);
+
     // Sounds can be loaded later
   }
 }
