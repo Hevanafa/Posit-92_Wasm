@@ -282,16 +282,17 @@ var
   newPtr: pointer;
   copySize, alignedSize, availableSpace: longword;
 begin
-  if (ptr >= poolStart) and (ptr < poolEnd) then begin
-    WasmReAllocMem := poolAlloc(newBytes);
+  if (longword(ptr) >= longword(poolStart))
+    and (longword(ptr) < longword(poolEnd)) then begin
+      WasmReAllocMem := poolAlloc(newBytes);
 
-    if WasmReAllocMem <> nil then begin
-      move(ptr^, result^, newBytes);
-      poolFree(ptr)
+      if WasmReAllocMem <> nil then begin
+        move(ptr^, WasmReAllocMem^, newBytes);
+        poolFree(ptr)
+      end;
+
+      exit
     end;
-
-    exit
-  end;
 
   if ptr = nil then begin
     WasmReAllocMem := WasmGetMem(newBytes);
@@ -317,7 +318,7 @@ begin
   { Handle expand in-place if available }
   nextBlock := PMemBlock(PByte(oldBlock) + sizeof(TMemBlock) + oldBlock^.size);
 
-  if (longword(nextBlock) < longword(heapCurrent)) and not nextBlock^.inUse then begin
+  if (longword(nextBlock) < longword(heapEnd)) and not nextBlock^.inUse then begin
     availableSpace := oldBlock^.size + sizeof(TMemBlock) + nextBlock^.size;
 
     if alignedSize <= availableSpace then begin
