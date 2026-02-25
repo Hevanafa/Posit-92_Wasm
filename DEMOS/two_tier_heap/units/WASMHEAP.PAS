@@ -62,7 +62,8 @@ const
 
 var
   poolStart, poolEnd: PByte;
-  heapStart, heapEnd: PByte;
+  heapStart: PByte;
+  heapEnd: PByte;  { The ceiling for the free-list walk }
   heapCurrent: PByte;  { where the next new block should go }
 
   buckets: array[0..BucketCount-1] of TBucket;
@@ -172,6 +173,7 @@ begin
   buckets[b].freeHead := slot
 end;
 
+
 function WasmGetMem(const bytes: longword): pointer;
 var
   current: PByte;
@@ -189,7 +191,7 @@ begin
   { First-fit search }
   current := heapStart;
 
-  while longword(current) < longword(heapCurrent) do begin
+  while longword(current) < longword(heapEnd) do begin
     block := PMemBlock(current);
 
     if (not block^.inUse) and (block^.size >= alignedSize) then begin
