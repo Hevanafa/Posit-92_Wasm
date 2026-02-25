@@ -253,6 +253,17 @@ var
   newPtr: pointer;
   copySize, alignedSize, availableSpace: longword;
 begin
+  if (ptr >= poolStart) and (ptr < poolEnd) then begin
+    WasmReAllocMem := poolAlloc(newBytes);
+
+    if WasmReAllocMem <> nil then begin
+      move(ptr^, result^, newBytes);
+      poolFree(ptr)
+    end;
+
+    exit
+  end;
+
   if ptr = nil then begin
     WasmReAllocMem := WasmGetMem(newBytes);
     exit
