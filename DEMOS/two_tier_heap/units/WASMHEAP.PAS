@@ -122,6 +122,22 @@ begin
     end;
 end;
 
+function poolAlloc(const bytes: LongWord): pointer;
+var
+  b: smallint;
+  slot: PPoolSlot;
+begin
+  b := findBucket(bytes);
+
+  if b = -1 then panicHalt('poolAlloc: Unable to allocate a bucket!');
+
+  if buckets[b].freeHead = nil then
+    panicHalt('poolAlloc: No free buckets!');
+
+  slot := buckets[b].freeHead;
+  buckets[b].freeHead := slot^.next;
+  result := Pointer(slot)
+end;
 
 function WasmGetMem(const bytes: longword): pointer;
 var
