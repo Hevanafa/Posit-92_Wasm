@@ -237,7 +237,8 @@ var
 begin
   if ptr = nil then exit;
 
-  if (ptr >= poolStart) and (ptr < poolEnd) then begin
+  if (longword(ptr) >= longword(poolStart))
+    and (longword(ptr) < longword(poolEnd)) then begin
     poolFree(ptr);
     exit
   end;
@@ -252,18 +253,24 @@ begin
 
   while scanPtr < block do begin
     prevBlock := scanPtr;
-    inc(scanPtr, BlockHeaderSize + scanPtr^.size)
+    scanPtr := PMemBlock(PByte(scanPtr) + BlockHeaderSize + scanPtr^.size)
   end;
 
   if (prevBlock <> nil) and (not prevBlock^.inUse) then
     inc(prevBlock^.size, BlockHeaderSize + block^.size);
 
-  { TODO: Forward coalescing logic
+  { Forward coalescing logic
     It should operate on the surviving block after the backward pass }
-  nextBlock := PMemBlock(pbyte(block) + sizeof(TMemBlock) + block^.size);
+
+  { Determine the surviving block after backward pass }
+  if (prevBlock <> nil) and (not prevBlock^.inUse) then
+    block := prevBlock;
+
+  { Forward coalescing logic operates on the surviving block }
+  nextBlock := PMemBlock(pbyte(block) + BlockHeaderSize + block^.size);
 
   { Check if the next block exists and is free }
-  if (longword(nextBlock) < longword(heapCurrent))
+  if (longword(nextBlock) < longword(heapEnd))
     and (not nextBlock^.inUse) then
     inc(block^.size, sizeof(TMemBlock) + nextBlock^.size);
 end;
