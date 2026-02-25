@@ -143,6 +143,26 @@ SHAPES.PAS(110,3) Fatal: Internal error 2010120506
 
 Simply call the cleanup script in experimental, then rebuild
 
+## Heap Memory Update
+
+This update was pushed on `v0.1.5_experimental` using the two-tier memory manager approach
+
+This release introduces a proper memory manager for `wasm32-embedded` target, replacing the previous first-fit bump allocator
+
+**Why this matters?**
+
+The previous bump allocator could not free memory properly, especially when using refcounted instances like `AnsiString` or classes, so I had to rely exclusively on `ShortString` and fixed-size records. This pretty much limited what FPC features that were safe to use
+
+**The two tiers**
+
+**Tier 1** is a fixed pool of 512 KB divided into size-class buckets (16, 32, 64, up to 512 bytes). This handles small & frequent allocations like string headers and object metadata
+
+Imagine a shelf with trays in it, where each shelf having a fixed count of slots, say 25, 20, 10, and 5. The term "pool" here is like the whole room of shelves, and the term "bucket" is like a shelf with slots, which can be filled with trays.
+
+TODO: Write about tier 2
+
+
+
 ## Credits
 
 Default font: [Nokia Cellphone FC](https://www.dafont.com/nokia-cellphone.font)
