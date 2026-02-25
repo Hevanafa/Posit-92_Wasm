@@ -22,7 +22,7 @@ type
   end;
   {$Pop}
 
-procedure initHeap(const startAddr, heapSize: longword); public name 'initHeap';
+procedure initHeap(const startAddr, poolSize, heapSize: longword); public name 'initHeap';
 
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
 procedure WasmFreeMem(const ptr: pointer); public name 'WasmFreeMem';
@@ -42,13 +42,17 @@ const
   BlockHeaderSize = sizeof(TMemBlock);
 
 var
+  poolStart, poolEnd: PByte;
   heapStart, heapEnd: PByte;
   heapCurrent: PByte;  { where the next new block should go }
 
-procedure initHeap(const startAddr, heapSize: longword);
+procedure initHeap(const startAddr, poolSize, heapSize: longword);
 begin
-  heapStart := PByte(startAddr);
-  heapEnd := PByte(startAddr + heapSize);
+  poolStart := PByte(startAddr);
+  poolEnd := PByte(startAddr + poolSize);
+
+  heapStart := poolEnd;
+  heapEnd := PByte(longword(heapStart) + heapSize);
   heapCurrent := heapStart
 end;
 
