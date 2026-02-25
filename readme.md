@@ -159,9 +159,27 @@ The previous bump allocator could not free memory properly, especially when usin
 
 Imagine a shelf with trays in it, where each shelf having a fixed count of slots, say 25, 20, 10, and 5. The term "pool" here is like the whole room of shelves, and the term "bucket" is like a shelf with slots, which can be filled with trays.
 
-TODO: Write about tier 2
+**Tier 2** is a free-list occupying the remaining ~1MB. This tier handles larger allocations like bitmaps using `ImgRef`. This includes forward & backward coalescing logic to prevent fragmentation
 
+**Memory Layout**
 
+The default is 2 MB
+
+```text
+0x000000..0x02FFFF   Pascal stack   (192KB)
+0x030000..0x06E7FF   Video memory   (320x200x4, depending on vgaWidth and vgaHeight)
+0x06E800..0x0EE7FF   Pool region    (512KB, two-tier tier 1)
+0x0EE800..0x200000   Heap region    (~1MB, two-tier tier 2)
+```
+
+You can increase the stack size in `posit-92.ts`, in case the stack leaks into the (virtual) video memory
+
+**Verified Working**
+
+* `AnsiString` dynamic allocation and deallocation
+* String formatting with `SysUtils.format`
+* BMFont loader
+* Free heap at runtime: ~997 KB
 
 ## Credits
 
