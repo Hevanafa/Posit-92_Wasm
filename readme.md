@@ -157,7 +157,7 @@ The previous bump allocator could not free memory properly, especially when usin
 
 **Tier 1** is a fixed pool of 512 KB divided into size-class buckets (16, 32, 64, up to 512 bytes). This handles small & frequent allocations like string headers and object metadata
 
-Imagine a shelf with trays in it, where each shelf having a fixed count of slots, say 25, 20, 10, and 5. The term "pool" here is like the whole room of shelves, and the term "bucket" is like a shelf with slots, which can be filled with trays.
+The term "pool" here is like a whole room of shelves, and the term "bucket" is like a shelf or a rack with slots.  Each shelf has a different slot size, which can be filled with trays.  However, if you want to call them lockers instead of shelves, they're essentially the same: the occupied/free binary nature of a slot
 
 **Tier 2** is a free-list occupying the remaining ~1MB. This tier handles larger allocations like bitmaps using `ImgRef`. This includes forward & backward coalescing logic to prevent fragmentation
 
