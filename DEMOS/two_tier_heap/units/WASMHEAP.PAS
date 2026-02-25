@@ -35,9 +35,11 @@ function getFreeHeapSize: longword;
 
 implementation
 
-const HeapAlignment = 8;
+uses Logger, Panic;
 
-{ uses Logger; }
+const
+  HeapAlignment = 8;
+  BlockHeaderSize = sizeof(TMemBlock);
 
 var
   heapStart, heapEnd: PByte;
@@ -80,7 +82,7 @@ begin
   block := PMemBlock(heapCurrent);
 
   if longword(heapCurrent) + sizeof(TMemBlock) + alignedSize > longword(heapEnd) then begin
-    { out of memory}
+    { out of memory }
     WasmGetMem := nil;
     exit
   end;
