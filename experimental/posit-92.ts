@@ -102,6 +102,7 @@ class Posit92 {
   #wasmMemSize = 2 * 1048576; // 2 MB
   #stackSize = 128 * 1024;
   #videoMemSize = 0;
+  #poolSize = 512 * 1024;
 
   #vgaWidth: number;
   #vgaHeight: number;
@@ -262,8 +263,8 @@ class Posit92 {
     // console.log("Default mem size", this.#wasm.exports.memory.buffer.byteLength);
 
     const videoMemStart = this.#stackSize;
-    const heapStart = this.#stackSize + this.#videoMemSize;
-    const heapSize = this.#wasmMemSize - heapStart;
+    const heapRegionStart = this.#stackSize + this.#videoMemSize;
+    const heapSize = this.#wasmMemSize - this.#poolSize - heapRegionStart;
 
     // Wasm memory is in 64KB pages
     const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
@@ -273,7 +274,7 @@ class Posit92 {
       this.#wasm.exports.memory.grow(requiredPages - pages);
 
     this.#wasm.exports.initVideoMem(this.#vgaWidth, this.#vgaHeight, videoMemStart);
-    this.#wasm.exports.initHeap(heapStart, heapSize);
+    this.#wasm.exports.initHeap(heapRegionStart, this.#poolSize, heapSize);
   }
 
   async init() {
