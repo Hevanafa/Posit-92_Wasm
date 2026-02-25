@@ -16,7 +16,7 @@ type WasmExports = {
   // VGA.PAS
   getSurfacePtr: () => number,
   initVideoMem: (width: number, height: number, startAddr: number) => void,
-  initHeap: (startAddr: number, heapSize: number) => void,
+  initHeapRegion: (startAddr: number, poolSize: number, heapSize: number) => void,
   WasmGetMem: (bytes: number) => number,
 
   // IMGREF.PAS
@@ -274,7 +274,7 @@ class Posit92 {
       this.#wasm.exports.memory.grow(requiredPages - pages);
 
     this.#wasm.exports.initVideoMem(this.#vgaWidth, this.#vgaHeight, videoMemStart);
-    this.#wasm.exports.initHeap(heapRegionStart, this.#poolSize, heapSize);
+    this.#wasm.exports.initHeapRegion(heapRegionStart, this.#poolSize, heapSize);
   }
 
   async init() {
