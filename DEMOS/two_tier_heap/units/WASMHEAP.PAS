@@ -4,6 +4,9 @@
   Low-level memory allocator
 }
 
+{$Mode ObjFPC}
+{$J-}
+
 unit WasmHeap;
 
 interface
@@ -11,10 +14,13 @@ interface
 type
   { Memory block header }
   PMemBlock = ^TMemBlock;
+  {$Push}
+  {$Align 8}
   TMemBlock = record
     size: longword;
     inUse: boolean;
   end;
+  {$Pop}
 
 procedure initHeap(const startAddr, heapSize: longword); public name 'initHeap';
 
@@ -29,6 +35,8 @@ function getFreeHeapSize: longword;
 
 implementation
 
+const HeapAlignment = 8;
+
 { uses Logger; }
 
 var
@@ -39,14 +47,7 @@ procedure initHeap(const startAddr, heapSize: longword);
 begin
   heapStart := PByte(startAddr);
   heapEnd := PByte(startAddr + heapSize);
-  heapCurrent := heapStart;
-
-{
-  writeLog('Attempting to call initHeap');
-  writeLogI32(longword(heapStart));
-  writeLogI32(longword(heapEnd));
-  writeLogI32(longword(heapCurrent));
-}
+  heapCurrent := heapStart
 end;
 
 
@@ -57,7 +58,7 @@ var
   dataPtr: PByte;
   alignedSize: longword;
 begin
-  alignedSize := (bytes + 3) and not 3;
+  alignedSize := (bytes + (HeapAlignment - 1)) and not (HeapAlignment - 1);
 
   { First-fit search }
   current := heapStart;
@@ -132,7 +133,7 @@ begin
     exit
   end;
 
-  alignedSize := (newBytes + 3) and not 3;
+  alignedSize := (newBytes + (HeapAlignment - 1)) and not (HeapAlignment - 1);
   oldBlock := PMemBlock(PByte(ptr) - sizeof(TMemBlock));
 
   { Handle shrink in-place }
