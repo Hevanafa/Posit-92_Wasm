@@ -22,7 +22,7 @@ procedure panicHalt(const msg: string);
 implementation
 
 {$ifdef WASM}
-uses Assets, VGA;
+uses VGA;
 {$endif}
 {$ifdef WIN64}
 uses Logger;
