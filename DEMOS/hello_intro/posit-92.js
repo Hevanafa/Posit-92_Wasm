@@ -6,7 +6,7 @@ class Posit92 {
     static version = "0.1.5_experimental";
     #wasmSource = "game.wasm";
     #wasmMemSize = 2 * 1048576;
-    #stackSize = 192 * 1024;
+    #stackSize = 256 * 1024;
     #videoMemSize = 0;
     #poolSize = 512 * 1024;
     #vgaWidth;

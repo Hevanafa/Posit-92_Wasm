@@ -99,9 +99,9 @@ class Posit92 {
   #wasmSource = "game.wasm";
 
   // Engine configs
-  #wasmMemSize = 2 * 1048576; // 2 MB
-  #stackSize = 192 * 1024;
-  #videoMemSize = 0;
+  #wasmMemSize = 2 * 1048576;  // 2 MB
+  #stackSize = 256 * 1024;
+  #videoMemSize = 0;  // assigned in the constructor
   #poolSize = 512 * 1024;
 
   #vgaWidth: number;

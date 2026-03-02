@@ -1,9 +1,11 @@
 library Game;
 
 {$Mode ObjFPC}
+{$H+}
 {$J-}  { Switch off assignments to typed constants }
 
 uses
+  SysUtils, FGL,
   IntroScr, Loading, Fullscreen,
   Conv, FPS, Logger,
   Keyboard, Mouse,
@@ -152,9 +154,6 @@ begin
 end;
 
 procedure draw;
-var
-  w: integer;
-  s: string;
 begin
   if actualGameState in [GameStateIntro, GameStateLoading] then
   case actualGameState of
@@ -179,9 +178,7 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  s := 'Hello world!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  printDefaultCentred('Hello world!', vgaWidth div 2, 120);
 
   drawMouse;
   drawFPS;
