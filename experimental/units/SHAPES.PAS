@@ -18,6 +18,10 @@ type
     x, y: double;
   end;
 
+  TPointInt = record
+    x, y: smallint;
+  end;
+
   TZone = record
     x, y: double;
     width, height: double;

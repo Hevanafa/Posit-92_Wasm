@@ -284,8 +284,12 @@ var
 begin
   assertFontSet;
 
+  if maxWidth <= 0 then begin
+    guiMeasureTextWrapHeight := 0;
+    exit
+  end;
+
   result := 0;
-  if maxWidth <= 0 then exit;
 
   { Process each line }
   text := replaceAll(text, #13#10, #10);
@@ -840,7 +844,10 @@ const
 var
   w: word;
 begin
-  if not isPromptShown then exit;
+  if not isPromptShown then begin
+    PromptBox := PromptNo;
+    exit
+  end;
 
   assertImageSet('imgPromptBG', imgPromptBG);
 
