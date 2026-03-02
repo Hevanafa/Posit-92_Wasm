@@ -37,7 +37,7 @@ const mixinMap: Record<string, string[]> = {
 
 const demoScripts = [
   "build_run_demo.ts",
-  "compile_demo.ts",
+  "make_demo.ts",
   "run_demo.ts",
   "server.ts"
 ];
