@@ -37,6 +37,37 @@ OmniPascal has a built-in code navigation, so it doesn't require GTags/CTags, GN
 
 When all the steps above is done, you can copy all the files of the `boilerplate` folder to your new project, except for `setup.ts`
 
+### Experimental Boilerplate
+
+First, choose either `hello_quick`, `hello_intro` or `hello_minimal` from the `DEMOS` folder
+
+- `hello_quick` is the recommended project because of the complete asset loader and Lazarus project files included
+- `hello_intro` is like `hello_quick` but with the intro sequence included
+- `hello_minimal` is the bare minimum just to get a plain black surface & text output on the console
+
+This will be the base directory for your future project
+
+Second, copy both `posit-92.ts` and `tsconfig.json` from the `experimental` folder
+
+Third, copy `experimental\units` excluding the `backup` and `deprecated` folders, and then name it as `shared`
+
+Fourth, copy the `server.ts` and `dist.ts` build scripts from `scripts`
+
+Here's the project structure:
+
+```text
+hello_quick\
+- shared\
+- (all files from hello_quick)
+- game.lpi
+- game.lpr
+- posit-92.ts
+- tsconfig.json
+- server.ts
+- dist.ts
+```
+
+
 ## Build Tasks
 
 I added build tasks in `tasks.json`, a few of them are:
