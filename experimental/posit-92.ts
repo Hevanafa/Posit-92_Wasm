@@ -648,6 +648,7 @@ class Posit92 {
     const fontGlyphs: Map<number, TBMFontGlyph> = new Map();
     let glyphCount = 0;
     let imgHandle = 0;
+    let spacing = [0, 0];
 
     for (const line of lines) {
       txtLine = line.replaceAll(/\s+/g, " ");
@@ -657,10 +658,24 @@ class Posit92 {
       if (txtLine.startsWith("info")) {
         // [k, v] = <StringPair>(pairs.find(pair => pair[0] == "face"));
 
-        const result = txtLine.match(/face=\"(.*?)\"/);
-        fontface = result?.[1] ?? "";
+        for (const [k, v] of pairs) {
+          switch (k) {
+            case "face":
+              const result = txtLine.match(/face=\"(.*?)\"/);
+              fontface = result?.[1] ?? "";
 
-        console.log("Loading BMFont", fontface);
+              console.log("Loading BMFont", fontface);
+              break;
+
+            case "spacing":
+              const [x, y] = v.split(",").map(s => Number(s));
+
+              // console.log("spacing", x, y);
+              spacing[0] = x;
+              spacing[1] = y;
+          }
+        }
+
 
       } else if (txtLine.startsWith("common")) {
         [k, v] = <StringPair>(pairs.find(pair => pair[0] == "lineHeight"));
@@ -708,6 +723,8 @@ class Posit92 {
 
     // true makes it little-endian
     fontMem.setUint16(offset, lineHeight, true);
+    fontMem.setUint8(offset + 2, spacing[0]);
+    fontMem.setUint8(offset + 3, spacing[1]);
     fontMem.setInt32(offset + 4, imgHandle, true);
 
     // Load glyphs

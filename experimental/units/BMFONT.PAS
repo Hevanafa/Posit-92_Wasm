@@ -24,6 +24,7 @@ type
     face: string[15];  { 16 bytes }
     filename: string[63];  { 64 bytes }
     lineHeight: word;  { 2 bytes }
+    spacing: array[0..1] of byte; { x, y }
     imgHandle: longint;  { 84th byte }
   end;
 
@@ -43,7 +44,10 @@ procedure printBMFont(
   const text: string;
   const x, y: integer);
 
-function measureBMFont(const glyphs: array of TBMFontGlyph; const text: string): integer;
+function measureBMFont(
+  const font: TBMFont;
+  const glyphs: array of TBMFontGlyph;
+  const text: string): integer;
 
 function printBMFontCharColour(
   const font: TBMFont;
@@ -147,17 +151,25 @@ procedure printBMFont(
 var
   a: word;
   ch: char;
-  left: integer;
+  left, step: integer;
 begin
   left := 0;
 
   for a:=1 to length(text) do begin
     ch := text[a];
-    inc(left, printBMFontChar(font, fontGlyphs, ch, x + left, y))
+    step := printBMFontChar(font, fontGlyphs, ch, x + left, y);
+
+    if a < length(text) then
+      inc(left, step + font.spacing[0])
+    else
+      inc(left, step);
   end;
 end;
 
-function measureBMFont(const glyphs: array of TBMFontGlyph; const text: string): integer;
+function measureBMFont(
+  const font: TBMFont;
+  const glyphs: array of TBMFontGlyph;
+  const text: string): integer;
 var
   a, result: word;
   glyphIdx: integer;
@@ -172,7 +184,10 @@ begin
     glyphIdx := charcode - 32;
 
     if (glyphIdx in [low(glyphs)..high(glyphs)]) then begin
-      inc(result, glyphs[glyphIdx].xadvance)
+      if a < length(text) then
+        inc(result, glyphs[glyphIdx].xadvance + font.spacing[0])
+      else
+        inc(result, glyphs[glyphIdx].xadvance);
     end;
   end;
 
@@ -221,17 +236,22 @@ procedure printBMFontColour(
   const colour: longword);
 var
   a: word;
-  left: integer;
+  left, step: integer;
 begin
   left := 0;
 
-  for a:=1 to length(text) do
-    inc(left,
-      printBMFontCharColour(
+  for a:=1 to length(text) do begin
+    step := printBMFontCharColour(
         font, fontGlyphs,
         text[a],
         x + left, y,
-        colour))
+        colour);
+
+    if a < length(text) then
+      inc(left, step + font.spacing[0])
+    else
+      inc(left, step);
+  end;
 end;
 
 
@@ -279,13 +299,18 @@ procedure printBMFontToDest(
 var
   a: word;
   ch: char;
-  left: integer;
+  left, step: integer;
 begin
   left := 0;
 
   for a:=1 to length(text) do begin
     ch := text[a];
-    inc(left, printBMFontCharToDest(font, fontGlyphs, destHandle, ch, x + left, y))
+    step := printBMFontCharToDest(font, fontGlyphs, destHandle, ch, x + left, y);
+
+    if a < length(text) then
+      inc(left, step + font.spacing[0])
+    else
+      inc(left, step);
   end;
 end;
 
