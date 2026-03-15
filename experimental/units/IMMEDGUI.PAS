@@ -210,9 +210,6 @@ begin
   { Important: Do not reset activeWidget on each frame }
   { activeWidget := -1; }
   nextWidgetID := 0;
-
-  { Used by prompt box }
-  clickConsumed := false;
 end;
 
 procedure resetActiveWidget;
@@ -305,11 +302,6 @@ end;
 
 { Begin widgets }
 
-function allowWidgetInteraction: boolean;
-begin
-  allowWidgetInteraction := (not isPromptShown)
-end;
-
 procedure TextLabel(const text: string; const x, y: smallint);
 begin
   assertFontSet;
@@ -394,12 +386,10 @@ begin
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
-  if allowWidgetInteraction then begin
-    if pointInZone(mousePoint, zone) then begin
-      hotWidget := thisWidgetID;
+  if pointInZone(mousePoint, zone) then begin
+    hotWidget := thisWidgetID;
 
-      if mouseJustPressed then activeWidget := thisWidgetID;
-    end;
+    if mouseJustPressed then activeWidget := thisWidgetID;
   end;
 
   { Render logic }
@@ -414,15 +404,10 @@ begin
   rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), IceCreamWhite);
   TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
 
-  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then begin
+  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
-
-    if not clickConsumed then begin
-      Button := true;
-      clickConsumed := true
-    end else
-      Button := false;
-  end else
+    Button := true
+  else
     Button := false;
 end;
 

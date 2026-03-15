@@ -123,7 +123,9 @@ begin
 
   gameTime := gameTime + dt;
 
-  resetWidgetIndices
+  resetWidgetIndices;
+  { Used by prompt box }
+  setClickConsumed(false)
 end;
 
 procedure draw;
@@ -137,6 +139,9 @@ begin
   end;
   
   cls(CornflowerBlue);
+
+  if Button('Under button', 50, 20, 30, 24) then
+    inc(clicks);
 
   if ImageButton((vgaWidth - getImageWidth(imgWinNormal)) div 2, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
     ShowPromptBox('Accept?', PromptTest);

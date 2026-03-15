@@ -8,9 +8,10 @@ interface
 type
   TPromptResult = (PromptWait, PromptYes, PromptNo);
 
-{ Prompt Box }
+procedure setClickConsumed(const value: boolean);
 procedure setPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
 function getPromptKey: integer;
+function allowWidgetInteraction: boolean;
 
 procedure ShowPromptBox(const text: string; const key: integer);
 function PromptButton(const text: string; const x, y: integer): boolean;
@@ -32,7 +33,12 @@ var
   promptText: string;
   clickConsumed: boolean;
 
-{ Prompt Box }
+
+procedure setClickConsumed(const value: boolean);
+begin
+  clickConsumed := value
+end;
+
 procedure setPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
 begin
   imgPromptBG := background;
@@ -46,12 +52,116 @@ begin
   getPromptKey := promptKey
 end;
 
+function allowWidgetInteraction: boolean;
+begin
+  allowWidgetInteraction := (not isPromptShown)
+end;
+
+
 { Show prompt box }
 procedure ShowPromptBox(const text: string; const key: integer);
 begin
   isPromptShown := true;
   promptKey := key;
   promptText := text;
+end;
+
+function UnderButton(const caption: string; const x, y, width, height: smallint): boolean;
+var
+  zone: TZone;
+  thisWidgetID: smallint;
+  buttonColour: longword;
+begin
+  assertFontSet;
+
+  zone.x := x;
+  zone.y := y;
+  zone.width := width;
+  zone.height := height;
+
+  { Update logic }
+  thisWidgetID := nextWidgetID;
+  inc(nextWidgetID);
+
+  if allowWidgetInteraction then begin
+    if pointInZone(mousePoint, zone) then begin
+      hotWidget := thisWidgetID;
+
+      if mouseJustPressed then activeWidget := thisWidgetID;
+    end;
+  end;
+
+  { Render logic }
+  if activeWidget = thisWidgetID then
+    buttonColour := IceCreamRed
+  else if hotWidget = thisWidgetID then
+    buttonColour := IceCreamOrange
+  else
+    buttonColour := IceCreamWhite;
+
+  rectfill(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), buttonColour);
+  rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), IceCreamWhite);
+  TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
+
+  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then begin
+    { activeWidget = -1 }  { Index reset is handled at the end of draw }
+
+    if not clickConsumed then begin
+      UnderButton := true;
+      clickConsumed := true
+    end else
+      UnderButton := false;
+  end else
+    UnderButton := false;
+end;
+
+function UnderImageButton(const x, y: smallint; const imgNormal, imgHovered, imgPressed: longint): boolean;
+var
+  zone: TZone;
+  thisWidgetID: smallint;
+  buttonImgHandle: longword;
+begin
+  assertFontSet;
+
+  zone.x := x;
+  zone.y := y;
+  zone.width := getImageWidth(imgNormal);
+  zone.height := getImageHeight(imgNormal);
+
+  { Update logic }
+  thisWidgetID := nextWidgetID;
+  inc(nextWidgetID);
+
+  if allowWidgetInteraction then begin
+    if pointInZone(mousePoint, zone) then begin
+      hotWidget := thisWidgetID;
+
+      if mouseJustPressed then activeWidget := thisWidgetID;
+    end;
+  end;
+
+  { Render logic }
+  if activeWidget = thisWidgetID then
+    buttonImgHandle := imgPressed
+  else if hotWidget = thisWidgetID then
+    buttonImgHandle := imgHovered
+  else
+    buttonImgHandle := imgNormal;
+
+  spr(buttonImgHandle, x, y);
+  { Use this in case you want your buttons have semitransparent pixels }
+  { sprBlend(buttonImgHandle, x, y); }
+
+  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
+    { activeWidget = -1 }  { Index reset is handled at the end of draw }
+
+    if not clickConsumed then begin
+      UnderImageButton := true;
+      clickConsumed := true
+    end else
+      UnderImageButton := false
+  else
+    UnderImageButton := false;
 end;
 
 function PromptButton(const text: string; const x, y: integer): boolean;
