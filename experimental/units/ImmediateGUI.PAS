@@ -33,6 +33,14 @@ type
     selectedIndex: smallint;
   end;
 
+const
+  { Immediate GUI default theme
+    https://lospec.com/palette-list/ice-cream-gb }
+  IceCreamWhite = $FFFFF6D3;
+  IceCreamOrange = $FFF9A875;
+  IceCreamRed = $FFEB6B6F;
+  IceCreamMaroon = $FF7C3F58;
+
 procedure initImmediateGUI;
 
 function getMousePoint: TPoint;
@@ -101,13 +109,6 @@ const
   Red = $FFFF5555;
   DarkBlue = $FF0000AA;
   SemitransparentBlack = $80000000;
-
-{ Immediate GUI default theme
-  https://lospec.com/palette-list/ice-cream-gb }
-  IceCreamWhite = $FFFFF6D3;
-  IceCreamOrange = $FFF9A875;
-  IceCreamRed = $FFEB6B6F;
-  IceCreamMaroon = $FF7C3F58;
 
 var
   { Immediate GUI }

@@ -21,7 +21,8 @@ function PromptBox: TPromptResult;
 implementation
 
 uses
-  Shapes, ImmediateGUI;
+  Graphics, Shapes,
+  ImmediateGUI, ImgRef, ImgRefFast;
 
 var
   { Prompt box assets }
@@ -87,14 +88,14 @@ begin
     if pointInZone(getMousePoint, zone) then begin
       setHotWidget(thisWidgetID);
 
-      if mouseJustPressed then activeWidget := thisWidgetID;
+      if getMouseJustPressed then setActiveWidget(thisWidgetID);
     end;
   end;
 
   { Render logic }
-  if activeWidget = thisWidgetID then
+  if getActiveWidget = thisWidgetID then
     buttonColour := IceCreamRed
-  else if hotWidget = thisWidgetID then
+  else if getHotWidget = thisWidgetID then
     buttonColour := IceCreamOrange
   else
     buttonColour := IceCreamWhite;
@@ -103,7 +104,7 @@ begin
   rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), IceCreamWhite);
   TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
 
-  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then begin
+  if getMouseJustReleased and (getHotWidget = thisWidgetID) and (getActiveWidget = thisWidgetID) then begin
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
 
     if not clickConsumed then begin
@@ -129,21 +130,21 @@ begin
   zone.height := getImageHeight(imgNormal);
 
   { Update logic }
-  thisWidgetID := nextWidgetID;
-  inc(nextWidgetID);
+  thisWidgetID := getNextWidgetID;
+  incNextWidgetID;
 
   if allowWidgetInteraction then begin
-    if pointInZone(mousePoint, zone) then begin
-      hotWidget := thisWidgetID;
+    if pointInZone(getMousePoint, zone) then begin
+      setHotWidget(thisWidgetID);
 
-      if mouseJustPressed then activeWidget := thisWidgetID;
+      if getMouseJustPressed then setActiveWidget(thisWidgetID);
     end;
   end;
 
   { Render logic }
-  if activeWidget = thisWidgetID then
+  if getActiveWidget = thisWidgetID then
     buttonImgHandle := imgPressed
-  else if hotWidget = thisWidgetID then
+  else if getHotWidget = thisWidgetID then
     buttonImgHandle := imgHovered
   else
     buttonImgHandle := imgNormal;
@@ -152,7 +153,7 @@ begin
   { Use this in case you want your buttons have semitransparent pixels }
   { sprBlend(buttonImgHandle, x, y); }
 
-  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
+  if getMouseJustReleased and (getHotWidget = thisWidgetID) and (getActiveWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
 
     if not clickConsumed then begin
