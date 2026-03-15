@@ -11,8 +11,9 @@ library Game;
 {$H+}{$J-}
 
 uses
+  { SysUtils, Classes, }
   BMFont, Conv, FPS, Graphics,
-  ImgRef, ImgRefFast, ImmedGui,
+  ImgRef, ImgRefFast, ImmedGui, SprEffects,
   Keyboard, Loading, Logger, Mouse,
   Panic, Shapes, Timing,
   WasmMemMgr, VGA,
@@ -38,7 +39,7 @@ var
   clicks: word;
   showFPS: TCheckboxState;
 
-  listItems: array[0..2] of string;
+  { listItems: TStringList; }
   listState: TListViewState;
 
   sliderValue: TSliderState;
@@ -68,6 +69,7 @@ begin
   loadAssets
 end;
 
+{ TODO: Remove this }
 procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
 var
   a, b: word;
@@ -90,6 +92,8 @@ procedure beginPlayingState;
 var
   a: word;
 begin
+  writeLog('beginPlayingState');
+
   { Initialise game state here }
   hideCursor;
 
@@ -102,10 +106,14 @@ begin
   replaceColours(blackFont.imgHandle, $FFFFFFFF, $FF000000);
 
   clicks := 0;
+  showFPS.checked := false;
 
-  for a:=0 to high(listItems) do
-    listItems[a] := 'ListItem' + i32str(a);
-  
+  { TODO: Enable this }
+  { listItems := TStringList.create;
+
+  for a:=1 to 3 do
+    listItems.Add(format('ListItem %d', [a])); }
+
   listState.x := 10;
   listState.y := 10;
   listState.selectedIndex := 0;
@@ -121,6 +129,7 @@ end;
 
 procedure afterInit;
 begin
+  writeLog('afterInit');
   beginPlayingState
 end;
 
@@ -166,39 +175,54 @@ begin
   if Button('Click me!', 180, 88, 50, 24) then
     inc(clicks);
 
-  if ImageButton(240, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
-    inc(clicks);
+  { TODO: Enable this }
+  { if ImageButton(240, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
+    inc(clicks); }
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  { spr(imgDosuEXE[0], 100, 80); }
   sprStretch(imgDosuEXE[0], 100, 80, 24, 48);
 
+  { TODO: Enable this }
+  {
   guiSetFont(defaultFont, defaultFontGlyphs);
   Slider(120, 40, 100, sliderValue, 0, 100);
   TextLabel('Slider value: ' + i32str(sliderValue.value), 120, 30);
+  }
 
+  { TODO: Enable this }
+  {
   s := 'Clicks: ' + i32str(clicks);
   w := guiMeasureText(s);
   TextLabel(s, (vgaWidth - w) div 2, 120);
+  }
 
+  { TODO: Enable this }
+  {
   guiSetFont(picotronFont, picotronFontGlyphs);
   s := 'Picotron font';
   w := guiMeasureText(s);
   TextLabel(s, (vgaWidth - w) div 2, 140);
+  }
 
+  { TODO: Enable this }
+  {
   guiSetFont(defaultFont, defaultFontGlyphs);
   ProgressBar(10, 80, 80, 10, 0.75);
   ProgressBarLabelled(10, 100, 80, 10, 0.75);
   Checkbox('Show FPS', 10, 60, showFPS);
-  ListView(listItems, listState);
+  }
+
+  { TODO: Debug this }
+  { ListView(listItems, listState); }
 
   { TextLabelWrap('This is a very long text!', 10, 160, 100); }
   { TextLabelWrap('This is a very long supercalifragilisticexpialidocious third line!', 10, 160, 100); }
-  TextLabelWrap('1st line'#13#10'2nd line'#10'3rd longer line', 10, 160, 100);
+  { TODO: Enable this }
+  { TextLabelWrap('1st line'#13#10'2nd line'#10'3rd longer line', 10, 160, 100); }
 
   resetActiveWidget;
 

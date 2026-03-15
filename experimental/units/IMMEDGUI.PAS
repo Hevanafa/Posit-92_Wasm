@@ -10,7 +10,8 @@ unit ImmedGUI;
 
 interface
 
-uses BMFont, Shapes;
+uses
+  BMFont, Shapes;
 
 type
   TCheckboxState = record
@@ -75,7 +76,7 @@ procedure CentredLabel(const text: string; const cx, y: integer);
 function Button(const caption: string; const x, y, width, height: integer): boolean;
 function ImageButton(const x, y: integer; const imgNormal, imgHovered, imgPressed: longint): boolean;
 
-procedure ListView(const items: array of string; var state: TListViewState);
+{ procedure ListView(const items: TStringList; var state: TListViewState); }
 
 procedure Checkbox(const caption: string; const x, y: integer; var state: TCheckboxState);
 
@@ -494,9 +495,12 @@ var
 begin
   assertFontSet;
 
+  { if (items = nil) or (items.count = 0) then exit; }
+  if length(items) = 0 then exit;
+
   lineHeight := activeFont.lineHeight + 2;
   widgetWidth := 100;
-  widgetHeight := lineHeight * (high(items) + 1);
+  widgetHeight := lineHeight * (length(items));
 
   zone.x := state.x;
   zone.y := state.y;
@@ -516,7 +520,7 @@ begin
 
         { Calculate which item was clicked }
         clickedIndex := (mouseY - state.y) div lineHeight;
-        if clickedIndex in [0..high(items)] then
+        if clickedIndex in [0..length(items)-1] then
           state.selectedIndex := clickedIndex;
       end;
     end;
@@ -528,7 +532,7 @@ begin
     state.x, state.y + lineHeight * state.selectedIndex,
     state.x + widgetWidth, state.y + lineHeight * (state.selectedIndex + 1), Red);
 
-  for a := 0 to high(items) do
+  for a:=0 to length(items)-1 do
     TextLabel(
       items[a],
       state.x + 2, state.y + 2 + lineHeight * a);
