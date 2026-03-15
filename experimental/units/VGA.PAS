@@ -6,10 +6,11 @@
 unit VGA;
 
 {$Mode ObjFPC}
-{$Notes OFF}
+{$H+}{$J-}
 {$R-}
 {$Q-}
-{$J-}
+
+{$Notes OFF}
 
 interface
 

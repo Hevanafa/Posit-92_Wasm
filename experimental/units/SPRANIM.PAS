@@ -5,8 +5,8 @@
 
 unit SprAnim;
 
-{$Mode TP}
-{$B-}
+{$Mode ObjFPC}
+{$H+}{$J-}
 
 interface
 

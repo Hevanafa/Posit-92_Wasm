@@ -10,7 +10,7 @@
 library Game;
 
 {$Mode ObjFPC}
-{$J-}
+{$H+}{$J-}
 
 const
   ExpectedHoldDuration = 2.5;  { in seconds }

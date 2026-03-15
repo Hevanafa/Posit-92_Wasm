@@ -7,8 +7,8 @@
 
 unit IntroScr;
 
-{$Mode TP}
-{$J-}  { Switch off assignments to typed constants }
+{$Mode ObjFPC}
+{$H+}{$J-}
 
 interface
 

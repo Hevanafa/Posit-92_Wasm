@@ -7,7 +7,8 @@
 
 unit Panic;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$H-}{$J-}
 
 interface
 

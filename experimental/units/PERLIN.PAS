@@ -1,7 +1,7 @@
 unit Perlin;
 
-{$Mode TP}
-{$J-}
+{$Mode ObjFPC}
+{$H+}{$J-}
 
 interface
   type TPerlin = record

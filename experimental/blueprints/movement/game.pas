@@ -1,7 +1,7 @@
 library Game;
 
 {$Mode ObjFPC}
-{$J-}  { Switch off assignments to typed constants }
+{$H+}{$J-}
 
 const
   SC_W = $11;

@@ -1,7 +1,7 @@
 unit SprEffects;
 
-{$Mode TP}
-{$B-}
+{$Mode ObjFPC}
+{$H+}{$J-}
 
 interface
 

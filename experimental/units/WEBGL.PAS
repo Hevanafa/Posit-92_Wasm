@@ -7,7 +7,8 @@
 
 unit WebGL;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$H+}{$J-}
 {$ModeSwitch MultiLineStrings}
 
 interface

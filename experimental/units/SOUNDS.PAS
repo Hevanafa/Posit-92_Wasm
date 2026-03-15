@@ -7,8 +7,8 @@
 
 unit Sounds;
 
-{$Mode TP}
-{$B-}
+{$Mode ObjFPC}
+{$H+}{$J-}
 
 interface
 

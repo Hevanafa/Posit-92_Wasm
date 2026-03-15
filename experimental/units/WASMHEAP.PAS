@@ -13,7 +13,7 @@
 }
 
 {$Mode ObjFPC}
-{$J-}
+{$H+}{$J-}
 
 unit WasmHeap;
 

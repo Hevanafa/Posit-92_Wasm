@@ -6,7 +6,7 @@
 unit Maths;
 
 {$Mode ObjFPC}
-{$J-}
+{$H+}{$J-}
 
 interface
 

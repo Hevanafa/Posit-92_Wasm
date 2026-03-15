@@ -1,7 +1,7 @@
 unit RichText;
 
-{$Mode TP}
-{$J-}
+{$Mode ObjFPC}
+{$H+}{$J-}
 
 interface
 

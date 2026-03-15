@@ -7,8 +7,8 @@
 
 unit Shapes;
 
-{$Mode TP}
-{$B-}
+{$Mode ObjFPC}
+{$H+}{$J-}
 
 interface
 

@@ -1,7 +1,7 @@
 library Game;
 
 {$Mode ObjFPC}
-{$J-}
+{$H+}{$J-}
 
 uses ItemType;
 

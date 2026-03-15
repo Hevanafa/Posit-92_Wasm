@@ -7,7 +7,8 @@
 
 unit Mouse;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$H+}{$J-}
 
 interface
 

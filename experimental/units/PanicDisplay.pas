@@ -1,6 +1,7 @@
 unit PanicDisplay;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$H-}{$J-}
 
 interface
 

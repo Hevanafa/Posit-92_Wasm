@@ -7,7 +7,9 @@
 
 unit Keyboard;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$H+}{$J-}
+{TODO: include all scancodes}
 
 interface
 

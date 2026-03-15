@@ -5,7 +5,8 @@
 
 unit PostProc;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$H+}{$J-}
 
 interface
 
