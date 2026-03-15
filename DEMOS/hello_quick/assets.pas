@@ -1,6 +1,7 @@
 unit Assets;
 
 {$Mode ObjFPC}
+{$H+}{$J-}
 
 interface
 
