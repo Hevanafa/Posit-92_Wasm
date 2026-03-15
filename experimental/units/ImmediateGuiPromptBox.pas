@@ -14,6 +14,10 @@ function getPromptKey: integer;
 function allowWidgetInteraction: boolean;
 
 procedure ShowPromptBox(const text: string; const key: integer);
+
+function UnderButton(const caption: string; const x, y, width, height: smallint): boolean;
+function UnderImageButton(const x, y: smallint; const imgNormal, imgHovered, imgPressed: longint): boolean;
+
 function PromptButton(const text: string; const x, y: integer): boolean;
 function PromptBox: TPromptResult;
 
@@ -22,7 +26,11 @@ implementation
 
 uses
   Graphics, Shapes,
-  ImmediateGUI, ImgRef, ImgRefFast;
+  ImmediateGUI,
+  ImgRef, ImgRefFast, VGA;
+
+const
+  SemitransparentBlack = $80000000;
 
 var
   { Prompt box assets }
@@ -185,19 +193,19 @@ begin
   zone.height := getImageHeight(imgPromptButtonNormal);
 
   { Update logic }
-  thisWidgetID := nextWidgetID;
+  thisWidgetID := getNextWidgetID;
   { PromptButton := ImageButton(x, y, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed); }
-  inc(nextWidgetID);
+  incNextWidgetID;
 
-  if pointInZone(mousePoint, zone) then begin
-    hotWidget := thisWidgetID;
-    if mouseJustPressed then activeWidget := thisWidgetID;
+  if pointInZone(getMousePoint, zone) then begin
+    setHotWidget(thisWidgetID);
+    if getMouseJustPressed then setActiveWidget(thisWidgetID);
   end;
 
   { Render logic }
-  if activeWidget = thisWidgetID then
+  if getActiveWidget = thisWidgetID then
     buttonImgHandle := imgPromptButtonPressed
-  else if hotWidget = thisWidgetID then
+  else if getHotWidget = thisWidgetID then
     buttonImgHandle := imgPromptButtonHovered
   else
     buttonImgHandle := imgPromptButtonNormal;
@@ -209,7 +217,7 @@ begin
   h := getImageHeight(imgPromptButtonPressed);
 
   textX := x + (w - textWidth) div 2;
-  textY := y + (h - activeFont.lineHeight) div 2;
+  textY := y + (h - getActiveFont^.lineHeight) div 2;
 
   { when pressed }
   if getActiveWidget = thisWidgetID then
@@ -217,7 +225,7 @@ begin
 
   TextLabel(text, textX, textY);
 
-  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then begin
+  if getMouseJustReleased and (getHotWidget = thisWidgetID) and (getActiveWidget = thisWidgetID) then begin
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
     if not clickConsumed then begin
       PromptButton := true;

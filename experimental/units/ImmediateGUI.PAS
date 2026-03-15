@@ -47,6 +47,8 @@ function getMousePoint: TPoint;
 function getMouseJustPressed: boolean;
 function getMouseJustReleased: boolean;
 
+function getActiveFont: PBMFont;
+
 function getHotWidget: smallint;
 procedure setHotWidget(const widgetID: smallint);
 function getActiveWidget: smallint;
@@ -108,7 +110,6 @@ const
   White = $FFFFFFFF;
   Red = $FFFF5555;
   DarkBlue = $FF0000AA;
-  SemitransparentBlack = $80000000;
 
 var
   { Immediate GUI }
@@ -154,6 +155,11 @@ end;
 function getMouseJustReleased: boolean;
 begin
   getMouseJustReleased := mouseJustReleased
+end;
+
+function getActiveFont: PBMFont;
+begin
+  getActiveFont := @activeFont;
 end;
 
 function getHotWidget: smallint;
