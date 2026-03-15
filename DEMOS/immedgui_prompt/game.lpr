@@ -140,14 +140,14 @@ begin
   
   cls(CornflowerBlue);
 
-  if Button('Under button', 50, 20, 30, 24) then
+  if UnderButton('Under button', 50, 20, 30, 24) then
     inc(clicks);
 
-  if ImageButton((vgaWidth - getImageWidth(imgWinNormal)) div 2, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
+  if UnderImageButton((vgaWidth - getImageWidth(imgWinNormal)) div 2, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
     ShowPromptBox('Accept?', PromptTest);
 
   s := 'Clicks: ' + i32str(clicks);
-  w := measureBMFont(defaultFontGlyphs, s);
+  w := measureBMFont(defaultFont, defaultFontGlyphs, s);
   TextLabel(s, (vgaWidth - w) div 2, 120);
 
   case PromptBox of
