@@ -24,27 +24,18 @@ function strPtrToString(const strPtr: PByte; const strLen: byte): ShortString;
 implementation
 
 function i32str(const value: longInt): string;
-var
-  result: string;
 begin
-  str(value, result);
-  i32str := result
+  str(value, i32str)
 end;
 
 function f32str(const value: double): string;
-var
-  result: string;
 begin
-  str(value:0:4, result);
-  f32str := result
+  str(value:0:4, f32str)
 end;
 
 function toFixed(const value: double; const decimals: smallint): string;
-var
-  result: string;
 begin
-  str(value:0:decimals, result);
-  toFixed := result
+  str(value:0:decimals, toFixed)
 end;
 
 
@@ -53,13 +44,11 @@ function i16HexStr(const value: word): string;
 const
   digits: array[0..15] of char = '0123456789ABCDEF';
 var
-  result: string;
   a: byte;
 begin
-  result:='';
+  i16HexStr := '';
   for a := 3 downto 0 do
-    result:=result + digits[(value shr (a * 4)) and $F];
-  i16hexStr := result
+    i16HexStr := i16HexStr + digits[(value shr (a * 4)) and $F];
 end;
 
 function i8HexStr(const value: byte): string;
@@ -79,14 +68,14 @@ end;
 
 function parseInt(const text: string): smallint;
 var
-  result, parseResult: smallint;
+  parseResult: smallint;
 begin
-  val(text, result, parseResult);
+  val(text, parseInt, parseResult);
+
   if parseResult <> 0 then begin
     writeLn('Error parsing to smallint:', text);
     parseInt := 0
-  end else
-    parseInt := result;
+  end;
 end;
 
 

@@ -176,7 +176,7 @@ var
   glyphIdx: smallint;
   charcode: byte;
 begin
-  result := 0;
+  measureBMFont := 0;
 
   for a:=1 to length(text) do begin
     charcode := ord(text[a]);
@@ -186,13 +186,11 @@ begin
 
     if (glyphIdx in [low(glyphs)..high(glyphs)]) then begin
       if a < length(text) then
-        inc(result, glyphs[glyphIdx].xadvance + font.spacing[0])
+        inc(measureBMFont, glyphs[glyphIdx].xadvance + font.spacing[0])
       else
-        inc(result, glyphs[glyphIdx].xadvance);
+        inc(measureBMFont, glyphs[glyphIdx].xadvance);
     end;
   end;
-
-  measureBMFont := result
 end;
 
 { Returns xadvance for the next char }
@@ -210,7 +208,7 @@ begin
   charcode := ord(ch);
   glyphIdx := charcode - 32;
 
-  result := 0;
+  printBMFontCharColour := 0;
 
   if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
     glyph := fontGlyphs[glyphIdx];
@@ -222,10 +220,8 @@ begin
       x + glyph.xoffset, y + glyph.yoffset,
       colour);
 
-    result := glyph.xadvance
+    printBMFontCharColour := glyph.xadvance
   end;
-
-  printBMFontCharColour := result
 end;
 
 procedure printBMFontColour(
