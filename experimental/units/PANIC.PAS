@@ -8,16 +8,14 @@
 unit Panic;
 
 {$Mode TP}
-{Define WASM}
 
 interface
 
 {$ifdef WASM}
 procedure jsPanicHalt(const textPtr: PByte; const textLen: integer); external 'env' name 'jsPanicHalt';
 {$endif}
-{$ifdef Windows}
+
 procedure panicHalt(const msg: string);
-{$endif}
 
 
 implementation

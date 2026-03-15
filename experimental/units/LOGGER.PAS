@@ -8,7 +8,6 @@
 unit Logger;
 
 {$Mode TP}
-{Define WASM}
 
 interface
 
