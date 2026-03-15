@@ -76,7 +76,7 @@ procedure CentredLabel(const text: string; const cx, y: smallint);
 function Button(const caption: string; const x, y, width, height: smallint): boolean;
 function ImageButton(const x, y: smallint; const imgNormal, imgHovered, imgPressed: longint): boolean;
 
-{ procedure ListView(const items: TStringList; var state: TListViewState); }
+procedure ListView(const items: array of string; var state: TListViewState);
 
 procedure Checkbox(const caption: string; const x, y: smallint; var state: TCheckboxState);
 

@@ -184,32 +184,25 @@ begin
   Slider(120, 40, 100, sliderValue, 0, 100);
   TextLabel('Slider value: ' + i32str(sliderValue.value), 120, 30);
 
-  {
   s := 'Clicks: ' + i32str(clicks);
   w := guiMeasureText(s);
   TextLabel(s, (vgaWidth - w) div 2, 120);
-  }
 
   guiSetFont(picotronFont, picotronFontGlyphs);
   s := 'Picotron font';
   w := guiMeasureText(s);
   TextLabel(s, (vgaWidth - w) div 2, 140);
 
-  { TODO: Enable this }
-  {
   guiSetFont(defaultFont, defaultFontGlyphs);
   ProgressBar(10, 80, 80, 10, 0.75);
   ProgressBarLabelled(10, 100, 80, 10, 0.75);
   Checkbox('Show FPS', 10, 60, showFPS);
-  }
 
-  { TODO: Debug this }
-  { ListView(listItems, listState); }
+  ListView(listItems, listState);
 
   { TextLabelWrap('This is a very long text!', 10, 160, 100); }
   { TextLabelWrap('This is a very long supercalifragilisticexpialidocious third line!', 10, 160, 100); }
-  { TODO: Enable this }
-  { TextLabelWrap('1st line'#13#10'2nd line'#10'3rd longer line', 10, 160, 100); }
+  TextLabelWrap('1st line'#13#10'2nd line'#10'3rd longer line', 10, 160, 100);
 
   resetActiveWidget;
 
