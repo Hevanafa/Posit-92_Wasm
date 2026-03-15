@@ -7,21 +7,24 @@
 
 unit ImgRefComp;
 
+{$Mode ObjFPC}
+{$H+}{$J-}
+
 interface
 
 { Based on SprComp unit }
-procedure sprAlpha(const imgHandle: longint; const x, y: integer; opacity: double);
-procedure sprBlend(const imgHandle: longint; const x, y: integer);
+procedure sprAlpha(const imgHandle: longint; const x, y: smallint; opacity: double);
+procedure sprBlend(const imgHandle: longint; const x, y: smallint);
 
 
 implementation
 
 uses ImgRef, Maths, VGA;
 
-procedure sprAlpha(const imgHandle: longint; const x, y: integer; opacity: double);
+procedure sprAlpha(const imgHandle: longint; const x, y: smallint; opacity: double);
 var
   image: PImageRef;
-  px, py: integer;
+  px, py: smallint;
   colour: longword;
   alpha: byte;
 begin
@@ -46,10 +49,10 @@ begin
   end;
 end;
 
-procedure sprBlend(const imgHandle: longint; const x, y: integer);
+procedure sprBlend(const imgHandle: longint; const x, y: smallint);
 var
   image: PImageRef;
-  px, py: integer;
+  px, py: smallint;
   colour: longword;
 begin
   if not isImageSet(imgHandle) then exit;

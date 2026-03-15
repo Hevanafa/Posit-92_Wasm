@@ -21,8 +21,8 @@ interface
 type
   PImageRef = ^TImageRef;
   TImageRef = record
-    width: integer;
-    height: integer;
+    width: smallint;
+    height: smallint;
     allocSize: longword;
     dataPtr: PByte;
   end;
@@ -34,23 +34,23 @@ const
   SprFlipVertical = 2;
   SprFlipBoth = SprFlipHorizontal or SprFlipVertical;
 
-procedure registerImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: integer); public name 'registerImageRef';
+procedure registerImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint); public name 'registerImageRef';
 
-function newImage(const width, height: integer): longint;
+function newImage(const width, height: smallint): longint;
 function copyImage(const imgHandle: longint): longint;
 procedure freeImage(const imgHandle: longint);
 
 function isImageSet(const imgHandle: longint): boolean;
 function getImagePtr(const imgHandle: longint): PImageRef;
 
-function getImageWidth(const imgHandle: longint): integer;
-procedure setImageWidth(const imgHandle: longint; const value: integer);
-function getImageHeight(const imgHandle: longint): integer;
-procedure setImageHeight(const imgHandle: longint; const value: integer);
+function getImageWidth(const imgHandle: longint): smallint;
+procedure setImageWidth(const imgHandle: longint; const value: smallint);
+function getImageHeight(const imgHandle: longint): smallint;
+procedure setImageHeight(const imgHandle: longint; const value: smallint);
 
-function unsafeSprPget(const image: PImageRef; const x, y: integer): longword;
-function unsafeSprGetAlpha(const image: PImageRef; const x, y: integer): byte;
-procedure unsafeSprPset(const image: PImageRef; const x, y: integer; const colour: longword);
+function unsafeSprPget(const image: PImageRef; const x, y: smallint): longword;
+function unsafeSprGetAlpha(const image: PImageRef; const x, y: smallint): byte;
+procedure unsafeSprPset(const image: PImageRef; const x, y: smallint; const colour: longword);
 
 
 implementation
@@ -71,7 +71,7 @@ var
   imageRefs: array[1..MaxImageRefs] of TImageRef;
 
 
-function findEmptyImageRefSlot: integer;
+function findEmptyImageRefSlot: longint;
 var
   a: longint;
 begin
@@ -84,9 +84,9 @@ begin
   findEmptyImageRefSlot := -1
 end;
 
-procedure registerImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: integer);
+procedure registerImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint);
 var
-  idx: integer;
+  idx: longint;
 begin
   idx := findEmptyImageRefSlot;
 
@@ -98,7 +98,7 @@ begin
   imageRefs[imgHandle].dataPtr := dataPtr
 end;
 
-function newImage(const width, height: integer): longint;
+function newImage(const width, height: smallint): longint;
 var
   slot: longint;
   allocSize: longword;
@@ -178,7 +178,7 @@ begin
   getImagePtr := @imageRefs[imgHandle]
 end;
 
-function getImageWidth(const imgHandle: longint): integer;
+function getImageWidth(const imgHandle: longint): smallint;
 var
   image: PImageRef;
 begin
@@ -189,7 +189,7 @@ begin
   getImageWidth := image^.width
 end;
 
-procedure setImageWidth(const imgHandle: longint; const value: integer);
+procedure setImageWidth(const imgHandle: longint; const value: smallint);
 var
   image: PImageRef;
 begin
@@ -206,7 +206,7 @@ begin
 end;
 
 
-function getImageHeight(const imgHandle: longint): integer;
+function getImageHeight(const imgHandle: longint): smallint;
 var
   image: PImageRef;
 begin
@@ -217,7 +217,7 @@ begin
   getImageHeight := image^.height
 end;
 
-procedure setImageHeight(const imgHandle: longint; const value: integer);
+procedure setImageHeight(const imgHandle: longint; const value: smallint);
 var
   image: PImageRef;
 begin
@@ -235,7 +235,7 @@ end;
 
 
 { Assuming image isn't nil & the bounds are known }
-function unsafeSprPget(const image: PImageRef; const x, y: integer): longword;
+function unsafeSprPget(const image: PImageRef; const x, y: smallint): longword;
 var
   offset: longword;
 begin
@@ -248,14 +248,14 @@ begin
     or image^.dataPtr[offset + 2]
 end;
 
-function unsafeSprGetAlpha(const image: PImageRef; const x, y: integer): byte;
+function unsafeSprGetAlpha(const image: PImageRef; const x, y: smallint): byte;
 begin
   unsafeSprGetAlpha := image^.dataPtr[
     (x + y * image^.width) * 4 + 3]
 end;
 
 
-procedure unsafeSprPset(const image: PImageRef; const x, y: integer; const colour: longword);
+procedure unsafeSprPset(const image: PImageRef; const x, y: smallint; const colour: longword);
 var
   offset: longword;
 begin
