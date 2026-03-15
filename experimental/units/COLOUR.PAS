@@ -1,5 +1,8 @@
 unit Colour;
 
+{$Mode ObjFPC}
+{$H+}{$J-}
+
 interface
 
 function HSVtoRGB(h, s, v: double): longword;
@@ -14,7 +17,7 @@ uses Maths;
 function HSVtoRGB(h, s, v: double): longword;
 var
   r, g, b: byte;
-  i: integer;
+  i: smallint;
   f, p, q, t: double;
 begin
   h := clamp(h, 0.0, 1.0);

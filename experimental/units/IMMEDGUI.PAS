@@ -19,7 +19,7 @@ type
   end;
 
   TSliderState = record
-    value: integer;
+    value: smallint;
   end;
   TSliderDragState = (
     SliderIdle,
@@ -29,8 +29,8 @@ type
   );
 
   TListViewState = record
-    x, y: integer;
-    selectedIndex: integer;
+    x, y: smallint;
+    selectedIndex: smallint;
   end;
 
 procedure initImmediateGUI;
@@ -39,11 +39,11 @@ function getMousePoint: TPoint;
 function getMouseJustPressed: boolean;
 function getMouseJustReleased: boolean;
 
-function getHotWidget: integer;
-procedure setHotWidget(const widgetID: integer);
-function getActiveWidget: integer;
-procedure setActiveWidget(const widgetID: integer);
-function getNextWidgetID: integer;
+function getHotWidget: smallint;
+procedure setHotWidget(const widgetID: smallint);
+function getActiveWidget: smallint;
+procedure setActiveWidget(const widgetID: smallint);
+function getNextWidgetID: smallint;
 procedure incNextWidgetID;
 
 { Can be used with drawMouse }
@@ -64,27 +64,27 @@ procedure resetActiveWidget;
 procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 
 function guiMeasureText(const text: string): word;
-function guiMeasureTextWrapHeight(text: string; const maxWidth: integer): word;
+function guiMeasureTextWrapHeight(text: string; const maxWidth: smallint): word;
 
 procedure assertFontSet;
 
 { Widgets }
-procedure TextLabel(const text: string; const x, y: integer);
-procedure TextLabelWrap(text: string; const x, y, maxWidth: integer);
-procedure CentredLabel(const text: string; const cx, y: integer);
+procedure TextLabel(const text: string; const x, y: smallint);
+procedure TextLabelWrap(text: string; const x, y, maxWidth: smallint);
+procedure CentredLabel(const text: string; const cx, y: smallint);
 
-function Button(const caption: string; const x, y, width, height: integer): boolean;
-function ImageButton(const x, y: integer; const imgNormal, imgHovered, imgPressed: longint): boolean;
+function Button(const caption: string; const x, y, width, height: smallint): boolean;
+function ImageButton(const x, y: smallint; const imgNormal, imgHovered, imgPressed: longint): boolean;
 
 { procedure ListView(const items: TStringList; var state: TListViewState); }
 
-procedure Checkbox(const caption: string; const x, y: integer; var state: TCheckboxState);
+procedure Checkbox(const caption: string; const x, y: smallint; var state: TCheckboxState);
 
-procedure Slider(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer);
-function SliderDrag(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer): TSliderDragState;
+procedure Slider(const x, y, width: smallint; var state: TSliderState; const minValue, maxValue: smallint);
+function SliderDrag(const x, y, width: smallint; var state: TSliderState; const minValue, maxValue: smallint): TSliderDragState;
 
-procedure ProgressBar(const x, y, width, height: integer; const perc: double);
-procedure ProgressBarLabelled(const x, y, width, height: integer; const perc: double);
+procedure ProgressBar(const x, y, width, height: smallint; const perc: double);
+procedure ProgressBarLabelled(const x, y, width, height: smallint; const perc: double);
 
 
 implementation
@@ -113,16 +113,16 @@ var
   { Immediate GUI }
   { Additional mouse variables }
   mousePoint: TPoint;
-  lastMouseButton: integer;
+  lastMouseButton: smallint;
   mouseJustPressed, mouseJustReleased: boolean;
 
   {
   activeWidget is the "memory" of what the user clicked on
   activeWidget must survive across frames
   }
-  hotWidget, activeWidget, nextWidgetID: integer;
+  hotWidget, activeWidget, nextWidgetID: smallint;
   { Used by SliderDrag }
-  lastActiveWidget: integer;
+  lastActiveWidget: smallint;
 
   isFontSet: boolean;
   activeFont: TBMFont;
@@ -133,7 +133,7 @@ var
 
   { Prompt box variables }
   isPromptShown: boolean;
-  promptKey: integer;  { Use Prompts enum }
+  promptKey: smallint;  { Use Prompts enum }
   promptText: string;
   clickConsumed: boolean;
 
@@ -164,27 +164,27 @@ begin
   getMouseJustReleased := mouseJustReleased
 end;
 
-function getHotWidget: integer;
+function getHotWidget: smallint;
 begin
   getHotWidget := hotWidget
 end;
 
-procedure setHotWidget(const widgetID: integer);
+procedure setHotWidget(const widgetID: smallint);
 begin
   hotWidget := widgetID
 end;
 
-function getActiveWidget: integer;
+function getActiveWidget: smallint;
 begin
   getActiveWidget := activeWidget
 end;
 
-procedure setActiveWidget(const widgetID: integer);
+procedure setActiveWidget(const widgetID: smallint);
 begin
   activeWidget := widgetID
 end;
 
-function getNextWidgetID: integer;
+function getNextWidgetID: smallint;
 begin
   getNextWidgetID := nextWidgetID
 end;
@@ -260,12 +260,12 @@ begin
   guiMeasureText := measureBMFont(activeFont, activeFontGlyphs, text)
 end;
 
-function guiMeasureTextWrapHeight(text: string; const maxWidth: integer): word;
+function guiMeasureTextWrapHeight(text: string; const maxWidth: smallint): word;
 var
   lines: array[0..9] of string;
-  lineCount: integer;
+  lineCount: smallint;
   words: array[0..99] of string;
-  wordCount: integer;
+  wordCount: smallint;
   row, a: word;
   run: string;  { in the sense of something continuous / sequential }
   spaceWidth: word;
@@ -319,18 +319,18 @@ begin
   allowWidgetInteraction := (not isPromptShown)
 end;
 
-procedure TextLabel(const text: string; const x, y: integer);
+procedure TextLabel(const text: string; const x, y: smallint);
 begin
   assertFontSet;
   printBMFont(activeFont, activeFontGlyphs, text, x, y)
 end;
 
-procedure TextLabelWrap(text: string; const x, y, maxWidth: integer);
+procedure TextLabelWrap(text: string; const x, y, maxWidth: smallint);
 var
   lines: array[0..9] of string;
-  lineCount: integer;
+  lineCount: smallint;
   words: array[0..99] of string;
-  wordCount: integer;
+  wordCount: smallint;
   row, a: word;
   run: string;  { in the sense of something continuous / sequential }
   spaceWidth: word;
@@ -377,7 +377,7 @@ begin
   end;
 end;
 
-procedure CentredLabel(const text: string; const cx, y: integer);
+procedure CentredLabel(const text: string; const cx, y: smallint);
 var
   w: word;
 begin
@@ -386,10 +386,10 @@ begin
 end;
 
 
-function Button(const caption: string; const x, y, width, height: integer): boolean;
+function Button(const caption: string; const x, y, width, height: smallint): boolean;
 var
   zone: TZone;
-  thisWidgetID: integer;
+  thisWidgetID: smallint;
   buttonColour: longword;
 begin
   assertFontSet;
@@ -435,10 +435,10 @@ begin
     Button := false;
 end;
 
-function ImageButton(const x, y: integer; const imgNormal, imgHovered, imgPressed: longint): boolean;
+function ImageButton(const x, y: smallint; const imgNormal, imgHovered, imgPressed: longint): boolean;
 var
   zone: TZone;
-  thisWidgetID: integer;
+  thisWidgetID: smallint;
   buttonImgHandle: longword;
 begin
   assertFontSet;
@@ -489,9 +489,9 @@ var
   a: word;
   lineHeight: word;
   widgetWidth, widgetHeight: word;
-  thisWidgetID: integer;
+  thisWidgetID: smallint;
   zone: TZone;
-  clickedIndex: integer;
+  clickedIndex: smallint;
 begin
   assertFontSet;
 
@@ -540,11 +540,11 @@ begin
   rect(state.x, state.y, state.x + widgetWidth, state.y + widgetHeight, White);
 end;
 
-procedure Checkbox(const caption: string; const x, y: integer; var state: TCheckboxState);
+procedure Checkbox(const caption: string; const x, y: smallint; var state: TCheckboxState);
 var
   zone: TZone;
-  w: integer;
-  thisWidgetID: integer;
+  w: smallint;
+  thisWidgetID: smallint;
   checkboxColour: longword;
 begin
   assertFontSet;
@@ -596,12 +596,12 @@ begin
 end;
 
 
-procedure Slider(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer);
+procedure Slider(const x, y, width: smallint; var state: TSliderState; const minValue, maxValue: smallint);
 var
   zone: TZone;
-  thisWidgetID: integer;
+  thisWidgetID: smallint;
   perc, range: double;
-  pendingValue, thumbX: integer;
+  pendingValue, thumbX: smallint;
   colour: longword;
 begin
   if minValue >= maxValue then panicHalt('Slider: minValue has to be less than maxValue!');
@@ -651,12 +651,12 @@ begin
   rect(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), colour)
 end;
 
-function SliderDrag(const x, y, width: integer; var state: TSliderState; const minValue, maxValue: integer): TSliderDragState;
+function SliderDrag(const x, y, width: smallint; var state: TSliderState; const minValue, maxValue: smallint): TSliderDragState;
 var
   zone: TZone;
-  thisWidgetID: integer;
+  thisWidgetID: smallint;
   perc, range: double;
-  pendingValue, thumbX: integer;
+  pendingValue, thumbX: smallint;
   colour: longword;
 begin
   if minValue >= maxValue then panicHalt('Slider: minValue has to be less than maxValue!');
@@ -717,7 +717,7 @@ begin
 end;
 
 
-procedure ProgressBar(const x, y, width, height: integer; const perc: double);
+procedure ProgressBar(const x, y, width, height: smallint; const perc: double);
 var
   w: word;
 begin
@@ -728,7 +728,7 @@ begin
   rect(x, y, x + width, y + height, white);
 end;
 
-procedure ProgressBarLabelled(const x, y, width, height: integer; const perc: double);
+procedure ProgressBarLabelled(const x, y, width, height: smallint; const perc: double);
 var
   percStr: string;
   w: word;

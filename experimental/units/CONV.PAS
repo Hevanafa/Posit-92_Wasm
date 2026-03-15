@@ -12,11 +12,11 @@ interface
 
 function i32str(const value: Longint): string;
 function f32str(const value: double): string;
-function toFixed(const value: double; const decimals: integer): string;
+function toFixed(const value: double; const decimals: smallint): string;
 function i16HexStr(const value: word): string;
 function i8HexStr(const value: byte): string;
 function boolStr(const value: boolean): string;
-function parseInt(const text: string): integer;
+function parseInt(const text: string): smallint;
 
 function strPtrToString(const strPtr: PByte; const strLen: byte): ShortString;
 
@@ -39,7 +39,7 @@ begin
   f32str := result
 end;
 
-function toFixed(const value: double; const decimals: integer): string;
+function toFixed(const value: double; const decimals: smallint): string;
 var
   result: string;
 begin
@@ -77,13 +77,13 @@ begin
     boolStr := 'false'
 end;
 
-function parseInt(const text: string): integer;
+function parseInt(const text: string): smallint;
 var
-  result, parseResult: integer;
+  result, parseResult: smallint;
 begin
   val(text, result, parseResult);
   if parseResult <> 0 then begin
-    writeLn('Error parsing to integer:', text);
+    writeLn('Error parsing to smallint:', text);
     parseInt := 0
   end else
     parseInt := result;
@@ -93,7 +93,7 @@ end;
 function strPtrToString(const strPtr: PByte; const strLen: byte): ShortString;
 var
   text: string;
-  a: integer;
+  a: smallint;
   charPtr: ^byte;
 begin
   setLength(text, strLen);
