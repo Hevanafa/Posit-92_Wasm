@@ -7,7 +7,8 @@
 
 unit UStrings;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$H+}{$J-}
 
 interface
 
@@ -33,7 +34,6 @@ var
   i, p, startPos: integer;
   delimLen: integer;
   token: string;
-  result: word;
 begin
   result := 0;
   i := 1;
@@ -80,7 +80,6 @@ end;
 
 function replaceAll(const source, searchStr, replaceStr: string): string;
 var
-  result: string;
   i, foundPos, searchLen: integer;
 begin
   result := '';
@@ -132,7 +131,6 @@ end;
 function lower(const txt: string): string;
 var
   a: integer;
-  result: string;
 begin
   result := txt;
   for a:=1 to length(result) do
@@ -145,7 +143,6 @@ end;
 function upper(const txt: string): string;
 var
   a: integer;
-  result: string;
 begin
   result := txt;
   for a:=1 to length(result) do

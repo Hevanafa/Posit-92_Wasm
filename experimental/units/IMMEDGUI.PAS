@@ -5,9 +5,8 @@
 
 unit ImmedGUI;
 
-{$Mode TP}
-{$J-}
-{$B-}
+{$Mode ObjFPC}
+{$H+}{$J-}
 
 interface
 
@@ -262,7 +261,6 @@ end;
 
 function guiMeasureTextWrapHeight(text: string; const maxWidth: integer): word;
 var
-  result: word;
   lines: array[0..9] of string;
   lineCount: integer;
   words: array[0..99] of string;

@@ -8,6 +8,7 @@
 library Game;
 
 {$Mode ObjFPC}
+{$H+}{$J-}
 
 uses
   BMFont, Conv, FPS, Graphics,
