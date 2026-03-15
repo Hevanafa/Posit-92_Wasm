@@ -50,7 +50,7 @@ uses
   Logger,
   WasmHeap;
 {$endif}
-{$ifdef WIN64}
+{$ifdef Windows}
 uses
   Logger;
 {$endif}

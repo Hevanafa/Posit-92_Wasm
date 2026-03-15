@@ -8,7 +8,7 @@
 unit Logger;
 
 {$Mode TP}
-{$Define WASM}
+{Define WASM}
 
 interface
 
@@ -22,7 +22,7 @@ function getLogBuffer: pointer; public name 'getLogBuffer';
 procedure flushLog; external 'env' name 'flushLog';
 {$endif}
 
-{$ifdef WIN64}
+{$ifdef Windows}
 procedure initLogger;
 procedure closeLogger;
 
@@ -41,7 +41,7 @@ var
   logBuffer: array[0..255] of byte;
 {$endif}
 
-{$ifdef WIN64}
+{$ifdef Windows}
 uses CRT;
 
 const
@@ -81,7 +81,7 @@ begin
 end;
 {$endif}
 
-{$ifdef WIN64}
+{$ifdef Windows}
 procedure initLogger;
 begin
   assign(logFile, logFilename);

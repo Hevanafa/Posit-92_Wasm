@@ -59,7 +59,7 @@ uses
 {$ifdef WASM}
   WasmHeap,
 {$endif}
-{$ifdef WIN64}
+{$ifdef Windows}
 {$endif}
   VGA;
 
@@ -146,7 +146,7 @@ begin
 {$ifdef WASM}
   WasmFreeMem(imageRefs[imgHandle].dataPtr);
 {$endif}
-{$ifdef WIN64}
+{$ifdef Windows}
   FreeMem(imageRefs[imgHandle].dataPtr);
 {$endif}
 

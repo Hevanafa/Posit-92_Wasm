@@ -16,7 +16,7 @@ var
 function getTimer: double; external 'env' name 'getTimer';
 function getFullTimer: double; external 'env' name 'getFullTimer';
 {$endif}
-{$ifdef WIN64}
+{$ifdef Windows}
 procedure initTiming;
 function getMidnightOffset: double;
 function getTimer: double;
@@ -29,7 +29,7 @@ procedure updateDeltaTime;
 
 implementation
 
-{$ifdef WIN64}
+{$ifdef Windows}
 uses SDL2Wrapper, SysUtils;
 {$endif}
 
@@ -48,7 +48,7 @@ begin
 end;
 
 
-{$ifdef WIN64}
+{$ifdef Windows}
 var
   timingInitialised: boolean;
   midnightOffset: double;  { Offset from midnight the day when the app started }
