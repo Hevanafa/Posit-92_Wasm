@@ -41,6 +41,7 @@ function copyImage(const imgHandle: longint): longint;
 procedure freeImage(const imgHandle: longint);
 
 function isImageSet(const imgHandle: longint): boolean;
+procedure assertImageSet(const varName: string; const imgHandle: longint);
 function getImagePtr(const imgHandle: longint): PImageRef;
 
 function getImageWidth(const imgHandle: longint): smallint;
@@ -173,10 +174,17 @@ begin
   isImageSet := (imageRefs[imgHandle].allocSize > 0)
 end;
 
+procedure assertImageSet(const varName: string; const imgHandle: longint);
+begin
+  if not isImageSet(imgHandle) then
+    panicHalt(varName + ' is unset!');
+end;
+
 function getImagePtr(const imgHandle: longint): PImageRef;
 begin
   getImagePtr := @imageRefs[imgHandle]
 end;
+
 
 function getImageWidth(const imgHandle: longint): smallint;
 var

@@ -235,12 +235,6 @@ begin
   if not isFontSet then panicHalt('activeFont is unset!');
 end;
 
-procedure assertImageSet(const varName: string; const imgHandle: longint);
-begin
-  if not isImageSet(imgHandle) then
-    panicHalt(varName + ' is unset!');
-end;
-
 { Returns the width of the text
   to measure the height, use `font.lineHeight` }
 function guiMeasureText(const text: string): word;
