@@ -8,7 +8,8 @@
 
 unit ImgRef;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$H+}{$J-}
 {$Notes OFF}
 {$B-}  { Enable boolean short-circuiting }
 {$R-}  { Turn off range checks }

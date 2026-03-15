@@ -7,13 +7,13 @@
 
 unit FPS;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$H+}{$J-}
 
 interface
 
 procedure initFPSCounter;
 procedure incrementFPS;
-{ procedure drawFPS; }
 
 function getLastFPS: integer;
 

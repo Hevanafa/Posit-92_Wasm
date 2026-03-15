@@ -5,8 +5,8 @@
 
 unit BMFont;
 
-{$Mode TP}
-{$B-}  { Enable boolean short-circuiting }
+{$Mode ObjFPC}
+{$H+}{$J-}
 
 interface
 
@@ -171,7 +171,7 @@ function measureBMFont(
   const glyphs: array of TBMFontGlyph;
   const text: string): integer;
 var
-  a, result: word;
+  a: word;
   glyphIdx: integer;
   charcode: byte;
 begin
@@ -205,7 +205,6 @@ var
   charcode: byte;
   glyphIdx: integer;
   glyph: TBMFontGlyph;
-  result: word;
 begin
   charcode := ord(ch);
   glyphIdx := charcode - 32;

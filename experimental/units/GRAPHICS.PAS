@@ -5,9 +5,9 @@
 
 unit Graphics;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$H+}{$J-}
 {$PointerMath ON}
-{$B-}  { Enable boolean short-circuiting }
 
 interface
 

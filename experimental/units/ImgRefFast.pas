@@ -7,8 +7,8 @@
 
 unit ImgRefFast;
 
-{$Mode TP}
-{$J-}
+{$Mode ObjFPC}
+{$H+}{$J-}
 {$B-}  { Enable boolean short-circuiting }
 {$R-}  { Turn off range checks }
 {$Q-}  { Turn off overflow checks }
