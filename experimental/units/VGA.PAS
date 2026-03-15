@@ -5,7 +5,7 @@
 
 unit VGA;
 
-{$Mode TP}
+{$Mode ObjFPC}
 {$Notes OFF}
 {$R-}
 {$Q-}
@@ -32,15 +32,15 @@ function getSurfacePtr: PByteArray; public name 'getSurfacePtr';
 procedure cls(const colour: longword);
 procedure clsBlend(const colour: longword);
 
-function unsafePget(const x, y: integer): longword;
-function pget(const x, y: integer): longword;
+function unsafePget(const x, y: smallint): longword;
+function pget(const x, y: smallint): longword;
 
-procedure legacyUnsafePset(const x, y: integer; const colour: longword);
-procedure unsafePset(const x, y: integer; const colour: longword);
-procedure pset(const x, y: integer; const colour: longword);
+procedure legacyUnsafePset(const x, y: smallint; const colour: longword);
+procedure unsafePset(const x, y: smallint; const colour: longword);
+procedure pset(const x, y: smallint; const colour: longword);
 
-procedure unsafePsetBlend(const x, y: integer; const colour: longword);
-procedure psetBlend(const x, y: integer; const colour: longword);
+procedure unsafePsetBlend(const x, y: smallint; const colour: longword);
+procedure psetBlend(const x, y: smallint; const colour: longword);
 
 
 implementation
@@ -86,7 +86,7 @@ begin
   getSurfacePtr := surface
 end;
 
-function unsafePget(const x, y: integer): longword;
+function unsafePget(const x, y: smallint): longword;
 var
   offset: longword;
 begin
@@ -100,7 +100,7 @@ begin
 end;
 
 { Gets the colour of a pixel }
-function pget(const x, y: integer): longword;
+function pget(const x, y: smallint): longword;
 begin
   if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then begin
     pget := 0;
@@ -110,7 +110,7 @@ begin
   pget := unsafePget(x, y)
 end;
 
-procedure legacyUnsafePset(const x, y: integer; const colour: longword);
+procedure legacyUnsafePset(const x, y: smallint; const colour: longword);
 var
   offset: longword;
 begin
@@ -123,7 +123,7 @@ begin
   surface^[offset + 3] := (colour shr 24) and $FF;
 end;
 
-procedure unsafePset(const x, y: integer; const colour: longword);
+procedure unsafePset(const x, y: smallint; const colour: longword);
 begin
   { ARGB to RGBA }
   PLongWord(@surface^[(y * vgaWidth + x) * 4])^ :=
@@ -134,14 +134,14 @@ begin
 end;
 
 { colour: AARRGGBB }
-procedure pset(const x, y: integer; const colour: longword);
+procedure pset(const x, y: smallint; const colour: longword);
 begin
   if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then exit;
   unsafePset(x, y, colour)
 end;
 
 
-procedure legacyUnsafePsetBlend(const x, y: integer; const colour: longword);
+procedure legacyUnsafePsetBlend(const x, y: smallint; const colour: longword);
 var
   srcA, srcR, srcG, srcB: byte;
   destA, destR, destG, destB: byte;
@@ -189,7 +189,7 @@ begin
   surface^[offset + 3] := outA;
 end;
 
-procedure unsafePsetBlend(const x, y: integer; const colour: longword);
+procedure unsafePsetBlend(const x, y: smallint; const colour: longword);
 var
   srcA, srcR, srcG, srcB: byte;
   destA, destR, destG, destB: byte;
@@ -229,7 +229,7 @@ begin
     or ((srcA + round(destA * invAlpha)) shl 24)
 end;
 
-procedure psetBlend(const x, y: integer; const colour: longword);
+procedure psetBlend(const x, y: smallint; const colour: longword);
 begin
   if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then exit;
 
@@ -247,7 +247,7 @@ end;
 
 procedure clsBlend(const colour: longword);
 var
-  a, b: integer;
+  a, b: word;
 begin
   for b:=0 to vgaHeight - 1 do
   for a:=0 to vgaWidth - 1 do
