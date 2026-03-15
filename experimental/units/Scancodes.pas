@@ -1,12 +1,13 @@
 {
   Scancodes for use in Pascal units
-  Part of Posit-92 framework
-  By Hevanafa, 25-11-2025
+  Part of Posit-92 game engine
 }
 
 unit Scancodes;
 
 interface
+
+{ Based on DOS scancodes }
 
 const
   SC_ESCAPE = $01;
