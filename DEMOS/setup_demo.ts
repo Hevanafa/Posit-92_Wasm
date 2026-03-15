@@ -15,7 +15,7 @@ import { styleText } from "node:util";
 
 const demoName = Bun.argv[2];
 
-if (demoName == "") {
+if (demoName == null || demoName == "") {
   console.log(styleText("red", "Error: Demo name is required"));
   console.log(styleText("white", "Usage: bun setup_demo.ts sound"));
   process.exit(1)
@@ -44,9 +44,9 @@ const demoScripts = [
 
 const scriptDir = import.meta.dir;
 const demoPath = join(scriptDir, demoName);
-const experimentalDir = join(scriptDir, "../experimental")
-const canonicalPosit = join(experimentalDir, "posit-92.js");
-const mixinsDir = join(experimentalDir, "mixins");
+const engineDir = join(scriptDir, "../experimental/engine")
+const canonicalPosit = join(engineDir, "posit-92.js");
+const mixinsDir = join(engineDir, "mixins");
 
 const scriptsDir = join(scriptDir, "../scripts");
 
@@ -62,7 +62,7 @@ for (const filename of [
   "posit-92.d.ts",
   "posit-92.js.map"
 ]) {
-  const srcPath = join(experimentalDir, filename);
+  const srcPath = join(engineDir, filename);
   const destPath = join(demoPath, filename);
 
   if (!existsSync(srcPath)) {
