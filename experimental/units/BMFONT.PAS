@@ -6,7 +6,8 @@
 unit BMFont;
 
 {$Mode ObjFPC}
-{$H+}{$J-}
+{$H-}
+{$J-}
 
 interface
 
@@ -15,8 +16,8 @@ type
   TBMFontGlyph = record
     id: word;
     x, y, width, height: word;
-    xoffset, yoffset: integer;
-    xadvance: integer;
+    xoffset, yoffset: smallint;
+    xadvance: smallint;
   end;
 
   PBMFont = ^TBMFont;
@@ -42,25 +43,25 @@ procedure printBMFont(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const text: string;
-  const x, y: integer);
+  const x, y: smallint);
 
 function measureBMFont(
   const font: TBMFont;
   const glyphs: array of TBMFontGlyph;
-  const text: string): integer;
+  const text: string): smallint;
 
 function printBMFontCharColour(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const ch: char;
-  const x, y: integer;
+  const x, y: smallint;
   const colour: longword): word;
 
 procedure printBMFontColour(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const text: string;
-  const x, y: integer;
+  const x, y: smallint;
   const colour: longword);
 
 function printBMFontCharToDest(
@@ -68,14 +69,14 @@ function printBMFontCharToDest(
   const fontGlyphs: array of TBMFontGlyph;
   const destHandle: longint;
   const ch: char;
-  const x, y: integer): integer;
+  const x, y: smallint): smallint;
 
 procedure printBMFontToDest(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const destHandle: longint;
   const text: string;
-  const x, y: integer);
+  const x, y: smallint);
 
 
 implementation
@@ -89,10 +90,10 @@ function printBMFontChar(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const ch: char;
-  const x, y: integer): integer;
+  const x, y: smallint): smallint;
 var
   charcode: byte;
-  glyphIdx: integer;
+  glyphIdx: smallint;
   glyph: TBMFontGlyph;
 begin
   charcode := ord(ch);
@@ -147,16 +148,18 @@ procedure printBMFont(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const text: string;
-  const x, y: integer);
+  const x, y: smallint);
 var
   a: word;
   ch: char;
-  left, step: integer;
+  left, step: smallint;
 begin
   left := 0;
 
   for a:=1 to length(text) do begin
     ch := text[a];
+    writeLog(i32str(a) + ' - ' + i32str(ord(ch)));
+
     step := printBMFontChar(font, fontGlyphs, ch, x + left, y);
 
     if a < length(text) then
@@ -166,13 +169,14 @@ begin
   end;
 end;
 
+
 function measureBMFont(
   const font: TBMFont;
   const glyphs: array of TBMFontGlyph;
-  const text: string): integer;
+  const text: string): smallint;
 var
   a: word;
-  glyphIdx: integer;
+  glyphIdx: smallint;
   charcode: byte;
 begin
   result := 0;
@@ -199,11 +203,11 @@ function printBMFontCharColour(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const ch: char;
-  const x, y: integer;
+  const x, y: smallint;
   const colour: longword): word;
 var
   charcode: byte;
-  glyphIdx: integer;
+  glyphIdx: smallint;
   glyph: TBMFontGlyph;
 begin
   charcode := ord(ch);
@@ -231,11 +235,11 @@ procedure printBMFontColour(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const text: string;
-  const x, y: integer;
+  const x, y: smallint;
   const colour: longword);
 var
   a: word;
-  left, step: integer;
+  left, step: smallint;
 begin
   left := 0;
 
@@ -259,10 +263,10 @@ function printBMFontCharToDest(
   const fontGlyphs: array of TBMFontGlyph;
   const destHandle: longint;
   const ch: char;
-  const x, y: integer): integer;
+  const x, y: smallint): smallint;
 var
   charcode: byte;
-  glyphIdx: integer;
+  glyphIdx: smallint;
   glyph: TBMFontGlyph;
 begin
   printBMFontCharToDest := 0;
@@ -294,11 +298,11 @@ procedure printBMFontToDest(
   const fontGlyphs: array of TBMFontGlyph;
   const destHandle: longint;
   const text: string;
-  const x, y: integer);
+  const x, y: smallint);
 var
   a: word;
   ch: char;
-  left, step: integer;
+  left, step: smallint;
 begin
   left := 0;
 
