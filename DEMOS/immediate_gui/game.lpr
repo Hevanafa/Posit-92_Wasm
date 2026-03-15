@@ -11,7 +11,7 @@ library Game;
 {$H+}{$J-}
 
 uses
-  { SysUtils, Classes, }
+  SysUtils, { Classes, }
   BMFont, Conv, FPS, Graphics,
   ImgRef, ImgRefFast, ImmedGui, SprEffects,
   Keyboard, Loading, Logger, Mouse,
@@ -39,7 +39,7 @@ var
   clicks: word;
   showFPS: TCheckboxState;
 
-  { listItems: TStringList; }
+  listItems: array of string;
   listState: TListViewState;
 
   sliderValue: TSliderState;
@@ -92,8 +92,6 @@ procedure beginPlayingState;
 var
   a: word;
 begin
-  writeLog('beginPlayingState');
-
   { Initialise game state here }
   hideCursor;
 
@@ -108,11 +106,9 @@ begin
   clicks := 0;
   showFPS.checked := false;
 
-  { TODO: Enable this }
-  { listItems := TStringList.create;
-
-  for a:=1 to 3 do
-    listItems.Add(format('ListItem %d', [a])); }
+  SetLength(listItems, 3);
+  for a:=0 to High(listItems) do
+    listItems[a] := format('ListItem %d', [a + 1]);
 
   listState.x := 10;
   listState.y := 10;
@@ -129,7 +125,6 @@ end;
 
 procedure afterInit;
 begin
-  writeLog('afterInit');
   beginPlayingState
 end;
 
@@ -175,9 +170,8 @@ begin
   if Button('Click me!', 180, 88, 50, 24) then
     inc(clicks);
 
-  { TODO: Enable this }
-  { if ImageButton(240, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
-    inc(clicks); }
+  if ImageButton(240, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
+    inc(clicks);
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
@@ -186,27 +180,20 @@ begin
 
   sprStretch(imgDosuEXE[0], 100, 80, 24, 48);
 
-  { TODO: Enable this }
-  {
   guiSetFont(defaultFont, defaultFontGlyphs);
   Slider(120, 40, 100, sliderValue, 0, 100);
   TextLabel('Slider value: ' + i32str(sliderValue.value), 120, 30);
-  }
 
-  { TODO: Enable this }
   {
   s := 'Clicks: ' + i32str(clicks);
   w := guiMeasureText(s);
   TextLabel(s, (vgaWidth - w) div 2, 120);
   }
 
-  { TODO: Enable this }
-  {
   guiSetFont(picotronFont, picotronFontGlyphs);
   s := 'Picotron font';
   w := guiMeasureText(s);
   TextLabel(s, (vgaWidth - w) div 2, 140);
-  }
 
   { TODO: Enable this }
   {
