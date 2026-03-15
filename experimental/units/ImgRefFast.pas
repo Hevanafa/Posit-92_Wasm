@@ -172,11 +172,11 @@ end;
 
 procedure sprRegionStretch(
   const imgHandle: longint;
-  const srcX, srcY, srcWidth, srcHeight: integer;
-  const destX, destY, destWidth, destHeight: integer);
+  const srcX, srcY, srcWidth, srcHeight: smallint;
+  const destX, destY, destWidth, destHeight: smallint);
 var
-  sx, sy: integer;
-  dx, dy: integer;
+  sx, sy: smallint;
+  dx, dy: smallint;
   image: PImageRef;
   alpha: byte;
   scaleX, scaleY: double;
@@ -210,13 +210,13 @@ end;
 
 procedure sprRegionSolid(
   const imgHandle: longint;
-  const srcX, srcY, srcW, srcH: integer;
-  const destX, destY: integer;
+  const srcX, srcY, srcW, srcH: smallint;
+  const destX, destY: smallint;
   const colour: longword);
 var
   image: PImageRef;
-  a, b: integer;
-  sx, sy: integer;
+  a, b: smallint;
+  sx, sy: smallint;
   srcPos: longint;
   alpha: byte;
 begin
@@ -242,10 +242,10 @@ begin
 end;
 
 { flip: use SprFlips enum }
-procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
+procedure sprFlip(const imgHandle: longint; const x, y: smallint; const flip: smallint);
 var
-  sx, sy: integer;
-  dx, dy: integer;
+  sx, sy: smallint;
+  dx, dy: smallint;
   srcPos: longint;
   image: PImageRef;
   alpha: byte;
@@ -291,17 +291,17 @@ end;
 procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
 var
   sx, sy: double;
-  dx, dy: integer;
+  dx, dy: smallint;
   srcPos: longint;
-  srcX, srcY: integer;
+  srcX, srcY: smallint;
   image: PImageRef;
 
   alpha: byte;
   colour: longword;
 
   cosAngle, sinAngle: double;
-  halfW, halfH: integer;
-  maxRadius: integer;
+  halfW, halfH: smallint;
+  maxRadius: smallint;
 begin
   if not isImageSet(imgHandle) then exit;
   image := getImagePtr(imgHandle);
@@ -339,11 +339,11 @@ begin
 end;
 
 
-procedure sprToDest(const src, dest: longint; const x, y: integer);
+procedure sprToDest(const src, dest: longint; const x, y: smallint);
 var
   srcImage, destImage: PImageRef;
   startX, endX, startY, endY: word;
-  a, b: integer;
+  a, b: smallint;
   srcOffset: longword;
   alpha: byte;
   colour: longword;
@@ -371,12 +371,12 @@ end;
 
 procedure sprRegionToDest(
   const src, dest: longint;
-  const srcX, srcY, srcW, srcH: integer;
-  const destX, destY: integer);
+  const srcX, srcY, srcW, srcH: smallint;
+  const destX, destY: smallint);
 var
   srcImage, destImage: PImageRef;
-  px, py: integer;
-  sx, sy: integer;
+  px, py: smallint;
+  sx, sy: smallint;
   srcPos: longint;
   alpha: byte;
   colour: longword;
@@ -403,11 +403,12 @@ begin
   end;
 end;
 
-procedure sprFlipInPlace(const imgHandle: longint; const flip: integer);
+{ flip: Use SprFlip enum }
+procedure sprFlipInPlace(const imgHandle: longint; const flip: smallint);
 var
   image: PImageRef;
-  px, py: integer;
-  halfW, halfH: integer;
+  px, py: smallint;
+  halfW, halfH: smallint;
   tempColour: longword;
   pos1, pos2: longint;
 begin

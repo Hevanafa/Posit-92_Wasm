@@ -22,7 +22,7 @@ procedure setImgPosit92Logo(const imgHandle: longint); public name 'setImgPosit9
 procedure setImgFPCLogo(const imgHandle: longint); public name 'setImgFPCLogo';
 procedure setImgWasmLogo(const imgHandle: longint); public name 'setImgWasmLogo';
 
-procedure renderIntro(const introSlide: integer);
+procedure renderIntro(const introSlide: smallint);
 procedure unloadIntro;
 
 
@@ -46,7 +46,7 @@ begin
   imgWasmLogo := imgHandle
 end;
 
-procedure renderIntro(const introSlide: integer);
+procedure renderIntro(const introSlide: smallint);
 begin
   cls($FF000000);
 

@@ -10,15 +10,15 @@ type
 
 procedure setClickConsumed(const value: boolean);
 procedure setPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
-function getPromptKey: integer;
+function getPromptKey: smallint;
 function allowWidgetInteraction: boolean;
 
-procedure ShowPromptBox(const text: string; const key: integer);
+procedure ShowPromptBox(const text: string; const key: smallint);
 
 function UnderButton(const caption: string; const x, y, width, height: smallint): boolean;
 function UnderImageButton(const x, y: smallint; const imgNormal, imgHovered, imgPressed: longint): boolean;
 
-function PromptButton(const text: string; const x, y: integer): boolean;
+function PromptButton(const text: string; const x, y: smallint): boolean;
 function PromptBox: TPromptResult;
 
 
@@ -56,7 +56,7 @@ begin
   imgPromptButtonPressed := btnPressed;
 end;
 
-function getPromptKey: integer;
+function getPromptKey: smallint;
 begin
   getPromptKey := promptKey
 end;
@@ -68,7 +68,7 @@ end;
 
 
 { Show prompt box }
-procedure ShowPromptBox(const text: string; const key: integer);
+procedure ShowPromptBox(const text: string; const key: smallint);
 begin
   isPromptShown := true;
   promptKey := key;
@@ -173,15 +173,15 @@ begin
     UnderImageButton := false;
 end;
 
-function PromptButton(const text: string; const x, y: integer): boolean;
+function PromptButton(const text: string; const x, y: smallint): boolean;
 var
   zone: TZone;
-  thisWidgetID: integer;
+  thisWidgetID: smallint;
   buttonImgHandle: longword;
 
   textWidth: word;
   w, h: word;
-  textX, textY: integer;
+  textX, textY: smallint;
 begin
   assertImageSet('imgPromptButtonNormal', imgPromptButtonNormal);
   assertImageSet('imgPromptButtonHovered', imgPromptButtonHovered);

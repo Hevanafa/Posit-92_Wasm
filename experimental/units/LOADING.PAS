@@ -5,6 +5,9 @@
 
 unit Loading;
 
+{$Mode ObjFPC}
+{$H+}{$J-}
+
 interface
 
 procedure renderLoadingScreen;
@@ -15,8 +18,8 @@ uses
   Conv, VGA,
   Assets;
 
-function getLoadingActual: integer; external 'env' name 'getLoadingActual';
-function getLoadingTotal: integer; external 'env' name 'getLoadingTotal';
+function getLoadingActual: smallint; external 'env' name 'getLoadingActual';
+function getLoadingTotal: smallint; external 'env' name 'getLoadingTotal';
 
 procedure renderLoadingScreen;
 var

@@ -16,9 +16,9 @@ function max(const a, b: double): double;
 function deg2rad(const deg: double): double;
 function rad2deg(const rad: double): double;
 function i32power(const i, exp: longint): longint;
-function f32power(const i: double; exp: integer): double;
-function floor(const value: double): integer;
-function ceil(const value: double): integer;
+function f32power(const i: double; exp: longint): double;
+function floor(const value: double): longint;
+function ceil(const value: double): longint;
 function ArcTan2(const y, x: double): double;
 
 
