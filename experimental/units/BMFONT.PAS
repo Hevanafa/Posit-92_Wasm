@@ -158,8 +158,6 @@ begin
 
   for a:=1 to length(text) do begin
     ch := text[a];
-    writeLog(i32str(a) + ' - ' + i32str(ord(ch)));
-
     step := printBMFontChar(font, fontGlyphs, ch, x + left, y);
 
     if a < length(text) then

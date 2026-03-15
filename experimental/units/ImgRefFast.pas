@@ -68,14 +68,10 @@ begin
   if not isImageSet(imgHandle) then exit;
 
   image := getImagePtr(imgHandle);
-  { data := PByte(image^.dataPtr); }
 
-  { writeLog('offset: ' + i32str(offset)); }
   if image^.allocSize = 0 then
     panicHalt('imgHandle ' + i32str(imgHandle) + ' allocSize is 0!');
   
-  { writeLog('allocSize: ' + i32str(image^.allocSize)); }
-
   for py:=0 to image^.height - 1 do
   for px:=0 to image^.width - 1 do begin
     if (x + px >= vgaWidth) or (x + px < 0)
