@@ -1,12 +1,12 @@
 // Copied from experimental/posit-92.js
-// Last synced: 2026-03-02
+// Last synced: 2026-03-15
 
 "use strict";
 class Posit92 {
     static version = "0.1.5_experimental";
     #wasmSource = "game.wasm";
     #wasmMemSize = 2 * 1048576;
-    #stackSize = 192 * 1024;
+    #stackSize = 256 * 1024;
     #videoMemSize = 0;
     #poolSize = 512 * 1024;
     #vgaWidth;
@@ -359,13 +359,24 @@ class Posit92 {
         const fontGlyphs = new Map();
         let glyphCount = 0;
         let imgHandle = 0;
+        let spacing = [0, 0];
         for (const line of lines) {
             txtLine = line.replaceAll(/\s+/g, " ");
             pairs = txtLine.split(" ").map(part => part.split("="));
             if (txtLine.startsWith("info")) {
-                const result = txtLine.match(/face=\"(.*?)\"/);
-                fontface = result?.[1] ?? "";
-                console.log("Loading BMFont", fontface);
+                for (const [k, v] of pairs) {
+                    switch (k) {
+                        case "face":
+                            const result = txtLine.match(/face=\"(.*?)\"/);
+                            fontface = result?.[1] ?? "";
+                            console.log("Loading BMFont", fontface);
+                            break;
+                        case "spacing":
+                            const [x, y] = v.split(",").map(s => Number(s));
+                            spacing[0] = x;
+                            spacing[1] = y;
+                    }
+                }
             }
             else if (txtLine.startsWith("common")) {
                 [k, v] = (pairs.find(pair => pair[0] == "lineHeight"));
@@ -418,6 +429,8 @@ class Posit92 {
         offset += 16;
         offset += 64;
         fontMem.setUint16(offset, lineHeight, true);
+        fontMem.setUint8(offset + 2, spacing[0]);
+        fontMem.setUint8(offset + 3, spacing[1]);
         fontMem.setInt32(offset + 4, imgHandle, true);
         const glyphsMem = new DataView(this.#wasm.exports.memory.buffer, glyphsPtr);
         for (const charID of fontGlyphs.keys()) {

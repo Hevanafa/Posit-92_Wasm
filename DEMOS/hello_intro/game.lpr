@@ -5,7 +5,7 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  SysUtils, FGL,
+  SysUtils,
   IntroScr, Loading, Fullscreen,
   Conv, FPS, Logger,
   Keyboard, Mouse,
