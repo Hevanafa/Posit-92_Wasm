@@ -7,7 +7,8 @@
 
 unit Logger;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$H-}{$J-}
 
 interface
 

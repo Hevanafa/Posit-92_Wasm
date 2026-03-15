@@ -1,5 +1,8 @@
 unit IIF;
 
+{$Mode ObjFPC}
+{$H-}{$J-}
+
 interface
 
 function i16Iif(const expr: boolean; const truePart, falsePart: smallint): smallint;

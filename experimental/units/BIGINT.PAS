@@ -8,7 +8,8 @@
 
 unit BigInt;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$H-}{$J+}
 
 interface
 

@@ -1,14 +1,12 @@
 {
-  Immediate GUI Implementation
+  Immediate GUI Prompt Box Implementation
   Part of Posit-92 game engine
-  By Hevanafa, 22-11-2025
-
-  Based on my QB64 Immediate GUI implementation
 }
 
 library Game;
 
 {$Mode ObjFPC}
+{$H+}{$J-}
 
 uses
   BMFont, Conv, FPS, Fullscreen,

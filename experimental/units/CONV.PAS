@@ -5,8 +5,8 @@
 
 unit Conv;
 
-{$Mode TP}
-{$B-}
+{$Mode ObjFPC}
+{$H-}{$J+}
 
 interface
 

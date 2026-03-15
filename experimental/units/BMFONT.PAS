@@ -6,8 +6,7 @@
 unit BMFont;
 
 {$Mode ObjFPC}
-{$H-}
-{$J-}
+{$H+}{$J-}
 
 interface
 
@@ -22,8 +21,8 @@ type
 
   PBMFont = ^TBMFont;
   TBMFont = record
-    face: string[15];  { 16 bytes }
-    filename: string[63];  { 64 bytes }
+    face: ShortString[15];  { 16 bytes }
+    filename: ShortString[63];  { 64 bytes }
     lineHeight: word;  { 2 bytes }
     spacing: array[0..1] of byte; { x, y }
     imgHandle: longint;  { 84th byte }

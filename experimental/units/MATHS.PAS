@@ -5,8 +5,8 @@
 
 unit Maths;
 
-{$Mode TP}
-{$B-}
+{$Mode ObjFPC}
+{$J-}
 
 interface
 
