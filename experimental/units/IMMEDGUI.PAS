@@ -128,15 +128,6 @@ var
   activeFont: TBMFont;
   activeFontGlyphs: array[32..126] of TBMFontGlyph;
 
-  { Prompt box assets }
-  imgPromptBG, imgPromptButtonNormal, imgPromptButtonHovered, imgPromptButtonPressed: longint;
-
-  { Prompt box variables }
-  isPromptShown: boolean;
-  promptKey: smallint;  { Use Prompts enum }
-  promptText: string;
-  clickConsumed: boolean;
-
 
 procedure initImmediateGUI;
 begin

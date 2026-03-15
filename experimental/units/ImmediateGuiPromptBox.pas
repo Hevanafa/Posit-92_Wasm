@@ -1,10 +1,11 @@
 unit ImmediateGUIPromptBox;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$H+}{$J-}
 
 interface
 
-const
+type
   TPromptResult = (PromptWait, PromptYes, PromptNo);
 
 { Prompt Box }
@@ -17,6 +18,19 @@ function PromptBox: TPromptResult;
 
 
 implementation
+
+uses
+  Shapes, ImmedGUI;
+
+var
+  { Prompt box assets }
+  imgPromptBG, imgPromptButtonNormal, imgPromptButtonHovered, imgPromptButtonPressed: longint;
+
+  { Prompt box variables }
+  isPromptShown: boolean;
+  promptKey: smallint;  { Use Prompts enum }
+  promptText: string;
+  clickConsumed: boolean;
 
 { Prompt Box }
 procedure setPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
