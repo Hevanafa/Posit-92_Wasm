@@ -267,7 +267,7 @@ end;
 function guiMeasureText(const text: string): word;
 begin
   assertFontSet;
-  guiMeasureText := measureBMFont(activeFontGlyphs, text)
+  guiMeasureText := measureBMFont(activeFont, activeFontGlyphs, text)
 end;
 
 function guiMeasureTextWrapHeight(text: string; const maxWidth: integer): word;
@@ -746,7 +746,7 @@ begin
   ProgressBar(x, y, width, height, perc);
   
   percStr := i32str(round(perc * 100)) + '%';
-  w := measureBMFont(activeFontGlyphs, percStr);
+  w := measureBMFont(activeFont, activeFontGlyphs, percStr);
   TextLabel(percStr, x + (width - w) div 2, y + (height - activeFont.lineHeight) div 2);
 end;
 
