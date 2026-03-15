@@ -3,7 +3,7 @@
   Hevanafa
 }
 
-unit ImmedGUI;
+unit ImmediateGUI;
 
 {$Mode ObjFPC}
 {$H+}{$J-}

@@ -14,7 +14,7 @@ uses
   BMFont, Conv, FPS, Fullscreen,
   Graphics, Loading,
   ImgRef, ImgRefFast,
-  ImmedGui, ImmediateGUIPromptBox,
+  ImmediateGUI, ImmediateGUIPromptBox,
   Keyboard, Logger, Mouse,
   Panic, Shapes, SprEffects, Timing,
   WasmMemMgr, VGA,

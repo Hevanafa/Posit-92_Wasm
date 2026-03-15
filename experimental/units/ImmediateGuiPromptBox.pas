@@ -21,7 +21,7 @@ function PromptBox: TPromptResult;
 implementation
 
 uses
-  Shapes, ImmedGUI;
+  Shapes, ImmediateGUI;
 
 var
   { Prompt box assets }
@@ -80,12 +80,12 @@ begin
   zone.height := height;
 
   { Update logic }
-  thisWidgetID := nextWidgetID;
-  inc(nextWidgetID);
+  thisWidgetID := getNextWidgetID;
+  incNextWidgetID;
 
   if allowWidgetInteraction then begin
-    if pointInZone(mousePoint, zone) then begin
-      hotWidget := thisWidgetID;
+    if pointInZone(getMousePoint, zone) then begin
+      setHotWidget(thisWidgetID);
 
       if mouseJustPressed then activeWidget := thisWidgetID;
     end;
