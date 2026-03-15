@@ -428,12 +428,10 @@ begin
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
-  if allowWidgetInteraction then begin
-    if pointInZone(mousePoint, zone) then begin
-      hotWidget := thisWidgetID;
+  if pointInZone(mousePoint, zone) then begin
+    hotWidget := thisWidgetID;
 
-      if mouseJustPressed then activeWidget := thisWidgetID;
-    end;
+    if mouseJustPressed then activeWidget := thisWidgetID;
   end;
 
   { Render logic }
@@ -450,12 +448,7 @@ begin
 
   if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
-
-    if not clickConsumed then begin
-      ImageButton := true;
-      clickConsumed := true
-    end else
-      ImageButton := false
+    ImageButton := true
   else
     ImageButton := false;
 end;
@@ -487,19 +480,18 @@ begin
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
-  if allowWidgetInteraction then
-    if pointInZone(mousePoint, zone) then begin
-      hotWidget := thisWidgetID;
+  if pointInZone(mousePoint, zone) then begin
+    hotWidget := thisWidgetID;
 
-      if mouseJustPressed then begin
-        activeWidget := thisWidgetID;
+    if mouseJustPressed then begin
+      activeWidget := thisWidgetID;
 
-        { Calculate which item was clicked }
-        clickedIndex := (mouseY - state.y) div lineHeight;
-        if clickedIndex in [0..length(items)-1] then
-          state.selectedIndex := clickedIndex;
-      end;
+      { Calculate which item was clicked }
+      clickedIndex := (mouseY - state.y) div lineHeight;
+      if clickedIndex in [0..length(items)-1] then
+        state.selectedIndex := clickedIndex;
     end;
+  end;
 
   { Update Render logic }
   rectfill(state.x, state.y, state.x + widgetWidth, state.y + widgetHeight, Black);
@@ -536,12 +528,10 @@ begin
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
-  if allowWidgetInteraction then begin
-    if pointInZone(mousePoint, zone) then begin
-      hotWidget := thisWidgetID;
+  if pointInZone(mousePoint, zone) then begin
+    hotWidget := thisWidgetID;
 
-      if mouseJustPressed then activeWidget := thisWidgetID;
-    end;
+    if mouseJustPressed then activeWidget := thisWidgetID;
   end;
 
   { Render logic }
@@ -564,10 +554,7 @@ begin
 
   if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then begin
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
-    if not clickConsumed then begin
-      state.checked := not state.checked;
-      clickConsumed := true
-    end;
+    state.checked := not state.checked;
   end;
 end;
 
@@ -591,12 +578,10 @@ begin
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
-  if allowWidgetInteraction then begin
-    if pointInZone(mousePoint, zone) then begin
-      hotWidget := thisWidgetID;
+  if pointInZone(mousePoint, zone) then begin
+    hotWidget := thisWidgetID;
 
-      if mouseJustPressed then activeWidget := thisWidgetID;
-    end;
+    if mouseJustPressed then activeWidget := thisWidgetID;
   end;
 
   { Value update logic }
@@ -646,13 +631,11 @@ begin
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
-  if allowWidgetInteraction then begin
-    if pointInZone(mousePoint, zone) then begin
-      hotWidget := thisWidgetID;
+  if pointInZone(mousePoint, zone) then begin
+    hotWidget := thisWidgetID;
 
-      if mouseJustPressed then
-        activeWidget := thisWidgetID;
-    end;
+    if mouseJustPressed then
+      activeWidget := thisWidgetID;
   end;
 
   { Value update logic }
