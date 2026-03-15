@@ -29,27 +29,27 @@ procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, de
 
 procedure sprRegionStretch(
   const imgHandle: longint;
-  const srcX, srcY, srcWidth, srcHeight: integer;
-  const destX, destY, destWidth, destHeight: integer);
+  const srcX, srcY, srcWidth, srcHeight: smallint;
+  const destX, destY, destWidth, destHeight: smallint);
 
 procedure sprRegionSolid(
   const imgHandle: longint;
-  const srcX, srcY, srcW, srcH: integer;
-  const destX, destY: integer;
+  const srcX, srcY, srcW, srcH: smallint;
+  const destX, destY: smallint;
   const colour: longword);
 
-procedure sprFlip(const imgHandle: longint; const x, y: integer; const flip: integer);
+procedure sprFlip(const imgHandle: longint; const x, y: smallint; const flip: smallint);
 
 { rotation is in radians }
-procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
+procedure sprRotate(const imgHandle: longint; const cx, cy: smallint; const rotation: double);
 
 
-procedure sprToDest(const src, dest: longint; const x, y: integer);
+procedure sprToDest(const src, dest: longint; const x, y: smallint);
 procedure sprRegionToDest(
   const src, dest: longint;
-  const srcX, srcY, srcW, srcH: integer;
-  const destX, destY: integer);
-procedure sprFlipInPlace(const imgHandle: longint; const flip: integer);
+  const srcX, srcY, srcW, srcH: smallint;
+  const destX, destY: smallint);
+procedure sprFlipInPlace(const imgHandle: longint; const flip: smallint);
 
 
 implementation
@@ -288,7 +288,7 @@ begin
   end;
 end;
 
-procedure sprRotate(const imgHandle: longint; const cx, cy: integer; const rotation: double);
+procedure sprRotate(const imgHandle: longint; const cx, cy: smallint; const rotation: double);
 var
   sx, sy: double;
   dx, dy: smallint;

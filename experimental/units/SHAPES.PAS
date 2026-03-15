@@ -113,12 +113,9 @@ end;
 
 
 function getPhysicsCPoint(const body: TPhysicsBody): TPoint;
-var
-  result: TPoint;
 begin
-  result.x := getPhysicsBodyCX(body);
-  result.y := getPhysicsBodyCY(body);
-  getPhysicsCPoint := result
+  getPhysicsCPoint.x := getPhysicsBodyCX(body);
+  getPhysicsCPoint.y := getPhysicsBodyCY(body);
 end;
 
 function getPhysicsBodyCX(const body: TPhysicsBody): double;
@@ -132,35 +129,27 @@ begin
 end;
 
 function newPoint(const x, y: double): TPoint;
-var
-  result: TPoint;
 begin
-  result.x := x;
-  result.y := y;
-  newPoint := result
+  newPoint.x := x;
+  newPoint.y := y;
 end;
 
 function newZone(const x, y, width, height: double): TZone;
-var
-  result: TZone;
 begin
-  result.x := x;
-  result.y := y;
-  result.width := width;
-  result.height := height;
-  newZone := result
+  newZone.x := x;
+  newZone.y := y;
+  newZone.width := width;
+  newZone.height := height;
 end;
 
 function physicsBodyToZone(const body: TPhysicsBody): TZone;
-var
-  result: TZone;
 begin
-  result.x := body.x;
-  result.y := body.y;
-  result.width := body.width;
-  result.height := body.height;
-
-  physicsBodyToZone := result
+  with physicsBodyToZone do begin
+    x := body.x;
+    y := body.y;
+    width := body.width;
+    height := body.height;
+  end;
 end;
 
 function zoneIntersects(const self, other: TZone): boolean;
