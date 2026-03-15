@@ -35,8 +35,9 @@ end;
 
 function whFreeMemSize(p: pointer; size: ptruint): ptruint;
 begin
-  WasmFreeMem(p);
-  whFreeMemSize := 0
+  { Read size before freeing }
+  whFreeMemSize := WasmMemSize(p);
+  WasmFreeMem(p)
 end;
 
 function whReAllocMem(var p: pointer; size: ptruint): pointer;
@@ -49,6 +50,10 @@ begin
   whAllocMem := WasmAllocMem(size)
 end;
 
+function whMemSize(p: pointer): ptruint;
+begin
+  whMemSize := WasmMemSize(p)
+end;
 
 procedure initHeapMgr;
 begin
@@ -57,6 +62,7 @@ begin
   customMemMgr.FreeMemSize := @whFreeMemSize;
   customMemMgr.ReAllocMem := @whReAllocMem;
   customMemMgr.AllocMem := @whAllocMem;
+  customMemMgr.MemSize := @whMemSize;
 
   SetMemoryManager(customMemMgr)
 end;

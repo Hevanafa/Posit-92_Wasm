@@ -25,6 +25,7 @@ function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
 procedure WasmFreeMem(const ptr: pointer); public name 'WasmFreeMem';
 function WasmReAllocMem(const ptr: pointer; const newBytes: longword): pointer;
 function WasmAllocMem(const bytes: longword): pointer; public name 'WasmAllocMem';
+function WasmMemSize(const ptr: pointer): PtrUInt;
 
 function getHeapSize: longword;
 function getFreeHeapSize: longword;
@@ -401,6 +402,27 @@ begin
     fillchar(WasmAllocMem^, bytes, 0)
 end;
 
+function WasmMemSize(const ptr: pointer): PtrUInt;
+var
+  idx: smallint;
+  block: PMemBlock;
+begin
+  if ptr = nil then begin
+    WasmMemSize := 0;
+    exit
+  end;
+
+  { Pool: Find which bucket owns this address }
+  idx := findBucketByPtr(ptr);
+  if idx >=0 then begin
+    WasmMemSize := buckets[idx].slotSize;
+    exit
+  end;
+
+  { Heap path }
+  block := PMemBlock(pbyte(ptr) - BlockHeaderSize);
+  WasmMemSize := block^.size
+end;
 
 function getHeapSize: longword;
 begin
