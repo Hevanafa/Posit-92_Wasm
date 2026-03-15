@@ -16,38 +16,38 @@ uses Shapes;
 function getAlpha(const colour: longword): byte;
 function solidify(const colour: longword): longword;
 
-procedure circ(const cx, cy, radius: integer; const colour: longword);
-procedure circfill(const cx, cy, radius: integer; const colour: longword);
+procedure circ(const cx, cy, radius: smallint; const colour: longword);
+procedure circfill(const cx, cy, radius: smallint; const colour: longword);
 
-procedure rect(x0, y0, x1, y1: integer; const colour: longword);
-procedure rectfill(x0, y0, x1, y1: integer; const colour: longword);
-procedure hline(x0, x1, y: integer; const colour: longword);
-{ procedure hline2(x0, x1, y: integer; const colour: longword); }
-procedure vline(x, y0, y1: integer; const colour: longword);
-{ procedure vline2(x, y0, y1: integer; const colour: longword); }
+procedure rect(x0, y0, x1, y1: smallint; const colour: longword);
+procedure rectfill(x0, y0, x1, y1: smallint; const colour: longword);
+procedure hline(x0, x1, y: smallint; const colour: longword);
+{ procedure hline2(x0, x1, y: smallint; const colour: longword); }
+procedure vline(x, y0, y1: smallint; const colour: longword);
+{ procedure vline2(x, y0, y1: smallint; const colour: longword); }
 
-procedure line(x0, y0, x1, y1: integer; const colour: longword);
-procedure lineThick(x0, y0, x1, y1, thickness: integer; const colour: longword);
+procedure line(x0, y0, x1, y1: smallint; const colour: longword);
+procedure lineThick(x0, y0, x1, y1, thickness: smallint; const colour: longword);
 
-procedure ellipse(const cx, cy, rx, ry: integer; const colour: longword);
-procedure ellipsefill(const cx, cy, rx, ry: integer; const colour: longword);
+procedure ellipse(const cx, cy, rx, ry: smallint; const colour: longword);
+procedure ellipsefill(const cx, cy, rx, ry: smallint; const colour: longword);
 
-procedure tri(x0, y0, x1, y1, x2, y2: integer; const colour: longword);
-procedure trifill(x1, y1, x2, y2, x3, y3: integer; const colour: longword);
+procedure tri(x0, y0, x1, y1, x2, y2: smallint; const colour: longword);
+procedure trifill(x1, y1, x2, y2, x3, y3: smallint; const colour: longword);
 
 procedure polygon(points: array of TPoint; const colour: longword);
-procedure polygonPtr(points: PPoint; const count: integer; const colour: longword);
+procedure polygonPtr(points: PPoint; const count: smallint; const colour: longword);
 
 procedure arc(
-  const cx, cy, radius: integer;
+  const cx, cy, radius: smallint;
   const startRad, endRad: double;
   const colour: longword);
 procedure pie(
-  const cx, cy, radius: integer;
+  const cx, cy, radius: smallint;
   const startRad, endRad: double;
   const colour: longword);
 
-procedure rectRound(x0, y0, x1, y1, radius: integer; const colour: longword);
+procedure rectRound(x0, y0, x1, y1, radius: smallint; const colour: longword);
 
 
 implementation
@@ -67,9 +67,9 @@ begin
     solidify := colour
 end;
 
-procedure circ(const cx, cy, radius: integer; const colour: longword);
+procedure circ(const cx, cy, radius: smallint; const colour: longword);
 var
-  x, y, p: integer;
+  x, y, p: smallint;
   solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
@@ -99,10 +99,10 @@ begin
   end;
 end;
 
-procedure circfill(const cx, cy, radius: integer; const colour: longword);
+procedure circfill(const cx, cy, radius: smallint; const colour: longword);
 var
-  x, y, p: integer;
-  a: integer;
+  x, y, p: smallint;
+  a: smallint;
   solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
@@ -133,9 +133,9 @@ begin
   end;
 end;
 
-procedure rect(x0, y0, x1, y1: integer; const colour: longword);
+procedure rect(x0, y0, x1, y1: smallint; const colour: longword);
 var
-  a, b, temp: integer;
+  a, b, temp: smallint;
   solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
@@ -157,9 +157,9 @@ begin
   end;
 end;
 
-procedure rectfill(x0, y0, x1, y1: integer; const colour: longword);
+procedure rectfill(x0, y0, x1, y1: smallint; const colour: longword);
 var
-  b, temp: integer;
+  b, temp: smallint;
   solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
@@ -175,9 +175,9 @@ begin
     hline(x0, x1, b, solid);
 end;
 
-procedure legacyHline(x0, x1, y: integer; const colour: longword);
+procedure legacyHline(x0, x1, y: smallint; const colour: longword);
 var
-  x: integer;
+  x: smallint;
   solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
@@ -191,9 +191,9 @@ begin
     pset(x, y, solid);
 end;
 
-procedure hline(x0, x1, y: integer; const colour: longword);
+procedure hline(x0, x1, y: smallint; const colour: longword);
 var
-  x: integer;
+  x: smallint;
   solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
@@ -213,9 +213,9 @@ begin
     unsafePset(x, y, solid);
 end;
 
-procedure legacyVline(x, y0, y1: integer; const colour: longword);
+procedure legacyVline(x, y0, y1: smallint; const colour: longword);
 var
-  temp, a: integer;
+  temp, a: smallint;
   solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
@@ -234,9 +234,9 @@ begin
   end;
 end;
 
-procedure vline(x, y0, y1: integer; const colour: longword);
+procedure vline(x, y0, y1: smallint; const colour: longword);
 var
-  y, temp: integer;
+  y, temp: smallint;
   solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
@@ -256,9 +256,9 @@ begin
 end;
 
 
-procedure line(x0, y0, x1, y1: integer; const colour: longword);
+procedure line(x0, y0, x1, y1: smallint; const colour: longword);
 var
-  dx, dy, sx, sy, err, e2: integer;
+  dx, dy, sx, sy, err, e2: smallint;
   solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
@@ -300,12 +300,12 @@ begin
   pset(x0, y0, solid)
 end;
 
-procedure lineThick(x0, y0, x1, y1, thickness: integer; const colour: longword);
+procedure lineThick(x0, y0, x1, y1, thickness: smallint; const colour: longword);
 var
   dx, dy, len: double;
   perpX, perpY: double;  { perpendicular }
   offset: double;
-  a, halfThick: integer;
+  a, halfThick: smallint;
   solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
@@ -346,11 +346,11 @@ begin
 end;
 
 
-procedure ellipse(const cx, cy, rx, ry: integer; const colour: longword);
+procedure ellipse(const cx, cy, rx, ry: smallint; const colour: longword);
 var
-  x, y: integer;
-  rx2, ry2, tworx2, twory2: integer;
-  p: integer;
+  x, y: smallint;
+  rx2, ry2, tworx2, twory2: smallint;
+  p: smallint;
   solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
@@ -405,11 +405,11 @@ begin
 end;
 
 
-procedure ellipsefill(const cx, cy, rx, ry: integer; const colour: longword);
+procedure ellipsefill(const cx, cy, rx, ry: smallint; const colour: longword);
 var
-  x, y: integer;
-  rx2, ry2, tworx2, twory2: integer;
-  p: integer;
+  x, y: smallint;
+  rx2, ry2, tworx2, twory2: smallint;
+  p: smallint;
   solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
@@ -459,7 +459,7 @@ begin
   end;
 end;
 
-procedure tri(x0, y0, x1, y1, x2, y2: integer; const colour: longword);
+procedure tri(x0, y0, x1, y1, x2, y2: smallint; const colour: longword);
 var
   solid: longword;
 begin
@@ -471,9 +471,9 @@ begin
   line(x0, y0, x2, y2, solid)
 end;
 
-procedure trifill(x1, y1, x2, y2, x3, y3: integer; const colour: longword);
+procedure trifill(x1, y1, x2, y2, x3, y3: smallint; const colour: longword);
 var
-  temp, minY, maxY, y: integer;
+  temp, minY, maxY, y: smallint;
   xa, xb: single;
   dxa, dxb: single;
   solid: longword;
@@ -532,7 +532,7 @@ end;
 
 procedure polygon(points: array of TPoint; const colour: longword);
 var
-  a, last: integer;
+  a, last: smallint;
   solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
@@ -550,9 +550,9 @@ begin
     round(points[0].x), round(points[0].y), solid);
 end;
 
-procedure polygonPtr(points: PPoint; const count: integer; const colour: longword);
+procedure polygonPtr(points: PPoint; const count: smallint; const colour: longword);
 var
-  a: integer;
+  a: smallint;
   solid: longword;
   p: PPoint;
 begin
@@ -576,12 +576,12 @@ end;
 
 
 procedure arc(
-  const cx, cy, radius: integer;
+  const cx, cy, radius: smallint;
   const startRad, endRad: double;
   const colour: longword);
 var
   angle, step: double;
-  x, y, prevX, prevY: integer;
+  x, y, prevX, prevY: smallint;
   first: boolean;
   solid: longword;
 begin
@@ -622,12 +622,12 @@ begin
 end;
 
 procedure pie(
-  const cx, cy, radius: integer;
+  const cx, cy, radius: smallint;
   const startRad, endRad: double;
   const colour: longword);
 var
   angle, step: double;
-  x, y, prevX, prevY: integer;
+  x, y, prevX, prevY: smallint;
   first: boolean;
   solid: longword;
 begin
@@ -668,9 +668,9 @@ begin
 end;
 
 
-procedure rectRound(x0, y0, x1, y1, radius: integer; const colour: longword);
+procedure rectRound(x0, y0, x1, y1, radius: smallint; const colour: longword);
 var
-  temp, maxRadius: integer;
+  temp, maxRadius: smallint;
   solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
