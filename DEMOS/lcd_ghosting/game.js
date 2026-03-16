@@ -39,6 +39,25 @@ class Game extends Posit92 {
   accumulatorSurface;
 
   /**
+   * @type { HTMLCanvasElement }
+   */
+  accumulatorSurfaceCopy;
+
+  initGhostSurfaces() {
+    this.cleanSurface = document.createElement("canvas");
+    this.cleanSurface.width = this.vgaWidth;
+    this.cleanSurface.height = this.vgaHeight;
+
+    this.accumulatorSurface = document.createElement("canvas");
+    this.accumulatorSurface.width = this.vgaWidth;
+    this.accumulatorSurface.height = this.vgaHeight;
+
+    this.accumulatorSurfaceCopy = document.createElement("canvas");
+    this.accumulatorSurfaceCopy.width = this.vgaWidth;
+    this.accumulatorSurfaceCopy.height = this.vgaHeight;
+  }
+
+  /**
    * @override
    */
   #vgaFlush() {
@@ -50,22 +69,27 @@ class Game extends Posit92 {
 
     const imgData = new ImageData(imageData, this.vgaWidth, this.vgaHeight);
 
-    if (this.cleanSurface == null) {
-      this.cleanSurface = document.createElement("canvas");
-      this.cleanSurface.width = this.vgaWidth;
-      this.cleanSurface.height = this.vgaHeight;
-
-      this.accumulatorSurface = document.createElement("canvas");
-      this.accumulatorSurface.width = this.vgaWidth;
-      this.accumulatorSurface.height = this.vgaHeight;
-    }
+    if (this.cleanSurface == null)
+      this.initGhostSurfaces();
 
     this.cleanSurface.getContext("2d").putImageData(imgData, 0, 0);
 
-    const accumulatorCtx = this.accumulatorSurface.getContext("2d");
-    accumulatorCtx.globalAlpha = 1 / 30.0;
+    /**
+     * @type { CanvasRenderingContext2D }
+     */
+    let accumulatorCtx;
+
+    // Do the surface copy (snapshot)
+    accumulatorCtx = this.accumulatorSurfaceCopy.getContext("2d");
     accumulatorCtx.drawImage(this.accumulatorSurface, 0, 0);
-    accumulatorCtx.globalAlpha = 1.0;  // This
+
+    // Draw the copy back with the decay alpha
+    accumulatorCtx = this.accumulatorSurface.getContext("2d");
+    accumulatorCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
+    accumulatorCtx.globalAlpha = 1 / 30.0;
+    accumulatorCtx.drawImage(this.accumulatorSurfaceCopy, 0, 0);
+
+    accumulatorCtx.globalAlpha = 1.0;
     accumulatorCtx.drawImage(this.cleanSurface, 0, 0);
 
     // Displayed game canvas

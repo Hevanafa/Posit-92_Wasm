@@ -167,7 +167,7 @@ begin
     end else
   end;
 
-  cls(CornflowerBlue);
+  cls($00000000);
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
