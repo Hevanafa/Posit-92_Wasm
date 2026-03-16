@@ -1,14 +1,14 @@
 library Game;
 
 {$Mode ObjFPC}
-{$H+}
+{$H+}  { Use AnsiStrings }
 {$J-}  { Switch off assignments to typed constants }
 
 uses
   SysUtils,
   IntroScr, Loading, Fullscreen,
   Conv, FPS, Logger,
-  Keyboard, Mouse,
+  Keyboard, Mouse, Scancodes,
   ImgRef, ImgRefFast, SprEffects,
   PostProc, Timing, WasmMemMgr,
   VGA,
@@ -22,10 +22,6 @@ type
   );
 
 const
-  SC_ESC = $01;
-  SC_SPACE = $39;
-  SC_ENTER = $1C;
-
   CornflowerBlue = $FF6495ED;
 
 var
@@ -140,8 +136,8 @@ begin
   { Handle inputs }
   updateMouse;
 
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
+  if lastEsc <> isKeyDown(SC_ESCAPE) then begin
+    lastEsc := isKeyDown(SC_ESCAPE);
 
     if lastEsc then begin
       writeLog('ESC is pressed!');
