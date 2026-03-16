@@ -74,13 +74,13 @@ procedure resetActiveWidget;
 procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 
 function guiMeasureText(const text: string): word;
-function guiMeasureTextWrapHeight(text: string; const maxWidth: smallint): word;
+function guiMeasureTextWrapHeight(text: ShortString; const maxWidth: smallint): word;
 
 procedure assertFontSet;
 
 { Widgets }
 procedure TextLabel(const text: string; const x, y: smallint);
-procedure TextLabelWrap(text: string; const x, y, maxWidth: smallint);
+procedure TextLabelWrap(text: ShortString; const x, y, maxWidth: smallint);
 procedure CentredLabel(const text: string; const cx, y: smallint);
 
 function Button(const caption: string; const x, y, width, height: smallint): boolean;
@@ -249,11 +249,11 @@ begin
   guiMeasureText := measureBMFont(activeFont, activeFontGlyphs, text)
 end;
 
-function guiMeasureTextWrapHeight(text: string; const maxWidth: smallint): word;
+function guiMeasureTextWrapHeight(text: ShortString; const maxWidth: smallint): word;
 var
-  lines: array[0..9] of string;
+  lines: array[0..9] of ShortString;
   lineCount: smallint;
-  words: array[0..99] of string;
+  words: array[0..99] of ShortString;
   wordCount: smallint;
   row, a: word;
   run: string;  { in the sense of something continuous / sequential }
@@ -309,11 +309,11 @@ begin
   printBMFont(activeFont, activeFontGlyphs, text, x, y)
 end;
 
-procedure TextLabelWrap(text: string; const x, y, maxWidth: smallint);
+procedure TextLabelWrap(text: ShortString; const x, y, maxWidth: smallint);
 var
-  lines: array[0..9] of string;
+  lines: array[0..9] of ShortString;
   lineCount: smallint;
-  words: array[0..99] of string;
+  words: array[0..99] of ShortString;
   wordCount: smallint;
   row, a: word;
   run: string;  { in the sense of something continuous / sequential }

@@ -13,7 +13,8 @@ library Game;
 uses
   SysUtils, { Classes, }
   BMFont, Conv, FPS, Graphics,
-  ImgRef, ImgRefFast, ImmedGui, SprEffects,
+  ImgRef, ImgRefFast, SprEffects,
+  ImmediateGui,
   Keyboard, Loading, Logger, Mouse,
   Panic, Shapes, Timing,
   WasmMemMgr, VGA,
