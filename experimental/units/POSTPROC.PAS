@@ -24,13 +24,13 @@ procedure applyGreyscale(const imgHandle: longint);
 procedure applyFullScanlines;
 procedure applyFullSubtleScanlines;
 procedure applyFullTint(const tint: longword);
-procedure applyFullBoxBlur(const radius: integer);
+procedure applyFullBoxBlur(const radius: word);
 procedure applyFullChromabe;
 
 function getFalloffName(const which: FalloffTypes): string;
 procedure applyFullVignette(const falloffType: FalloffTypes; const strength: double);
 
-procedure applyFullPhosphor(const radius: integer);
+procedure applyFullPhosphor(const radius: word);
 
 implementation
 
@@ -51,7 +51,7 @@ var
 procedure applyGreyscale(const imgHandle: longint);
 var
   image: PImageRef;
-  px, py: integer;
+  px, py: smallint;
   r, g, b, a: byte;
   grey: byte;
   colour: longword;
@@ -163,9 +163,9 @@ begin
 end;
 
 
-procedure applyFullBoxBlur(const radius: integer);
+procedure applyFullBoxBlur(const radius: smallint);
 var
-  a, b, c, d: integer;
+  a, b, c, d: smallint;
   colour: longword;
   count: word;
   red, green, blue: word;
@@ -215,10 +215,10 @@ end;
 
 procedure applyFullChromabe;
 var
-  px, py: integer;
+  px, py: smallint;
   redPixel, greenPixel, bluePixel: longword;
   r, g, b, a: byte;
-  redX, blueX: integer;
+  redX, blueX: smallint;
   colour: longword;
 begin
   if imgChromabePtr = nil then begin
@@ -268,11 +268,10 @@ begin
   getFalloffName := result
 end;
 
+{ strength: Either 0.3 or 0.7 }
 procedure applyFullVignette(const falloffType: FalloffTypes; const strength: double);
-{ const
-  strength: double = 0.7; } { Either 0.3 or 0.7 }
 var
-  px, py: integer;
+  px, py: smallint;
   centreX, centreY: double;
   offsetX, offsetY: double;
   normX, normY: double;
@@ -373,13 +372,13 @@ begin
 end;
 
 { Based on box blur }
-procedure applyFullPhosphor(const radius: integer);
+procedure applyFullPhosphor(const radius: smallint);
 const
   { blendAmount: double = 0.7; } { 70% original, 30% blur }
   blendAmount: double = 0.3;  { 30% original, 70% blur }
   brightnessMult: double = 1.2;
 var
-  a, b, c, d: integer;
+  a, b, c, d: smallint;
   colour: longword;
   count: word;
   red, green, blue: word;

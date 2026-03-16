@@ -17,7 +17,7 @@ procedure playSound(const key: longint); external 'env' name 'playSound';
 procedure playMusic(const key: longint); external 'env' name 'playMusic';
 function getMusicRepeat: boolean; external 'env' name 'getMusicRepeat';
 procedure setMusicRepeat(const value: boolean); external 'env' name 'setMusicRepeat';
-procedure handleMusicRepeat(const musicKey: integer);
+procedure handleMusicRepeat(const musicKey: smallint);
 procedure pauseMusic; external 'env' name 'pauseMusic';
 procedure stopMusic; external 'env' name 'stopMusic';
 
@@ -35,7 +35,7 @@ implementation
 
 { Handle music repeat (only when it is playing)
   Important: #musicPlayer.loop must be turned off! }
-procedure handleMusicRepeat(const musicKey: integer);
+procedure handleMusicRepeat(const musicKey: smallint);
 begin
   if getMusicPlaying and (getMusicTime >= getMusicDuration - 0.05) then
     if getMusicRepeat then begin

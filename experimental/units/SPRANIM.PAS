@@ -31,23 +31,23 @@ procedure updateSpriteAnim(
   const sprite: TSpriteAnim;
   const t: double;
   var startTick: double;
-  var frameIdxRef: integer);
+  var frameIdxRef: smallint);
 
 procedure rewindSpriteAnim(
   var startTickRef: double;
   const startTick: double;
-  var frameIdxRef: integer);
+  var frameIdxRef: smallint);
 
 procedure drawSpriteAnim(
   const sprite: TSpriteAnim;
-  const frameIdx: integer;
-  const x, y: integer);
+  const frameIdx: smallint;
+  const x, y: smallint);
 
 procedure drawSpriteAnimToDest(
   const sprite: TSpriteAnim;
   const destHandle: longint;
-  const frameIdx: integer;
-  const x, y: integer);
+  const frameIdx: smallint;
+  const x, y: smallint);
 
 
 implementation
@@ -72,7 +72,7 @@ procedure updateSpriteAnim(
   const sprite: TSpriteAnim;
   const t: double;
   var startTick: double;
-  var frameIdxRef: integer);
+  var frameIdxRef: smallint);
 begin
   if t >= startTick + sprite.interval then begin
     if frameIdxRef < sprite.frameCount - 1 then begin
@@ -88,7 +88,7 @@ end;
 procedure rewindSpriteAnim(
   var startTickRef: double;
   const startTick: double;
-  var frameIdxRef: integer);
+  var frameIdxRef: smallint);
 begin
   startTickRef := startTick;
   frameIdxRef := 0
@@ -96,8 +96,8 @@ end;
 
 procedure drawSpriteAnim(
   const sprite: TSpriteAnim;
-  const frameIdx: integer;
-  const x, y: integer);
+  const frameIdx: smallint;
+  const x, y: smallint);
 begin
   if frameIdx >= sprite.frameCount then exit;
 
@@ -110,8 +110,8 @@ end;
 procedure drawSpriteAnimToDest(
   const sprite: TSpriteAnim;
   const destHandle: longint;
-  const frameIdx: integer;
-  const x, y: integer);
+  const frameIdx: smallint;
+  const x, y: smallint);
 begin
   if not isImageSet(destHandle) then exit;
   if frameIdx >= sprite.frameCount then exit;

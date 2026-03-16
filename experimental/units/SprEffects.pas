@@ -5,8 +5,8 @@ unit SprEffects;
 
 interface
 
-procedure sprOutline(const imgHandle: longint; const x, y: integer; const colour: longword);
-procedure sprShadow(const imgHandle: longint; const x, y: integer; const offsetX, offsetY: integer; const colour: longword);
+procedure sprOutline(const imgHandle: longint; const x, y: smallint; const colour: longword);
+procedure sprShadow(const imgHandle: longint; const x, y: smallint; const offsetX, offsetY: smallint; const colour: longword);
 procedure replaceColour(const imgHandle: longint; const oldColour, newColour: longword);
 
 
@@ -14,9 +14,9 @@ implementation
 
 uses ImgRef, ImgRefFast, VGA;
 
-procedure sprOutline(const imgHandle: longint; const x, y: integer; const colour: longword);
+procedure sprOutline(const imgHandle: longint; const x, y: smallint; const colour: longword);
 var
-  a, b: integer;
+  a, b: smallint;
   image: PImageRef;
 begin
   if not isImageSet(imgHandle) then exit;
@@ -61,10 +61,10 @@ end;
 
 
 { This procedure only processes solid pixels }
-procedure sprShadow(const imgHandle: longint; const x, y: integer; const offsetX, offsetY: integer; const colour: longword);
+procedure sprShadow(const imgHandle: longint; const x, y: smallint; const offsetX, offsetY: smallint; const colour: longword);
 var
-  a, b: integer;
-  destX, destY: integer;
+  a, b: smallint;
+  destX, destY: smallint;
   image: PImageRef;
   alpha: byte;
 begin

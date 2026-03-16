@@ -14,7 +14,7 @@ type
   
   TMapObject = record
     active: boolean;
-    flags: integer;  { Use MapObjectFlags enum }
+    flags: smallint;  { Use MapObjectFlags enum }
     objectType: TMapObjects;
     itemType: TCollectibleItems;
     zone: TZone;
@@ -43,9 +43,9 @@ var
 function spawnMapObject(
   var mapObjects: array of TMapObject;
   const objectType: TMapObjects;
-  const cx, cy: double): integer;
+  const cx, cy: double): smallint;
 var
-  idx: integer;
+  idx: smallint;
   a: word;
 begin
   idx := -1;
@@ -107,7 +107,7 @@ procedure spawnItem(
   const itemType: TCollectibleItems;
   const cx, cy: double);
 var
-  idx: integer;
+  idx: smallint;
   imgHandle: longword;
 begin
   idx := spawnMapObject(mapObjects, MapObjectItemDrop, cx, cy);

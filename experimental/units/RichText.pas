@@ -15,7 +15,7 @@ procedure rtfSetBoldItalicFont(const font: TBMFont; const glyphs: array of TBMFo
 
 procedure RichTextLabel(
   const text: string;
-  const x, y: integer;
+  const x, y: smallint;
   const colourTable: array of longword);
 
 
@@ -73,10 +73,10 @@ end;
 
 procedure rtfPrintWithFormat(
   const text: string;
-  const x, y: integer;
+  const x, y: smallint;
   const bold, italic: boolean;
   const colour: longword;
-  var leftOffset: integer);
+  var leftOffset: smallint);
 begin
   if bold and italic then begin
     printBMFontColour(
@@ -115,7 +115,7 @@ end;
 
 procedure RichTextLabel(
   const text: string;
-  const x, y: integer;
+  const x, y: smallint;
   const colourTable: array of longword);
 var
   bold, italic: boolean;
@@ -123,11 +123,11 @@ var
   lastBold, lastItalic: boolean;
   lastColour: longword;
 
-  reader: integer;
-  leftOffset: integer;
+  reader: smallint;
+  leftOffset: smallint;
   substr: string;
   digitChar: char;
-  colourIdx: integer;
+  colourIdx: smallint;
 
   controlSeq: string;
   skipSeq: boolean;

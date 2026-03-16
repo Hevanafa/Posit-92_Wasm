@@ -17,7 +17,7 @@ var
   { BigInt "registers". The result register isn't always a number }
   BigIntA, BigIntB, BigIntResult: string;
 
-procedure loadBigIntResult(const textPtr: pointer; const textLen: integer); public name 'loadBigIntResult';
+procedure loadBigIntResult(const textPtr: pointer; const textLen: smallint); public name 'loadBigIntResult';
 function getBigIntAPtr: pointer; public name 'getBigIntAPtr';
 function getBigIntBPtr: pointer; public name 'getBigIntBPtr';
 function getBigIntResultPtr: pointer; public name 'getBigIntResultPtr';
@@ -39,7 +39,7 @@ implementation
 
 uses Conv;
 
-procedure loadBigIntResult(const textPtr: pointer; const textLen: integer);
+procedure loadBigIntResult(const textPtr: pointer; const textLen: smallint);
 begin
   BigIntResult := strPtrToString(textPtr, textLen)
 end;
