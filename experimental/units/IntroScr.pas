@@ -48,7 +48,7 @@ end;
 
 procedure renderIntro(const introSlide: smallint);
 begin
-  cls($FF000000);
+  cls($00000000);
 
   case introSlide of
     1: begin

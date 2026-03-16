@@ -26,7 +26,7 @@ var
   s: string;
   w: word;
 begin
-  cls($FF000000);
+  cls($00000000);
 
   s := 'Progress: ' + i32str(getLoadingActual) + ' / ' + i32str(getLoadingTotal);
   w := measureDefault(s);
