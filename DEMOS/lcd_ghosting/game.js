@@ -29,6 +29,11 @@ class Game extends Posit92 {
   }
 
   /**
+   * @type { HTMLCanvasElement }
+   */
+  surfaceCopy;
+
+  /**
    * @override
    */
   #vgaFlush() {
@@ -39,7 +44,20 @@ class Game extends Posit92 {
       this.vgaWidth * this.vgaHeight * 4);
 
     const imgData = new ImageData(imageData, this.vgaWidth, this.vgaHeight);
-    this.canvasCtx.putImageData(imgData, 0, 0);
+
+    if (this.surfaceCopy == null) {
+      this.surfaceCopy = document.createElement("canvas");
+      this.surfaceCopy.width = this.vgaWidth;
+      this.surfaceCopy.height = this.vgaHeight;
+    }
+
+    this.surfaceCopy.getContext("2d").putImageData(imgData, 0, 0);
+
+    this.canvasCtx.globalAlpha = 0.1;
+
+    this.canvasCtx.drawImage(this.surfaceCopy, 0, 0);
+    
+    this.canvasCtx.globalAlpha = 1.0;
   }
 
   async loadDefaultFont() {

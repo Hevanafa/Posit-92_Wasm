@@ -12,6 +12,9 @@ class Posit92 {
     get vgaHeight() { return this.#vgaHeight; }
     #canvas;
     #ctx;
+    /**
+     * @returns { CanvasRenderingContext2D }
+     */
     get canvasCtx() {
         return this.#ctx;
     }
