@@ -8,7 +8,7 @@ uses
   SysUtils, FGL,
   Loading, Fullscreen,
   Conv, FPS, Logger,
-  Keyboard, Mouse, Scancodes,
+  Keyboard, Mouse,
   ImgRef, ImgRefFast,
   Timing, WasmMemMgr, VGA,
   Assets;
