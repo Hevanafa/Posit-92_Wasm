@@ -105,10 +105,17 @@ class Posit92 {
   #poolSize = 512 * 1024;
 
   #vgaWidth: number;
+  get vgaWidth(): number { return this.#vgaWidth }
+
   #vgaHeight: number;
+  get vgaHeight(): number { return this.#vgaHeight }
 
   #canvas: HTMLCanvasElement;
-  #ctx: CanvasRenderingContext2D;
+  
+  #ctx: CanvasRenderingContext2D; // or WebGLRenderingContext
+  get canvasCtx(): CanvasRenderingContext2D {
+    return this.#ctx
+  }
 
   #wasm: WebAssemblyInstance = null!;
   get wasmInstance() { return this.#wasm }
