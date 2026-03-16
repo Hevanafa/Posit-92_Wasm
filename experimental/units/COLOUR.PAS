@@ -20,6 +20,8 @@ var
   i: smallint;
   f, p, q, t: double;
 begin
+  r := 0; g := 0; b := 0;
+
   h := clamp(h, 0.0, 1.0);
   s := clamp(s, 0.0, 1.0);
   v := clamp(v, 0.0, 1.0);

@@ -1,8 +1,7 @@
 library Game;
 
 {$Mode ObjFPC}
-{$J-}
-{$H-}
+{$H+}{$J-}
 
 uses
   Conv, Colour, FPS, Fullscreen,
