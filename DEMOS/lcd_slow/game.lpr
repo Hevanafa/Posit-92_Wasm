@@ -166,8 +166,14 @@ begin
       renderIntro(introSlide);
 
       { Debug intro state }
-      printDefault('(Intro slide ' + i32str(introSlide) + ')', 30, 30);
-      printDefault('Slide end tick: ' + f32str(introSlideEndTick), 30, 40);
+      { printDefault('(Intro slide ' + i32str(introSlide) + ')', 30, 30);
+      printDefault('Slide end tick: ' + f32str(introSlideEndTick), 30, 40); }
+
+      if getTimer >= nextDrawTick then begin
+        nextDrawTick := getTimer + 1 / 18.0;
+        vgaFlush
+      end else
+        vgaFade;
 
       exit
     end;
