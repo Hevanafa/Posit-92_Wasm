@@ -16,16 +16,16 @@ unit ImgRefFast;
 interface
 
 { spr with TImageRef }
-procedure spr(const imgHandle: longint; const x, y: integer);
+procedure spr(const imgHandle: longint; const x, y: smallint);
 
 procedure sprClear(const imgHandle: longint; const colour: longword);
 
 procedure sprRegion(
   const imgHandle: longint;
-  const srcX, srcY, srcW, srcH: integer;
-  const destX, destY: integer);
+  const srcX, srcY, srcW, srcH: smallint;
+  const destX, destY: smallint);
 
-procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
+procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: smallint);
 
 procedure sprRegionStretch(
   const imgHandle: longint;
@@ -56,10 +56,10 @@ implementation
 
 uses Logger, Conv, ImgRef, Maths, Panic, VGA;
 
-procedure spr(const imgHandle: longint; const x, y: integer);
+procedure spr(const imgHandle: longint; const x, y: smallint);
 var
   image: PImageRef;
-  px, py: integer;
+  px, py: smallint;
   offset: longword;
   { data: PByte; }
   a: byte;
@@ -91,7 +91,7 @@ end;
 procedure sprClear(const imgHandle: longint; const colour: longword);
 var
   image: PImageRef;
-  px, py: integer;
+  px, py: smallint;
 begin
   if not isImageSet(imgHandle) then exit;
 
@@ -105,13 +105,13 @@ end;
 
 procedure sprRegion(
   const imgHandle: longint;
-  const srcX, srcY, srcW, srcH: integer;
-  const destX, destY: integer);
+  const srcX, srcY, srcW, srcH: smallint;
+  const destX, destY: smallint);
 var
   image: PImageRef;
-  a, b: integer;
-  sx, sy: integer;
-  srcPos: longint;
+  a, b: smallint;
+  sx, sy: smallint;
+  srcPos: longword;
   alpha: byte;
   colour: longword;
 begin
@@ -137,11 +137,11 @@ begin
 end;
 
 { Stretch a sprite with nearest neighbour scaling }
-procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: integer);
+procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: smallint);
 var
-  sx, sy: integer;
-  dx, dy: integer;
-  srcPos: longint;
+  sx, sy: smallint;
+  dx, dy: smallint;
+  srcPos: longword;
   image: PImageRef;
   alpha: byte;
   scaleX, scaleY: double;
@@ -217,7 +217,7 @@ var
   image: PImageRef;
   a, b: smallint;
   sx, sy: smallint;
-  srcPos: longint;
+  srcPos: longword;
   alpha: byte;
 begin
   if not isImageSet(imgHandle) then exit;
@@ -246,7 +246,7 @@ procedure sprFlip(const imgHandle: longint; const x, y: smallint; const flip: sm
 var
   sx, sy: smallint;
   dx, dy: smallint;
-  srcPos: longint;
+  srcPos: longword;
   image: PImageRef;
   alpha: byte;
   colour: longword;
@@ -292,7 +292,7 @@ procedure sprRotate(const imgHandle: longint; const cx, cy: smallint; const rota
 var
   sx, sy: double;
   dx, dy: smallint;
-  srcPos: longint;
+  srcPos: longword;
   srcX, srcY: smallint;
   image: PImageRef;
 
@@ -377,7 +377,7 @@ var
   srcImage, destImage: PImageRef;
   px, py: smallint;
   sx, sy: smallint;
-  srcPos: longint;
+  srcPos: longword;
   alpha: byte;
   colour: longword;
 begin

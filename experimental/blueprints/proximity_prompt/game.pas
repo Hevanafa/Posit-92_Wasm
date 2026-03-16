@@ -18,7 +18,7 @@ const
 var
   { Map object interaction }
   holdDuration: double;
-  lastClosestObject: integer;  { index of map object }
+  lastClosestObject: smallint;  { index of map object }
   nextClosestObjectTick: double;  { use gameTime }
 
 

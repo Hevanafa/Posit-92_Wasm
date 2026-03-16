@@ -14,7 +14,7 @@ type
   TInventoryItem = record
     active: boolean;  { isInUse can also be used }
     itemType: TCollectibleItems;
-    value: integer;  { No multipliers for now }
+    value: smallint;  { No multipliers for now }
     imgHandle: longint;
   end;
   

@@ -73,9 +73,9 @@ begin
     i32power := i32power * i;
 end;
 
-function f32power(const i: double; exp: integer): double;
+function f32power(const i: double; exp: longint): double;
 var
-  a: integer;
+  a: longint;
 begin
   if exp < 0 then panicHalt('f32power: Negative exp isn''t supported!');
   if exp = 0 then begin f32power := 1; exit end;
@@ -86,7 +86,7 @@ begin
     f32power := f32power * i;
 end;
 
-function floor(const value: double): integer;
+function floor(const value: double): longint;
 begin
   if (value >= 0) or (frac(value) = 0) then
     floor := trunc(value)
@@ -94,7 +94,7 @@ begin
     floor := trunc(value) - 1;
 end;
 
-function ceil(const value: double): integer;
+function ceil(const value: double): longint;
 begin
   if frac(value) = 0 then
     ceil := trunc(value)

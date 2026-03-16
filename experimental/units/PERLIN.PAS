@@ -87,7 +87,7 @@ end;
 
 function noise2D(var p: TPerlin; const x, y: double): double;
 var
-  xi, yi, aa, ab, ba, bb: integer;
+  xi, yi, aa, ab, ba, bb: longint;
   xf, yf, u, v: double;
   x1, x2, y1: double;
 begin
@@ -113,7 +113,7 @@ end;
 
 function noise1D(var p: TPerlin; const x: double): double;
 var
-  xi, a, b: integer;
+  xi, a, b: longint;
   xf, u: double;
   g1, g2: double;
 begin
