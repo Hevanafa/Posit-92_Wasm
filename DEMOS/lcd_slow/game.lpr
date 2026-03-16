@@ -178,7 +178,7 @@ begin
     spr(imgDosuEXE[0], 148, 78);
 
   printDefaultCentred('Hello world!', vgaWidth div 2, 110);
-  printDefaultCentred('LCD ghosting demo', vgaWidth div 2, 120);
+  printDefaultCentred('Slow LCD demo', vgaWidth div 2, 120);
   printDefaultCentred(format('f: %d', [frames]), vgaWidth div 2, 140);
 
   drawMouse;

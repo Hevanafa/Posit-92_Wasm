@@ -48,42 +48,50 @@ class Game extends Posit92 {
     this.snapshotSurface.height = this.vgaHeight;
   }
 
+  nextFrameTick = 0;
+
   /**
    * @override
    */
   #vgaFlush() {
-    const surfacePtr = this.wasmInstance.exports.getSurfacePtr();
-    const imageData = new Uint8ClampedArray(
-      this.wasmInstance.exports.memory.buffer,
-      surfacePtr,
-      this.vgaWidth * this.vgaHeight * 4);
+    if (Date.now() / 1000.0 >= this.nextFrameTick) {
+      this.nextFrameTick = Date.now() / 1000.0 + 1 / 18.0;  // 18 FPS display
 
-    const imgData = new ImageData(imageData, this.vgaWidth, this.vgaHeight);
+      const surfacePtr = this.wasmInstance.exports.getSurfacePtr();
+      const imageData = new Uint8ClampedArray(
+        this.wasmInstance.exports.memory.buffer,
+        surfacePtr,
+        this.vgaWidth * this.vgaHeight * 4);
 
-    if (this.cleanSurface == null)
-      this.initGhostSurfaces();
+      const imgData = new ImageData(imageData, this.vgaWidth, this.vgaHeight);
 
-    // This requires the background (in WASM)
-    // to be completely transparent using cls($00000000)
-    this.cleanSurface.getContext("2d").putImageData(imgData, 0, 0);
+      if (this.cleanSurface == null)
+        this.initGhostSurfaces();
 
-    // Stamp
-    this.canvasCtx.globalAlpha = 1.0;
-    this.canvasCtx.drawImage(this.cleanSurface, 0, 0);
+      // This requires the background (in WASM)
+      // to be completely transparent using cls($00000000)
+      this.cleanSurface.getContext("2d").putImageData(imgData, 0, 0);
 
-    /**
-     * @type { CanvasRenderingContext2D }
-     */
-    let snapshotCtx;
+      // Stamp
+      this.canvasCtx.globalAlpha = 1.0;
+      this.canvasCtx.drawImage(this.cleanSurface, 0, 0);
+    } else {
+      /**
+       * @type { CanvasRenderingContext2D }
+       */
+      let snapshotCtx;
 
-    snapshotCtx = this.snapshotSurface.getContext("2d");
-    snapshotCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
-    snapshotCtx.drawImage(this.canvas, 0, 0);
+      snapshotCtx = this.snapshotSurface.getContext("2d");
+      snapshotCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
+      snapshotCtx.drawImage(this.canvas, 0, 0);
 
-    // Displayed game canvas
-    this.canvasCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
-    this.canvasCtx.globalAlpha = 28 / 30.0;
-    this.canvasCtx.drawImage(this.snapshotSurface, 0, 0);
+      // Displayed game canvas
+      this.canvasCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
+      this.canvasCtx.globalAlpha = 28 / 30.0;
+      this.canvasCtx.drawImage(this.snapshotSurface, 0, 0);
+    }
+
+    this.frames++
   }
 
   async loadDefaultFont() {
