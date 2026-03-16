@@ -34,6 +34,7 @@ var
 
   { Init your game state here }
   actualGameState: TGameStates;
+  nextDrawTick: double;
   gameTime: double;
   frames: longint;
 
@@ -43,6 +44,10 @@ procedure signalDone; external 'env' name 'signalDone';
 procedure hideCursor; external 'env' name 'hideCursor';
 procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
 procedure loadAssets; external 'env' name 'loadAssets';
+
+{$ifdef WASM}
+procedure vgaFade; external 'env' name 'vgaFade';
+{$endif}
 
 procedure drawFPS;
 begin
@@ -80,6 +85,7 @@ begin
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
   frames := 0;
+  nextDrawTick := 0.0;
   
   { replaceColour(defaultFont.imgHandle, $FFFFFFFF, $FF000000); }
 end;
@@ -184,7 +190,11 @@ begin
   drawMouse;
   drawFPS;
 
-  vgaFlush
+  if getTimer >= nextDrawTick then begin
+    nextDrawTick := getTimer + 1 / 18.0;
+    vgaFlush
+  end else
+    vgaFade;
 end;
 
 exports

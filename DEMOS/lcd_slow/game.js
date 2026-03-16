@@ -18,11 +18,14 @@ class Game extends Posit92 {
     const { env } = super._getWasmImportObject();
 
     Object.assign(env, {
-      vgaFlush: this.#vgaFlush.bind(this)
+      vgaFlush: this.#vgaFlush.bind(this),
+      vgaFade: this.#vgaFade.bind(this)
     });
   }
 
   async init() {
+    this.initGhostSurfaces();
+
     this.setLoadingText("Downloading engine...");
     this.#setupImportObject();
     await super.init();
@@ -48,51 +51,44 @@ class Game extends Posit92 {
     this.snapshotSurface.height = this.vgaHeight;
   }
 
-  nextFrameTick = 0;
-
   /**
    * @override
    */
   #vgaFlush() {
-    if (Date.now() / 1000.0 >= this.nextFrameTick) {
-      this.nextFrameTick = Date.now() / 1000.0 + 1 / 18.0;  // 18 FPS display
+    const surfacePtr = this.wasmInstance.exports.getSurfacePtr();
+    const imageData = new Uint8ClampedArray(
+      this.wasmInstance.exports.memory.buffer,
+      surfacePtr,
+      this.vgaWidth * this.vgaHeight * 4);
 
-      const surfacePtr = this.wasmInstance.exports.getSurfacePtr();
-      const imageData = new Uint8ClampedArray(
-        this.wasmInstance.exports.memory.buffer,
-        surfacePtr,
-        this.vgaWidth * this.vgaHeight * 4);
+    const imgData = new ImageData(imageData, this.vgaWidth, this.vgaHeight);
 
-      const imgData = new ImageData(imageData, this.vgaWidth, this.vgaHeight);
 
-      if (this.cleanSurface == null)
-        this.initGhostSurfaces();
+    // This requires the background (in WASM)
+    // to be completely transparent using cls($00000000)
+    this.cleanSurface.getContext("2d").putImageData(imgData, 0, 0);
 
-      // This requires the background (in WASM)
-      // to be completely transparent using cls($00000000)
-      this.cleanSurface.getContext("2d").putImageData(imgData, 0, 0);
-
-      // Stamp
-      this.canvasCtx.globalAlpha = 1.0;
-      this.canvasCtx.drawImage(this.cleanSurface, 0, 0);
-    } else {
-      /**
-       * @type { CanvasRenderingContext2D }
-       */
-      let snapshotCtx;
-
-      snapshotCtx = this.snapshotSurface.getContext("2d");
-      snapshotCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
-      snapshotCtx.drawImage(this.canvas, 0, 0);
-
-      // Displayed game canvas
-      this.canvasCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
-      this.canvasCtx.globalAlpha = 28 / 30.0;
-      this.canvasCtx.drawImage(this.snapshotSurface, 0, 0);
-    }
-
-    this.frames++
+    // Stamp
+    this.canvasCtx.globalAlpha = 1.0;
+    this.canvasCtx.drawImage(this.cleanSurface, 0, 0);
   }
+
+  #vgaFade() {
+    /**
+     * @type { CanvasRenderingContext2D }
+     */
+    let snapshotCtx;
+
+    snapshotCtx = this.snapshotSurface.getContext("2d");
+    snapshotCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
+    snapshotCtx.drawImage(this.canvas, 0, 0);
+
+    // Displayed game canvas
+    this.canvasCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
+    this.canvasCtx.globalAlpha = 0.8;
+    this.canvasCtx.drawImage(this.snapshotSurface, 0, 0);
+  }
+
 
   async loadDefaultFont() {
     await this.loadBMFont(
