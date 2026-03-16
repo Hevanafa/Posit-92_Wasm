@@ -31,7 +31,12 @@ class Game extends Posit92 {
   /**
    * @type { HTMLCanvasElement }
    */
-  surfaceCopy;
+  cleanSurface
+
+  /**
+   * @type { HTMLCanvasElement }
+   */
+  accumulatorSurface;
 
   /**
    * @override
@@ -45,19 +50,26 @@ class Game extends Posit92 {
 
     const imgData = new ImageData(imageData, this.vgaWidth, this.vgaHeight);
 
-    if (this.surfaceCopy == null) {
-      this.surfaceCopy = document.createElement("canvas");
-      this.surfaceCopy.width = this.vgaWidth;
-      this.surfaceCopy.height = this.vgaHeight;
+    if (this.cleanSurface == null) {
+      this.cleanSurface = document.createElement("canvas");
+      this.cleanSurface.width = this.vgaWidth;
+      this.cleanSurface.height = this.vgaHeight;
+
+      this.accumulatorSurface = document.createElement("canvas");
+      this.accumulatorSurface.width = this.vgaWidth;
+      this.accumulatorSurface.height = this.vgaHeight;
     }
 
-    this.surfaceCopy.getContext("2d").putImageData(imgData, 0, 0);
+    this.cleanSurface.getContext("2d").putImageData(imgData, 0, 0);
 
-    this.canvasCtx.globalAlpha = 0.1;
+    const accumulatorCtx = this.accumulatorSurface.getContext("2d");
+    accumulatorCtx.globalAlpha = 1 / 30.0;
+    accumulatorCtx.drawImage(this.accumulatorSurface, 0, 0);
+    accumulatorCtx.globalAlpha = 1.0;  // This
+    accumulatorCtx.drawImage(this.cleanSurface, 0, 0);
 
-    this.canvasCtx.drawImage(this.surfaceCopy, 0, 0);
-    
-    this.canvasCtx.globalAlpha = 1.0;
+    // Displayed game canvas
+    this.canvasCtx.drawImage(this.accumulatorSurface, 0, 0);
   }
 
   async loadDefaultFont() {
