@@ -24,13 +24,13 @@ procedure applyGreyscale(const imgHandle: longint);
 procedure applyFullScanlines;
 procedure applyFullSubtleScanlines;
 procedure applyFullTint(const tint: longword);
-procedure applyFullBoxBlur(const radius: word);
+procedure applyFullBoxBlur(const radius: smallint);
 procedure applyFullChromabe;
 
 function getFalloffName(const which: FalloffTypes): string;
 procedure applyFullVignette(const falloffType: FalloffTypes; const strength: double);
 
-procedure applyFullPhosphor(const radius: word);
+procedure applyFullPhosphor(const radius: smallint);
 
 implementation
 
@@ -254,18 +254,20 @@ begin
 end;
 
 function getFalloffName(const which: FalloffTypes): string;
-var
-  result: string;
 begin
   case which of
-    FalloffTypeSmoothstep: result := 'Smoothstep';
-    FalloffTypeLinear: result := 'Linear';
-    FalloffTypeEaseInQuad: result := 'Ease in quad';
-    FalloffTypeEaseOutQuad: result := 'Ease out quad';
+    FalloffTypeSmoothstep:
+      getFalloffName := 'Smoothstep';
+    FalloffTypeLinear:
+      getFalloffName := 'Linear';
+
+    FalloffTypeEaseInQuad:
+      getFalloffName := 'Ease in quad';
+    FalloffTypeEaseOutQuad:
+      getFalloffName := 'Ease out quad';
+
     else result := 'Unknown falloff type: ' + i32str(ord(which));
   end;
-
-  getFalloffName := result
 end;
 
 { strength: Either 0.3 or 0.7 }

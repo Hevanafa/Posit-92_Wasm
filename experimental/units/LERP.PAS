@@ -47,13 +47,9 @@ begin
 end;
 
 function newLerp(const startTick, duration: double): TLerpTimer;
-var
-  result: TLerpTimer;
 begin
-  result.startTick := startTick;
-  result.endTick := startTick + duration;
-
-  newLerp := result
+  newLerp.startTick := startTick;
+  newLerp.endTick := startTick + duration;
 end;
 
 function getLerpPerc(const lt: TLerpTimer; const t: double): double;
