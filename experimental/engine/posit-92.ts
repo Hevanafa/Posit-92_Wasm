@@ -758,7 +758,7 @@ class Posit92 {
   // KEYBOARD.PAS
 
   /**
-   * Based on DOS scancodes
+   * JS KeyboardEvent.code to DOS scancode
    */
   ScancodeMap: Record<string, number> = {
     "Escape": 0x01,
