@@ -81,21 +81,24 @@ class Game extends Posit92 {
 
     // Surface copy (snapshot)
     accumulatorCtx = this.accumulatorSurfaceCopy.getContext("2d");
-    // accumulatorCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
+    accumulatorCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
     accumulatorCtx.drawImage(this.accumulatorSurface, 0, 0);
 
     // Draw the copy back with the decay alpha
     accumulatorCtx = this.accumulatorSurface.getContext("2d");
-    // accumulatorCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
+    accumulatorCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
+
+    accumulatorCtx.globalAlpha = 0.9;
     accumulatorCtx.drawImage(this.accumulatorSurfaceCopy, 0, 0);
-    // accumulatorCtx.globalAlpha = 0.9;
-    accumulatorCtx.fillStyle = "rgba(32, 32, 32, 0.9)";
-    accumulatorCtx.fillRect(0, 0, this.vgaWidth, this.vgaHeight);
+    
+    // accumulatorCtx.fillStyle = "rgba(32, 32, 32, 0.9)";
+    // accumulatorCtx.fillRect(0, 0, this.vgaWidth, this.vgaHeight);
 
     accumulatorCtx.globalAlpha = 1.0;
     accumulatorCtx.drawImage(this.cleanSurface, 0, 0);
 
     // Displayed game canvas
+    this.canvasCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
     this.canvasCtx.drawImage(this.accumulatorSurface, 0, 0);
   }
 
