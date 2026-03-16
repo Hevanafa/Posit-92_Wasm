@@ -111,6 +111,9 @@ class Posit92 {
   get vgaHeight(): number { return this.#vgaHeight }
 
   #canvas: HTMLCanvasElement;
+  get canvas(): HTMLCanvasElement {
+    return this.#canvas
+  }
   
   #ctx: CanvasRenderingContext2D; // or WebGLRenderingContext
   get canvasCtx(): CanvasRenderingContext2D {

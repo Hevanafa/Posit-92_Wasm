@@ -36,25 +36,16 @@ class Game extends Posit92 {
   /**
    * @type { HTMLCanvasElement }
    */
-  accumulatorSurface;
-
-  /**
-   * @type { HTMLCanvasElement }
-   */
-  accumulatorSurfaceCopy;
+  snapshotSurface;
 
   initGhostSurfaces() {
     this.cleanSurface = document.createElement("canvas");
     this.cleanSurface.width = this.vgaWidth;
     this.cleanSurface.height = this.vgaHeight;
 
-    this.accumulatorSurface = document.createElement("canvas");
-    this.accumulatorSurface.width = this.vgaWidth;
-    this.accumulatorSurface.height = this.vgaHeight;
-
-    this.accumulatorSurfaceCopy = document.createElement("canvas");
-    this.accumulatorSurfaceCopy.width = this.vgaWidth;
-    this.accumulatorSurfaceCopy.height = this.vgaHeight;
+    this.snapshotSurface = document.createElement("canvas");
+    this.snapshotSurface.width = this.vgaWidth;
+    this.snapshotSurface.height = this.vgaHeight;
   }
 
   /**
@@ -76,35 +67,23 @@ class Game extends Posit92 {
     // to be completely transparent using cls($00000000)
     this.cleanSurface.getContext("2d").putImageData(imgData, 0, 0);
 
+    // Stamp
+    this.canvasCtx.globalAlpha = 1.0;
+    this.canvasCtx.drawImage(this.cleanSurface, 0, 0);
+
     /**
      * @type { CanvasRenderingContext2D }
      */
-    let accumulatorCtx;
+    let snapshotCtx;
 
-    // Surface copy (snapshot)
-    accumulatorCtx = this.accumulatorSurfaceCopy.getContext("2d");
-    accumulatorCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
-    accumulatorCtx.drawImage(this.accumulatorSurface, 0, 0);
-
-    // Draw the copy back with the decay alpha
-    accumulatorCtx = this.accumulatorSurface.getContext("2d");
-    accumulatorCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
-
-    // Best tested: Either 27/30 or 28/30, since 26/30 is too fast, and 29/30 has visible dirty areas
-    accumulatorCtx.globalAlpha = 27 / 30.0;
-    accumulatorCtx.drawImage(this.accumulatorSurfaceCopy, 0, 0);
-    
-    accumulatorCtx.globalAlpha = 1.0;
-    accumulatorCtx.drawImage(this.cleanSurface, 0, 0);
+    snapshotCtx = this.snapshotSurface.getContext("2d");
+    snapshotCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
+    snapshotCtx.drawImage(this.canvas, 0, 0);
 
     // Displayed game canvas
     this.canvasCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
-
-    // Use this for a tinted background
-    // this.canvasCtx.fillStyle = "#202020";
-    // this.canvasCtx.fillRect(0, 0, this.vgaWidth, this.vgaHeight);
-
-    this.canvasCtx.drawImage(this.accumulatorSurface, 0, 0);
+    this.canvasCtx.globalAlpha = 28 / 30.0;
+    this.canvasCtx.drawImage(this.snapshotSurface, 0, 0);
   }
 
   async loadDefaultFont() {
