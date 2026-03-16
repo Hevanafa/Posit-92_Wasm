@@ -72,6 +72,8 @@ class Game extends Posit92 {
     if (this.cleanSurface == null)
       this.initGhostSurfaces();
 
+    // This requires the background (in WASM)
+    // to be completely transparent using cls($00000000)
     this.cleanSurface.getContext("2d").putImageData(imgData, 0, 0);
 
     /**
@@ -88,7 +90,8 @@ class Game extends Posit92 {
     accumulatorCtx = this.accumulatorSurface.getContext("2d");
     accumulatorCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
 
-    accumulatorCtx.globalAlpha = 29 / 30.0;
+    // Best tested: Either 27/30 or 28/30, since 26/30 is too fast, and 29/30 has visible dirty areas
+    accumulatorCtx.globalAlpha = 27 / 30.0;
     accumulatorCtx.drawImage(this.accumulatorSurfaceCopy, 0, 0);
     
     accumulatorCtx.globalAlpha = 1.0;
@@ -96,6 +99,11 @@ class Game extends Posit92 {
 
     // Displayed game canvas
     this.canvasCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
+
+    // Use this for a tinted background
+    // this.canvasCtx.fillStyle = "#202020";
+    // this.canvasCtx.fillRect(0, 0, this.vgaWidth, this.vgaHeight);
+
     this.canvasCtx.drawImage(this.accumulatorSurface, 0, 0);
   }
 

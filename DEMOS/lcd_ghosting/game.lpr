@@ -173,11 +173,12 @@ begin
   cls($00000000);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    spr(imgDosuEXE[1], 148, 78)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    spr(imgDosuEXE[0], 148, 78);
 
-  printDefaultCentred('Hello world!', vgaWidth div 2, 120);
+  printDefaultCentred('Hello world!', vgaWidth div 2, 110);
+  printDefaultCentred('LCD ghosting demo', vgaWidth div 2, 120);
   printDefaultCentred(format('f: %d', [frames]), vgaWidth div 2, 140);
 
   drawMouse;
