@@ -35,6 +35,7 @@ var
   { Init your game state here }
   actualGameState: TGameStates;
   gameTime: double;
+  frames: longint;
 
 
 { Use this to set `done` to true }
@@ -78,8 +79,9 @@ begin
   { Initialise game state here }
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
+  frames := 0;
   
-  replaceColour(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
+  { replaceColour(defaultFont.imgHandle, $FFFFFFFF, $FF000000); }
 end;
 
 
@@ -146,7 +148,8 @@ begin
   end;
 
   { Handle game state updates }
-  gameTime := gameTime + dt
+  gameTime := gameTime + dt;
+  inc(frames);
 end;
 
 procedure draw;
@@ -175,6 +178,7 @@ begin
     spr(imgDosuEXE[0], 148, 88);
 
   printDefaultCentred('Hello world!', vgaWidth div 2, 120);
+  printDefaultCentred(format('f: %d', [frames]), vgaWidth div 2, 140);
 
   drawMouse;
   drawFPS;

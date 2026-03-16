@@ -88,12 +88,9 @@ class Game extends Posit92 {
     accumulatorCtx = this.accumulatorSurface.getContext("2d");
     accumulatorCtx.clearRect(0, 0, this.vgaWidth, this.vgaHeight);
 
-    accumulatorCtx.globalAlpha = 0.9;
+    accumulatorCtx.globalAlpha = 29 / 30.0;
     accumulatorCtx.drawImage(this.accumulatorSurfaceCopy, 0, 0);
     
-    // accumulatorCtx.fillStyle = "rgba(32, 32, 32, 0.9)";
-    // accumulatorCtx.fillRect(0, 0, this.vgaWidth, this.vgaHeight);
-
     accumulatorCtx.globalAlpha = 1.0;
     accumulatorCtx.drawImage(this.cleanSurface, 0, 0);
 
