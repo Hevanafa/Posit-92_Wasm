@@ -8,7 +8,7 @@
 unit UStrings;
 
 {$Mode ObjFPC}
-{$H+}{$J-}
+{$H-}{$J-}
 
 interface
 
