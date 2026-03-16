@@ -14,6 +14,34 @@ class Game extends Posit92 {
     ])
   }
 
+  #setupImportObject() {
+    const { env } = super._getWasmImportObject();
+
+    Object.assign(env, {
+      vgaFlush: this.#vgaFlush.bind(this)
+    });
+  }
+
+  async init() {
+    this.setLoadingText("Downloading engine...");
+    this.#setupImportObject();
+    await super.init();
+  }
+
+  /**
+   * @override
+   */
+  #vgaFlush() {
+    const surfacePtr = this.wasmInstance.exports.getSurfacePtr();
+    const imageData = new Uint8ClampedArray(
+      this.wasmInstance.exports.memory.buffer,
+      surfacePtr,
+      this.vgaWidth * this.vgaHeight * 4);
+
+    const imgData = new ImageData(imageData, this.vgaWidth, this.vgaHeight);
+    this.canvasCtx.putImageData(imgData, 0, 0);
+  }
+
   async loadDefaultFont() {
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
@@ -38,11 +66,6 @@ class Game extends Posit92 {
     this.wasmInstance.exports.setImgDosuEXE(handle, 1);
 
     // Add more assets as necessary
-  }
-
-  async init() {
-    this.setLoadingText("Downloading engine...");
-    await super.init();
   }
 
   /**
