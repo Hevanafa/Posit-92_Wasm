@@ -60,7 +60,18 @@ body {
 #play-overlay > button > img {
   scale: 2;
   image-rendering: pixelated;
-  filter: drop-shadow(0 0 20px #FFFF55);
+  
+  /* No animation: */
+  /* filter: drop-shadow(0 0 12px #FFFF55) */
+
+  animation: yellow-neon 2.4s ease-in-out infinite;
+  will-change: filter;
+}
+
+@keyframes yellow-neon {
+  0% { filter: drop-shadow(0 0 12px #FFFF55) }
+  50% { filter: drop-shadow(0 0 20px #FFFF55) }
+  100% { filter: drop-shadow(0 0 12px #FFFF55) }
 }
 
 #game {
