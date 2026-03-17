@@ -48,7 +48,7 @@ let lastFrameTime = 0.0;
 var done = false;
 
 async function main() {
-  const game = new Game("game");
+  const game = new Game("game", 128, 128);
   await game.init();
   await game.loadDefaultFont();
   

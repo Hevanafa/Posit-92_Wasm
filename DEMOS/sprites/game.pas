@@ -1,12 +1,13 @@
 library Game;
 
 {$Mode ObjFPC}
-{$J-}
+{$H+}{$J-}
 
 uses
   Conv, FPS, Fullscreen,
+  ImmediateGUI,
   ImgRef, ImgRefFast, ImgRefComp,
-  ImmedGui, Keyboard, Mouse,
+  Keyboard, Mouse,
   Lerp, Loading, Logger, Panic,
   PostProc, Shapes, Timing, WasmMemMgr,
   VGA,

@@ -55,7 +55,7 @@ end;
 
 function measureDefault(const text: string): word;
 begin
-  measureDefault := measureBMFont(defaultFontGlyphs, text)
+  measureDefault := measureBMFont(defaultFont, defaultFontGlyphs, text)
 end;
 
 
