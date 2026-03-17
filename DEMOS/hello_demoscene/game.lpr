@@ -1,18 +1,13 @@
 library Game;
 
 {$Mode ObjFPC}
-{$H+}
+{$H+}  { Use AnsiStrings }
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  Loading, Fullscreen,
-  Keyboard, Mouse,
-  ImgRef, ImgRefFast,
-  Timing, WasmMemMgr, VGA,
+  Loading, Fullscreen, Keyboard, Mouse,
+  ImgRefFast, Timing, WasmMemMgr, VGA,
   Assets;
-
-const
-  CornflowerBlue = $FF6495ED;
 
 var
   { Game state variables }
@@ -21,7 +16,6 @@ var
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
 procedure hideCursor; external 'env' name 'hideCursor';
-procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
 procedure loadAssets; external 'env' name 'loadAssets';
 
 procedure drawMouse;
@@ -29,16 +23,16 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-
 procedure init;
 begin
   initHeapMgr;
-  initDeltaTime
+  initDeltaTime;
+
+  loadAssets;
 end;
 
 procedure afterInit;
 begin
-  loadAssets;
   hideCursor;
   fitCanvas;
 
@@ -50,18 +44,15 @@ procedure update;
 begin
   updateDeltaTime;
 
-  { Handle inputs }
   updateMouse;
-
   if isKeyDown(SC_ESCAPE) then signalDone;
 
-  { Handle game state updates }
   gameTime := gameTime + dt
 end;
 
 procedure draw;
 begin
-  cls(CornflowerBlue);
+  cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
