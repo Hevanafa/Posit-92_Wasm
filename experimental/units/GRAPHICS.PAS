@@ -199,15 +199,14 @@ begin
   if getAlpha(colour) = 0 then exit;
   solid := solidify(colour);
 
-  if (y < 0) or (y >= vgaHeight) then exit;
+  if (y < clipY1) or (y > clipY2) then exit;
 
   if x1 < x0 then begin
     x := x0; x0 := x1; x1 := x
   end;
 
-  if x0 < 0 then x0 := 0;
-  if x1 >= vgaWidth then x1 := vgaWidth - 1;
-  if x0 > x1 then exit;
+  if x0 < clipX1 then x0 := clipX1;
+  if x1 > clipX2 then x1 := clipX2;
 
   for x:=x0 to x1 do
     unsafePset(x, y, solid);
@@ -240,15 +239,16 @@ var
   solid: longword;
 begin
   if getAlpha(colour) = 0 then exit;
-  if (x < 0) or (x >= vgaWidth) then exit;
+  if (x < clipX1) or (x > clipX2) then exit;
+
   solid := solidify(colour);
 
   if y1 < y0 then begin
     temp := y0; y0 := y1; y1 := temp
   end;
 
-  if y0 < 0 then y0 := 0;
-  if y1 >= vgaHeight then y1 := vgaHeight - 1;
+  if y0 < clipY1 then y0 := clipY1;
+  if y1 > clipY2 then y1 := clipY2;
   if y0 > y1 then exit;
 
   for y:=y0 to y1 do

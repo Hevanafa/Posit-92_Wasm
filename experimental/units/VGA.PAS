@@ -49,6 +49,7 @@ function clipX2: smallint;
 function clipY2: smallint;
 
 procedure setClip(x1, y1, x2, y2: smallint);
+procedure resetClip;
 
 
 implementation
@@ -68,6 +69,7 @@ var
   bufferSize: longword;
   surface: PByteArray;
 
+  { inclusive clipping bounds }
   _clipX1, _clipY1, _clipX2, _clipY2: smallint;
 
 function vgaWidth: smallint;
@@ -87,7 +89,7 @@ begin
   _vgaHeight := height;
   bufferSize := _vgaWidth * _vgaHeight * 4;
 
-  resetClipRect;
+  resetClip;
 
   surface := startAddr;
   fillchar(surface^, bufferSize, 0);
@@ -148,7 +150,8 @@ end;
 { colour: AARRGGBB }
 procedure pset(const x, y: smallint; const colour: longword);
 begin
-  if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then exit;
+  if (x > _clipX2) or (x < _clipX1)
+    or (y > _clipY2) or (y < _clipX1) then exit;
   unsafePset(x, y, colour)
 end;
 
@@ -297,10 +300,13 @@ begin
     temp := y1;  y1 := y2;  y2 := temp
   end;
 
-  _clipX1 := x1;
-  _clipY1 := y1;
-  _clipX2 := x2;
-  _clipY2 := y2;
+  if x1 < 0 then x1 := 0;
+  if x2 >= _vgaWidth then x2 := _vgaWidth - 1;
+  if y1 < 0 then y1 := 0;
+  if y2 >= _vgaHeight then y2 := _vgaHeight - 1;
+
+  _clipX1 := x1;  _clipY1 := y1;
+  _clipX2 := x2;  _clipY2 := y2;
 end;
 
 procedure resetClip;
