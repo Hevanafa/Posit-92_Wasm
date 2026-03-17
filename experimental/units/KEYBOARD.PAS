@@ -11,6 +11,7 @@ unit Keyboard;
 interface
 
 { Based on DOS scancodes }
+{ 17-03-2026 - Turned off F5 to make it easier to refresh the page }
 
 const
   SC_ESCAPE = $01;
@@ -81,7 +82,7 @@ const
   SC_F2 = $3C;
   SC_F3 = $3D;
   SC_F4 = $3E;
-  SC_F5 = $3F;
+  { SC_F5 = $3F; }
   SC_F6 = $40;
   SC_F7 = $41;
   SC_F8 = $42;
