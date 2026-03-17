@@ -19,15 +19,10 @@ type
   );
 
 const
-  SC_ESC = $01;
-  SC_SPACE = $39;
-  SC_ENTER = $1C;
-  SC_F2 = $3C;
-
   CornflowerBlue = $FF6495ED;
 
 var
-  lastEsc, lastF2: boolean;
+  lastF2: boolean;
 
   { Game state variables }
   actualGameState: TGameStates;
@@ -90,14 +85,7 @@ begin
   { Handle inputs }
   updateMouse;
 
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
-
-    if lastEsc then begin
-      writeLog('ESC is pressed!');
-      signalDone
-    end;
-  end;
+  if isKeyDown(SC_ESCAPE) then signalDone;
 
   if lastF2 <> isKeyDown(SC_F2) then begin
     lastF2 := isKeyDown(SC_F2);
@@ -110,9 +98,6 @@ begin
 end;
 
 procedure draw;
-var
-  w: integer;
-  s: string;
 begin
   if actualGameState = GameStateLoading then begin
     renderLoadingScreen; exit
@@ -125,9 +110,7 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  s := 'Hello world!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  printDefaultCentred('Press F2 to take a screenshot', vgaWidth div 2, 120);
 
   drawMouse;
   drawFPS;
