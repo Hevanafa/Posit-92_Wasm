@@ -70,18 +70,20 @@ body {
 }
 
 #play-overlay > button > img {
-  scale: 2;
   image-rendering: pixelated;
   
-  /* No animation: */
-  /* filter: drop-shadow(0 0 12px #FFFF55) */
-
-  animation: yellow-neon 3.0s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px #FFFF55);
   will-change: filter;
+  animation: yellow-neon 3.0s ease-in-out infinite;
+  transition: filter 0.2s ease-out;
+
+  transform: scale(2);
+  transition: transform 0.2s ease-out;
 }
 
 #play-overlay > button:hover > img {
   animation: white-neon 2.4s ease-in-out infinite;
+  transform: scale(2.1)
 }
 
 
