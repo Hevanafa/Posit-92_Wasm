@@ -43,6 +43,13 @@ procedure pset(const x, y: smallint; const colour: longword);
 procedure unsafePsetBlend(const x, y: smallint; const colour: longword);
 procedure psetBlend(const x, y: smallint; const colour: longword);
 
+function clipX1: smallint;
+function clipY1: smallint;
+function clipX2: smallint;
+function clipY2: smallint;
+
+procedure setClipRect(const x1, y1, x2, y2: smallint);
+
 
 implementation
 
@@ -60,6 +67,8 @@ var
   _vgaWidth, _vgaHeight: smallint;
   bufferSize: longword;
   surface: PByteArray;
+
+  _clipX1, _clipY1, _clipX2, _clipY2: smallint;
 
 function vgaWidth: smallint;
 begin
@@ -255,5 +264,32 @@ begin
     unsafePsetBlend(a, b, colour);
 end;
 
+function clipX1: smallint;
+begin
+  clipX1 := _clipX1
+end;
+
+function clipY1: smallint;
+begin
+  clipY1 := _clipY1
+end;
+
+function clipX2: smallint;
+begin
+  clipX2 := _clipX2
+end;
+
+function clipY2: smallint;
+begin
+  clipY2 := _clipY2
+end;
+
+procedure setClipRect(const x1, y1, x2, y2: smallint);
+begin
+  _clipX1 := x1;
+  _clipY1 := y1;
+  _clipX2 := x2;
+  _clipY2 := y2;
+end;
 
 end.
