@@ -74,8 +74,8 @@ begin
   
   for py:=0 to image^.height - 1 do
   for px:=0 to image^.width - 1 do begin
-    if (x + px >= vgaWidth) or (x + px < 0)
-      or (y + py >= vgaHeight) or (y + py < 0) then continue;
+    if (x + px > clipX2) or (x + px < clipX1)
+      or (y + py > clipY2) or (y + py < clipY1) then continue;
 
     { offset to ImageData buffer }
     offset := (px + py * image^.width) * 4;
@@ -121,8 +121,8 @@ begin
 
   for b:=0 to srcH - 1 do
   for a:=0 to srcW - 1 do begin
-    if (destX + a >= vgaWidth) or (destX + a < 0)
-      or (destY + b >= vgaHeight) or (destY + b < 0) then continue;
+    if (destX + a > clipX2) or (destX + a < clipX1)
+      or (destY + b > clipY2) or (destY + b < clipY1) then continue;
 
     sx := srcX + a;
     sy := srcY + b;
@@ -155,8 +155,8 @@ begin
 
   for dy := 0 to destHeight - 1 do
   for dx := 0 to destWidth - 1 do begin
-    if (destX + dx >= vgaWidth) or (destX + dx < 0)
-      or (destY + dy >= vgaHeight) or (destY + dy < 0) then continue;
+    if (destX + dx > clipX2) or (destX + dx < clipX1)
+      or (destY + dy > clipY2) or (destY + dy < clipY1) then continue;
 
     sx := trunc(dx * scaleX);
     sy := trunc(dy * scaleY);
@@ -190,8 +190,8 @@ begin
 
   for dy := 0 to destHeight - 1 do
   for dx := 0 to destWidth - 1 do begin
-    if (destX + dx >= vgaWidth) or (destX + dx < 0)
-      or (destY + dy >= vgaHeight) or (destY + dy < 0) then continue;
+    if (destX + dx > clipX2) or (destX + dx < clipX1)
+      or (destY + dy > clipY2) or (destY + dy < clipY1) then continue;
 
     { Map destination pixel to source region }
     sx := srcX + trunc(dx * scaleX);
@@ -226,8 +226,8 @@ begin
 
   for b:=0 to srcH - 1 do
   for a:=0 to srcW - 1 do begin
-    if (destX + a >= vgaWidth) or (destX + a < 0)
-      or (destY + b >= vgaHeight) or (destY + b < 0) then continue;
+    if (destX + a > clipX2) or (destX + a < clipX1)
+      or (destY + b > clipY2) or (destY + b < clipY1) then continue;
 
     sx := srcX + a;
     sy := srcY + b;
@@ -280,8 +280,8 @@ begin
       end
     end;
 
-    if (dx >= vgaWidth) or (dx < 0)
-      or (dy >= vgaHeight) or (dy < 0) then continue;
+    if (dx > clipX2) or (dx < clipX1)
+      or (dy > clipY2) or (dy < clipY1) then continue;
 
     colour := unsafeSprPget(image, sx, sy);
     unsafePset(dx, dy, colour);
@@ -317,8 +317,8 @@ begin
   
   for dy := -maxRadius to maxRadius do
   for dx := -maxRadius to maxRadius do begin
-    if (cx + dx < 0) or (cx + dx >= vgaWidth)
-      or (cy + dy < 0) or (cy + dy >= vgaHeight) then continue;
+    if (cx + dx < clipX1) or (cx + dx > clipX2)
+      or (cy + dy < clipY1) or (cy + dy > clipY2) then continue;
 
     sx := dx * cosAngle - dy * sinAngle;
     sy := dx * sinAngle + dy * cosAngle;

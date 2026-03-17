@@ -35,8 +35,8 @@ begin
 
   for py := 0 to image^.height - 1 do
   for px := 0 to image^.width - 1 do begin
-    if (x + px >= vgaWidth) or (x + px < 0)
-      or (y + py >= vgaHeight) or (y + py < 0) then continue;
+    if (x + px > clipX2) or (x + px < clipX1)
+      or (y + py > clipY2) or (y + py < clipY1) then continue;
 
     colour := unsafeSprPget(image, px, py);
     alpha := colour shr 24;
@@ -61,8 +61,8 @@ begin
 
   for py := 0 to image^.height - 1 do
   for px := 0 to image^.width - 1 do begin
-    if (x + px >= vgaWidth) or (x + px < 0)
-      or (y + py >= vgaHeight) or (y + py < 0) then continue;
+    if (x + px > clipX2) or (x + px < clipX1)
+      or (y + py > clipY2) or (y + py < clipY1) then continue;
 
     colour := unsafeSprPget(image, px, py);
     psetBlend(x + px, y + py, colour)
