@@ -57,6 +57,18 @@ body {
   box-sizing: border-box;
 }
 
+@keyframes yellow-neon {
+  0% { filter: drop-shadow(0 0 12px #FFFF55) }
+  50% { filter: drop-shadow(0 0 20px #FFFF55) }
+  100% { filter: drop-shadow(0 0 12px #FFFF55) }
+}
+
+@keyframes white-neon {
+  0% { filter: drop-shadow(0 0 6px white) }
+  50% { filter: drop-shadow(0 0 14px white) }
+  100% { filter: drop-shadow(0 0 6px white) }
+}
+
 #play-overlay > button > img {
   scale: 2;
   image-rendering: pixelated;
@@ -64,15 +76,14 @@ body {
   /* No animation: */
   /* filter: drop-shadow(0 0 12px #FFFF55) */
 
-  animation: yellow-neon 2.4s ease-in-out infinite;
+  animation: yellow-neon 3.0s ease-in-out infinite;
   will-change: filter;
 }
 
-@keyframes yellow-neon {
-  0% { filter: drop-shadow(0 0 12px #FFFF55) }
-  50% { filter: drop-shadow(0 0 20px #FFFF55) }
-  100% { filter: drop-shadow(0 0 12px #FFFF55) }
+#play-overlay > button:hover > img {
+  animation: white-neon 2.4s ease-in-out infinite;
 }
+
 
 #game {
   image-rendering: pixelated;
