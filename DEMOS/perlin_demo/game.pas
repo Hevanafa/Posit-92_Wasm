@@ -7,7 +7,8 @@ uses
   BMFont, Loading, Fullscreen, Graphics,
   Conv, FPS, Logger,
   Keyboard, Mouse,
-  ImgRef, ImgRefFast, ImmedGUI, SprEffects,
+  ImgRef, ImgRefFast,
+  ImmediateGUI, SprEffects,
   Shapes, Timing, WasmMemMgr, VGA,
   Assets, Perlin;
 

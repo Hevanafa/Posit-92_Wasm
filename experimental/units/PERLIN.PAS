@@ -52,9 +52,8 @@ function grad(const hash: byte; const x, y: double): double;
 var
   h: byte;
   u, v: double;
-  result: double;
 begin
-  result := 0.0;
+  grad := 0.0;
 
   h := hash and $F;
   if h < 8 then u := x else u := y;
@@ -67,16 +66,14 @@ begin
     v := 0;
 
   if (h and 1) = 0 then
-    result := u
+    grad := u
   else
-    result := -u;
+    grad := -u;
 
   if (h and 2) = 0 then
-    result := result + v
+    grad := grad + v
   else
-    result := result - v;
-
-  grad := result
+    grad := grad - v;
 end;
 
 { The same as lerpLinear with a different parameter order }
