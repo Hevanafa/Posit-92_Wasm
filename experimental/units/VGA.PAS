@@ -48,7 +48,7 @@ function clipY1: smallint;
 function clipX2: smallint;
 function clipY2: smallint;
 
-procedure setClipRect(x1, y1, x2, y2: smallint);
+procedure setClip(x1, y1, x2, y2: smallint);
 
 
 implementation
@@ -86,6 +86,8 @@ begin
   _vgaWidth := width;
   _vgaHeight := height;
   bufferSize := _vgaWidth * _vgaHeight * 4;
+
+  resetClipRect;
 
   surface := startAddr;
   fillchar(surface^, bufferSize, 0);
@@ -284,7 +286,7 @@ begin
   clipY2 := _clipY2
 end;
 
-procedure setClipRect(x1, y1, x2, y2: smallint);
+procedure setClip(x1, y1, x2, y2: smallint);
 var
   temp: smallint;
 begin
@@ -299,6 +301,14 @@ begin
   _clipY1 := y1;
   _clipX2 := x2;
   _clipY2 := y2;
+end;
+
+procedure resetClip;
+begin
+  _clipX1 := 0;
+  _clipY1 := 0;
+  _clipX2 := _vgaWidth - 1;
+  _clipY2 := _vgaHeight - 1;
 end;
 
 end.
