@@ -334,7 +334,9 @@ class Posit92 {
    */
   async quickStart() {
     this.hideLoadingOverlay();
-    this.#wasm.exports.beginLoadingState();
+
+    if (Object.hasOwn(this.#wasm.exports, "beginLoadingState"))
+      this.#wasm.exports.beginLoadingState();
   }
 
   afterInit() {
