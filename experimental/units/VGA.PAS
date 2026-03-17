@@ -48,7 +48,7 @@ function clipY1: smallint;
 function clipX2: smallint;
 function clipY2: smallint;
 
-procedure setClipRect(const x1, y1, x2, y2: smallint);
+procedure setClipRect(x1, y1, x2, y2: smallint);
 
 
 implementation
@@ -284,8 +284,17 @@ begin
   clipY2 := _clipY2
 end;
 
-procedure setClipRect(const x1, y1, x2, y2: smallint);
+procedure setClipRect(x1, y1, x2, y2: smallint);
+var
+  temp: smallint;
 begin
+  if x1 > x2 then begin
+    temp := x1;  x1 := x2;  x2 := temp
+  end;
+  if y1 > y2 then begin
+    temp := y1;  y1 := y2;  y2 := temp
+  end;
+
   _clipX1 := x1;
   _clipY1 := y1;
   _clipX2 := x2;
