@@ -20,7 +20,7 @@ body {
   inset: 0;
   width: 640px;
   height: 400px;
-  background: grey;
+  background: inherit;
 }
 
 #play-overlay > button {
@@ -38,6 +38,11 @@ body {
   background: transparent;
   border: 1px solid var(--posit-92-accent);
   box-sizing: border-box;
+}
+
+#play-overlay > button > img {
+  scale: 2;
+  image-rendering: pixelated;
 }
 
 #game {
