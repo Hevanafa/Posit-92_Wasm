@@ -1,6 +1,9 @@
 :root {
   --posit-92-accent: #ff5555;
   --posit-92-dark-accent: #aa0000;
+
+  --overlay-width: 640px;
+  --overlay-height: 400px;
 }
 
 body {
@@ -13,8 +16,8 @@ body {
   position: absolute;
   margin: auto;
   inset: 0;
-  width: 640px;
-  height: 400px;
+  width: var(--overlay-width);
+  height: var(--overlay-height);
 
   background: inherit;
 }
@@ -113,8 +116,8 @@ body {
   position: absolute;
   margin: auto;
   inset: 0;
-  width: 640px;
-  height: 400px;
+  width: var(--overlay-width);
+  height: var(--overlay-height);
 
   color: white;
   opacity: 1.0;
