@@ -1,3 +1,6 @@
+// Copied from experimental/posit-92.js
+// Last synced: 2026-03-17
+
 "use strict";
 class Posit92 {
     static version = "0.1.6_experimental";
@@ -11,10 +14,10 @@ class Posit92 {
     #vgaHeight;
     get vgaHeight() { return this.#vgaHeight; }
     #canvas;
+    get canvas() {
+        return this.#canvas;
+    }
     #ctx;
-    /**
-     * @returns { CanvasRenderingContext2D }
-     */
     get canvasCtx() {
         return this.#ctx;
     }
@@ -152,7 +155,8 @@ class Posit92 {
     }
     async quickStart() {
         this.hideLoadingOverlay();
-        this.#wasm.exports.beginLoadingState();
+        if (Object.hasOwn(this.#wasm.exports, "beginLoadingState"))
+            this.#wasm.exports.beginLoadingState();
     }
     afterInit() {
         this.#wasm.exports.afterInit();
@@ -516,7 +520,6 @@ class Posit92 {
         "F2": 0x3C,
         "F3": 0x3D,
         "F4": 0x3E,
-        "F5": 0x3F,
         "F6": 0x40,
         "F7": 0x41,
         "F8": 0x42,

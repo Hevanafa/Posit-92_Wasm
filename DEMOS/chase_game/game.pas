@@ -1,6 +1,7 @@
 library Game;
 
 {$Mode ObjFPC}
+{$H+}
 {$J-}  { Switch off assignments to typed constants }
 
 uses
@@ -36,14 +37,6 @@ type
   end;
 
 const
-  SC_ESC = $01;
-  SC_SPACE = $39;
-  SC_ENTER = $1C;
-  SC_W = $11;
-  SC_A = $1E;
-  SC_S = $1F;
-  SC_D = $20;
-
   CornflowerBlue = $FF6495ED;
   Velocity = 90;
   EnemyVelocity = 30;
@@ -56,8 +49,6 @@ const
 
 
 var
-  lastEsc: boolean;
-
   { Game State }
   actualGameState: TGameStates;
   gameTime: double;
@@ -182,16 +173,8 @@ begin
 
   { Handle inputs }
   updateMouse;
-{
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
 
-    if lastEsc then begin
-      writeLog('ESC is pressed!');
-      signalDone
-    end;
-  end;
-}
+  if isKeyDown(SC_ESCAPE) then signalDone;
 
   if not isCaught and not isWin then begin
     if isKeyDown(sc_w) then playerBody.y := playerBody.y - velocity * dt;
