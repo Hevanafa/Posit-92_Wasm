@@ -150,8 +150,9 @@ end;
 { colour: AARRGGBB }
 procedure pset(const x, y: smallint; const colour: longword);
 begin
-  if (x > _clipX2) or (x < _clipX1)
-    or (y > _clipY2) or (y < _clipX1) then exit;
+  if (x > _clipX2) or (x < _clipX1) or (y > _clipY2) or (y < _clipX1) then
+    exit;
+
   unsafePset(x, y, colour)
 end;
 
@@ -246,7 +247,7 @@ end;
 
 procedure psetBlend(const x, y: smallint; const colour: longword);
 begin
-  if (x >= vgaWidth) or (x < 0) or (y >= vgaHeight) or (y < 0) then exit;
+  if (x > _clipX2) or (x < _clipX1) or (y > _clipY2) or (y < _clipY1) then exit;
 
   unsafePsetBlend(x, y, colour)
 end;
