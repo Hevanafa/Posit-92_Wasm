@@ -81,8 +81,8 @@ begin
     destX := x + a + offsetX;
     destY := y + b + offsetY;
 
-    if (destX < 0) or (destX >= vgaWidth)
-      or (destY < 0) or (destY >= vgaHeight) then continue;
+    if (destX < clipX1) or (destX > clipX2)
+      or (destY < clipY1) or (destY > clipY2) then continue;
 
     if alpha = 255 then
       unsafePset(destX, destY, colour)
@@ -107,6 +107,5 @@ begin
     if unsafeSprPget(image, a, b) = oldColour then
       unsafeSprPset(image, a, b, newColour);
 end;
-
 
 end.
