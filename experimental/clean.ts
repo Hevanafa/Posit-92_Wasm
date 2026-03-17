@@ -30,7 +30,7 @@ function collectFiles(dir: string): Array<string> {
   return result
 }
 
-const files = collectFiles(import.meta.dir);
+const files = collectFiles(process.cwd());
 
 if (files.length == 0)
   console.log(styleText("white", "No files needed to be cleaned"))
