@@ -1,17 +1,26 @@
 // Copied from experimental/posit-92.js
-// Last synced: 2026-01-23
+// Last synced: 2026-03-17
 
 "use strict";
 class Posit92 {
-    static version = "0.1.4_experimental";
+    static version = "0.1.6_experimental";
     #wasmSource = "game.wasm";
     #wasmMemSize = 2 * 1048576;
-    #stackSize = 128 * 1024;
+    #stackSize = 256 * 1024;
     #videoMemSize = 0;
-    #vgaWidth = 320;
-    #vgaHeight = 200;
+    #poolSize = 512 * 1024;
+    #vgaWidth;
+    get vgaWidth() { return this.#vgaWidth; }
+    #vgaHeight;
+    get vgaHeight() { return this.#vgaHeight; }
     #canvas;
+    get canvas() {
+        return this.#canvas;
+    }
     #ctx;
+    get canvasCtx() {
+        return this.#ctx;
+    }
     #wasm = null;
     get wasmInstance() { return this.#wasm; }
     #midnightOffset = 0;
@@ -54,12 +63,16 @@ class Posit92 {
         this.cleanup();
         done = true;
     }
-    constructor(canvasID) {
+    constructor(canvasID, vgaWidth = 320, vgaHeight = 200) {
         this.#assertString(canvasID);
+        this.#assertNumber(vgaWidth);
+        this.#assertNumber(vgaHeight);
         if (document.getElementById(canvasID) == null)
             throw new Error(`Couldn't find canvasID \"${canvasID}\"`);
         this.#canvas = document.getElementById(canvasID);
         this.#ctx = this.#canvas.getContext("2d");
+        this.#vgaWidth = vgaWidth;
+        this.#vgaHeight = vgaHeight;
         this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
     }
     #loadMidnightOffset() {
@@ -105,14 +118,14 @@ class Posit92 {
     }
     #initWasmMemory() {
         const videoMemStart = this.#stackSize;
-        const heapStart = this.#stackSize + this.#videoMemSize;
-        const heapSize = this.#wasmMemSize - heapStart;
+        const heapRegionStart = this.#stackSize + this.#videoMemSize;
+        const heapSize = this.#wasmMemSize - this.#poolSize - heapRegionStart;
         const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
         const requiredPages = Math.ceil(this.#wasmMemSize / 65536);
         if (pages < requiredPages)
             this.#wasm.exports.memory.grow(requiredPages - pages);
         this.#wasm.exports.initVideoMem(this.#vgaWidth, this.#vgaHeight, videoMemStart);
-        this.#wasm.exports.initHeap(heapStart, heapSize);
+        this.#wasm.exports.initHeapRegion(heapRegionStart, this.#poolSize, heapSize);
     }
     async init() {
         this.#loadMidnightOffset();
@@ -142,7 +155,8 @@ class Posit92 {
     }
     async quickStart() {
         this.hideLoadingOverlay();
-        this.#wasm.exports.beginLoadingState();
+        if (Object.hasOwn(this.#wasm.exports, "beginLoadingState"))
+            this.#wasm.exports.beginLoadingState();
     }
     afterInit() {
         this.#wasm.exports.afterInit();
@@ -348,16 +362,30 @@ class Posit92 {
         let txtLine = "";
         let pairs;
         let k = "", v = "";
-        let lineHeight = 0;
+        let fontface = "";
         let filename = "";
+        let lineHeight = 0;
         const fontGlyphs = new Map();
         let glyphCount = 0;
         let imgHandle = 0;
+        let spacing = [0, 0];
         for (const line of lines) {
             txtLine = line.replaceAll(/\s+/g, " ");
             pairs = txtLine.split(" ").map(part => part.split("="));
             if (txtLine.startsWith("info")) {
-                [k, v] = (pairs.find(pair => pair[0] == "face"));
+                for (const [k, v] of pairs) {
+                    switch (k) {
+                        case "face":
+                            const result = txtLine.match(/face=\"(.*?)\"/);
+                            fontface = result?.[1] ?? "";
+                            console.log("Loading BMFont", fontface);
+                            break;
+                        case "spacing":
+                            const [x, y] = v.split(",").map(s => Number(s));
+                            spacing[0] = x;
+                            spacing[1] = y;
+                    }
+                }
             }
             else if (txtLine.startsWith("common")) {
                 [k, v] = (pairs.find(pair => pair[0] == "lineHeight"));
@@ -401,6 +429,7 @@ class Posit92 {
                 glyphCount++;
             }
         }
+        console.log("Loaded", glyphCount, "glyphs");
         imgHandle = await this.loadImage(filename);
         const fontPtr = fontPtrRef;
         const glyphsPtr = fontGlyphsPtrRef;
@@ -409,6 +438,8 @@ class Posit92 {
         offset += 16;
         offset += 64;
         fontMem.setUint16(offset, lineHeight, true);
+        fontMem.setUint8(offset + 2, spacing[0]);
+        fontMem.setUint8(offset + 3, spacing[1]);
         fontMem.setInt32(offset + 4, imgHandle, true);
         const glyphsMem = new DataView(this.#wasm.exports.memory.buffer, glyphsPtr);
         for (const charID of fontGlyphs.keys()) {
@@ -425,26 +456,120 @@ class Posit92 {
             glyphsMem.setInt16(glyphOffset + 12, glyph.yoffset, true);
             glyphsMem.setInt16(glyphOffset + 14, glyph.xadvance, true);
         }
+        console.log("loadBMFont", fontface, "completed");
     }
-    ScancodeMap = null;
+    ScancodeMap = {
+        "Escape": 0x01,
+        "Digit1": 0x02,
+        "Digit2": 0x03,
+        "Digit3": 0x04,
+        "Digit4": 0x05,
+        "Digit5": 0x06,
+        "Digit6": 0x07,
+        "Digit7": 0x08,
+        "Digit8": 0x09,
+        "Digit9": 0x0A,
+        "Digit0": 0x0B,
+        "Minus": 0x0C,
+        "Equal": 0x0D,
+        "Backspace": 0x0E,
+        "Tab": 0x0F,
+        "KeyQ": 0x10,
+        "KeyW": 0x11,
+        "KeyE": 0x12,
+        "KeyR": 0x13,
+        "KeyT": 0x14,
+        "KeyY": 0x15,
+        "KeyU": 0x16,
+        "KeyI": 0x17,
+        "KeyO": 0x18,
+        "KeyP": 0x19,
+        "BracketLeft": 0x1A,
+        "BracketRight": 0x1B,
+        "Enter": 0x1C,
+        "ControlLeft": 0x1D,
+        "KeyA": 0x1E,
+        "KeyS": 0x1F,
+        "KeyD": 0x20,
+        "KeyF": 0x21,
+        "KeyG": 0x22,
+        "KeyH": 0x23,
+        "KeyJ": 0x24,
+        "KeyK": 0x25,
+        "KeyL": 0x26,
+        "Semicolon": 0x27,
+        "Quote": 0x28,
+        "Backquote": 0x29,
+        "ShiftLeft": 0x2A,
+        "Backslash": 0x2B,
+        "KeyZ": 0x2C,
+        "KeyX": 0x2D,
+        "KeyC": 0x2E,
+        "KeyV": 0x2F,
+        "KeyB": 0x30,
+        "KeyN": 0x31,
+        "KeyM": 0x32,
+        "Comma": 0x33,
+        "Period": 0x34,
+        "Slash": 0x35,
+        "ShiftRight": 0x36,
+        "AltLeft": 0x38,
+        "Space": 0x39,
+        "CapsLock": 0x3A,
+        "F1": 0x3B,
+        "F2": 0x3C,
+        "F3": 0x3D,
+        "F4": 0x3E,
+        "F6": 0x40,
+        "F7": 0x41,
+        "F8": 0x42,
+        "F9": 0x43,
+        "F10": 0x44,
+        "F11": 0x57,
+        "F12": 0x58,
+        "NumLock": 0x45,
+        "ScrollLock": 0x46,
+        "Home": 0x47,
+        "ArrowUp": 0x48,
+        "PageUp": 0x49,
+        "ArrowLeft": 0x4B,
+        "ArrowRight": 0x4D,
+        "End": 0x4F,
+        "ArrowDown": 0x50,
+        "PageDown": 0x51,
+        "Insert": 0x52,
+        "Delete": 0x53,
+        "Numpad7": 0x47,
+        "Numpad8": 0x48,
+        "Numpad9": 0x49,
+        "NumpadSubtract": 0x4A,
+        "Numpad4": 0x4B,
+        "Numpad5": 0x4C,
+        "Numpad6": 0x4D,
+        "NumpadAdd": 0x4E,
+        "Numpad1": 0x4F,
+        "Numpad2": 0x50,
+        "Numpad3": 0x51,
+        "Numpad0": 0x52,
+        "NumpadDecimal": 0x53,
+    };
     heldScancodes = new Set();
     #initKeyboard() {
         if (this.ScancodeMap == null) {
             console.warn("Missing ScancodeMap in " + this.constructor.name);
             return;
         }
-        const ScancodeMap = this.ScancodeMap;
         window.addEventListener("keydown", e => {
             if (e.repeat)
                 return;
-            const scancode = ScancodeMap[e.code];
+            const scancode = this.ScancodeMap[e.code];
             if (scancode) {
                 this.heldScancodes.add(scancode);
                 e.preventDefault();
             }
         });
         window.addEventListener("keyup", e => {
-            const scancode = ScancodeMap[e.code];
+            const scancode = this.ScancodeMap[e.code];
             if (scancode)
                 this.heldScancodes.delete(scancode);
         });

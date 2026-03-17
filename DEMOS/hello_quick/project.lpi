@@ -26,7 +26,7 @@
     </RunParams>
     <Units>
       <Unit>
-        <Filename Value="game.lpr"/>
+        <Filename Value="game.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Game"/>
       </Unit>
