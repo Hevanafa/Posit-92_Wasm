@@ -12,6 +12,7 @@ uses
 var
   { Game state variables }
   gameTime: double;
+  t, x, y: smallint;
 
 { Use this to set `done` to true }
 procedure signalDone; external 'env' name 'signalDone';
@@ -44,22 +45,25 @@ procedure update;
 begin
   updateDeltaTime;
 
+  { Handle inputs }
   updateMouse;
+
   if isKeyDown(SC_ESCAPE) then signalDone;
 
-  gameTime := gameTime + dt
+  { TODO: Handle arrow keys }
+
+  { Handle update logic }
+  gameTime := gameTime + dt;
+  inc(t)
 end;
 
 procedure draw;
 begin
-  cls($FF6495ED);
+  cls($FF333C57);
 
-  if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
-  else
-    spr(imgDosuEXE[0], 148, 88);
+  sprRegionStretch(imgTicsy, t mod 60 div 30 * 2, 0, 16, 16, x, y, 32, 32);
 
-  printDefaultCentred('Hello world!', vgaWidth div 2, 120);
+  printDefault('HELLO WORLD!', 84, 84);
 
   drawMouse;
 
