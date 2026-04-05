@@ -6,7 +6,9 @@ unit SprEffects;
 interface
 
 procedure sprOutline(const imgHandle: longint; const x, y: smallint; const colour: longword);
+{ This procedure only processes solid pixels }
 procedure sprShadow(const imgHandle: longint; const x, y: smallint; const offsetX, offsetY: smallint; const colour: longword);
+{ Replaces 1 colour of an image, in-place }
 procedure replaceColour(const imgHandle: longint; const oldColour, newColour: longword);
 
 
@@ -60,7 +62,6 @@ begin
 end;
 
 
-{ This procedure only processes solid pixels }
 procedure sprShadow(const imgHandle: longint; const x, y: smallint; const offsetX, offsetY: smallint; const colour: longword);
 var
   a, b: smallint;
