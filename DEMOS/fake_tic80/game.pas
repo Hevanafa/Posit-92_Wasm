@@ -5,12 +5,16 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  Loading, Fullscreen, Keyboard, Mouse,
-  ImgRefFast, Timing, WasmMemMgr, VGA,
+  Loading, Fullscreen,
+  Conv, { Logger, }
+  Keyboard, Mouse,
+  ImgRefFast, SprEffects, Timing,
+  WasmMemMgr, VGA,
   Assets;
 
 var
   { Game state variables }
+  once: boolean;
   gameTime: double;
   t, x, y: smallint;
 
@@ -38,6 +42,7 @@ begin
 
   { Initialise game state here }
   gameTime := 0.0;
+  once := false;
 
   t := 0;
   x := 96;
@@ -59,6 +64,11 @@ begin
   if isKeyDown(SC_RIGHT) then inc(x);
 
   { Handle update logic }
+  if not once then begin
+    { writelog('What imgHandle:' + i32str(defaultFont.imgHandle)); }
+    replaceColour(defaultFont.imgHandle, $FFFFFFFF, $FF333C57);
+  end;
+
   gameTime := gameTime + dt;
   inc(t)
 end;
