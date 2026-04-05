@@ -7,10 +7,7 @@ class Game extends Posit92 {
   AssetManifest = {
     images: {
       cursor: "assets/images/cursor.png",
-      dosu_exe: [
-        "assets/images/dosu_1.png",
-        "assets/images/dosu_2.png"
-      ]
+      ticsy: "assets/images/ticsy.png"
       // Add more image assets here
     },
     sounds: new Map([
