@@ -2,6 +2,8 @@ use strict;
 use warnings;
 use v5.38.0;
 
+use Term::ANSIColor qw(colored);
+
 use Cwd qw(abs_path);
 use File::Copy qw(copy);
 use File::Path qw(remove_tree);
@@ -13,7 +15,7 @@ use File::Copy::Recursive qw(dircopy);
 my $wasm = "game.wasm";
 
 unless (-f $wasm) {
-  say "Missing $wasm!";
+  say colored("Missing $wasm!", "red");
   exit 1
 }
 
@@ -35,9 +37,11 @@ my @files = (
 );
 
 for (@files) {
-  copy $_, $dist_dir
+  copy($_, $dist_dir) or die "Couldn't copy $_: $!"
 }
 
 # Copy assets
 dircopy(abs_path("assets"), "$dist_dir/assets") or
-  warn "Couldn't copy assets: $!"
+  warn "Couldn't copy assets: $!";
+
+say colored("Copied to dist successfully!", "bright_green")
