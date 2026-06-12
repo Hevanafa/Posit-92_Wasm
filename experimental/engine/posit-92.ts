@@ -73,7 +73,8 @@ type WasmImports = {
     getFullTimer: () => number,
 
     // VGA
-    vgaFlush: () => void
+    vgaUpload: () => void,
+    vgaPresent: () => void
   }
 }
 
@@ -171,7 +172,8 @@ class Posit92 {
       getFullTimer: () => this.#getFullTimer(),
 
       // VGA
-      vgaFlush: () => this.#vgaFlush()
+      vgaUpload: () => this.#vgaUpload(),
+      vgaPresent: () => this.#vgaPresent()
     }
   };
 
@@ -994,9 +996,10 @@ class Posit92 {
 
 
   // VGA.PAS
-  flush() { this.#vgaFlush() }
-  
-  #vgaFlush() {
+  // flush() { this.#vgaFlush() }
+  #surface: ImageData = null!;
+
+  #vgaUpload() {
     const surfacePtr = this.#wasm.exports.getSurfacePtr();
     const imageData = new Uint8ClampedArray(
       this.#wasm.exports.memory.buffer,
@@ -1004,9 +1007,11 @@ class Posit92 {
       this.#vgaWidth * this.#vgaHeight * 4
     );
 
-    const imgData = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
-
-    this.#ctx.putImageData(imgData, 0, 0);
+    this.#surface = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
+  }
+  
+  #vgaPresent() {
+    this.#ctx.putImageData(this.#surface, 0, 0);
   }
 
   // Fullscreen.pas

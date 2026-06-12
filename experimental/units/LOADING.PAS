@@ -32,7 +32,8 @@ begin
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, vgaHeight div 2 - defaultFont.lineHeight);
 
-  vgaFlush
+  vgaUpload;
+  vgaPresent
 end;
 
 end.

@@ -63,7 +63,8 @@ begin
 
   drawMouse;
 
-  vgaFlush
+  vgaUpload;
+  vgaPresent
 end;
 
 exports
