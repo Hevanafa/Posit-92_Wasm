@@ -30,8 +30,9 @@ function vgaHeight: smallint;
 procedure initVideoMem(const width, height: smallint; const startAddr: PByteArray); public name 'initVideoMem';
 function getSurfacePtr: PByteArray; public name 'getSurfacePtr';
 
-{ Colour format: $AARRGGBB }
+{ colour format: $AARRGGBB like in QB64 PE }
 procedure cls(const colour: longword);
+{ colour format: $AARRGGBB }
 procedure clsBlend(const colour: longword);
 
 function unsafePget(const x, y: smallint): longword;
@@ -254,12 +255,12 @@ begin
 end;
 
 procedure cls(const colour: longword);
-var
-  a, b: word;
 begin
-  for b:=0 to vgaHeight - 1 do
-  for a:=0 to vgaWidth - 1 do
-    unsafePset(a, b, colour);
+  FillDWord(
+    getSurfacePtr^,
+    vgaWidth * vgaHeight,
+    { convert ARGB to RGBA + flip the byte order }
+    SwapEndian((colour and $FFFFFF shl 8) or (colour and $FF000000 shr 24)))
 end;
 
 procedure clsBlend(const colour: longword);
