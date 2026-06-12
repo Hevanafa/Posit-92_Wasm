@@ -13,16 +13,18 @@ use File::Spec::Functions qw(catfile);
 use File::Copy::Recursive qw(dircopy);
 
 my $wasm = "game.wasm";
-my $dist_dir = abs_path("dist");
 
 unless (-f $wasm) {
   say "Missing $wasm!";
   exit 1
 }
 
+my $dist_dir = "dist";
+
 remove_tree $dist_dir if -d $dist_dir;
 
 mkdir $dist_dir;
+$dist_dir = abs_path("dist");
 
 # Copy base files
 my @files = (
@@ -52,4 +54,4 @@ for (@files) {
 #   }
 # }, "assets")
 
-dircopy("assets", "$dist_dir/assets") or warn "Couldn't copy assets: $!"
+dircopy(abs_path("assets"), "$dist_dir/assets") or warn "Couldn't copy assets: $!"
