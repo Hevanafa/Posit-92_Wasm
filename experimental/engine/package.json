@@ -3,5 +3,8 @@
   "version": "0.1.6_experimental",
   "devDependencies": {
     "@types/bun": "^1.3.4"
+  },
+  "scripts": {
+    "make": "bun build ./posit-92.ts --outdir ."
   }
 }
