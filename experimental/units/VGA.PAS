@@ -19,7 +19,8 @@ type
   TByteArray = array[0..0] of byte;
 
 {$ifdef WASM}
-procedure vgaFlush; external 'env' name 'vgaFlush';
+procedure vgaUpload; external 'env' name 'vgaUpload';
+procedure vgaPresent; external 'env' name 'vgaPresent';
 {$endif}
 
 function vgaWidth: smallint;
