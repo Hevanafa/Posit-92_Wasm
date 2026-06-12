@@ -7,16 +7,8 @@
 dist/
 
 # Boilerplate files
-boilerplate/UNITS/
-boilerplate/posit-92.js
-boilerplate/favicon.ico
-
-# The only required script is setup.ps1
-boilerplate/*.ps1
-!boilerplate/setup.ps1
-
-boilerplate/*.ts
-!boilerplate/setup.ts
+boilerplate/
+!boilerplate/setup.pl
 
 # Demo Build Scripts
 DEMOS/*/*.ps1

@@ -6,8 +6,9 @@ use v5.38.0;
 
 my $count = 0;
 my @files = (
-  glob("*.js"),
-  glob("*.d.ts")
+  glob("*.js.map"),
+  glob("*.d.ts"),
+  glob("*.js")
 );
 
 for my $file (@files) {
