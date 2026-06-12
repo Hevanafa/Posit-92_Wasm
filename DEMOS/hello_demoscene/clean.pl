@@ -15,10 +15,9 @@ for my $dir (qw(backup lib)) {
 my @extensions = qw(wasm compiled o ppu);
 my $pattern = join("|", @extensions);
 
-find(sub {
-  return unless -f && /\.($pattern)$/;
-
-  my $full_path = $File::Find::name;
-  unlink or warn "Could not delete $full_path: $!\n";
-  print "Deleted file $full_path"
-}, ".")
+for my $ext (@extensions) {
+  for (glob "*.$ext") {
+    unlink or warn "Could not delete $_: $!\n";
+    say "Deleted $_"
+  }
+}
