@@ -1,6 +1,3 @@
-// Copied from experimental/posit-92.js
-// Last synced: 2026-03-17
-
 "use strict";
 class Posit92 {
     static version = "0.1.6_experimental";
@@ -48,7 +45,8 @@ class Posit92 {
             jsPanicHalt: this.#panicHalt.bind(this),
             getTimer: () => this.#getTimer(),
             getFullTimer: () => this.#getFullTimer(),
-            vgaFlush: () => this.#vgaFlush()
+            vgaUpload: () => this.#vgaUpload(),
+            vgaPresent: () => this.#vgaPresent()
         }
     };
     _getWasmImportObject() {
@@ -520,7 +518,6 @@ class Posit92 {
         "F2": 0x3C,
         "F3": 0x3D,
         "F4": 0x3E,
-        "F5": 0x3F,
         "F6": 0x40,
         "F7": 0x41,
         "F8": 0x42,
@@ -644,12 +641,14 @@ class Posit92 {
     #getFullTimer() {
         return Date.now() / 1000;
     }
-    flush() { this.#vgaFlush(); }
-    #vgaFlush() {
+    #surface = null;
+    #vgaUpload() {
         const surfacePtr = this.#wasm.exports.getSurfacePtr();
         const imageData = new Uint8ClampedArray(this.#wasm.exports.memory.buffer, surfacePtr, this.#vgaWidth * this.#vgaHeight * 4);
-        const imgData = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
-        this.#ctx.putImageData(imgData, 0, 0);
+        this.#surface = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
+    }
+    #vgaPresent() {
+        this.#ctx.putImageData(this.#surface, 0, 0);
     }
     #addResizeListener() {
         window.addEventListener("resize", this.#handleResize.bind(this));
