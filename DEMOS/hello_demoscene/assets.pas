@@ -46,7 +46,7 @@ end;
 
 procedure PrintDefault(const text: string; const x, y: integer);
 begin
-  printBMFont(defaultFont, defaultFontGlyphs, text, x, y)
+  PrintBMFont(defaultFont, defaultFontGlyphs, text, x, y)
 end;
 
 procedure PrintDefaultCentred(const text: string; const cx, y: integer);
@@ -59,7 +59,7 @@ end;
 
 function MeasureDefault(const text: string): word;
 begin
-  MeasureDefault := measureBMFont(defaultFont, defaultFontGlyphs, text)
+  MeasureDefault := MeasureBMFont(defaultFont, defaultFontGlyphs, text)
 end;
 
 

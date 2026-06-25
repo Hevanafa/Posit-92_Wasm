@@ -29,48 +29,48 @@ type
   end;
 
 { This procedure creates a new ImgRef instance }
-procedure cloneBMFont(
+procedure CloneBMFont(
   const srcFont: TBMFont; const srcFontGlyphs: array of TBMFontGlyph;
   var destFont: TBMFont; var destFontGlyphs: array of TBMFontGlyph);
 
-procedure freeBMFont(
+procedure FreeBMFont(
   var font: TBMFont;
   var fontGlyphs: array of TBMFontGlyph;
   const freeImgHandle: boolean);
 
-procedure printBMFont(
+procedure PrintBMFont(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const text: string;
   const x, y: smallint);
 
-function measureBMFont(
+function MeasureBMFont(
   const font: TBMFont;
   const glyphs: array of TBMFontGlyph;
   const text: string): smallint;
 
-function printBMFontCharColour(
+function PrintBMFontCharColour(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const ch: char;
   const x, y: smallint;
   const colour: longword): word;
 
-procedure printBMFontColour(
+procedure PrintBMFontColour(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const text: string;
   const x, y: smallint;
   const colour: longword);
 
-function printBMFontCharToDest(
+function PrintBMFontCharToDest(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const destHandle: longint;
   const ch: char;
   const x, y: smallint): smallint;
 
-procedure printBMFontToDest(
+procedure PrintBMFontToDest(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const destHandle: longint;
@@ -85,7 +85,7 @@ uses
   ImgRef, ImgRefFast;
 
 { Returns glyph.xadvance }
-function printBMFontChar(
+function PrintBMFontChar(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const ch: char;
@@ -109,12 +109,12 @@ begin
       glyph.width, glyph.height,
       x + glyph.xoffset, y + glyph.yoffset);
     
-    printBMFontChar := glyph.xadvance
+    PrintBMFontChar := glyph.xadvance
   end else
-    printBMFontChar := 0;
+    PrintBMFontChar := 0;
 end;
 
-procedure cloneBMFont(
+procedure CloneBMFont(
   const srcFont: TBMFont; const srcFontGlyphs: array of TBMFontGlyph;
   var destFont: TBMFont; var destFontGlyphs: array of TBMFontGlyph);
 var
@@ -128,7 +128,7 @@ begin
   destFont.imgHandle := CopyImage(srcFont.imgHandle)
 end;
 
-procedure freeBMFont(
+procedure FreeBMFont(
   var font: TBMFont;
   var fontGlyphs: array of TBMFontGlyph;
   const freeImgHandle: boolean);
@@ -143,7 +143,7 @@ begin
     fillchar(fontGlyphs[a], sizeof(TBMFontGlyph), 0);
 end;
 
-procedure printBMFont(
+procedure PrintBMFont(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const text: string;
@@ -157,7 +157,7 @@ begin
 
   for a:=1 to length(text) do begin
     ch := text[a];
-    step := printBMFontChar(font, fontGlyphs, ch, x + left, y);
+    step := PrintBMFontChar(font, fontGlyphs, ch, x + left, y);
 
     if a < length(text) then
       inc(left, step + font.spacing[0])
@@ -167,7 +167,7 @@ begin
 end;
 
 
-function measureBMFont(
+function MeasureBMFont(
   const font: TBMFont;
   const glyphs: array of TBMFontGlyph;
   const text: string): smallint;
@@ -176,7 +176,7 @@ var
   glyphIdx: smallint;
   charcode: byte;
 begin
-  measureBMFont := 0;
+  MeasureBMFont := 0;
 
   for a:=1 to length(text) do begin
     charcode := ord(text[a]);
@@ -186,15 +186,15 @@ begin
 
     if (glyphIdx in [low(glyphs)..high(glyphs)]) then begin
       if a < length(text) then
-        inc(measureBMFont, glyphs[glyphIdx].xadvance + font.spacing[0])
+        inc(MeasureBMFont, glyphs[glyphIdx].xadvance + font.spacing[0])
       else
-        inc(measureBMFont, glyphs[glyphIdx].xadvance);
+        inc(MeasureBMFont, glyphs[glyphIdx].xadvance);
     end;
   end;
 end;
 
 { Returns xadvance for the next char }
-function printBMFontCharColour(
+function PrintBMFontCharColour(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const ch: char;
@@ -208,7 +208,7 @@ begin
   charcode := ord(ch);
   glyphIdx := charcode - 32;
 
-  printBMFontCharColour := 0;
+  PrintBMFontCharColour := 0;
 
   if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
     glyph := fontGlyphs[glyphIdx];
@@ -220,11 +220,11 @@ begin
       x + glyph.xoffset, y + glyph.yoffset,
       colour);
 
-    printBMFontCharColour := glyph.xadvance
+    PrintBMFontCharColour := glyph.xadvance
   end;
 end;
 
-procedure printBMFontColour(
+procedure PrintBMFontColour(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const text: string;
@@ -237,7 +237,7 @@ begin
   left := 0;
 
   for a:=1 to length(text) do begin
-    step := printBMFontCharColour(
+    step := PrintBMFontCharColour(
         font, fontGlyphs,
         text[a],
         x + left, y,
@@ -251,7 +251,7 @@ begin
 end;
 
 
-function printBMFontCharToDest(
+function PrintBMFontCharToDest(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const destHandle: longint;
@@ -262,7 +262,7 @@ var
   glyphIdx: smallint;
   glyph: TBMFontGlyph;
 begin
-  printBMFontCharToDest := 0;
+  PrintBMFontCharToDest := 0;
 
   if not IsImageSet(destHandle) then exit;
 
@@ -281,12 +281,12 @@ begin
       glyph.width, glyph.height,
       x + glyph.xoffset, y + glyph.yoffset);
     
-    printBMFontCharToDest := glyph.xadvance
+    PrintBMFontCharToDest := glyph.xadvance
   end else
-    printBMFontCharToDest := 0;
+    PrintBMFontCharToDest := 0;
 end;
 
-procedure printBMFontToDest(
+procedure PrintBMFontToDest(
   const font: TBMFont;
   const fontGlyphs: array of TBMFontGlyph;
   const destHandle: longint;
@@ -301,7 +301,7 @@ begin
 
   for a:=1 to length(text) do begin
     ch := text[a];
-    step := printBMFontCharToDest(font, fontGlyphs, destHandle, ch, x + left, y);
+    step := PrintBMFontCharToDest(font, fontGlyphs, destHandle, ch, x + left, y);
 
     if a < length(text) then
       inc(left, step + font.spacing[0])
