@@ -41,8 +41,9 @@ DEMOS/mfgj0/**/*.*
 backup/
 lib/
 
-DEMOS/*/*.lps
-DEMOS/*/*.compiled
+*.lps
+*.compiled
+
 DEMOS/*/backup/
 DEMOS/*/lib/
 !DEMOS/hello_lazarus/compile_demo.ts
