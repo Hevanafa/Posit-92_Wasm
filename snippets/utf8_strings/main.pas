@@ -31,12 +31,20 @@ begin
   getByteArrayLen := byteArrayLen
 end;
 
+procedure setByteArrayLen(value: longint); public name 'setByteArrayLen';
+begin
+  byteArrayLen := value
+end;
+
+
 { procedure helloWorld; external 'env' name 'helloWorld'; }
 procedure logWithPtr(ptr: pointer; len: longint); external 'env' name 'logWithPtr';
 
 procedure init;
 begin
   initHeapMgr;
+
+  { Test Pascal to JS }
 
   { byteArray := BytesOf('Hello!');
   byteArrayLen := Length(byteArray); }
@@ -46,6 +54,7 @@ begin
 
   logWithPtr(@byteArray[0], byteArrayLen);
 end;
+
 
 exports
   init;
