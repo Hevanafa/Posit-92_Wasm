@@ -51,7 +51,7 @@ async function main() {
   wasm.exports.init();
 
   const ptr = wasm.exports.getInteropBufPtr();
-  const len = wasm.exports.getInteropBufPtrLen();
+  const len = wasm.exports.getInteropBufLen();
 
   // console.log("ptr:", ptr);
   // console.log("len:", len);

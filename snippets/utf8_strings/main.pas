@@ -26,9 +26,9 @@ begin
   getInteropBufPtr := @interopBuffer[0]
 end;
 
-function getInteropBufPtrLen: longint; public name 'getInteropBufPtrLen';
+function getInteropBufLen: longint; public name 'getInteropBufLen';
 begin
-  getInteropBufPtrLen := interopBufferLen
+  getInteropBufLen := interopBufferLen
 end;
 
 procedure setInteropBufLen(value: longint); public name 'setInteropBufLen';
