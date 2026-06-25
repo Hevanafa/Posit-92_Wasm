@@ -86,16 +86,16 @@ begin
 end;
 
 procedure RegisterImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint);
-var
-  idx: longint;
 begin
-  idx := FindEmptyImageRefSlot;
+  if (imgHandle < 1) or (imgHandle >= high(imageRefs)) then
+    PanicHalt('Invalid image handle: ' + I32Str(imgHandle));
 
-  if idx < 0 then PanicHalt('Image ref pool is full!');
+  if (imageRefs[imgHandle].allocSize > 0) then
+    PanicHalt('Image handle ' + I32Str(imgHandle) + ' already used! (allocSize > 0)');
 
   imageRefs[imgHandle].width := w;
   imageRefs[imgHandle].height := h;
-  imageRefs[imgHandle].allocSize := w * h * 4;
+  imageRefs[imgHandle].allocSize := longword(w) * longword(h) * 4;
   imageRefs[imgHandle].dataPtr := dataPtr
 end;
 
