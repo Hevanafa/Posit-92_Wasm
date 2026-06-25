@@ -1,3 +1,8 @@
+/**
+ * @type {WebAssembly.Instance}
+ */
+let wasm;
+
 // Add your Pascal external procedures & functions here:
 const importObject = Object.freeze({
   env: {
@@ -7,15 +12,17 @@ const importObject = Object.freeze({
     flushLog: () => {},
     jsPanicHalt: () => {},
 
-    helloWorld: () => console.log("Hello from snippets!")
+    helloWorld: () => console.log("Hello from snippets!"),
+
+    logWithPtr: (ptr, len) => {
+      const bytes = new Uint8Array(wasm.exports.memory.buffer, ptr, len);
+      const text = new TextDecoder().decode(bytes);
+
+      console.log(text)
+    }
     // Add more externals below
   }
 });
-
-/**
- * @type {WebAssembly.Instance}
- */
-let wasm;
 
 async function initWebAssembly() {
   const response = await fetch("main.wasm");

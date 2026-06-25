@@ -19,7 +19,7 @@ type
 
 var
   byteArray: TBytes;
-  byteArrayLen: LongInt;
+  byteArrayLen: longint;
 
 function getByteArrayPtr: pointer; public name 'getByteArrayPtr';
 begin
@@ -32,13 +32,16 @@ begin
 end;
 
 { procedure helloWorld; external 'env' name 'helloWorld'; }
+procedure logWithPtr(ptr: pointer; len: longint); external 'env' name 'logWithPtr';
 
 procedure init;
 begin
   initHeapMgr;
 
   byteArray := BytesOf('Hello!');
-  byteArrayLen := Length(byteArray)
+  byteArrayLen := Length(byteArray);
+
+  logWithPtr(@byteArray[0], byteArrayLen);
 end;
 
 exports
