@@ -34,24 +34,24 @@ const
   SprFlipVertical = 2;
   SprFlipBoth = SprFlipHorizontal or SprFlipVertical;
 
-procedure registerImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint); public name 'registerImageRef';
+procedure RegisterImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint); public name 'RegisterImageRef';
 
-function newImage(const width, height: smallint): longint;
-function copyImage(const imgHandle: longint): longint;
-procedure freeImage(const imgHandle: longint);
+function NewImage(const width, height: smallint): longint;
+function CopyImage(const imgHandle: longint): longint;
+procedure FreeImage(const imgHandle: longint);
 
-function isImageSet(const imgHandle: longint): boolean;
-procedure assertImageSet(const varName: string; const imgHandle: longint);
-function getImagePtr(const imgHandle: longint): PImageRef;
+function IsImageSet(const imgHandle: longint): boolean;
+procedure AssertImageSet(const varName: string; const imgHandle: longint);
+function GetImagePtr(const imgHandle: longint): PImageRef;
 
-function getImageWidth(const imgHandle: longint): smallint;
-procedure setImageWidth(const imgHandle: longint; const value: smallint);
-function getImageHeight(const imgHandle: longint): smallint;
-procedure setImageHeight(const imgHandle: longint; const value: smallint);
+function GetImageWidth(const imgHandle: longint): smallint;
+procedure SetImageWidth(const imgHandle: longint; const value: smallint);
+function GetImageHeight(const imgHandle: longint): smallint;
+procedure SetImageHeight(const imgHandle: longint; const value: smallint);
 
-function unsafeSprPget(const image: PImageRef; const x, y: smallint): longword;
-function unsafeSprGetAlpha(const image: PImageRef; const x, y: smallint): byte;
-procedure unsafeSprPset(const image: PImageRef; const x, y: smallint; const colour: longword);
+function UnsafeSprPget(const image: PImageRef; const x, y: smallint): longword;
+function UnsafeSprGetAlpha(const image: PImageRef; const x, y: smallint): byte;
+procedure UnsafeSprPset(const image: PImageRef; const x, y: smallint; const colour: longword);
 
 
 implementation
@@ -72,24 +72,24 @@ var
   imageRefs: array[1..MaxImageRefs] of TImageRef;
 
 
-function findEmptyImageRefSlot: longint;
+function FindEmptyImageRefSlot: longint;
 var
   a: longint;
 begin
   for a:=1 to high(imageRefs) do
-    if not isImageSet(a) then begin
-      findEmptyImageRefSlot := a;
+    if not IsImageSet(a) then begin
+      FindEmptyImageRefSlot := a;
       exit
     end;
 
-  findEmptyImageRefSlot := -1
+  FindEmptyImageRefSlot := -1
 end;
 
-procedure registerImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint);
+procedure RegisterImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint);
 var
   idx: longint;
 begin
-  idx := findEmptyImageRefSlot;
+  idx := FindEmptyImageRefSlot;
 
   if idx < 0 then PanicHalt('Image ref pool is full!');
 
@@ -99,7 +99,7 @@ begin
   imageRefs[imgHandle].dataPtr := dataPtr
 end;
 
-function newImage(const width, height: smallint): longint;
+function NewImage(const width, height: smallint): longint;
 var
   slot: longint;
   allocSize: longword;
@@ -111,7 +111,7 @@ begin
   if height <= 0 then
     PanicHalt('newImage: Invalid height: ' + I32Str(height));
 
-  slot := findEmptyImageRefSlot;
+  slot := FindEmptyImageRefSlot;
   if slot < 0 then PanicHalt('Image ref pool is full!');
   
   allocSize := width * height * 4;
@@ -123,24 +123,24 @@ begin
   imageRefs[slot].allocSize := allocSize;
   imageRefs[slot].dataPtr := dataPtr;
 
-  newImage := slot
+  NewImage := slot
 end;
 
 { imgHandle: Source image handle }
-function copyImage(const imgHandle: longint): longint;
+function CopyImage(const imgHandle: longint): longint;
 var
   slot: longint;
   src, dest: PImageRef;
 begin
-  src := getImagePtr(imgHandle);
-  slot := newImage(src^.width, src^.height);
-  dest := getImagePtr(slot);
+  src := GetImagePtr(imgHandle);
+  slot := NewImage(src^.width, src^.height);
+  dest := GetImagePtr(slot);
 
   move(src^.dataPtr^, dest^.dataPtr^, src^.allocSize);
-  copyImage := slot
+  CopyImage := slot
 end;
 
-procedure freeImage(const imgHandle: longint);
+procedure FreeImage(const imgHandle: longint);
 begin
   if (imgHandle < 1) or (imgHandle >= MaxImageRefs) then exit;
   if imageRefs[imgHandle].dataPtr = nil then exit;
@@ -159,9 +159,9 @@ begin
 end;
 
 
-function isImageSet(const imgHandle: longint): boolean;
+function IsImageSet(const imgHandle: longint): boolean;
 begin
-  isImageSet := false;
+  IsImageSet := false;
 
 {$ifdef PanicOnInvalidHandle}
   if imgHandle <= 0 then
@@ -170,42 +170,42 @@ begin
   if imgHandle <= 0 then exit;
 {$endif}
 
-  { isImageSet := (imageRefs[imgHandle].width > 0) and (imageRefs[imgHandle].height > 0) }
-  isImageSet := (imageRefs[imgHandle].allocSize > 0)
+  { IsImageSet := (imageRefs[imgHandle].width > 0) and (imageRefs[imgHandle].height > 0) }
+  IsImageSet := (imageRefs[imgHandle].allocSize > 0)
 end;
 
-procedure assertImageSet(const varName: string; const imgHandle: longint);
+procedure AssertImageSet(const varName: string; const imgHandle: longint);
 begin
-  if not isImageSet(imgHandle) then
+  if not IsImageSet(imgHandle) then
     PanicHalt(varName + ' is unset!');
 end;
 
-function getImagePtr(const imgHandle: longint): PImageRef;
+function GetImagePtr(const imgHandle: longint): PImageRef;
 begin
-  getImagePtr := @imageRefs[imgHandle]
+  GetImagePtr := @imageRefs[imgHandle]
 end;
 
 
-function getImageWidth(const imgHandle: longint): smallint;
+function GetImageWidth(const imgHandle: longint): smallint;
 var
   image: PImageRef;
 begin
-  getImageWidth := 0;
-  if not isImageSet(imgHandle) then exit;
+  GetImageWidth := 0;
+  if not IsImageSet(imgHandle) then exit;
 
-  image := getImagePtr(imgHandle);
-  getImageWidth := image^.width
+  image := GetImagePtr(imgHandle);
+  GetImageWidth := image^.width
 end;
 
-procedure setImageWidth(const imgHandle: longint; const value: smallint);
+procedure SetImageWidth(const imgHandle: longint; const value: smallint);
 var
   image: PImageRef;
 begin
-  if not isImageSet(imgHandle) then exit;
+  if not IsImageSet(imgHandle) then exit;
   if value <= 0 then
     PanicHalt('setImageWidth: Invalid width: ' + I32Str(value));
 
-  image := getImagePtr(imgHandle);
+  image := GetImagePtr(imgHandle);
 
   if value * image^.height * 4 > image^.allocSize then
     PanicHalt('setImageWidth: New size exceeds the allocated buffer!');
@@ -214,26 +214,26 @@ begin
 end;
 
 
-function getImageHeight(const imgHandle: longint): smallint;
+function GetImageHeight(const imgHandle: longint): smallint;
 var
   image: PImageRef;
 begin
-  getImageHeight := 0;
-  if not isImageSet(imgHandle) then exit;
+  GetImageHeight := 0;
+  if not IsImageSet(imgHandle) then exit;
 
-  image := getImagePtr(imgHandle);
-  getImageHeight := image^.height
+  image := GetImagePtr(imgHandle);
+  GetImageHeight := image^.height
 end;
 
-procedure setImageHeight(const imgHandle: longint; const value: smallint);
+procedure SetImageHeight(const imgHandle: longint; const value: smallint);
 var
   image: PImageRef;
 begin
-  if not isImageSet(imgHandle) then exit;
+  if not IsImageSet(imgHandle) then exit;
   if value <= 0 then
     PanicHalt('setImageHeight: Invalid width: ' + I32Str(value));
 
-  image := getImagePtr(imgHandle);
+  image := GetImagePtr(imgHandle);
 
   if image^.width * value * 4 > image^.allocSize then
     PanicHalt('setImageHeight: New size exceeds the allocated buffer!');
@@ -243,27 +243,27 @@ end;
 
 
 { Assuming image isn't nil & the bounds are known }
-function unsafeSprPget(const image: PImageRef; const x, y: smallint): longword;
+function UnsafeSprPget(const image: PImageRef; const x, y: smallint): longword;
 var
   offset: longword;
 begin
   offset := (x + y * image^.width) * 4;
 
-  unsafeSprPget :=
+  UnsafeSprPget :=
     (image^.dataPtr[offset + 3] shl 24)
     or (image^.dataPtr[offset] shl 16)
     or (image^.dataPtr[offset + 1] shl 8)
     or image^.dataPtr[offset + 2]
 end;
 
-function unsafeSprGetAlpha(const image: PImageRef; const x, y: smallint): byte;
+function UnsafeSprGetAlpha(const image: PImageRef; const x, y: smallint): byte;
 begin
-  unsafeSprGetAlpha := image^.dataPtr[
+  UnsafeSprGetAlpha := image^.dataPtr[
     (x + y * image^.width) * 4 + 3]
 end;
 
 
-procedure unsafeSprPset(const image: PImageRef; const x, y: smallint; const colour: longword);
+procedure UnsafeSprPset(const image: PImageRef; const x, y: smallint; const colour: longword);
 var
   offset: longword;
 begin

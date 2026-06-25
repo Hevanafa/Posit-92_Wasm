@@ -18,38 +18,39 @@ interface
 { spr with TImageRef }
 procedure Spr(const imgHandle: longint; const x, y: smallint);
 
-procedure sprClear(const imgHandle: longint; const colour: longword);
+procedure SprClear(const imgHandle: longint; const colour: longword);
 
-procedure sprRegion(
+procedure SprRegion(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: smallint;
   const destX, destY: smallint);
 
-procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: smallint);
+procedure SprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: smallint);
 
-procedure sprRegionStretch(
+procedure SprRegionStretch(
   const imgHandle: longint;
   const srcX, srcY, srcWidth, srcHeight: smallint;
   const destX, destY, destWidth, destHeight: smallint);
 
-procedure sprRegionSolid(
+procedure SprRegionSolid(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: smallint;
   const destX, destY: smallint;
   const colour: longword);
 
-procedure sprFlip(const imgHandle: longint; const x, y: smallint; const flip: smallint);
+procedure SprFlip(const imgHandle: longint; const x, y: smallint; const flip: smallint);
 
 { rotation is in radians }
-procedure sprRotate(const imgHandle: longint; const cx, cy: smallint; const rotation: double);
+procedure SprRotate(const imgHandle: longint; const cx, cy: smallint; const rotation: double);
 
+procedure SprToDest(const src, dest: longint; const x, y: smallint);
 
-procedure sprToDest(const src, dest: longint; const x, y: smallint);
-procedure sprRegionToDest(
+procedure SprRegionToDest(
   const src, dest: longint;
   const srcX, srcY, srcW, srcH: smallint;
   const destX, destY: smallint);
-procedure sprFlipInPlace(const imgHandle: longint; const flip: smallint);
+
+procedure SprFlipInPlace(const imgHandle: longint; const flip: smallint);
 
 
 implementation
@@ -65,9 +66,9 @@ var
   a: byte;
   colour: longword;
 begin
-  if not isImageSet(imgHandle) then exit;
+  if not IsImageSet(imgHandle) then exit;
 
-  image := getImagePtr(imgHandle);
+  image := GetImagePtr(imgHandle);
 
   if image^.allocSize = 0 then
     PanicHalt('imgHandle ' + I32Str(imgHandle) + ' allocSize is 0!');
@@ -83,27 +84,27 @@ begin
     a := image^.dataPtr[offset + 3];
     if a < 255 then continue;
 
-    colour := unsafeSprPget(image, px, py);
+    colour := UnsafeSprPget(image, px, py);
     UnsafePset(x + px, y + py, colour)
   end;
 end;
 
-procedure sprClear(const imgHandle: longint; const colour: longword);
+procedure SprClear(const imgHandle: longint; const colour: longword);
 var
   image: PImageRef;
   px, py: smallint;
 begin
-  if not isImageSet(imgHandle) then exit;
+  if not IsImageSet(imgHandle) then exit;
 
-  image := getImagePtr(imgHandle);
+  image := GetImagePtr(imgHandle);
 
   { fillchar(image^.dataPtr, image^.width * image^.height * 4, 0); }
   for py:=0 to image^.height - 1 do
   for px:=0 to image^.width - 1 do
-    unsafeSprPset(image, px, py, colour);
+    UnsafeSprPset(image, px, py, colour);
 end;
 
-procedure sprRegion(
+procedure SprRegion(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: smallint;
   const destX, destY: smallint);
@@ -115,9 +116,9 @@ var
   alpha: byte;
   colour: longword;
 begin
-  if not isImageSet(imgHandle) then exit;
+  if not IsImageSet(imgHandle) then exit;
 
-  image := getImagePtr(imgHandle);
+  image := GetImagePtr(imgHandle);
 
   for b:=0 to srcH - 1 do
   for a:=0 to srcW - 1 do begin
@@ -131,13 +132,13 @@ begin
     alpha := image^.dataPtr[srcPos + 3];
     if alpha < 255 then continue;
 
-    colour := unsafeSprPget(image, sx, sy);
+    colour := UnsafeSprPget(image, sx, sy);
     UnsafePset(destX + a, destY + b, colour);
   end;
 end;
 
 { Stretch a sprite with nearest neighbour scaling }
-procedure sprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: smallint);
+procedure SprStretch(const imgHandle: longint; const destX, destY, destWidth, destHeight: smallint);
 var
   sx, sy: smallint;
   dx, dy: smallint;
@@ -147,8 +148,8 @@ var
   scaleX, scaleY: double;
   colour: longword;
 begin
-  if not isImageSet(imgHandle) then exit;
-  image := getImagePtr(imgHandle);
+  if not IsImageSet(imgHandle) then exit;
+  image := GetImagePtr(imgHandle);
 
   scaleX := image^.width / destWidth;
   scaleY := image^.height / destHeight;
@@ -165,12 +166,12 @@ begin
     alpha := image^.dataPtr[srcPos + 3];
     if alpha < 255 then continue;
 
-    colour := unsafeSprPget(image, sx, sy);
+    colour := UnsafeSprPget(image, sx, sy);
     UnsafePset(dx + destX, dy + destY, colour);
   end;
 end;
 
-procedure sprRegionStretch(
+procedure SprRegionStretch(
   const imgHandle: longint;
   const srcX, srcY, srcWidth, srcHeight: smallint;
   const destX, destY, destWidth, destHeight: smallint);
@@ -182,8 +183,8 @@ var
   scaleX, scaleY: double;
   colour: longword;
 begin
-  if not isImageSet(imgHandle) then exit;
-  image := getImagePtr(imgHandle);
+  if not IsImageSet(imgHandle) then exit;
+  image := GetImagePtr(imgHandle);
 
   scaleX := srcWidth / destWidth;
   scaleY := srcHeight / destHeight;
@@ -200,7 +201,7 @@ begin
     if (sx >= image^.width) or (sx < 0)
       or (sy >= image^.height) or (sy < 0) then continue;
 
-    colour := unsafeSprPget(image, sx, sy);
+    colour := UnsafeSprPget(image, sx, sy);
     alpha := colour shr 24;
     if alpha < 255 then continue;
 
@@ -208,7 +209,7 @@ begin
   end;
 end;
 
-procedure sprRegionSolid(
+procedure SprRegionSolid(
   const imgHandle: longint;
   const srcX, srcY, srcW, srcH: smallint;
   const destX, destY: smallint;
@@ -220,9 +221,9 @@ var
   srcPos: longword;
   alpha: byte;
 begin
-  if not isImageSet(imgHandle) then exit;
+  if not IsImageSet(imgHandle) then exit;
 
-  image := getImagePtr(imgHandle);
+  image := GetImagePtr(imgHandle);
 
   for b:=0 to srcH - 1 do
   for a:=0 to srcW - 1 do begin
@@ -236,13 +237,13 @@ begin
     alpha := image^.dataPtr[srcPos + 3];
     if alpha < 255 then continue;
 
-    { colour := unsafeSprPget(image, sx, sy); }
+    { colour := UnsafeSprPget(image, sx, sy); }
     UnsafePset(destX + a, destY + b, colour);
   end;
 end;
 
 { flip: use SprFlips enum }
-procedure sprFlip(const imgHandle: longint; const x, y: smallint; const flip: smallint);
+procedure SprFlip(const imgHandle: longint; const x, y: smallint; const flip: smallint);
 var
   sx, sy: smallint;
   dx, dy: smallint;
@@ -256,9 +257,9 @@ begin
     exit
   end;
 
-  if not isImageSet(imgHandle) then exit;
+  if not IsImageSet(imgHandle) then exit;
 
-  image := getImagePtr(imgHandle);
+  image := GetImagePtr(imgHandle);
 
   for sy := 0 to image^.height - 1 do
   for sx := 0 to image^.width - 1 do begin
@@ -283,12 +284,12 @@ begin
     if (dx > ClipX2) or (dx < ClipX1)
       or (dy > ClipY2) or (dy < ClipY1) then continue;
 
-    colour := unsafeSprPget(image, sx, sy);
+    colour := UnsafeSprPget(image, sx, sy);
     UnsafePset(dx, dy, colour);
   end;
 end;
 
-procedure sprRotate(const imgHandle: longint; const cx, cy: smallint; const rotation: double);
+procedure SprRotate(const imgHandle: longint; const cx, cy: smallint; const rotation: double);
 var
   sx, sy: double;
   dx, dy: smallint;
@@ -303,8 +304,8 @@ var
   halfW, halfH: smallint;
   maxRadius: smallint;
 begin
-  if not isImageSet(imgHandle) then exit;
-  image := getImagePtr(imgHandle);
+  if not IsImageSet(imgHandle) then exit;
+  image := GetImagePtr(imgHandle);
 
   { Negative for inverse transform }
   cosAngle := cos(-rotation);
@@ -333,13 +334,13 @@ begin
     alpha := image^.dataPtr[srcPos + 3];
     if alpha < 255 then continue;
 
-    colour := unsafeSprPget(image, srcX, srcY);
+    colour := UnsafeSprPget(image, srcX, srcY);
     UnsafePset(cx + dx, cy + dy, colour)
   end;
 end;
 
 
-procedure sprToDest(const src, dest: longint; const x, y: smallint);
+procedure SprToDest(const src, dest: longint; const x, y: smallint);
 var
   srcImage, destImage: PImageRef;
   startX, endX, startY, endY: word;
@@ -348,10 +349,10 @@ var
   alpha: byte;
   colour: longword;
 begin
-  if not isImageSet(src) or not isImageSet(dest) then exit;
+  if not IsImageSet(src) or not IsImageSet(dest) then exit;
 
-  srcImage := getImagePtr(src);
-  destImage := getImagePtr(dest);
+  srcImage := GetImagePtr(src);
+  destImage := GetImagePtr(dest);
 
   startX := trunc(max(0, -x));
   startY := trunc(max(0, -y));
@@ -364,12 +365,12 @@ begin
     alpha := srcImage^.dataPtr[srcOffset + 3];
     if alpha < 255 then continue;
 
-    colour := unsafeSprPget(srcImage, a, b);
-    unsafeSprPset(destImage, x + a, y + b, colour)
+    colour := UnsafeSprPget(srcImage, a, b);
+    UnsafeSprPset(destImage, x + a, y + b, colour)
   end;
 end;
 
-procedure sprRegionToDest(
+procedure SprRegionToDest(
   const src, dest: longint;
   const srcX, srcY, srcW, srcH: smallint;
   const destX, destY: smallint);
@@ -381,10 +382,10 @@ var
   alpha: byte;
   colour: longword;
 begin
-  if not isImageSet(src) or not isImageSet(dest) then exit;
+  if not IsImageSet(src) or not IsImageSet(dest) then exit;
 
-  srcImage := getImagePtr(src);
-  destImage := getImagePtr(dest);
+  srcImage := GetImagePtr(src);
+  destImage := GetImagePtr(dest);
 
   for py:=0 to srcH - 1 do
   for px:=0 to srcW - 1 do begin
@@ -398,13 +399,13 @@ begin
     alpha := srcImage^.dataPtr[srcPos + 3];
     if alpha < 255 then continue;
 
-    colour := unsafeSprPget(srcImage, sx, sy);
-    unsafeSprPset(destImage, destX + px, destY + py, colour);
+    colour := UnsafeSprPget(srcImage, sx, sy);
+    UnsafeSprPset(destImage, destX + px, destY + py, colour);
   end;
 end;
 
 { flip: Use SprFlip enum }
-procedure sprFlipInPlace(const imgHandle: longint; const flip: smallint);
+procedure SprFlipInPlace(const imgHandle: longint; const flip: smallint);
 var
   image: PImageRef;
   px, py: smallint;
@@ -413,9 +414,9 @@ var
   pos1, pos2: longint;
 begin
   if flip = SprFlipNone then exit;
-  if not isImageSet(imgHandle) then exit;
+  if not IsImageSet(imgHandle) then exit;
 
-  image := getImagePtr(imgHandle);
+  image := GetImagePtr(imgHandle);
 
   { Horizontal flip }
   if (flip and SprFlipHorizontal) <> 0 then begin

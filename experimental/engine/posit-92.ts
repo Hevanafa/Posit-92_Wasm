@@ -14,13 +14,15 @@ type WasmExports = {
   GetLogBuffer: () => number,
 
   // VGA.PAS
-  getSurfacePtr: () => number,
-  initVideoMem: (width: number, height: number, startAddr: number) => void,
-  initHeapRegion: (startAddr: number, poolSize: number, heapSize: number) => void,
+  GetSurfacePtr: () => number,
+  InitVideoMem: (width: number, height: number, startAddr: number) => void,
+
+  // WASMHEAP.PAS
+  InitHeapRegion: (startAddr: number, poolSize: number, heapSize: number) => void,
   WasmGetMem: (bytes: number) => number,
 
   // IMGREF.PAS
-  registerImageRef: (imgHandle: number, dataPtr: number, width: number, height: number) => void;
+  RegisterImageRef: (imgHandle: number, dataPtr: number, width: number, height: number) => void;
 
   // Primary unit
   beginIntroState: () => void,
@@ -285,8 +287,8 @@ class Posit92 {
     if (pages < requiredPages)
       this.#wasm.exports.memory.grow(requiredPages - pages);
 
-    this.#wasm.exports.initVideoMem(this.#vgaWidth, this.#vgaHeight, videoMemStart);
-    this.#wasm.exports.initHeapRegion(heapRegionStart, this.#poolSize, heapSize);
+    this.#wasm.exports.InitVideoMem(this.#vgaWidth, this.#vgaHeight, videoMemStart);
+    this.#wasm.exports.InitHeapRegion(heapRegionStart, this.#poolSize, heapSize);
   }
 
   async init() {
@@ -413,7 +415,7 @@ class Posit92 {
     // Register with Wasm pointer
     const handle = this.#images.length;
     this.#images.push(imageData);  // Keep data in JS for reference
-    this.#wasm.exports.registerImageRef(handle, wasmPtr, img.width, img.height);
+    this.#wasm.exports.RegisterImageRef(handle, wasmPtr, img.width, img.height);
 
     return handle
   }
@@ -1001,7 +1003,7 @@ class Posit92 {
   #surface: ImageData = null!;
 
   #vgaUpload() {
-    const surfacePtr = this.#wasm.exports.getSurfacePtr();
+    const surfacePtr = this.#wasm.exports.GetSurfacePtr();
     const imageData = new Uint8ClampedArray(
       this.#wasm.exports.memory.buffer,
       surfacePtr,

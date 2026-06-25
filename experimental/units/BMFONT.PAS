@@ -103,7 +103,7 @@ begin
   if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
     glyph := fontGlyphs[glyphIdx];
 
-    sprRegion(
+    SprRegion(
       font.imgHandle,
       glyph.x, glyph.y,
       glyph.width, glyph.height,
@@ -125,7 +125,7 @@ begin
   for a:=0 to high(srcFontGlyphs) do
     destFontGlyphs[a] := srcFontGlyphs[a];
 
-  destFont.imgHandle := copyImage(srcFont.imgHandle)
+  destFont.imgHandle := CopyImage(srcFont.imgHandle)
 end;
 
 procedure freeBMFont(
@@ -136,7 +136,7 @@ var
   a: Word;
 begin
   if freeImgHandle then
-    freeImage(font.imgHandle);
+    FreeImage(font.imgHandle);
 
   fillchar(font, sizeof(TBMFont), 0);
   for a:=0 to high(fontGlyphs) do
@@ -213,7 +213,7 @@ begin
   if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
     glyph := fontGlyphs[glyphIdx];
 
-    sprRegionSolid(
+    SprRegionSolid(
       font.imgHandle,
       glyph.x, glyph.y,
       glyph.width, glyph.height,
@@ -264,7 +264,7 @@ var
 begin
   printBMFontCharToDest := 0;
 
-  if not isImageSet(destHandle) then exit;
+  if not IsImageSet(destHandle) then exit;
 
   charcode := ord(ch);
 
@@ -274,7 +274,7 @@ begin
   if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
     glyph := fontGlyphs[glyphIdx];
 
-    sprRegionToDest(
+    SprRegionToDest(
       font.imgHandle,
       destHandle,
       glyph.x, glyph.y,
