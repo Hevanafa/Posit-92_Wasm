@@ -11,7 +11,8 @@ library Main;
 {$Mode ObjFPC}
 {$H+}
 
-uses SysUtils;
+uses
+  SysUtils, WasmMemMgr;
 
 type
   TByteArray = array[0..255] of byte;
@@ -20,7 +21,7 @@ var
   byteArray: TBytes;
   byteArrayLen: LongInt;
 
-function getByteArrayPtr: pointer; public name 'getBytePtr';
+function getByteArrayPtr: pointer; public name 'getByteArrayPtr';
 begin
   getByteArrayPtr := @byteArray[0]
 end;
@@ -34,6 +35,8 @@ end;
 
 procedure init;
 begin
+  initHeapMgr;
+
   byteArray := BytesOf('Hello!');
   byteArrayLen := Length(byteArray)
 end;
