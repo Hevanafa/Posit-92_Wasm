@@ -14,12 +14,12 @@ interface
 
 {$ifdef WASM}
 { Must be registered in importObject }
-procedure writeLogI32(const value: longint); external 'env' name 'writeLogI32';
-procedure writeLogF32(const value: double); external 'env' name 'writeLogF32';
+procedure WriteLogI32(const value: longint); external 'env' name 'WriteLogI32';
+procedure WriteLogF32(const value: double); external 'env' name 'WriteLogF32';
 
-function getLogBuffer: pointer; public name 'getLogBuffer';
+function GetLogBuffer: pointer; public name 'GetLogBuffer';
 { Forwards logBuffer to JS }
-procedure flushLog; external 'env' name 'flushLog';
+procedure FlushLog; external 'env' name 'FlushLog';
 {$endif}
 
 {$ifdef Windows}
@@ -51,10 +51,10 @@ var
   logOpened: boolean;
 {$endif}
 
-function getLogBuffer: pointer;
+function GetLogBuffer: pointer;
 begin
 {$ifdef WASM}
-  getLogBuffer := @logBuffer
+  GetLogBuffer := @logBuffer
 {$else}
   getLogBuffer := nil
 {$endif}
@@ -77,7 +77,7 @@ begin
     logBuffer[a] := ord(msg[a]);
 
   { JS will read logBuffer }
-  flushLog
+  FlushLog
 end;
 {$endif}
 

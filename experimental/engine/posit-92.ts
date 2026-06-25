@@ -11,7 +11,7 @@ type WasmExports = {
   memory: WebAssembly.Memory,
 
   // LOGGER.PAS
-  getLogBuffer: () => number,
+  GetLogBuffer: () => number,
 
   // VGA.PAS
   getSurfacePtr: () => number,
@@ -962,7 +962,7 @@ class Posit92 {
 
   // LOGGER.PAS
   #pascalWriteLog() {
-    const bufferPtr = this.#wasm.exports.getLogBuffer();
+    const bufferPtr = this.#wasm.exports.GetLogBuffer();
     const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, bufferPtr, 256);
 
     const len = buffer[0];
