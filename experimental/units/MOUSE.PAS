@@ -23,9 +23,9 @@ var
 
 {$ifdef WASM}
 { Hide system cursor }
-procedure hideCursor; external 'env' name 'hideCursor';
+procedure HideCursor; external 'env' name 'HideCursor';
 { Show system cursor }
-procedure showCursor; external 'env' name 'showCursor';
+procedure ShowCursor; external 'env' name 'ShowCursor';
 procedure UpdateMouse;
 {$endif}
 
@@ -33,15 +33,15 @@ procedure UpdateMouse;
 implementation
 
 {$ifdef WASM}
-function getMouseX: smallint; external 'env' name 'getMouseX';
-function getMouseY: smallint; external 'env' name 'getMouseY';
-function getMouseButton: smallint; external 'env' name 'getMouseButton';
+function GetMouseX: smallint; external 'env' name 'GetMouseX';
+function GetMouseY: smallint; external 'env' name 'GetMouseY';
+function GetMouseButton: smallint; external 'env' name 'GetMouseButton';
 
 procedure UpdateMouse;
 begin
-  mouseX := getMouseX;
-  mouseY := getMouseY;
-  mouseButton := getMouseButton;
+  mouseX := GetMouseX;
+  mouseY := GetMouseY;
+  mouseButton := GetMouseButton;
 end;
 {$endif}
 

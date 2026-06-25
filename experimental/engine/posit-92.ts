@@ -52,18 +52,18 @@ type WasmImports = {
     FitCanvas: () => void,
 
     // Keyboard
-    isKeyDown: (scancode: number) => boolean,
-    signalDone: () => void,
+    IsKeyDown: (scancode: number) => boolean,
+    SignalDone: () => void,
 
     // Logger
-    writeLogF32: (value: number) => void,
-    writeLogI32: (value: number) => void,
-    flushLog: () => void,
+    WriteLogF32: (value: number) => void,
+    WriteLogI32: (value: number) => void,
+    FlushLog: () => void,
 
     // Mouse
-    getMouseX: () => number,
-    getMouseY: () => number,
-    getMouseButton: () => number,
+    GetMouseX: () => number,
+    GetMouseY: () => number,
+    GetMouseButton: () => number,
 
     // Panic
     jsPanicHalt: (textPtr: number, textLen: number) => void,
@@ -151,18 +151,18 @@ class Posit92 {
       FitCanvas: () => this.#fitCanvas(),
 
       // Keyboard
-      isKeyDown: this.#isKeyDown.bind(this),
-      signalDone: this.#signalDone.bind(this),
+      IsKeyDown: this.#isKeyDown.bind(this),
+      SignalDone: this.#signalDone.bind(this),
 
       // Logger
-      writeLogF32: value => console.log("Pascal (f32):", value),
-      writeLogI32: value => console.log("Pascal (i32):", value),
-      flushLog: () => this.#pascalWriteLog(),
+      WriteLogF32: value => console.log("Pascal (f32):", value),
+      WriteLogI32: value => console.log("Pascal (i32):", value),
+      FlushLog: () => this.#pascalWriteLog(),
 
       // Mouse
-      getMouseX: () => this.#getMouseX(),
-      getMouseY: () => this.#getMouseY(),
-      getMouseButton: () => this.#getMouseButton(),
+      GetMouseX: () => this.#getMouseX(),
+      GetMouseY: () => this.#getMouseY(),
+      GetMouseButton: () => this.#getMouseButton(),
 
       // Panic
       jsPanicHalt: this.#panicHalt.bind(this),

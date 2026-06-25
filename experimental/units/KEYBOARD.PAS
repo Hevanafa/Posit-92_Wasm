@@ -125,7 +125,7 @@ const
   SC_F11 = $57;
   SC_F12 = $58;
 
-function IsKeyDown(const scancode: byte): boolean; external 'env' name 'isKeyDown';
+function IsKeyDown(const scancode: byte): boolean; external 'env' name 'IsKeyDown';
 
 implementation
 
