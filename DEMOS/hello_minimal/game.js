@@ -9,17 +9,18 @@ class Game extends Posit92 {
 /**
  * Entry point
  */
-async function main() {
+async function Main() {
   const game = new Game("game");
-  await game.init();
+  await game.Init();
 
-  game.hideLoadingOverlay();
-  game.wasmInstance.exports.afterInit();
+  game.HideLoadingOverlay();
+  game.WasmInstance.exports.AfterInit();
 
-  function loop() {
-    game.update();
-    game.draw();
-    requestAnimationFrame(loop)
+  function Loop() {
+    game.Update();
+    game.Draw();
+    requestAnimationFrame(Loop)
   }
-  requestAnimationFrame(loop)
+
+  requestAnimationFrame(Loop)
 }

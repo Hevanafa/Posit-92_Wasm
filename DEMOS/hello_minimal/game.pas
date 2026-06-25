@@ -6,28 +6,29 @@ library Game;
 uses
   Logger, WasmMemMgr, VGA;
 
-procedure init;
+procedure Init;
 begin
   initHeapMgr;
 end;
 
-procedure afterInit;
+procedure AfterInit;
 begin
   writeLog('Hello from hello_minimal!')
 end;
 
-procedure update;
+procedure Update;
 begin
 end;
 
-procedure draw;
+procedure Draw;
 begin
-  cls($FF101010);
-  vgaFlush
+  Cls($FF101010);
+  VgaUpload;
+  VgaPresent
 end;
 
 exports
-  init, afterInit, update, draw;
+  Init, AfterInit, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
