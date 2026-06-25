@@ -3,6 +3,10 @@ const importObject = Object.freeze({
   env: {
     _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
 
+    // Just to please the WebAssembly init
+    flushLog: () => {},
+    jsPanicHalt: () => {},
+
     helloWorld: () => console.log("Hello from snippets!")
     // Add more externals below
   }
