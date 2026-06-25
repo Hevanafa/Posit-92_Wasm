@@ -73,8 +73,8 @@ type WasmImports = {
     GetFullTimer: () => number,
 
     // VGA
-    vgaUpload: () => void,
-    vgaPresent: () => void
+    VgaUpload: () => void,
+    VgaPresent: () => void
   }
 }
 
@@ -172,8 +172,8 @@ class Posit92 {
       GetFullTimer: () => this.#getFullTimer(),
 
       // VGA
-      vgaUpload: () => this.#vgaUpload(),
-      vgaPresent: () => this.#vgaPresent()
+      VgaUpload: () => this.#vgaUpload(),
+      VgaPresent: () => this.#vgaPresent()
     }
   };
 

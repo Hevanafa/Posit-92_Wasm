@@ -74,8 +74,8 @@ begin
   
   for py:=0 to image^.height - 1 do
   for px:=0 to image^.width - 1 do begin
-    if (x + px > clipX2) or (x + px < clipX1)
-      or (y + py > clipY2) or (y + py < clipY1) then continue;
+    if (x + px > ClipX2) or (x + px < ClipX1)
+      or (y + py > ClipY2) or (y + py < ClipY1) then continue;
 
     { offset to ImageData buffer }
     offset := (px + py * image^.width) * 4;
@@ -84,7 +84,7 @@ begin
     if a < 255 then continue;
 
     colour := unsafeSprPget(image, px, py);
-    unsafePset(x + px, y + py, colour)
+    UnsafePset(x + px, y + py, colour)
   end;
 end;
 
@@ -121,8 +121,8 @@ begin
 
   for b:=0 to srcH - 1 do
   for a:=0 to srcW - 1 do begin
-    if (destX + a > clipX2) or (destX + a < clipX1)
-      or (destY + b > clipY2) or (destY + b < clipY1) then continue;
+    if (destX + a > ClipX2) or (destX + a < ClipX1)
+      or (destY + b > ClipY2) or (destY + b < ClipY1) then continue;
 
     sx := srcX + a;
     sy := srcY + b;
@@ -132,7 +132,7 @@ begin
     if alpha < 255 then continue;
 
     colour := unsafeSprPget(image, sx, sy);
-    unsafePset(destX + a, destY + b, colour);
+    UnsafePset(destX + a, destY + b, colour);
   end;
 end;
 
@@ -155,8 +155,8 @@ begin
 
   for dy := 0 to destHeight - 1 do
   for dx := 0 to destWidth - 1 do begin
-    if (destX + dx > clipX2) or (destX + dx < clipX1)
-      or (destY + dy > clipY2) or (destY + dy < clipY1) then continue;
+    if (destX + dx > ClipX2) or (destX + dx < ClipX1)
+      or (destY + dy > ClipY2) or (destY + dy < ClipY1) then continue;
 
     sx := trunc(dx * scaleX);
     sy := trunc(dy * scaleY);
@@ -166,7 +166,7 @@ begin
     if alpha < 255 then continue;
 
     colour := unsafeSprPget(image, sx, sy);
-    unsafePset(dx + destX, dy + destY, colour);
+    UnsafePset(dx + destX, dy + destY, colour);
   end;
 end;
 
@@ -190,8 +190,8 @@ begin
 
   for dy := 0 to destHeight - 1 do
   for dx := 0 to destWidth - 1 do begin
-    if (destX + dx > clipX2) or (destX + dx < clipX1)
-      or (destY + dy > clipY2) or (destY + dy < clipY1) then continue;
+    if (destX + dx > ClipX2) or (destX + dx < ClipX1)
+      or (destY + dy > ClipY2) or (destY + dy < ClipY1) then continue;
 
     { Map destination pixel to source region }
     sx := srcX + trunc(dx * scaleX);
@@ -204,7 +204,7 @@ begin
     alpha := colour shr 24;
     if alpha < 255 then continue;
 
-    unsafePset(dx + destX, dy + destY, colour)
+    UnsafePset(dx + destX, dy + destY, colour)
   end;
 end;
 
@@ -226,8 +226,8 @@ begin
 
   for b:=0 to srcH - 1 do
   for a:=0 to srcW - 1 do begin
-    if (destX + a > clipX2) or (destX + a < clipX1)
-      or (destY + b > clipY2) or (destY + b < clipY1) then continue;
+    if (destX + a > ClipX2) or (destX + a < ClipX1)
+      or (destY + b > ClipY2) or (destY + b < ClipY1) then continue;
 
     sx := srcX + a;
     sy := srcY + b;
@@ -237,7 +237,7 @@ begin
     if alpha < 255 then continue;
 
     { colour := unsafeSprPget(image, sx, sy); }
-    unsafePset(destX + a, destY + b, colour);
+    UnsafePset(destX + a, destY + b, colour);
   end;
 end;
 
@@ -280,11 +280,11 @@ begin
       end
     end;
 
-    if (dx > clipX2) or (dx < clipX1)
-      or (dy > clipY2) or (dy < clipY1) then continue;
+    if (dx > ClipX2) or (dx < ClipX1)
+      or (dy > ClipY2) or (dy < ClipY1) then continue;
 
     colour := unsafeSprPget(image, sx, sy);
-    unsafePset(dx, dy, colour);
+    UnsafePset(dx, dy, colour);
   end;
 end;
 
@@ -317,8 +317,8 @@ begin
   
   for dy := -maxRadius to maxRadius do
   for dx := -maxRadius to maxRadius do begin
-    if (cx + dx < clipX1) or (cx + dx > clipX2)
-      or (cy + dy < clipY1) or (cy + dy > clipY2) then continue;
+    if (cx + dx < ClipX1) or (cx + dx > ClipX2)
+      or (cy + dy < ClipY1) or (cy + dy > ClipY2) then continue;
 
     sx := dx * cosAngle - dy * sinAngle;
     sy := dx * sinAngle + dy * cosAngle;
@@ -334,7 +334,7 @@ begin
     if alpha < 255 then continue;
 
     colour := unsafeSprPget(image, srcX, srcY);
-    unsafePset(cx + dx, cy + dy, colour)
+    UnsafePset(cx + dx, cy + dy, colour)
   end;
 end;
 

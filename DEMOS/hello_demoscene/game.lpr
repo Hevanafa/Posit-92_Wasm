@@ -59,7 +59,7 @@ begin
   else
     Spr(imgDosuEXE[0], 148, 88);
 
-  PrintDefaultCentred('Hello world!', vgaWidth div 2, 120);
+  PrintDefaultCentred('Hello world!', VgaWidth div 2, 120);
 
   DrawMouse;
 

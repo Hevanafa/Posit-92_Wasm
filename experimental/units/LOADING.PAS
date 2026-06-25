@@ -30,7 +30,7 @@ begin
 
   s := 'Progress: ' + I32Str(GetLoadingActual) + ' / ' + I32Str(GetLoadingTotal);
   w := MeasureDefault(s);
-  PrintDefault(s, (vgaWidth - w) div 2, vgaHeight div 2 - defaultFont.lineHeight);
+  PrintDefault(s, (VgaWidth - w) div 2, VgaHeight div 2 - defaultFont.lineHeight);
 
   VgaUpload;
   VgaPresent
