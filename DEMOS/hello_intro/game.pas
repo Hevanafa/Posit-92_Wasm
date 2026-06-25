@@ -50,13 +50,13 @@ end;
 
 procedure DrawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  Spr(imgCursor, mouseX, mouseY)
 end;
 
 procedure BeginIntroState;
 begin
   HideLoadingOverlay;
-  fitCanvas;
+  FitCanvas;
 
   actualGameState := GameStateIntro;
   introSlide := 1;
@@ -66,20 +66,20 @@ end;
 procedure BeginLoadingState;
 begin
   actualGameState := GameStateLoading;
-  fitCanvas;
+  FitCanvas;
   LoadAssets
 end;
 
 procedure BeginPlayingState;
 begin
   HideCursor;
-  fitCanvas;
+  FitCanvas;
 
   { Initialise game state here }
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
   
-  replaceColour(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
+  ReplaceColour(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
 end;
 
 
@@ -99,34 +99,34 @@ procedure Update;
 var
   shouldSkip: boolean;
 begin
-  updateDeltaTime;
+  UpdateDeltaTime;
   IncrementFPS;
 
   if actualGameState = GameStateIntro then begin
     shouldSkip := false;
 
     { Handle inputs }
-    if lastSpacebar <> isKeyDown(SC_SPACE) then begin
-      lastSpacebar := isKeyDown(SC_SPACE);
+    if lastSpacebar <> IsKeyDown(SC_SPACE) then begin
+      lastSpacebar := IsKeyDown(SC_SPACE);
       if lastSpacebar then shouldSkip := true
     end;
 
-    if lastEnter <> isKeyDown(SC_ENTER) then begin
-      lastEnter := isKeyDown(SC_ENTER);
+    if lastEnter <> IsKeyDown(SC_ENTER) then begin
+      lastEnter := IsKeyDown(SC_ENTER);
       if lastEnter then shouldSkip := true
     end;
 
     { Handle next slide }
-    if getTimer >= introSlideEndTick then
+    if GetTimer >= introSlideEndTick then
       shouldSkip := true;
 
     if shouldSkip then begin
-      introSlideEndTick := getTimer + 2.0;
+      introSlideEndTick := GetTimer + 2.0;
       inc(introSlide);
     end;
 
     if introSlide > IntroSlides then begin
-      unloadIntro;
+      UnloadIntro;
       BeginLoadingState
     end;
 
@@ -134,13 +134,13 @@ begin
   end;
 
   { Handle inputs }
-  updateMouse;
+  UpdateMouse;
 
-  if lastEsc <> isKeyDown(SC_ESCAPE) then begin
-    lastEsc := isKeyDown(SC_ESCAPE);
+  if lastEsc <> IsKeyDown(SC_ESCAPE) then begin
+    lastEsc := IsKeyDown(SC_ESCAPE);
 
     if lastEsc then begin
-      writeLog('ESC is pressed!');
+      WriteLog('ESC is pressed!');
       SignalDone
     end;
   end;
@@ -154,7 +154,7 @@ begin
   if actualGameState in [GameStateIntro, GameStateLoading] then
   case actualGameState of
     GameStateIntro: begin
-      renderIntro(introSlide);
+      RenderIntro(introSlide);
 
       { Debug intro state }
       PrintDefault('(Intro slide ' + i32str(introSlide) + ')', 30, 30);
@@ -163,16 +163,17 @@ begin
       exit
     end;
     GameStateLoading: begin
-      renderLoadingScreen; exit
+      RenderLoadingScreen;
+      exit
     end else
   end;
 
-  cls(CornflowerBlue);
+  Cls(CornflowerBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    Spr(imgDosuEXE[1], 148, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    Spr(imgDosuEXE[0], 148, 88);
 
   PrintDefaultCentred('Hello world!', vgaWidth div 2, 120);
 

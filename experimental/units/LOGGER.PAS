@@ -31,7 +31,7 @@ procedure writeLogF32(const value: double);
 procedure writeWarn(const msg: string);
 {$endif}
 
-procedure writeLog(const msg: string);
+procedure WriteLog(const msg: string);
 
 
 implementation
@@ -62,7 +62,7 @@ end;
 
 
 {$ifdef WASM}
-procedure writeLog(const msg: string);
+procedure WriteLog(const msg: string);
 var
   a: byte;
   len: word;

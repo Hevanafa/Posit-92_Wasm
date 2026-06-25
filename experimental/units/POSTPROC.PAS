@@ -288,7 +288,7 @@ begin
 
   if strength < 0.05 then exit;
 
-  { writeLog('DEBUG applyFullVignette'); }
+  { WriteLog('DEBUG applyFullVignette'); }
 
   for py:=0 to vgaHeight - 1 do 
   for px:=0 to vgaWidth - 1 do begin
@@ -305,7 +305,7 @@ begin
     { Elliptical distance }
     dist := sqrt(normX * normX + normY * normY);
 {
-    writeLog('normX, normY, dist');
+    WriteLog('normX, normY, dist');
     writeLogF32(normX);
     writeLogF32(normY);
     writeLogF32(dist);
@@ -318,7 +318,7 @@ begin
     if t > 1.0 then t := 1.0;
 
 {
-    writeLog('t after clamp');
+    WriteLog('t after clamp');
     writeLogF32(t);
 }
 
@@ -335,7 +335,7 @@ begin
         factor := t * t * (3.0 - 2.0 * t);
     end;
 {
-    writeLog('factor after falloffType');
+    WriteLog('factor after falloffType');
     writeLogF32(factor);
 }
 
@@ -343,7 +343,7 @@ begin
     factor := 1.0 - (1.0 - factor) * strength;
 
 {
-    writeLog('factor after apply strength');
+    WriteLog('factor after apply strength');
     writeLogF32(factor);
 }
 
@@ -355,7 +355,7 @@ begin
     b := colour and $FF;
     a := colour shr 24 and $FF;
 {
-    writeLog('rgb with factor');
+    WriteLog('rgb with factor');
     writeLogF32(r * factor);
     writeLogF32(g * factor);
     writeLogF32(b * factor);

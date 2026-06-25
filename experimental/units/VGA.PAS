@@ -86,7 +86,7 @@ end;
 
 procedure InitVideoMem(const width, height: smallint; const startAddr: PByteArray);
 begin
-  { writeLog('Attempting to call initVideoMem'); }
+  { WriteLog('Attempting to call initVideoMem'); }
   _vgaWidth := width;
   _vgaHeight := height;
   bufferSize := _vgaWidth * _vgaHeight * 4;
