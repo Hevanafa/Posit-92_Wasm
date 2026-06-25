@@ -35,21 +35,21 @@ type WasmImports = {
   env: {
     _haltproc: (n: number) => void,
 
-    hideLoadingOverlay: () => void,
-    loadAssets: () => void,
+    HideLoadingOverlay: () => void,
+    LoadAssets: () => void,
 
     // Loading
-    getLoadingActual: () => number,
-    getLoadingTotal: () => number,
+    GetLoadingActual: () => number,
+    GetLoadingTotal: () => number,
 
-    hideCursor: () => void,
-    showCursor: () => void,
+    HideCursor: () => void,
+    ShowCursor: () => void,
 
     // Fullscreen
-    toggleFullscreen: () => void,
-    endFullscreen: () => void,
-    getFullscreenState: () => boolean,
-    fitCanvas: () => void,
+    ToggleFullscreen: () => void,
+    EndFullscreen: () => void,
+    GetFullscreenState: () => boolean,
+    FitCanvas: () => void,
 
     // Keyboard
     isKeyDown: (scancode: number) => boolean,
@@ -134,21 +134,21 @@ class Posit92 {
       _haltproc: this.#handleHaltProc.bind(this),
 
       // Intro
-      hideLoadingOverlay: this.hideLoadingOverlay.bind(this),
-      loadAssets: this.#loadAssets.bind(this),
+      HideLoadingOverlay: this.hideLoadingOverlay.bind(this),
+      LoadAssets: this.#loadAssets.bind(this),
 
       // Loading
-      getLoadingActual: this.getLoadingActual.bind(this),
-      getLoadingTotal: this.getLoadingTotal.bind(this),
+      GetLoadingActual: this.getLoadingActual.bind(this),
+      GetLoadingTotal: this.getLoadingTotal.bind(this),
 
-      hideCursor: () => this.#hideCursor(),
-      showCursor: () => this.#showCursor(),
+      HideCursor: () => this.#hideCursor(),
+      ShowCursor: () => this.#showCursor(),
 
       // Fullscreen
-      toggleFullscreen: () => this.#toggleFullscreen(),
-      endFullscreen: () => this.#endFullscreen(),
-      getFullscreenState: () => this.#getFullscreenState(),
-      fitCanvas: () => this.#fitCanvas(),
+      ToggleFullscreen: () => this.#toggleFullscreen(),
+      EndFullscreen: () => this.#endFullscreen(),
+      GetFullscreenState: () => this.#getFullscreenState(),
+      FitCanvas: () => this.#fitCanvas(),
 
       // Keyboard
       isKeyDown: this.#isKeyDown.bind(this),
