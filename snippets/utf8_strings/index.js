@@ -22,7 +22,9 @@ function logWithPtr(ptr, len) {
 // Add your Pascal external procedures & functions here:
 const importObject = Object.freeze({
   env: {
-    _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
+    // _haltproc: exitcode => console.log("Programme halted with code:", exitcode),
+    // _haltproc: () => { throw new Error("Programme called halt") },
+    _haltproc: () => {},
 
     // Just to please the WebAssembly init
     flushLog: () => {},
@@ -48,8 +50,8 @@ async function main() {
   await initWebAssembly();
   wasm.exports.init();
 
-  const ptr = wasm.exports.getByteArrayPtr();
-  const len = wasm.exports.getByteArrayLen();
+  const ptr = wasm.exports.getInteropBufPtr();
+  const len = wasm.exports.getInteropBufPtrLen();
 
   // console.log("ptr:", ptr);
   // console.log("len:", len);
@@ -57,7 +59,7 @@ async function main() {
   // Test 大家好 - JS to Pascal
   // new TextEncoder("utf-8") is the default
   const bytes = new TextEncoder().encode("大家好！");
-  wasm.exports.setByteArrayLen(bytes.length);
+  wasm.exports.setInteropBufLen(bytes.length);
   new Uint8Array(wasm.exports.memory.buffer, ptr, bytes.length).set(bytes);
 
   // Test the result immediately

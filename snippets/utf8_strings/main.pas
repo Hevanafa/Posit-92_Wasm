@@ -14,28 +14,27 @@ library Main;
 uses
   SysUtils, WasmMemMgr;
 
-type
-  TByteArray = array[0..255] of byte;
+{ type
+  TByteArray = array[0..255] of byte; }
 
 var
-  byteArray: TBytes;
-  byteArrayLen: longint;
+  interopBuffer: TBytes;
+  interopBufferLen: longint;
 
-function getByteArrayPtr: pointer; public name 'getByteArrayPtr';
+function getInteropBufPtr: pointer; public name 'getInteropBufPtr';
 begin
-  getByteArrayPtr := @byteArray[0]
+  getInteropBufPtr := @interopBuffer[0]
 end;
 
-function getByteArrayLen: longint; public name 'getByteArrayLen';
+function getInteropBufPtrLen: longint; public name 'getInteropBufPtrLen';
 begin
-  getByteArrayLen := byteArrayLen
+  getInteropBufPtrLen := interopBufferLen
 end;
 
-procedure setByteArrayLen(value: longint); public name 'setByteArrayLen';
+procedure setInteropBufLen(value: longint); public name 'setInteropBufLen';
 begin
-  byteArrayLen := value
+  interopBufferLen := value
 end;
-
 
 { procedure helloWorld; external 'env' name 'helloWorld'; }
 procedure logWithPtr(ptr: pointer; len: longint); external 'env' name 'logWithPtr';
@@ -44,15 +43,18 @@ procedure init;
 begin
   initHeapMgr;
 
+  { Assign this only once on init }
+  SetLength(interopBuffer, 256);
+
   { Test Pascal to JS }
 
-  { byteArray := BytesOf('Hello!');
-  byteArrayLen := Length(byteArray); }
+  { interopBuffer := BytesOf('Hello!');
+  interopBufferLen := Length(interopBuffer); }
 
-  byteArray := BytesOf('你好香港');
-  byteArrayLen := Length(byteArray);
+  interopBuffer := BytesOf('你好香港');
+  interopBufferLen := Length(interopBuffer);
 
-  logWithPtr(@byteArray[0], byteArrayLen);
+  logWithPtr(@interopBuffer[0], interopBufferLen);
 end;
 
 
