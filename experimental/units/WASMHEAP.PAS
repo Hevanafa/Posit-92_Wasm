@@ -217,7 +217,7 @@ var
 begin
   b := findBucketByPtr(ptr);
 
-  if b = -1 then panicHalt('poolFree: ' + i32str(longword(ptr)) + 'doesn''t belong to the pool region!');
+  if b = -1 then panicHalt('poolFree: ' + I32Str(longword(ptr)) + 'doesn''t belong to the pool region!');
 
   slot := PPoolSlot(ptr);
   slot^.next := buckets[b].freeHead;

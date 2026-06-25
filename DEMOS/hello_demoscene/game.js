@@ -21,8 +21,8 @@ class Game extends Posit92 {
   async loadDefaultFont() {
     await this.loadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
-      this.wasmInstance.exports.defaultFontPtr(),
-      this.wasmInstance.exports.defaultFontGlyphsPtr());
+      this.wasmInstance.exports.DefaultFontPtr(),
+      this.wasmInstance.exports.DefaultFontGlyphsPtr());
   }
 
   /**

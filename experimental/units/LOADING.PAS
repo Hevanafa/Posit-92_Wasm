@@ -10,7 +10,7 @@ unit Loading;
 
 interface
 
-procedure renderLoadingScreen;
+procedure RenderLoadingScreen;
 
 implementation
 
@@ -18,19 +18,19 @@ uses
   Conv, VGA,
   Assets;
 
-function getLoadingActual: smallint; external 'env' name 'getLoadingActual';
-function getLoadingTotal: smallint; external 'env' name 'getLoadingTotal';
+function GetLoadingActual: smallint; external 'env' name 'getLoadingActual';
+function GetLoadingTotal: smallint; external 'env' name 'getLoadingTotal';
 
-procedure renderLoadingScreen;
+procedure RenderLoadingScreen;
 var
   s: string;
   w: word;
 begin
   Cls($00000000);
 
-  s := 'Progress: ' + i32str(getLoadingActual) + ' / ' + i32str(getLoadingTotal);
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, vgaHeight div 2 - defaultFont.lineHeight);
+  s := 'Progress: ' + I32Str(GetLoadingActual) + ' / ' + I32Str(GetLoadingTotal);
+  w := MeasureDefault(s);
+  PrintDefault(s, (vgaWidth - w) div 2, vgaHeight div 2 - defaultFont.lineHeight);
 
   VgaUpload;
   VgaPresent

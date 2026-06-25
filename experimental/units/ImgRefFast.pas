@@ -70,7 +70,7 @@ begin
   image := getImagePtr(imgHandle);
 
   if image^.allocSize = 0 then
-    panicHalt('imgHandle ' + i32str(imgHandle) + ' allocSize is 0!');
+    panicHalt('imgHandle ' + I32Str(imgHandle) + ' allocSize is 0!');
   
   for py:=0 to image^.height - 1 do
   for px:=0 to image^.width - 1 do begin

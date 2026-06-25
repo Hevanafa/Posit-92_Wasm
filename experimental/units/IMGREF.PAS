@@ -106,10 +106,10 @@ var
   dataPtr: PByte;
 begin
   if width <= 0 then
-    panicHalt('newImage: Invalid width: ' + i32str(width));
+    panicHalt('newImage: Invalid width: ' + I32Str(width));
 
   if height <= 0 then
-    panicHalt('newImage: Invalid height: ' + i32str(height));
+    panicHalt('newImage: Invalid height: ' + I32Str(height));
 
   slot := findEmptyImageRefSlot;
   if slot < 0 then panicHalt('Image ref pool is full!');
@@ -203,7 +203,7 @@ var
 begin
   if not isImageSet(imgHandle) then exit;
   if value <= 0 then
-    panicHalt('setImageWidth: Invalid width: ' + i32str(value));
+    panicHalt('setImageWidth: Invalid width: ' + I32Str(value));
 
   image := getImagePtr(imgHandle);
 
@@ -231,7 +231,7 @@ var
 begin
   if not isImageSet(imgHandle) then exit;
   if value <= 0 then
-    panicHalt('setImageHeight: Invalid width: ' + i32str(value));
+    panicHalt('setImageHeight: Invalid width: ' + I32Str(value));
 
   image := getImagePtr(imgHandle);
 

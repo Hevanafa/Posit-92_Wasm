@@ -10,76 +10,76 @@ unit Conv;
 
 interface
 
-function i32str(const value: Longint): string;
-function f32str(const value: double): string;
-function toFixed(const value: double; const decimals: smallint): string;
-function i16HexStr(const value: word): string;
-function i8HexStr(const value: byte): string;
-function boolStr(const value: boolean): string;
-function parseInt(const text: string): smallint;
+function I32Str(const value: Longint): string;
+function F32str(const value: double): string;
+function ToFixed(const value: double; const decimals: smallint): string;
+function I16HexStr(const value: word): string;
+function I8HexStr(const value: byte): string;
+function BoolStr(const value: boolean): string;
+function ParseInt(const text: string): smallint;
 
-function strPtrToString(const strPtr: PByte; const strLen: byte): ShortString;
+function StrPtrToString(const strPtr: PByte; const strLen: byte): ShortString;
 
 
 implementation
 
-function i32str(const value: longInt): string;
+function I32Str(const value: longInt): string;
 begin
-  str(value, i32str)
+  str(value, I32Str)
 end;
 
-function f32str(const value: double): string;
+function F32str(const value: double): string;
 begin
-  str(value:0:4, f32str)
+  str(value:0:4, F32str)
 end;
 
-function toFixed(const value: double; const decimals: smallint): string;
+function ToFixed(const value: double; const decimals: smallint): string;
 begin
-  str(value:0:decimals, toFixed)
+  str(value:0:decimals, ToFixed)
 end;
 
 
 
-function i16HexStr(const value: word): string;
+function I16HexStr(const value: word): string;
 const
   digits: array[0..15] of char = '0123456789ABCDEF';
 var
   a: byte;
 begin
-  i16HexStr := '';
+  I16HexStr := '';
   for a := 3 downto 0 do
-    i16HexStr := i16HexStr + digits[(value shr (a * 4)) and $F];
+    I16HexStr := I16HexStr + digits[(value shr (a * 4)) and $F];
 end;
 
-function i8HexStr(const value: byte): string;
+function I8HexStr(const value: byte): string;
 const
   digits: array[0..15] of char = '0123456789ABCDEF';
 begin
-  i8HexStr := digits[(value shr 4) and $F] + digits[value and $F];
+  I8HexStr := digits[(value shr 4) and $F] + digits[value and $F];
 end;
 
-function boolStr(const value: boolean): string;
+function BoolStr(const value: boolean): string;
 begin
   if value then
-    boolStr := 'true'
+    BoolStr := 'true'
   else
-    boolStr := 'false'
+    BoolStr := 'false'
 end;
 
-function parseInt(const text: string): smallint;
+function ParseInt(const text: string): smallint;
 var
   parseResult: smallint;
 begin
-  val(text, parseInt, parseResult);
+  val(text, ParseInt, parseResult);
 
   if parseResult <> 0 then begin
     writeLn('Error parsing to smallint:', text);
-    parseInt := 0
+    ParseInt := 0
   end;
 end;
 
 
-function strPtrToString(const strPtr: PByte; const strLen: byte): ShortString;
+function StrPtrToString(const strPtr: PByte; const strLen: byte): ShortString;
 var
   text: string;
   a: smallint;
@@ -92,7 +92,7 @@ begin
     inc(charPtr)
   end;
 
-  strPtrToString := text
+  StrPtrToString := text
 end;
 
 
