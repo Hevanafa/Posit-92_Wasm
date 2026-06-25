@@ -16,7 +16,7 @@ unit ImgRefFast;
 interface
 
 { spr with TImageRef }
-procedure spr(const imgHandle: longint; const x, y: smallint);
+procedure Spr(const imgHandle: longint; const x, y: smallint);
 
 procedure sprClear(const imgHandle: longint; const colour: longword);
 
@@ -56,7 +56,7 @@ implementation
 
 uses Logger, Conv, ImgRef, Maths, Panic, VGA;
 
-procedure spr(const imgHandle: longint; const x, y: smallint);
+procedure Spr(const imgHandle: longint; const x, y: smallint);
 var
   image: PImageRef;
   px, py: smallint;
@@ -252,7 +252,7 @@ var
   colour: longword;
 begin
   if flip = SprFlipNone then begin
-    spr(imgHandle, x, y);
+    Spr(imgHandle, x, y);
     exit
   end;
 

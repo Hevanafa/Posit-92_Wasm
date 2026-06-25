@@ -19,8 +19,8 @@ type
   TByteArray = array[0..0] of byte;
 
 {$ifdef WASM}
-procedure vgaUpload; external 'env' name 'vgaUpload';
-procedure vgaPresent; external 'env' name 'vgaPresent';
+procedure VgaUpload; external 'env' name 'vgaUpload';
+procedure VgaPresent; external 'env' name 'vgaPresent';
 {$endif}
 
 function vgaWidth: smallint;
@@ -31,7 +31,7 @@ procedure initVideoMem(const width, height: smallint; const startAddr: PByteArra
 function getSurfacePtr: PByteArray; public name 'getSurfacePtr';
 
 { colour format: $AARRGGBB like in QB64 PE }
-procedure cls(const colour: longword);
+procedure Cls(const colour: longword);
 { colour format: $AARRGGBB }
 procedure clsBlend(const colour: longword);
 
@@ -254,7 +254,7 @@ begin
   unsafePsetBlend(x, y, colour)
 end;
 
-procedure cls(const colour: longword);
+procedure Cls(const colour: longword);
 begin
   FillDWord(
     getSurfacePtr^,

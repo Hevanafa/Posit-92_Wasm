@@ -12,7 +12,7 @@ unit WasmMemMgr;
 
 interface
 
-procedure initHeapMgr;
+procedure InitHeapMgr;
 
 
 implementation
@@ -55,7 +55,7 @@ begin
   whMemSize := WasmMemSize(p)
 end;
 
-procedure initHeapMgr;
+procedure InitHeapMgr;
 begin
   customMemMgr.GetMem := @whGetMem;
   customMemMgr.FreeMem := @whFreeMem;

@@ -14,61 +14,61 @@ var
   gameTime: double;
 
 { Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure hideCursor; external 'env' name 'hideCursor';
-procedure loadAssets; external 'env' name 'loadAssets';
+procedure SignalDone; external 'env' name 'signalDone';
+procedure HideCursor; external 'env' name 'hideCursor';
+procedure LoadAssets; external 'env' name 'loadAssets';
 
-procedure drawMouse;
+procedure DrawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  Spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure init;
+procedure Init;
 begin
-  initHeapMgr;
-  initDeltaTime;
+  InitHeapMgr;
+  InitDeltaTime;
 
-  loadAssets;
+  LoadAssets;
 end;
 
-procedure afterInit;
+procedure AfterInit;
 begin
-  hideCursor;
-  fitCanvas;
+  HideCursor;
+  FitCanvas;
 
   { Initialise game state here }
   gameTime := 0.0;
 end;
 
-procedure update;
+procedure Update;
 begin
-  updateDeltaTime;
+  UpdateDeltaTime;
 
-  updateMouse;
-  if isKeyDown(SC_ESCAPE) then signalDone;
+  UpdateMouse;
+  if IsKeyDown(SC_ESCAPE) then SignalDone;
 
   gameTime := gameTime + dt
 end;
 
-procedure draw;
+procedure Draw;
 begin
-  cls($FF6495ED);
+  Cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    Spr(imgDosuEXE[1], 148, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    Spr(imgDosuEXE[0], 148, 88);
 
-  printDefaultCentred('Hello world!', vgaWidth div 2, 120);
+  PrintDefaultCentred('Hello world!', vgaWidth div 2, 120);
 
-  drawMouse;
+  DrawMouse;
 
-  vgaUpload;
-  vgaPresent
+  VgaUpload;
+  VgaPresent
 end;
 
 exports
-  init, afterInit, update, draw;
+  Init, AfterInit, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }

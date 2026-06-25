@@ -24,8 +24,8 @@ function getTimer: double;
 function getFullTimer: double;
 {$endif}
 
-procedure initDeltaTime;
-procedure updateDeltaTime;
+procedure InitDeltaTime;
+procedure UpdateDeltaTime;
 
 
 implementation
@@ -34,14 +34,14 @@ implementation
 uses SDL2Wrapper, SysUtils;
 {$endif}
 
-procedure initDeltaTime;
+procedure InitDeltaTime;
 begin
   dt := 0.0;
   lastFrameTime := getTimer;
   currentTime := lastFrameTime;
 end;
 
-procedure updateDeltaTime;
+procedure UpdateDeltaTime;
 begin
   currentTime := getTimer;
   dt := currentTime - lastFrameTime;

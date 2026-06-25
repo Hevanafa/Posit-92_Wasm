@@ -26,14 +26,14 @@ var
   s: string;
   w: word;
 begin
-  cls($00000000);
+  Cls($00000000);
 
   s := 'Progress: ' + i32str(getLoadingActual) + ' / ' + i32str(getLoadingTotal);
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, vgaHeight div 2 - defaultFont.lineHeight);
 
-  vgaUpload;
-  vgaPresent
+  VgaUpload;
+  VgaPresent
 end;
 
 end.

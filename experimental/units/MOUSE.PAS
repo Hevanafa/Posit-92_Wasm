@@ -26,7 +26,7 @@ var
 procedure hideCursor; external 'env' name 'hideCursor';
 { Show system cursor }
 procedure showCursor; external 'env' name 'showCursor';
-procedure updateMouse;
+procedure UpdateMouse;
 {$endif}
 
 
@@ -37,7 +37,7 @@ function getMouseX: smallint; external 'env' name 'getMouseX';
 function getMouseY: smallint; external 'env' name 'getMouseY';
 function getMouseButton: smallint; external 'env' name 'getMouseButton';
 
-procedure updateMouse;
+procedure UpdateMouse;
 begin
   mouseX := getMouseX;
   mouseY := getMouseY;
