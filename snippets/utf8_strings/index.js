@@ -3,6 +3,15 @@
  */
 let wasm;
 
+/**
+ * This also works:
+ * 
+ * `new TextDecoder()`
+ * 
+ * Since it's UTF-8 by default
+ */
+const textDecoder = new TextDecoder("utf-8");
+
 // Add your Pascal external procedures & functions here:
 const importObject = Object.freeze({
   env: {
@@ -16,7 +25,7 @@ const importObject = Object.freeze({
 
     logWithPtr: (ptr, len) => {
       const bytes = new Uint8Array(wasm.exports.memory.buffer, ptr, len);
-      const text = new TextDecoder().decode(bytes);
+      const text = textDecoder.decode(bytes);
 
       console.log(text)
     }

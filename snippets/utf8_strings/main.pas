@@ -38,7 +38,10 @@ procedure init;
 begin
   initHeapMgr;
 
-  byteArray := BytesOf('Hello!');
+  { byteArray := BytesOf('Hello!');
+  byteArrayLen := Length(byteArray); }
+
+  byteArray := BytesOf('你好香港');
   byteArrayLen := Length(byteArray);
 
   logWithPtr(@byteArray[0], byteArrayLen);
