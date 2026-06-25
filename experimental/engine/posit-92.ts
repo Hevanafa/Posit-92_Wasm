@@ -409,12 +409,15 @@ class Posit92 {
     const wasmPtr = this.#wasm.exports.WasmGetMem(byteSize);
     wasmMemory.set(imageData.data, wasmPtr)
 
+    // Reserve index 0
     if (this.#images.length == 0)
       this.#images.push(null);
 
     // Register with Wasm pointer
     const handle = this.#images.length;
-    this.#images.push(imageData);  // Keep data in JS for reference
+    this.#images.push(null);
+    // this.#images.push(imageData);  // Keep data in JS for reference
+
     this.#wasm.exports.RegisterImageRef(handle, wasmPtr, img.width, img.height);
 
     return handle
