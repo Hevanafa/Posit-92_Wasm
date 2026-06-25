@@ -66,11 +66,11 @@ type WasmImports = {
     GetMouseButton: () => number,
 
     // Panic
-    jsPanicHalt: (textPtr: number, textLen: number) => void,
+    JsPanicHalt: (textPtr: number, textLen: number) => void,
 
     // Timing
-    getTimer: () => number,
-    getFullTimer: () => number,
+    GetTimer: () => number,
+    GetFullTimer: () => number,
 
     // VGA
     vgaUpload: () => void,
@@ -165,11 +165,11 @@ class Posit92 {
       GetMouseButton: () => this.#getMouseButton(),
 
       // Panic
-      jsPanicHalt: this.#panicHalt.bind(this),
+      JsPanicHalt: this.#panicHalt.bind(this),
 
       // Timing
-      getTimer: () => this.#getTimer(),
-      getFullTimer: () => this.#getFullTimer(),
+      GetTimer: () => this.#getTimer(),
+      GetFullTimer: () => this.#getFullTimer(),
 
       // VGA
       vgaUpload: () => this.#vgaUpload(),

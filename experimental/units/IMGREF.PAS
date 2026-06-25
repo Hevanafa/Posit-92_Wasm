@@ -91,7 +91,7 @@ var
 begin
   idx := findEmptyImageRefSlot;
 
-  if idx < 0 then panicHalt('Image ref pool is full!');
+  if idx < 0 then PanicHalt('Image ref pool is full!');
 
   imageRefs[imgHandle].width := w;
   imageRefs[imgHandle].height := h;
@@ -106,13 +106,13 @@ var
   dataPtr: PByte;
 begin
   if width <= 0 then
-    panicHalt('newImage: Invalid width: ' + I32Str(width));
+    PanicHalt('newImage: Invalid width: ' + I32Str(width));
 
   if height <= 0 then
-    panicHalt('newImage: Invalid height: ' + I32Str(height));
+    PanicHalt('newImage: Invalid height: ' + I32Str(height));
 
   slot := findEmptyImageRefSlot;
-  if slot < 0 then panicHalt('Image ref pool is full!');
+  if slot < 0 then PanicHalt('Image ref pool is full!');
   
   allocSize := width * height * 4;
   dataPtr := PByte(getmem(allocSize));
@@ -177,7 +177,7 @@ end;
 procedure assertImageSet(const varName: string; const imgHandle: longint);
 begin
   if not isImageSet(imgHandle) then
-    panicHalt(varName + ' is unset!');
+    PanicHalt(varName + ' is unset!');
 end;
 
 function getImagePtr(const imgHandle: longint): PImageRef;
@@ -203,12 +203,12 @@ var
 begin
   if not isImageSet(imgHandle) then exit;
   if value <= 0 then
-    panicHalt('setImageWidth: Invalid width: ' + I32Str(value));
+    PanicHalt('setImageWidth: Invalid width: ' + I32Str(value));
 
   image := getImagePtr(imgHandle);
 
   if value * image^.height * 4 > image^.allocSize then
-    panicHalt('setImageWidth: New size exceeds the allocated buffer!');
+    PanicHalt('setImageWidth: New size exceeds the allocated buffer!');
 
   image^.width := value
 end;
@@ -231,12 +231,12 @@ var
 begin
   if not isImageSet(imgHandle) then exit;
   if value <= 0 then
-    panicHalt('setImageHeight: Invalid width: ' + I32Str(value));
+    PanicHalt('setImageHeight: Invalid width: ' + I32Str(value));
 
   image := getImagePtr(imgHandle);
 
   if image^.width * value * 4 > image^.allocSize then
-    panicHalt('setImageHeight: New size exceeds the allocated buffer!');
+    PanicHalt('setImageHeight: New size exceeds the allocated buffer!');
 
   image^.height := value
 end;

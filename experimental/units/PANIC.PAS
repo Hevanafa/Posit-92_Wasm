@@ -13,10 +13,10 @@ unit Panic;
 interface
 
 {$ifdef WASM}
-procedure jsPanicHalt(const textPtr: PByte; const textLen: word); external 'env' name 'jsPanicHalt';
+procedure JsPanicHalt(const textPtr: PByte; const textLen: word); external 'env' name 'JsPanicHalt';
 {$endif}
 
-procedure panicHalt(const msg: string);
+procedure PanicHalt(const msg: string);
 
 
 implementation
@@ -42,7 +42,7 @@ end;
 
 {$else}
 { Default: WASM }
-procedure panicHalt(const msg: string);
+procedure PanicHalt(const msg: string);
 var
   a: word;
   msgBuffer: array[0..255] of byte;
@@ -50,7 +50,7 @@ begin
   for a:=1 to length(msg) do
     msgBuffer[a-1] := ord(msg[a]);
 
-  jsPanicHalt(@msgBuffer, length(msg));
+  JsPanicHalt(@msgBuffer, length(msg));
   halt(1)
 end;
 {$endif}

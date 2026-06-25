@@ -14,9 +14,10 @@ var
   dt, lastFrameTime, currentTime: double;
 
 {$ifdef WASM}
-function getTimer: double; external 'env' name 'getTimer';
-function getFullTimer: double; external 'env' name 'getFullTimer';
+function GetTimer: double; external 'env' name 'GetTimer';
+function GetFullTimer: double; external 'env' name 'GetFullTimer';
 {$endif}
+
 {$ifdef Windows}
 procedure initTiming;
 function getMidnightOffset: double;
@@ -37,13 +38,13 @@ uses SDL2Wrapper, SysUtils;
 procedure InitDeltaTime;
 begin
   dt := 0.0;
-  lastFrameTime := getTimer;
+  lastFrameTime := GetTimer;
   currentTime := lastFrameTime;
 end;
 
 procedure UpdateDeltaTime;
 begin
-  currentTime := getTimer;
+  currentTime := GetTimer;
   dt := currentTime - lastFrameTime;
   lastFrameTime := currentTime
 end;

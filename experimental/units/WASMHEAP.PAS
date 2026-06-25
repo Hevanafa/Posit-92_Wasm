@@ -200,10 +200,10 @@ var
 begin
   b := findBucket(bytes);
 
-  if b = -1 then panicHalt('poolAlloc: Unable to allocate a bucket!');
+  if b = -1 then PanicHalt('poolAlloc: Unable to allocate a bucket!');
 
   if buckets[b].freeHead = nil then
-    panicHalt('poolAlloc: No free buckets!');
+    PanicHalt('poolAlloc: No free buckets!');
 
   slot := buckets[b].freeHead;
   buckets[b].freeHead := slot^.next;
@@ -217,7 +217,7 @@ var
 begin
   b := findBucketByPtr(ptr);
 
-  if b = -1 then panicHalt('poolFree: ' + I32Str(longword(ptr)) + 'doesn''t belong to the pool region!');
+  if b = -1 then PanicHalt('poolFree: ' + I32Str(longword(ptr)) + 'doesn''t belong to the pool region!');
 
   slot := PPoolSlot(ptr);
   slot^.next := buckets[b].freeHead;
