@@ -453,9 +453,9 @@ class Posit92 {
   /**
    * Load images from manifest in parallel
    * 
-   * The setter must have this pattern: `"setImg" + "[AssetName]"` in camelCase
+   * The setter must have this pattern: `"SetImg" + "[AssetName]"` in camelCase
    * 
-   * For example: `setImgCursor, setImgHandCursor`
+   * For example: `SetImgCursor, SetImgHandCursor`
    * 
    * @param manifest - Key-value pairs of `"asset_key": "image_path"`
    */
@@ -494,7 +494,8 @@ class Posit92 {
       const caps = key
         .replace(/^./, _ => _.toUpperCase())
         .replace(/_(.)/g, (_, g1) => g1.toUpperCase());
-      const setterName = `setImg${caps}`;
+      
+      const setterName = `SetImg${caps}`;
 
       if (typeof this.wasmInstance.exports[setterName] != "function")
         console.error("loadAssetsFromManifest: Missing setter", setterName, "for the asset key", key)
