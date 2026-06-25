@@ -23,6 +23,12 @@ async function initWebAssembly() {
 async function main() {
   await initWebAssembly();
   wasm.exports.init();
+
+  const ptr = wasm.exports.getByteArrayPtr();
+  const len = wasm.exports.getByteArrayLen();
+
+  console.log("ptr:", ptr);
+  console.log("len:", len);
 }
 
 main()

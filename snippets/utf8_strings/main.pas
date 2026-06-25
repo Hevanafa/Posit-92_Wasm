@@ -1,7 +1,6 @@
 {
   Compile:
-  E:\fpc-wasm\fpc\bin\x86_64-win64\fpc.exe -Pwasm32 -Tembedded .\main.pas
-  remove-item .\main.wasm; rename-item "main" "main.wasm"
+  perl .\make.pl
 
   Run:
   npx http-server
@@ -9,13 +8,34 @@
 
 library Main;
 
-{$Mode TP}
+{$Mode ObjFPC}
+{$H+}
 
-procedure helloWorld; external 'env' name 'helloWorld';
+uses SysUtils;
+
+type
+  TByteArray = array[0..255] of byte;
+
+var
+  byteArray: TBytes;
+  byteArrayLen: LongInt;
+
+function getByteArrayPtr: pointer; public name 'getBytePtr';
+begin
+  getByteArrayPtr := @byteArray[0]
+end;
+
+function getByteArrayLen: longint; public name 'getByteArrayLen';
+begin
+  getByteArrayLen := byteArrayLen
+end;
+
+{ procedure helloWorld; external 'env' name 'helloWorld'; }
 
 procedure init;
 begin
-  helloWorld
+  byteArray := BytesOf('Hello!');
+  byteArrayLen := Length(byteArray)
 end;
 
 exports
