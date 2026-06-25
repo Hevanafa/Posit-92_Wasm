@@ -68,7 +68,8 @@ begin
     end;
   end;
 
-  vgaFlush
+  VgaUpload;
+  VgaPresent
 end;
 
 procedure UnloadIntro;

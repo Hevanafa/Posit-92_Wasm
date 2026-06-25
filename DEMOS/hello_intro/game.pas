@@ -38,24 +38,24 @@ var
 
 
 { Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure hideCursor; external 'env' name 'hideCursor';
-procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
-procedure loadAssets; external 'env' name 'loadAssets';
+procedure SignalDone; external 'env' name 'SignalDone';
+procedure HideCursor; external 'env' name 'HideCursor';
+procedure HideLoadingOverlay; external 'env' name 'HideLoadingOverlay';
+procedure LoadAssets; external 'env' name 'LoadAssets';
 
-procedure drawFPS;
+procedure DrawFPS;
 begin
-  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
+  PrintDefault('FPS:' + i32str(GetLastFPS), 240, 0);
 end;
 
-procedure drawMouse;
+procedure DrawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure beginIntroState;
+procedure BeginIntroState;
 begin
-  hideLoadingOverlay;
+  HideLoadingOverlay;
   fitCanvas;
 
   actualGameState := GameStateIntro;
@@ -63,16 +63,16 @@ begin
   introSlideEndTick := getTimer + 2.0;
 end;
 
-procedure beginLoadingState;
+procedure BeginLoadingState;
 begin
   actualGameState := GameStateLoading;
   fitCanvas;
-  loadAssets
+  LoadAssets
 end;
 
-procedure beginPlayingState;
+procedure BeginPlayingState;
 begin
-  hideCursor;
+  HideCursor;
   fitCanvas;
 
   { Initialise game state here }
@@ -83,24 +83,24 @@ begin
 end;
 
 
-procedure init;
+procedure Init;
 begin
-  initHeapMgr;
-  initDeltaTime;
-  initFPSCounter
+  InitHeapMgr;
+  InitDeltaTime;
+  InitFPSCounter
 end;
 
-procedure afterInit;
+procedure AfterInit;
 begin
-  beginPlayingState;
+  BeginPlayingState;
 end;
 
-procedure update;
+procedure Update;
 var
   shouldSkip: boolean;
 begin
   updateDeltaTime;
-  incrementFPS;
+  IncrementFPS;
 
   if actualGameState = GameStateIntro then begin
     shouldSkip := false;
@@ -127,7 +127,7 @@ begin
 
     if introSlide > IntroSlides then begin
       unloadIntro;
-      beginLoadingState
+      BeginLoadingState
     end;
 
     exit
@@ -141,7 +141,7 @@ begin
 
     if lastEsc then begin
       writeLog('ESC is pressed!');
-      signalDone
+      SignalDone
     end;
   end;
 
@@ -149,7 +149,7 @@ begin
   gameTime := gameTime + dt
 end;
 
-procedure draw;
+procedure Draw;
 begin
   if actualGameState in [GameStateIntro, GameStateLoading] then
   case actualGameState of
@@ -157,8 +157,8 @@ begin
       renderIntro(introSlide);
 
       { Debug intro state }
-      printDefault('(Intro slide ' + i32str(introSlide) + ')', 30, 30);
-      printDefault('Slide end tick: ' + f32str(introSlideEndTick), 30, 40);
+      PrintDefault('(Intro slide ' + i32str(introSlide) + ')', 30, 30);
+      PrintDefault('Slide end tick: ' + f32str(introSlideEndTick), 30, 40);
 
       exit
     end;
@@ -174,21 +174,19 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  printDefaultCentred('Hello world!', vgaWidth div 2, 120);
+  PrintDefaultCentred('Hello world!', vgaWidth div 2, 120);
 
-  drawMouse;
-  drawFPS;
+  DrawMouse;
+  DrawFPS;
 
-  vgaFlush
+  VgaUpload;
+  VgaPresent
 end;
 
 exports
-  beginIntroState,
-  beginLoadingState,
-  init,
-  afterInit,
-  update,
-  draw;
+  BeginIntroState,
+  BeginLoadingState,
+  Init, AfterInit, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }

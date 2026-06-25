@@ -12,10 +12,10 @@ unit FPS;
 
 interface
 
-procedure initFPSCounter;
-procedure incrementFPS;
+procedure InitFPSCounter;
+procedure IncrementFPS;
 
-function getLastFPS: smallint;
+function GetLastFPS: smallint;
 
 
 implementation
@@ -27,14 +27,14 @@ var
   actualFPS, lastFPS: smallint;
   lastFPSTime: double; { in seconds }
 
-procedure initFPSCounter;
+procedure InitFPSCounter;
 begin
   actualFPS := 0;
   lastFPS := 0;
   lastFPSTime := getTimer;
 end;
 
-procedure incrementFPS;
+procedure IncrementFPS;
 begin
   actualFPS := actualFPS + 1;
   if getTimer - lastFPSTime >= 1.0 then begin
@@ -44,9 +44,9 @@ begin
   end;
 end;
 
-function getLastFPS: smallint;
+function GetLastFPS: smallint;
 begin
-  getLastFPS := lastFPS
+  GetLastFPS := lastFPS
 end;
 
 

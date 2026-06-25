@@ -15,16 +15,16 @@ var
   imgDosuEXE: array[0..1] of longint;
 
 { BMFont boilerplate }
-function defaultFontPtr: PBMFont; public name 'defaultFontPtr';
-function defaultFontGlyphsPtr: PBMFontGlyph; public name 'defaultFontGlyphsPtr';
+function DefaultFontPtr: PBMFont; public name 'DefaultFontPtr';
+function DefaultFontGlyphsPtr: PBMFontGlyph; public name 'DefaultFontGlyphsPtr';
 
-procedure printDefault(const text: string; const x, y: integer);
-procedure printDefaultCentred(const text: string; const cx, y: integer);
-function measureDefault(const text: string): word;
+procedure PrintDefault(const text: string; const x, y: integer);
+procedure PrintDefaultCentred(const text: string; const cx, y: integer);
+function MeasureDefault(const text: string): word;
 
 { Asset boilerplate }
-procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
-procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
+procedure SetImgCursor(const imgHandle: longint); public name 'SetImgCursor';
+procedure SetImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'SetImgDosuEXE';
 
 
 implementation
@@ -33,43 +33,43 @@ uses Conv;
 
 { Begin BMFont boilerplate}
 
-function defaultFontPtr: PBMFont;
+function DefaultFontPtr: PBMFont;
 begin
-  defaultFontPtr := @defaultFont
+  DefaultFontPtr := @defaultFont
 end;
 
-function defaultFontGlyphsPtr: PBMFontGlyph;
+function DefaultFontGlyphsPtr: PBMFontGlyph;
 begin
-  defaultFontGlyphsPtr := @defaultFontGlyphs
+  DefaultFontGlyphsPtr := @defaultFontGlyphs
 end;
 
-procedure printDefault(const text: string; const x, y: integer);
+procedure PrintDefault(const text: string; const x, y: integer);
 begin
   printBMFont(defaultFont, defaultFontGlyphs, text, x, y)
 end;
 
-procedure printDefaultCentred(const text: string; const cx, y: integer);
+procedure PrintDefaultCentred(const text: string; const cx, y: integer);
 var
   w: word;
 begin
-  w := measureDefault(text);
-  printDefault(text, cx - w div 2, y)
+  w := MeasureDefault(text);
+  PrintDefault(text, cx - w div 2, y)
 end;
 
-function measureDefault(const text: string): word;
+function MeasureDefault(const text: string): word;
 begin
-  measureDefault := measureBMFont(defaultFont, defaultFontGlyphs, text)
+  MeasureDefault := measureBMFont(defaultFont, defaultFontGlyphs, text)
 end;
 
 
 { Begin asset boilerplate }
 
-procedure setImgCursor(const imgHandle: longint);
+procedure SetImgCursor(const imgHandle: longint);
 begin
   imgCursor := imgHandle
 end;
 
-procedure setImgDosuEXE(const imgHandle: longint; const idx: integer);
+procedure SetImgDosuEXE(const imgHandle: longint; const idx: integer);
 begin
   imgDosuEXE[idx] := imgHandle
 end;

@@ -14,56 +14,56 @@ class Game extends Posit92 {
     ])
   }
 
-  async loadDefaultFont() {
-    await this.loadBMFont(
+  async LoadDefaultFont() {
+    await this.LoadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
-      this.wasmInstance.exports.defaultFontPtr(),
-      this.wasmInstance.exports.defaultFontGlyphsPtr());
+      this.WasmInstance.exports.DefaultFontPtr(),
+      this.WasmInstance.exports.DefaultFontGlyphsPtr());
   }
 
   /**
    * @override
    */
-  async loadAssets() {
+  async LoadAssets() {
     let handle = 0;
 
-    this.initLoadingScreen();
+    this.InitLoadingScreen();
 
-    await this.loadImagesFromManifest(this.AssetManifest.images);
+    await this.LoadImagesFromManifest(this.AssetManifest.images);
     // Sounds can be loaded later
 
-    handle = await this.loadImage("assets/images/dosu_1.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 0);
-    handle = await this.loadImage("assets/images/dosu_2.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 1);
+    handle = await this.LoadImage("assets/images/dosu_1.png");
+    this.WasmInstance.exports.SetImgDosuEXE(handle, 0);
+    handle = await this.LoadImage("assets/images/dosu_2.png");
+    this.WasmInstance.exports.SetImgDosuEXE(handle, 1);
 
     // Add more assets as necessary
   }
 
-  async init() {
-    this.setLoadingText("Downloading engine...");
-    await super.init();
+  async Init() {
+    this.SetLoadingText("Downloading engine...");
+    await super.Init();
   }
 
   /**
    * @override
    */
-  onWasmProgress(loaded, total) {
+  OnWasmProgress(loaded, total) {
     const loadedKB = Math.ceil(loaded / 1024);
     const totalKB = Math.ceil(total / 1024);
 
-    this.setLoadingText(`Downloading engine... ${loadedKB} / ${totalKB} KB`)
+    this.SetLoadingText(`Downloading engine... ${loadedKB} / ${totalKB} KB`)
   }
 
-  async loadIntro() {
-    this.wasmInstance.exports.setImgPosit92Logo(
-      await this.loadImage("assets/images/posit-92_32px.png"));
+  async LoadIntro() {
+    this.WasmInstance.exports.SetImgPosit92Logo(
+      await this.LoadImage("assets/images/posit-92_32px.png"));
 
-    this.wasmInstance.exports.setImgFPCLogo(
-      await this.loadImage("assets/images/fpc_logo.png"));
+    this.WasmInstance.exports.SetImgFPCLogo(
+      await this.LoadImage("assets/images/fpc_logo.png"));
 
-    this.wasmInstance.exports.setImgWasmLogo(
-      await this.loadImage("assets/images/wasm_logo.png"));
+    this.WasmInstance.exports.SetImgWasmLogo(
+      await this.LoadImage("assets/images/wasm_logo.png"));
   }
 }
 
@@ -76,17 +76,17 @@ let lastFrameTime = 0.0;
 
 var done = false;
 
-async function main() {
+async function Main() {
   const game = new Game("game");
-  await game.init();
-  await game.loadDefaultFont();
+  await game.Init();
+  await game.LoadDefaultFont();
 
-  await game.loadIntro();
-  game.beginIntro();
+  await game.LoadIntro();
+  game.BeginIntro();
 
-  function loop(currentTime) {
+  function Loop(currentTime) {
     if (done) {
-      game.cleanup();
+      game.Cleanup();
       return;
     }
 
@@ -94,19 +94,19 @@ async function main() {
 
     if (elapsed >= FrameTime) {
       lastFrameTime = currentTime - (elapsed % FrameTime);  // Carry over extra time
-      game.update();
-      game.draw();
+      game.Update();
+      game.Draw();
     }
 
-    requestAnimationFrame(loop)
+    requestAnimationFrame(Loop)
   }
 
-  requestAnimationFrame(loop)
+  requestAnimationFrame(Loop)
 }
 
-function play() {
+function Play() {
   const overlay = document.getElementById("play-overlay");
   overlay.parentNode.removeChild(overlay);
 
-  main()
+  Main()
 }
