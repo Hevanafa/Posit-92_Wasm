@@ -19,7 +19,7 @@ unit WasmHeap;
 
 interface
 
-procedure initHeapRegion(const startAddr, poolSize, heapSize: longword); public name 'initHeapRegion';
+procedure InitHeapRegion(const startAddr, poolSize, heapSize: longword); public name 'InitHeapRegion';
 
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
 procedure WasmFreeMem(const ptr: pointer); public name 'WasmFreeMem';
@@ -27,15 +27,15 @@ function WasmReAllocMem(const ptr: pointer; const newBytes: longword): pointer;
 function WasmAllocMem(const bytes: longword): pointer; public name 'WasmAllocMem';
 function WasmMemSize(const ptr: pointer): PtrUInt;
 
-function getHeapSize: longword;
-function getFreeHeapSize: longword;
+function GetHeapSize: longword;
+function GetFreeHeapSize: longword;
 
 { Debug functions }
-function getPoolStart: longword;
-function getPoolEnd: longword;
-function getHeapStart: longword;
-function getHeapCurrent: longword;
-function getHeapEnd: longword;
+function GetPoolStart: longword;
+function GetPoolEnd: longword;
+function GetHeapStart: longword;
+function GetHeapCurrent: longword;
+function GetHeapEnd: longword;
 
 
 implementation
@@ -119,7 +119,7 @@ var
 
   buckets: array[0..BucketCount-1] of TBucket;
 
-procedure initPool(const poolSize: longword);
+procedure InitPool(const poolSize: longword);
 var
   b: smallint; { bucket index }
   rollingPtr: PByte;
@@ -152,7 +152,7 @@ begin
   end;
 end;
 
-procedure initHeapRegion(const startAddr, poolSize, heapSize: longword);
+procedure InitHeapRegion(const startAddr, poolSize, heapSize: longword);
 begin
   poolStart := PByte(startAddr);
   poolEnd := PByte(startAddr + poolSize);
@@ -161,44 +161,44 @@ begin
   heapEnd := PByte(longword(heapStart) + heapSize);
   heapCurrent := heapStart;
 
-  initPool(poolSize)
+  InitPool(poolSize)
 end;
 
 
-function findBucket(const bytes: longword): smallint;
+function FindBucket(const bytes: longword): smallint;
 var
   a: word;
 begin
-  findBucket := -1;
+  FindBucket := -1;
 
   for a:=0 to BucketCount-1 do
     if BucketSizes[a] >= bytes then begin
-      findBucket := a;
+      FindBucket := a;
       exit
     end;
 end;
 
-function findBucketByPtr(const ptr: pointer): smallint;
+function FindBucketByPtr(const ptr: pointer): smallint;
 var
   b: smallint;
 begin
-  findBucketByPtr := -1;
+  FindBucketByPtr := -1;
 
   for b:=0 to BucketCount-1 do
     if (LongWord(ptr) >= longword(buckets[b].regionStart))
       and (longword(ptr) < longword(buckets[b].regionEnd)) then begin
-        findBucketByPtr := b;
+        FindBucketByPtr := b;
         exit
       end;
 end;
 
 
-function poolAlloc(const bytes: LongWord): pointer;
+function PoolAlloc(const bytes: LongWord): pointer;
 var
   b: smallint;
   slot: PPoolSlot;
 begin
-  b := findBucket(bytes);
+  b := FindBucket(bytes);
 
   if b = -1 then PanicHalt('poolAlloc: Unable to allocate a bucket!');
 
@@ -207,15 +207,15 @@ begin
 
   slot := buckets[b].freeHead;
   buckets[b].freeHead := slot^.next;
-  poolAlloc := pointer(slot)
+  PoolAlloc := pointer(slot)
 end;
 
-procedure poolFree(const ptr: pointer);
+procedure PoolFree(const ptr: pointer);
 var
   b: smallint;
   slot: PPoolSlot;
 begin
-  b := findBucketByPtr(ptr);
+  b := FindBucketByPtr(ptr);
 
   if b = -1 then PanicHalt('poolFree: ' + I32Str(longword(ptr)) + 'doesn''t belong to the pool region!');
 
@@ -233,7 +233,7 @@ var
   alignedSize: longword;
 begin
   if bytes <= PoolSizeClassMax then begin
-    WasmGetMem := poolAlloc(bytes);
+    WasmGetMem := PoolAlloc(bytes);
     exit
   end;
 
@@ -290,7 +290,7 @@ begin
 
   if (longword(ptr) >= longword(poolStart))
     and (longword(ptr) < longword(poolEnd)) then begin
-    poolFree(ptr);
+    PoolFree(ptr);
     exit
   end;
 
@@ -335,11 +335,11 @@ var
 begin
   if (longword(ptr) >= longword(poolStart))
     and (longword(ptr) < longword(poolEnd)) then begin
-      WasmReAllocMem := poolAlloc(newBytes);
+      WasmReAllocMem := PoolAlloc(newBytes);
 
       if WasmReAllocMem <> nil then begin
         move(ptr^, WasmReAllocMem^, newBytes);
-        poolFree(ptr)
+        PoolFree(ptr)
       end;
 
       exit
@@ -413,7 +413,7 @@ begin
   end;
 
   { Pool: Find which bucket owns this address }
-  idx := findBucketByPtr(ptr);
+  idx := FindBucketByPtr(ptr);
   if idx >=0 then begin
     WasmMemSize := buckets[idx].slotSize;
     exit
@@ -424,12 +424,12 @@ begin
   WasmMemSize := block^.size
 end;
 
-function getHeapSize: longword;
+function GetHeapSize: longword;
 begin
-  getHeapSize := heapEnd - heapStart
+  GetHeapSize := heapEnd - heapStart
 end;
 
-function getFreeHeapSize: longword;
+function GetFreeHeapSize: longword;
 var
   current: PByte;  { current memory offset }
   block: PMemBlock;
@@ -452,29 +452,29 @@ begin
   GetFreeHeapSize := freeBytes
 end;
 
-function getPoolStart: longword;
+function GetPoolStart: longword;
 begin
-  getPoolStart := longword(poolStart)
+  GetPoolStart := longword(poolStart)
 end;
 
-function getPoolEnd: longword;
+function GetPoolEnd: longword;
 begin
-  getPoolEnd := longword(poolEnd)
+  GetPoolEnd := longword(poolEnd)
 end;
 
-function getHeapStart: longword;
+function GetHeapStart: longword;
 begin
-  getHeapStart := longword(heapStart)
+  GetHeapStart := longword(heapStart)
 end;
 
-function getHeapCurrent: longword;
+function GetHeapCurrent: longword;
 begin
-  getHeapCurrent := longword(heapCurrent)
+  GetHeapCurrent := longword(heapCurrent)
 end;
 
-function getHeapEnd: longword;
+function GetHeapEnd: longword;
 begin
-  getHeapEnd := longword(heapEnd)
+  GetHeapEnd := longword(heapEnd)
 end;
 
 end.

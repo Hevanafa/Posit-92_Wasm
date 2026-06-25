@@ -18,20 +18,20 @@ class Game extends Posit92 {
     ])
   }
 
-  async loadDefaultFont() {
-    await this.loadBMFont(
+  async LoadDefaultFont() {
+    await this.LoadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
-      this.wasmInstance.exports.DefaultFontPtr(),
-      this.wasmInstance.exports.DefaultFontGlyphsPtr());
+      this.WasmInstance.exports.DefaultFontPtr(),
+      this.WasmInstance.exports.DefaultFontGlyphsPtr());
   }
 
   /**
    * @override
    */
-  async loadAssets() {
+  async LoadAssets() {
     // this.initLoadingScreen();
 
-    await this.loadImagesFromManifest(this.AssetManifest.images);
+    await this.LoadImagesFromManifest(this.AssetManifest.images);
     // Sounds can be loaded later
   }
 }
@@ -45,16 +45,16 @@ let lastFrameTime = 0.0;
 
 var done = false;
 
-async function main() {
+async function Main() {
   const game = new Game("game");
-  await game.init();
-  await game.loadDefaultFont();
+  await game.Init();
+  await game.LoadDefaultFont();
 
-  game.quickStart();
+  game.QuickStart();
 
-  function loop(currentTime) {
+  function Loop(currentTime) {
     if (done) {
-      game.cleanup();
+      game.Cleanup();
       return;
     }
 
@@ -62,19 +62,19 @@ async function main() {
 
     if (elapsed >= FrameTime) {
       lastFrameTime = currentTime - (elapsed % FrameTime);  // Carry over extra time
-      game.update();
-      game.draw();
+      game.Update();
+      game.Draw();
     }
 
-    requestAnimationFrame(loop)
+    requestAnimationFrame(Loop)
   }
 
-  requestAnimationFrame(loop)
+  requestAnimationFrame(Loop)
 }
 
-function play() {
+function Play() {
   const overlay = document.getElementById("play-overlay");
   overlay.parentNode.removeChild(overlay);
 
-  main()
+  Main()
 }

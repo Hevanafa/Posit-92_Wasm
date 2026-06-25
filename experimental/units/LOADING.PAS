@@ -18,8 +18,8 @@ uses
   Conv, VGA,
   Assets;
 
-function GetLoadingActual: smallint; external 'env' name 'getLoadingActual';
-function GetLoadingTotal: smallint; external 'env' name 'getLoadingTotal';
+function GetLoadingActual: smallint; external 'env' name 'GetLoadingActual';
+function GetLoadingTotal: smallint; external 'env' name 'GetLoadingTotal';
 
 procedure RenderLoadingScreen;
 var
