@@ -5,6 +5,7 @@ use v5.38.0;
 use Cwd qw(abs_path);
 use File::Copy qw(copy);
 use File::Spec::Functions qw(catfile);
+use File::Basename qw(basename);
 
 my $dest = abs_path(".");
 
@@ -22,5 +23,6 @@ mkdir "units" unless -d "units";
 mkdir "shared" unless -d "shared";
 
 for (glob "../experimental/units/*.{pas,PAS}") {
-  copy $_, "./shared/$_"
+  my $filename = basename($_);
+  copy($_, "./shared/$filename") or warn $!
 }
