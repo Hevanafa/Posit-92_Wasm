@@ -1,6 +1,6 @@
 // posit-92.ts
 class Posit92 {
-  static version = "0.1.6_experimental";
+  static version = "0.1.7";
   #wasmSource = "game.wasm";
   #wasmMemSize = 2 * 1048576;
   #stackSize = 256 * 1024;
@@ -210,7 +210,7 @@ class Posit92 {
     if (this.#images.length == 0)
       this.#images.push(null);
     const handle = this.#images.length;
-    this.#images.push(imageData);
+    this.#images.push(null);
     this.#wasm.exports.RegisterImageRef(handle, wasmPtr, img.width, img.height);
     return handle;
   }
@@ -603,6 +603,31 @@ class Posit92 {
       this.#UpdateMouseButton();
     });
     this.#canvas.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+    this.#canvas.addEventListener("touchmove", (e) => {
+      const touch = e.touches[0];
+      const rect = this.#canvas.getBoundingClientRect();
+      const scaleX = this.#canvas.width / rect.width;
+      const scaleY = this.#canvas.height / rect.height;
+      this.#mouseX = Math.floor((touch.clientX - rect.left) * scaleX);
+      this.#mouseY = Math.floor((touch.clientY - rect.top) * scaleY);
+      e.preventDefault();
+    });
+    this.#canvas.addEventListener("touchstart", (e) => {
+      const touch = e.touches[0];
+      const rect = this.#canvas.getBoundingClientRect();
+      const scaleX = this.#canvas.width / rect.width;
+      const scaleY = this.#canvas.height / rect.height;
+      this.#mouseX = Math.floor((touch.clientX - rect.left) * scaleX);
+      this.#mouseY = Math.floor((touch.clientY - rect.top) * scaleY);
+      this.#leftButtonDown = true;
+      this.#UpdateMouseButton();
+      e.preventDefault();
+    });
+    this.#canvas.addEventListener("touchend", (e) => {
+      this.#leftButtonDown = false;
+      this.#UpdateMouseButton();
       e.preventDefault();
     });
   }

@@ -1,6 +1,6 @@
 // posit-92.ts
 class Posit92 {
-  static version = "0.1.6_experimental";
+  static version = "0.1.7";
   #wasmSource = "game.wasm";
   #wasmMemSize = 2 * 1048576;
   #stackSize = 256 * 1024;
