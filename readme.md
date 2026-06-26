@@ -2,27 +2,18 @@
 
 ![preview](preview.png)
 
-This project is a port of [POSIT-92](https://github.com/Hevanafa/POSIT-92) which targets WebAssembly
+This project is a port of the original [POSIT-92](https://github.com/Hevanafa/POSIT-92) for DOS, which targets WebAssembly
 
 ## Requirements
 
-1. **Free Pascal Compiler** which has been configured with `wasm32-embedded` as the target (read **Compiler Setup** section below to see how)
-2. **VSCode** with the **[OmniPascal](https://marketplace.visualstudio.com/items?itemName=Wosi.omnipascal)** extension by Wosi enabled
-3. **[Bun](https://bun.com/)** (at least v1.3.5) to handle both the build scripts (just like Perl) and also to start the HTTP server
+1. **Lazarus IDE**
+2. **Free Pascal Compiler** which has been configured with `wasm32-embedded` as the target (read **Compiler Setup** section below to see how)
+3. **Perl** to handle most of the build & text processing tasks
+4. **[Bun](https://bun.com/)** (at least v1.3.5) to transpile the engine code and to start the HTTP server
 
 I'm using Windows 10 Home (64-bit, version 22H2, build 19045.6575) to build this project
 
-If you want to edit the build scripts with **Bun**, install the dependencies first with
-
-```powershell
-bun install
-```
-
-**Update 11-12-2025:** Changed the extension used
-
-This is because the **Pascal** extension by Alessandro Fragnani is too difficult to get the "Go to definition" feature working, while **OmniPascal** can do it right out of the box
-
-OmniPascal has a built-in code navigation, so it doesn't require GTags/CTags, GNU Global, or even Python installed
+If you want to use **VSCode** instead of Lazarus, install the **[OmniPascal](https://marketplace.visualstudio.com/items?itemName=Wosi.omnipascal)** extension by Wosi
 
 ## Getting Started
 
