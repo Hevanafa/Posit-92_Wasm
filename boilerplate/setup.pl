@@ -16,3 +16,11 @@ my @scripts = ("clean.pl", "dist.pl", "server.ts");
 for (@scripts) {
   copy(catfile($scripts_dir, $_), $dest) or warn "Couldn't copy $_: $!";
 }
+
+mkdir "units" unless -d "units";
+
+mkdir "shared" unless -d "shared";
+
+for (glob "../experimental/units/*.{pas,PAS}") {
+  copy $_, "./shared/$_"
+}
