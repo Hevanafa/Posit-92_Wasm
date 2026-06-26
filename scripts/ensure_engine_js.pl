@@ -2,6 +2,8 @@ use strict;
 use warnings;
 use v5.38.2;
 
+use File::Basename qw(basename);
+
 # Copy engine JS
 
 say "Checking engine JS...";
