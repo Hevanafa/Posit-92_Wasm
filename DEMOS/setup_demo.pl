@@ -15,13 +15,18 @@ my $demo_dir = $ARGV[0];
 if (!$demo_dir) {
   say "Missing \$demo_dir!";
   say "Usage:";
-  say "$0 <demo_dir>";
+  say "$0 <demo_dir> [--all]";
   exit 1
 }
 
-my $dest = catfile(getcwd, $demo_dir);
-
 # TODO: Check --all
+
+if (grep { $_ eq "--all" } @ARGV) {
+  say "--all option is used";
+  exit
+}
+
+my $dest = catfile(getcwd, $demo_dir);
 
 # Copy engine JS
 
