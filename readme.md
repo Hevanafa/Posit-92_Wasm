@@ -127,16 +127,6 @@ Just in case you want to use a different installation folder, you can change `$c
 - `compile.ts` - Main compile script
 - Optional: `compile_demo.ts` - Change this if you want to play around with the demos
 
-## What To Do
-
-When there is a compiler error especially in the demo projects, something like this:
-
-```text
-SHAPES.PAS(110,3) Fatal: Internal error 2010120506
-```
-
-Simply call the cleanup script in experimental, then rebuild
-
 ## Credits
 
 Default font: [Nokia Cellphone FC](https://www.dafont.com/nokia-cellphone.font)
