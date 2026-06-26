@@ -1,8 +1,10 @@
 import { styleText } from "node:util";
 
 // Requires Bun to be installed
-if (Bun == null)
+if (process.versions?.bun == null)
   throw new Error("This app requires Bun!");
+
+console.log(`Running on Bun v${process.versions?.bun}`);
 
 async function startServer(port: number, maxRetries: number): Promise<void> {
   for (let attempt = 0; attempt < maxRetries; attempt++) {
