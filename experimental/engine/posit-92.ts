@@ -959,7 +959,7 @@ class Posit92 {
       this.#mouseX = Math.floor((touch.clientX - rect.left) * scaleX);
       this.#mouseY = Math.floor((touch.clientY - rect.top) * scaleY);
 
-      e.preventDefault();
+      e.preventDefault({ passive: false });
     });
 
     this.#canvas.addEventListener("touchstart", e => {
@@ -976,13 +976,13 @@ class Posit92 {
       this.#leftButtonDown = true;
       this.#UpdateMouseButton();
 
-      e.preventDefault();
+      e.preventDefault({ passive: false });
     });
 
     this.#canvas.addEventListener("touchend", e => {
       this.#leftButtonDown = false;
       this.#UpdateMouseButton();
-      e.preventDefault()
+      e.preventDefault({ passive: false });
     });
   }
 
