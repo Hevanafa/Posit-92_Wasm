@@ -62,6 +62,8 @@ if (grep { $_ eq "--all" } @ARGV) {
     say ""
   }
 
+  say colored("Done!", "bright_green");
+
   exit
 }
 
