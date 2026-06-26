@@ -7,7 +7,7 @@
 dist/
 
 # Boilerplate files
-boilerplate/*.*
+boilerplate/**/*
 !boilerplate/setup.pl
 
 # Demo Build Scripts
