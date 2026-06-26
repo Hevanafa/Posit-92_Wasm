@@ -57,11 +57,6 @@ When all the steps above is done, you can copy all the files of the `boilerplate
 
 It took me a few retries until the compiler finally completed compiling
 
-Just in case you want to use a different installation folder, you can change `$compilerPath` in these scripts:
-
-- `compile.ts` - Main compile script
-- Optional: `compile_demo.ts` - Change this if you want to play around with the demos
-
 ## Credits
 
 Default font: [Nokia Cellphone FC](https://www.dafont.com/nokia-cellphone.font)
