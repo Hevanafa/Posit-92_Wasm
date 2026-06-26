@@ -9,7 +9,7 @@ This project is a port of the original [POSIT-92](https://github.com/Hevanafa/PO
 1. **Lazarus IDE**
 2. **Free Pascal Compiler** which has been configured with `wasm32-embedded` as the target (read **Compiler Setup** section below to see how)
 3. **Perl** to handle most of the build & text processing tasks
-4. **[Bun](https://bun.com/)** (at least v1.3.5) to transpile the engine code and to start the HTTP server
+4. **[Bun](https://bun.com/)** (at least v1.3.5) either to transpile the engine code or to start the local HTTP server
 
 I'm using Windows 10 Home (64-bit, version 22H2, build 19045.6575) to build this project
 
@@ -19,44 +19,26 @@ If you want to use **VSCode** instead of Lazarus, install the **[OmniPascal](htt
 
 1. Open VSCode terminal `Ctrl + ~`
 2. `cd boilerplate`
-3. Run `bun .\setup.ts`
-4. Choose which project version that you want:
-   1. `default`
-   2. `demo` is for demo projects, for use within this repo
-5. Run `bun .\compile.ts`
+3. Run `perl .\setup.pl`
+4. Run `perl .\make.pl`
+   
    This will make sure that all the units can be compiled & run
 
-When all the steps above is done, you can copy all the files of the `boilerplate` folder to your new project, except for `setup.ts`
+When all the steps above is done, you can copy all the files of the `boilerplate` folder to your new project, except for `setup.pl`
 
-### Experimental Boilerplate
+## Boilerplate Overview
 
-First, choose either `hello_quick`, `hello_intro` or `hello_minimal` from the `DEMOS` folder
+`hello_demoscene`
 
-- `hello_quick` is the recommended project because of the complete asset loader and Lazarus project files included
-- `hello_intro` is like `hello_quick` but with the intro sequence included
-- `hello_minimal` is the bare minimum just to get a plain black surface & text output on the console
+- Starts immediately without an intro
 
-This will be the base directory for your future project
+`hello_intro`
 
-Second, copy both `posit-92.ts` and `tsconfig.json` from the `experimental` folder
+- Standard Posit-92 project with an intro / loading sequence
 
-Third, copy `experimental\units` excluding the `backup` and `deprecated` folders, and then name it as `shared`
+`hello_minimal`
 
-Fourth, copy the `server.ts` and `dist.ts` build scripts from `scripts`
-
-Here's the project structure:
-
-```text
-hello_quick\
-- shared\
-- (all files from hello_quick)
-- game.lpi
-- game.lpr
-- posit-92.ts
-- tsconfig.json
-- server.ts
-- dist.ts
-```
+- Smallest possible project
 
 ## Compiler Setup
 
