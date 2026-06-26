@@ -11,6 +11,8 @@ use Term::ANSIColor qw(colored);
 
 my $dest = abs_path(".");
 
+# Copy engine JS
+
 eval {
   system "perl ../scripts/ensure_engine_js.pl";
   1
