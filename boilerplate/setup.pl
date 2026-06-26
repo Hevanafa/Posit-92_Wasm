@@ -12,9 +12,9 @@ use Term::ANSIColor qw(colored);
 my $dest = abs_path(".");
 
 eval {
-  system "perl ../scripts/check_engine_js.pl";
+  system "perl ../scripts/ensure_engine_js.pl";
   1
-}
+};
 
 chdir $dest;
 
@@ -85,6 +85,8 @@ say $fh $_ for @lines;
 close $fh;
 
 # Final copy step
+
+my $engine_js_path = "../experimental/engine/posit-92.js";
 
 say "Copying " . basename($engine_js_path) . "...";
 copy $engine_js_path, catfile($dest, basename($engine_js_path));
