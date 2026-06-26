@@ -38,4 +38,32 @@ for (glob "../experimental/units/*.{pas,PAS}") {
 
 # Pull files from hello_demoscene
 
-dircopy("../DEMOS/hello_demoscene", $dest)
+dircopy("../DEMOS/hello_demoscene", $dest);
+
+# Handle project.lpi
+
+say "Processing project.lpi...";
+
+my $other_unit_dirs = "units;shared";
+
+my $fh;
+open ($fh, "<", "project.lpi")
+  or die "Couldn't open project.lpi: $!";
+
+my @lines = ();
+
+while (my $line = <$fh>) {
+  chomp $line;
+
+  if ($line =~ /otherunitfiles/i) {
+    $line =~ s/(value=\")(.*)(\")/$1$other_unit_dirs$3/i
+  }
+
+  push @lines, $line
+}
+
+close $fh;
+
+open ($fh, ">", "project.lpi");
+say $fh, $_ for @lines;
+close $fh
