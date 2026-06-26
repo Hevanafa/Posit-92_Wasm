@@ -12,28 +12,30 @@ use File::Copy::Recursive qw(dircopy);
 
 my $dest = abs_path(".");
 my $scripts_dir = abs_path("../scripts");
-my @scripts = ("clean.pl", "dist.pl", "server.ts");
+my @scripts = (
+  "clean.pl", "make.pl", "dist.pl",
+  "server.ts"
+);
 
 for (@scripts) {
-  copy(catfile($scripts_dir, $_), $dest) or warn "Couldn't copy $_: $!";
+  my $filename = basename($_);
+
+  copy(catfile($scripts_dir, $_), catfile($dest, $filename))
+    or warn "Couldn't copy $_: $!";
 }
 
 # Copy engine units
 
-mkdir "units" unless -d "units";
-
 mkdir "shared" unless -d "shared";
+mkdir "units" unless -d "units";
 
 for (glob "../experimental/units/*.{pas,PAS}") {
   my $filename = basename($_);
-  copy($_, catfile($dest, "shared/$filename")) or warn $!
+
+  copy($_, catfile($dest, "shared/$filename"))
+    or warn "Couldn't copy $_: $!";
 }
 
 # Pull files from hello_demoscene
-
-# for (glob "../DEMOS/hello_demoscene/*.*") {
-#   my $filename = basename($_);
-#   copy($_, "./$filename") or warn $!
-# }
 
 dircopy("../DEMOS/hello_demoscene", $dest)
