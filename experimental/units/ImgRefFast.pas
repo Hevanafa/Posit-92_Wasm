@@ -62,8 +62,7 @@ var
   image: PImageRef;
   px, py: smallint;
   offset: longword;
-  { data: PByte; }
-  a: byte;
+  a: byte; { alpha }
   colour: longword;
 begin
   if not IsImageSet(imgHandle) then exit;
