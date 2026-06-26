@@ -3,6 +3,7 @@ use warnings;
 use v5.38.2;
 
 use Cwd qw(getcwd);
+use Term::ANSIColor qw(colored);
 
 # print join " -- ", @ARGV;
 
@@ -25,6 +26,7 @@ eval {
 };
 
 chdir $dest;
+chdir "..";
 
 my $engine_js_path = "../experimental/engine/posit-92.js";
 
@@ -32,6 +34,8 @@ say "Copying " . basename($engine_js_path) . "...";
 copy $engine_js_path, catfile($dest, basename($engine_js_path));
 
 # Copy build scripts
+
+say "Copying build scripts..."
 
 my $scripts_dir = abs_path("../scripts");
 
@@ -41,8 +45,8 @@ my @scripts = (
 );
 
 for (@scripts) {
-  my $filename = basename($_);
-
-  copy(catfile($scripts_dir, $_), catfile($dest, $filename))
+  copy(catfile($scripts_dir, $_), catfile($dest, $_))
     or warn "Couldn't copy $_: $!";
 }
+
+say colored("Done!", "bright_green")
