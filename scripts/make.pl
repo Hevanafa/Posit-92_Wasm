@@ -3,14 +3,14 @@ use warnings;
 use v5.38.2;
 
 my $compiler_path = "E:/fpc-wasm/fpc/bin/x86_64-win64/fpc.exe";
-my $primary_unit = "game.pas";
+my $primary_unit = "game.lpr";
 my $output_file = "game.wasm";
 
 my @args = (
-  $compiler_path,
   "-Pwasm32",
   "-Tembedded",
-  "-FuUNITS",
+  "-Fuunits",
+  "-Fushared",
   "-dWASM",
   "-o$output_file",
   $primary_unit
