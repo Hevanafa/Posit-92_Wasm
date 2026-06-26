@@ -21,10 +21,15 @@ If you want to use **VSCode** instead of Lazarus, install the **[OmniPascal](htt
 2. `cd boilerplate`
 3. Run `perl .\setup.pl`
 4. Run `perl .\make.pl`
-   
+
    This will make sure that all the units can be compiled & run
 
 When all the steps above is done, you can copy all the files of the `boilerplate` folder to your new project, except for `setup.pl`
+
+Optionally:
+
+1. Run `bun .\server.ts`
+2. Open `http://localhost:8008` in your browser to see if the "Hello world!" actually appears
 
 ## Boilerplate Overview
 
