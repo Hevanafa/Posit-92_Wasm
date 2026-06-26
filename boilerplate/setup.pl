@@ -9,11 +9,27 @@ use File::Basename qw(basename);
 use File::Copy::Recursive qw(dircopy);
 use Term::ANSIColor qw(colored);
 
+my $dest = abs_path(".");
+
+# Copy engine JS
+
+say "Checking engine JS...";
+
+my $engine_js_path = "../experimental/engine/posit-92.js";
+
+unless (-f $engine_js_path) {
+  say "Couldn't find the engine JS " . basename($engine_js_path);
+  
+  chdir "../experimental/engine";
+  system "bun run make"
+}
+
+chdir $dest;
+
 # Copy build scripts
 
 say "Copying build scripts...";
 
-my $dest = abs_path(".");
 my $scripts_dir = abs_path("../scripts");
 my @scripts = (
   "clean.pl", "make.pl", "dist.pl",
@@ -75,6 +91,11 @@ close $fh;
 open $fh, ">", $project_info_file;
 say $fh $_ for @lines;
 close $fh;
+
+# Final copy step
+
+say "Copying " . basename($engine_js_path) . "...";
+copy $engine_js_path, catfile($dest, basename($engine_js_path));
 
 say colored("Setup complete!", "bright_green");
 say "Run perl .\\make.pl to build the WebAssembly, and then";
