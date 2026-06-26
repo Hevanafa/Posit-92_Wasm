@@ -65,5 +65,5 @@ while (my $line = <$fh>) {
 close $fh;
 
 open ($fh, ">", "project.lpi");
-say $fh, $_ for @lines;
+say $fh $_ for @lines;
 close $fh
