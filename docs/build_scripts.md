@@ -12,12 +12,12 @@ The Perl scripts are usually unnecessary when you're already building with Lazar
 
 The demo projects use a special units collection: `experimental\units`, so the build scripts are slightly different
 
-- `make_demo.ts` - Compile only (similar to `make.ts`)
+- `make_demo.pl` - Compile only (similar to `make.pl`)
 - `server.ts` - Starts the local HTTP server
 
 ## Distribution Scripts
 
-Usually what you need are `optimise_wasm.ts` and `dist.ts`
+Usually what you need are `optimise_wasm.pl` and `dist.pl`
 
 The scripts are as follows:
 
