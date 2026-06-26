@@ -10,11 +10,16 @@ dist/
 boilerplate/**/*
 !boilerplate/setup.pl
 
-# Demo Build Scripts
+# Demo build scripts
 DEMOS/*/*.ps1
 DEMOS/*/*.pl
 !DEMOS/webgl_demo/*.ps1
 !DEMOS/square_screen/*.ps1
+
+# Demo build artifacts
+DEMOS/*/posit-92.js
+DEMOS/*/*.d.ts
+DEMOS/*/*.js.map
 
 # Bun build scripts for demo projects
 DEMOS/*/*.ts
@@ -53,6 +58,3 @@ DEMOS/*/lib/
 experimental/engine/*.d.ts
 experimental/engine/*.js
 experimental/engine/*.js.map
-
-DEMOS/*/*.d.ts
-DEMOS/*/*.js.map
