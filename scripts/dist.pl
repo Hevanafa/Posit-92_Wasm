@@ -31,6 +31,7 @@ $dist_dir = abs_path("dist");
 my @files = (
   $wasm,
   "game.js",
+  "posit-92.css",
   "posit-92.js",
   "index.html",
   "favicon.ico"
