@@ -10,6 +10,7 @@ use Term::ANSIColor qw(colored);
 
 # print join " -- ", @ARGV;
 
+my $start_dir = getcwd;
 my $demo_dir = $ARGV[0];
 
 if (!$demo_dir) {
@@ -19,15 +20,6 @@ if (!$demo_dir) {
   exit 1
 }
 
-# TODO: Check --all
-
-if (grep { $_ eq "--all" } @ARGV) {
-  say "--all option is used";
-  exit
-}
-
-my $dest = catfile(getcwd, $demo_dir);
-
 # Copy engine JS
 
 eval {
@@ -36,19 +28,30 @@ eval {
 };
 
 # Return to DEMOS
-chdir $dest;
-chdir "..";
+chdir $start_dir;
 
 my $engine_js_path = "../experimental/engine/posit-92.js";
 
+
+# TODO: Check --all
+
+if (grep { $_ eq "--all" } @ARGV) {
+  say "--all option is used";
+
+  my @dirs = grep { -d } glob "*";
+  say for @dirs;
+
+  exit
+}
+
 say "Copying " . basename($engine_js_path) . "...";
-copy($engine_js_path, catfile($dest, basename($engine_js_path)));
+copy($engine_js_path, catfile($demo_dir, basename($engine_js_path)));
 
 # Copy build scripts
 
 say "Copying build scripts...";
 
-my $scripts_dir = abs_path("../scripts");
+my $scripts_dir = "../scripts";
 
 my @scripts = (
   "clean.pl", "make_demo.pl", "dist.pl",
@@ -56,7 +59,7 @@ my @scripts = (
 );
 
 for (@scripts) {
-  copy(catfile($scripts_dir, $_), catfile($dest, $_))
+  copy(catfile($scripts_dir, $_), catfile($demo_dir, $_))
     or warn "Couldn't copy $_: $!";
 }
 
