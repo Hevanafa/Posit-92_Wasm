@@ -957,7 +957,7 @@ class Posit92 {
       const scaleY = this.#canvas.height / rect.height;
 
       this.#mouseX = Math.floor((touch.clientX - rect.left) * scaleX);
-      this.#mouseY = Math.floor((touch.clientX - rect.left) * scaleY);
+      this.#mouseY = Math.floor((touch.clientY - rect.top) * scaleY);
 
       e.preventDefault();
     });
@@ -971,7 +971,7 @@ class Posit92 {
       const scaleY = this.#canvas.height / rect.height;
 
       this.#mouseX = Math.floor((touch.clientX - rect.left) * scaleX);
-      this.#mouseY = Math.floor((touch.clientX - rect.left) * scaleY);
+      this.#mouseY = Math.floor((touch.clientY - rect.top) * scaleY);
 
       this.#leftButtonDown = true;
       this.#UpdateMouseButton();
@@ -983,7 +983,7 @@ class Posit92 {
       this.#leftButtonDown = false;
       this.#UpdateMouseButton();
       e.preventDefault()
-    })
+    });
   }
 
   #GetMouseX() { return this.#mouseX }
