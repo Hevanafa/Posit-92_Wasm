@@ -38,7 +38,10 @@ if (grep { $_ eq "--all" } @ARGV) {
   say "--all option is used";
 
   for $demo_dir (grep { -d } glob "*") {
+    say "Demo dir: ".$demo_dir;
+
     # Copy engine JS
+
     say "Copying " . basename($engine_js_path) . "...";
     copy($engine_js_path, catfile($demo_dir, basename($engine_js_path)));
 
@@ -55,6 +58,8 @@ if (grep { $_ eq "--all" } @ARGV) {
       copy(catfile($scripts_dir, $_), catfile($demo_dir, $_))
         or warn "Couldn't copy $_: $!";
     }
+
+    say ""
   }
 
   exit
@@ -63,6 +68,7 @@ if (grep { $_ eq "--all" } @ARGV) {
 # Take care of 1 demo
 
 # Copy engine JS
+
 say "Copying " . basename($engine_js_path) . "...";
 copy($engine_js_path, catfile($demo_dir, basename($engine_js_path)));
 
