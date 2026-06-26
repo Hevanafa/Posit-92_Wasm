@@ -947,6 +947,43 @@ class Posit92 {
     this.#canvas.addEventListener("contextmenu", e => {
       e.preventDefault()
     });
+
+    // Handle touch events
+    this.#canvas.addEventListener("touchmove", e => {
+      const touch = e.touches[0];
+
+      const rect = this.#canvas.getBoundingClientRect();
+      const scaleX = this.#canvas.width / rect.width;
+      const scaleY = this.#canvas.height / rect.height;
+
+      this.#mouseX = Math.floor((touch.clientX - rect.left) * scaleX);
+      this.#mouseY = Math.floor((touch.clientX - rect.left) * scaleY);
+
+      e.preventDefault();
+    });
+
+    this.#canvas.addEventListener("touchstart", e => {
+      // Similar to touchmove but with #leftButtonDown assignment
+      const touch = e.touches[0];
+
+      const rect = this.#canvas.getBoundingClientRect();
+      const scaleX = this.#canvas.width / rect.width;
+      const scaleY = this.#canvas.height / rect.height;
+
+      this.#mouseX = Math.floor((touch.clientX - rect.left) * scaleX);
+      this.#mouseY = Math.floor((touch.clientX - rect.left) * scaleY);
+
+      this.#leftButtonDown = true;
+      this.#UpdateMouseButton();
+
+      e.preventDefault();
+    });
+
+    this.#canvas.addEventListener("touchend", e => {
+      this.#leftButtonDown = false;
+      this.#UpdateMouseButton();
+      e.preventDefault()
+    })
   }
 
   #GetMouseX() { return this.#mouseX }
