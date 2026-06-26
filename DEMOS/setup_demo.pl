@@ -20,8 +20,7 @@ if (!$demo_dir) {
   exit 1
 }
 
-# Copy engine JS
-
+# Ensure engine JS
 eval {
   system "perl ../scripts/ensure_engine_js.pl";
   1
@@ -31,27 +30,45 @@ eval {
 chdir $start_dir;
 
 my $engine_js_path = "../experimental/engine/posit-92.js";
+my $scripts_dir = "../scripts";
 
-
-# TODO: Check --all
+# --all option
 
 if (grep { $_ eq "--all" } @ARGV) {
   say "--all option is used";
 
-  my @dirs = grep { -d } glob "*";
-  say for @dirs;
+  for $demo_dir (grep { -d } glob "*") {
+    # Copy engine JS
+    say "Copying " . basename($engine_js_path) . "...";
+    copy($engine_js_path, catfile($demo_dir, basename($engine_js_path)));
+
+    # Copy build scripts
+
+    say "Copying build scripts...";
+
+    my @scripts = (
+      "clean.pl", "make_demo.pl", "dist.pl",
+      "server.ts"
+    );
+
+    for (@scripts) {
+      copy(catfile($scripts_dir, $_), catfile($demo_dir, $_))
+        or warn "Couldn't copy $_: $!";
+    }
+  }
 
   exit
 }
 
+# Take care of 1 demo
+
+# Copy engine JS
 say "Copying " . basename($engine_js_path) . "...";
 copy($engine_js_path, catfile($demo_dir, basename($engine_js_path)));
 
 # Copy build scripts
 
 say "Copying build scripts...";
-
-my $scripts_dir = "../scripts";
 
 my @scripts = (
   "clean.pl", "make_demo.pl", "dist.pl",
