@@ -12,6 +12,7 @@ boilerplate/*.*
 
 # Demo Build Scripts
 DEMOS/*/*.ps1
+DEMOS/*/*.pl
 !DEMOS/webgl_demo/*.ps1
 !DEMOS/square_screen/*.ps1
 
