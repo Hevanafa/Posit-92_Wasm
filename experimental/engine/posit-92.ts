@@ -10,6 +10,9 @@ type BMFontManifest = Map<string, { path: string, setter: string, glyphSetter: s
 type WasmExports = {
   memory: WebAssembly.Memory,
 
+  DefaultFontPtr: () => number;
+  DefaultFontGlyphsPtr: () => number;
+
   // InteropBuf.pas
   GetInteropBufPtr: () => number,
   GetInteropBufLen: () => number,
@@ -101,9 +104,12 @@ type TBMFontGlyph = {
 }
 
 type Posit92Options = {
-  vgaWidth: number;
-  vgaHeight: number;
+  vgaWidth?: number;
+  vgaHeight?: number;
   renderer: "2d" | "webgl" | "experimental-webgl" | string;
+  fps?: number;
+  skipIntro?: boolean;
+  loadDefaultFont?: boolean;
 };
 
 class Posit92 {
@@ -260,8 +266,8 @@ class Posit92 {
 
     this.#canvas = <HTMLCanvasElement>document.getElementById(canvasID);
     
-    this.#vgaWidth = options.vgaWidth;
-    this.#vgaHeight = options.vgaHeight;
+    this.#vgaWidth = options.vgaWidth!;
+    this.#vgaHeight = options.vgaHeight!;
 
     if (options.renderer == "2d")
       this.#ctx = this.#canvas.getContext(options.renderer)!;
@@ -359,13 +365,6 @@ class Posit92 {
     this.#InitKeyboard();
     this.#InitMouse();
     this.#LoadMidnightOffset();
-
-    await this.LoadBootAssets();
-    await this.LoadGameAssets();
-
-    this.#wasm.exports.OnReady();
-    this.#AddOutOfFocusFix();
-    this.#AddResizeListener()
   }
 
   BeginIntro() {
@@ -400,18 +399,6 @@ class Posit92 {
    * Overridden by the inherited `Game` class
    */
   async LoadGameAssets() {}
-
-  /**
-   * Bypass intro sequence
-   * 
-   * Should be used **without** the intro screen
-   */
-  async QuickStart() {
-    this.HideLoadingOverlay();
-
-    if (Object.hasOwn(this.#wasm.exports, "BeginLoadingState"))
-      this.#wasm.exports.BeginLoadingState();
-  }
 
 
   #HideCursor() {
@@ -1176,6 +1163,31 @@ class Posit92 {
 
   // Main game loop
 
+  async Start() {
+    await this.InitRuntime();
+    
+    await this.LoadBootAssets();
+    await this.LoadGameAssets();
+
+    this.#wasm.exports.OnReady();
+    this.#AddOutOfFocusFix();
+    this.#AddResizeListener();
+
+    this.StartLoop();
+  }
+
+  /**
+   * Bypass intro sequence
+   * 
+   * Should be used **without** the intro screen
+   */
+  async QuickStart() {
+    this.HideLoadingOverlay();
+
+    if (Object.hasOwn(this.#wasm.exports, "BeginLoadingState"))
+      this.#wasm.exports.BeginLoadingState();
+  }
+
   #Loop = (currentTime: number) => {
     if (this.#done) {
       this.Cleanup();
@@ -1193,7 +1205,7 @@ class Posit92 {
     requestAnimationFrame(this.#Loop)
   }
 
-  Start() {
+  StartLoop() {
     requestAnimationFrame(this.#Loop)
   }
 
