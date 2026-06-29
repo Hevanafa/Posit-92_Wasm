@@ -5,7 +5,7 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  WasmMemMgr, InteropBuf, Logger,
+  WasmMemMgr, InteropBuf, Logger, WasmHost,
   Loading, Fullscreen,
   Keyboard, Mouse,
   ImgRefFast, Timing, VGA,
@@ -14,12 +14,6 @@ uses
 var
   { Game state variables }
   gameTime: double;
-
-{ Use this to set `done` to true }
-procedure SignalDone; external 'env' name 'SignalDone';
-procedure HideCursor; external 'env' name 'HideCursor';
-procedure RequestAssetLoad; external 'env' name 'RequestAssetLoad';
-procedure FitCanvas; external 'env' name 'FitCanvas';
 
 procedure DrawMouse;
 begin
