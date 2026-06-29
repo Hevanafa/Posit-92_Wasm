@@ -58,7 +58,7 @@ begin
     if lastEsc then SignalDone;
   end;
 
-  gameTime := gameTime + dt
+  gameTime := gameTime + DeltaTime;
 end;
 
 { Draw in WebGL context }
@@ -109,6 +109,11 @@ begin
   PrintDefault(s, (vgaWidth - w) div 2, 120);
 
   DrawMouse;
+
+  { Finalise software rendering }
+  VgaUpload;
+  VgaPresent;
+
   PresentWebGL
 end;
 

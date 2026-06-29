@@ -2,16 +2,7 @@
 
 // Game < WebGLMixin < Posit92
 class Game extends WebGLMixin {
-  /**
-   * KeyboardEvent.code to DOS scancode
-   */
-  ScancodeMap = {
-    "Escape": 0x01,
-    "Space": 0x39
-    // Add more scancodes as necessary
-  };
-
-  async LoadAssets() {
+  async LoadGameAssets() {
     let handle = 0;
 
     handle = await this.LoadImage("assets/images/cursor.png");
@@ -29,46 +20,11 @@ class Game extends WebGLMixin {
 
     // Add more assets as necessary
   }
-
-  constructor(canvasID) {
-    super(canvasID, {
-      renderer: "webgl"
-    });
-  }
 }
 
-const TargetFPS = 60;
-const FrameTime = 1000 / TargetFPS;
-/**
- * in milliseconds
- */
-let lastFrameTime = 0.0;
-
-var done = false;
-
 async function Main() {
-  const game = new Game("game");
-  await game.Init();
-  game.AfterInit();
-
-  function Loop(currentTime) {
-    if (done) {
-      game.Cleanup();
-      return;
-    }
-
-    const elapsed = currentTime - lastFrameTime;
-
-    if (elapsed >= FrameTime) {
-      lastFrameTime = currentTime - (elapsed % FrameTime);  // Carry over extra time
-      game.Update();
-      game.Draw();
-    }
-
-    requestAnimationFrame(Loop)
-  }
-
-  requestAnimationFrame(Loop)
+  const game = new Game("game", { renderer: "webgl" });
+  await game.Start();
 }
 
 function Play() {
