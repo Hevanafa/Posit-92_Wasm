@@ -103,7 +103,7 @@ class WebGLMixin extends Posit92 {
   #ReadCString(ptr) {
     this.#AssertNumber(ptr);
 
-    const memory = new Uint8Array(this.wasmInstance.exports.memory.buffer);
+    const memory = new Uint8Array(this.WasmInstance.exports.memory.buffer);
     let end = ptr;
     while (memory[end] != 0) end++;  // Find null terminator
 
@@ -135,7 +135,7 @@ class WebGLMixin extends Posit92 {
     format, type, pixelsPtr) {
 
     const pixels = new Uint8Array(
-      this.wasmInstance.exports.memory.buffer,
+      this.WasmInstance.exports.memory.buffer,
       pixelsPtr,
       width * height * 4);
 
@@ -202,7 +202,7 @@ class WebGLMixin extends Posit92 {
 
   #glBufferData(target, size, dataPtr, usage) {
     const data = new Float32Array(
-      this.wasmInstance.exports.memory.buffer,
+      this.WasmInstance.exports.memory.buffer,
       dataPtr,
       size / 4
     );
