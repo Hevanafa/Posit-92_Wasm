@@ -69,7 +69,6 @@ class SoundsMixin extends Posit92 {
    */
   async Init() {
     this.#InitAudio();
-
     this.#SetupImportObject();
     await super.Init()
   }

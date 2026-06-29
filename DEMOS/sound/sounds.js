@@ -43,46 +43,45 @@ class SoundsMixin extends Posit92 {
   #musicPauseTime = 0.0;
   #musicPlaying = false;
 
-  #setupImportObject() {
-    const { env } = super._getWasmImportObject();
+  #SetupImportObject() {
+    const { env } = this.WasmImportObject;
 
     Object.assign(env, {
-      playSound: this.#playSound.bind(this),
-      setSoundVolume: this.#setSoundVolume.bind(this),
+      PlaySound: this.#PlaySound.bind(this),
+      SetSoundVolume: this.#SetSoundVolume.bind(this),
 
-      playMusic: this.#playMusic.bind(this),
-      pauseMusic: this.#pauseMusic.bind(this),
-      stopMusic: this.#stopMusic.bind(this),
-      seekMusic: this.#seekMusic.bind(this),
-      getMusicTime: this.#getMusicTime.bind(this),
-      getMusicDuration: this.#getMusicDuration.bind(this),
+      PlayMusic: this.#PlayMusic.bind(this),
+      PauseMusic: this.#PauseMusic.bind(this),
+      StopMusic: this.#StopMusic.bind(this),
+      SeekMusic: this.#SeekMusic.bind(this),
+      GetMusicTime: this.#GetMusicTime.bind(this),
+      GetMusicDuration: this.#GetMusicDuration.bind(this),
 
-      getMusicPlaying: () => this.#musicPlaying,
-      getMusicRepeat: this.#getMusicRepeat.bind(this),
-      setMusicRepeat: this.#setMusicRepeat.bind(this),
-      setMusicVolume: this.#setMusicVolume.bind(this),
+      GetMusicPlaying: () => this.#musicPlaying,
+      GetMusicRepeat: this.#GetMusicRepeat.bind(this),
+      SetMusicRepeat: this.#SetMusicRepeat.bind(this),
+      SetMusicVolume: this.#SetMusicVolume.bind(this),
     })
   }
 
   /**
    * @override
    */
-  async init() {
-    this.#initAudio();
-
-    this.#setupImportObject();
-    await super.init()
+  async Init() {
+    this.#InitAudio();
+    this.#SetupImportObject();
+    await super.Init()
   }
 
   /**
    * @override
    */
-  cleanup() {
-    this.#stopMusic();
-    super.cleanup()
+  Cleanup() {
+    this.#StopMusic();
+    super.Cleanup()
   }
 
-  #assertNumber(value) {
+  #AssertNumber(value) {
     if (typeof value != "number")
       throw new Error(`Expected a number, but received ${typeof value}`);
 
@@ -90,13 +89,13 @@ class SoundsMixin extends Posit92 {
       throw new Error("Expected a number, but received NaN");
   }
 
-  #initAudio() {
+  #InitAudio() {
     this.#audioContext = new AudioContext();
   }
 
 
   // SOUNDS.PAS
-  async loadSound(key, url) {
+  async LoadSound(key, url) {
     const response = await fetch(url);
     const arrayBuffer = await response.arrayBuffer();
     const audioBuffer = await this.#audioContext.decodeAudioData(arrayBuffer);
@@ -104,20 +103,20 @@ class SoundsMixin extends Posit92 {
     console.log("loadSound", key, url);
 
     this.#sounds.set(key, audioBuffer);
-    this.#setSoundVolume(key, 0.5)
+    this.#SetSoundVolume(key, 0.5)
   }
 
   /**
    * Load sound files from manifest in parallel
    * @param {Map<number, string>} manifest - Key-value pairs of `"asset_key": "sound_path"`
    */
-  async loadSoundsFromManifest(manifest) {
+  async LoadSoundsFromManifest(manifest) {
     const entries = Array.from(manifest.entries());
 
-    this.incLoadingTotal(manifest.size);
+    this.IncLoadingTotal(manifest.size);
 
     const promises = entries.map(([key, url]) =>
-      this.loadSound(key, url)
+      this.LoadSound(key, url)
         .then(() => {
           // On success
           return { key, url, success: true }
@@ -143,7 +142,7 @@ class SoundsMixin extends Posit92 {
     }
   }
 
-  #playSound(key) {
+  #PlaySound(key) {
     const buffer = this.#sounds.get(key);
     if (buffer == null) {
       console.warn("Sound " + key + " is not loaded");
@@ -168,7 +167,7 @@ class SoundsMixin extends Posit92 {
   /**
    * Create a new music player node
    */
-  #resetMusicPlayerNode() {
+  #ResetMusicPlayerNode() {
     this.#musicPlayer = this.#audioContext.createBufferSource();
     this.#musicGainNode = this.#audioContext.createGain();
 
@@ -183,7 +182,7 @@ class SoundsMixin extends Posit92 {
     this.#musicGainNode.connect(this.#audioContext.destination);
   }
 
-  #destroyMusicPlayerNode() {
+  #DestroyMusicPlayerNode() {
     if (this.#musicPlayer != null) {
       this.#musicPlayer.stop();
       this.#musicPlayer = null;
@@ -191,19 +190,19 @@ class SoundsMixin extends Posit92 {
     }
   }
 
-  #playMusic(key) {
+  #PlayMusic(key) {
     // If still playing
     if (this.#musicPlaying && this.#musicBuffer != null)
       return;
 
     // Resuming
     if (this.#musicBuffer != null) {
-      this.#resetMusicPlayerNode();
-      this.#resumeMusic();
+      this.#ResetMusicPlayerNode();
+      this.#ResumeMusic();
       return
     }
 
-    this.#stopMusic();
+    this.#StopMusic();
 
     const buffer = this.#sounds.get(key);
     if (buffer == null) {
@@ -214,8 +213,8 @@ class SoundsMixin extends Posit92 {
     this.#musicBuffer = buffer;
     this.#musicPauseTime = 0.0;
 
-    this.#resetMusicPlayerNode();
-    this.#resumeMusic();
+    this.#ResetMusicPlayerNode();
+    this.#ResumeMusic();
   }
 
   /**
@@ -223,13 +222,13 @@ class SoundsMixin extends Posit92 {
    * 
    * Requires `#resetMusicPlayerNode()` to be called right before this
    */
-  #resumeMusic() {
+  #ResumeMusic() {
     this.#musicPlayer.start(0, this.#musicPauseTime);
     this.#musicStartTime = this.#audioContext.currentTime - this.#musicPauseTime;
     this.#musicPlaying = true
   }
 
-  #pauseMusic() {
+  #PauseMusic() {
     if (!this.#musicPlaying || this.#musicPlayer == null)
       return;
 
@@ -242,12 +241,12 @@ class SoundsMixin extends Posit92 {
     }
 
     // Stop the music player, but don't "forget" the pause position
-    this.#destroyMusicPlayerNode();
+    this.#DestroyMusicPlayerNode();
     this.#musicPlaying = false
   }
 
-  #stopMusic() {
-    this.#destroyMusicPlayerNode();
+  #StopMusic() {
+    this.#DestroyMusicPlayerNode();
     this.#musicBuffer = null;
     this.#musicPauseTime = 0.0;
     this.#musicPlaying = false
@@ -256,60 +255,60 @@ class SoundsMixin extends Posit92 {
   /**
    * @param {number} t time in seconds
    */
-  #seekMusic(t) {
-    this.#assertNumber(t);
+  #SeekMusic(t) {
+    this.#AssertNumber(t);
     if (this.#musicBuffer == null) return;
 
     const duration = this.#musicBuffer.duration;
-    t = this.#clamp(t, 0.0, duration);
+    t = this.#Clamp(t, 0.0, duration);
 
     const wasPlaying = this.#musicPlaying;
 
     // Stop current playback
-    this.#destroyMusicPlayerNode();
+    this.#DestroyMusicPlayerNode();
 
     this.#musicPauseTime = t;
     this.#musicPlaying = false;
 
     if (wasPlaying) {
-      this.#resetMusicPlayerNode();
-      this.#resumeMusic();
+      this.#ResetMusicPlayerNode();
+      this.#ResumeMusic();
     }
   }
 
-  #clamp(value, min, max) {
-    this.#assertNumber(value);
-    this.#assertNumber(min);
-    this.#assertNumber(max);
+  #Clamp(value, min, max) {
+    this.#AssertNumber(value);
+    this.#AssertNumber(min);
+    this.#AssertNumber(max);
 
     return Math.max(min, Math.min(max, value))
   }
 
-  #getMusicRepeat() { return this.#musicRepeat }
-  #setMusicRepeat(value) {
+  #GetMusicRepeat() { return this.#musicRepeat }
+  #SetMusicRepeat(value) {
     this.#musicRepeat = value;
   }
 
-  #setSoundVolume(key, volume) {
-    const clamped = this.#clamp(volume, 0.0, 1.0);
+  #SetSoundVolume(key, volume) {
+    const clamped = this.#Clamp(volume, 0.0, 1.0);
     this.#soundVolumes.set(key, clamped)
   }
 
-  #setMusicVolume(volume) {
-    this.#musicVolume = this.#clamp(volume, 0.0, 1.0);
+  #SetMusicVolume(volume) {
+    this.#musicVolume = this.#Clamp(volume, 0.0, 1.0);
 
     if (this.#musicGainNode != null)
       this.#musicGainNode.gain.value = this.#musicVolume;
   }
 
-  #getMusicDuration() {
+  #GetMusicDuration() {
     if (this.#musicBuffer == null)
       return 0.0;
 
     return this.#musicBuffer.duration
   }
 
-  #getMusicTime() {
+  #GetMusicTime() {
     if (this.#musicBuffer == null)
       return 0.0;
 
@@ -317,7 +316,7 @@ class SoundsMixin extends Posit92 {
       return this.#musicPauseTime;
 
     const elapsed = this.#audioContext.currentTime - this.#musicStartTime;
-    const duration = this.#getMusicDuration();
+    const duration = this.#GetMusicDuration();
 
     return elapsed % duration
   }
