@@ -1,34 +1,32 @@
 library Game;
 
 {$Mode ObjFPC}
+{$H+}
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  Logger, WasmMemMgr, VGA;
+  EngineCore, Logger, VGA;
 
-procedure Init;
+procedure OnReady;
 begin
-  initHeapMgr;
-end;
-
-procedure AfterInit;
-begin
-  writeLog('Hello from hello_minimal!')
+  WriteLog('Hello from hello_minimal!')
 end;
 
 procedure Update;
 begin
+
 end;
 
 procedure Draw;
 begin
   Cls($FF101010);
+
   VgaUpload;
   VgaPresent
 end;
 
 exports
-  Init, AfterInit, Update, Draw;
+  OnReady, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
