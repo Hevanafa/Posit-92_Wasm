@@ -44,37 +44,9 @@ class Game extends Posit92 {
   }
 }
 
-const TargetFPS = 60;
-const FrameTime = 1000 / TargetFPS;
-/**
- * in milliseconds
- */
-let lastFrameTime = 0.0;
-
-var done = false;
-
 async function Main() {
-  const game = new Game("game");
+  const game = new Game("game", { skipIntro: false });
   game.Start();
-
-  function Loop(currentTime) {
-    if (done) {
-      game.Cleanup();
-      return;
-    }
-
-    const elapsed = currentTime - lastFrameTime;
-
-    if (elapsed >= FrameTime) {
-      lastFrameTime = currentTime - (elapsed % FrameTime);  // Carry over extra time
-      game.Update();
-      game.Draw();
-    }
-
-    requestAnimationFrame(Loop)
-  }
-
-  requestAnimationFrame(Loop)
 }
 
 function Play() {
