@@ -28,7 +28,7 @@ class Game extends Posit92 {
   /**
    * @override
    */
-  async RequestAssetLoad() {
+  async LoadAssets() {
     await this.LoadImagesFromManifest(this.AssetManifest.images);
     // Sounds can be loaded later
   }

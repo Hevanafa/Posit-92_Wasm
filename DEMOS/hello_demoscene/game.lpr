@@ -20,13 +20,14 @@ begin
   Spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure Init;
+procedure InitRuntime;
 begin
   InitEngine;
   RequestAssetLoad
 end;
 
-procedure AfterInit;
+{ Called after InitRuntime and when RequestAssetLoad is finished }
+procedure OnReady;
 begin
   HideCursor;
   FitCanvas;
@@ -65,7 +66,7 @@ begin
 end;
 
 exports
-  Init, AfterInit, Update, Draw;
+  InitRuntime, OnReady, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }

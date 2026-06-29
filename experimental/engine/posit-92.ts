@@ -32,7 +32,7 @@ type WasmExports = {
   BeginIntroState: () => void,
   BeginLoadingState: () => void,
   Init: () => void,
-  AfterInit: () => void,
+  OnReady: () => void,
   Update: () => void,
   Draw: () => void
 };
@@ -380,14 +380,21 @@ class Posit92 {
     this.#ShowCursor();
   }
 
+  async #RequestAssetLoad() {
+    await this.LoadAssets();
+    this.OnReady()
+  }
+
   /**
    * Overridden by the inherited `Game` class
    */
-  async RequestAssetLoad() {}
+  async LoadAssets() {}
 
-  async #RequestAssetLoad() {
-    await this.RequestAssetLoad();
-    this.AfterInit()
+  OnReady() {
+    this.#wasm.exports.OnReady();
+
+    this.#AddOutOfFocusFix();
+    this.#AddResizeListener()
   }
 
   /**
@@ -400,12 +407,6 @@ class Posit92 {
 
     if (Object.hasOwn(this.#wasm.exports, "beginLoadingState"))
       this.#wasm.exports.BeginLoadingState();
-  }
-
-  AfterInit() {
-    this.#wasm.exports.AfterInit();
-    this.#AddOutOfFocusFix();
-    this.#AddResizeListener()
   }
 
 
