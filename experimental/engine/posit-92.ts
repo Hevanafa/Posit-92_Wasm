@@ -338,7 +338,13 @@ class Posit92 {
     this.#midnightOffset = midnight.getTime()
   }
 
+  /**
+   * Overridable by mixins
+   */
+  SetupImportObject() { }
+
   async #InitWebAssembly() {
+    this.SetupImportObject();
     Object.freeze(this.#importObject);
     const response = await fetch(this.#wasmSource);
 

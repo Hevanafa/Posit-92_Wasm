@@ -5,6 +5,7 @@
     "target": "ES2022",
     "lib": ["DOM", "ESNext"],
     "removeComments": true,
+    "noImplicitReturns": true,
     "outDir": ".",
     "rootDir": "./",
     "sourceMap": true,
