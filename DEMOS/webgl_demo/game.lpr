@@ -103,8 +103,7 @@ begin
 
   { Finalise software rendering }
   VgaUpload;
-  { VgaPresent; }
-  PresentWebGL
+  WebGLPresent
 end;
 
 
