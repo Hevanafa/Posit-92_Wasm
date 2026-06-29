@@ -402,7 +402,7 @@ class Posit92 {
   /**
    * Loads assets owned by the engine
    */
-  async LoadBootAssets() {
+  async #LoadBootAssets() {
     await this.LoadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.WasmInstance.exports.DefaultFontPtr(),
@@ -1178,20 +1178,25 @@ class Posit92 {
   // Main game loop
 
   async Start() {
+    // WebAssembly init & stuff
     await this.InitRuntime();
-    await this.LoadBootAssets();
+
+    // Boot
+    await this.#LoadBootAssets();
     this.HideLoadingOverlay();
 
+    // Engine stuff
     this.#AddOutOfFocusFix();
     this.#AddResizeListener();
-
     this.#StartLoop();
-    
+
+    // Loading
     if (Object.hasOwn(this.#wasm.exports, "BeginLoadingState"))
       this.#wasm.exports.BeginLoadingState();
 
     await this.LoadGameAssets();
 
+    // Ready
     this.#wasm.exports.OnReady();
   }
 
