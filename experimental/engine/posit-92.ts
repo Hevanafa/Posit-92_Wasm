@@ -88,7 +88,9 @@ type WasmImports = {
 
     // VGA
     VgaUpload: () => void,
-    VgaPresent: () => void
+    VgaPresent: () => void,
+
+    RequestAssetLoad: () => void
   }
 }
 
@@ -186,21 +188,14 @@ class Posit92 {
     env: {
       _haltproc: this.#HandleHaltProc.bind(this),
 
-      // Intro
-      HideLoadingOverlay: this.#HideLoadingOverlay.bind(this),
-
       // Loading
       GetLoadingActual: this.GetLoadingActual.bind(this),
       GetLoadingTotal: this.GetLoadingTotal.bind(this),
-
-      HideCursor: () => this.#HideCursor(),
-      ShowCursor: () => this.#ShowCursor(),
 
       // Fullscreen
       ToggleFullscreen: () => this.#ToggleFullscreen(),
       EndFullscreen: () => this.#EndFullscreen(),
       GetFullscreenState: () => this.#GetFullscreenState(),
-      FitCanvas: () => this.#FitCanvas(),
 
       // Keyboard
       IsKeyDown: this.#IsKeyDown.bind(this),
@@ -225,7 +220,14 @@ class Posit92 {
 
       // VGA
       VgaUpload: () => this.#VgaUpload(),
-      VgaPresent: () => this.#VgaPresent()
+      VgaPresent: () => this.#VgaPresent(),
+
+      // WasmHost
+      HideCursor: () => this.#HideCursor(),
+      ShowCursor: () => this.#ShowCursor(),
+      FitCanvas: () => this.#FitCanvas(),
+      HideLoadingOverlay: this.#HideLoadingOverlay.bind(this),
+      RequestAssetLoad: this.#RequestAssetLoad.bind(this)
     }
   };
 
@@ -469,6 +471,10 @@ class Posit92 {
    * Overridden by the inherited `Game` class
    */
   async LoadGameAssets() {}
+  
+  async #RequestAssetLoad() {
+    await this.LoadGameAssets()
+  }
 
 
   #HideCursor() {
@@ -1249,15 +1255,18 @@ class Posit92 {
     this.#AddResizeListener();
     this.#StartLoop();
 
-    // Loading
-    if (this.bootOptions.skipIntro == true)
-    if (Object.hasOwn(this.#wasm.exports, "BeginLoadingState"))
-      this.#wasm.exports.BeginLoadingState();
+    if (this.bootOptions.skipIntro == true) {
+      // Loading
+      if (Object.hasOwn(this.#wasm.exports, "BeginLoadingState"))
+        this.#wasm.exports.BeginLoadingState();
 
-    await this.LoadGameAssets();
+      await this.LoadGameAssets();
 
-    // Ready
-    this.#wasm.exports.OnReady();
+      // Ready
+      this.#wasm.exports.OnReady();
+    } else
+      // Pass the state control to Pascal
+      this.#wasm.exports.BeginIntroState();
   }
 
   #Loop = (currentTime: number) => {

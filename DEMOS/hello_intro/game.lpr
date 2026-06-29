@@ -59,7 +59,8 @@ end;
 procedure BeginLoadingState;
 begin
   actualGameState := GameStateLoading;
-  FitCanvas
+  FitCanvas;
+  RequestAssetLoad
 end;
 
 procedure BeginPlayingState;
