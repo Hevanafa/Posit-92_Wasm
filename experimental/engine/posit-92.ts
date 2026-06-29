@@ -170,7 +170,7 @@ class Posit92 {
       _haltproc: this.#HandleHaltProc.bind(this),
 
       // Intro
-      HideLoadingOverlay: this.HideLoadingOverlay.bind(this),
+      HideLoadingOverlay: this.#HideLoadingOverlay.bind(this),
 
       // Loading
       GetLoadingActual: this.GetLoadingActual.bind(this),
@@ -667,7 +667,7 @@ class Posit92 {
     div.innerHTML = text;
   }
 
-  HideLoadingOverlay() {
+  #HideLoadingOverlay() {
     const div = document.getElementById("loading-overlay");
     if (div == null) return;
     div.classList.add("hidden");
@@ -1194,7 +1194,7 @@ class Posit92 {
 
     // Boot
     await this.#LoadBootAssets();
-    this.HideLoadingOverlay();
+    this.#HideLoadingOverlay();
 
     // Engine stuff
     this.#AddOutOfFocusFix();
