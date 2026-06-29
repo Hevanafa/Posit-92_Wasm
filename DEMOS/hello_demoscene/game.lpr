@@ -20,13 +20,11 @@ begin
   Spr(imgCursor, mouseX, mouseY)
 end;
 
-{ Called after InitRuntime and when RequestAssetLoad is finished }
+{ Called after LoadGameAssets is finished }
 procedure OnReady;
 begin
   HideCursor;
   FitCanvas;
-
-  WriteLog('AfterInit call');
 
   { Initialise game state here }
   gameTime := 0.0
