@@ -184,6 +184,11 @@ class Posit92 {
    */
   #lastFrameTime = 0.0;
 
+  /**
+   * If the callback simply forwards to an instance method, use `.bind(this)`.
+   * Use an arrow function only when the callback needs to transform arguments
+   * or perform extra work
+   */
   #importObject: WasmImports = {
     env: {
       _haltproc: this.#HandleHaltProc.bind(this),
@@ -193,7 +198,7 @@ class Posit92 {
       GetLoadingTotal: this.GetLoadingTotal.bind(this),
 
       // Fullscreen
-      ToggleFullscreen: () => this.#ToggleFullscreen(),
+      ToggleFullscreen: this.#ToggleFullscreen.bind(this),
       EndFullscreen: () => this.#EndFullscreen(),
       GetFullscreenState: () => this.#GetFullscreenState(),
 
