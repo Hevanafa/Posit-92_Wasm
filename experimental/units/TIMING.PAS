@@ -10,10 +10,8 @@ unit Timing;
 
 interface
 
-var
-  dt, lastFrameTime, currentTime: double;
-
 {$ifdef WASM}
+function DeltaTime: double;
 function GetTimer: double; external 'env' name 'GetTimer';
 function GetFullTimer: double; external 'env' name 'GetFullTimer';
 {$endif}
@@ -34,6 +32,14 @@ implementation
 {$ifdef Windows}
 uses SDL2Wrapper, SysUtils;
 {$endif}
+
+var
+  dt, lastFrameTime, currentTime: double;
+
+function DeltaTime: double;
+begin
+  DeltaTime := dt
+end;
 
 procedure InitDeltaTime;
 begin

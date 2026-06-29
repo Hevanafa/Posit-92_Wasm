@@ -5,7 +5,7 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  WasmMemMgr, InteropBuf, Logger, WasmHost,
+  EngineCore, Logger, WasmHost,
   Loading, Fullscreen,
   Keyboard, Mouse,
   ImgRefFast, Timing, VGA,
@@ -22,10 +22,7 @@ end;
 
 procedure Init;
 begin
-  InitHeapMgr;
-  InitInteropBuffer;
-  InitDeltaTime;
-
+  InitEngine;
   RequestAssetLoad
 end;
 
@@ -43,11 +40,11 @@ end;
 procedure Update;
 begin
   UpdateDeltaTime;
-
   UpdateMouse;
+
   if IsKeyDown(SC_ESCAPE) then SignalDone;
 
-  gameTime := gameTime + dt
+  gameTime := gameTime + DeltaTime
 end;
 
 procedure Draw;
