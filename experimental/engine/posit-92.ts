@@ -113,7 +113,7 @@ type Posit92Options = {
 };
 
 class Posit92 {
-  static version = "0.1.7";
+  static version = "0.1.8";
 
   readonly #wasmSource = "game.wasm";
 
