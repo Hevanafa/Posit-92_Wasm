@@ -18,7 +18,7 @@ var
 { Use this to set `done` to true }
 procedure SignalDone; external 'env' name 'SignalDone';
 procedure HideCursor; external 'env' name 'HideCursor';
-procedure LoadAssets; external 'env' name 'LoadAssets';
+procedure RequestAssetLoad; external 'env' name 'RequestAssetLoad';
 procedure FitCanvas; external 'env' name 'FitCanvas';
 
 procedure DrawMouse;
@@ -32,7 +32,7 @@ begin
   InitInteropBuffer;
   InitDeltaTime;
 
-  LoadAssets
+  RequestAssetLoad
 end;
 
 procedure AfterInit;

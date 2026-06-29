@@ -42,7 +42,7 @@ type WasmImports = {
     _haltproc: (n: number) => void,
 
     HideLoadingOverlay: () => void,
-    LoadAssets: () => void,
+    RequestAssetLoad: () => void,
 
     // Loading
     GetLoadingActual: () => number,
@@ -158,7 +158,7 @@ class Posit92 {
 
       // Intro
       HideLoadingOverlay: this.HideLoadingOverlay.bind(this),
-      LoadAssets: this.#LoadAssets.bind(this),
+      RequestAssetLoad: this.#RequestAssetLoad.bind(this),
 
       // Loading
       GetLoadingActual: this.GetLoadingActual.bind(this),
@@ -383,10 +383,10 @@ class Posit92 {
   /**
    * Overridden by the inherited `Game` class
    */
-  async LoadAssets() {}
+  async RequestAssetLoad() {}
 
-  async #LoadAssets() {
-    await this.LoadAssets();
+  async #RequestAssetLoad() {
+    await this.RequestAssetLoad();
     this.AfterInit()
   }
 
