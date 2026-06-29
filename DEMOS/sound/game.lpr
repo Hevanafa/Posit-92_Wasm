@@ -44,7 +44,7 @@ procedure LoadAssets; external 'env' name 'LoadAssets';
 
 procedure DrawFPS;
 begin
-  PrintDefault('FPS:' + i32str(getLastFPS), 240, 0);
+  PrintDefault('FPS:' + I32Str(getLastFPS), 240, 0);
 end;
 
 procedure DrawMouse;
@@ -75,9 +75,9 @@ end;
 
 procedure Init;
 begin
-  initHeapMgr;
-  initDeltaTime;
-  initFPSCounter;
+  InitHeapMgr;
+  InitDeltaTime;
+  InitFPSCounter
 end;
 
 procedure AfterInit;
@@ -87,14 +87,14 @@ end;
 
 procedure Update;
 begin
-  updateDeltaTime;
-  incrementFPS;
+  UpdateDeltaTime;
+  IncrementFPS;
 
-  updateMouse;
+  UpdateMouse;
 
   { Your Update logic here }
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
+  if lastEsc <> IsKeyDown(SC_ESC) then begin
+    lastEsc := IsKeyDown(SC_ESC);
 
     if lastEsc then begin
       writeLog('ESC is pressed!');
@@ -102,34 +102,34 @@ begin
     end;
   end;
 
-  if lastSpacebar <> isKeyDown(SC_SPACE) then begin
-    lastSpacebar := isKeyDown(SC_SPACE);
+  if lastSpacebar <> IsKeyDown(SC_SPACE) then begin
+    lastSpacebar := IsKeyDown(SC_SPACE);
 
     if lastSpacebar then PlayRandomSFX;
   end;
 
-  if lastD1 <> isKeyDown(SC_1) then begin
-    lastD1 := isKeyDown(SC_1);
+  if lastD1 <> IsKeyDown(SC_1) then begin
+    lastD1 := IsKeyDown(SC_1);
     if lastD1 then playSound(1);
   end;
 
-  if lastD2 <> isKeyDown(SC_2) then begin
-    lastD2 := isKeyDown(SC_2);
+  if lastD2 <> IsKeyDown(SC_2) then begin
+    lastD2 := IsKeyDown(SC_2);
     if lastD2 then playSound(2);
   end;
 
-  if lastD3 <> isKeyDown(SC_3) then begin
-    lastD3 := isKeyDown(SC_3);
+  if lastD3 <> IsKeyDown(SC_3) then begin
+    lastD3 := IsKeyDown(SC_3);
     if lastD3 then playSound(3);
   end;
 
-  if lastD4 <> isKeyDown(SC_4) then begin
-    lastD4 := isKeyDown(SC_4);
+  if lastD4 <> IsKeyDown(SC_4) then begin
+    lastD4 := IsKeyDown(SC_4);
     if lastD4 then playSound(4);
   end;
 
-  if lastD5 <> isKeyDown(SC_5) then begin
-    lastD5 := isKeyDown(SC_5);
+  if lastD5 <> IsKeyDown(SC_5) then begin
+    lastD5 := IsKeyDown(SC_5);
     if lastD5 then playSound(5);
   end;
 
