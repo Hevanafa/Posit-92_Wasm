@@ -185,6 +185,11 @@ class Posit92 {
     }
   };
 
+  /**
+   * Public for mixins
+   * 
+   * Game code should not modify this directly
+   */
   get WasmImportObject() {
     return this.#importObject
   }
