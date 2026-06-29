@@ -15,19 +15,25 @@ class Game extends WebGLMixin {
     let handle = 0;
 
     handle = await this.LoadImage("assets/images/cursor.png");
-    this.wasmInstance.exports.SetImgCursor(handle);
+    this.WasmInstance.exports.SetImgCursor(handle);
 
     await this.LoadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
-      this.wasmInstance.exports.DefaultFontPtr(),
-      this.wasmInstance.exports.DefaultFontGlyphsPtr());
+      this.WasmInstance.exports.DefaultFontPtr(),
+      this.WasmInstance.exports.DefaultFontGlyphsPtr());
 
     handle = await this.LoadImage("assets/images/dosu_1.png");
-    this.wasmInstance.exports.SetImgDosuEXE(handle, 0);
+    this.WasmInstance.exports.SetImgDosuEXE(handle, 0);
     handle = await this.LoadImage("assets/images/dosu_2.png");
-    this.wasmInstance.exports.SetImgDosuEXE(handle, 1);
+    this.WasmInstance.exports.SetImgDosuEXE(handle, 1);
 
     // Add more assets as necessary
+  }
+
+  constructor(canvasID) {
+    super(canvasID, {
+      renderer: "webgl"
+    });
   }
 }
 

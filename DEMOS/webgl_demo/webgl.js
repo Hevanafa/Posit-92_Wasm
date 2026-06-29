@@ -4,7 +4,7 @@ class WebGLMixin extends Posit92 {
   /**
    * @type {WebGLRenderingContext}
    */
-  #gl;
+  #ctx;
 
   /**
    * @type {Map<number, WebGLTexture>}
@@ -37,13 +37,13 @@ class WebGLMixin extends Posit92 {
   #nextUniformId = 1;
 
   #SetupImportObject() {
-    const { env } = super._getWasmImportObject();
+    const { env } = this.WasmImportObject;
 
     Object.assign(env, {
       // WebGL
-      glClearColor: (r, g, b, a) => this.#gl.clearColor(r, g, b, a),
-      glClear: mask => this.#gl.clear(mask),
-      glViewport: (x, y, w, h) => this.#gl.viewport(x, y, w, h),
+      glClearColor: (r, g, b, a) => this.#ctx.clearColor(r, g, b, a),
+      glClear: mask => this.#ctx.clear(mask),
+      glViewport: (x, y, w, h) => this.#ctx.viewport(x, y, w, h),
       glCreateTexture: this.#glCreateTexture.bind(this),
 
       glBindTexture: this.#glBindTexture.bind(this),
@@ -78,9 +78,9 @@ class WebGLMixin extends Posit92 {
    */
   async Init() {
     // Important: this.#ctx initialisation must be turned off
-    this.#gl = this.Canvas.getContext("webgl") ?? this.Canvas.getContext("experimental-webgl");
+    this.#ctx = this.Canvas.getContext("webgl") ?? this.Canvas.getContext("experimental-webgl");
 
-    if (this.#gl == null)
+    if (this.#ctx == null)
       throw new Error("WebGL is not supported!");
 
     this.#SetupImportObject();
@@ -103,7 +103,7 @@ class WebGLMixin extends Posit92 {
   #ReadCString(ptr) {
     this.#AssertNumber(ptr);
 
-    const memory = new Uint8Array(this.wasmInstance.exports.memory.buffer);
+    const memory = new Uint8Array(this.WasmInstance.exports.memory.buffer);
     let end = ptr;
     while (memory[end] != 0) end++;  // Find null terminator
 
@@ -113,7 +113,7 @@ class WebGLMixin extends Posit92 {
 
 
   #glCreateTexture() {
-    const texture = this.#gl.createTexture();
+    const texture = this.#ctx.createTexture();
     const id = this.#nextTextureId++;
     console.log("id", id, this.#nextTextureId);
     this.#textures.set(id, texture);
@@ -122,11 +122,11 @@ class WebGLMixin extends Posit92 {
 
   #glBindTexture(target, textureId) {
     const texture = this.#textures.get(textureId);
-    this.#gl.bindTexture(target, texture)
+    this.#ctx.bindTexture(target, texture)
   }
 
   #glTextParameteri(target, pname, param) {
-    this.#gl.texParameteri(target, pname, param)
+    this.#ctx.texParameteri(target, pname, param)
   }
 
   #glTexImage2D(
@@ -135,11 +135,11 @@ class WebGLMixin extends Posit92 {
     format, type, pixelsPtr) {
 
     const pixels = new Uint8Array(
-      this.wasmInstance.exports.memory.buffer,
+      this.WasmInstance.exports.memory.buffer,
       pixelsPtr,
       width * height * 4);
 
-    this.#gl.texImage2D(
+    this.#ctx.texImage2D(
       target, level, internalFormat,
       width, height, border,
       format, type, pixels)
@@ -147,7 +147,7 @@ class WebGLMixin extends Posit92 {
 
 
   #glCreateShader(type) {
-    const shader = this.#gl.createShader(type);
+    const shader = this.#ctx.createShader(type);
     const id = this.#nextShaderId++;
     this.#shaders.set(id, shader);
     return id
@@ -156,16 +156,16 @@ class WebGLMixin extends Posit92 {
   #glShaderSource(shaderId, sourcePtr) {
     const shader = this.#shaders.get(shaderId);
     const source = this.#ReadCString(sourcePtr);
-    this.#gl.shaderSource(shader, source)
+    this.#ctx.shaderSource(shader, source)
   }
 
   #glCompileShader(shaderId) {
     const shader = this.#shaders.get(shaderId);
-    this.#gl.compileShader(shader)
+    this.#ctx.compileShader(shader)
   }
 
   #glCreateProgram() {
-    const program = this.#gl.createProgram();
+    const program = this.#ctx.createProgram();
     const id = this.#nextProgramId++;
     this.#programs.set(id, program);
     return id
@@ -174,22 +174,22 @@ class WebGLMixin extends Posit92 {
   #glAttachShader(programId, shaderId) {
     const program = this.#programs.get(programId);
     const shader = this.#shaders.get(shaderId);
-    this.#gl.attachShader(program, shader)
+    this.#ctx.attachShader(program, shader)
   }
 
   #glLinkProgram(programId) {
     const program = this.#programs.get(programId);
-    this.#gl.linkProgram(program)
+    this.#ctx.linkProgram(program)
   }
 
   #glUseProgram(programId) {
     const program = this.#programs.get(programId);
-    this.#gl.useProgram(program)
+    this.#ctx.useProgram(program)
   }
 
 
   #glCreateBuffer() {
-    const buffer = this.#gl.createBuffer();
+    const buffer = this.#ctx.createBuffer();
     const id = this.#nextBufferId++;
     this.#buffers.set(id, buffer);
     return id
@@ -197,40 +197,40 @@ class WebGLMixin extends Posit92 {
 
   #glBindBuffer(target, bufferId) {
     const buffer = this.#buffers.get(bufferId);
-    this.#gl.bindBuffer(target, buffer)
+    this.#ctx.bindBuffer(target, buffer)
   }
 
   #glBufferData(target, size, dataPtr, usage) {
     const data = new Float32Array(
-      this.wasmInstance.exports.memory.buffer,
+      this.WasmInstance.exports.memory.buffer,
       dataPtr,
       size / 4
     );
-    this.#gl.bufferData(target, data, usage)
+    this.#ctx.bufferData(target, data, usage)
   }
 
   #glGetAttribLocation(programId, namePtr) {
     const program = this.#programs.get(programId);
     const name = this.#ReadCString(namePtr);
-    return this.#gl.getAttribLocation(program, name)
+    return this.#ctx.getAttribLocation(program, name)
   }
 
   #glEnableVertexAttribArray(idx) {
-    this.#gl.enableVertexAttribArray(idx)
+    this.#ctx.enableVertexAttribArray(idx)
   }
 
   #glVertexAttribPointer(idx, size, type, normalized, stride, offset) {
-    this.#gl.vertexAttribPointer(idx, size, type, normalized, stride, offset)
+    this.#ctx.vertexAttribPointer(idx, size, type, normalized, stride, offset)
   }
 
   #glDrawArrays(mode, first, count) {
-    let err = this.#gl.getError();
+    let err = this.#ctx.getError();
     if (err != 0)
       throw new Error("WebGL error before draw:", err);
 
-    this.#gl.drawArrays(mode, first, count);
+    this.#ctx.drawArrays(mode, first, count);
 
-    err = this.#gl.getError();
+    err = this.#ctx.getError();
     if (err != 0)
       throw new Error("WebGL error after draw:", err);
   }
@@ -239,7 +239,7 @@ class WebGLMixin extends Posit92 {
   #glGetUniformLocation(programId, namePtr) {
     const program = this.#programs.get(programId);
     const name = this.#ReadCString(namePtr);
-    const location = this.#gl.getUniformLocation(program, name);
+    const location = this.#ctx.getUniformLocation(program, name);
 
     const id = this.#nextUniformId++;
     this.#uniformLocations.set(id, location);
@@ -249,10 +249,10 @@ class WebGLMixin extends Posit92 {
   #glUniform1i(locationId, value) {
     // console.log("unifLoc", locationId, value);
     const loc = this.#uniformLocations.get(locationId);
-    this.#gl.uniform1i(loc, value)
+    this.#ctx.uniform1i(loc, value)
   }
 
   #glActiveTexture(texture) {
-    this.#gl.activeTexture(texture)
+    this.#ctx.activeTexture(texture)
   }
 }
