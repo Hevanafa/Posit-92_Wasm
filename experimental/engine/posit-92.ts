@@ -10,8 +10,12 @@ type BMFontManifest = Map<string, { path: string, setter: string, glyphSetter: s
 type WasmExports = {
   memory: WebAssembly.Memory,
 
+  // InteropBuf.pas
+  GetInteropBufPtr: () => number,
+  GetInteropBufLen: () => number,
+  SetInteropBufLen: (value: number) => void,
+
   // LOGGER.PAS
-  GetLogBuffer: () => number,
 
   // VGA.PAS
   GetSurfacePtr: () => number,
@@ -1048,14 +1052,16 @@ class Posit92 {
 
   // LOGGER.PAS
   #PascalWriteLog() {
-    const bufferPtr = this.#wasm.exports.GetLogBuffer();
-    const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, bufferPtr, 256);
+    const wasmBuffer = this.#wasm.exports.memory.buffer;
+    const ptr = this.#wasm.exports.GetInteropBufPtr();
+    const len = this.#wasm.exports.GetInteropBufLen();
 
-    const len = buffer[0];
-    const msgBytes = buffer.slice(1, 1 + len);
-    const msg = new TextDecoder().decode(msgBytes);
+    const byteArray = new Uint8Array(wasmBuffer, ptr, len);
 
-    console.log("Pascal:", msg);
+    // The default is utf-8 but just to make it intentional
+    const msg = new TextDecoder("utf-8").decode(byteArray);
+
+    console.log("WriteLog:", msg);
   }
 
 
