@@ -96,6 +96,12 @@ type TBMFontGlyph = {
   lineHeight: number
 }
 
+type Posit92Options = {
+  vgaWidth: number;
+  vgaHeight: number;
+  renderer: "2d" | "webgl"
+};
+
 class Posit92 {
   static version = "0.1.7";
 
@@ -199,19 +205,31 @@ class Posit92 {
   constructor(canvasID: string, vgaWidth: number, vgaHeight: number);
   constructor(canvasID: string, options: Posit92Options);
 
-  constructor(canvasID: string, vgaWidthOrOptions?: number | Posit92Options, vgaHeight?) {
+  constructor(canvasID: string, vgaWidthOrOptions?: number | Posit92Options, vgaHeight?: number) {
     this.#AssertString(canvasID);
-    this.#AssertNumber(vgaWidth);
-    this.#AssertNumber(vgaHeight);
 
     if (document.getElementById(canvasID) == null)
       throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
 
     this.#canvas = <HTMLCanvasElement>document.getElementById(canvasID);
-    this.#ctx = this.#canvas.getContext("2d")!;
+    
+    if (typeof vgaWidthOrOptions == "object") {
+      const options = vgaWidthOrOptions;
 
-    this.#vgaWidth = vgaWidth;
-    this.#vgaHeight = vgaHeight;
+      this.#vgaWidth = options.vgaWidth ?? 320;
+      this.#vgaHeight = options.vgaHeight ?? 240;
+    } else if (typeof vgaWidthOrOptions == "number") {
+      const vgaWidth = vgaWidthOrOptions;
+      this.#AssertNumber(vgaWidth);
+      this.#AssertNumber(vgaHeight);
+
+      this.#vgaWidth = vgaWidth;
+      this.#vgaHeight = vgaHeight;
+    }
+
+
+
+    this.#ctx = this.#canvas.getContext("2d")!;
 
     this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4
   }
