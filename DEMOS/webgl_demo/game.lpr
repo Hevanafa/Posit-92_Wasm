@@ -32,7 +32,6 @@ end;
 procedure Init;
 begin
   InitHeapMgr;
-  InitBuffer;
   InitDeltaTime;
 
   SetupWebGLViewport;
@@ -64,7 +63,7 @@ end;
 
 { Draw in WebGL context }
 { Test code }
-procedure TestDraw;
+{ procedure TestDraw;
 var
   a: integer;
 begin
@@ -84,6 +83,7 @@ begin
 
   PresentWebGL
 end;
+}
 
 
 { Draw in WebGL context }

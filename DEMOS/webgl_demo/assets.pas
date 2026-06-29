@@ -49,7 +49,7 @@ end;
 
 function MeasureDefault(const text: string): word;
 begin
-  MeasureDefault := measureBMFont(defaultFontGlyphs, text)
+  MeasureDefault := measureBMFont(defaultFont, defaultFontGlyphs, text)
 end;
 
 
