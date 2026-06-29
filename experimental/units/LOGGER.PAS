@@ -8,7 +8,8 @@
 unit Logger;
 
 {$Mode ObjFPC}
-{$H-}{$J-}
+{$H+}
+{$J-}
 
 interface
 
@@ -16,9 +17,6 @@ interface
 { Must be registered in importObject }
 procedure WriteLogI32(const value: longint); external 'env' name 'WriteLogI32';
 procedure WriteLogF32(const value: double); external 'env' name 'WriteLogF32';
-
-function GetLogBuffer: pointer; public name 'GetLogBuffer';
-{ Forwards logBuffer to JS }
 procedure FlushLog; external 'env' name 'FlushLog';
 {$endif}
 
@@ -48,32 +46,11 @@ var
   logOpened: boolean;
 {$endif}
 
-function GetLogBuffer: pointer;
-begin
-{$ifdef WASM}
-  GetLogBuffer := @logBuffer
-{$else}
-  getLogBuffer := nil
-{$endif}
-end;
-
 
 {$ifdef WASM}
 procedure WriteLog(const msg: string);
-var
-  a: byte;
-  len: word;
 begin
-  len := length(msg);
-
-  { Cap length to 255 }
-  if len > 255 then len := 255;
-
-  logBuffer[0] := len;
-  for a:=1 to len do
-    logBuffer[a] := ord(msg[a]);
-
-  { JS will read logBuffer }
+  WriteInteropString(msg);
   FlushLog
 end;
 {$endif}
