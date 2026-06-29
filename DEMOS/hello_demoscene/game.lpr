@@ -5,8 +5,10 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  Loading, Logger, Fullscreen, Keyboard, Mouse,
-  ImgRefFast, Timing, WasmMemMgr, VGA,
+  WasmMemMgr, InteropBuf, Logger,
+  Loading, Fullscreen,
+  Keyboard, Mouse,
+  ImgRefFast, Timing, VGA,
   Assets;
 
 var
@@ -17,6 +19,7 @@ var
 procedure SignalDone; external 'env' name 'SignalDone';
 procedure HideCursor; external 'env' name 'HideCursor';
 procedure LoadAssets; external 'env' name 'LoadAssets';
+procedure FitCanvas; external 'env' name 'FitCanvas';
 
 procedure DrawMouse;
 begin
@@ -25,12 +28,11 @@ end;
 
 procedure Init;
 begin
-  WriteLog('Init call');
-
   InitHeapMgr;
+  InitInteropBuffer;
   InitDeltaTime;
 
-  LoadAssets;
+  LoadAssets
 end;
 
 procedure AfterInit;
@@ -38,8 +40,10 @@ begin
   HideCursor;
   FitCanvas;
 
+  WriteLog('AfterInit call');
+
   { Initialise game state here }
-  gameTime := 0.0;
+  gameTime := 0.0
 end;
 
 procedure Update;

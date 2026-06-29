@@ -5,6 +5,8 @@ unit InteropBuf;
 
 interface
 
+procedure InitInteropBuffer;
+
 function GetInteropBufPtr: pointer; public name 'GetInteropBufPtr';
 function GetInteropBufLen: longint; public name 'GetInteropBufLen';
 procedure SetInteropBufLen(value: longint); public name 'SetInteropBufLen';
@@ -24,6 +26,12 @@ const
 var
   interopBufArray: array[0..InteropBufCapacity - 1] of byte;
   interopBufLen: longint;
+
+procedure InitInteropBuffer;
+begin
+  fillchar(interopBufArray, SizeOf(interopBufArray), 0);
+  interopBufLen := 0
+end;
 
 function GetInteropBufPtr: pointer;
 begin
@@ -53,10 +61,6 @@ function ReadInteropString: AnsiString;
 begin
   SetString(ReadInteropString, PAnsiChar(@interopBufArray[0]), interopBufLen)
 end;
-
-initialization
-  fillchar(interopBufArray, SizeOf(interopBufArray), 0);
-  interopBufLen := 0;
 
 end.
 
