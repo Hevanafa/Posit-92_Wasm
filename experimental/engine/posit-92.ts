@@ -31,7 +31,8 @@ type WasmExports = {
   // Primary unit
   BeginIntroState: () => void,
   BeginLoadingState: () => void,
-  Init: () => void,
+  
+  InitRuntime: () => void,
   OnReady: () => void,
   Update: () => void,
   Draw: () => void
@@ -355,7 +356,7 @@ class Posit92 {
   async InitRuntime() {
     await this.#InitWebAssembly();
     this.#InitWasmMemory();
-    this.#wasm.exports.Init();
+    this.#wasm.exports.InitRuntime();
 
     this.#InitKeyboard();
     this.#InitMouse();
