@@ -1,8 +1,5 @@
 "use strict";
 
-const TargetFPS = 60;
-const FrameTime = 1000 / TargetFPS;
-
 type ImageManifest = Record<string, string | string[]>;
 type SoundManifest = Map<number, string>;
 type BMFontManifest = Map<string, { path: string, setter: string, glyphSetter: string }>;
@@ -109,23 +106,19 @@ type Posit92Options = {
   renderer: "2d" | "webgl" | "experimental-webgl" | string;
 };
 
-/**
- * in milliseconds
- */
-let lastFrameTime = 0.0;
-
-let done = false;
-
 class Posit92 {
   static version = "0.1.7";
 
-  #wasmSource = "game.wasm";
+  readonly #wasmSource = "game.wasm";
 
   // Engine configs
-  #wasmMemSize = 2 * 1048576;  // 2 MB
-  #stackSize = 256 * 1024;
+  readonly #wasmMemSize = 2 * 1048576;  // 2 MB
+  readonly #stackSize = 256 * 1024;
   #videoMemSize = 0;  // assigned in the constructor
-  #poolSize = 512 * 1024;
+  readonly #poolSize = 512 * 1024;
+
+  readonly #TargetFPS = 60;
+  readonly #FrameTime = 1000 / this.#TargetFPS;
 
   #vgaWidth: number;
   get VgaWidth(): number { return this.#vgaWidth }
@@ -150,6 +143,14 @@ class Posit92 {
    * Used in `getTimer`
    */
   #midnightOffset = 0;
+
+
+  #done = false;
+
+  /**
+   * in milliseconds
+   */
+  #lastFrameTime = 0.0;
 
   #importObject: WasmImports = {
     env: {
@@ -1121,6 +1122,7 @@ class Posit92 {
   }
 
   // Fullscreen.pas
+  
   #AddResizeListener() {
     window.addEventListener("resize", this.#HandleResize.bind(this))
   }
@@ -1166,27 +1168,27 @@ class Posit92 {
     }
   }
 
+  // Main game loop
 
-  // Game loop
-  StartLoop() {
-    function Loop(currentTime: number) {
-      if (done) {
-        this.Cleanup();
-        return;
-      }
-
-      const elapsed = currentTime - lastFrameTime;
-
-      if (elapsed >= FrameTime) {
-        lastFrameTime = currentTime - (elapsed % FrameTime);  // Carry over extra time
-        this.Update();
-        this.Draw();
-      }
-
-      requestAnimationFrame(Loop)
+  #Loop = (currentTime: number) => {
+    if (this.#done) {
+      this.Cleanup();
+      return;
     }
 
-    requestAnimationFrame(Loop)
+    const elapsed = currentTime - this.#lastFrameTime;
+
+    if (elapsed >= this.#FrameTime) {
+      this.#lastFrameTime = currentTime - (elapsed % this.#FrameTime);  // Carry over extra time
+      this.Update();
+      this.Draw();
+    }
+
+    requestAnimationFrame(this.#Loop)
+  }
+
+  StartLoop() {
+    requestAnimationFrame(this.#Loop)
   }
 
   Update() { this.#wasm.exports.Update() }
