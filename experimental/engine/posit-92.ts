@@ -194,13 +194,13 @@ class Posit92 {
       _haltproc: this.#HandleHaltProc.bind(this),
 
       // Loading
-      GetLoadingActual: this.GetLoadingActual.bind(this),
-      GetLoadingTotal: this.GetLoadingTotal.bind(this),
+      GetLoadingActual: this.#GetLoadingActual.bind(this),
+      GetLoadingTotal: this.#GetLoadingTotal.bind(this),
 
       // Fullscreen
       ToggleFullscreen: this.#ToggleFullscreen.bind(this),
-      EndFullscreen: () => this.#EndFullscreen(),
-      GetFullscreenState: () => this.#GetFullscreenState(),
+      EndFullscreen: this.#EndFullscreen.bind(this),
+      GetFullscreenState: this.#GetFullscreenState.bind(this),
 
       // Keyboard
       IsKeyDown: this.#IsKeyDown.bind(this),
@@ -209,28 +209,28 @@ class Posit92 {
       // Logger
       WriteLogF32: value => console.log("Pascal (f32):", value),
       WriteLogI32: value => console.log("Pascal (i32):", value),
-      FlushLog: () => this.#PascalWriteLog(),
+      FlushLog: this.#PascalFlushLog.bind(this),
 
       // Mouse
-      GetMouseX: () => this.#GetMouseX(),
-      GetMouseY: () => this.#GetMouseY(),
-      GetMouseButton: () => this.#GetMouseButton(),
+      GetMouseX: this.#GetMouseX.bind(this),
+      GetMouseY: this.#GetMouseY.bind(this),
+      GetMouseButton: this.#GetMouseButton.bind(this),
 
       // Panic
       JsPanicHalt: this.#PanicHalt.bind(this),
 
       // Timing
-      GetTimer: () => this.#GetTimer(),
-      GetFullTimer: () => this.#GetFullTimer(),
+      GetTimer: this.#GetTimer.bind(this),
+      GetFullTimer: this.#GetFullTimer.bind(this),
 
       // VGA
-      VgaUpload: () => this.#VgaUpload(),
-      VgaPresent: () => this.#VgaPresent(),
+      VgaUpload: this.#VgaUpload.bind(this),
+      VgaPresent: this.#VgaPresent.bind(this),
 
       // WasmHost
-      HideCursor: () => this.#HideCursor(),
-      ShowCursor: () => this.#ShowCursor(),
-      FitCanvas: () => this.#FitCanvas(),
+      HideCursor: this.#HideCursor.bind(this),
+      ShowCursor: this.#ShowCursor.bind(this),
+      FitCanvas: this.#FitCanvas.bind(this),
       HideLoadingOverlay: this.#HideLoadingOverlay.bind(this),
       RequestAssetLoad: this.#RequestAssetLoad.bind(this)
     }
@@ -559,13 +559,13 @@ class Posit92 {
    * Used in asset counter
    */
   #loadingActual = 0;
-  GetLoadingActual() { return this.#loadingActual }
+  #GetLoadingActual() { return this.#loadingActual }
 
   /**
    * Used in asset counter
    */
   #loadingTotal = 0;
-  GetLoadingTotal() { return this.#loadingTotal }
+  #GetLoadingTotal() { return this.#loadingTotal }
 
   async #LoadSingleImage(key: string, path: string) {
     return this.LoadImage(path).then(handle => {
@@ -1139,7 +1139,8 @@ class Posit92 {
 
 
   // LOGGER.PAS
-  #PascalWriteLog() {
+
+  #PascalFlushLog() {
     const wasmBuffer = this.#wasm.exports.memory.buffer;
     const ptr = this.#wasm.exports.GetInteropBufPtr();
     const len = this.#wasm.exports.GetInteropBufLen();
@@ -1154,6 +1155,7 @@ class Posit92 {
 
 
   // PANIC.PAS
+  
   #PanicHalt(textPtr: number, textLen: number) {
     const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, textPtr, textLen);
     const msg = new TextDecoder().decode(buffer);
