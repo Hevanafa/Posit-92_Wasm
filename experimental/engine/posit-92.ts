@@ -174,10 +174,12 @@ class Posit92 {
     return this.#canvas
   }
   
-  #ctx: CanvasRenderingContext2D = null!; // or WebGLRenderingContext
-  get CanvasCtx(): CanvasRenderingContext2D {
-    return this.#ctx
-  }
+  canvasCtx: CanvasRenderingContext2D;
+  glCtx: WebGLRenderingContext;
+
+  // get CanvasCtx(): CanvasRenderingContext2D {
+  //   return this.#ctx
+  // }
 
   #wasm: WebAssemblyInstance = null!;
   get WasmInstance() { return this.#wasm }
@@ -328,7 +330,9 @@ class Posit92 {
     this.#vgaHeight = options.vgaHeight!;
 
     if (options.renderer == "2d")
-      this.#ctx = this.#canvas.getContext(options.renderer)!;
+      this.canvasCtx = this.#canvas.getContext(options.renderer)!;
+    else if (options.renderer == "webgl")
+      this.glCtx = this.#canvas.getContext(options.renderer)!;
 
     if (options.fps != null) {
       this.#AssertNumber(options.fps);
@@ -1208,7 +1212,7 @@ class Posit92 {
   }
   
   #VgaPresent() {
-    this.#ctx.putImageData(this.#surface, 0, 0);
+    this.canvasCtx.putImageData(this.#surface, 0, 0);
   }
 
   // Fullscreen.pas
