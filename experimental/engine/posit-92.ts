@@ -270,6 +270,9 @@ class Posit92 {
     this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4
   }
 
+  /**
+   * used in `GetTimer` and `GetFullTimer`
+   */
   #LoadMidnightOffset() {
     const now = new Date();
     const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -350,14 +353,13 @@ class Posit92 {
   }
 
   async InitRuntime() {
-    this.#LoadMidnightOffset();
-
     await this.#InitWebAssembly();
     this.#InitWasmMemory();
     this.#wasm.exports.Init();
 
     this.#InitKeyboard();
     this.#InitMouse();
+    this.#LoadMidnightOffset();
   }
 
   BeginIntro() {
