@@ -314,8 +314,6 @@ class Posit92 {
 
     const result = await WebAssembly.instantiate(bytes.buffer, this.#importObject);
     this.#wasm = <WebAssemblyInstance>result.instance;
-
-    this.#InitWasmMemory();
   }
 
   /**
@@ -355,6 +353,7 @@ class Posit92 {
     this.#LoadMidnightOffset();
 
     await this.#InitWebAssembly();
+    this.#InitWasmMemory();
     this.#wasm.exports.Init();
 
     this.#InitKeyboard();
@@ -1122,7 +1121,7 @@ class Posit92 {
   }
 
   // Fullscreen.pas
-  
+
   #AddResizeListener() {
     window.addEventListener("resize", this.#HandleResize.bind(this))
   }
