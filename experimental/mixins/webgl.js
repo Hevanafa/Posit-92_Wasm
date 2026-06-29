@@ -2,9 +2,11 @@ class WebGLMixin extends Posit92 {
   // WebAssembly initialisation happens in the parent class Posit92
 
   /**
+   * Enable this only to see the type definition
+   * 
    * @type {WebGLRenderingContext}
    */
-  glCtx;
+  // glCtx;
 
   /**
    * @type {Map<number, WebGLTexture>}

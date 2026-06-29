@@ -170,12 +170,13 @@ class Posit92 {
   get VgaHeight(): number { return this.#vgaHeight }
 
   #canvas: HTMLCanvasElement;
-  get Canvas(): HTMLCanvasElement {
-    return this.#canvas
-  }
   
-  canvasCtx: CanvasRenderingContext2D;
-  glCtx: WebGLRenderingContext;
+  canvasCtx: CanvasRenderingContext2D = null!;
+  
+  /**
+   * Assigned by WebGLMixin
+   */
+  glCtx: WebGLRenderingContext = null!;
 
   // get CanvasCtx(): CanvasRenderingContext2D {
   //   return this.#ctx
@@ -284,10 +285,14 @@ class Posit92 {
 
       vgaWidth = options.vgaWidth ?? defaultVgaWidth;
       vgaHeight = options.vgaHeight ?? defaultVgaHeight;
-      renderer = options.renderer ?? "2d";
 
-      if (options.fps != null)
-        fps = options.fps;
+      if (options.renderer != null)
+        renderer = options.renderer;
+
+      if (options.fps != null) {
+        this.#AssertNumber(options.fps);
+        fps = options.fps
+      }
 
       if (options.skipIntro != null)
         skipIntro = options.skipIntro;
@@ -331,14 +336,13 @@ class Posit92 {
 
     if (options.renderer == "2d")
       this.canvasCtx = this.#canvas.getContext(options.renderer)!;
-    else if (options.renderer == "webgl")
+    else if (options.renderer == "webgl") {
+      console.log("gl context assignment")
       this.glCtx = this.#canvas.getContext(options.renderer)!;
-
-    if (options.fps != null) {
-      this.#AssertNumber(options.fps);
-      this.#TargetFPS = options.fps;
+      console.log(this.glCtx);
     }
 
+    this.#TargetFPS = options.fps!;
     this.#FrameTime = 1000 / this.#TargetFPS;
 
     this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4
