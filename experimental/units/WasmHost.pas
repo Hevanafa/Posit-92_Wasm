@@ -1,3 +1,10 @@
+{
+  Unit to contain generic or function calls to the host JS / browser that
+  don't have a specific category
+
+  Part of Posit-92 game engine
+}
+
 unit WasmHost;
 
 interface
