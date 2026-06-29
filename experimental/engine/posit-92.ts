@@ -109,7 +109,7 @@ type Posit92Options = {
   renderer: "2d" | "webgl" | "experimental-webgl" | string;
   fps?: number;
   skipIntro?: boolean;
-  loadDefaultFont?: boolean;
+  defaultFont?: boolean;
 };
 
 class Posit92 {

@@ -1,5 +1,6 @@
 {
-  Loading unit - Part of Posit-92 game engine
+  Loading unit
+  Part of Posit-92 game engine
   Hevanafa
 }
 
@@ -16,7 +17,7 @@ implementation
 
 uses
   Conv, VGA,
-  Assets;
+  EngineFonts;
 
 function GetLoadingActual: smallint; external 'env' name 'GetLoadingActual';
 function GetLoadingTotal: smallint; external 'env' name 'GetLoadingTotal';
@@ -30,7 +31,7 @@ begin
 
   s := 'Progress: ' + I32Str(GetLoadingActual) + ' / ' + I32Str(GetLoadingTotal);
   w := MeasureDefault(s);
-  PrintDefault(s, (VgaWidth - w) div 2, VgaHeight div 2 - defaultFont.lineHeight);
+  PrintDefault(s, (VgaWidth - w) div 2, VgaHeight div 2 - DefaultFontPtr^.lineHeight);
 
   VgaUpload;
   VgaPresent
