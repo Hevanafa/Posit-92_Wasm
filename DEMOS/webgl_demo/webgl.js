@@ -36,8 +36,10 @@ class WebGLMixin extends Posit92 {
   #uniformLocations = new Map();
   #nextUniformId = 1;
 
-  #SetupImportObject() {
+  SetupImportObject() {
     const { env } = this.WasmImportObject;
+
+    console.log("SetupImportObject call");
 
     Object.assign(env, {
       // WebGL
@@ -83,7 +85,7 @@ class WebGLMixin extends Posit92 {
     if (this.#ctx == null)
       throw new Error("WebGL is not supported!");
 
-    this.#SetupImportObject();
+    this.SetupImportObject();
     await super.Init();
   }
 
