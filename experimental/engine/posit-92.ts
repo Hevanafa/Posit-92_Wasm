@@ -43,7 +43,6 @@ type WasmImports = {
     _haltproc: (n: number) => void,
 
     HideLoadingOverlay: () => void,
-    RequestAssetLoad: () => void,
 
     // Loading
     GetLoadingActual: () => number,
@@ -159,7 +158,6 @@ class Posit92 {
 
       // Intro
       HideLoadingOverlay: this.HideLoadingOverlay.bind(this),
-      RequestAssetLoad: this.#RequestAssetLoad.bind(this),
 
       // Loading
       GetLoadingActual: this.GetLoadingActual.bind(this),
@@ -361,6 +359,12 @@ class Posit92 {
     this.#InitKeyboard();
     this.#InitMouse();
     this.#LoadMidnightOffset();
+
+    await this.LoadAssets();
+    
+    this.#wasm.exports.OnReady();
+    this.#AddOutOfFocusFix();
+    this.#AddResizeListener()
   }
 
   BeginIntro() {
@@ -381,22 +385,10 @@ class Posit92 {
     this.#ShowCursor();
   }
 
-  async #RequestAssetLoad() {
-    await this.LoadAssets();
-    this.OnReady()
-  }
-
   /**
    * Overridden by the inherited `Game` class
    */
   async LoadAssets() {}
-
-  OnReady() {
-    this.#wasm.exports.OnReady();
-
-    this.#AddOutOfFocusFix();
-    this.#AddResizeListener()
-  }
 
   /**
    * Bypass intro sequence
