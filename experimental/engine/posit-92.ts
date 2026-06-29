@@ -185,7 +185,7 @@ class Posit92 {
     }
   };
 
-  GetWasmImportObject() {
+  get WasmImportObject() {
     return this.#importObject
   }
   
