@@ -78,7 +78,7 @@ end;
 
 procedure OnReady;
 begin
-  BeginPlayingState;
+  BeginPlayingState
 end;
 
 procedure Update;
@@ -115,6 +115,13 @@ begin
       UnloadIntro;
       BeginLoadingState
     end;
+
+    exit
+  end;
+
+  if actualGameState = GameStateLoading then begin
+    if GetLoadingActual >= GetLoadingTotal then
+      BeginPlayingState;
 
     exit
   end;

@@ -11,16 +11,17 @@ unit Loading;
 
 interface
 
+function GetLoadingActual: smallint; external 'env' name 'GetLoadingActual';
+function GetLoadingTotal: smallint; external 'env' name 'GetLoadingTotal';
+
 procedure RenderLoadingScreen;
+
 
 implementation
 
 uses
   Conv, VGA,
   EngineFonts;
-
-function GetLoadingActual: smallint; external 'env' name 'GetLoadingActual';
-function GetLoadingTotal: smallint; external 'env' name 'GetLoadingTotal';
 
 procedure RenderLoadingScreen;
 var
