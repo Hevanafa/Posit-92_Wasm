@@ -5,8 +5,8 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  EngineCore, Logger, WasmHost,
-  Loading, Fullscreen,
+  EngineCore, WasmHost,
+  Logger, Loading, Fullscreen,
   Keyboard, Mouse,
   ImgRefFast, Timing, VGA,
   Assets;
