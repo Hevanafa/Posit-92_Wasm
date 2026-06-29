@@ -47,7 +47,7 @@ var done = false;
 
 async function Main() {
   const game = new Game("game");
-  await game.Init();
+  await game.InitRuntime();
   await game.LoadDefaultFont();
 
   game.QuickStart();
