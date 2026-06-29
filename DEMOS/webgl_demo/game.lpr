@@ -82,7 +82,7 @@ begin
   glClearColor(1.0, 0.4, 0.4, 1.0);
   glClear(GL_COLOR_BUFFER_BIT);
 
-  flushWebGL
+  PresentWebGL
 end;
 
 
@@ -109,7 +109,7 @@ begin
   PrintDefault(s, (vgaWidth - w) div 2, 120);
 
   DrawMouse;
-  flushWebGL
+  PresentWebGL
 end;
 
 

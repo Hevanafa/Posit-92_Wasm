@@ -36,7 +36,7 @@ class WebGLMixin extends Posit92 {
   #uniformLocations = new Map();
   #nextUniformId = 1;
 
-  #setupImportObject() {
+  #SetupImportObject() {
     const { env } = super._getWasmImportObject();
 
     Object.assign(env, {
@@ -76,21 +76,21 @@ class WebGLMixin extends Posit92 {
   /**
    * @override
    */
-  async init() {
+  async Init() {
     // Important: this.#ctx initialisation must be turned off
-    this.#gl = this._getCanvas().getContext("webgl") ?? this._getCanvas().getContext("experimental-webgl");
+    this.#gl = this.Canvas.getContext("webgl") ?? this.Canvas.getContext("experimental-webgl");
 
     if (this.#gl == null)
       throw new Error("WebGL is not supported!");
 
-    this.#setupImportObject();
-    await super.init();
+    this.#SetupImportObject();
+    await super.Init();
   }
 
   /**
    * @override
    */
-  #assertNumber(value) {
+  #AssertNumber(value) {
     if (typeof value != "number")
       throw new Error(`Expected a number, but received ${typeof value}`);
 
@@ -100,8 +100,8 @@ class WebGLMixin extends Posit92 {
 
 
   // WEBGL.PAS
-  #readCString(ptr) {
-    this.#assertNumber(ptr);
+  #ReadCString(ptr) {
+    this.#AssertNumber(ptr);
 
     const memory = new Uint8Array(this.wasmInstance.exports.memory.buffer);
     let end = ptr;
@@ -155,7 +155,7 @@ class WebGLMixin extends Posit92 {
 
   #glShaderSource(shaderId, sourcePtr) {
     const shader = this.#shaders.get(shaderId);
-    const source = this.#readCString(sourcePtr);
+    const source = this.#ReadCString(sourcePtr);
     this.#gl.shaderSource(shader, source)
   }
 
@@ -211,7 +211,7 @@ class WebGLMixin extends Posit92 {
 
   #glGetAttribLocation(programId, namePtr) {
     const program = this.#programs.get(programId);
-    const name = this.#readCString(namePtr);
+    const name = this.#ReadCString(namePtr);
     return this.#gl.getAttribLocation(program, name)
   }
 
@@ -238,7 +238,7 @@ class WebGLMixin extends Posit92 {
 
   #glGetUniformLocation(programId, namePtr) {
     const program = this.#programs.get(programId);
-    const name = this.#readCString(namePtr);
+    const name = this.#ReadCString(namePtr);
     const location = this.#gl.getUniformLocation(program, name);
 
     const id = this.#nextUniformId++;

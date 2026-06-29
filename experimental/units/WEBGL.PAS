@@ -81,7 +81,7 @@ procedure glActiveTexture(const texture: longword); external 'env' name 'glActiv
 
 procedure SetupWebGLViewport;
 procedure SetupWebGLShaders;
-procedure flushWebGL;
+procedure PresentWebGL;
 
 
 implementation
@@ -169,7 +169,7 @@ void main() {
 end;
 
 { Upload pixel data to the GPU }
-procedure flushWebGL;
+procedure PresentWebGL;
 begin
 {
   glClearColor(1.0, 0.4, 0.4, 1.0);

@@ -11,21 +11,21 @@ class Game extends WebGLMixin {
     // Add more scancodes as necessary
   };
 
-  async loadAssets() {
+  async LoadAssets() {
     let handle = 0;
 
-    handle = await this.loadImage("assets/images/cursor.png");
-    this.wasmInstance.exports.setImgCursor(handle);
+    handle = await this.LoadImage("assets/images/cursor.png");
+    this.wasmInstance.exports.SetImgCursor(handle);
 
-    await this.loadBMFont(
+    await this.LoadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
-      this.wasmInstance.exports.defaultFontPtr(),
-      this.wasmInstance.exports.defaultFontGlyphsPtr());
+      this.wasmInstance.exports.DefaultFontPtr(),
+      this.wasmInstance.exports.DefaultFontGlyphsPtr());
 
-    handle = await this.loadImage("assets/images/dosu_1.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 0);
-    handle = await this.loadImage("assets/images/dosu_2.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 1);
+    handle = await this.LoadImage("assets/images/dosu_1.png");
+    this.wasmInstance.exports.SetImgDosuEXE(handle, 0);
+    handle = await this.LoadImage("assets/images/dosu_2.png");
+    this.wasmInstance.exports.SetImgDosuEXE(handle, 1);
 
     // Add more assets as necessary
   }
@@ -40,14 +40,14 @@ let lastFrameTime = 0.0;
 
 var done = false;
 
-async function main() {
+async function Main() {
   const game = new Game("game");
-  await game.init();
-  game.afterInit();
+  await game.Init();
+  game.AfterInit();
 
-  function loop(currentTime) {
+  function Loop(currentTime) {
     if (done) {
-      game.cleanup();
+      game.Cleanup();
       return;
     }
 
@@ -55,19 +55,19 @@ async function main() {
 
     if (elapsed >= FrameTime) {
       lastFrameTime = currentTime - (elapsed % FrameTime);  // Carry over extra time
-      game.update();
-      game.draw();
+      game.Update();
+      game.Draw();
     }
 
-    requestAnimationFrame(loop)
+    requestAnimationFrame(Loop)
   }
 
-  requestAnimationFrame(loop)
+  requestAnimationFrame(Loop)
 }
 
-function play() {
+function Play() {
   const overlay = document.getElementById("play-overlay");
   overlay.parentNode.removeChild(overlay)
 
-  main()
+  Main()
 }
