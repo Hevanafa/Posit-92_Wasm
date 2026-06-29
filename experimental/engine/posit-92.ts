@@ -948,7 +948,7 @@ class Posit92 {
     "NumpadDecimal": 0x53,
   };
 
-  heldScancodes = new Set();
+  #heldScancodes = new Set();
 
   #InitKeyboard() {
     if (this.ScancodeMap == null) {
@@ -961,19 +961,19 @@ class Posit92 {
 
       const scancode = this.ScancodeMap[e.code];
       if (scancode) {
-        this.heldScancodes.add(scancode);
+        this.#heldScancodes.add(scancode);
         e.preventDefault();
       }
     })
 
     window.addEventListener("keyup", e => {
       const scancode = this.ScancodeMap[e.code];
-      if (scancode) this.heldScancodes.delete(scancode)
+      if (scancode) this.#heldScancodes.delete(scancode)
     })
   }
 
   #IsKeyDown(scancode: number) {
-    return this.heldScancodes.has(scancode)
+    return this.#heldScancodes.has(scancode)
   }
 
 
@@ -1179,27 +1179,20 @@ class Posit92 {
 
   async Start() {
     await this.InitRuntime();
-    
     await this.LoadBootAssets();
-    await this.LoadGameAssets();
+    this.HideLoadingOverlay();
 
-    this.#wasm.exports.OnReady();
     this.#AddOutOfFocusFix();
     this.#AddResizeListener();
 
-    this.StartLoop();
-  }
-
-  /**
-   * Bypass intro sequence
-   * 
-   * Should be used **without** the intro screen
-   */
-  async QuickStart() {
-    this.HideLoadingOverlay();
-
+    this.#StartLoop();
+    
     if (Object.hasOwn(this.#wasm.exports, "BeginLoadingState"))
       this.#wasm.exports.BeginLoadingState();
+
+    await this.LoadGameAssets();
+
+    this.#wasm.exports.OnReady();
   }
 
   #Loop = (currentTime: number) => {
@@ -1219,7 +1212,7 @@ class Posit92 {
     requestAnimationFrame(this.#Loop)
   }
 
-  StartLoop() {
+  #StartLoop() {
     requestAnimationFrame(this.#Loop)
   }
 
