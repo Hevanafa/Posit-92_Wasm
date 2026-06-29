@@ -204,6 +204,7 @@ class Posit92 {
 
   #NormaliseOptions(vgaWidthOrOptions?: number | Posit92Options, vgaHeight?: number): Posit92Options {
     let vgaWidth = 320;
+    vgaHeight = vgaHeight ?? 240;
     let renderer = "2d";
 
     if (typeof vgaWidthOrOptions == "object") {
@@ -219,7 +220,7 @@ class Posit92 {
 
     return {
       vgaWidth,
-      vgaHeight: vgaHeight ?? 240,
+      vgaHeight,
       renderer
     }
   }
@@ -240,7 +241,9 @@ class Posit92 {
     
     this.#vgaWidth = options.vgaWidth;
     this.#vgaHeight = options.vgaHeight;
-    this.#ctx = this.#canvas.getContext(options.renderer)!;
+
+    if (options.renderer == "2d")
+      this.#ctx = this.#canvas.getContext(options.renderer)!;
 
     this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4
   }
