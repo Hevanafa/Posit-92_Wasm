@@ -5,7 +5,7 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  Loading, Fullscreen, Keyboard, Mouse,
+  Loading, Logger, Fullscreen, Keyboard, Mouse,
   ImgRefFast, Timing, WasmMemMgr, VGA,
   Assets;
 
@@ -25,6 +25,8 @@ end;
 
 procedure Init;
 begin
+  WriteLog('Init call');
+
   InitHeapMgr;
   InitDeltaTime;
 

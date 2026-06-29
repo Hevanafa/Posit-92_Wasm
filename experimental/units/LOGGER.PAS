@@ -36,10 +36,7 @@ procedure WriteLog(const msg: string);
 
 implementation
 
-{$ifdef WASM}
-var
-  logBuffer: array[0..255] of byte;
-{$endif}
+uses InteropBuf;
 
 {$ifdef Windows}
 uses CRT;
