@@ -49,12 +49,18 @@ begin
 end;
 
 procedure WriteInteropString(const s: AnsiString);
-var
-  byteAry: TBytes;
+{ var
+  byteAry: TBytes; }
 begin
-  byteAry := BytesOf(s);
-  interopBufLen := length(byteAry);
-  move(byteAry, interopBufArray, interopBufLen);
+  { byteAry := BytesOf(s); }
+  interopBufLen := length(s);
+
+  if interopBufLen > InteropBufCapacity then
+    interopBufLen := InteropBufCapacity;  { Either this, or raise an exception }
+
+  if interopBufLen = 0 then exit;
+
+  move(s[1], interopBufArray, interopBufLen)
 end;
 
 function ReadInteropString: AnsiString;
