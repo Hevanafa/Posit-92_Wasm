@@ -4,6 +4,7 @@ library Game;
 {$H-}
 
 uses
+  EngineCore, EngineFonts,
   Keyboard, Mouse,
   ImgRef, ImgRefFast, Logger,
   Timing, VGA, WasmMemMgr, WebGL,
@@ -28,17 +29,7 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-
-procedure Init;
-begin
-  InitHeapMgr;
-  InitDeltaTime;
-
-  SetupWebGLViewport;
-  SetupWebGLShaders;
-end;
-
-procedure AfterInit;
+procedure OnReady;
 begin
   { Initialise game state here }
   HideCursor;
@@ -119,9 +110,7 @@ end;
 
 
 exports
-  { Main game procedures }
-  Init,
-  AfterInit,
+  OnReady,
   Update,
   Draw;
 
