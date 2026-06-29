@@ -16,7 +16,6 @@ function MeasureDefault(const text: string): word;
 implementation
 
 var
-  { for use in loadBMFont }
   defaultFont: TBMFont;
   defaultFontGlyphs: array[32..126] of TBMFontGlyph;
 

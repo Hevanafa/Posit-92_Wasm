@@ -259,6 +259,8 @@ class Posit92 {
     }
   }
 
+  bootOptions: Posit92Options;
+
   constructor(canvasID: string);
   constructor(canvasID: string, vgaWidth: number, vgaHeight: number);
   constructor(canvasID: string, options: Posit92Options);
@@ -270,6 +272,7 @@ class Posit92 {
       throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
 
     const options = this.#NormaliseOptions(vgaWidthOrOptions, vgaHeight);
+    this.bootOptions = options;
 
     this.#canvas = <HTMLCanvasElement>document.getElementById(canvasID);
     
@@ -403,7 +406,11 @@ class Posit92 {
    * Loads assets owned by the engine
    */
   async #LoadBootAssets() {
-    await this.#LoadDefaultFont()
+    if (this.bootOptions.defaultFont == null
+      || this.bootOptions.defaultFont == true)
+      await this.#LoadDefaultFont();
+
+    // TODO: Load the intro assets
   }
 
   async #LoadDefaultFont() {
