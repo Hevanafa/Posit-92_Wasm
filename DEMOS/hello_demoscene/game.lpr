@@ -20,12 +20,6 @@ begin
   Spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure InitRuntime;
-begin
-  InitEngine;
-  RequestAssetLoad
-end;
-
 { Called after InitRuntime and when RequestAssetLoad is finished }
 procedure OnReady;
 begin
@@ -66,7 +60,7 @@ begin
 end;
 
 exports
-  InitRuntime, OnReady, Update, Draw;
+  OnReady, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }

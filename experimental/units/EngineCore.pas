@@ -2,7 +2,7 @@ unit EngineCore;
 
 interface
 
-procedure InitEngine;
+procedure InitEngine; public name 'InitEngine';
 
 
 implementation

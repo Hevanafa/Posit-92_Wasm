@@ -15,7 +15,8 @@ type WasmExports = {
   GetInteropBufLen: () => number,
   SetInteropBufLen: (value: number) => void,
 
-  // LOGGER.PAS
+  // EngineCore.pas
+  InitEngine: () => void,
 
   // VGA.PAS
   GetSurfacePtr: () => number,
@@ -31,8 +32,7 @@ type WasmExports = {
   // Primary unit
   BeginIntroState: () => void,
   BeginLoadingState: () => void,
-  
-  InitRuntime: () => void,
+
   OnReady: () => void,
   Update: () => void,
   Draw: () => void
@@ -356,7 +356,7 @@ class Posit92 {
   async InitRuntime() {
     await this.#InitWebAssembly();
     this.#InitWasmMemory();
-    this.#wasm.exports.InitRuntime();
+    this.#wasm.exports.InitEngine();
 
     this.#InitKeyboard();
     this.#InitMouse();
