@@ -196,7 +196,10 @@ class Posit92 {
     done = true
   }
 
-  constructor(canvasID: string, vgaWidth = 320, vgaHeight = 200) {
+  constructor(canvasID: string, vgaWidth: number, vgaHeight: number);
+  constructor(canvasID: string, options: Posit92Options);
+
+  constructor(canvasID: string, vgaWidthOrOptions?: number | Posit92Options, vgaHeight?) {
     this.#AssertString(canvasID);
     this.#AssertNumber(vgaWidth);
     this.#AssertNumber(vgaHeight);
