@@ -120,11 +120,18 @@ class Posit92 {
   // Engine configs
   readonly #wasmMemSize = 2 * 1048576;  // 2 MB
   readonly #stackSize = 256 * 1024;
-  #videoMemSize = 0;  // assigned in the constructor
+
+  /**
+   * assigned in the constructor
+   */
+  #videoMemSize = 0;
   readonly #poolSize = 512 * 1024;
 
-  readonly #TargetFPS = 60;
-  readonly #FrameTime = 1000 / this.#TargetFPS;
+  /**
+   * also assigned in the constructor
+   */
+  #TargetFPS = 60;
+  #FrameTime: number;
 
   #vgaWidth: number;
   get VgaWidth(): number { return this.#vgaWidth }
@@ -271,6 +278,13 @@ class Posit92 {
 
     if (options.renderer == "2d")
       this.#ctx = this.#canvas.getContext(options.renderer)!;
+
+    if (options.fps != null) {
+      this.#AssertNumber(options.fps);
+      this.#TargetFPS = options.fps;
+    }
+
+    this.#FrameTime = 1000 / this.#TargetFPS;
 
     this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4
   }
