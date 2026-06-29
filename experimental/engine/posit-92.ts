@@ -248,14 +248,12 @@ class Posit92 {
   #HandleHaltProc(exitcode: number) {
     console.log("Programme halted with code:", exitcode);
     this.Cleanup();
-    //@ts-ignore
-    done = true
+    this.#done = true
   }
 
   #SignalDone() {
     this.Cleanup();
-    //@ts-ignore
-    done = true
+    this.#done = true
   }
 
   #NormaliseOptions(vgaWidthOrOptions?: number | Posit92Options, vgaHeight?: number): Posit92Options {
@@ -1160,8 +1158,7 @@ class Posit92 {
     const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, textPtr, textLen);
     const msg = new TextDecoder().decode(buffer);
 
-    //@ts-ignore
-    done = true;
+    this.#done = true;
     this.Cleanup();
 
     throw new Error(`PANIC: ${msg}`)
