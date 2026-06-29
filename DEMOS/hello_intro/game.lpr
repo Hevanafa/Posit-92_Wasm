@@ -5,9 +5,9 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  SysUtils,
+  SysUtils, Logger,
   IntroScr, Loading, Fullscreen,
-  Conv, FPS, Logger,
+  Conv, FPS,
   Keyboard, Mouse,
   ImgRef, ImgRefFast, SprEffects,
   PostProc, Timing, WasmMemMgr,
@@ -42,6 +42,7 @@ procedure SignalDone; external 'env' name 'SignalDone';
 procedure HideCursor; external 'env' name 'HideCursor';
 procedure HideLoadingOverlay; external 'env' name 'HideLoadingOverlay';
 procedure LoadAssets; external 'env' name 'LoadAssets';
+procedure FitCanvas; external 'env' name 'FitCanvas';
 
 procedure DrawFPS;
 begin
