@@ -79,8 +79,8 @@ procedure glUniform1i(const locationId, value: longint); external 'env' name 'gl
 
 procedure glActiveTexture(const texture: longword); external 'env' name 'glActiveTexture';
 
-procedure setupWebGLViewport;
-procedure setupWebGLShaders;
+procedure SetupWebGLViewport;
+procedure SetupWebGLShaders;
 procedure flushWebGL;
 
 
@@ -92,7 +92,7 @@ var
   textureId: longword;  { Used by WebGL }
   vertexShader, fragShader, prog: longword;
 
-procedure setupWebGLViewport;
+procedure SetupWebGLViewport;
 begin
   glViewport(0, 0, vgaWidth, vgaHeight);
   textureId := glCreateTexture;
@@ -106,7 +106,7 @@ begin
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 end;
 
-procedure setupWebGLShaders;
+procedure SetupWebGLShaders;
 const
   vertices: array[0..7] of single = (
     -1, -1, 1, -1,

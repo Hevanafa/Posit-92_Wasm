@@ -21,41 +21,42 @@ var
   drawOnce: boolean;
 
 { Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
+procedure SignalDone; external 'env' name 'SignalDone';
 
-procedure drawMouse;
+procedure DrawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
 
-procedure init;
+procedure Init;
 begin
-  initMemMgr;
-  initBuffer;
-  initDeltaTime;
+  InitHeapMgr;
+  InitBuffer;
+  InitDeltaTime;
 
-  setupWebGLViewport;
-  setupWebGLShaders;
+  SetupWebGLViewport;
+  SetupWebGLShaders;
 end;
 
-procedure afterInit;
+procedure AfterInit;
 begin
   { Initialise game state here }
-  hideCursor;
-  drawOnce := false;
+  HideCursor;
+
+  drawOnce := false
 end;
 
-procedure update;
+procedure Update;
 begin
-  updateDeltaTime;
+  UpdateDeltaTime;
 
-  updateMouse;
+  UpdateMouse;
 
-  { Your update logic here }
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
-    if lastEsc then signalDone;
+  { Your Update logic here }
+  if lastEsc <> IsKeyDown(SC_ESC) then begin
+    lastEsc := IsKeyDown(SC_ESC);
+    if lastEsc then SignalDone;
   end;
 
   gameTime := gameTime + dt
@@ -63,7 +64,7 @@ end;
 
 { Draw in WebGL context }
 { Test code }
-procedure testDraw;
+procedure TestDraw;
 var
   a: integer;
 begin
@@ -86,38 +87,38 @@ end;
 
 
 { Draw in WebGL context }
-procedure draw;
+procedure Draw;
 var
   s: string;
   w: word;
 begin
 {
-  testDraw; exit;
+  TestDraw; exit;
 }
 
   { CPU rendering code }
-  cls($FF6495ED);
+  Cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    Spr(imgDosuEXE[1], 148, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    Spr(imgDosuEXE[0], 148, 88);
 
   s := 'Hello from Posit-92 + WebAssembly + WebGL!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  w := MeasureDefault(s);
+  PrintDefault(s, (vgaWidth - w) div 2, 120);
 
-  drawMouse;
+  DrawMouse;
   flushWebGL
 end;
 
 
 exports
   { Main game procedures }
-  init,
-  afterInit,
-  update,
-  draw;
+  Init,
+  AfterInit,
+  Update,
+  Draw;
 
 begin
 { Starting point is intentionally left empty }
