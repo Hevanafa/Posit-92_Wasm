@@ -69,7 +69,7 @@ end;
 
 procedure PlayRandomSFX;
 begin
-  playSound(1 + random(SfxSlip))
+  PlaySound(1 + random(SfxSlip))
 end;
 
 
@@ -110,27 +110,27 @@ begin
 
   if lastD1 <> IsKeyDown(SC_1) then begin
     lastD1 := IsKeyDown(SC_1);
-    if lastD1 then playSound(1);
+    if lastD1 then PlaySound(1);
   end;
 
   if lastD2 <> IsKeyDown(SC_2) then begin
     lastD2 := IsKeyDown(SC_2);
-    if lastD2 then playSound(2);
+    if lastD2 then PlaySound(2);
   end;
 
   if lastD3 <> IsKeyDown(SC_3) then begin
     lastD3 := IsKeyDown(SC_3);
-    if lastD3 then playSound(3);
+    if lastD3 then PlaySound(3);
   end;
 
   if lastD4 <> IsKeyDown(SC_4) then begin
     lastD4 := IsKeyDown(SC_4);
-    if lastD4 then playSound(4);
+    if lastD4 then PlaySound(4);
   end;
 
   if lastD5 <> IsKeyDown(SC_5) then begin
     lastD5 := IsKeyDown(SC_5);
-    if lastD5 then playSound(5);
+    if lastD5 then PlaySound(5);
   end;
 
   gameTime := gameTime + dt

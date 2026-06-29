@@ -1,5 +1,6 @@
 {
-  Sounds unit - Part of Posit-92 game engine
+  Sounds unit
+  Part of Posit-92 game engine
   By Hevanafa
 
   Requires SoundsMixin class
@@ -12,37 +13,37 @@ unit Sounds;
 
 interface
 
-procedure playSound(const key: longint); external 'env' name 'playSound';
+procedure PlaySound(const key: longint); external 'env' name 'PlaySound';
 
-procedure playMusic(const key: longint); external 'env' name 'playMusic';
-function getMusicRepeat: boolean; external 'env' name 'getMusicRepeat';
-procedure setMusicRepeat(const value: boolean); external 'env' name 'setMusicRepeat';
-procedure handleMusicRepeat(const musicKey: smallint);
-procedure pauseMusic; external 'env' name 'pauseMusic';
-procedure stopMusic; external 'env' name 'stopMusic';
+procedure PlayMusic(const key: longint); external 'env' name 'PlayMusic';
+function GetMusicRepeat: boolean; external 'env' name 'GetMusicRepeat';
+procedure SetMusicRepeat(const value: boolean); external 'env' name 'SetMusicRepeat';
+procedure HandleMusicRepeat(const musicKey: smallint);
+procedure PauseMusic; external 'env' name 'PauseMusic';
+procedure StopMusic; external 'env' name 'StopMusic';
 
 { t: time in seconds }
-procedure seekMusic(const t: double); external 'env' name 'seekMusic';
-function getMusicPlaying: boolean; external 'env' name 'getMusicPlaying';
-function getMusicTime: double; external 'env' name 'getMusicTime';
-function getMusicDuration: double; external 'env' name 'getMusicDuration';
+procedure SeekMusic(const t: double); external 'env' name 'SeekMusic';
+function GetMusicPlaying: boolean; external 'env' name 'GetMusicPlaying';
+function GetMusicTime: double; external 'env' name 'GetMusicTime';
+function GetMusicDuration: double; external 'env' name 'GetMusicDuration';
 
-procedure setSoundVolume(const key: longint; const volume: double); external 'env' name 'setSoundVolume';
-procedure setMusicVolume(const volume: double); external 'env' name 'setMusicVolume';
+procedure SetSoundVolume(const key: longint; const volume: double); external 'env' name 'SetSoundVolume';
+procedure SetMusicVolume(const volume: double); external 'env' name 'SetMusicVolume';
 
 
 implementation
 
 { Handle music repeat (only when it is playing)
   Important: #musicPlayer.loop must be turned off! }
-procedure handleMusicRepeat(const musicKey: smallint);
+procedure HandleMusicRepeat(const musicKey: smallint);
 begin
-  if getMusicPlaying and (getMusicTime >= getMusicDuration - 0.05) then
-    if getMusicRepeat then begin
-      stopMusic;
-      playMusic(musicKey)
+  if GetMusicPlaying and (GetMusicTime >= GetMusicDuration - 0.05) then
+    if GetMusicRepeat then begin
+      StopMusic;
+      PlayMusic(musicKey)
     end else
-      stopMusic;
+      StopMusic;
 end;
 
 end.
