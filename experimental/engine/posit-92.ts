@@ -112,8 +112,20 @@ type Posit92Options = {
   vgaWidth?: number;
   vgaHeight?: number;
   renderer: "2d" | "webgl" | "experimental-webgl" | string;
+
+  /**
+   * Default: 60
+   */
   fps?: number;
+
+  /**
+   * Default: true
+   */
   skipIntro?: boolean;
+
+  /**
+   * Default: true
+   */
   defaultFont?: boolean;
 };
 
@@ -245,6 +257,9 @@ class Posit92 {
 
     let vgaWidth = defaultVgaWidth;
     let renderer = "2d";
+    let fps = 60;
+    let skipIntro = true;
+    let defaultFont = true;
 
     if (typeof vgaWidthOrOptions == "object") {
       const options = vgaWidthOrOptions;
@@ -252,6 +267,15 @@ class Posit92 {
       vgaWidth = options.vgaWidth ?? defaultVgaWidth;
       vgaHeight = options.vgaHeight ?? defaultVgaHeight;
       renderer = options.renderer ?? "2d";
+
+      if (options.fps != null)
+        fps = options.fps;
+
+      if (options.skipIntro != null)
+        skipIntro = options.skipIntro;
+
+      if (options.defaultFont != null)
+        defaultFont = options.defaultFont;
     } else {
       vgaWidth = vgaWidthOrOptions ?? defaultVgaWidth;
       vgaHeight = vgaHeight ?? defaultVgaHeight;
@@ -260,7 +284,10 @@ class Posit92 {
     return {
       vgaWidth,
       vgaHeight,
-      renderer
+      renderer,
+      fps,
+      skipIntro,
+      defaultFont
     }
   }
 
@@ -1223,6 +1250,7 @@ class Posit92 {
     this.#StartLoop();
 
     // Loading
+    if (this.bootOptions.skipIntro == true)
     if (Object.hasOwn(this.#wasm.exports, "BeginLoadingState"))
       this.#wasm.exports.BeginLoadingState();
 
