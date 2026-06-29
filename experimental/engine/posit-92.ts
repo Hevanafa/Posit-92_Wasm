@@ -99,7 +99,7 @@ type TBMFontGlyph = {
 type Posit92Options = {
   vgaWidth: number;
   vgaHeight: number;
-  renderer: "2d" | "webgl"
+  renderer: "2d" | "webgl" | "experimental-webgl" | string;
 };
 
 class Posit92 {
@@ -124,7 +124,7 @@ class Posit92 {
     return this.#canvas
   }
   
-  #ctx: CanvasRenderingContext2D; // or WebGLRenderingContext
+  #ctx: CanvasRenderingContext2D = null!; // or WebGLRenderingContext
   get CanvasCtx(): CanvasRenderingContext2D {
     return this.#ctx
   }
@@ -202,6 +202,29 @@ class Posit92 {
     done = true
   }
 
+  #NormaliseOptions(vgaWidthOrOptions?: number | Posit92Options, vgaHeight?: number): Posit92Options {
+    let vgaWidth = 320;
+    let renderer = "2d";
+
+    if (typeof vgaWidthOrOptions == "object") {
+      const options = vgaWidthOrOptions;
+
+      vgaWidth = options.vgaWidth ?? 320;
+      vgaHeight = options.vgaHeight ?? 240;
+      renderer = options.renderer ?? "2d";
+    } else {
+      vgaWidth = vgaWidthOrOptions ?? 320;
+      // vgaHeight = vgaHeight;
+    }
+
+    return {
+      vgaWidth,
+      vgaHeight: vgaHeight ?? 240,
+      renderer
+    }
+  }
+
+  constructor(canvasID: string);
   constructor(canvasID: string, vgaWidth: number, vgaHeight: number);
   constructor(canvasID: string, options: Posit92Options);
 
@@ -211,25 +234,13 @@ class Posit92 {
     if (document.getElementById(canvasID) == null)
       throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
 
+    const options = this.#NormaliseOptions(vgaWidthOrOptions, vgaHeight);
+
     this.#canvas = <HTMLCanvasElement>document.getElementById(canvasID);
     
-    if (typeof vgaWidthOrOptions == "object") {
-      const options = vgaWidthOrOptions;
-
-      this.#vgaWidth = options.vgaWidth ?? 320;
-      this.#vgaHeight = options.vgaHeight ?? 240;
-    } else if (typeof vgaWidthOrOptions == "number") {
-      const vgaWidth = vgaWidthOrOptions;
-      this.#AssertNumber(vgaWidth);
-      this.#AssertNumber(vgaHeight);
-
-      this.#vgaWidth = vgaWidth;
-      this.#vgaHeight = vgaHeight;
-    }
-
-
-
-    this.#ctx = this.#canvas.getContext("2d")!;
+    this.#vgaWidth = options.vgaWidth;
+    this.#vgaHeight = options.vgaHeight;
+    this.#ctx = this.#canvas.getContext(options.renderer)!;
 
     this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4
   }
@@ -980,6 +991,7 @@ class Posit92 {
       this.#mouseX = Math.floor((touch.clientX - rect.left) * scaleX);
       this.#mouseY = Math.floor((touch.clientY - rect.top) * scaleY);
 
+      //@ts-ignore
       e.preventDefault({ passive: false });
     });
 
@@ -997,12 +1009,15 @@ class Posit92 {
       this.#leftButtonDown = true;
       this.#UpdateMouseButton();
 
+      //@ts-ignore
       e.preventDefault({ passive: false });
     });
 
     this.#canvas.addEventListener("touchend", e => {
       this.#leftButtonDown = false;
       this.#UpdateMouseButton();
+
+      //@ts-ignore
       e.preventDefault({ passive: false });
     });
   }
