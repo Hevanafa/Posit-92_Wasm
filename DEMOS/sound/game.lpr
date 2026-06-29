@@ -1,6 +1,7 @@
 library Game;
 
 {$Mode ObjFPC}
+{$H+}{$J-}
 
 uses
   Conv, FPS, Graphics,
@@ -36,75 +37,75 @@ var
   gameTime: double;
 
 { Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure hideCursor; external 'env' name 'hideCursor';
-procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
-procedure loadAssets; external 'env' name 'loadAssets';
+procedure SignalDone; external 'env' name 'SignalDone';
+procedure HideCursor; external 'env' name 'HideCursor';
+procedure HideLoadingOverlay; external 'env' name 'HideLoadingOverlay';
+procedure LoadAssets; external 'env' name 'LoadAssets';
 
-procedure drawFPS;
+procedure DrawFPS;
 begin
-  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
+  PrintDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
-procedure drawMouse;
+procedure DrawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  Spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure beginLoadingState;
+procedure BeginLoadingState;
 begin
   actualGameState := GameStateLoading;
-  loadAssets
+  LoadAssets
 end;
 
-procedure beginPlayingState;
+procedure BeginPlayingState;
 begin
   { Initialise game state here }
-  hideCursor;
+  HideCursor;
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
 end;
 
 
-procedure playRandomSFX;
+procedure PlayRandomSFX;
 begin
   playSound(1 + random(SfxSlip))
 end;
 
 
-procedure init;
+procedure Init;
 begin
   initHeapMgr;
   initDeltaTime;
   initFPSCounter;
 end;
 
-procedure afterInit;
+procedure AfterInit;
 begin
-  beginPlayingState
+  BeginPlayingState
 end;
 
-procedure update;
+procedure Update;
 begin
   updateDeltaTime;
   incrementFPS;
 
   updateMouse;
 
-  { Your update logic here }
+  { Your Update logic here }
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
 
     if lastEsc then begin
       writeLog('ESC is pressed!');
-      signalDone
+      SignalDone
     end;
   end;
 
   if lastSpacebar <> isKeyDown(SC_SPACE) then begin
     lastSpacebar := isKeyDown(SC_SPACE);
 
-    if lastSpacebar then playRandomSFX;
+    if lastSpacebar then PlayRandomSFX;
   end;
 
   if lastD1 <> isKeyDown(SC_1) then begin
@@ -135,7 +136,7 @@ begin
   gameTime := gameTime + dt
 end;
 
-procedure draw;
+procedure Draw;
 var
   w: integer;
   s: string;
@@ -153,26 +154,27 @@ begin
     spr(imgDosuEXE[0], 148, 88);
 
   s := '1, 2, 3, 4, 5 - Play sound';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  w := MeasureDefault(s);
+  PrintDefault(s, (vgaWidth - w) div 2, 120);
 
   s := 'Spacebar - Play a random sound';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 130);
+  w := MeasureDefault(s);
+  PrintDefault(s, (vgaWidth - w) div 2, 130);
 
-  drawMouse;
-  drawFPS;
+  DrawMouse;
+  DrawFPS;
 
-  vgaFlush
+  VgaUpload;
+  VgaPresent
 end;
 
 exports
   { Main game procedures }
-  beginLoadingState,
-  init,
-  afterInit,
-  update,
-  draw;
+  BeginLoadingState,
+  Init,
+  AfterInit,
+  Update,
+  Draw;
 
 begin
 { Starting point is intentionally left empty }
