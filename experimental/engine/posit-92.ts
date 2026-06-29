@@ -403,10 +403,14 @@ class Posit92 {
    * Loads assets owned by the engine
    */
   async #LoadBootAssets() {
+    await this.#LoadDefaultFont()
+  }
+
+  async #LoadDefaultFont() {
     await this.LoadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.WasmInstance.exports.DefaultFontPtr(),
-      this.WasmInstance.exports.DefaultFontGlyphsPtr());
+      this.WasmInstance.exports.DefaultFontGlyphsPtr())
   }
 
   /**
