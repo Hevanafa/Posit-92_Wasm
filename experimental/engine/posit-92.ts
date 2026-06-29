@@ -360,8 +360,9 @@ class Posit92 {
     this.#InitMouse();
     this.#LoadMidnightOffset();
 
-    await this.LoadAssets();
-    
+    await this.LoadBootAssets();
+    await this.LoadGameAssets();
+
     this.#wasm.exports.OnReady();
     this.#AddOutOfFocusFix();
     this.#AddResizeListener()
@@ -386,9 +387,19 @@ class Posit92 {
   }
 
   /**
+   * Loads assets owned by the engine
+   */
+  async LoadBootAssets() {
+    await this.LoadBMFont(
+      "assets/fonts/nokia_cellphone_fc_8.txt",
+      this.WasmInstance.exports.DefaultFontPtr(),
+      this.WasmInstance.exports.DefaultFontGlyphsPtr());
+  }
+
+  /**
    * Overridden by the inherited `Game` class
    */
-  async LoadAssets() {}
+  async LoadGameAssets() {}
 
   /**
    * Bypass intro sequence
@@ -398,7 +409,7 @@ class Posit92 {
   async QuickStart() {
     this.HideLoadingOverlay();
 
-    if (Object.hasOwn(this.#wasm.exports, "beginLoadingState"))
+    if (Object.hasOwn(this.#wasm.exports, "BeginLoadingState"))
       this.#wasm.exports.BeginLoadingState();
   }
 
@@ -1182,7 +1193,7 @@ class Posit92 {
     requestAnimationFrame(this.#Loop)
   }
 
-  StartLoop() {
+  Start() {
     requestAnimationFrame(this.#Loop)
   }
 

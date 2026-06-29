@@ -18,17 +18,10 @@ class Game extends Posit92 {
     ])
   }
 
-  async LoadDefaultFont() {
-    await this.LoadBMFont(
-      "assets/fonts/nokia_cellphone_fc_8.txt",
-      this.WasmInstance.exports.DefaultFontPtr(),
-      this.WasmInstance.exports.DefaultFontGlyphsPtr());
-  }
-
   /**
    * @override
    */
-  async LoadAssets() {
+  async LoadGameAssets() {
     await this.LoadImagesFromManifest(this.AssetManifest.images);
     // Sounds can be loaded later
   }
@@ -37,14 +30,12 @@ class Game extends Posit92 {
 async function Main() {
   const game = new Game("game");
   await game.InitRuntime();
-  await game.LoadDefaultFont();
-  game.QuickStart();
-  game.StartLoop();
+  game.Start();
 }
 
 function Play() {
   const overlay = document.getElementById("play-overlay");
   overlay.parentNode.removeChild(overlay);
-
+  
   Main()
 }
