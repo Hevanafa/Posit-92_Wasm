@@ -111,8 +111,19 @@ type TBMFontGlyph = {
 }
 
 type Posit92Options = {
+  /**
+   * default: 320
+   */
   vgaWidth?: number;
+
+  /**
+   * default: 200
+   */
   vgaHeight?: number;
+
+  /**
+   * default: "2d"
+   */
   renderer: "2d" | "webgl" | "experimental-webgl" | string;
 
   /**
