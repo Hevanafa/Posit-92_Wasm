@@ -4,7 +4,7 @@ library Game;
 {$H+}{$J-}
 
 uses
-  Conv, FPS, Graphics,
+  Conv, FPS, Fullscreen, Graphics,
   ImgRef, ImgRefFast,
   Keyboard, Mouse,
   Loading, Logger, Panic, Sounds,
@@ -55,14 +55,18 @@ end;
 procedure BeginLoadingState;
 begin
   actualGameState := GameStateLoading;
+  FitCanvas;
+
   LoadAssets
 end;
 
 procedure BeginPlayingState;
 begin
-  { Initialise game state here }
-  HideCursor;
   actualGameState := GameStatePlaying;
+
+  HideCursor;
+  FitCanvas;
+
   gameTime := 0.0;
 end;
 
