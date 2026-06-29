@@ -17,9 +17,6 @@ function ReadInteropString: AnsiString;
 
 implementation
 
-uses
-  SysUtils;
-
 const
   InteropBufCapacity = 1020;
 
@@ -49,18 +46,14 @@ begin
 end;
 
 procedure WriteInteropString(const s: AnsiString);
-{ var
-  byteAry: TBytes; }
 begin
-  { byteAry := BytesOf(s); }
   interopBufLen := length(s);
 
   if interopBufLen > InteropBufCapacity then
     interopBufLen := InteropBufCapacity;  { Either this, or raise an exception }
 
-  if interopBufLen = 0 then exit;
-
-  move(s[1], interopBufArray, interopBufLen)
+  if interopBufLen > 0 then
+    move(s[1], interopBufArray, interopBufLen);
 end;
 
 function ReadInteropString: AnsiString;
