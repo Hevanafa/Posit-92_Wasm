@@ -1,5 +1,8 @@
 "use strict";
 
+const TargetFPS = 60;
+const FrameTime = 1000 / TargetFPS;
+
 type ImageManifest = Record<string, string | string[]>;
 type SoundManifest = Map<number, string>;
 type BMFontManifest = Map<string, { path: string, setter: string, glyphSetter: string }>;
@@ -105,6 +108,13 @@ type Posit92Options = {
   vgaHeight: number;
   renderer: "2d" | "webgl" | "experimental-webgl" | string;
 };
+
+/**
+ * in milliseconds
+ */
+let lastFrameTime = 0.0;
+
+let done = false;
 
 class Posit92 {
   static version = "0.1.7";
@@ -1158,6 +1168,27 @@ class Posit92 {
 
 
   // Game loop
+  StartLoop() {
+    function Loop(currentTime: number) {
+      if (done) {
+        this.Cleanup();
+        return;
+      }
+
+      const elapsed = currentTime - lastFrameTime;
+
+      if (elapsed >= FrameTime) {
+        lastFrameTime = currentTime - (elapsed % FrameTime);  // Carry over extra time
+        this.Update();
+        this.Draw();
+      }
+
+      requestAnimationFrame(Loop)
+    }
+
+    requestAnimationFrame(Loop)
+  }
+
   Update() { this.#wasm.exports.Update() }
   Draw() { this.#wasm.exports.Draw() }
 }
