@@ -212,19 +212,21 @@ class Posit92 {
   }
 
   #NormaliseOptions(vgaWidthOrOptions?: number | Posit92Options, vgaHeight?: number): Posit92Options {
-    let vgaWidth = 320;
-    vgaHeight = vgaHeight ?? 240;
+    const defaultVgaWidth = 320;
+    const defaultVgaHeight = 200;
+
+    let vgaWidth = defaultVgaWidth;
     let renderer = "2d";
 
     if (typeof vgaWidthOrOptions == "object") {
       const options = vgaWidthOrOptions;
 
-      vgaWidth = options.vgaWidth ?? 320;
-      vgaHeight = options.vgaHeight ?? 240;
+      vgaWidth = options.vgaWidth ?? defaultVgaWidth;
+      vgaHeight = options.vgaHeight ?? defaultVgaHeight;
       renderer = options.renderer ?? "2d";
     } else {
-      vgaWidth = vgaWidthOrOptions ?? 320;
-      // vgaHeight = vgaHeight;
+      vgaWidth = vgaWidthOrOptions ?? defaultVgaWidth;
+      vgaHeight = vgaHeight ?? defaultVgaHeight;
     }
 
     return {
