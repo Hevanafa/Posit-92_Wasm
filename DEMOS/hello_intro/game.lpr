@@ -5,13 +5,13 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  SysUtils, Logger,
+  SysUtils,
+  EngineCore, EngineFonts, Logger, WasmHost,
   IntroScr, Loading, Fullscreen,
   Conv, FPS,
   Keyboard, Mouse,
   ImgRef, ImgRefFast, SprEffects,
-  PostProc, Timing, WasmMemMgr,
-  VGA,
+  Timing, VGA,
   Assets;
 
 type
@@ -37,13 +37,6 @@ var
   gameTime: double;
 
 
-{ Use this to set `done` to true }
-procedure SignalDone; external 'env' name 'SignalDone';
-procedure HideCursor; external 'env' name 'HideCursor';
-procedure HideLoadingOverlay; external 'env' name 'HideLoadingOverlay';
-procedure LoadAssets; external 'env' name 'LoadAssets';
-procedure FitCanvas; external 'env' name 'FitCanvas';
-
 procedure DrawFPS;
 begin
   PrintDefault('FPS:' + i32str(GetLastFPS), 240, 0);
@@ -56,10 +49,9 @@ end;
 
 procedure BeginIntroState;
 begin
-  HideLoadingOverlay;
+  actualGameState := GameStateIntro;
   FitCanvas;
 
-  actualGameState := GameStateIntro;
   introSlide := 1;
   introSlideEndTick := getTimer + 2.0;
 end;
@@ -67,8 +59,7 @@ end;
 procedure BeginLoadingState;
 begin
   actualGameState := GameStateLoading;
-  FitCanvas;
-  LoadAssets
+  FitCanvas
 end;
 
 procedure BeginPlayingState;
@@ -80,18 +71,11 @@ begin
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
   
-  ReplaceColour(defaultFont.imgHandle, $FFFFFFFF, $FF000000);
+  ReplaceColour(DefaultFontPtr^.imgHandle, $FFFFFFFF, $FF000000);
 end;
 
 
-procedure Init;
-begin
-  InitHeapMgr;
-  InitDeltaTime;
-  InitFPSCounter
-end;
-
-procedure AfterInit;
+procedure OnReady;
 begin
   BeginPlayingState;
 end;
@@ -147,7 +131,7 @@ begin
   end;
 
   { Handle game state updates }
-  gameTime := gameTime + dt
+  gameTime := gameTime + DeltaTime
 end;
 
 procedure Draw;
@@ -188,7 +172,7 @@ end;
 exports
   BeginIntroState,
   BeginLoadingState,
-  Init, AfterInit, Update, Draw;
+  OnReady, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }

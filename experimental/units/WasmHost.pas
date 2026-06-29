@@ -17,6 +17,8 @@ procedure SignalDone; external 'env' name 'SignalDone';
 procedure ShowCursor; external 'env' name 'ShowCursor';
 procedure HideCursor; external 'env' name 'HideCursor';
 procedure FitCanvas; external 'env' name 'FitCanvas';
+procedure HideLoadingOverlay; external 'env' name 'HideLoadingOverlay';
+
 
 implementation
 

@@ -21,6 +21,11 @@ type WasmExports = {
   // EngineCore.pas
   InitEngine: () => void,
 
+  // IntroScr.pas
+  SetImgPosit92Logo: (imgHandle: number) => void;
+  SetImgFPCLogo: (imgHandle: number) => void;
+  SetImgWasmLogo: (imgHandle: number) => void;
+
   // VGA.PAS
   GetSurfacePtr: () => number,
   InitVideoMem: (width: number, height: number, startAddr: number) => void,
@@ -409,8 +414,17 @@ class Posit92 {
     if (this.bootOptions.defaultFont == null
       || this.bootOptions.defaultFont == true)
       await this.#LoadDefaultFont();
+  }
 
-    // TODO: Load the intro assets
+  async #LoadIntroAssets() {
+    this.WasmInstance.exports.SetImgPosit92Logo(
+      await this.LoadImage("assets/images/posit-92_32px.png"));
+
+    this.WasmInstance.exports.SetImgFPCLogo(
+      await this.LoadImage("assets/images/fpc_logo.png"));
+
+    this.WasmInstance.exports.SetImgWasmLogo(
+      await this.LoadImage("assets/images/wasm_logo.png"));
   }
 
   async #LoadDefaultFont() {
@@ -418,6 +432,10 @@ class Posit92 {
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.WasmInstance.exports.DefaultFontPtr(),
       this.WasmInstance.exports.DefaultFontGlyphsPtr())
+  }
+
+  async LoadAssets() {
+    throw new Error("LoadAssets has been moved to LoadGameAssets");
   }
 
   /**
@@ -1191,10 +1209,13 @@ class Posit92 {
   async Start() {
     // WebAssembly init & stuff
     await this.InitRuntime();
+    this.#HideLoadingOverlay();
 
     // Boot
     await this.#LoadBootAssets();
-    this.#HideLoadingOverlay();
+    
+    if (this.bootOptions.skipIntro == false)
+      await this.#LoadIntroAssets();
 
     // Engine stuff
     this.#AddOutOfFocusFix();

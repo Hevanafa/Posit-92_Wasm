@@ -29,7 +29,7 @@ procedure UnloadIntro;
 implementation
 
 uses
-  Assets, ImgRef, ImgRefFast, VGA;
+  EngineFonts, ImgRef, ImgRefFast, VGA;
 
 procedure SetImgPosit92Logo(const imgHandle: longint);
 begin

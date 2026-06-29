@@ -14,17 +14,10 @@ class Game extends Posit92 {
     ])
   }
 
-  async LoadDefaultFont() {
-    await this.LoadBMFont(
-      "assets/fonts/nokia_cellphone_fc_8.txt",
-      this.WasmInstance.exports.DefaultFontPtr(),
-      this.WasmInstance.exports.DefaultFontGlyphsPtr());
-  }
-
   /**
    * @override
    */
-  async LoadAssets() {
+  async LoadGameAssets() {
     let handle = 0;
 
     this.InitLoadingScreen();
@@ -40,11 +33,6 @@ class Game extends Posit92 {
     // Add more assets as necessary
   }
 
-  async Init() {
-    this.SetLoadingText("Downloading engine...");
-    await super.Init();
-  }
-
   /**
    * @override
    */
@@ -53,17 +41,6 @@ class Game extends Posit92 {
     const totalKB = Math.ceil(total / 1024);
 
     this.SetLoadingText(`Downloading engine... ${loadedKB} / ${totalKB} KB`)
-  }
-
-  async LoadIntro() {
-    this.WasmInstance.exports.SetImgPosit92Logo(
-      await this.LoadImage("assets/images/posit-92_32px.png"));
-
-    this.WasmInstance.exports.SetImgFPCLogo(
-      await this.LoadImage("assets/images/fpc_logo.png"));
-
-    this.WasmInstance.exports.SetImgWasmLogo(
-      await this.LoadImage("assets/images/wasm_logo.png"));
   }
 }
 
@@ -78,11 +55,7 @@ var done = false;
 
 async function Main() {
   const game = new Game("game");
-  await game.Init();
-  await game.LoadDefaultFont();
-
-  await game.LoadIntro();
-  game.BeginIntro();
+  game.Start();
 
   function Loop(currentTime) {
     if (done) {
