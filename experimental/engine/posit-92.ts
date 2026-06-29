@@ -1244,6 +1244,8 @@ class Posit92 {
   // Main game loop
 
   async Start() {
+    const showIntro = this.bootOptions.skipIntro == true;
+
     // WebAssembly init & stuff
     await this.InitRuntime();
     this.#HideLoadingOverlay();
@@ -1251,7 +1253,7 @@ class Posit92 {
     // Boot
     await this.#LoadBootAssets();
     
-    if (this.bootOptions.skipIntro == false)
+    if (!showIntro)
       await this.#LoadIntroAssets();
 
     // Engine stuff
@@ -1259,7 +1261,7 @@ class Posit92 {
     this.#AddResizeListener();
     this.#StartLoop();
 
-    if (this.bootOptions.skipIntro == true) {
+    if (showIntro) {
       // Loading
       if (Object.hasOwn(this.#wasm.exports, "BeginLoadingState"))
         this.#wasm.exports.BeginLoadingState();
