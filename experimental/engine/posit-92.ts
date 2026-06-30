@@ -164,10 +164,16 @@ class Posit92 {
   #FrameTime: number;
 
   #vgaWidth: number;
-  get VgaWidth(): number { return this.#vgaWidth }
+  
+  get VgaWidth(): number {
+    return this.#vgaWidth;
+  }
 
   #vgaHeight: number;
-  get VgaHeight(): number { return this.#vgaHeight }
+
+  get VgaHeight(): number {
+    return this.#vgaHeight;
+  }
 
   #canvas: HTMLCanvasElement;
   
@@ -183,8 +189,9 @@ class Posit92 {
   // }
 
   #wasm: WebAssemblyInstance = null!;
+
   get WasmInstance(): WebAssemblyInstance {
-    return this.#wasm
+    return this.#wasm;
   }
 
   /**
@@ -258,18 +265,18 @@ class Posit92 {
    * Game code should not modify this directly
    */
   get WasmImportObject(): WasmImports {
-    return this.#importObject
+    return this.#importObject;
   }
   
   #HandleHaltProc(exitcode: number): void {
     console.log("Programme halted with code:", exitcode);
     this.Cleanup();
-    this.#done = true
+    this.#done = true;
   }
 
   #SignalDone(): void {
     this.Cleanup();
-    this.#done = true
+    this.#done = true;
   }
 
   #NormaliseOptions(vgaWidthOrOptions?: number | Posit92Options, vgaHeight?: number): Posit92Options {
@@ -293,7 +300,7 @@ class Posit92 {
 
       if (options.fps != null) {
         this.#AssertNumber(options.fps);
-        fps = options.fps
+        fps = options.fps;
       }
 
       if (options.skipIntro != null)
@@ -313,7 +320,7 @@ class Posit92 {
       fps,
       skipIntro,
       defaultFont
-    }
+    };
   }
 
   bootOptions: Posit92Options;
@@ -338,16 +345,13 @@ class Posit92 {
 
     if (options.renderer == "2d")
       this.canvasCtx = this.#canvas.getContext(options.renderer)!;
-    else if (options.renderer == "webgl") {
-      console.log("gl context assignment")
+    else if (options.renderer == "webgl")
       this.glCtx = this.#canvas.getContext(options.renderer)!;
-      console.log(this.glCtx);
-    }
 
     this.#TargetFPS = options.fps!;
     this.#FrameTime = 1000 / this.#TargetFPS;
 
-    this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4
+    this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
   }
 
   /**
@@ -356,7 +360,7 @@ class Posit92 {
   #LoadMidnightOffset(): void {
     const now = new Date();
     const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    this.#midnightOffset = midnight.getTime()
+    this.#midnightOffset = midnight.getTime();
   }
 
   /**
@@ -390,7 +394,7 @@ class Posit92 {
       chunks.push(value);
       loaded += value.length;
 
-      this.OnWasmProgress(loaded, total)
+      this.OnWasmProgress(loaded, total);
     }
 
     // Combine chunks
@@ -398,7 +402,7 @@ class Posit92 {
     let pos = 0;
     for (const chunk of chunks) {
       bytes.set(chunk, pos);
-      pos += chunk.length
+      pos += chunk.length;
     }
 
     const result = await WebAssembly.instantiate(bytes.buffer, this.#importObject);
@@ -413,10 +417,10 @@ class Posit92 {
     const loadedKB = Math.ceil(loaded / 1024);
 
     if (isNaN(total))
-      this.SetLoadingText(`Downloading engine (${ loadedKB } KB)`)
+      this.SetLoadingText(`Downloading engine (${ loadedKB } KB)`);
     else {
       const totalKB = Math.ceil(total / 1024);
-      this.SetLoadingText(`Downloading engine (${ loadedKB } KB / ${ totalKB } KB)`)
+      this.SetLoadingText(`Downloading engine (${ loadedKB } KB / ${ totalKB } KB)`);
     }
   }
 
@@ -449,14 +453,14 @@ class Posit92 {
   }
 
   BeginIntro(): void {
-    this.#wasm.exports.BeginIntroState()
+    this.#wasm.exports.BeginIntroState();
   }
 
   #AddOutOfFocusFix(): void {
     this.#canvas.addEventListener("click", () => {
       this.#canvas.tabIndex = 0;
-      this.#canvas.focus()
-    })
+      this.#canvas.focus();
+    });
   }
 
   /**
@@ -490,7 +494,7 @@ class Posit92 {
     await this.LoadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.WasmInstance.exports.DefaultFontPtr(),
-      this.WasmInstance.exports.DefaultFontGlyphsPtr())
+      this.WasmInstance.exports.DefaultFontGlyphsPtr());
   }
 
   async LoadAssets(): Promise<void> {
@@ -503,19 +507,19 @@ class Posit92 {
   async LoadGameAssets(): Promise<void> {}
   
   async #RequestAssetLoad(): Promise<void> {
-    await this.LoadGameAssets()
+    await this.LoadGameAssets();
   }
 
 
   #HideCursor(): void {
-    this.#canvas.style.cursor = "none"
+    this.#canvas.style.cursor = "none";
   }
 
   #ShowCursor(): void {
-    this.#canvas.style.removeProperty("cursor")
+    this.#canvas.style.removeProperty("cursor");
   }
 
-  #AssertNumber(value: unknown) {
+  #AssertNumber(value: unknown): void {
     if (typeof value != "number")
       throw new Error(`Expected a number, but received ${typeof value}`);
 
@@ -523,7 +527,7 @@ class Posit92 {
       throw new Error("Expected a number, but received NaN");
   }
 
-  #AssertString(value: unknown) {
+  #AssertString(value: unknown): void {
     if (typeof value != "string")
       throw new Error(`Expected a string, but received ${typeof value}`);
   }
@@ -534,16 +538,17 @@ class Posit92 {
 
     return new Promise((resolve, reject) => {
       const img = new Image();
+      
       img.onload = () => resolve(img);
       img.onerror = reject;
-      img.src = url
-    })
+      img.src = url;
+    });
   }
 
   // Used in loadImage
   #images: Array<ImageData | null> = [];
 
-  async LoadImage(url: string) {
+  async LoadImage(url: string): Promise<number> {
     this.#AssertString(url);
 
     const img = await this.LoadImageFromURL(url);
@@ -564,7 +569,7 @@ class Posit92 {
     const wasmMemory = new Uint8Array(this.#wasm.exports.memory.buffer);
     const byteSize = img.width * img.height * 4;
     const wasmPtr = this.#wasm.exports.WasmGetMem(byteSize);
-    wasmMemory.set(imageData.data, wasmPtr)
+    wasmMemory.set(imageData.data, wasmPtr);
 
     // Reserve index 0
     if (this.#images.length == 0)
@@ -584,15 +589,17 @@ class Posit92 {
    * Used in asset counter
    */
   #loadingActual = 0;
+
   #GetLoadingActual() { return this.#loadingActual }
 
   /**
    * Used in asset counter
    */
   #loadingTotal = 0;
+
   #GetLoadingTotal() { return this.#loadingTotal }
 
-  async #LoadSingleImage(key: string, path: string) {
+  async #LoadSingleImage(key: string, path: string): Promise<number> {
     return this.LoadImage(path).then(handle => {
       // On success
       this.IncLoadingActual();
@@ -600,7 +607,7 @@ class Posit92 {
     })
   }
 
-  async #LoadImageArray(key: string, paths: Array<string>) {
+  async #LoadImageArray(key: string, paths: Array<string>): Promise<number> {
     const promises = paths.map((path, index) => 
       this.LoadImage(path).then(handle => {
         // On success
