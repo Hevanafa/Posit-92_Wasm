@@ -1,6 +1,11 @@
-class WebGLMixin extends Posit92 {
-  // WebAssembly initialisation happens in the parent class Posit92
+/**
+ * WebAssembly initialisation happens in the parent class Posit92
+ * 
+ * Part of Posit-92 game engine
+ */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+class WebGLMixin extends Posit92 {
   /**
    * Enable this only to see the type definition
    * 
@@ -41,7 +46,7 @@ class WebGLMixin extends Posit92 {
   /**
    * @override
    */
-  SetupImportObject() {
+  SetupImportObject(): void {
     const { env } = this.WasmImportObject;
 
     console.log("SetupImportObject call");
@@ -90,7 +95,7 @@ class WebGLMixin extends Posit92 {
     while (memory[end] != 0) end++;  // Find null terminator
 
     const bytes = memory.subarray(ptr, end);
-    return new TextDecoder().decode(bytes)
+    return new TextDecoder().decode(bytes);
   }
 
   #glClear(mask: number): void {
@@ -98,21 +103,24 @@ class WebGLMixin extends Posit92 {
   }
 
 
-  #glCreateTexture() {
+  #glCreateTexture(): number {
     const texture = this.glCtx.createTexture();
     const id = this.#nextTextureId++;
+
     console.log("id", id, this.#nextTextureId);
+
     this.#textures.set(id, texture);
-    return 1
+    
+    return id;
   }
 
-  #glBindTexture(target, textureId) {
+  #glBindTexture(target: number, textureId: number) {
     const texture = this.#textures.get(textureId);
-    this.glCtx.bindTexture(target, texture)
+    this.glCtx.bindTexture(target, texture);
   }
 
   #glTextParameteri(target, pname, param) {
-    this.glCtx.texParameteri(target, pname, param)
+    this.glCtx.texParameteri(target, pname, param);
   }
 
   #glTexImage2D(
@@ -128,7 +136,7 @@ class WebGLMixin extends Posit92 {
     this.glCtx.texImage2D(
       target, level, internalFormat,
       width, height, border,
-      format, type, pixels)
+      format, type, pixels);
   }
 
 
