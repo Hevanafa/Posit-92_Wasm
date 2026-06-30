@@ -66,40 +66,40 @@ begin
   points := '123';
 
   { Addition }
-  BigIntA := '12';
-  BigIntB := '34';
-  addBigInt;
+  bigIntA := '12';
+  bigIntB := '34';
+  AddBigInt;
 
-  writeLog('a = ' + BigIntA);
-  writeLog('b = ' + BigIntB);
-  writeLog('a + b = ' + BigIntResult);
+  writeLog('a = ' + bigIntA);
+  writeLog('b = ' + bigIntB);
+  writeLog('a + b = ' + bigIntResult);
 
   { Subtraction }
-  BigIntA := '56';
-  BigIntB := '78';
-  subtractBigInt;
+  bigIntA := '56';
+  bigIntB := '78';
+  SubtractBigInt;
 
-  writeLog('a = ' + BigIntA);
-  writeLog('b = ' + BigIntB);
-  writeLog('a - b = ' + BigIntResult);
+  writeLog('a = ' + bigIntA);
+  writeLog('b = ' + bigIntB);
+  writeLog('a - b = ' + bigIntResult);
 
   { Multiplication }
-  BigIntA := '6';
-  BigIntB := '7';
-  multiplyBigInt;
+  bigIntA := '6';
+  bigIntB := '7';
+  SultiplyBigInt;
 
-  writeLog('a = ' + BigIntA);
-  writeLog('b = ' + BigIntB);
-  writeLog('a * b = ' + BigIntResult);
+  writeLog('a = ' + bigIntA);
+  writeLog('b = ' + bigIntB);
+  writeLog('a * b = ' + bigIntResult);
 
   { Comparison }
-  BigIntA := '6';
-  BigIntB := '7';
-  compareBigInt;
+  bigIntA := '6';
+  bigIntB := '7';
+  CompareBigInt;
 
-  writeLog('a = ' + BigIntA);
-  writeLog('b = ' + BigIntB);
-  writeLog('compare(a, b) = ' + BigIntResult);
+  writeLog('a = ' + bigIntA);
+  writeLog('b = ' + bigIntB);
+  writeLog('compare(a, b) = ' + bigIntResult);
 end;
 
 { Used by BigInt }
@@ -144,15 +144,15 @@ begin
     lastLeft := isKeyDown(SC_LEFT);
 
     if lastLeft then begin
-      BigIntA := points;
-      BigIntB := '1000';
-      compareBigInt;
+      bigIntA := points;
+      bigIntB := '1000';
+      CompareBigInt;
 
       { if points > 1000 }
-      if parseInt(BigIntResult) > 0 then begin
-        BigIntB := '10';
-        divideBigInt;
-        points := BigIntResult
+      if parseInt(bigIntResult) > 0 then begin
+        bigIntB := '10';
+        DivideBigInt;
+        points := bigIntResult
       end;
     end;
   end;
@@ -161,11 +161,11 @@ begin
     lastRight := isKeyDown(SC_RIGHT);
 
     if lastRight then begin
-      BigIntA := points;
-      BigIntB := '10';
-      multiplyBigInt;
+      bigIntA := points;
+      bigIntB := '10';
+      SultiplyBigInt;
 
-      points := BigIntResult
+      points := bigIntResult
     end;
   end;
 
@@ -190,14 +190,14 @@ begin
 
   PrintCentred(points, 140);
 
-  BigIntA := points;
-  formatBigInt;
-  formattedPoints := BigIntResult;
+  bigIntA := points;
+  FormatBigInt;
+  formattedPoints := bigIntResult;
   PrintCentred(formattedPoints, 150);
 
-  BigIntA := points;
-  formatBigIntScientific;
-  formattedPoints := BigIntResult;
+  bigIntA := points;
+  FormatBigIntScientific;
+  formattedPoints := bigIntResult;
   PrintCentred(formattedPoints, 160);
 
   PrintCentred('Left - Decrease | Right - Increase', 180);

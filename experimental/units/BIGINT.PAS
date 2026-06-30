@@ -15,48 +15,49 @@ interface
 
 var
   { BigInt "registers". The result register isn't always a number }
-  BigIntA, BigIntB, BigIntResult: string;
+  bigIntA, bigIntB, bigIntResult: string;
 
-procedure loadBigIntResult(const textPtr: pointer; const textLen: smallint); public name 'loadBigIntResult';
-function getBigIntAPtr: pointer; public name 'getBigIntAPtr';
-function getBigIntBPtr: pointer; public name 'getBigIntBPtr';
-function getBigIntResultPtr: pointer; public name 'getBigIntResultPtr';
+procedure LoadBigIntResult(const textPtr: pointer; const textLen: smallint); public name 'LoadBigIntResult';
 
-procedure addBigInt; external 'env' name 'addBigInt';
-procedure subtractBigInt; external 'env' name 'subtractBigInt';
-procedure multiplyBigInt; external 'env' name 'multiplyBigInt';
-procedure divideBigInt; external 'env' name 'divideBigInt';
+function GetBigIntAPtr: pointer; public name 'GetBigIntAPtr';
+function GetBigIntBPtr: pointer; public name 'GetBigIntBPtr';
+function GetBigIntResultPtr: pointer; public name 'GetBigIntResultPtr';
+
+procedure AddBigInt; external 'env' name 'AddBigInt';
+procedure SubtractBigInt; external 'env' name 'SubtractBigInt';
+procedure SultiplyBigInt; external 'env' name 'SultiplyBigInt';
+procedure DivideBigInt; external 'env' name 'DivideBigInt';
 
 { Sets the Result register to either -1, 0, or 1 }
-procedure compareBigInt; external 'env' name 'compareBigInt';
+procedure CompareBigInt; external 'env' name 'CompareBigInt';
 
 { Requires only register A, outputs to the Result register }
-procedure formatBigInt; external 'env' name 'formatBigInt';
-procedure formatBigIntScientific; external 'env' name 'formatBigIntScientific';
+procedure FormatBigInt; external 'env' name 'FormatBigInt';
+procedure FormatBigIntScientific; external 'env' name 'FormatBigIntScientific';
 
 
 implementation
 
 uses Conv;
 
-procedure loadBigIntResult(const textPtr: pointer; const textLen: smallint);
+procedure LoadBigIntResult(const textPtr: pointer; const textLen: smallint);
 begin
-  BigIntResult := strPtrToString(textPtr, textLen)
+  bigIntResult := strPtrToString(textPtr, textLen)
 end;
 
-function getBigIntAPtr: pointer;
+function GetBigIntAPtr: pointer;
 begin
-  getBigIntAPtr := @BigIntA
+  GetBigIntAPtr := @bigIntA
 end;
 
-function getBigIntBPtr: pointer;
+function GetBigIntBPtr: pointer;
 begin
-  getBigIntBPtr := @BigIntB
+  GetBigIntBPtr := @bigIntB
 end;
 
-function getBigIntResultPtr: pointer;
+function GetBigIntResultPtr: pointer;
 begin
-  getBigIntResultPtr := @BigIntResult
+  GetBigIntResultPtr := @bigIntResult
 end;
 
 end.
