@@ -1,5 +1,6 @@
 type BigIntWasmExports = WasmExports & {
-  getStringBuffer: () => number;
+  GetStringBuffer: () => number;
+  loadBigIntResult: (bufferPtr: number, length: number) => void;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -20,8 +21,12 @@ class BigIntMixin extends Posit92 {
     });
   }
 
-  get WasmInstance(): WebAssemblyInstance & { exports: BigIntWasmExports } {
-    return super.WasmInstance as any;
+  // get WasmInstance(): WebAssemblyInstance & { exports: BigIntWasmExports } {
+  //   return super.WasmInstance as any;
+  // }
+
+  get WasmInstanceExports(): BigIntWasmExports {
+    return this.WasmInstance.exports as BigIntWasmExports;
   }
 
   AssertBigInt(value: unknown): void {
@@ -38,8 +43,8 @@ class BigIntMixin extends Posit92 {
     const encoder = new TextEncoder();
     const bytes = encoder.encode(text);
 
-    const bufferPtr = this.WasmInstance.exports.getStringBuffer();
-    const buffer = new Uint8Array(this.WasmInstance.exports.memory.buffer, bufferPtr, bytes.length);
+    const bufferPtr = this.WasmInstanceExports.GetStringBuffer();
+    const buffer = new Uint8Array(this.WasmInstanceExports.memory.buffer, bufferPtr, bytes.length);
     buffer.set(bytes);
 
     return bytes.length;
@@ -50,8 +55,8 @@ class BigIntMixin extends Posit92 {
       throw new Error("n should be either of type BigInt or string");
 
     const length = this.#LoadStringBuffer(n.toString());
-    const bufferPtr = this.WasmInstance.exports.getStringBuffer();
-    this.WasmInstance.exports.loadBigIntResult(bufferPtr, length);
+    const bufferPtr = this.WasmInstanceExports.GetStringBuffer();
+    this.WasmInstanceExports.loadBigIntResult(bufferPtr, length);
   }
 
   #BufferPtrToString(bufferPtr: number): string {
@@ -70,9 +75,9 @@ class BigIntMixin extends Posit92 {
 
   #AddBigInt(): void {
     const biStrA = this.#BufferPtrToString(
-      this.WasmInstance.exports.getBigIntAPtr());
+      this.WasmInstanceExports.getBigIntAPtr());
     const biStrB = this.#BufferPtrToString(
-      this.WasmInstance.exports.getBigIntBPtr());
+      this.WasmInstanceExports.getBigIntBPtr());
     
     const [a, b] = [BigInt(biStrA), BigInt(biStrB)];
 
@@ -84,32 +89,32 @@ class BigIntMixin extends Posit92 {
   }
 
   #SubtractBigInt(): void {
-    const biStrA = this.#BufferPtrToString(this.WasmInstance.exports.getBigIntAPtr());
-    const biStrB = this.#BufferPtrToString(this.WasmInstance.exports.getBigIntBPtr());
+    const biStrA = this.#BufferPtrToString(this.WasmInstanceExports.getBigIntAPtr());
+    const biStrB = this.#BufferPtrToString(this.WasmInstanceExports.getBigIntBPtr());
     
     const [a, b] = [BigInt(biStrA), BigInt(biStrB)];
     this.#LoadBigIntResult(a - b);
   }
 
   #MultiplyBigInt(): void {
-    const biStrA = this.#BufferPtrToString(this.WasmInstance.exports.getBigIntAPtr());
-    const biStrB = this.#BufferPtrToString(this.WasmInstance.exports.getBigIntBPtr());
+    const biStrA = this.#BufferPtrToString(this.WasmInstanceExports.getBigIntAPtr());
+    const biStrB = this.#BufferPtrToString(this.WasmInstanceExports.getBigIntBPtr());
     
     const [a, b] = [BigInt(biStrA), BigInt(biStrB)];
     this.#LoadBigIntResult(a * b);
   }
 
   #DivideBigInt(): void {
-    const biStrA = this.#BufferPtrToString(this.WasmInstance.exports.getBigIntAPtr());
-    const biStrB = this.#BufferPtrToString(this.WasmInstance.exports.getBigIntBPtr());
+    const biStrA = this.#BufferPtrToString(this.WasmInstanceExports.getBigIntAPtr());
+    const biStrB = this.#BufferPtrToString(this.WasmInstanceExports.getBigIntBPtr());
     
     const [a, b] = [BigInt(biStrA), BigInt(biStrB)];
     this.#LoadBigIntResult(a / b);
   }
 
   #CompareBigInt(): void {
-    const biStrA = this.#BufferPtrToString(this.WasmInstance.exports.getBigIntAPtr());
-    const biStrB = this.#BufferPtrToString(this.WasmInstance.exports.getBigIntBPtr());
+    const biStrA = this.#BufferPtrToString(this.WasmInstanceExports.getBigIntAPtr());
+    const biStrB = this.#BufferPtrToString(this.WasmInstanceExports.getBigIntBPtr());
     
     const [a, b] = [BigInt(biStrA), BigInt(biStrB)];
 
@@ -122,7 +127,7 @@ class BigIntMixin extends Posit92 {
   }
 
   #FormatBigInt(): void {
-    const biStrA = this.#BufferPtrToString(this.WasmInstance.exports.getBigIntAPtr());
+    const biStrA = this.#BufferPtrToString(this.WasmInstanceExports.getBigIntAPtr());
     const a = BigInt(biStrA);
     let readable = 0;
 
@@ -176,7 +181,7 @@ class BigIntMixin extends Posit92 {
 
 
   #FormatBigIntScientific(): void {
-    const biStrA = this.#BufferPtrToString(this.WasmInstance.exports.getBigIntAPtr());
+    const biStrA = this.#BufferPtrToString(this.WasmInstanceExports.getBigIntAPtr());
     const a = BigInt(biStrA);
     const digits = a.toString().length;
 
