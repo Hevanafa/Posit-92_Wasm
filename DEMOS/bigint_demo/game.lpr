@@ -3,10 +3,11 @@ library Game;
 {$Mode ObjFPC}
 
 uses
+  EngineCore, EngineFonts, WasmHost, WasmMemMgr,
   Conv, FPS, Fullscreen,
   ImgRef, ImgRefFast,
   Loading, Keyboard, Logger, Mouse,
-  Timing, WasmMemMgr, VGA,
+  Timing, VGA,
   Assets, BigInt;
 
 type
@@ -35,28 +36,25 @@ var
   gameTime: double;
   points: string; { BigInt }
 
-{ Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure loadAssets; external 'env' name 'loadAssets';
-
-procedure drawFPS;
+procedure DrawFPS;
 begin
   printDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
-procedure drawMouse;
+procedure DrawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure beginLoadingState;
+procedure BeginLoadingState;
 begin
   actualGameState := GameStateLoading;
   fitCanvas;
-  loadAssets
+
+  RequestAssetLoad
 end;
 
-procedure beginPlayingState;
+procedure BeginPlayingState;
 begin
   hideCursor;
   fitCanvas;
@@ -105,41 +103,34 @@ begin
 end;
 
 { Used by BigInt }
-function getStringBuffer: pointer;
+function GetStringBuffer: pointer;
 begin
-  getStringBuffer := @stringBuffer
+  GetStringBuffer := @stringBuffer
 end;
 
 
-procedure init;
+procedure OnReady;
 begin
-  initHeapMgr;
-  initDeltaTime;
-  initFPSCounter
-end;
-
-procedure afterInit;
-begin
-  beginPlayingState
+  BeginPlayingState
 end;
 
 
-procedure printCentred(const text: string; const y: integer);
+procedure PrintCentred(const text: string; const y: integer);
 var
   w: integer;
 begin
-  w := measureDefault(text);
-  printDefault(text, (vgaWidth - w) div 2, y)
+  w := MeasureDefault(text);
+  PrintDefault(text, (vgaWidth - w) div 2, y)
 end;
 
-procedure update;
+procedure Update;
 begin
   updateDeltaTime;
   incrementFPS;
 
   updateMouse;
 
-  { Your update logic here }
+  { Your Update logic here }
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
 
@@ -178,10 +169,10 @@ begin
     end;
   end;
 
-  gameTime := gameTime + dt
+  gameTime := gameTime + DeltaTime
 end;
 
-procedure draw;
+procedure Draw;
 var
   formattedPoints: string;
 begin
@@ -197,31 +188,32 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  printCentred(points, 140);
+  PrintCentred(points, 140);
 
   BigIntA := points;
   formatBigInt;
   formattedPoints := BigIntResult;
-  printCentred(formattedPoints, 150);
+  PrintCentred(formattedPoints, 150);
 
   BigIntA := points;
   formatBigIntScientific;
   formattedPoints := BigIntResult;
-  printCentred(formattedPoints, 160);
+  PrintCentred(formattedPoints, 160);
 
-  printCentred('Left - Decrease | Right - Increase', 180);
+  PrintCentred('Left - Decrease | Right - Increase', 180);
 
-  drawMouse;
-  drawFPS;
+  DrawMouse;
+  DrawFPS;
 
-  vgaFlush
+  VgaUpload;
+  VgaPresent
 end;
 
 exports
-  getStringBuffer,
-  beginLoadingState,
+  GetStringBuffer,
+  BeginLoadingState,
   { Main game procedures }
-  init, afterInit, update, draw;
+  OnReady, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
