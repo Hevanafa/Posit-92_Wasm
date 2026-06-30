@@ -18,6 +18,7 @@ type WasmExports = {
   // InteropBuf.pas
   GetInteropBufPtr: () => number,
   GetInteropBufLen: () => number,
+  GetInteropBufCapacity: () => number,
   SetInteropBufLen: (value: number) => void,
 
   // EngineCore.pas
@@ -1203,6 +1204,10 @@ class Posit92 {
 
     const ptr = this.#wasm.exports.GetInteropBufPtr();
     const len = bytes.length;
+    const capacity = this.#wasm.exports.GetInteropBufCapacity();
+
+    if (len > capacity)
+      throw new RangeError(`Interop buffer overflow: ${len} > ${capacity}`);
 
     const memview = new Uint8Array(this.#wasm.exports.memory.buffer);
     memview.set(bytes, ptr);
