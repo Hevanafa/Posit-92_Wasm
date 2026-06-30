@@ -2,6 +2,8 @@ use strict;
 use warnings;
 use v5.38.2;
 
+use File::Which qw(which);
+
 my $source_file = $ARGV[0];
 
 unless ($source_file) {

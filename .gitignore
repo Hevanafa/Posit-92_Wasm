@@ -18,9 +18,12 @@ DEMOS/*/*.pl
 
 # Demo build artifacts
 DEMOS/*/posit-92.js
-DEMOS/*/webgl.js
 DEMOS/*/*.d.ts
 DEMOS/*/*.js.map
+
+# Mixin files
+DEMOS/*/webgl.js
+DEMOS/*/bigint.js
 
 # Bun build scripts for demo projects
 DEMOS/*/*.ts
@@ -60,3 +63,5 @@ experimental/engine/*.d.ts
 experimental/engine/*.js
 experimental/engine/*.js.map
 experimental/mixins/webgl.js
+experimental/mixins/bigint.js
+
