@@ -12,7 +12,7 @@
 				"args": [
 					"-NoExit",
 					"-Command",
-					"function prompt { '> ' }"
+					"$env:LC_ALL=\"C\";function prompt { '> ' }"
 				]
 			},
 			"Git Bash": {
