@@ -65,40 +65,32 @@ begin
 
   points := '123';
 
+  { Addition }
   BigIntSetA('20');
   BigIntSetB('57');
   JsBigIntAdd;
   WriteLog(ReadInteropString);
 
-  {
-  { Addition }
-  bigIntA := '12';
-  bigIntB := '34';
-  AddBigInt;
-
-  writeLog('a = ' + bigIntA);
-  writeLog('b = ' + bigIntB);
-  writeLog('a + b = ' + bigIntResult);
-
   { Subtraction }
-  bigIntA := '56';
-  bigIntB := '78';
-  SubtractBigInt;
-
-  writeLog('a = ' + bigIntA);
-  writeLog('b = ' + bigIntB);
-  writeLog('a - b = ' + bigIntResult);
+  BigIntSetA('56');
+  BigIntSetB('78');
+  JsBigIntSubtract;
+  WriteLog(ReadInteropString);
 
   { Multiplication }
-  bigIntA := '6';
-  bigIntB := '7';
-  MultiplyBigInt;
+  BigIntSetA('6');
+  BigIntSetB('7');
+  JsBigIntMultiply;
+  writelog(ReadInteropString);
 
-  writeLog('a = ' + bigIntA);
-  writeLog('b = ' + bigIntB);
-  writeLog('a * b = ' + bigIntResult);
+  { Division }
+  BigIntSetA('80');
+  BigIntSetB('8');
+  JsBigIntDivide;
+  writelog(ReadInteropString);
 
-  { Comparison }
+{ Comparison }
+  {
   bigIntA := '6';
   bigIntB := '7';
   CompareBigInt;

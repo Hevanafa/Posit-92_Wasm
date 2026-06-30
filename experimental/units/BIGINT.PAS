@@ -66,7 +66,6 @@ end;
 
 procedure BigIntSetA(const n: string);
 begin
-  { bigIntA := n; }
   WriteInteropString(n);
   JsBigIntSetA
 end;
