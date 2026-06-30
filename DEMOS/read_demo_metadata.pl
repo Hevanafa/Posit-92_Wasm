@@ -4,6 +4,12 @@ use v5.38.2;
 
 use Cwd qw(cwd);
 
+unless ($ARGV[0]) {
+  say "Usage:";
+  say "$0 <demo_dir>";
+  exit 1
+}
+
 my $original_dir = cwd;
 my ($demo_dir) = $ARGV[0] =~ /([a-z_]+)/;
 
@@ -35,7 +41,7 @@ for $line (<$fh>) {
     say $line;
 
     my ($mixins) = $line =~ /[:](.*)/;
-    
+
     my @mixins = map {
       $_ =~ /^\s*(.+)\s*$/;
       $1
