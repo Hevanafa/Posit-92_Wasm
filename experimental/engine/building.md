@@ -1,7 +1,5 @@
 To build, use this command:
 
 ```powershell
-bun run make
+perl .\make.pl
 ```
-
-The alias is available in `package.json`
