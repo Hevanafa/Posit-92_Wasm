@@ -1,3 +1,8 @@
+{
+  Title: WebGL Demo
+  Mixins: webgl
+}
+
 library Game;
 
 {$Mode ObjFPC}
