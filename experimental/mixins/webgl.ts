@@ -110,7 +110,7 @@ class WebGLMixin extends Posit92 {
     console.log("id", id, this.#nextTextureId);
 
     this.#textures.set(id, texture);
-    
+
     return id;
   }
 
@@ -119,7 +119,7 @@ class WebGLMixin extends Posit92 {
     this.glCtx.bindTexture(target, texture);
   }
 
-  #glTextParameteri(target, pname, param) {
+  #glTextParameteri(target: number, pname: number, param: number): void {
     this.glCtx.texParameteri(target, pname, param);
   }
 
@@ -140,67 +140,75 @@ class WebGLMixin extends Posit92 {
   }
 
 
-  #glCreateShader(type) {
+  #glCreateShader(type: number): number {
     const shader = this.glCtx.createShader(type);
     const id = this.#nextShaderId++;
+    
     this.#shaders.set(id, shader);
-    return id
+
+    return id;
   }
 
-  #glShaderSource(shaderId, sourcePtr) {
+  #glShaderSource(shaderId: number, sourcePtr: number): void {
     const shader = this.#shaders.get(shaderId);
     const source = this.#ReadCString(sourcePtr);
-    this.glCtx.shaderSource(shader, source)
+    this.glCtx.shaderSource(shader, source);
   }
 
-  #glCompileShader(shaderId) {
+  #glCompileShader(shaderId: number): void {
     const shader = this.#shaders.get(shaderId);
-    this.glCtx.compileShader(shader)
+    this.glCtx.compileShader(shader);
   }
 
-  #glCreateProgram() {
+  #glCreateProgram(): number {
     const program = this.glCtx.createProgram();
     const id = this.#nextProgramId++;
+    
     this.#programs.set(id, program);
-    return id
+
+    return id;
   }
 
-  #glAttachShader(programId, shaderId) {
+  #glAttachShader(programId: number, shaderId: number): void {
     const program = this.#programs.get(programId);
     const shader = this.#shaders.get(shaderId);
-    this.glCtx.attachShader(program, shader)
+
+    this.glCtx.attachShader(program, shader);
   }
 
-  #glLinkProgram(programId) {
+  #glLinkProgram(programId: number): void {
     const program = this.#programs.get(programId);
-    this.glCtx.linkProgram(program)
+    this.glCtx.linkProgram(program);
   }
 
-  #glUseProgram(programId) {
+  #glUseProgram(programId: number): void {
     const program = this.#programs.get(programId);
-    this.glCtx.useProgram(program)
+    this.glCtx.useProgram(program);
   }
 
 
-  #glCreateBuffer() {
+  #glCreateBuffer(): number {
     const buffer = this.glCtx.createBuffer();
     const id = this.#nextBufferId++;
+
     this.#buffers.set(id, buffer);
-    return id
+
+    return id;
   }
 
   #glBindBuffer(target, bufferId) {
     const buffer = this.#buffers.get(bufferId);
-    this.glCtx.bindBuffer(target, buffer)
+    this.glCtx.bindBuffer(target, buffer);
   }
 
   #glBufferData(target, size, dataPtr, usage) {
     const data = new Float32Array(
       this.WasmInstance.exports.memory.buffer,
       dataPtr,
-      size / 4
+      Math.ceil(size / 4)
     );
-    this.glCtx.bufferData(target, data, usage)
+
+    this.glCtx.bufferData(target, data, usage);
   }
 
   #glGetAttribLocation(programId, namePtr) {
@@ -230,23 +238,23 @@ class WebGLMixin extends Posit92 {
   }
 
 
-  #glGetUniformLocation(programId, namePtr) {
+  #glGetUniformLocation(programId: number, namePtr: number): number {
     const program = this.#programs.get(programId);
     const name = this.#ReadCString(namePtr);
     const location = this.glCtx.getUniformLocation(program, name);
 
     const id = this.#nextUniformId++;
     this.#uniformLocations.set(id, location);
+
     return id
   }
 
   #glUniform1i(locationId, value) {
-    // console.log("unifLoc", locationId, value);
     const loc = this.#uniformLocations.get(locationId);
     this.glCtx.uniform1i(loc, value)
   }
 
-  #glActiveTexture(texture) {
+  #glActiveTexture(texture: number) {
     this.glCtx.activeTexture(texture)
   }
 }
