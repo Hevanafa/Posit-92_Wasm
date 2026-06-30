@@ -34,6 +34,7 @@ var
 
   points: string; { BigInt }
   formattedPoints: string;
+  scientificPoints: string;
 
 procedure DrawFPS;
 begin
@@ -62,11 +63,11 @@ begin
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
-  points := '123';
+  points := '1234';
 
   BigIntSetA(points);
-  JsBigIntFormat;
-  formattedPoints := ReadInteropString;
+  formattedPoints := BigIntFormat(points);
+  scientificPoints := BigIntFormatScientific(points);
 
   { Addition }
   BigIntSetA('20');
@@ -93,15 +94,10 @@ begin
   writelog(BigIntFetchResult);
 
   { Comparison }
-  {
-  bigIntA := '6';
-  bigIntB := '7';
-  CompareBigInt;
-
-  writeLog('a = ' + bigIntA);
-  writeLog('b = ' + bigIntB);
-  writeLog('compare(a, b) = ' + bigIntResult);
-  }
+  BigIntSetA('6');
+  BigIntSetB('7');
+  JsBigIntCompare;
+  writeLog('compare(a, b) = ' + BigIntFetchResult);
 end;
 
 procedure OnReady;
@@ -148,7 +144,8 @@ begin
         JsBigIntDivide;
 
         points := BigIntFetchResult;
-        formattedPoints := BigIntFormat(points)
+        formattedPoints := BigIntFormat(points);
+        scientificPoints := BigIntFormatScientific(points);
       end;
     end;
   end;
@@ -162,7 +159,8 @@ begin
       JsBigIntMultiply;
 
       points := BigIntFetchResult;
-      formattedPoints := BigIntFormat(points)
+      formattedPoints := BigIntFormat(points);
+      scientificPoints := BigIntFormatScientific(points);
     end;
   end;
 
@@ -185,13 +183,7 @@ begin
 
   PrintCentred(points, 140);
   PrintCentred(formattedPoints, 150);
-
-  {
-  bigIntA := points;
-  FormatBigIntScientific;
-  formattedPoints := bigIntResult;
-  PrintCentred(formattedPoints, 160);
-  }
+  PrintCentred(scientificPoints, 160);
 
   PrintCentred('Left - Decrease | Right - Increase', 180);
 
