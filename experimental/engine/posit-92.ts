@@ -150,6 +150,7 @@ type Posit92Options = {
   defaultFont?: boolean;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Posit92 {
   static version = "0.1.8";
 
@@ -547,7 +548,7 @@ class Posit92 {
     return new Promise((resolve, reject) => {
       const img = new Image();
 
-      img.onload = () => resolve(img);
+      img.onload = (): void => { resolve(img); };
       img.onerror = reject;
       img.src = url;
     });
@@ -590,7 +591,7 @@ class Posit92 {
 
     this.#wasm.exports.RegisterImageRef(handle, wasmPtr, img.width, img.height);
 
-    return handle
+    return handle;
   }
 
   /**
@@ -611,24 +612,24 @@ class Posit92 {
     return this.#loadingTotal;
   }
 
-  async #LoadSingleImage(key: string, path: string): Promise<number> {
+  async #LoadSingleImage(key: string, path: string): Promise<LoadImageReturn> {
     return this.LoadImage(path).then(handle => {
       // On success
       this.IncLoadingActual();
-      return { key, path, handle }
-    })
+      return { key, path, handle };
+    });
   }
 
-  async #LoadImageArray(key: string, paths: Array<string>): Promise<number> {
-    const promises = paths.map((path, index) => 
-      this.LoadImage(path).then(handle => {
-        // On success
-        this.IncLoadingActual();
-        return { key, path, handle, index }
-      })
-    );
+  async #LoadImageArray(key: string, paths: Array<string>): Promise<Array<number>> {
+    const promises = paths.map(
+      (path, index) => 
+        this.LoadImage(path).then(handle => {
+          // On success
+          this.IncLoadingActual();
+          return { key, path, handle, index };
+        }));
 
-    return Promise.all(promises)
+    return Promise.all(promises);
   }
 
   /**
@@ -640,7 +641,7 @@ class Posit92 {
    * 
    * @param manifest - Key-value pairs of `"asset_key": "image_path"`
    */
-  async LoadImagesFromManifest(manifest: ImageManifest): Promise<number> {
+  async LoadImagesFromManifest(manifest: ImageManifest): Promise<void> {
     const entries = Object.entries(manifest);
 
     const promises = entries.map(([key, pathOrArray]) =>
@@ -649,7 +650,7 @@ class Posit92 {
       : this.#LoadSingleImage(key, pathOrArray)
     );
 
-    const results: Array<number | FailureItem> = await Promise.all(promises);
+    const results = await Promise.all(promises);
 
     type FailureItem = {
       key: string,
@@ -666,7 +667,7 @@ class Posit92 {
       for (const failure of failures)
         console.error("   " + failure.key + ": " + failure.path);
 
-      throw new Error("Failed to load some assets")
+      throw new Error("Failed to load some assets");
     }
 
     for (const item of results.flat(1)) {
@@ -680,7 +681,7 @@ class Posit92 {
       const setterName = `SetImg${caps}`;
 
       if (typeof this.WasmInstance.exports[setterName] != "function")
-        console.error("loadAssetsFromManifest: Missing setter", setterName, "for the asset key", key)
+        console.error("loadAssetsFromManifest: Missing setter", setterName, "for the asset key", key);
       else {
         if (index == null)
           //@ts-ignore
@@ -701,14 +702,14 @@ class Posit92 {
 
       if (typeof setter != "function") {
         console.error("loadBMFontFromManifest: Missing setter", setter);
-        return { key, setterPtr: 0 }
+        return { key, setterPtr: 0 };
       }
 
       const glyphSetter = this.WasmInstance.exports[params.glyphSetter];
 
       if (typeof glyphSetter != "function") {
         console.error("loadBMFontFromManifest: Missing glyphSetter", params.glyphSetter);
-        return { key, glyphSetterPtr: 0 }
+        return { key, glyphSetterPtr: 0 };
       }
 
       const [setterPtr, glyphSetterPtr] = [setter(), glyphSetter()];
@@ -716,8 +717,8 @@ class Posit92 {
       return this.LoadBMFont(params.path, setterPtr, glyphSetterPtr).then(() => {
         // On success
         this.IncLoadingActual();
-        return { key, path: params.path, setterPtr, glyphSetterPtr }
-      })
+        return { key, path: params.path, setterPtr, glyphSetterPtr };
+      });
     });
 
     const results = await Promise.all(promises);
@@ -731,28 +732,28 @@ class Posit92 {
         "Failed to load assets:",
         failures.map(item => item.key).join(", "));
       
-      throw new Error("Failed to load some assets")
+      throw new Error("Failed to load some assets");
     }
 
-    for (const item of results) ;
+    // for (const item of results) ;
   }
 
   IncLoadingActual(): void {
-    this.#loadingActual++
+    this.#loadingActual++;
   }
 
   SetLoadingActual(value: number): void {
     this.#AssertNumber(value);
-    this.#loadingActual = value
+    this.#loadingActual = value;
   }
 
   IncLoadingTotal(count: number): void {
-    this.#loadingTotal += count
+    this.#loadingTotal += count;
   }
 
   SetLoadingTotal(value: number): void {
     this.#AssertNumber(value);
-    this.#loadingTotal = value
+    this.#loadingTotal = value;
   }
 
   SetLoadingText(text: string): void {
@@ -769,7 +770,7 @@ class Posit92 {
   }
 
   async Sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms))
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   /**
@@ -784,7 +785,7 @@ class Posit92 {
   InitLoadingScreen(): void {
     if (this.AssetManifest == null) {
       console.warn("Missing AssetManifest in " + this.constructor.name);
-      return
+      return;
     }
 
     const imageCount = this.AssetManifest.images != null
@@ -814,10 +815,10 @@ class Posit92 {
       yoffset: 0,
       xadvance: 0,
       lineHeight: 0
-    }
+    };
   }
 
-  async LoadBMFont(url: string, fontPtrRef: number, fontGlyphsPtrRef: number) {
+  async LoadBMFont(url: string, fontPtrRef: number, fontGlyphsPtrRef: number): Promise<void> {
     this.#AssertString(url);
     this.#AssertNumber(fontPtrRef);
     this.#AssertNumber(fontGlyphsPtrRef);
@@ -829,6 +830,8 @@ class Posit92 {
 
     let txtLine = "";
     let pairs: Array<StringPair>;
+    
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, prefer-const
     let k = "", v = "";
 
     let fontface = "";
@@ -868,11 +871,11 @@ class Posit92 {
 
 
       } else if (txtLine.startsWith("common")) {
-        [k, v] = <StringPair>(pairs.find(pair => pair[0] == "lineHeight"));
+        [, v] = <StringPair>(pairs.find(pair => pair[0] == "lineHeight"));
         lineHeight = parseInt(v);
 
       } else if (txtLine.startsWith("page")) {
-        [k, v] = <StringPair>(pairs.find(pair => pair[0] == "file"));
+        [, v] = <StringPair>(pairs.find(pair => pair[0] == "file"));
         filename = v.replaceAll(/"/g, "");
 
       } else if (txtLine.startsWith("char") && !txtLine.startsWith("chars")) {
@@ -892,7 +895,7 @@ class Posit92 {
         }
 
         fontGlyphs.set(tempGlyph.id, tempGlyph);
-        glyphCount++
+        glyphCount++;
       }
     }
 
@@ -1058,7 +1061,7 @@ class Posit92 {
   #InitKeyboard(): void {
     if (this.ScancodeMap == null) {
       console.warn("Missing ScancodeMap in " + this.constructor.name);
-      return
+      return;
     }
 
     window.addEventListener("keydown", e => {
@@ -1069,16 +1072,16 @@ class Posit92 {
         this.#heldScancodes.add(scancode);
         e.preventDefault();
       }
-    })
+    });
 
     window.addEventListener("keyup", e => {
       const scancode = this.ScancodeMap[e.code];
-      if (scancode) this.#heldScancodes.delete(scancode)
-    })
+      if (scancode) this.#heldScancodes.delete(scancode);
+    });
   }
 
-  #IsKeyDown(scancode: number): void {
-    return this.#heldScancodes.has(scancode)
+  #IsKeyDown(scancode: number): boolean {
+    return this.#heldScancodes.has(scancode);
   }
 
 
@@ -1115,7 +1118,7 @@ class Posit92 {
     });
 
     this.#canvas.addEventListener("contextmenu", e => {
-      e.preventDefault()
+      e.preventDefault();
     });
 
     // Handle touch events
@@ -1174,11 +1177,11 @@ class Posit92 {
 
   #UpdateMouseButton(): void {
     if (this.#leftButtonDown && this.#rightButtonDown)
-      this.#mouseButton = 3
+      this.#mouseButton = 3;
     else if (this.#rightButtonDown)
-      this.#mouseButton = 2
+      this.#mouseButton = 2;
     else if (this.#leftButtonDown)
-      this.#mouseButton = 1
+      this.#mouseButton = 1;
     else
       this.#mouseButton = 0;
   }
@@ -1225,7 +1228,7 @@ class Posit92 {
 
   // VGA.PAS
 
-  #surface: ImageData = null!;
+  #surface: ImageData | null = null;
 
   #VgaUpload(): void {
     const surfacePtr = this.#wasm.exports.GetSurfacePtr();
@@ -1237,28 +1240,29 @@ class Posit92 {
     );
 
     if (this.#surface != null)
-      delete this.#surface;
+      this.#surface = null;
 
     this.#surface = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
   }
   
   #VgaPresent(): void {
-    this.canvasCtx.putImageData(this.#surface, 0, 0);
+    if (this.#surface != null)
+      this.canvasCtx.putImageData(this.#surface, 0, 0);
   }
 
   // Fullscreen.pas
 
   #AddResizeListener(): void {
-    window.addEventListener("resize", this.#HandleResize.bind(this))
+    window.addEventListener("resize", this.#HandleResize.bind(this));
   }
 
-  #GetFullscreenState(): void {
-    return document.fullscreenElement != null
+  #GetFullscreenState(): boolean {
+    return document.fullscreenElement != null;
   }
 
   #ToggleFullscreen(): void {
     if (!this.#GetFullscreenState())
-      this.#canvas.requestFullscreen()
+      this.#canvas.requestFullscreen();
     else
       document.exitFullscreen();
   }
@@ -1272,7 +1276,7 @@ class Posit92 {
     this.#FitCanvas();
   }
 
-  #FitCanvas() {
+  #FitCanvas(): void {
     const aspectRatio = this.#vgaWidth / this.#vgaHeight;
 
     const [windowWidth, windowHeight] = [window.innerWidth, window.innerHeight];
@@ -1281,10 +1285,10 @@ class Posit92 {
     let w = 0, h = 0;
     if (windowRatio > aspectRatio) {
       h = windowHeight;
-      w = h * aspectRatio
+      w = h * aspectRatio;
     } else {
       w = windowWidth;
-      h = w / aspectRatio
+      h = w / aspectRatio;
     }
 
     if (this.#canvas != null) {
@@ -1295,7 +1299,7 @@ class Posit92 {
 
   // Main game loop
 
-  async Start() {
+  async Start(): Promise<void> {
     const showIntro = this.bootOptions.skipIntro == true;
 
     // WebAssembly init & stuff
@@ -1327,7 +1331,7 @@ class Posit92 {
       this.#wasm.exports.BeginIntroState();
   }
 
-  #Loop = (currentTime: number) => {
+  #Loop = (currentTime: number): void => {
     if (this.#done) {
       this.Cleanup();
       return;
@@ -1341,13 +1345,13 @@ class Posit92 {
       this.Draw();
     }
 
-    requestAnimationFrame(this.#Loop)
+    requestAnimationFrame(this.#Loop);
+  };
+
+  #StartLoop(): void {
+    requestAnimationFrame(this.#Loop);
   }
 
-  #StartLoop() {
-    requestAnimationFrame(this.#Loop)
-  }
-
-  Update() { this.#wasm.exports.Update() }
-  Draw() { this.#wasm.exports.Draw() }
+  Update(): void { this.#wasm.exports.Update(); }
+  Draw(): void { this.#wasm.exports.Draw(); }
 }
