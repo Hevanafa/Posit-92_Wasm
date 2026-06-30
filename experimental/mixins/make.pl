@@ -9,7 +9,7 @@ unless ($source_file) {
   exit 1
 }
 
-unless (-x "bun") {
+unless (which "bun") {
   say "This script requires Bun JS runtime";
   say "https://bun.com/";
   exit 1
