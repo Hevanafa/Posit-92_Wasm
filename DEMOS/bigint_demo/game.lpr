@@ -86,7 +86,7 @@ begin
   { Multiplication }
   bigIntA := '6';
   bigIntB := '7';
-  SultiplyBigInt;
+  MultiplyBigInt;
 
   writeLog('a = ' + bigIntA);
   writeLog('b = ' + bigIntB);
@@ -163,7 +163,7 @@ begin
     if lastRight then begin
       bigIntA := points;
       bigIntB := '10';
-      SultiplyBigInt;
+      MultiplyBigInt;
 
       points := bigIntResult
     end;

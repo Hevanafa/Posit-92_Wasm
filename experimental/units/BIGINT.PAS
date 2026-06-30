@@ -25,7 +25,7 @@ function GetBigIntResultPtr: pointer; public name 'GetBigIntResultPtr';
 
 procedure AddBigInt; external 'env' name 'AddBigInt';
 procedure SubtractBigInt; external 'env' name 'SubtractBigInt';
-procedure SultiplyBigInt; external 'env' name 'SultiplyBigInt';
+procedure MultiplyBigInt; external 'env' name 'MultiplyBigInt';
 procedure DivideBigInt; external 'env' name 'DivideBigInt';
 
 { Sets the Result register to either -1, 0, or 1 }
