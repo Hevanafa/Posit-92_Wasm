@@ -4,13 +4,17 @@ import { defineConfig } from "eslint/config";
 
 export default defineConfig([
   { files: ["**/*.js"], languageOptions: { sourceType: "script" } },
-  { files: ["**/*.{js,mjs,cjs,ts,mts,cts}"], languageOptions: { globals: globals.node } },
-  tseslint.configs.recommended,
-
   {
-    files: ["**.*.ts"],
+    files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
+    languageOptions: { globals: globals.node },
     rules: {
-      "consistent-return": "error"
+      "consistent-return": "error",
+      "@typescript-eslint/explicit-function-return-type": "error",
+
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/ban-ts-comment": "off"
     }
   },
+
+  tseslint.configs.recommended,
 ]);
