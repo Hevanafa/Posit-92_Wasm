@@ -65,6 +65,9 @@ begin
 
   points := '123';
 
+  BigIntSetA('34');
+
+  {
   { Addition }
   bigIntA := '12';
   bigIntB := '34';
@@ -100,6 +103,7 @@ begin
   writeLog('a = ' + bigIntA);
   writeLog('b = ' + bigIntB);
   writeLog('compare(a, b) = ' + bigIntResult);
+  }
 end;
 
 { Used by BigInt }
@@ -140,7 +144,7 @@ begin
     end;
   end;
 
-  if lastLeft <> isKeyDown(SC_LEFT) then begin
+  { if lastLeft <> isKeyDown(SC_LEFT) then begin
     lastLeft := isKeyDown(SC_LEFT);
 
     if lastLeft then begin
@@ -167,7 +171,7 @@ begin
 
       points := bigIntResult
     end;
-  end;
+  end; }
 
   gameTime := gameTime + DeltaTime
 end;
@@ -190,6 +194,7 @@ begin
 
   PrintCentred(points, 140);
 
+  {
   bigIntA := points;
   FormatBigInt;
   formattedPoints := bigIntResult;
@@ -199,6 +204,7 @@ begin
   FormatBigIntScientific;
   formattedPoints := bigIntResult;
   PrintCentred(formattedPoints, 160);
+  }
 
   PrintCentred('Left - Decrease | Right - Increase', 180);
 
