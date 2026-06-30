@@ -31,9 +31,9 @@ class WebGLMixin extends Posit92 {
 
     Object.assign(env, {
       // WebGL
-      glClearColor: (r, g, b, a) => this.glCtx.clearColor(r, g, b, a),
+      glClearColor: this.#glClearColor.bind(this),
       glClear: this.#glClear.bind(this),
-      glViewport: (x, y, w, h) => this.glCtx.viewport(x, y, w, h),
+      glViewport: this.#glViewport.bind(this),
       glCreateTexture: this.#glCreateTexture.bind(this),
 
       glBindTexture: this.#glBindTexture.bind(this),
@@ -76,16 +76,29 @@ class WebGLMixin extends Posit92 {
     return new TextDecoder().decode(bytes);
   }
 
+  /**
+   * 
+   * @param r 0.0 .. 1.0
+   * @param g 0.0 .. 1.0
+   * @param b 0.0 .. 1.0
+   * @param a 0.0 .. 1.0
+   */
+  #glClearColor(r: number, g: number, b: number, a: number): void {
+    this.glCtx.clearColor(r, g, b, a);
+  }
+
   #glClear(mask: number): void {
     this.glCtx.clear(mask);
+  }
+
+  #glViewport(x: number, y: number, w: number, h: number): void {
+    this.glCtx.viewport(x, y, w, h);
   }
 
 
   #glCreateTexture(): number {
     const texture = this.glCtx.createTexture();
     const id = this.#nextTextureId++;
-
-    console.log("id", id, this.#nextTextureId);
 
     this.#textures.set(id, texture);
 
@@ -197,6 +210,10 @@ class WebGLMixin extends Posit92 {
 
   #glGetAttribLocation(programId: number, namePtr: number): number {
     const program = this.#programs.get(programId);
+
+    if (program == null)
+      throw new Error(`glGetAttribLocation: Missing program with programId: ${programId}`);
+
     const name = this.#ReadCString(namePtr);
 
     return this.glCtx.getAttribLocation(program, name);
@@ -235,9 +252,12 @@ class WebGLMixin extends Posit92 {
     const name = this.#ReadCString(namePtr);
 
     if (program == null)
-      throw new Error(`Missing program with programId ${programId}!`);
+      throw new Error(`glGetUniformLocation: Missing program with programId ${programId}!`);
 
     const location = this.glCtx.getUniformLocation(program, name);
+
+    if (location == null)
+      throw new Error(`glGetUniformLocation: Missing UniformLocation with programId ${programId}!`);
 
     const id = this.#nextUniformId++;
     this.#uniformLocations.set(id, location);
