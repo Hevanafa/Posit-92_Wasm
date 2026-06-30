@@ -23,7 +23,7 @@ class BigIntMixin extends Posit92 {
 
       JsBigIntFetchResult: this.#BigIntFetchResult.bind(this),
 
-      // FormatBigInt: this.#FormatBigInt.bind(this),
+      JsBigIntFormat: this.#BigIntFormat.bind(this),
       // FormatBigIntScientific: this.#FormatBigIntScientific.bind(this)
     });
   }
@@ -86,58 +86,63 @@ class BigIntMixin extends Posit92 {
     this.WriteInteropBuffer(this.#bigIntResult.toString());
   }
 
-  // #FormatBigInt(): void {
-  //   const biStrA = this.#BufferPtrToString(this.WasmInstanceExports.GetBigIntAPtr());
-  //   const a = BigInt(biStrA);
-  //   let readable = 0;
+  /**
+   * Makes the result string available in the interop string
+   * 
+   * Uses only `bigIntA`
+   */
+  #BigIntFormat(): void {
+    const n = this.#bigIntA;
 
-  //   if (a >= 10n ** 33n) {
-  //     readable = Number(a / 10n ** 32n) / 10;
-  //     this.#LoadBigIntResult(readable + "Dc");
+    let readable = 0;
 
-  //   } else if (a >= 10n ** 30n) {
-  //     readable = Number(a / 10n ** 29n) / 10;
-  //     this.#LoadBigIntResult(readable + "No");
+    if (n >= 10n ** 33n) {
+      readable = Number(n / 10n ** 32n) / 10;
+      this.WriteInteropBuffer(readable + "Dc");
 
-  //   } else if (a >= 10n ** 27n) {
-  //     readable = Number(a / 10n ** 26n) / 10;
-  //     this.#LoadBigIntResult(readable + "Oc");
+    } else if (n >= 10n ** 30n) {
+      readable = Number(n / 10n ** 29n) / 10;
+      this.WriteInteropBuffer(readable + "No");
 
-  //   } else if (a >= 10n ** 24n) {
-  //     readable = Number(a / 10n ** 23n) / 10;
-  //     this.#LoadBigIntResult(readable + "Sp");
+    } else if (n >= 10n ** 27n) {
+      readable = Number(n / 10n ** 26n) / 10;
+      this.WriteInteropBuffer(readable + "Oc");
 
-  //   } else if (a >= 10n ** 21n) {
-  //     readable = Number(a / 10n ** 20n) / 10;
-  //     this.#LoadBigIntResult(readable + "Sx");
+    } else if (n >= 10n ** 24n) {
+      readable = Number(n / 10n ** 23n) / 10;
+      this.WriteInteropBuffer(readable + "Sp");
 
-  //   } else if (a >= 10n ** 18n) {
-  //     readable = Number(a / 10n ** 17n) / 10;
-  //     this.#LoadBigIntResult(readable + "Qi");
+    } else if (n >= 10n ** 21n) {
+      readable = Number(n / 10n ** 20n) / 10;
+      this.WriteInteropBuffer(readable + "Sx");
 
-  //   } else if (a >= 10n ** 15n) {
-  //     readable = Number(a / 10n ** 14n) / 10;
-  //     this.#LoadBigIntResult(readable + "Qa");
+    } else if (n >= 10n ** 18n) {
+      readable = Number(n / 10n ** 17n) / 10;
+      this.WriteInteropBuffer(readable + "Qi");
+
+    } else if (n >= 10n ** 15n) {
+      readable = Number(n / 10n ** 14n) / 10;
+      this.WriteInteropBuffer(readable + "Qa");
     
-  //   } else if (a >= 10n ** 12n) {
-  //     readable = Number(a / 10n ** 11n) / 10;
-  //     this.#LoadBigIntResult(readable + "T");
+    } else if (n >= 10n ** 12n) {
+      readable = Number(n / 10n ** 11n) / 10;
+      this.WriteInteropBuffer(readable + "T");
 
-  //   } else if (a >= 1_000_000_000n) {
-  //     readable = Number(a / 100_000_000n) / 10;
-  //     this.#LoadBigIntResult(readable + "B");
+    } else if (n >= 1_000_000_000n) {
+      readable = Number(n / 100_000_000n) / 10;
+      this.WriteInteropBuffer(readable + "B");
       
-  //   } else if (a >= 1_000_000n) {
-  //     readable = Number(a / 100_000n) / 10;
-  //     this.#LoadBigIntResult(readable + "M");
+    } else if (n >= 1_000_000n) {
+      readable = Number(n / 100_000n) / 10;
+      this.WriteInteropBuffer(readable + "M");
 
-  //   } else if (a >= 1000n) {
-  //     readable = Number(a / 100n) / 10;
-  //     this.#LoadBigIntResult(readable + "K");
+    } else if (n >= 1000n) {
+      readable = Number(n / 100n) / 10;
+      this.WriteInteropBuffer(readable + "K");
 
-  //   } else
-  //     this.#LoadBigIntResult(a);
-  // }
+    } else
+      this.WriteInteropBuffer(n.toString());
+  }
 
 
   // #FormatBigIntScientific(): void {
