@@ -114,7 +114,7 @@ class WebGLMixin extends Posit92 {
     return id;
   }
 
-  #glBindTexture(target: number, textureId: number) {
+  #glBindTexture(target: number, textureId: number): void {
     const texture = this.#textures.get(textureId);
     this.glCtx.bindTexture(target, texture);
   }
@@ -124,10 +124,16 @@ class WebGLMixin extends Posit92 {
   }
 
   #glTexImage2D(
-    target, level, internalFormat,
-    width, height, border,
-    format, type, pixelsPtr) {
-
+    target: number,
+    level: number,
+    internalFormat: number,
+    width: number,
+    height: number,
+    border: number,
+    format: number,
+    type: number,
+    pixelsPtr: number
+  ): void {
     const pixels = new Uint8Array(
       this.WasmInstance.exports.memory.buffer,
       pixelsPtr,
@@ -196,12 +202,12 @@ class WebGLMixin extends Posit92 {
     return id;
   }
 
-  #glBindBuffer(target, bufferId) {
+  #glBindBuffer(target: number, bufferId: number): void {
     const buffer = this.#buffers.get(bufferId);
     this.glCtx.bindBuffer(target, buffer);
   }
 
-  #glBufferData(target, size, dataPtr, usage) {
+  #glBufferData(target: number, size: number, dataPtr: number, usage: GLenum): void {
     const data = new Float32Array(
       this.WasmInstance.exports.memory.buffer,
       dataPtr,
@@ -211,21 +217,29 @@ class WebGLMixin extends Posit92 {
     this.glCtx.bufferData(target, data, usage);
   }
 
-  #glGetAttribLocation(programId, namePtr) {
+  #glGetAttribLocation(programId, namePtr): number {
     const program = this.#programs.get(programId);
     const name = this.#ReadCString(namePtr);
-    return this.glCtx.getAttribLocation(program, name)
+
+    return this.glCtx.getAttribLocation(program, name);
   }
 
-  #glEnableVertexAttribArray(idx) {
-    this.glCtx.enableVertexAttribArray(idx)
+  #glEnableVertexAttribArray(idx: number): void {
+    this.glCtx.enableVertexAttribArray(idx);
   }
 
-  #glVertexAttribPointer(idx, size, type, normalized, stride, offset) {
-    this.glCtx.vertexAttribPointer(idx, size, type, normalized, stride, offset)
+  #glVertexAttribPointer(
+    idx: number,
+    size: number,
+    type: number,
+    normalized: boolean,
+    stride: number,
+    offset: number
+  ): void {
+    this.glCtx.vertexAttribPointer(idx, size, type, normalized, stride, offset);
   }
 
-  #glDrawArrays(mode, first, count) {
+  #glDrawArrays(mode: number, first: number, count: number): void {
     let err = this.glCtx.getError();
     if (err != 0)
       throw new Error("WebGL error before draw:", err);
@@ -246,15 +260,15 @@ class WebGLMixin extends Posit92 {
     const id = this.#nextUniformId++;
     this.#uniformLocations.set(id, location);
 
-    return id
+    return id;
   }
 
-  #glUniform1i(locationId, value) {
+  #glUniform1i(locationId: number, value: number): void {
     const loc = this.#uniformLocations.get(locationId);
-    this.glCtx.uniform1i(loc, value)
+    this.glCtx.uniform1i(loc, value);
   }
 
-  #glActiveTexture(texture: number) {
-    this.glCtx.activeTexture(texture)
+  #glActiveTexture(texture: number): void {
+    this.glCtx.activeTexture(texture);
   }
 }
