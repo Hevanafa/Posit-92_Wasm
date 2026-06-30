@@ -315,7 +315,7 @@ class Posit92 {
         renderer = options.renderer;
 
       if (options.fps != null) {
-        this.#AssertNumber(options.fps);
+        this.AssertNumber(options.fps);
         fps = options.fps;
       }
 
@@ -346,7 +346,7 @@ class Posit92 {
   constructor(canvasID: string, options: Posit92Options);
 
   constructor(canvasID: string, vgaWidthOrOptions?: number | Posit92Options, vgaHeight?: number) {
-    this.#AssertString(canvasID);
+    this.AssertString(canvasID);
 
     if (document.getElementById(canvasID) == null)
       throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
@@ -535,7 +535,10 @@ class Posit92 {
     this.#canvas.style.removeProperty("cursor");
   }
 
-  #AssertNumber(value: unknown): void {
+  /**
+   * Public for mixins
+   */
+  AssertNumber(value: unknown): void {
     if (typeof value != "number")
       throw new Error(`Expected a number, but received ${typeof value}`);
 
@@ -543,14 +546,17 @@ class Posit92 {
       throw new Error("Expected a number, but received NaN");
   }
 
-  #AssertString(value: unknown): void {
+  /**
+   * Public for mixins
+   */
+  AssertString(value: unknown): void {
     if (typeof value != "string")
       throw new Error(`Expected a string, but received ${typeof value}`);
   }
 
 
   async LoadImageFromURL(url: string): Promise<HTMLImageElement> {
-    this.#AssertString(url);
+    this.AssertString(url);
 
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -565,7 +571,7 @@ class Posit92 {
   #images: Array<ImageData | null> = [];
 
   async LoadImage(url: string): Promise<number> {
-    this.#AssertString(url);
+    this.AssertString(url);
 
     const img = await this.LoadImageFromURL(url);
 
@@ -750,7 +756,7 @@ class Posit92 {
   }
 
   SetLoadingActual(value: number): void {
-    this.#AssertNumber(value);
+    this.AssertNumber(value);
     this.#loadingActual = value;
   }
 
@@ -759,7 +765,7 @@ class Posit92 {
   }
 
   SetLoadingTotal(value: number): void {
-    this.#AssertNumber(value);
+    this.AssertNumber(value);
     this.#loadingTotal = value;
   }
 
@@ -826,9 +832,9 @@ class Posit92 {
   }
 
   async LoadBMFont(url: string, fontPtrRef: number, fontGlyphsPtrRef: number): Promise<void> {
-    this.#AssertString(url);
-    this.#AssertNumber(fontPtrRef);
-    this.#AssertNumber(fontGlyphsPtrRef);
+    this.AssertString(url);
+    this.AssertNumber(fontPtrRef);
+    this.AssertNumber(fontGlyphsPtrRef);
 
     const res = await fetch(url);
     const text = await res.text();

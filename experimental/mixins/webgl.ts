@@ -49,7 +49,7 @@ class WebGLMixin extends Posit92 {
     Object.assign(env, {
       // WebGL
       glClearColor: (r, g, b, a) => this.glCtx.clearColor(r, g, b, a),
-      glClear: mask => this.glCtx.clear(mask),
+      glClear: this.#glClear.bind(this),
       glViewport: (x, y, w, h) => this.glCtx.viewport(x, y, w, h),
       glCreateTexture: this.#glCreateTexture.bind(this),
 
@@ -80,35 +80,10 @@ class WebGLMixin extends Posit92 {
     });
   }
 
-  /**
-   * @override
-   */
-  // async Init() {
-  //   // Important: this.#ctx initialisation must be turned off
-  //   this.#ctx = this.Canvas.getContext("webgl") ?? this.Canvas.getContext("experimental-webgl");
-
-  //   if (this.#ctx == null)
-  //     throw new Error("WebGL is not supported!");
-
-  //   this.SetupImportObject();
-  //   await super.Init();
-  // }
-
-  /**
-   * @override
-   */
-  #AssertNumber(value) {
-    if (typeof value != "number")
-      throw new Error(`Expected a number, but received ${typeof value}`);
-
-    if (isNaN(value))
-      throw new Error("Expected a number, but received NaN");
-  }
-
-
   // WEBGL.PAS
-  #ReadCString(ptr) {
-    this.#AssertNumber(ptr);
+
+  #ReadCString(ptr: number): string {
+    this.AssertNumber(ptr);
 
     const memory = new Uint8Array(this.WasmInstance.exports.memory.buffer);
     let end = ptr;
@@ -116,6 +91,10 @@ class WebGLMixin extends Posit92 {
 
     const bytes = memory.subarray(ptr, end);
     return new TextDecoder().decode(bytes)
+  }
+
+  #glClear(mask: number): void {
+    this.glCtx.clear(mask);
   }
 
 
