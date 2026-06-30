@@ -1197,8 +1197,8 @@ class Posit92 {
 
   // InteropBuf.pas
 
-  WriteInteropBuffer(s: string) {
-    const encoder = new TextEncoder("utf-8");
+  WriteInteropBuffer(s: string): void {
+    const encoder = new TextEncoder(); // Default: utf-8
     const bytes = encoder.encode(s);
 
     const ptr = this.#wasm.exports.GetInteropBufPtr();
@@ -1210,19 +1210,26 @@ class Posit92 {
     this.#wasm.exports.SetInteropBufLen(len);
   }
 
+  ReadInteropBuffer(): string {
+    if (this.#wasm.exports.GetInteropBufLen() == 0)
+      return "";
 
-  // LOGGER.PAS
-
-  #PascalFlushLog(): void {
     const wasmBuffer = this.#wasm.exports.memory.buffer;
+
     const ptr = this.#wasm.exports.GetInteropBufPtr();
     const len = this.#wasm.exports.GetInteropBufLen();
 
     const byteArray = new Uint8Array(wasmBuffer, ptr, len);
 
     // The default is utf-8 but just to make it intentional
-    const msg = new TextDecoder("utf-8").decode(byteArray);
+    return new TextDecoder("utf-8").decode(byteArray);
+  }
 
+
+  // LOGGER.PAS
+
+  #PascalFlushLog(): void {
+    const msg = this.ReadInteropBuffer();
     console.log("WriteLog:", msg);
   }
 

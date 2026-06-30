@@ -72,7 +72,6 @@ class BigIntMixin extends Posit92 {
   }
 
 
-
   // Begin arithmetic operations
 
   #AddBigInt(): void {
