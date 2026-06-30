@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 "use strict";
 
 type ImageManifest = Record<string, string | string[]>;
@@ -109,6 +111,12 @@ type TBMFontGlyph = {
   xadvance: number,
   lineHeight: number
 }
+
+type LoadImageReturn = {
+  key: string;
+  path: string;
+  handle: number
+};
 
 type Posit92Options = {
   /**
@@ -538,7 +546,7 @@ class Posit92 {
 
     return new Promise((resolve, reject) => {
       const img = new Image();
-      
+
       img.onload = () => resolve(img);
       img.onerror = reject;
       img.src = url;
@@ -590,14 +598,18 @@ class Posit92 {
    */
   #loadingActual = 0;
 
-  #GetLoadingActual() { return this.#loadingActual }
+  #GetLoadingActual(): number {
+    return this.#loadingActual;
+  }
 
   /**
    * Used in asset counter
    */
   #loadingTotal = 0;
 
-  #GetLoadingTotal() { return this.#loadingTotal }
+  #GetLoadingTotal(): number {
+    return this.#loadingTotal;
+  }
 
   async #LoadSingleImage(key: string, path: string): Promise<number> {
     return this.LoadImage(path).then(handle => {
@@ -628,7 +640,7 @@ class Posit92 {
    * 
    * @param manifest - Key-value pairs of `"asset_key": "image_path"`
    */
-  async LoadImagesFromManifest(manifest: ImageManifest) {
+  async LoadImagesFromManifest(manifest: ImageManifest): Promise<number> {
     const entries = Object.entries(manifest);
 
     const promises = entries.map(([key, pathOrArray]) =>
@@ -637,7 +649,7 @@ class Posit92 {
       : this.#LoadSingleImage(key, pathOrArray)
     );
 
-    const results = await Promise.all(promises);
+    const results: Array<number | FailureItem> = await Promise.all(promises);
 
     type FailureItem = {
       key: string,
@@ -645,6 +657,7 @@ class Posit92 {
       handle: number,
       index?: number
     };
+
     const failures = <Array<FailureItem>>results.flat(1).filter(item => item.handle == 0);
 
     if (failures.length > 0) {
@@ -679,7 +692,7 @@ class Posit92 {
     }
   }
 
-  async LoadBMFontFromManifest(manifest: BMFontManifest) {
+  async LoadBMFontFromManifest(manifest: BMFontManifest): Promise<void> {
     const entries = Object.entries(manifest);
     // console.log(entries);
 
@@ -724,45 +737,38 @@ class Posit92 {
     for (const item of results) ;
   }
 
-  get LoadingProgress() {
-    return {
-      actual: this.#loadingActual,
-      total: this.#loadingTotal
-    }
-  }
-
-  IncLoadingActual() {
+  IncLoadingActual(): void {
     this.#loadingActual++
   }
 
-  SetLoadingActual(value: number) {
+  SetLoadingActual(value: number): void {
     this.#AssertNumber(value);
     this.#loadingActual = value
   }
 
-  IncLoadingTotal(count: number) {
+  IncLoadingTotal(count: number): void {
     this.#loadingTotal += count
   }
 
-  SetLoadingTotal(value: number) {
+  SetLoadingTotal(value: number): void {
     this.#AssertNumber(value);
     this.#loadingTotal = value
   }
 
-  SetLoadingText(text: string) {
+  SetLoadingText(text: string): void {
     const div = document.querySelector("#loading-overlay > div");
     if (div == null) return;
     div.innerHTML = text;
   }
 
-  #HideLoadingOverlay() {
+  #HideLoadingOverlay(): void {
     const div = document.getElementById("loading-overlay");
     if (div == null) return;
     div.classList.add("hidden");
     this.SetLoadingText("");
   }
 
-  async Sleep(ms: number) {
+  async Sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
@@ -775,7 +781,7 @@ class Posit92 {
     bmfonts?: BMFontManifest
   } | null = null;
 
-  InitLoadingScreen() {
+  InitLoadingScreen(): void {
     if (this.AssetManifest == null) {
       console.warn("Missing AssetManifest in " + this.constructor.name);
       return
@@ -1049,7 +1055,7 @@ class Posit92 {
 
   #heldScancodes = new Set();
 
-  #InitKeyboard() {
+  #InitKeyboard(): void {
     if (this.ScancodeMap == null) {
       console.warn("Missing ScancodeMap in " + this.constructor.name);
       return
@@ -1071,7 +1077,7 @@ class Posit92 {
     })
   }
 
-  #IsKeyDown(scancode: number) {
+  #IsKeyDown(scancode: number): void {
     return this.#heldScancodes.has(scancode)
   }
 
@@ -1084,7 +1090,7 @@ class Posit92 {
   #leftButtonDown = false;
   #rightButtonDown = false;
 
-  #InitMouse() {
+  #InitMouse(): void {
     this.#canvas.addEventListener("mousemove", e => {
       const rect = this.#canvas.getBoundingClientRect();
 
@@ -1154,11 +1160,19 @@ class Posit92 {
     });
   }
 
-  #GetMouseX() { return this.#mouseX }
-  #GetMouseY() { return this.#mouseY }
-  #GetMouseButton() { return this.#mouseButton }
+  #GetMouseX(): number {
+    return this.#mouseX;
+  }
 
-  #UpdateMouseButton() {
+  #GetMouseY(): number {
+    return this.#mouseY;
+  }
+
+  #GetMouseButton(): number {
+    return this.#mouseButton;
+  }
+
+  #UpdateMouseButton(): void {
     if (this.#leftButtonDown && this.#rightButtonDown)
       this.#mouseButton = 3
     else if (this.#rightButtonDown)
@@ -1172,7 +1186,7 @@ class Posit92 {
 
   // LOGGER.PAS
 
-  #PascalFlushLog() {
+  #PascalFlushLog(): void {
     const wasmBuffer = this.#wasm.exports.memory.buffer;
     const ptr = this.#wasm.exports.GetInteropBufPtr();
     const len = this.#wasm.exports.GetInteropBufLen();
@@ -1188,70 +1202,74 @@ class Posit92 {
 
   // PANIC.PAS
   
-  #PanicHalt(textPtr: number, textLen: number) {
+  #PanicHalt(textPtr: number, textLen: number): void {
     const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, textPtr, textLen);
     const msg = new TextDecoder().decode(buffer);
 
     this.#done = true;
     this.Cleanup();
 
-    throw new Error(`PANIC: ${msg}`)
+    throw new Error(`PANIC: ${msg}`);
   }
 
 
   // TIMING.PAS
-  #GetTimer() {
-    return (Date.now() - this.#midnightOffset) / 1000
+  #GetTimer(): number {
+    return (Date.now() - this.#midnightOffset) / 1000;
   }
 
-  #GetFullTimer() {
-    return Date.now() / 1000
+  #GetFullTimer(): number {
+    return Date.now() / 1000;
   }
 
 
   // VGA.PAS
-  // flush() { this.#vgaFlush() }
+
   #surface: ImageData = null!;
 
-  #VgaUpload() {
+  #VgaUpload(): void {
     const surfacePtr = this.#wasm.exports.GetSurfacePtr();
+
     const imageData = new Uint8ClampedArray(
       this.#wasm.exports.memory.buffer,
       surfacePtr,
       this.#vgaWidth * this.#vgaHeight * 4
     );
 
+    if (this.#surface != null)
+      delete this.#surface;
+
     this.#surface = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
   }
   
-  #VgaPresent() {
+  #VgaPresent(): void {
     this.canvasCtx.putImageData(this.#surface, 0, 0);
   }
 
   // Fullscreen.pas
 
-  #AddResizeListener() {
+  #AddResizeListener(): void {
     window.addEventListener("resize", this.#HandleResize.bind(this))
   }
 
-  #GetFullscreenState() {
+  #GetFullscreenState(): void {
     return document.fullscreenElement != null
   }
 
-  #ToggleFullscreen() {
+  #ToggleFullscreen(): void {
     if (!this.#GetFullscreenState())
       this.#canvas.requestFullscreen()
     else
       document.exitFullscreen();
   }
 
-  #EndFullscreen() {
+  #EndFullscreen(): void {
     if (this.#GetFullscreenState())
       document.exitFullscreen();
   }
 
-  #HandleResize() {
-    this.#FitCanvas()
+  #HandleResize(): void {
+    this.#FitCanvas();
   }
 
   #FitCanvas() {

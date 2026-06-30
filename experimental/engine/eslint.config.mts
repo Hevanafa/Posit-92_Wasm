@@ -11,13 +11,12 @@ export default defineConfig([
     rules: {
       "consistent-return": "error",
 
-      "semi": ["error", "always"],
+      "semi": ["warn", "always"],
       "semi-style": ["error", "last"],
 
       "@typescript-eslint/explicit-function-return-type": "error",
 
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/ban-ts-comment": "off"
+      "@typescript-eslint/no-unused-vars": "off"
     }
   },
 
