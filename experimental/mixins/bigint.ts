@@ -1,5 +1,4 @@
 type BigIntWasmExports = WasmExports & {
-  GetStringBuffer: () => number;
   LoadBigIntResult: (bufferPtr: number, length: number) => void;
   GetBigIntAPtr: () => number;
   GetBigIntBPtr: () => number;
@@ -11,17 +10,24 @@ class BigIntMixin extends Posit92 {
     const { env } = super.WasmImportObject;
 
     Object.assign(env, {
-      // BigInt
-      AddBigInt: () => this.#AddBigInt.bind(this),
-      SubtractBigInt: () => this.#SubtractBigInt.bind(this),
-      MultiplyBigInt: () => this.#MultiplyBigInt.bind(this),
-      DivideBigInt: () => this.#DivideBigInt.bind(this),
+      JsBigIntSetA: this.#BigIntSetA.bind(this),
+      JsBigIntSetB: this.#BigIntSetB.bind(this),
+      // JsBigIntSetA: this.#BigIntSetResult.bind(this),
 
-      CompareBigInt: () => this.#CompareBigInt.bind(this),
-      FormatBigInt: () => this.#FormatBigInt.bind(this),
-      FormatBigIntScientific: () => this.#FormatBigIntScientific.bind(this)
+      // AddBigInt: () => this.#AddBigInt.bind(this),
+      // SubtractBigInt: () => this.#SubtractBigInt.bind(this),
+      // MultiplyBigInt: () => this.#MultiplyBigInt.bind(this),
+      // DivideBigInt: () => this.#DivideBigInt.bind(this),
+
+      // CompareBigInt: () => this.#CompareBigInt.bind(this),
+      // FormatBigInt: () => this.#FormatBigInt.bind(this),
+      // FormatBigIntScientific: () => this.#FormatBigIntScientific.bind(this)
     });
   }
+
+  #bigIntA: bigint = 0n;
+  #bigIntB: bigint = 0n;
+  #bigIntResult: bigint = 0n;
 
   // get WasmInstance(): WebAssemblyInstance & { exports: BigIntWasmExports } {
   //   return super.WasmInstance as any;
@@ -38,42 +44,39 @@ class BigIntMixin extends Posit92 {
   
   // BigInt interop
 
-  /**
-   * Pass a JS string to Pascal
-   */
-  #LoadStringBuffer(text: string): number {
-    const encoder = new TextEncoder();
-    const bytes = encoder.encode(text);
-
-    const bufferPtr = this.WasmInstanceExports.GetStringBuffer();
-    const buffer = new Uint8Array(this.WasmInstanceExports.memory.buffer, bufferPtr, bytes.length);
-    buffer.set(bytes);
-
-    return bytes.length;
+  #BigIntSetA(): void {
+    this.#bigIntA = BigInt(this.ReadInteropBuffer());
+    console.log(this.#bigIntA);
   }
 
-  #LoadBigIntResult(n: bigint | string): void {
-    if ((typeof n != "bigint") && (typeof n != "string"))
-      throw new Error("n should be either of type BigInt or string");
-
-    const length = this.#LoadStringBuffer(n.toString());
-    const bufferPtr = this.WasmInstanceExports.GetStringBuffer();
-    this.WasmInstanceExports.LoadBigIntResult(bufferPtr, length);
+  #BigIntSetB(): void {
+    this.#bigIntB = BigInt(this.ReadInteropBuffer());
+    console.log(this.#bigIntB);
   }
 
-  #BufferPtrToString(bufferPtr: number): string {
-    this.AssertNumber(bufferPtr);
+  // #LoadBigIntResult(n: bigint | string): void {
+  //   if ((typeof n != "bigint") && (typeof n != "string"))
+  //     throw new Error("n should be either of type BigInt or string");
+// 
+  //   const length = this.WriteInteropBuffer(n.toString());
+  //   const bufferPtr = this.WasmInstanceExports.GetStringBuffer();
+  //   this.WasmInstanceExports.LoadBigIntResult(bufferPtr, length);
+  // }
 
-    const buffer = new Uint8Array(this.WasmInstance.exports.memory.buffer, bufferPtr, 256);
-    const len = buffer[0];
-    const bytes = buffer.slice(1, 1 + len);
+  // #BufferPtrToString(bufferPtr: number): string {
+  //   this.AssertNumber(bufferPtr);
 
-    return new TextDecoder().decode(bytes);
-  }
+  //   const buffer = new Uint8Array(this.WasmInstance.exports.memory.buffer, bufferPtr, 256);
+  //   const len = buffer[0];
+  //   const bytes = buffer.slice(1, 1 + len);
+
+  //   return new TextDecoder().decode(bytes);
+  // }
 
 
   // Begin arithmetic operations
 
+  /*
   #AddBigInt(): void {
     const biStrA = this.#BufferPtrToString(
       this.WasmInstanceExports.GetBigIntAPtr());
@@ -192,5 +195,5 @@ class BigIntMixin extends Posit92 {
     } else
       this.#LoadBigIntResult(a);
   }
-
+  */
 }
