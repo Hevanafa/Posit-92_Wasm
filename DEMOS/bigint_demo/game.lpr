@@ -66,25 +66,25 @@ begin
   BigIntSetA('20');
   BigIntSetB('57');
   JsBigIntAdd;
-  WriteLog(ReadInteropString);
+  WriteLog(BigIntFetchResult);
 
   { Subtraction }
   BigIntSetA('56');
   BigIntSetB('78');
   JsBigIntSubtract;
-  WriteLog(ReadInteropString);
+  WriteLog(BigIntFetchResult);
 
   { Multiplication }
   BigIntSetA('6');
   BigIntSetB('7');
   JsBigIntMultiply;
-  writelog(ReadInteropString);
+  writelog(BigIntFetchResult);
 
   { Division }
   BigIntSetA('80');
   BigIntSetB('8');
   JsBigIntDivide;
-  writelog(ReadInteropString);
+  writelog(BigIntFetchResult);
 
   { Comparison }
   {

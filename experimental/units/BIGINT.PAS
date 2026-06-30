@@ -32,6 +32,9 @@ procedure JsBigIntCompare; external 'env' name 'JsBigIntCompare';
 { procedure FormatBigInt; external 'env' name 'FormatBigInt';
 procedure FormatBigIntScientific; external 'env' name 'FormatBigIntScientific'; }
 
+procedure JsBigIntFetchResult; external 'env' name 'JsBigIntFetchResult';
+function BigIntFetchResult: string;
+
 
 implementation
 
@@ -47,6 +50,12 @@ procedure BigIntSetB(const n: string);
 begin
   WriteInteropString(n);
   JsBigIntSetB
+end;
+
+function BigIntFetchResult: string;
+begin
+  JsBigIntFetchResult;
+  BigIntFetchResult := ReadInteropString
 end;
 
 end.

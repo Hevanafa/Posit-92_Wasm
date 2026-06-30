@@ -19,8 +19,10 @@ class BigIntMixin extends Posit92 {
       JsBigIntSubtract: this.#BigIntSubtract.bind(this),
       JsBigIntMultiply: this.#BigIntMultiply.bind(this),
       JsBigIntDivide: this.#BigIntDivide.bind(this),
-
       JsBigIntCompare: this.#BigIntCompare.bind(this),
+
+      JsBigIntFetchResult: this.#BigIntFetchResult.bind(this),
+
       // FormatBigInt: this.#FormatBigInt.bind(this),
       // FormatBigIntScientific: this.#FormatBigIntScientific.bind(this)
     });
@@ -57,22 +59,18 @@ class BigIntMixin extends Posit92 {
 
   #BigIntAdd(): void {
     this.#bigIntResult = this.#bigIntA + this.#bigIntB;
-    this.WriteInteropBuffer(this.#bigIntResult.toString());
   }
 
   #BigIntSubtract(): void {
     this.#bigIntResult = this.#bigIntA - this.#bigIntB;
-    this.WriteInteropBuffer(this.#bigIntResult.toString());
   }
 
   #BigIntMultiply(): void {
     this.#bigIntResult = this.#bigIntA * this.#bigIntB;
-    this.WriteInteropBuffer(this.#bigIntResult.toString());
   }
 
   #BigIntDivide(): void {
     this.#bigIntResult = this.#bigIntA / this.#bigIntB;
-    this.WriteInteropBuffer(this.#bigIntResult.toString());
   }
 
   #BigIntCompare(): void {
@@ -82,7 +80,9 @@ class BigIntMixin extends Posit92 {
       this.#bigIntResult = -1n;
     else
       this.#bigIntResult = 0n;
+  }
 
+  #BigIntFetchResult(): void {
     this.WriteInteropBuffer(this.#bigIntResult.toString());
   }
 
