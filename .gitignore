@@ -18,6 +18,7 @@ DEMOS/*/*.pl
 
 # Demo build artifacts
 DEMOS/*/posit-92.js
+DEMOS/*/webgl.js
 DEMOS/*/*.d.ts
 DEMOS/*/*.js.map
 
