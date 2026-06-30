@@ -26,8 +26,8 @@ procedure JsBigIntDivide; external 'env' name 'JsBigIntDivide';
 procedure JsBigIntCompare; external 'env' name 'JsBigIntCompare';
 
 { Requires only register A, outputs to the Result register }
-{ procedure FormatBigInt; external 'env' name 'FormatBigInt';
-procedure FormatBigIntScientific; external 'env' name 'FormatBigIntScientific'; }
+procedure JsBigIntFormat; external 'env' name 'JsBigIntFormat';
+{ procedure FormatBigIntScientific; external 'env' name 'FormatBigIntScientific'; }
 
 procedure JsBigIntFetchResult; external 'env' name 'JsBigIntFetchResult';
 function BigIntFetchResult: string;

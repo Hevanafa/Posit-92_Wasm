@@ -31,7 +31,9 @@ var
   { Game state variables }
   actualGameState: TGameStates;
   gameTime: double;
+
   points: string; { BigInt }
+  formattedPoints: string;
 
 procedure DrawFPS;
 begin
@@ -61,6 +63,10 @@ begin
   gameTime := 0.0;
 
   points := '123';
+
+  BigIntSetA(points);
+  JsBigIntFormat;
+  formattedPoints := ReadInteropString;
 
   { Addition }
   BigIntSetA('20');
@@ -140,7 +146,11 @@ begin
       if parseInt(BigIntFetchResult) > 0 then begin
         BigIntSetB('10');
         JsBigIntDivide;
-        points := BigIntFetchResult
+
+        points := BigIntFetchResult;
+
+        JsBigIntFormat;
+        formattedPoints := ReadInteropString;
       end;
     end;
   end;
@@ -153,7 +163,10 @@ begin
       BigIntSetB('10');
       JsBigIntMultiply;
 
-      points := BigIntFetchResult
+      points := BigIntFetchResult;
+
+      JsBigIntFormat;
+      formattedPoints := ReadInteropString;
     end;
   end;
 
@@ -161,8 +174,6 @@ begin
 end;
 
 procedure Draw;
-var
-  formattedPoints: string;
 begin
   if actualGameState = GameStateLoading then begin
     renderLoadingScreen;
@@ -177,13 +188,9 @@ begin
     spr(imgDosuEXE[0], 148, 88);
 
   PrintCentred(points, 140);
-
-  {
-  bigIntA := points;
-  FormatBigInt;
-  formattedPoints := bigIntResult;
   PrintCentred(formattedPoints, 150);
 
+  {
   bigIntA := points;
   FormatBigIntScientific;
   formattedPoints := bigIntResult;
