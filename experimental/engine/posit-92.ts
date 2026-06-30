@@ -1195,6 +1195,21 @@ class Posit92 {
       this.#mouseButton = 0;
   }
 
+  // InteropBuf.pas
+
+  WriteInteropBuffer(s: string) {
+    const encoder = new TextEncoder("utf-8");
+    const bytes = encoder.encode(s);
+
+    const ptr = this.#wasm.exports.GetInteropBufPtr();
+    const len = bytes.length;
+
+    const memview = new Uint8Array(this.#wasm.exports.memory.buffer);
+    memview.set(bytes, ptr);
+
+    this.#wasm.exports.SetInteropBufLen(len);
+  }
+
 
   // LOGGER.PAS
 
