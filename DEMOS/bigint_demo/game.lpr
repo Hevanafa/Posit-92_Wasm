@@ -1,14 +1,19 @@
+{
+  Title: BigInt demo
+  Mixins: bigint
+}
+
 library Game;
 
 {$Mode ObjFPC}
 
 uses
-  EngineCore, EngineFonts, WasmHost, WasmMemMgr,
-  Conv, FPS, Fullscreen,
-  ImgRef, ImgRefFast,
-  Loading, Keyboard, Logger, Mouse,
+  EngineCore, EngineFonts, WasmHost,
+  BigInt, InteropBuf, Logger,
+  Conv, FPS, ImgRefFast,
+  Loading, Keyboard, Mouse,
   Timing, VGA,
-  Assets, BigInt, InteropBuf;
+  Assets;
 
 type
   TGameStates = (

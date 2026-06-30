@@ -1,9 +1,9 @@
 {
-  Big Integer - Part of Posit-92 game engine
-  Hevanafa
+  Big Integer unit
+  Part of Posit-92 game engine
+  By Hevanafa
   
-  This unit requires JS bindings
-  See `posit-92.js` in `bigint` demo to see how
+  This unit requires the mixin `BigIntMixin`
 }
 
 unit BigInt;
