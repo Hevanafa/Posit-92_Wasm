@@ -118,6 +118,13 @@ type LoadImageReturn = {
   handle: number
 };
 
+type LoadImageArrayReturn = {
+  key: string;
+  path: string;
+  handle: number;
+  index: number
+}
+
 type Posit92Options = {
   /**
    * default: 320
@@ -620,7 +627,7 @@ class Posit92 {
     });
   }
 
-  async #LoadImageArray(key: string, paths: Array<string>): Promise<Array<number>> {
+  async #LoadImageArray(key: string, paths: Array<string>): Promise<Array<LoadImageArrayReturn>> {
     const promises = paths.map(
       (path, index) => 
         this.LoadImage(path).then(handle => {
