@@ -6,41 +6,19 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class WebGLMixin extends Posit92 {
-  /**
-   * Enable this only to see the type definition
-   * 
-   * @type {WebGLRenderingContext}
-   */
-  // glCtx;
-
-  /**
-   * @type {Map<number, WebGLTexture>}
-   */
-  #textures = new Map();
+  #textures: Map<number, WebGLTexture> = new Map();
   #nextTextureId = 1;
 
-  /**
-   * @type {Map<number, WebGLShader>}
-   */
-  #shaders = new Map();
+  #shaders: Map<number, WebGLShader> = new Map();
   #nextShaderId = 1;
 
-  /**
-   * @type {Map<number, WebGLProgram>}
-   */
-  #programs = new Map();
+  #programs: Map<number, WebGLProgram> = new Map();
   #nextProgramId = 1;
 
-  /**
-   * @type {Map<number, WebGLBuffer>}
-   */
-  #buffers = new Map();
+  #buffers: Map<number, WebGLBuffer> = new Map();
   #nextBufferId = 1;
 
-  /**
-   * @type {Map<number, WebGLUniformLocation>}
-   */
-  #uniformLocations = new Map();
+  #uniformLocations: Map<number, WebGLUniformLocation> = new Map();
   #nextUniformId = 1;
 
   /**
@@ -217,7 +195,7 @@ class WebGLMixin extends Posit92 {
     this.glCtx.bufferData(target, data, usage);
   }
 
-  #glGetAttribLocation(programId, namePtr): number {
+  #glGetAttribLocation(programId: number, namePtr: number): number {
     const program = this.#programs.get(programId);
     const name = this.#ReadCString(namePtr);
 
@@ -242,19 +220,23 @@ class WebGLMixin extends Posit92 {
   #glDrawArrays(mode: number, first: number, count: number): void {
     let err = this.glCtx.getError();
     if (err != 0)
-      throw new Error("WebGL error before draw:", err);
+      throw new Error("WebGL error before draw: " + err);
 
     this.glCtx.drawArrays(mode, first, count);
 
     err = this.glCtx.getError();
     if (err != 0)
-      throw new Error("WebGL error after draw:", err);
+      throw new Error("WebGL error after draw: " + err);
   }
 
 
   #glGetUniformLocation(programId: number, namePtr: number): number {
     const program = this.#programs.get(programId);
     const name = this.#ReadCString(namePtr);
+
+    if (program == null)
+      throw new Error(`Missing program with programId ${programId}!`);
+
     const location = this.glCtx.getUniformLocation(program, name);
 
     const id = this.#nextUniformId++;
