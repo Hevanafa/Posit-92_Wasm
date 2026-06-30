@@ -55,14 +55,12 @@ class BigIntMixin extends Posit92 {
     console.log(this.#bigIntB);
   }
 
+  // Begin arithmetic operations
+  
   #BigIntAdd(): void {
     this.#bigIntResult = this.#bigIntA + this.#bigIntB;
     this.WriteInteropBuffer(this.#bigIntResult.toString());
   }
-
-
-
-  // Begin arithmetic operations
 
   #BigIntSubtract(): void {
     this.#bigIntResult = this.#bigIntA - this.#bigIntB;

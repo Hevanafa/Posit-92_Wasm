@@ -9,6 +9,7 @@ procedure InitInteropBuffer;
 
 function GetInteropBufPtr: pointer; public name 'GetInteropBufPtr';
 function GetInteropBufLen: longint; public name 'GetInteropBufLen';
+function GetInteropBufCapacity: longint; public name 'GetInteropBufCapacity';
 procedure SetInteropBufLen(value: longint); public name 'SetInteropBufLen';
 
 procedure WriteInteropString(const s: AnsiString);
@@ -38,6 +39,11 @@ end;
 function GetInteropBufLen: longint;
 begin
   GetInteropBufLen := interopBufLen
+end;
+
+function GetInteropBufCapacity: longint;
+begin
+  GetInteropBufCapacity := InteropBufCapacity
 end;
 
 procedure SetInteropBufLen(value: longint);
