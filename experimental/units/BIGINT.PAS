@@ -22,18 +22,12 @@ procedure JsBigIntSetA; external 'env' name 'JsBigIntSetA';
 procedure JsBigIntSetB; external 'env' name 'JsBigIntSetB';
 
 procedure JsBigIntAdd; external 'env' name 'JsBigIntAdd';
-
-{ function GetBigIntAPtr: pointer; public name 'GetBigIntAPtr';
-function GetBigIntBPtr: pointer; public name 'GetBigIntBPtr';
-function GetBigIntResultPtr: pointer; public name 'GetBigIntResultPtr';
-
-procedure AddBigInt; external 'env' name 'AddBigInt';
-procedure SubtractBigInt; external 'env' name 'SubtractBigInt';
-procedure MultiplyBigInt; external 'env' name 'MultiplyBigInt';
-procedure DivideBigInt; external 'env' name 'DivideBigInt'; }
+procedure JsBigIntSubtract; external 'env' name 'JsBigIntSubtract';
+procedure JsBigIntMultiply; external 'env' name 'JsBigIntMultiply';
+procedure JsBigIntDivide; external 'env' name 'JsBigIntDivide';
 
 { Sets the Result register to either -1, 0, or 1 }
-{ procedure CompareBigInt; external 'env' name 'CompareBigInt'; }
+procedure JsBigIntCompare; external 'env' name 'JsBigIntCompare';
 
 { Requires only register A, outputs to the Result register }
 { procedure FormatBigInt; external 'env' name 'FormatBigInt';
