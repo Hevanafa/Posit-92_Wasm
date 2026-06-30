@@ -20,6 +20,10 @@ class BigIntMixin extends Posit92 {
     });
   }
 
+  get WasmInstance(): WebAssemblyInstance & { exports: BigIntWasmExports } {
+    return super.WasmInstance as any;
+  }
+
   AssertBigInt(value: unknown): void {
     if (typeof value != "bigint")
       throw new Error(`Expected a BigInt, but received ${typeof value}`);
@@ -41,9 +45,7 @@ class BigIntMixin extends Posit92 {
     return bytes.length;
   }
 
-  #loadBigIntResult(n: bigint): void {
-    this.AssertBigInt(n);
-
+  #loadBigIntResult(n: bigint | string): void {
     if ((typeof n != "bigint") && (typeof n != "string"))
       throw new Error("n should be either of type BigInt or string");
 
@@ -173,7 +175,7 @@ class BigIntMixin extends Posit92 {
   }
 
 
-  #formatBigIntScientific() {
+  #formatBigIntScientific(): void {
     const biStrA = this.#bufferPtrToString(this.WasmInstance.exports.getBigIntAPtr());
     const a = BigInt(biStrA);
     const digits = a.toString().length;
