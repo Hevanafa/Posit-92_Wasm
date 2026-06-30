@@ -14,7 +14,9 @@ unit BigInt;
 
 interface
 
+function BigIntFetchRegA: string;
 procedure BigIntSetA(const n: string);
+function BigIntFetchRegB: string;
 procedure BigIntSetB(const n: string);
 
 procedure JsBigIntAdd; external 'env' name 'JsBigIntAdd';
@@ -28,11 +30,7 @@ procedure JsBigIntCompare; external 'env' name 'JsBigIntCompare';
 { Requires only register A, outputs to the Result register }
 function BigIntFormat(const n: string): string;
 function BigIntFormatScientific(const n: string): string;
-procedure JsBigIntFormat; external 'env' name 'JsBigIntFormat';
-procedure JsBigIntFormatScientific; external 'env' name 'JsBigIntFormatScientific';
-
 function BigIntFetchResult: string;
-procedure JsBigIntFetchResult; external 'env' name 'JsBigIntFetchResult';
 
 
 implementation
@@ -42,10 +40,29 @@ uses Conv, InteropBuf;
 procedure JsBigIntSetA; external 'env' name 'JsBigIntSetA';
 procedure JsBigIntSetB; external 'env' name 'JsBigIntSetB';
 
+procedure JsBigIntFetchRegA; external 'env' name 'JsBigIntFetchRegA';
+procedure JsBigIntFetchRegB; external 'env' name 'JsBigIntFetchRegB';
+
+procedure JsBigIntFormat; external 'env' name 'JsBigIntFormat';
+procedure JsBigIntFormatScientific; external 'env' name 'JsBigIntFormatScientific';
+procedure JsBigIntFetchResult; external 'env' name 'JsBigIntFetchResult';
+
+function BigIntFetchRegA: string;
+begin
+  JsBigIntFetchRegA;
+  BigIntFetchRegA := ReadInteropString
+end;
+
 procedure BigIntSetA(const n: string);
 begin
   WriteInteropString(n);
   JsBigIntSetA
+end;
+
+function BigIntFetchRegB: string;
+begin
+  JsBigIntFetchRegB;
+  BigIntFetchRegB := ReadInteropString
 end;
 
 procedure BigIntSetB(const n: string);

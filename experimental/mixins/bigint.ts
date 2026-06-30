@@ -12,7 +12,9 @@ class BigIntMixin extends Posit92 {
     console.log("SetupImportObject");
 
     Object.assign(env, {
+      JsBigIntFetchRegA: this.#BigIntFetchRegA.bind(this),
       JsBigIntSetA: this.#BigIntSetA.bind(this),
+      JsBigIntFetchRegB: this.#BigIntFetchRegB.bind(this),
       JsBigIntSetB: this.#BigIntSetB.bind(this),
 
       JsBigIntAdd: this.#BigIntAdd.bind(this),
@@ -53,6 +55,14 @@ class BigIntMixin extends Posit92 {
 
   #BigIntSetB(): void {
     this.#bigIntB = BigInt(this.ReadInteropBuffer());
+  }
+
+  #BigIntFetchRegA(): void {
+    this.WriteInteropBuffer(this.#bigIntA.toString());
+  }
+
+  #BigIntFetchRegB(): void {
+    this.WriteInteropBuffer(this.#bigIntB.toString());
   }
 
   // Begin arithmetic operations

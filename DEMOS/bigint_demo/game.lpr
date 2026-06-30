@@ -71,7 +71,9 @@ begin
 
   { Addition }
   BigIntSetA('20');
+  writelog('a = ' + BigIntFetchRegA);
   BigIntSetB('57');
+  writelog('b = ' + BigIntFetchRegB);
   JsBigIntAdd;
   WriteLog(BigIntFetchResult);
 
