@@ -44,7 +44,7 @@ node_modules/
 # Games from different repos
 DEMOS/mfgj0/**/*.*
 
-# Lazarus
+# Lazarus stuff
 backup/
 lib/
 
@@ -59,3 +59,4 @@ DEMOS/*/lib/
 experimental/engine/*.d.ts
 experimental/engine/*.js
 experimental/engine/*.js.map
+experimental/mixins/webgl.js
