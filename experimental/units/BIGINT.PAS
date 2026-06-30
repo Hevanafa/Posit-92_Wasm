@@ -17,9 +17,6 @@ interface
 procedure BigIntSetA(const n: string);
 procedure BigIntSetB(const n: string);
 
-procedure JsBigIntSetA; external 'env' name 'JsBigIntSetA';
-procedure JsBigIntSetB; external 'env' name 'JsBigIntSetB';
-
 procedure JsBigIntAdd; external 'env' name 'JsBigIntAdd';
 procedure JsBigIntSubtract; external 'env' name 'JsBigIntSubtract';
 procedure JsBigIntMultiply; external 'env' name 'JsBigIntMultiply';
@@ -39,6 +36,9 @@ function BigIntFetchResult: string;
 implementation
 
 uses Conv, InteropBuf;
+
+procedure JsBigIntSetA; external 'env' name 'JsBigIntSetA';
+procedure JsBigIntSetB; external 'env' name 'JsBigIntSetB';
 
 procedure BigIntSetA(const n: string);
 begin

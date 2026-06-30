@@ -129,19 +129,18 @@ begin
     end;
   end;
 
-  { if lastLeft <> isKeyDown(SC_LEFT) then begin
+  if lastLeft <> isKeyDown(SC_LEFT) then begin
     lastLeft := isKeyDown(SC_LEFT);
 
     if lastLeft then begin
-      bigIntA := points;
-      bigIntB := '1000';
-      CompareBigInt;
+      BigIntSetA(points);
+      BigIntSetB('1000');
+      JsBigIntCompare;
 
-      { if points > 1000 }
-      if parseInt(bigIntResult) > 0 then begin
-        bigIntB := '10';
-        DivideBigInt;
-        points := bigIntResult
+      if parseInt(BigIntFetchResult) > 0 then begin
+        BigIntSetB('10');
+        JsBigIntDivide;
+        points := BigIntFetchResult
       end;
     end;
   end;
@@ -150,13 +149,13 @@ begin
     lastRight := isKeyDown(SC_RIGHT);
 
     if lastRight then begin
-      bigIntA := points;
-      bigIntB := '10';
-      MultiplyBigInt;
+      BigIntSetA(points);
+      BigIntSetB('10');
+      JsBigIntMultiply;
 
-      points := bigIntResult
+      points := BigIntFetchResult
     end;
-  end; }
+  end;
 
   gameTime := gameTime + DeltaTime
 end;
