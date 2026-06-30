@@ -26,6 +26,7 @@ procedure JsBigIntDivide; external 'env' name 'JsBigIntDivide';
 procedure JsBigIntCompare; external 'env' name 'JsBigIntCompare';
 
 { Requires only register A, outputs to the Result register }
+function BigIntFormat(const n: string): string;
 procedure JsBigIntFormat; external 'env' name 'JsBigIntFormat';
 { procedure FormatBigIntScientific; external 'env' name 'FormatBigIntScientific'; }
 
@@ -50,6 +51,13 @@ procedure BigIntSetB(const n: string);
 begin
   WriteInteropString(n);
   JsBigIntSetB
+end;
+
+function BigIntFormat(const n: string): string;
+begin
+  BigIntSetA(n);
+  JsBigIntFormat;
+  BigIntFormat := ReadInteropString
 end;
 
 function BigIntFetchResult: string;

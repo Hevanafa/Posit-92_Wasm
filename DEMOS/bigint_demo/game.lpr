@@ -148,9 +148,7 @@ begin
         JsBigIntDivide;
 
         points := BigIntFetchResult;
-
-        JsBigIntFormat;
-        formattedPoints := ReadInteropString;
+        formattedPoints := BigIntFormat(points)
       end;
     end;
   end;
@@ -164,9 +162,7 @@ begin
       JsBigIntMultiply;
 
       points := BigIntFetchResult;
-
-      JsBigIntFormat;
-      formattedPoints := ReadInteropString;
+      formattedPoints := BigIntFormat(points)
     end;
   end;
 
