@@ -47,12 +47,10 @@ class BigIntMixin extends Posit92 {
 
   #BigIntSetA(): void {
     this.#bigIntA = BigInt(this.ReadInteropBuffer());
-    console.log("bigIntA", this.#bigIntA);
   }
 
   #BigIntSetB(): void {
     this.#bigIntB = BigInt(this.ReadInteropBuffer());
-    console.log("bigIntB", this.#bigIntB);
   }
 
   // Begin arithmetic operations
@@ -64,22 +62,16 @@ class BigIntMixin extends Posit92 {
 
   #BigIntSubtract(): void {
     this.#bigIntResult = this.#bigIntA - this.#bigIntB;
-    console.log("BigIntSubtract", this.#bigIntResult);
-
     this.WriteInteropBuffer(this.#bigIntResult.toString());
   }
 
   #BigIntMultiply(): void {
     this.#bigIntResult = this.#bigIntA * this.#bigIntB;
-    console.log("BigIntMultiply", this.#bigIntResult);
-
     this.WriteInteropBuffer(this.#bigIntResult.toString());
   }
 
   #BigIntDivide(): void {
     this.#bigIntResult = this.#bigIntA / this.#bigIntB;
-    console.log("BigIntDivide", this.#bigIntResult);
-
     this.WriteInteropBuffer(this.#bigIntResult.toString());
   }
 

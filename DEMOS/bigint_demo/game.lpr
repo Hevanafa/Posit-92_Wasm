@@ -28,9 +28,6 @@ var
   lastEsc: boolean;
   lastLeft, lastRight: boolean;
 
-  { Used by BigInt }
-  stringBuffer: array[0..255] of byte;
-
   { Game state variables }
   actualGameState: TGameStates;
   gameTime: double;
@@ -89,7 +86,7 @@ begin
   JsBigIntDivide;
   writelog(ReadInteropString);
 
-{ Comparison }
+  { Comparison }
   {
   bigIntA := '6';
   bigIntB := '7';
@@ -100,13 +97,6 @@ begin
   writeLog('compare(a, b) = ' + bigIntResult);
   }
 end;
-
-{ Used by BigInt }
-function GetStringBuffer: pointer;
-begin
-  GetStringBuffer := @stringBuffer
-end;
-
 
 procedure OnReady;
 begin
@@ -211,7 +201,6 @@ begin
 end;
 
 exports
-  GetStringBuffer,
   BeginLoadingState,
   { Main game procedures }
   OnReady, Update, Draw;

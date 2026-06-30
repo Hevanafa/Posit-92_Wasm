@@ -9,11 +9,10 @@
 unit BigInt;
 
 {$Mode ObjFPC}
-{$H-}{$J+}
+{$H+}
+{$J+}
 
 interface
-
-{ procedure LoadBigIntResult(const textPtr: pointer; const textLen: smallint); public name 'LoadBigIntResult'; }
 
 procedure BigIntSetA(const n: string);
 procedure BigIntSetB(const n: string);
@@ -37,32 +36,6 @@ procedure FormatBigIntScientific; external 'env' name 'FormatBigIntScientific'; 
 implementation
 
 uses Conv, InteropBuf;
-
-{ var }
-  { BigInt "registers". The result register isn't always a number }
-  { bigIntA, bigIntB, bigIntResult: string; }
-
-{
-procedure LoadBigIntResult(const textPtr: pointer; const textLen: smallint);
-begin
-  bigIntResult := strPtrToString(textPtr, textLen)
-end;
-
-function GetBigIntAPtr: pointer;
-begin
-  GetBigIntAPtr := @bigIntA
-end;
-
-function GetBigIntBPtr: pointer;
-begin
-  GetBigIntBPtr := @bigIntB
-end;
-
-function GetBigIntResultPtr: pointer;
-begin
-  GetBigIntResultPtr := @bigIntResult
-end;
-}
 
 procedure BigIntSetA(const n: string);
 begin
