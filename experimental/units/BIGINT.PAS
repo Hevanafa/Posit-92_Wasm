@@ -16,7 +16,12 @@ interface
 { procedure LoadBigIntResult(const textPtr: pointer; const textLen: smallint); public name 'LoadBigIntResult'; }
 
 procedure BigIntSetA(const n: string);
+procedure BigIntSetB(const n: string);
+
 procedure JsBigIntSetA; external 'env' name 'JsBigIntSetA';
+procedure JsBigIntSetB; external 'env' name 'JsBigIntSetB';
+
+procedure JsBigIntAdd; external 'env' name 'JsBigIntAdd';
 
 { function GetBigIntAPtr: pointer; public name 'GetBigIntAPtr';
 function GetBigIntBPtr: pointer; public name 'GetBigIntBPtr';
@@ -39,10 +44,11 @@ implementation
 
 uses Conv, InteropBuf;
 
-var
+{ var }
   { BigInt "registers". The result register isn't always a number }
-  bigIntA, bigIntB, bigIntResult: string;
+  { bigIntA, bigIntB, bigIntResult: string; }
 
+{
 procedure LoadBigIntResult(const textPtr: pointer; const textLen: smallint);
 begin
   bigIntResult := strPtrToString(textPtr, textLen)
@@ -62,12 +68,19 @@ function GetBigIntResultPtr: pointer;
 begin
   GetBigIntResultPtr := @bigIntResult
 end;
+}
 
 procedure BigIntSetA(const n: string);
 begin
-  bigIntA := n;
+  { bigIntA := n; }
   WriteInteropString(n);
   JsBigIntSetA
+end;
+
+procedure BigIntSetB(const n: string);
+begin
+  WriteInteropString(n);
+  JsBigIntSetB
 end;
 
 end.

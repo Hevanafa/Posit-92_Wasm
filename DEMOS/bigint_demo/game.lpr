@@ -8,7 +8,7 @@ uses
   ImgRef, ImgRefFast,
   Loading, Keyboard, Logger, Mouse,
   Timing, VGA,
-  Assets, BigInt;
+  Assets, BigInt, InteropBuf;
 
 type
   TGameStates = (
@@ -65,7 +65,10 @@ begin
 
   points := '123';
 
-  BigIntSetA('34');
+  BigIntSetA('20');
+  BigIntSetB('57');
+  JsBigIntAdd;
+  WriteLog(ReadInteropString);
 
   {
   { Addition }
