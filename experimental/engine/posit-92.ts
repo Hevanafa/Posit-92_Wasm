@@ -183,7 +183,9 @@ class Posit92 {
   // }
 
   #wasm: WebAssemblyInstance = null!;
-  get WasmInstance() { return this.#wasm }
+  get WasmInstance(): WebAssemblyInstance {
+    return this.#wasm
+  }
 
   /**
    * Used in `getTimer`
@@ -255,17 +257,17 @@ class Posit92 {
    * 
    * Game code should not modify this directly
    */
-  get WasmImportObject() {
+  get WasmImportObject(): WasmImports {
     return this.#importObject
   }
   
-  #HandleHaltProc(exitcode: number) {
+  #HandleHaltProc(exitcode: number): void {
     console.log("Programme halted with code:", exitcode);
     this.Cleanup();
     this.#done = true
   }
 
-  #SignalDone() {
+  #SignalDone(): void {
     this.Cleanup();
     this.#done = true
   }
@@ -351,7 +353,7 @@ class Posit92 {
   /**
    * used in `GetTimer` and `GetFullTimer`
    */
-  #LoadMidnightOffset() {
+  #LoadMidnightOffset(): void {
     const now = new Date();
     const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     this.#midnightOffset = midnight.getTime()
@@ -360,9 +362,9 @@ class Posit92 {
   /**
    * Overridable by mixins
    */
-  SetupImportObject() { }
+  SetupImportObject(): void { }
 
-  async #InitWebAssembly() {
+  async #InitWebAssembly(): Promise<void> {
     this.SetupImportObject();
     Object.freeze(this.#importObject);
     const response = await fetch(this.#wasmSource);
@@ -407,7 +409,7 @@ class Posit92 {
    * @param loaded in bytes
    * @param total in bytes
    */
-  OnWasmProgress(loaded: number, total: number) {
+  OnWasmProgress(loaded: number, total: number): void {
     const loadedKB = Math.ceil(loaded / 1024);
 
     if (isNaN(total))
@@ -418,7 +420,7 @@ class Posit92 {
     }
   }
 
-  #InitWasmMemory() {
+  #InitWasmMemory(): void {
     // console.log("Default mem size", this.#wasm.exports.memory.buffer.byteLength);
 
     const videoMemStart = this.#stackSize;
@@ -436,7 +438,7 @@ class Posit92 {
     this.#wasm.exports.InitHeapRegion(heapRegionStart, this.#poolSize, heapSize);
   }
 
-  async InitRuntime() {
+  async InitRuntime(): Promise<void> {
     await this.#InitWebAssembly();
     this.#InitWasmMemory();
     this.#wasm.exports.InitEngine();
@@ -446,11 +448,11 @@ class Posit92 {
     this.#LoadMidnightOffset();
   }
 
-  BeginIntro() {
+  BeginIntro(): void {
     this.#wasm.exports.BeginIntroState()
   }
 
-  #AddOutOfFocusFix() {
+  #AddOutOfFocusFix(): void {
     this.#canvas.addEventListener("click", () => {
       this.#canvas.tabIndex = 0;
       this.#canvas.focus()
@@ -458,22 +460,22 @@ class Posit92 {
   }
 
   /**
-   * Called when `done` is `true`
+   * Called when `done` is assigned `true`
    */
-  Cleanup() {
+  Cleanup(): void {
     this.#ShowCursor();
   }
 
   /**
    * Loads assets owned by the engine
    */
-  async #LoadBootAssets() {
+  async #LoadBootAssets(): Promise<void> {
     if (this.bootOptions.defaultFont == null
       || this.bootOptions.defaultFont == true)
       await this.#LoadDefaultFont();
   }
 
-  async #LoadIntroAssets() {
+  async #LoadIntroAssets(): Promise<void> {
     this.WasmInstance.exports.SetImgPosit92Logo(
       await this.LoadImage("assets/images/posit-92_32px.png"));
 
@@ -484,36 +486,36 @@ class Posit92 {
       await this.LoadImage("assets/images/wasm_logo.png"));
   }
 
-  async #LoadDefaultFont() {
+  async #LoadDefaultFont(): Promise<void> {
     await this.LoadBMFont(
       "assets/fonts/nokia_cellphone_fc_8.txt",
       this.WasmInstance.exports.DefaultFontPtr(),
       this.WasmInstance.exports.DefaultFontGlyphsPtr())
   }
 
-  async LoadAssets() {
+  async LoadAssets(): Promise<void> {
     throw new Error("LoadAssets has been moved to LoadGameAssets");
   }
 
   /**
    * Overridden by the inherited `Game` class
    */
-  async LoadGameAssets() {}
+  async LoadGameAssets(): Promise<void> {}
   
-  async #RequestAssetLoad() {
+  async #RequestAssetLoad(): Promise<void> {
     await this.LoadGameAssets()
   }
 
 
-  #HideCursor() {
+  #HideCursor(): void {
     this.#canvas.style.cursor = "none"
   }
 
-  #ShowCursor() {
+  #ShowCursor(): void {
     this.#canvas.style.removeProperty("cursor")
   }
 
-  #AssertNumber(value: any) {
+  #AssertNumber(value: unknown) {
     if (typeof value != "number")
       throw new Error(`Expected a number, but received ${typeof value}`);
 
@@ -521,7 +523,7 @@ class Posit92 {
       throw new Error("Expected a number, but received NaN");
   }
 
-  #AssertString(value: any) {
+  #AssertString(value: unknown) {
     if (typeof value != "string")
       throw new Error(`Expected a string, but received ${typeof value}`);
   }
@@ -823,7 +825,7 @@ class Posit92 {
     const fontGlyphs: Map<number, TBMFontGlyph> = new Map();
     let glyphCount = 0;
     let imgHandle = 0;
-    let spacing = [0, 0];
+    const spacing = [0, 0];
 
     for (const line of lines) {
       txtLine = line.replaceAll(/\s+/g, " ");
