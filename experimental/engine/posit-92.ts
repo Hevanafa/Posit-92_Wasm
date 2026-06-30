@@ -200,10 +200,6 @@ class Posit92 {
    */
   glCtx: WebGLRenderingContext = null!;
 
-  // get CanvasCtx(): CanvasRenderingContext2D {
-  //   return this.#ctx
-  // }
-
   #wasm: WebAssemblyInstance = null!;
 
   get WasmInstance(): WebAssemblyInstance {
