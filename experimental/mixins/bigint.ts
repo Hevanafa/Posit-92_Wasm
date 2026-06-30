@@ -24,7 +24,7 @@ class BigIntMixin extends Posit92 {
       JsBigIntFetchResult: this.#BigIntFetchResult.bind(this),
 
       JsBigIntFormat: this.#BigIntFormat.bind(this),
-      // FormatBigIntScientific: this.#FormatBigIntScientific.bind(this)
+      JsBigIntFormatScientific: this.#BigIntFormatScientific.bind(this)
     });
   }
 
@@ -144,16 +144,14 @@ class BigIntMixin extends Posit92 {
       this.WriteInteropBuffer(n.toString());
   }
 
+  #BigIntFormatScientific(): void {
+    const n = this.#bigIntA;
+    const digits = n.toString().length;
 
-  // #FormatBigIntScientific(): void {
-  //   const biStrA = this.#BufferPtrToString(this.WasmInstanceExports.GetBigIntAPtr());
-  //   const a = BigInt(biStrA);
-  //   const digits = a.toString().length;
-
-  //   if (a >= 1000n) {
-  //     const readable = Number(a / 10n ** (BigInt(digits) - 2n)) / 10;
-  //     this.#LoadBigIntResult(readable + " * 10^" + (digits - 1));
-  //   } else
-  //     this.#LoadBigIntResult(a);
-  // }
+    if (n >= 1000n) {
+      const readable = Number(n / 10n ** (BigInt(digits) - 2n)) / 10;
+      this.WriteInteropBuffer(readable + " * 10^" + (digits - 1));
+    } else
+      this.WriteInteropBuffer(n.toString());
+  }
 }
