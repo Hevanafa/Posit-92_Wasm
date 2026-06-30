@@ -37,6 +37,12 @@ implementation
 
 uses Conv, InteropBuf;
 
+{
+  Verbs used for data flow:
+  Set  : Pascal --> JS
+  Fetch: JS --> Pascal
+}
+
 procedure JsBigIntSetA; external 'env' name 'JsBigIntSetA';
 procedure JsBigIntSetB; external 'env' name 'JsBigIntSetB';
 
