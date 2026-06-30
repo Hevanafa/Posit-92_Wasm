@@ -16,13 +16,13 @@ class BigIntMixin extends Posit92 {
       JsBigIntSetB: this.#BigIntSetB.bind(this),
 
       JsBigIntAdd: this.#BigIntAdd.bind(this),
-      JsBigIntSubtract: () => this.#BigIntSubtract.bind(this),
-      JsBigIntMultiply: () => this.#BigIntMultiply.bind(this),
-      JsBigIntDivide: () => this.#BigIntDivide.bind(this),
+      JsBigIntSubtract: this.#BigIntSubtract.bind(this),
+      JsBigIntMultiply: this.#BigIntMultiply.bind(this),
+      JsBigIntDivide: this.#BigIntDivide.bind(this),
 
-      JsBigIntCompare: () => this.#BigIntCompare.bind(this),
-      // FormatBigInt: () => this.#FormatBigInt.bind(this),
-      // FormatBigIntScientific: () => this.#FormatBigIntScientific.bind(this)
+      JsBigIntCompare: this.#BigIntCompare.bind(this),
+      // FormatBigInt: this.#FormatBigInt.bind(this),
+      // FormatBigIntScientific: this.#FormatBigIntScientific.bind(this)
     });
   }
 
@@ -47,16 +47,16 @@ class BigIntMixin extends Posit92 {
 
   #BigIntSetA(): void {
     this.#bigIntA = BigInt(this.ReadInteropBuffer());
-    console.log(this.#bigIntA);
+    console.log("bigIntA", this.#bigIntA);
   }
 
   #BigIntSetB(): void {
     this.#bigIntB = BigInt(this.ReadInteropBuffer());
-    console.log(this.#bigIntB);
+    console.log("bigIntB", this.#bigIntB);
   }
 
   // Begin arithmetic operations
-  
+
   #BigIntAdd(): void {
     this.#bigIntResult = this.#bigIntA + this.#bigIntB;
     this.WriteInteropBuffer(this.#bigIntResult.toString());
@@ -64,16 +64,22 @@ class BigIntMixin extends Posit92 {
 
   #BigIntSubtract(): void {
     this.#bigIntResult = this.#bigIntA - this.#bigIntB;
+    console.log("BigIntSubtract", this.#bigIntResult);
+
     this.WriteInteropBuffer(this.#bigIntResult.toString());
   }
 
   #BigIntMultiply(): void {
     this.#bigIntResult = this.#bigIntA * this.#bigIntB;
+    console.log("BigIntMultiply", this.#bigIntResult);
+
     this.WriteInteropBuffer(this.#bigIntResult.toString());
   }
 
   #BigIntDivide(): void {
     this.#bigIntResult = this.#bigIntA / this.#bigIntB;
+    console.log("BigIntDivide", this.#bigIntResult);
+
     this.WriteInteropBuffer(this.#bigIntResult.toString());
   }
 
