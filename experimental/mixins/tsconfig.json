@@ -13,6 +13,8 @@
   },
   "files": [
     "../engine/posit-92.ts",
+
+    "./bigint.ts",
     "./webgl.ts"
   ]
 }

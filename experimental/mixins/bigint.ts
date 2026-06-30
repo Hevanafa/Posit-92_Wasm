@@ -1,6 +1,7 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class BigIntMixin extends Posit92 {
-  #setupImportObject() {
-    const { env } = super._getWasmImportObject();
+  SetupImportObject() {
+    const { env } = this.WasmImportObject;
 
     Object.assign(env, {
       // BigInt
@@ -13,14 +14,6 @@ class BigIntMixin extends Posit92 {
       formatBigInt: () => this.#formatBigInt(),
       formatBigIntScientific: () => this.#formatBigIntScientific()
     })
-  }
-
-  /**
-   * @override
-   */
-  async init() {
-    this.#setupImportObject();
-    await super.init()
   }
 
   #assertNumber(value) {
