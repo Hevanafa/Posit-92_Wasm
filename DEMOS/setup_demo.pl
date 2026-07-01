@@ -28,11 +28,6 @@ unless (-d $demo_dir) {
   exit 1
 }
 
-my @mixins = read_mixins $demo_dir;
-print join " -- ", @mixins;
-
-exit;
-
 # Ensure engine JS
 eval {
   system "perl ../scripts/ensure_engine_js.pl";
@@ -41,6 +36,7 @@ eval {
 
 # Return to DEMOS
 chdir $start_dir;
+
 
 my $engine_js_path = "../experimental/engine/posit-92.js";
 my $scripts_dir = "../scripts";
@@ -86,6 +82,15 @@ if (grep { $_ eq "--all" } @ARGV) {
 
 say "Copying " . basename($engine_js_path) . "...";
 copy($engine_js_path, catfile($demo_dir, basename($engine_js_path)));
+
+# Obtain the list of mixins
+
+my @mixins = read_mixins $demo_dir;
+# print join " -- ", @mixins;
+
+# TODO: Ensure mixin files
+# TODO: Copy mixin files
+
 
 # Copy build scripts
 
