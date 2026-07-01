@@ -2,6 +2,7 @@ use strict;
 use warnings;
 use v5.38.2;
 
+use FindBin qw($Bin);
 use Cwd qw(abs_path getcwd);
 use File::Copy qw(copy);
 use File::Spec::Functions qw(catfile);
@@ -13,18 +14,20 @@ use DemoMetadata qw(read_mixins);
 
 # print join " -- ", @ARGV;
 
-my $start_dir = getcwd;
-my $demo_dir = $ARGV[0];
+my $script_dir = $Bin;
+my $project_root = catdir($Bin, "..");
 
-if (!$demo_dir) {
-  say "Missing \$demo_dir!";
+my $engine_js_path = catdir($project_root, "experimental", "engine", "posit-92.js");
+my $scripts_dir = catdir($project_root, "scripts");
+
+my $demo_or_option = $ARGV[0];
+
+if (!$demo_or_option) {
   say "Usage:";
-  say "$0 <demo_dir> [--all]";
+  say "$0 <demo_or_option> [--all]";
+
   exit 1
 }
-
-my $engine_js_path = "../experimental/engine/posit-92.js";
-my $scripts_dir = "../scripts";
 
 # Ensure engine JS
 eval {
@@ -87,7 +90,7 @@ sub setup_demo {
 if (grep { $_ eq "--all" } @ARGV) {
   say "--all option is used";
 
-  for $demo_dir (grep { -d } glob "*") {
+  for my $demo_dir (grep { -d } glob "*") {
     say "Demo dir: ".$demo_dir;
 
     # TODO: actually do the setup
@@ -102,6 +105,8 @@ if (grep { $_ eq "--all" } @ARGV) {
 }
 
 # Otherwise handle setup for only 1 demo
+
+my $demo_dir = $demo_or_option;
 
 unless (-d $demo_dir) {
   say "Couldn't find ".$demo_dir."!";
