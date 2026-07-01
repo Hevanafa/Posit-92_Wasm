@@ -28,7 +28,8 @@ unless (-d $demo_dir) {
   exit 1
 }
 
-my $demo_dir_abs = abs_path($demo_dir);
+# Normalise $demo_dir
+($demo_dir) = $demo_dir =~ /([a-z_]+)/;
 
 # Ensure engine JS
 eval {
@@ -41,6 +42,56 @@ chdir $start_dir;
 
 my $engine_js_path = "../experimental/engine/posit-92.js";
 my $scripts_dir = "../scripts";
+
+sub setup_demo {
+  my $target_dir = shift;
+
+  unless ($target_dir) {
+    say "Missing $target_dir parameter!";
+    return
+  }
+
+  my $target_dir_abs = abs_path($target_dir);
+
+  # Copy engine JS
+
+  say "Copying " . basename($engine_js_path) . "...";
+  copy($engine_js_path, catfile($target_dir, basename($engine_js_path)));
+
+  # Handle mixins
+
+  my @mixins = read_mixins $target_dir;
+  # print join " -- ", @mixins;
+
+  if (@mixins) {
+    say "Copying mixin files...";
+
+    chdir "../experimental/mixins/";
+
+    for my $mixin_name (@mixins) {
+      system "perl ensure_mixin.pl ".$mixin_name;
+
+      copy($mixin_name.".js", catfile($target_dir_abs, $mixin_name.".js"))
+        or warn "Couldn't copy mixin: $mixin_name"
+    }
+
+    chdir $start_dir;
+  }
+
+  # Copy build scripts
+
+  say "Copying build scripts...";
+
+  my @scripts = (
+    "clean.pl", "make_demo.pl", "dist.pl",
+    "server.ts"
+  );
+
+  for (@scripts) {
+    copy(catfile($scripts_dir, $_), catfile($demo_dir, $_))
+      or warn "Couldn't copy $_: $!";
+  }
+}
 
 # --all option
 
@@ -62,43 +113,6 @@ if (grep { $_ eq "--all" } @ARGV) {
 
 # Take care of 1 demo
 
-# Copy engine JS
-
-say "Copying " . basename($engine_js_path) . "...";
-copy($engine_js_path, catfile($demo_dir, basename($engine_js_path)));
-
-# Handle mixins
-
-my @mixins = read_mixins $demo_dir;
-# print join " -- ", @mixins;
-
-if (@mixins) {
-  say "Copying mixin files...";
-
-  chdir "../experimental/mixins/";
-
-  for my $mixin_name (@mixins) {
-    system "perl ensure_mixin.pl ".$mixin_name;
-
-    copy($mixin_name.".js", catfile($demo_dir_abs, $mixin_name.".js"))
-      or warn "Couldn't copy mixin: $mixin_name"
-  }
-
-  chdir $start_dir;
-}
-
-# Copy build scripts
-
-say "Copying build scripts...";
-
-my @scripts = (
-  "clean.pl", "make_demo.pl", "dist.pl",
-  "server.ts"
-);
-
-for (@scripts) {
-  copy(catfile($scripts_dir, $_), catfile($demo_dir, $_))
-    or warn "Couldn't copy $_: $!";
-}
+setup_demo $demo_dir;
 
 say colored("Done!", "bright_green")
