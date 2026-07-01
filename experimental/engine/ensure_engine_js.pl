@@ -2,13 +2,14 @@ use strict;
 use warnings;
 use v5.38.2;
 
+use FindBin qw($Bin);
 use File::Basename qw(basename);
 
-# Copy engine JS
+my $script_dir = $Bin;
 
 say "Checking engine JS...";
 
-my $engine_js_path = "../experimental/engine/posit-92.js";
+my $engine_js_path = catfile($script_dir, "posit-92.js");
 
 unless (-f $engine_js_path) {
   my $cmd = "bun run make";
