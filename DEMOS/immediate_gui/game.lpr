@@ -45,12 +45,6 @@ var
 
   sliderValue: TSliderState;
 
-{ Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure hideCursor; external 'env' name 'hideCursor';
-procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
-procedure loadAssets; external 'env' name 'loadAssets';
-
 procedure drawFPS;
 begin
   printDefault('FPS:' + i32str(getLastFPS), 240, 0);
@@ -58,7 +52,7 @@ end;
 
 procedure drawMouse;
 begin
-  if hasHoveredWidget then
+  if HasHoveredWidget then
     spr(imgHandCursor, mouseX - 5, mouseY - 1)
   else
     spr(imgCursor, mouseX, mouseY);
@@ -67,26 +61,7 @@ end;
 procedure BeginLoadingState;
 begin
   actualGameState := GameStateLoading;
-  loadAssets
-end;
-
-{ TODO: Remove this }
-procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
-var
-  a, b: word;
-  image: PImageRef;
-begin
-  if not isImageSet(imgHandle) then begin
-    writeLog('replaceColours: Unset imgHandle: ' + i32str(imgHandle));
-    exit
-  end;
-
-  image := getImagePtr(imgHandle);
-
-  for b:=0 to image^.height - 1 do
-  for a:=0 to image^.width - 1 do
-    if unsafeSprPget(image, a, b) = oldColour then
-      unsafeSprPset(image, a, b, newColour);
+  RequestAssetLoad
 end;
 
 procedure BeginPlayingState;
@@ -99,10 +74,10 @@ begin
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
-  initImmediateGUI;
-  guiSetFont(defaultFont, defaultFontGlyphs);
+  InitImmediateGUI;
+  GuiSetFont(DefaultFontPtr^, DefaultFontGlyphsPtr^);
 
-  replaceColours(blackFont.imgHandle, $FFFFFFFF, $FF000000);
+  ReplaceColour(blackFont.imgHandle, $FFFFFFFF, $FF000000);
 
   clicks := 0;
   showFPS.checked := false;
@@ -127,9 +102,9 @@ begin
   UpdateDeltaTime;
   IncrementFPS;
 
-  updateGUILastMouseButton;
+  UpdateGUILastMouseButton;
   UpdateMouse;
-  updateGUIMousePoint;
+  UpdateGUIMousePoint;
 
   { Your Update logic here }
   if lastEsc <> IsKeyDown(SC_ESC) then begin
@@ -143,7 +118,7 @@ begin
 
   gameTime := gameTime + DeltaTime;
 
-  resetWidgetIndices
+  ResetWidgetIndices
 end;
 
 procedure Draw;
@@ -160,7 +135,7 @@ begin
 
   Cls($FF6495ED);
 
-  guiSetFont(blackFont, blackFontGlyphs);
+  GuiSetFont(blackFont, blackFontGlyphs);
   if Button('Click me!', 180, 88, 50, 24) then
     inc(clicks);
 
@@ -174,20 +149,20 @@ begin
 
   sprStretch(imgDosuEXE[0], 100, 80, 24, 48);
 
-  guiSetFont(defaultFont, defaultFontGlyphs);
+  GuiSetFont(DefaultFontPtr^, DefaultFontGlyphsPtr^);
   Slider(120, 40, 100, sliderValue, 0, 100);
   TextLabel('Slider value: ' + i32str(sliderValue.value), 120, 30);
 
   s := 'Clicks: ' + i32str(clicks);
-  w := guiMeasureText(s);
+  w := GuiMeasureText(s);
   TextLabel(s, (vgaWidth - w) div 2, 120);
 
-  guiSetFont(picotronFont, picotronFontGlyphs);
+  GuiSetFont(picotronFont, picotronFontGlyphs);
   s := 'Picotron font';
-  w := guiMeasureText(s);
+  w := GuiMeasureText(s);
   TextLabel(s, (vgaWidth - w) div 2, 140);
 
-  guiSetFont(defaultFont, defaultFontGlyphs);
+  GuiSetFont(DefaultFontPtr^, DefaultFontGlyphsPtr^);
   ProgressBar(10, 80, 80, 10, 0.75);
   ProgressBarLabelled(10, 100, 80, 10, 0.75);
   Checkbox('Show FPS', 10, 60, showFPS);
@@ -198,7 +173,7 @@ begin
   { TextLabelWrap('This is a very long supercalifragilisticexpialidocious third line!', 10, 160, 100); }
   TextLabelWrap('1st line'#13#10'2nd line'#10'3rd longer line', 10, 160, 100);
 
-  resetActiveWidget;
+  ResetActiveWidget;
 
   drawMouse;
 

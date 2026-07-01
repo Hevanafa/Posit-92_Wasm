@@ -41,42 +41,42 @@ const
   IceCreamRed = $FFEB6B6F;
   IceCreamMaroon = $FF7C3F58;
 
-procedure initImmediateGUI;
+procedure InitImmediateGUI;
 
-function getMousePoint: TPoint;
-function getMouseJustPressed: boolean;
-function getMouseJustReleased: boolean;
+function GetMousePoint: TPoint;
+function GetMouseJustPressed: boolean;
+function GetMouseJustReleased: boolean;
 
-function getActiveFont: PBMFont;
+function GetActiveFont: PBMFont;
 
-function getHotWidget: smallint;
-procedure setHotWidget(const widgetID: smallint);
-function getActiveWidget: smallint;
-procedure setActiveWidget(const widgetID: smallint);
-function getNextWidgetID: smallint;
-procedure incNextWidgetID;
+function GetHotWidget: smallint;
+procedure SetHotWidget(const widgetID: smallint);
+function GetActiveWidget: smallint;
+procedure SetActiveWidget(const widgetID: smallint);
+function GetNextWidgetID: smallint;
+procedure IncNextWidgetID;
 
 { Can be used with drawMouse }
-function hasHoveredWidget: boolean;
+function HasHoveredWidget: boolean;
 
 { Required: Called before updateMouse }
-procedure updateGUILastMouseButton;
+procedure UpdateGUILastMouseButton;
 
 { Required: Called after updateMouse }
-procedure updateGUIMousePoint;
+procedure UpdateGUIMousePoint;
 
 { Required: Called at the end of update routine }
-procedure resetWidgetIndices;
+procedure ResetWidgetIndices;
 
 { Required: Must be placed at the end of the draw routine }
-procedure resetActiveWidget;
+procedure ResetActiveWidget;
 
-procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
+procedure GuiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 
-function guiMeasureText(const text: string): word;
-function guiMeasureTextWrapHeight(text: ShortString; const maxWidth: smallint): word;
+function GuiMeasureText(const text: string): word;
+function GuiMeasureTextWrapHeight(text: ShortString; const maxWidth: smallint): word;
 
-procedure assertFontSet;
+procedure AssertFontSet;
 
 { Widgets }
 procedure TextLabel(const text: string; const x, y: smallint);
@@ -131,7 +131,7 @@ var
   activeFontGlyphs: array[32..126] of TBMFontGlyph;
 
 
-procedure initImmediateGUI;
+procedure InitImmediateGUI;
 begin
   hotWidget := -1;
   activeWidget := -1;
@@ -142,67 +142,67 @@ begin
   mousePoint.y := 0;
 end;
 
-function getMousePoint: TPoint;
+function GetMousePoint: TPoint;
 begin
-  getMousePoint := mousePoint
+  GetMousePoint := mousePoint
 end;
 
-function getMouseJustPressed: boolean;
+function GetMouseJustPressed: boolean;
 begin
-  getMouseJustPressed := mouseJustPressed
+  GetMouseJustPressed := mouseJustPressed
 end;
 
-function getMouseJustReleased: boolean;
+function GetMouseJustReleased: boolean;
 begin
-  getMouseJustReleased := mouseJustReleased
+  GetMouseJustReleased := mouseJustReleased
 end;
 
-function getActiveFont: PBMFont;
+function GetActiveFont: PBMFont;
 begin
-  getActiveFont := @activeFont;
+  GetActiveFont := @activeFont;
 end;
 
-function getHotWidget: smallint;
+function GetHotWidget: smallint;
 begin
-  getHotWidget := hotWidget
+  GetHotWidget := hotWidget
 end;
 
-procedure setHotWidget(const widgetID: smallint);
+procedure SetHotWidget(const widgetID: smallint);
 begin
   hotWidget := widgetID
 end;
 
-function getActiveWidget: smallint;
+function GetActiveWidget: smallint;
 begin
-  getActiveWidget := activeWidget
+  GetActiveWidget := activeWidget
 end;
 
-procedure setActiveWidget(const widgetID: smallint);
+procedure SetActiveWidget(const widgetID: smallint);
 begin
   activeWidget := widgetID
 end;
 
-function getNextWidgetID: smallint;
+function GetNextWidgetID: smallint;
 begin
-  getNextWidgetID := nextWidgetID
+  GetNextWidgetID := nextWidgetID
 end;
 
-procedure incNextWidgetID;
+procedure IncNextWidgetID;
 begin
   inc(nextWidgetID)
 end;
 
-function hasHoveredWidget: boolean;
+function HasHoveredWidget: boolean;
 begin
-  hasHoveredWidget := hotWidget > -1
+  HasHoveredWidget := hotWidget > -1
 end;
 
-procedure updateGUILastMouseButton;
+procedure UpdateGUILastMouseButton;
 begin
   lastMouseButton := mouseButton
 end;
 
-procedure updateGUIMousePoint;
+procedure UpdateGUIMousePoint;
 begin
   mousePoint.x := mouseX;
   mousePoint.y := mouseY;
@@ -211,7 +211,7 @@ begin
   mouseJustReleased := (mouseButton = MouseButtonNone) and (lastMouseButton <> MouseButtonNone)
 end;
 
-procedure resetWidgetIndices;
+procedure ResetWidgetIndices;
 begin
   hotWidget := -1;
   { Important: Do not reset activeWidget on each frame }
@@ -219,13 +219,13 @@ begin
   nextWidgetID := 0;
 end;
 
-procedure resetActiveWidget;
+procedure ResetActiveWidget;
 begin
   lastActiveWidget := activeWidget;
   if mouseJustReleased and (activeWidget >= 0) then activeWidget := -1;
 end;
 
-procedure guiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
+procedure GuiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
 var
   a: word;
 begin
@@ -236,20 +236,20 @@ begin
     activeFontGlyphs[a] := glyphs[a - 32];
 end;
 
-procedure assertFontSet;
+procedure AssertFontSet;
 begin
   if not isFontSet then panicHalt('activeFont is unset!');
 end;
 
 { Returns the width of the text
   to measure the height, use `font.lineHeight` }
-function guiMeasureText(const text: string): word;
+function GuiMeasureText(const text: string): word;
 begin
-  assertFontSet;
-  guiMeasureText := measureBMFont(activeFont, activeFontGlyphs, text)
+  AssertFontSet;
+  GuiMeasureText := measureBMFont(activeFont, activeFontGlyphs, text)
 end;
 
-function guiMeasureTextWrapHeight(text: ShortString; const maxWidth: smallint): word;
+function GuiMeasureTextWrapHeight(text: ShortString; const maxWidth: smallint): word;
 var
   lines: array[0..9] of ShortString;
   lineCount: smallint;
@@ -260,10 +260,10 @@ var
   spaceWidth: word;
   wordWidth, runWidth: word;
 begin
-  assertFontSet;
+  AssertFontSet;
 
   if maxWidth <= 0 then begin
-    guiMeasureTextWrapHeight := 0;
+    GuiMeasureTextWrapHeight := 0;
     exit
   end;
 
@@ -278,11 +278,11 @@ begin
     run := '';
     runWidth := 0;
 
-    spaceWidth := guiMeasureText(' ');
+    spaceWidth := GuiMeasureText(' ');
     wordCount := split(lines[row], ' ', words);
 
     for a:=0 to wordCount - 1 do begin
-      wordWidth := guiMeasureText(words[a]);
+      wordWidth := GuiMeasureText(words[a]);
 
       if runWidth + wordWidth <= maxWidth then begin
         run := run + words[a] + ' ';
@@ -297,7 +297,7 @@ begin
     inc(result, activeFont.lineHeight);
   end;
 
-  guiMeasureTextWrapHeight := result
+  GuiMeasureTextWrapHeight := result
 end;
 
 
@@ -305,7 +305,7 @@ end;
 
 procedure TextLabel(const text: string; const x, y: smallint);
 begin
-  assertFontSet;
+  AssertFontSet;
   printBMFont(activeFont, activeFontGlyphs, text, x, y)
 end;
 
@@ -321,7 +321,7 @@ var
   wordWidth, runWidth: word;
   left, top: word;
 begin
-  assertFontSet;
+  AssertFontSet;
   if maxWidth <= 0 then exit;
 
   { Process each line }
@@ -335,11 +335,11 @@ begin
     runWidth := 0;
     left := x;
 
-    spaceWidth := guiMeasureText(' ');
+    spaceWidth := GuiMeasureText(' ');
     wordCount := split(lines[row], ' ', words);
 
     for a:=0 to wordCount - 1 do begin
-      wordWidth := guiMeasureText(words[a]);
+      wordWidth := GuiMeasureText(words[a]);
 
       if runWidth + wordWidth <= maxWidth then begin
         run := run + words[a] + ' ';
@@ -365,7 +365,7 @@ procedure CentredLabel(const text: string; const cx, y: smallint);
 var
   w: word;
 begin
-  w := guiMeasureText(text);
+  w := GuiMeasureText(text);
   TextLabel(text, cx - w div 2, y)
 end;
 
@@ -376,7 +376,7 @@ var
   thisWidgetID: smallint;
   buttonColour: longword;
 begin
-  assertFontSet;
+  AssertFontSet;
 
   zone.x := x;
   zone.y := y;
@@ -418,7 +418,7 @@ var
   thisWidgetID: smallint;
   buttonImgHandle: longword;
 begin
-  assertFontSet;
+  AssertFontSet;
 
   zone.x := x;
   zone.y := y;
@@ -463,7 +463,7 @@ var
   zone: TZone;
   clickedIndex: smallint;
 begin
-  assertFontSet;
+  AssertFontSet;
 
   { if (items = nil) or (items.count = 0) then exit; }
   if length(items) = 0 then exit;
@@ -516,12 +516,12 @@ var
   thisWidgetID: smallint;
   checkboxColour: longword;
 begin
-  assertFontSet;
+  AssertFontSet;
 
   zone.x := x;
   zone.y := y;
 
-  w := guiMeasureText(caption);
+  w := GuiMeasureText(caption);
   zone.width := w + 6;
   zone.height := activeFont.lineHeight;
 
@@ -693,7 +693,7 @@ var
   percStr: string;
   w: word;
 begin
-  assertFontSet;
+  AssertFontSet;
 
   ProgressBar(x, y, width, height, perc);
   
