@@ -32,20 +32,38 @@ if (!$demo_or_option) {
   exit 1
 }
 
+say "Broken for now!";
+exit 1;
+
 # Ensure engine JS
 eval {
-  system "perl", catfile($scripts_dir, "ensure_engine_js.pl");
+  system "perl", catfile($engine_dir, "ensure_engine_js.pl");
   1
 };
 
 sub setup_demo {
-  my $target_dir = shift;
+  my $demo_dir = shift;
 
-  unless ($target_dir) {
-    say "Missing $target_dir parameter!";
+  unless ($demo_dir) {
+    say "Missing $demo_dir parameter!";
     return
   }
 
+  # Normalise $demo_dir
+  ($demo_dir) = $demo_dir =~ /([a-z_]+)/;
+
+  $demo_dir = catdir($project_root, "DEMOS", $demo_dir);
+
+  unless (-d $demo_dir) {
+    say "Couldn't find ".$demo_dir."!";
+    exit 1
+  }
+
+  # Return to DEMOS
+
+  chdir $start_dir;
+
+  setup_demo $demo_dir;
   my $target_dir_abs = abs_path($target_dir);
 
   # Copy engine JS
@@ -110,18 +128,6 @@ if (grep { $_ eq "--all" } @ARGV) {
 # Otherwise handle setup for only 1 demo
 
 my $demo_dir = $demo_or_option;
-
-unless (-d $demo_dir) {
-  say "Couldn't find ".$demo_dir."!";
-  exit 1
-}
-
-# Normalise $demo_dir
-($demo_dir) = $demo_dir =~ /([a-z_]+)/;
-
-# Return to DEMOS
-
-chdir $start_dir;
 
 setup_demo $demo_dir;
 
