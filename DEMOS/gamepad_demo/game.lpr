@@ -4,12 +4,12 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
+  EngineCore, EngineFonts, WasmHost,
   BMFont, Graphics, Loading, Fullscreen,
   Conv, FPS, Logger,
   Keyboard, Mouse, Gamepad,
-  ImgRef, ImgRefFast,
-  Timing, WasmHeap, WasmMemMgr,
-  PostProc, VGA,
+  ImgRef, ImgRefFast, SprEffects,
+  Timing, VGA,
   Assets;
 
 type
@@ -37,72 +37,58 @@ var
   gameTime: double;
 
 
-{ Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure hideCursor; external 'env' name 'hideCursor';
-procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
-procedure loadAssets; external 'env' name 'loadAssets';
-
-procedure drawFPS;
+procedure DrawFPS;
 begin
   printDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
-procedure drawMouse;
+procedure DrawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure beginLoadingState;
+procedure BeginLoadingState;
 begin
   actualGameState := GameStateLoading;
-  fitCanvas;
-  loadAssets
+  FitCanvas;
+  RequestAssetLoad
 end;
 
-procedure beginPlayingState;
+procedure BeginPlayingState;
 begin
-  hideCursor;
-  fitCanvas;
+  HideCursor;
+  FitCanvas;
 
   { Initialise game state here }
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
-  greyFont := defaultFont;
-  greyFont.imgHandle := copyImage(defaultFont.imgHandle);
+  greyFont := DefaultFontPtr^;
+  greyFont.imgHandle := copyImage(DefaultFontPtr^.imgHandle);
   replaceColour(greyFont.imgHandle, white, lightgrey)
 end;
 
 procedure StateLabel(const text: string; const x, y: integer; const enabled: boolean);
 begin
   if enabled then
-    printDefault(text, x, y)
+    PrintDefault(text, x, y)
   else
-    printBMFont(greyFont, defaultFontGlyphs, text, x, y);
+    PrintBMFont(greyFont, DefaultFontGlyphsPtr^, text, x, y);
 end;
 
 
-procedure init;
+procedure OnReady;
 begin
-  initMemMgr;
-  initBuffer;
-  initDeltaTime;
-  initFPSCounter
+  BeginPlayingState
 end;
 
-procedure afterInit;
+procedure Update;
 begin
-  beginPlayingState
-end;
-
-procedure update;
-begin
-  updateDeltaTime;
-  incrementFPS;
+  UpdateDeltaTime;
+  IncrementFPS;
 
   { Handle inputs }
-  updateMouse;
+  UpdateMouse;
 
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
@@ -114,10 +100,10 @@ begin
   end;
 
   { Handle game state updates }
-  gameTime := gameTime + dt
+  gameTime := gameTime + DeltaTime
 end;
 
-procedure draw;
+procedure Draw;
 var
   w: integer;
   s: string;
@@ -196,18 +182,18 @@ begin
     printDefault('RY: ' + f32str(rightY), 220, 160);
   end;
 
-  drawMouse;
-  drawFPS;
+  DrawMouse;
+  DrawFPS;
 
-  vgaFlush
+  VgaUpload;
+  VgaPresent
 end;
 
 exports
-  beginLoadingState,
-  init,
-  afterInit,
-  update,
-  draw;
+  BeginLoadingState,
+  OnReady,
+  Update,
+  Draw;
 
 begin
 { Starting point is intentionally left empty }
