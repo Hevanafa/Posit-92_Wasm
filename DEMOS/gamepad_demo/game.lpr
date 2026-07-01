@@ -121,7 +121,7 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  if not gamepadConnected then begin
+  if not GamepadConnected then begin
     s := 'Plug in a controller';
     w := measureDefault(s);
     printDefault(s, (vgaWidth - w) div 2, 120);
@@ -132,49 +132,49 @@ begin
   end;
 
   { Debug buttons }
-  if gamepadConnected then begin
-    { if gamepadButton(BTN_DPAD_UP) then printDefault('UP', 105, 100 - 10); }
-    StateLabel('UP', 95, 100 - 10, gamepadButton(BTN_DPAD_UP));
-    StateLabel('DOWN', 95, 100 + 10, gamepadButton(BTN_DPAD_DOWN));
-    StateLabel('LEFT', 95 - 15, 100, gamepadButton(BTN_DPAD_LEFT));
-    StateLabel('RIGHT', 95 + 15, 100, gamepadButton(BTN_DPAD_RIGHT));
+  if GamepadConnected then begin
+    { if GamepadButton(BTN_DPAD_UP) then printDefault('UP', 105, 100 - 10); }
+    StateLabel('UP', 95, 100 - 10, GamepadButton(BTN_DPAD_UP));
+    StateLabel('DOWN', 95, 100 + 10, GamepadButton(BTN_DPAD_DOWN));
+    StateLabel('LEFT', 95 - 15, 100, GamepadButton(BTN_DPAD_LEFT));
+    StateLabel('RIGHT', 95 + 15, 100, GamepadButton(BTN_DPAD_RIGHT));
 
-    StateLabel('X', 200 - 10, 100, gamepadButton(BTN_X));
-    StateLabel('Y', 200, 100 - 10, gamepadButton(BTN_Y));
-    StateLabel('A', 200, 100 + 10, gamepadButton(BTN_A));
-    StateLabel('B', 200 + 10, 100, gamepadButton(BTN_B));
+    StateLabel('X', 200 - 10, 100, GamepadButton(BTN_X));
+    StateLabel('Y', 200, 100 - 10, GamepadButton(BTN_Y));
+    StateLabel('A', 200, 100 + 10, GamepadButton(BTN_A));
+    StateLabel('B', 200 + 10, 100, GamepadButton(BTN_B));
 
-    StateLabel('LB', 145, 50, gamepadButton(BTN_LB));
-    StateLabel('RB', 175, 50, gamepadButton(BTN_RB));
-    StateLabel('LT', 145, 60, gamepadButton(BTN_LT));
-    StateLabel('RT', 175, 60, gamepadButton(BTN_RT));
+    StateLabel('LB', 145, 50, GamepadButton(BTN_LB));
+    StateLabel('RB', 175, 50, GamepadButton(BTN_RB));
+    StateLabel('LT', 145, 60, GamepadButton(BTN_LT));
+    StateLabel('RT', 175, 60, GamepadButton(BTN_RT));
 
-    StateLabel('START', 165, 80, gamepadButton(BTN_START));
-    StateLabel('BACK', 135, 80, gamepadButton(BTN_BACK));
+    StateLabel('START', 165, 80, GamepadButton(BTN_START));
+    StateLabel('BACK', 135, 80, GamepadButton(BTN_BACK));
   end;
 
   { Debug analogue sticks }
-  if gamepadConnected then begin
-    if gamepadButton(BTN_LSTICK) then
+  if GamepadConnected then begin
+    if GamepadButton(BTN_LSTICK) then
       circfill(130, 150, 20, green)
     else
       circ(130, 150, 20, white);
 
-    if gamepadButton(BTN_RSTICK) then
+    if GamepadButton(BTN_RSTICK) then
       circfill(190, 150, 20, green)
     else
       circ(190, 150, 20, white);
 
-    leftX := gamepadAxis(AXIS_LEFT_X);
-    leftY := gamepadAxis(AXIS_LEFT_Y);
-    rightX := gamepadAxis(AXIS_RIGHT_X);
-    rightY := gamepadAxis(AXIS_RIGHT_Y);
+    leftX := GamepadAxis(AXIS_LEFT_X);
+    leftY := GamepadAxis(AXIS_LEFT_Y);
+    rightX := GamepadAxis(AXIS_RIGHT_X);
+    rightY := GamepadAxis(AXIS_RIGHT_Y);
 
     circfill(130 + round(20 * leftX), 150 + round(20 * leftY), 5, white);
     circfill(190 + round(20 * rightX), 150 + round(20 * rightY), 5, white);
 
-    StateLabel('LSTICK', 120, 180, gamepadButton(BTN_LSTICK));
-    StateLabel('RSTICK', 170, 180, gamepadButton(BTN_RSTICK));
+    StateLabel('LSTICK', 120, 180, GamepadButton(BTN_LSTICK));
+    StateLabel('RSTICK', 170, 180, GamepadButton(BTN_RSTICK));
 
     printDefault('LX: ' + f32str(leftX), 40, 150);
     printDefault('LY: ' + f32str(leftY), 40, 160);

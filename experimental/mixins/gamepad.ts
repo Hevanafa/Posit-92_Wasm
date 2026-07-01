@@ -7,9 +7,9 @@ class GamepadMixin extends Posit92 {
     const { env } = super.WasmImportObject;
 
     Object.assign(env, {
-      gamepadConnected: this.#GamepadConnected.bind(this),
-      gamepadButton: this.#GamepadButton.bind(this),
-      gamepadAxis: this.#gamepadAxis.bind(this)
+      GamepadConnected: this.#GamepadConnected.bind(this),
+      GamepadButton: this.#GamepadButton.bind(this),
+      GamepadAxis: this.#GamepadAxis.bind(this)
     });
   }
 
@@ -54,7 +54,7 @@ class GamepadMixin extends Posit92 {
     return gamepad.buttons[button].pressed;
   }
 
-  #gamepadAxis(axis: number): number {
+  #GamepadAxis(axis: number): number {
     if (this.#gamepadIndex < 0) return 0.0;
 
     const gamepads = navigator.getGamepads();
