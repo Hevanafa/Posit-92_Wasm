@@ -5,19 +5,22 @@ use v5.38.2;
 use FindBin qw($Bin);
 use Cwd qw(abs_path getcwd);
 use File::Copy qw(copy);
-use File::Spec::Functions qw(catfile);
+use File::Spec::Functions qw(catdir, catfile);
 use File::Basename qw(basename);
 use Term::ANSIColor qw(colored);
 
-use lib ".";
+use lib $Bin;
 use DemoMetadata qw(read_mixins);
 
 # print join " -- ", @ARGV;
 
 my $script_dir = $Bin;
+
 my $project_root = catdir($Bin, "..");
 
-my $engine_js_path = catdir($project_root, "experimental", "engine", "posit-92.js");
+my $engine_dir = catdir($project_root, "experimental", "engine");
+my $engine_js_path = catfile($engine_dir, "posit-92.js");
+
 my $scripts_dir = catdir($project_root, "scripts");
 
 my $demo_or_option = $ARGV[0];
