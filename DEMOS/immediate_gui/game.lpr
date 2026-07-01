@@ -11,13 +11,13 @@ library Game;
 {$H+}{$J-}
 
 uses
-  SysUtils, { Classes, }
+  SysUtils,
+  EngineCore, EngineFonts, WasmHost,
   BMFont, Conv, FPS, Graphics,
   ImgRef, ImgRefFast, SprEffects,
   ImmediateGui,
   Keyboard, Loading, Logger, Mouse,
-  Panic, Shapes, Timing,
-  WasmMemMgr, VGA,
+  Panic, Shapes, Timing, VGA,
   Assets;
 
 type
@@ -64,7 +64,7 @@ begin
     spr(imgCursor, mouseX, mouseY);
 end;
 
-procedure beginLoadingState;
+procedure BeginLoadingState;
 begin
   actualGameState := GameStateLoading;
   loadAssets
@@ -89,7 +89,7 @@ begin
       unsafeSprPset(image, a, b, newColour);
 end;
 
-procedure beginPlayingState;
+procedure BeginPlayingState;
 var
   a: word;
 begin
@@ -117,55 +117,48 @@ begin
 end;
 
 
-procedure init;
+procedure OnReady;
 begin
-  initHeapMgr;
-  initDeltaTime;
-  initFPSCounter;
+  BeginPlayingState
 end;
 
-procedure afterInit;
+procedure Update;
 begin
-  beginPlayingState
-end;
-
-procedure update;
-begin
-  updateDeltaTime;
-  incrementFPS;
+  UpdateDeltaTime;
+  IncrementFPS;
 
   updateGUILastMouseButton;
-  updateMouse;
+  UpdateMouse;
   updateGUIMousePoint;
 
-  { Your update logic here }
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
+  { Your Update logic here }
+  if lastEsc <> IsKeyDown(SC_ESC) then begin
+    lastEsc := IsKeyDown(SC_ESC);
 
     if lastEsc then begin
-      writeLog('ESC is pressed!');
+      WriteLog('ESC is pressed!');
       signalDone
     end;
   end;
 
-  gameTime := gameTime + dt;
+  gameTime := gameTime + DeltaTime;
 
   resetWidgetIndices
 end;
 
-procedure draw;
+procedure Draw;
 var
   w: integer;
   s: string;
 begin
   if actualGameState = GameStateLoading then begin
-    renderLoadingScreen;
+    RenderLoadingScreen;
     exit
   end;
 
-  spr(imgCursor, 10, 100);
+  Spr(imgCursor, 10, 100);
 
-  cls($FF6495ED);
+  Cls($FF6495ED);
 
   guiSetFont(blackFont, blackFontGlyphs);
   if Button('Click me!', 180, 88, 50, 24) then
@@ -211,13 +204,14 @@ begin
 
   if showFPS.checked then drawFPS;
 
-  vgaFlush
+  VgaUpload;
+  VgaPresent
 end;
 
 exports
   { Main game procedures }
-  beginLoadingState,
-  init, afterInit, update, draw;
+  BeginLoadingState,
+  OnReady, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
