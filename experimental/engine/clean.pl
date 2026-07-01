@@ -4,11 +4,14 @@ use strict;
 use warnings;
 use v5.38.0;
 
+use FindBin qw($Bin);
+use File::Spec::Functions qw(catfile);
+
 my $count = 0;
 my @files = (
-  glob("*.js.map"),
-  glob("*.d.ts"),
-  glob("*.js")
+  glob(catfile($Bin, "*.js.map")),
+  glob(catfile($Bin, "*.d.ts")),
+  glob(catfile($Bin, "*.js"))
 );
 
 for my $file (@files) {
