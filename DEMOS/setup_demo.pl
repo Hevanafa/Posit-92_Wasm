@@ -50,24 +50,7 @@ if (grep { $_ eq "--all" } @ARGV) {
   for $demo_dir (grep { -d } glob "*") {
     say "Demo dir: ".$demo_dir;
 
-    # Copy engine JS
-
-    say "Copying " . basename($engine_js_path) . "...";
-    copy($engine_js_path, catfile($demo_dir, basename($engine_js_path)));
-
-    # Copy build scripts
-
-    say "Copying build scripts...";
-
-    my @scripts = (
-      "clean.pl", "make_demo.pl", "dist.pl",
-      "server.ts"
-    );
-
-    for (@scripts) {
-      copy(catfile($scripts_dir, $_), catfile($demo_dir, $_))
-        or warn "Couldn't copy $_: $!";
-    }
+    # TODO: Handle --all option
 
     say ""
   }
@@ -90,7 +73,7 @@ my @mixins = read_mixins $demo_dir;
 # print join " -- ", @mixins;
 
 if (@mixins) {
-  say "Copying mixin files..."
+  say "Copying mixin files...";
 
   chdir "../experimental/mixins/";
 
