@@ -1,16 +1,12 @@
 unit Assets;
 
-{$Mode TP}
+{$Mode ObjFPC}
 
 interface
 
 uses BMFont;
 
 var
-  { for use in loadBMFont }
-  defaultFont: TBMFont;
-  defaultFontGlyphs: array[32..126] of TBMFontGlyph;
-
   imgCursor: longint;
   imgDosuEXE: array[0..1] of longint;
 
@@ -19,84 +15,53 @@ var
   imgPause: longint;
   imgVolumeOn, imgVolumeOff: longint;
 
-{ BMFont boilerplate }
-function defaultFontPtr: PBMFont; public name 'defaultFontPtr';
-function defaultFontGlyphsPtr: PBMFontGlyph; public name 'defaultFontGlyphsPtr';
-
-procedure printDefault(const text: string; const x, y: integer);
-function measureDefault(const text: string): word;
-
 { Asset boilerplate }
-procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
-procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
 
-procedure setImgPlay(const imgHandle: longint); public name 'setImgPlay';
-procedure setImgStop(const imgHandle: longint); public name 'setImgStop';
-procedure setImgPause(const imgHandle: longint); public name 'setImgPause';
-procedure setImgVolumeOn(const imgHandle: longint); public name 'setImgVolumeOn';
-procedure setImgVolumeOff(const imgHandle: longint); public name 'setImgVolumeOff';
+procedure SetImgCursor(const imgHandle: longint); public name 'SetImgCursor';
+procedure SetImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'SetImgDosuEXE';
+
+procedure SetImgPlay(const imgHandle: longint); public name 'SetImgPlay';
+procedure SetImgStop(const imgHandle: longint); public name 'SetImgStop';
+procedure SetImgPause(const imgHandle: longint); public name 'SetImgPause';
+procedure SetImgVolumeOn(const imgHandle: longint); public name 'SetImgVolumeOn';
+procedure SetImgVolumeOff(const imgHandle: longint); public name 'SetImgVolumeOff';
 
 
 implementation
 
 uses Conv;
 
-{ Begin BMFont boilerplate}
-
-function defaultFontPtr: PBMFont;
-begin
-  defaultFontPtr := @defaultFont
-end;
-
-function defaultFontGlyphsPtr: PBMFontGlyph;
-begin
-  defaultFontGlyphsPtr := @defaultFontGlyphs
-end;
-
-procedure printDefault(const text: string; const x, y: integer);
-begin
-  printBMFont(defaultFont, defaultFontGlyphs, text, x, y)
-end;
-
-function measureDefault(const text: string): word;
-begin
-  measureDefault := measureBMFont(defaultFontGlyphs, text)
-end;
-
-
-{ Begin asset boilerplate }
-
-procedure setImgCursor(const imgHandle: longint);
+procedure SetImgCursor(const imgHandle: longint);
 begin
   imgCursor := imgHandle
 end;
 
-procedure setImgDosuEXE(const imgHandle: longint; const idx: integer);
+procedure SetImgDosuEXE(const imgHandle: longint; const idx: integer);
 begin
   imgDosuEXE[idx] := imgHandle
 end;
 
-procedure setImgPlay(const imgHandle: longint);
+procedure SetImgPlay(const imgHandle: longint);
 begin
   imgPlay := imgHandle
 end;
 
-procedure setImgStop(const imgHandle: longint);
+procedure SetImgStop(const imgHandle: longint);
 begin
   imgStop := imgHandle
 end;
 
-procedure setImgPause(const imgHandle: longint);
+procedure SetImgPause(const imgHandle: longint);
 begin
   imgPause := imgHandle
 end;
 
-procedure setImgVolumeOn(const imgHandle: longint);
+procedure SetImgVolumeOn(const imgHandle: longint);
 begin
   imgVolumeOn := imgHandle
 end;
 
-procedure setImgVolumeOff(const imgHandle: longint);
+procedure SetImgVolumeOff(const imgHandle: longint);
 begin
   imgVolumeOff := imgHandle
 end;

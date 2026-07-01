@@ -4,11 +4,12 @@ library Game;
 {$J-}
 
 uses
-  Conv, Fullscreen, Loading,
-  Keyboard, Mouse, ImmedGui,
-  ImgRef, ImgRefFast, Logger,
-  Sounds, Strings, Timing,
-  WasmMemMgr, VGA,
+  EngineCore, EngineFonts, WasmHost,
+  Conv, Fullscreen, Loading, Logger,
+  Keyboard, Mouse,
+  ImmediateGUI, ImgRef, ImgRefFast,
+  Sounds, UStrings, Timing,
+  VGA,
   Assets;
 
 type
@@ -56,7 +57,7 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure beginLoadingState;
+procedure BeginLoadingState;
 begin
   actualGameState := GameStateLoading;
   fitCanvas;
@@ -89,13 +90,7 @@ begin
 end;
 
 
-procedure init;
-begin
-  initHeapMgr;
-  initDeltaTime;
-end;
-
-procedure afterInit;
+procedure OnReady;
 begin
   beginPlayingState
 end;
@@ -110,7 +105,7 @@ begin
 end;
 
 
-procedure update;
+procedure Update;
 begin
   updateDeltaTime;
 
@@ -118,13 +113,13 @@ begin
   updateMouse;
   updateGUIMousePoint;
 
-  { Your update logic here }
+  { Your Update logic here }
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
     if lastEsc then signalDone;
   end;
 
-  gameTime := gameTime + dt;
+  gameTime := gameTime + DeltaTime;
 
   if lastRepeat <> repeatState.checked then begin
     lastRepeat := repeatState.checked;
@@ -141,7 +136,7 @@ begin
   resetWidgetIndices
 end;
 
-procedure draw;
+procedure Draw;
 var
   isPlaying: boolean;
 
@@ -217,12 +212,14 @@ begin
   resetActiveWidget;
 
   drawMouse;
-  vgaFlush
+
+  VgaUpload;
+  VgaPresent
 end;
 
 exports
-  beginLoadingState,
-  init, afterInit, update, draw;
+  BeginLoadingState,
+  OnReady, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
