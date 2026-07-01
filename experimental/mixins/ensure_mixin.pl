@@ -12,3 +12,14 @@ unless ($mixin_name) {
 
   exit 1
 }
+
+my $source_file = $mixin_name;
+$source_file .= ".ts" if $mixin_name !~ /\.ts$/;
+
+unless (-f $source_file) {
+  say "Couldn't find ".$source_file."!";
+  exit 1
+}
+
+say "Generating ".$mixin_name.".js...";
+system "perl make.pl $source_file"
