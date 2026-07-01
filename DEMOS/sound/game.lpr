@@ -4,11 +4,12 @@ library Game;
 {$H+}{$J-}
 
 uses
+  EngineCore, EngineFonts, WasmHost,
   Conv, FPS, Fullscreen, Graphics,
   ImgRef, ImgRefFast,
   Keyboard, Mouse,
   Loading, Logger, Panic, Sounds,
-  Timing, WasmMemMgr, VGA,
+  Timing, VGA,
   Assets;
 
 type
@@ -36,12 +37,6 @@ var
   actualGameState: TGameStates;
   gameTime: double;
 
-{ Use this to set `done` to true }
-procedure SignalDone; external 'env' name 'SignalDone';
-procedure HideCursor; external 'env' name 'HideCursor';
-procedure HideLoadingOverlay; external 'env' name 'HideLoadingOverlay';
-procedure LoadAssets; external 'env' name 'LoadAssets';
-
 procedure DrawFPS;
 begin
   PrintDefault('FPS:' + I32Str(getLastFPS), 240, 0);
@@ -56,8 +51,7 @@ procedure BeginLoadingState;
 begin
   actualGameState := GameStateLoading;
   FitCanvas;
-
-  LoadAssets
+  RequestAssetLoad
 end;
 
 procedure BeginPlayingState;
@@ -77,14 +71,7 @@ begin
 end;
 
 
-procedure Init;
-begin
-  InitHeapMgr;
-  InitDeltaTime;
-  InitFPSCounter
-end;
-
-procedure AfterInit;
+procedure OnReady;
 begin
   BeginPlayingState
 end;
@@ -137,7 +124,7 @@ begin
     if lastD5 then PlaySound(5);
   end;
 
-  gameTime := gameTime + dt
+  gameTime := gameTime + DeltaTime
 end;
 
 procedure Draw;
@@ -175,8 +162,7 @@ end;
 exports
   { Main game procedures }
   BeginLoadingState,
-  Init,
-  AfterInit,
+  OnReady,
   Update,
   Draw;
 
