@@ -1,34 +1,29 @@
 /**
  * Sounds mixin
+ * 
+ * Part of Posit-92 game engine
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class SoundsMixin extends Posit92 {
-  /**
-   * @type {AudioContext}
-   */
-  #audioContext = null;
+  #audioContext: AudioContext | null = null;
+
+  #sounds: Map<number, AudioBuffer> = new Map();
+  #soundVolumes: Map<number, number> = new Map();
 
   /**
-   * @type {Map<number, AudioBuffer>}
+   * One-shot, dies after `.stop()`
    */
-  #sounds = new Map();
-  /**
-   * @type {Map<number, number>}
-   */
-  #soundVolumes = new Map();
+  #musicPlayer: AudioBufferSourceNode = null;
 
   /**
-   * @type {AudioBufferSourceNode} One-shot, dies after `.stop()`
+   * One-shot, dies after `.stop()`
    */
-  #musicPlayer = null;
-  /**
-   * @type {GainNode} One-shot, dies after `.stop()`
-   */
-  #musicGainNode = null;
+  #musicGainNode: GainNode = null;
 
   /**
-   * @type {AudioBuffer} Reusable audio buffer data
+   * Reusable audio buffer data
    */
-  #musicBuffer = null;
+  #musicBuffer: AudioBuffer = null;
 
   #musicRepeat = true;
   #musicVolume = 1.0;
@@ -37,13 +32,15 @@ class SoundsMixin extends Posit92 {
    * in seconds
    */
   #musicStartTime = 0.0;
+
   /**
    * in seconds
    */
   #musicPauseTime = 0.0;
+
   #musicPlaying = false;
 
-  #SetupImportObject() {
+  SetupImportObject(): void {
     const { env } = this.WasmImportObject;
 
     Object.assign(env, {
@@ -61,16 +58,15 @@ class SoundsMixin extends Posit92 {
       GetMusicRepeat: this.#GetMusicRepeat.bind(this),
       SetMusicRepeat: this.#SetMusicRepeat.bind(this),
       SetMusicVolume: this.#SetMusicVolume.bind(this),
-    })
+    });
   }
 
   /**
    * @override
    */
-  async Init() {
+  async InitRuntime() {
     this.#InitAudio();
-    this.#SetupImportObject();
-    await super.Init()
+    await super.InitRuntime();
   }
 
   /**
@@ -78,15 +74,7 @@ class SoundsMixin extends Posit92 {
    */
   Cleanup() {
     this.#StopMusic();
-    super.Cleanup()
-  }
-
-  #AssertNumber(value) {
-    if (typeof value != "number")
-      throw new Error(`Expected a number, but received ${typeof value}`);
-
-    if (isNaN(value))
-      throw new Error("Expected a number, but received NaN");
+    super.Cleanup();
   }
 
   #InitAudio() {
@@ -103,7 +91,7 @@ class SoundsMixin extends Posit92 {
     console.log("loadSound", key, url);
 
     this.#sounds.set(key, audioBuffer);
-    this.#SetSoundVolume(key, 0.5)
+    this.#SetSoundVolume(key, 0.5);
   }
 
   /**
@@ -119,13 +107,13 @@ class SoundsMixin extends Posit92 {
       this.LoadSound(key, url)
         .then(() => {
           // On success
-          return { key, url, success: true }
+          return { key, url, success: true };
         })
         .catch(err => {
           console.error("Failed to load sound: " + url, err);
-          return { key, url, success: false }
+          return { key, url, success: false };
         })
-        .finally(() => { this.incLoadingActual() })
+        .finally(() => { this.IncLoadingActual(); })
     );
 
     const results = await Promise.all(promises);
@@ -138,7 +126,7 @@ class SoundsMixin extends Posit92 {
       for (const failure of failures)
         console.error("   " + failure.key + ": " + failure.path);
 
-      throw new Error("Failed to load some sounds")
+      throw new Error("Failed to load some sounds");
     }
   }
 
@@ -146,7 +134,7 @@ class SoundsMixin extends Posit92 {
     const buffer = this.#sounds.get(key);
     if (buffer == null) {
       console.warn("Sound " + key + " is not loaded");
-      return
+      return;
     }
 
     const volume = this.#soundVolumes.get(key);
@@ -160,7 +148,7 @@ class SoundsMixin extends Posit92 {
     // Connect source -> gain -> destination
     source.connect(gainNode);
     gainNode.connect(this.#audioContext.destination);
-    source.start(0)
+    source.start(0);
     // source automatically disconnects when done
   }
 
@@ -199,7 +187,7 @@ class SoundsMixin extends Posit92 {
     if (this.#musicBuffer != null) {
       this.#ResetMusicPlayerNode();
       this.#ResumeMusic();
-      return
+      return;
     }
 
     this.#StopMusic();
@@ -207,7 +195,7 @@ class SoundsMixin extends Posit92 {
     const buffer = this.#sounds.get(key);
     if (buffer == null) {
       console.warn("Music " + key + " is not loaded");
-      return
+      return;
     }
 
     this.#musicBuffer = buffer;
@@ -225,7 +213,7 @@ class SoundsMixin extends Posit92 {
   #ResumeMusic() {
     this.#musicPlayer.start(0, this.#musicPauseTime);
     this.#musicStartTime = this.#audioContext.currentTime - this.#musicPauseTime;
-    this.#musicPlaying = true
+    this.#musicPlaying = true;
   }
 
   #PauseMusic() {
@@ -237,26 +225,26 @@ class SoundsMixin extends Posit92 {
     // Handle looping
     if (this.#musicBuffer != null) {
       const duration = this.#musicBuffer.duration;  // in seconds
-      this.#musicPauseTime %= duration
+      this.#musicPauseTime %= duration;
     }
 
     // Stop the music player, but don't "forget" the pause position
     this.#DestroyMusicPlayerNode();
-    this.#musicPlaying = false
+    this.#musicPlaying = false;
   }
 
   #StopMusic() {
     this.#DestroyMusicPlayerNode();
     this.#musicBuffer = null;
     this.#musicPauseTime = 0.0;
-    this.#musicPlaying = false
+    this.#musicPlaying = false;
   }
 
   /**
    * @param {number} t time in seconds
    */
   #SeekMusic(t) {
-    this.#AssertNumber(t);
+    this.AssertNumber(t);
     if (this.#musicBuffer == null) return;
 
     const duration = this.#musicBuffer.duration;
@@ -277,21 +265,24 @@ class SoundsMixin extends Posit92 {
   }
 
   #Clamp(value, min, max) {
-    this.#AssertNumber(value);
-    this.#AssertNumber(min);
-    this.#AssertNumber(max);
+    this.AssertNumber(value);
+    this.AssertNumber(min);
+    this.AssertNumber(max);
 
-    return Math.max(min, Math.min(max, value))
+    return Math.max(min, Math.min(max, value));
   }
 
-  #GetMusicRepeat() { return this.#musicRepeat }
+  #GetMusicRepeat() {
+    return this.#musicRepeat;
+  }
+
   #SetMusicRepeat(value) {
     this.#musicRepeat = value;
   }
 
   #SetSoundVolume(key, volume) {
     const clamped = this.#Clamp(volume, 0.0, 1.0);
-    this.#soundVolumes.set(key, clamped)
+    this.#soundVolumes.set(key, clamped);
   }
 
   #SetMusicVolume(volume) {
@@ -305,7 +296,7 @@ class SoundsMixin extends Posit92 {
     if (this.#musicBuffer == null)
       return 0.0;
 
-    return this.#musicBuffer.duration
+    return this.#musicBuffer.duration;
   }
 
   #GetMusicTime() {
@@ -318,6 +309,6 @@ class SoundsMixin extends Posit92 {
     const elapsed = this.#audioContext.currentTime - this.#musicStartTime;
     const duration = this.#GetMusicDuration();
 
-    return elapsed % duration
+    return elapsed % duration;
   }
 }
