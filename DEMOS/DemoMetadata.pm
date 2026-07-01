@@ -69,6 +69,6 @@ sub read_mixins {
   chdir $original_dir;
 }
 
-return @mixins
+return @mixins;
 
 1

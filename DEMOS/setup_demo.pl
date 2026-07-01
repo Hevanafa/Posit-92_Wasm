@@ -8,11 +8,10 @@ use File::Spec::Functions qw(catfile);
 use File::Basename qw(basename);
 use Term::ANSIColor qw(colored);
 
+use lib ".";
 use DemoMetadata qw(read_mixins);
 
 # print join " -- ", @ARGV;
-
-
 
 my $start_dir = getcwd;
 my $demo_dir = $ARGV[0];
@@ -23,6 +22,11 @@ if (!$demo_dir) {
   say "$0 <demo_dir> [--all]";
   exit 1
 }
+
+my @mixins = read_mixins $demo_dir;
+print join " -- ", @mixins;
+
+exit;
 
 # Ensure engine JS
 eval {
