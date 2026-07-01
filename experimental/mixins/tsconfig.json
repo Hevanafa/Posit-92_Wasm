@@ -13,8 +13,8 @@
   },
   "files": [
     "../engine/posit-92.ts",
-
     "./bigint.ts",
+    "./gamepad.ts",
     "./sounds.ts",
     "./webgl.ts"
   ]
