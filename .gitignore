@@ -22,14 +22,15 @@ DEMOS/*/*.d.ts
 DEMOS/*/*.js.map
 
 # Mixin files
-DEMOS/*/webgl.js
 DEMOS/*/bigint.js
+DEMOS/*/gamepad.js
+DEMOS/*/sounds.js
+DEMOS/*/webgl.js
 
 # Bun build scripts for demo projects
 DEMOS/*/*.ts
 !DEMOS/square_screen/*.ts
 !DEMOS/dos_display/*.ts
-!DEMOS/gamepad_demo/dist.ts
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1

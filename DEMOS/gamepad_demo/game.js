@@ -26,9 +26,9 @@ class Game extends GamepadMixin {
     // Sounds can be loaded later
 
     handle = await this.LoadImage("assets/images/dosu_1.png");
-    this.WasmInstance.exports.setImgDosuEXE(handle, 0);
+    this.WasmInstance.exports.SetImgDosuEXE(handle, 0);
     handle = await this.LoadImage("assets/images/dosu_2.png");
-    this.WasmInstance.exports.setImgDosuEXE(handle, 1);
+    this.WasmInstance.exports.SetImgDosuEXE(handle, 1);
 
     // Add more assets as necessary
   }
