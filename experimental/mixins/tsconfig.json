@@ -15,6 +15,7 @@
     "../engine/posit-92.ts",
 
     "./bigint.ts",
+    "./sounds.ts",
     "./webgl.ts"
   ]
 }
