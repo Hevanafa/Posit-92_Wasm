@@ -64,7 +64,7 @@ class SoundsMixin extends Posit92 {
   /**
    * @override
    */
-  async InitRuntime() {
+  async InitRuntime(): Promise<void> {
     this.#InitAudio();
     await super.InitRuntime();
   }
@@ -72,20 +72,24 @@ class SoundsMixin extends Posit92 {
   /**
    * @override
    */
-  Cleanup() {
+  Cleanup(): void {
     this.#StopMusic();
     super.Cleanup();
   }
 
-  #InitAudio() {
+  #InitAudio(): void {
     this.#audioContext = new AudioContext();
   }
 
 
   // SOUNDS.PAS
-  async LoadSound(key, url) {
+  async LoadSound(key: number, url: string): Promise<void> {
     const response = await fetch(url);
     const arrayBuffer = await response.arrayBuffer();
+
+    if (this.#audioContext == null)
+      throw new Error("LoadSound: audioContext is not initialised!");
+
     const audioBuffer = await this.#audioContext.decodeAudioData(arrayBuffer);
 
     console.log("loadSound", key, url);
@@ -96,9 +100,9 @@ class SoundsMixin extends Posit92 {
 
   /**
    * Load sound files from manifest in parallel
-   * @param {Map<number, string>} manifest - Key-value pairs of `"asset_key": "sound_path"`
+   * @param manifest Key-value pairs of `"asset_key": "sound_path"`
    */
-  async LoadSoundsFromManifest(manifest) {
+  async LoadSoundsFromManifest(manifest: Map<number, string>): Promise<void> {
     const entries = Array.from(manifest.entries());
 
     this.IncLoadingTotal(manifest.size);
@@ -119,7 +123,9 @@ class SoundsMixin extends Posit92 {
     const results = await Promise.all(promises);
 
     // Error handling
+
     const failures = results.filter(item => !item.success);
+
     if (failures.length > 0) {
       console.error("Failed to load sounds:");
       
@@ -130,14 +136,21 @@ class SoundsMixin extends Posit92 {
     }
   }
 
-  #PlaySound(key) {
+  #PlaySound(key: number): void {
+    if (this.#audioContext == null)
+      throw new Error("PlaySound: audioContext is not initialised!");
+
     const buffer = this.#sounds.get(key);
+
     if (buffer == null) {
-      console.warn("Sound " + key + " is not loaded");
+      console.warn("PlaySound: Sound " + key + " is not loaded!");
       return;
     }
 
-    const volume = this.#soundVolumes.get(key);
+    const volume = this.#soundVolumes.get(key) ?? 0.0;
+
+    if (!this.#soundVolumes.has(key))
+      console.warn("Missing sound volume for key " + key);
 
     const source = this.#audioContext.createBufferSource();
     const gainNode = this.#audioContext.createGain();
@@ -156,6 +169,9 @@ class SoundsMixin extends Posit92 {
    * Create a new music player node
    */
   #ResetMusicPlayerNode(): void {
+    if (this.#audioContext == null)
+      throw new Error("ResetMusicPlayerNode: audioContext is not initialised!");
+
     this.#musicPlayer = this.#audioContext.createBufferSource();
     this.#musicGainNode = this.#audioContext.createGain();
 
@@ -211,6 +227,12 @@ class SoundsMixin extends Posit92 {
    * Requires `#resetMusicPlayerNode()` to be called right before this
    */
   #ResumeMusic(): void {
+    if (this.#musicPlayer == null)
+      throw new Error("ResumeMusic: musicPlayer is not initialised!");
+
+    if (this.#audioContext == null)
+      throw new Error("ResumeMusic: audioContext is not initialised!");
+
     this.#musicPlayer.start(0, this.#musicPauseTime);
     this.#musicStartTime = this.#audioContext.currentTime - this.#musicPauseTime;
     this.#musicPlaying = true;
@@ -221,7 +243,7 @@ class SoundsMixin extends Posit92 {
       return;
 
     if (this.#audioContext == null)
-      throw new Error("audioContext is not initialised!");
+      throw new Error("PauseMusic: audioContext is not initialised!");
 
     this.#musicPauseTime = this.#audioContext.currentTime - this.#musicStartTime;
 
@@ -267,20 +289,26 @@ class SoundsMixin extends Posit92 {
     }
   }
 
-  #GetMusicRepeat() {
+  #GetMusicRepeat(): boolean {
     return this.#musicRepeat;
   }
 
-  #SetMusicRepeat(value) {
+  #SetMusicRepeat(value: boolean): void {
     this.#musicRepeat = value;
   }
 
-  #SetSoundVolume(key, volume) {
+  /**
+   * @param volume 0.0 .. 1.0
+   */
+  #SetSoundVolume(key: number, volume: number): void {
     const clamped = this.Clamp(volume, 0.0, 1.0);
     this.#soundVolumes.set(key, clamped);
   }
 
-  #SetMusicVolume(volume) {
+  /**
+   * @param volume 0.0 .. 1.0
+   */
+  #SetMusicVolume(volume: number): void {
     this.#musicVolume = this.Clamp(volume, 0.0, 1.0);
 
     if (this.#musicGainNode != null)
@@ -295,6 +323,9 @@ class SoundsMixin extends Posit92 {
   }
 
   #GetMusicTime(): number {
+    if (this.#audioContext == null)
+      throw new Error("GetMusicTime: audioContext is not initialised!");
+
     if (this.#musicBuffer == null)
       return 0.0;
 
