@@ -2,8 +2,10 @@ use strict;
 use warnings;
 use v5.38.2;
 
+use FindBin qw($Bin);
 use File::Which qw(which);
 
+my $script_dir = $Bin;
 my $source_file = $ARGV[0];
 
 unless ($source_file) {
@@ -17,4 +19,4 @@ unless (which "bun") {
   exit 1
 }
 
-system "bun build $source_file --outdir ."
+system "bun build $source_file --outdir $script_dir"
