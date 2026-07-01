@@ -23,6 +23,11 @@ if (!$demo_dir) {
   exit 1
 }
 
+unless (-d $demo_dir) {
+  say "Couldn't find ".$demo_dir."!";
+  exit 1
+}
+
 my @mixins = read_mixins $demo_dir;
 print join " -- ", @mixins;
 

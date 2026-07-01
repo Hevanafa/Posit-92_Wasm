@@ -18,8 +18,15 @@ use Cwd qw(cwd);
 # }
 
 sub read_mixins {
+  my @mixins = ();
+
   my $original_dir = cwd;
   my ($demo_dir) = @_;  # $ARGV[0] =~ /([a-z_]+)/;
+
+  unless (-d $demo_dir) {
+    say "Couldn't find ".$demo_dir."!";
+    return @mixins
+  }
 
   say "chdir to ".$demo_dir."...";
   chdir $demo_dir;
@@ -37,7 +44,8 @@ sub read_mixins {
     if ($skipped >= 10) {
       close $fh;
       say "Couldn't find any opening comments within the first 10 lines!";
-      exit
+
+      return @mixins
     }
 
     last if $line =~ /{/;
@@ -67,8 +75,8 @@ sub read_mixins {
 
   say "Returning to ".$original_dir."...";
   chdir $original_dir;
-}
 
-return @mixins;
+  @mixins
+}
 
 1
