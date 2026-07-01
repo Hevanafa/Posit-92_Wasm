@@ -4,7 +4,7 @@ use v5.38.2;
 
 use FindBin;
 use File::Basename qw(basename dirname);
-use File::Spec qw(catfile);
+use File::Spec::Functions qw(catfile);
 
 my $script_dir = $FindBin::Bin;
 my $mixin_name = $ARGV[0];
