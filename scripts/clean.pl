@@ -2,6 +2,7 @@ use strict;
 use warnings;
 use v5.38.0;
 
+use FindBin qw($Bin);
 use File::Path qw(remove_tree);
 use File::Find;
 
