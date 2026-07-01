@@ -31,7 +31,7 @@ if (!$demo_or_option) {
 
 # Ensure engine JS
 eval {
-  system "perl ../scripts/ensure_engine_js.pl";
+  system "perl", catfile($scripts_dir, "ensure_engine_js.pl");
   1
 };
 
