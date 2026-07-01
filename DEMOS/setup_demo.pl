@@ -8,7 +8,11 @@ use File::Spec::Functions qw(catfile);
 use File::Basename qw(basename);
 use Term::ANSIColor qw(colored);
 
+use DemoMetadata qw(read_mixins);
+
 # print join " -- ", @ARGV;
+
+
 
 my $start_dir = getcwd;
 my $demo_dir = $ARGV[0];
