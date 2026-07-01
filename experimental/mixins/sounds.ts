@@ -130,7 +130,7 @@ class SoundsMixin extends Posit92 {
       console.error("Failed to load sounds:");
       
       for (const failure of failures)
-        console.error("   " + failure.key + ": " + failure.path);
+        console.error("   " + failure.key + ": " + failure.url);
 
       throw new Error("Failed to load some sounds");
     }
