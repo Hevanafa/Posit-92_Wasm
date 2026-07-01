@@ -1,3 +1,8 @@
+{
+  Title: Music demo
+  Mixins: sounds
+}
+
 library Game;
 
 {$Mode ObjFPC}
