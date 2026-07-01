@@ -2,11 +2,11 @@ use strict;
 use warnings;
 use v5.38.2;
 
-use FindBin;
+use FindBin qw($Bin);
 use File::Basename qw(basename dirname);
 use File::Spec::Functions qw(catfile);
 
-my $script_dir = $FindBin::Bin;
+my $script_dir = $Bin;
 my $mixin_name = $ARGV[0];
 
 unless ($mixin_name) {
@@ -17,6 +17,8 @@ unless ($mixin_name) {
 
   exit 1
 }
+
+my $make_script = catfile($script_dir, "make.pl");
 
 # Normalise mixin name
 $mixin_name = basename($mixin_name);
@@ -33,4 +35,4 @@ unless (-f $source_file) {
 }
 
 say "Generating ".$mixin_name.".js...";
-system "perl make.pl $source_file"
+system "perl $make_script $source_file"
