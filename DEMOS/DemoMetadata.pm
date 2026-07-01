@@ -11,6 +11,8 @@ our @EXPORT_OK = qw(read_mixins);
 
 use Cwd qw(cwd);
 
+my $DEBUG = 0;
+
 # unless ($ARGV[0]) {
 #   say "Usage:";
 #   say "$0 <demo_dir>";
@@ -28,7 +30,10 @@ sub read_mixins {
     return @mixins
   }
 
-  say "chdir to ".$demo_dir."...";
+  if ($DEBUG) {
+    say "chdir to ".$demo_dir."..."
+  }
+
   chdir $demo_dir;
 
   open my $fh, "<", "game.lpr";
@@ -54,16 +59,19 @@ sub read_mixins {
   for $line (<$fh>) {
     if ($line =~ /mixins:/i) {
       chomp $line;
-      say $line;
+
+      say $line if $DEBUG;
 
       my ($mixins) = $line =~ /[:](.*)/;
 
-      my @mixins = map {
+      @mixins = map {
         $_ =~ /^\s*(.+)\s*$/;
         $1
       } $mixins =~ /[^,]+/g;
 
-      say "Required mixins: ".(join " -- ", @mixins);
+      if ($DEBUG) {
+        say "Required mixins: ".(join " -- ", @mixins)
+      }
 
       last
     }
@@ -73,7 +81,10 @@ sub read_mixins {
 
   close $fh;
 
-  say "Returning to ".$original_dir."...";
+  if ($DEBUG) {
+    say "Returning to ".$original_dir."..."
+  }
+
   chdir $original_dir;
 
   @mixins
