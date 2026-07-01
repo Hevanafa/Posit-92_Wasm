@@ -17,6 +17,8 @@ unless (-f $engine_js_path) {
 
   say "Couldn't find the engine JS " . basename($engine_js_path);
   say "Invoking build command...";
-  
+
   system @cmd or die "Couldn't execute: $!"
+} else {
+  say "Found posit-92.js in ".$engine_js_path
 }
