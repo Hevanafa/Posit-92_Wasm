@@ -64,4 +64,4 @@ experimental/engine/*.js
 experimental/engine/*.js.map
 experimental/mixins/webgl.js
 experimental/mixins/bigint.js
-
+experimental/mixins/sounds.js
