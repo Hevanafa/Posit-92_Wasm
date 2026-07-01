@@ -73,8 +73,7 @@ begin
   actualGameState := GameStatePlaying;
   hideCursor;
 
-  initImmediateGUI;
-  guiSetFont(defaultFont, defaultFontGlyphs);
+  InitImmediateGUI;
 
   actualMusicKey := -1;
   isMuted := false;

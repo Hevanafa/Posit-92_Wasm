@@ -41,7 +41,7 @@ const
   IceCreamRed = $FFEB6B6F;
   IceCreamMaroon = $FF7C3F58;
 
-procedure InitImmediateGUI;
+procedure InitImmediateGUI(useDefaultFont: boolean = true);
 
 function GetMousePoint: TPoint;
 function GetMouseJustPressed: boolean;
@@ -100,7 +100,7 @@ procedure ProgressBarLabelled(const x, y, width, height: smallint; const perc: d
 implementation
 
 uses
-  Conv, Graphics,
+  EngineFonts, Conv, Graphics,
   ImgRef, ImgRefFast,
   Maths, Mouse, Panic, UStrings,
   VGA;
@@ -131,7 +131,7 @@ var
   activeFontGlyphs: array[32..126] of TBMFontGlyph;
 
 
-procedure InitImmediateGUI;
+procedure InitImmediateGUI(useDefaultFont: boolean);
 begin
   hotWidget := -1;
   activeWidget := -1;
@@ -140,6 +140,9 @@ begin
 
   mousePoint.x := 0;
   mousePoint.y := 0;
+
+  if useDefaultFont then
+    GuiSetFont(DefaultFontPtr^, DefaultFontGlyphsPtr^);
 end;
 
 function GetMousePoint: TPoint;
