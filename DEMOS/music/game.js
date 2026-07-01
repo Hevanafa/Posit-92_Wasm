@@ -16,31 +16,33 @@ class Game extends SoundsMixin {
   /**
    * @override
    */
-  async loadAssets() {
+  async LoadGameAssets() {
     let handle = 0;
 
-    this.initLoadingScreen();
+    this.InitLoadingScreen();
 
-    await this.loadImagesFromManifest(this.AssetManifest.images);
+    await this.LoadImagesFromManifest(this.AssetManifest.images);
 
-    handle = await this.loadImage("assets/images/dosu_1.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 0);
-    handle = await this.loadImage("assets/images/dosu_2.png");
-    this.wasmInstance.exports.setImgDosuEXE(handle, 1);
+    handle = await this.LoadImage("assets/images/dosu_1.png");
+    this.WasmInstance.exports.SetImgDosuEXE(handle, 0);
+    handle = await this.LoadImage("assets/images/dosu_2.png");
+    this.WasmInstance.exports.SetImgDosuEXE(handle, 1);
 
-    this.wasmInstance.exports.setImgPlay(
-      await this.loadImage("assets/images/play.png"));
-    this.wasmInstance.exports.setImgStop(
-      await this.loadImage("assets/images/stop.png"));
-    this.wasmInstance.exports.setImgPause(
-      await this.loadImage("assets/images/pause.png"));
+    this.WasmInstance.exports.SetImgPlay(
+      await this.LoadImage("assets/images/play.png"));
+    this.WasmInstance.exports.SetImgStop(
+      await this.LoadImage("assets/images/stop.png"));
+    this.WasmInstance.exports.SetImgPause(
+      await this.LoadImage("assets/images/pause.png"));
 
-    this.wasmInstance.exports.setImgVolumeOn(
-      await this.loadImage("assets/images/volume_on.png"));
-    this.wasmInstance.exports.setImgVolumeOff(
-      await this.loadImage("assets/images/volume_off.png"));
+    this.WasmInstance.exports.SetImgVolumeOn(
+      await this.LoadImage("assets/images/volume_on.png"));
+    this.WasmInstance.exports.SetImgVolumeOff(
+      await this.LoadImage("assets/images/volume_off.png"));
 
-    await this.loadSound(BgmClassic, "assets/bgm/Georges Bizet - Les Toreadors from Carmen Suite No. 1.ogg");
+    await this.LoadSound(
+      BgmClassic,
+      "assets/bgm/Georges Bizet - Les Toreadors from Carmen Suite No. 1.ogg");
 
     // Add more assets as necessary
   }

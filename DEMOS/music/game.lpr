@@ -46,13 +46,7 @@ var
   volumeState: TSliderState;
   lastVolume: integer;
 
-{ Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure hideCursor; external 'env' name 'hideCursor';
-procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
-procedure loadAssets; external 'env' name 'loadAssets';
-
-procedure drawMouse;
+procedure DrawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
@@ -61,7 +55,7 @@ procedure BeginLoadingState;
 begin
   actualGameState := GameStateLoading;
   fitCanvas;
-  loadAssets
+  RequestAssetLoad
 end;
 
 procedure beginPlayingState;
@@ -94,45 +88,45 @@ begin
   beginPlayingState
 end;
 
-function getMusicTimeStr: string;
+function GetMusicTimeStr: string;
 var
   m, s: integer;
 begin
   m := trunc(getMusicTime) div 60;
   s := trunc(getMusicTime) mod 60;
-  getMusicTimeStr := i32str(m) + ':' + padStart(i32str(s), 2, '0');
+  GetMusicTimeStr := i32str(m) + ':' + padStart(i32str(s), 2, '0');
 end;
 
 
 procedure Update;
 begin
-  updateDeltaTime;
+  UpdateDeltaTime;
 
-  updateGUILastMouseButton;
-  updateMouse;
-  updateGUIMousePoint;
+  UpdateGUILastMouseButton;
+  UpdateMouse;
+  UpdateGUIMousePoint;
 
   { Your Update logic here }
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
-    if lastEsc then signalDone;
+  if lastEsc <> IsKeyDown(SC_ESC) then begin
+    lastEsc := IsKeyDown(SC_ESC);
+    if lastEsc then SignalDone;
   end;
 
   gameTime := gameTime + DeltaTime;
 
   if lastRepeat <> repeatState.checked then begin
     lastRepeat := repeatState.checked;
-    setMusicRepeat(repeatState.checked)
+    SetMusicRepeat(repeatState.checked)
   end;
 
   if lastVolume <> volumeState.value then begin
     lastVolume := volumeState.value;
-    setMusicVolume(volumeState.value / 100.0)
+    SetMusicVolume(volumeState.value / 100.0)
   end;
 
-  handleMusicRepeat(BgmClassic);
+  HandleMusicRepeat(BgmClassic);
 
-  resetWidgetIndices
+  ResetWidgetIndices
 end;
 
 procedure Draw;
@@ -143,24 +137,24 @@ var
   dragState: TSliderDragState;
 begin
   if actualGameState = GameStateLoading then begin
-    renderLoadingScreen;
+    RenderLoadingScreen;
     exit
   end;
 
-  cls(CornflowerBlue);
+  Cls(CornflowerBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 48)
+    Spr(imgDosuEXE[1], 148, 48)
   else
-    spr(imgDosuEXE[0], 148, 48);
+    Spr(imgDosuEXE[0], 148, 48);
 
   Checkbox('Repeat', 50, 125, repeatState);
 
   isPlaying := getMusicPlaying;
   if isPlaying then
-    printDefault('Playing', 10, 10)
+    PrintDefault('Playing', 10, 10)
   else
-    printDefault('Paused / Stopped', 10, 10);
+    PrintDefault('Paused / Stopped', 10, 10);
 
   { Music Seeker }
   duration := getMusicDuration;
@@ -173,14 +167,14 @@ begin
     seekTime := seekerState.value / 100.0 * duration;
     { writeLogF32(seekTime); }
 
-    seekMusic(seekTime)
+    SeekMusic(seekTime)
   end;
 
   if (dragState <> SliderDragging) and (duration > 0.0) then
     seekerState.value := round(actualTime / duration * 100.0);
 
   { Music time }
-  printDefault(getMusicTimeStr, 100, 124);
+  PrintDefault(GetMusicTimeStr, 100, 124);
 
   { Play / pause button }
   if isPlaying then begin
@@ -191,14 +185,14 @@ begin
       if actualMusicKey < 0 then begin
         { Starting new }
         actualMusicKey := BgmClassic;
-        playMusic(BgmClassic)
+        PlayMusic(BgmClassic)
       end else
         { Resuming }
-        playMusic(actualMusicKey);
+        PlayMusic(actualMusicKey);
     end;
   
   if ImageButton(161, 116, imgStop, imgStop, imgStop) then
-    stopMusic;
+    StopMusic;
 
   { Volume control }
   if isMuted or (volumeState.value = 0) then
@@ -208,9 +202,9 @@ begin
 
   Slider(217, 125, 64, volumeState, 0, 100);
 
-  resetActiveWidget;
+  ResetActiveWidget;
 
-  drawMouse;
+  DrawMouse;
 
   VgaUpload;
   VgaPresent
