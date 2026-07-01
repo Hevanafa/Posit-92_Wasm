@@ -17,13 +17,13 @@ class Game extends Posit92 {
     bmfonts: {
       blackFont: {
         path: "assets/fonts/nokia_cellphone_fc_8.txt",
-        setter: "blackFontPtr",
-        glyphSetter: "blackFontGlyphsPtr"
+        setter: "BlackFontPtr",
+        glyphSetter: "BlackFontGlyphsPtr"
       },
       picotron: {
         path: "assets/fonts/picotron_8px.txt",
-        setter: "picotronFontPtr",
-        glyphSetter: "picotronFontGlyphsPtr"
+        setter: "PicotronFontPtr",
+        glyphSetter: "PicotronFontGlyphsPtr"
       }
     }
   }
