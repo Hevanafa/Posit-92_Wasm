@@ -23,25 +23,14 @@ if (!$demo_dir) {
   exit 1
 }
 
-unless (-d $demo_dir) {
-  say "Couldn't find ".$demo_dir."!";
-  exit 1
-}
-
-# Normalise $demo_dir
-($demo_dir) = $demo_dir =~ /([a-z_]+)/;
+my $engine_js_path = "../experimental/engine/posit-92.js";
+my $scripts_dir = "../scripts";
 
 # Ensure engine JS
 eval {
   system "perl ../scripts/ensure_engine_js.pl";
   1
 };
-
-# Return to DEMOS
-chdir $start_dir;
-
-my $engine_js_path = "../experimental/engine/posit-92.js";
-my $scripts_dir = "../scripts";
 
 sub setup_demo {
   my $target_dir = shift;
@@ -93,7 +82,7 @@ sub setup_demo {
   }
 }
 
-# --all option
+# Handle --all option
 
 if (grep { $_ eq "--all" } @ARGV) {
   say "--all option is used";
@@ -101,8 +90,9 @@ if (grep { $_ eq "--all" } @ARGV) {
   for $demo_dir (grep { -d } glob "*") {
     say "Demo dir: ".$demo_dir;
 
-    # TODO: Handle --all option
-
+    # TODO: actually do the setup
+    # setup_demo $demo_dir;
+    
     say ""
   }
 
@@ -111,7 +101,19 @@ if (grep { $_ eq "--all" } @ARGV) {
   exit
 }
 
-# Take care of 1 demo
+# Otherwise handle setup for only 1 demo
+
+unless (-d $demo_dir) {
+  say "Couldn't find ".$demo_dir."!";
+  exit 1
+}
+
+# Normalise $demo_dir
+($demo_dir) = $demo_dir =~ /([a-z_]+)/;
+
+# Return to DEMOS
+
+chdir $start_dir;
 
 setup_demo $demo_dir;
 
