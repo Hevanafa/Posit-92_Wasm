@@ -1,18 +1,19 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class GamepadMixin extends Posit92 {
   #debug = true;
   #gamepadIndex = -1;
 
-  #setupImportObject() {
-    const { env } = super._getWasmImportObject();
+  SetupImportObject(): void {
+    const { env } = super.WasmImportObject;
 
     Object.assign(env, {
-      gamepadConnected: this.#gamepadConnected.bind(this),
-      gamepadButton: this.#gamepadButton.bind(this),
+      gamepadConnected: this.#GamepadConnected.bind(this),
+      gamepadButton: this.#GamepadButton.bind(this),
       gamepadAxis: this.#gamepadAxis.bind(this)
-    })
+    });
   }
 
-  #initGamepad() {
+  #InitGamepad(): void {
     window.addEventListener("gamepadconnected", e => {
       if (this.#debug)
         console.log("Gamepad connected:", e.gamepad);
@@ -38,12 +39,11 @@ class GamepadMixin extends Posit92 {
     });
   }
 
-  #gamepadConnected() { return this.#gamepadIndex >= 0 }
+  #GamepadConnected(): boolean {
+    return this.#gamepadIndex >= 0;
+  }
 
-  /**
-   * @param {number} button 
-   */
-  #gamepadButton(button) {
+  #GamepadButton(button: number): boolean {
     if (this.#gamepadIndex < 0) return false;
 
     const gamepads = navigator.getGamepads();
@@ -51,34 +51,22 @@ class GamepadMixin extends Posit92 {
 
     if (gamepad == null) return false;
 
-    return gamepad.buttons[button].pressed
+    return gamepad.buttons[button].pressed;
   }
 
-  /**
-   * @param {number} axis 
-   */
-  #gamepadAxis(axis) {
-    if (this.#gamepadIndex < 0) return false;
+  #gamepadAxis(axis: number): number {
+    if (this.#gamepadIndex < 0) return 0.0;
 
     const gamepads = navigator.getGamepads();
     const gamepad = gamepads[this.#gamepadIndex];
 
     if (gamepad == null) return 0.0;
 
-    return gamepad.axes[axis]
+    return gamepad.axes[axis];
   }
 
-  /**
-   * @override
-   */
-  async init() {
-    this.#initGamepad();
-    this.#setupImportObject();
-    await super.init();
-  }
-
-  update() {
-    
-    super.update()
+  async InitRuntime(): Promise<void> {
+    this.#InitGamepad();
+    await super.InitRuntime();
   }
 }
