@@ -957,6 +957,13 @@ class Posit92 {
     console.log("loadBMFont", fontface, "completed");
   }
 
+  Clamp(value: number, min: number, max: number): number {
+    this.AssertNumber(value);
+    this.AssertNumber(min);
+    this.AssertNumber(max);
+
+    return Math.max(min, Math.min(max, value));
+  }
 
   // KEYBOARD.PAS
 

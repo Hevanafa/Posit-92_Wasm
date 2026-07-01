@@ -13,17 +13,17 @@ class SoundsMixin extends Posit92 {
   /**
    * One-shot, dies after `.stop()`
    */
-  #musicPlayer: AudioBufferSourceNode = null;
+  #musicPlayer: AudioBufferSourceNode | null = null;
 
   /**
    * One-shot, dies after `.stop()`
    */
-  #musicGainNode: GainNode = null;
+  #musicGainNode: GainNode | null = null;
 
   /**
    * Reusable audio buffer data
    */
-  #musicBuffer: AudioBuffer = null;
+  #musicBuffer: AudioBuffer | null = null;
 
   #musicRepeat = true;
   #musicVolume = 1.0;
@@ -155,7 +155,7 @@ class SoundsMixin extends Posit92 {
   /**
    * Create a new music player node
    */
-  #ResetMusicPlayerNode() {
+  #ResetMusicPlayerNode(): void {
     this.#musicPlayer = this.#audioContext.createBufferSource();
     this.#musicGainNode = this.#audioContext.createGain();
 
@@ -170,15 +170,15 @@ class SoundsMixin extends Posit92 {
     this.#musicGainNode.connect(this.#audioContext.destination);
   }
 
-  #DestroyMusicPlayerNode() {
-    if (this.#musicPlayer != null) {
-      this.#musicPlayer.stop();
-      this.#musicPlayer = null;
-      this.#musicGainNode = null;
-    }
+  #DestroyMusicPlayerNode(): void {
+    if (this.#musicPlayer == null) return;
+
+    this.#musicPlayer.stop();
+    this.#musicPlayer = null;
+    this.#musicGainNode = null;
   }
 
-  #PlayMusic(key) {
+  #PlayMusic(key: number): void {
     // If still playing
     if (this.#musicPlaying && this.#musicBuffer != null)
       return;
@@ -210,15 +210,18 @@ class SoundsMixin extends Posit92 {
    * 
    * Requires `#resetMusicPlayerNode()` to be called right before this
    */
-  #ResumeMusic() {
+  #ResumeMusic(): void {
     this.#musicPlayer.start(0, this.#musicPauseTime);
     this.#musicStartTime = this.#audioContext.currentTime - this.#musicPauseTime;
     this.#musicPlaying = true;
   }
 
-  #PauseMusic() {
+  #PauseMusic(): void {
     if (!this.#musicPlaying || this.#musicPlayer == null)
       return;
+
+    if (this.#audioContext == null)
+      throw new Error("audioContext is not initialised!");
 
     this.#musicPauseTime = this.#audioContext.currentTime - this.#musicStartTime;
 
@@ -233,7 +236,7 @@ class SoundsMixin extends Posit92 {
     this.#musicPlaying = false;
   }
 
-  #StopMusic() {
+  #StopMusic(): void {
     this.#DestroyMusicPlayerNode();
     this.#musicBuffer = null;
     this.#musicPauseTime = 0.0;
@@ -241,14 +244,14 @@ class SoundsMixin extends Posit92 {
   }
 
   /**
-   * @param {number} t time in seconds
+   * @param t time in seconds
    */
-  #SeekMusic(t) {
+  #SeekMusic(t: number): void {
     this.AssertNumber(t);
     if (this.#musicBuffer == null) return;
 
     const duration = this.#musicBuffer.duration;
-    t = this.#Clamp(t, 0.0, duration);
+    t = this.Clamp(t, 0.0, duration);
 
     const wasPlaying = this.#musicPlaying;
 
@@ -264,14 +267,6 @@ class SoundsMixin extends Posit92 {
     }
   }
 
-  #Clamp(value, min, max) {
-    this.AssertNumber(value);
-    this.AssertNumber(min);
-    this.AssertNumber(max);
-
-    return Math.max(min, Math.min(max, value));
-  }
-
   #GetMusicRepeat() {
     return this.#musicRepeat;
   }
@@ -281,25 +276,25 @@ class SoundsMixin extends Posit92 {
   }
 
   #SetSoundVolume(key, volume) {
-    const clamped = this.#Clamp(volume, 0.0, 1.0);
+    const clamped = this.Clamp(volume, 0.0, 1.0);
     this.#soundVolumes.set(key, clamped);
   }
 
   #SetMusicVolume(volume) {
-    this.#musicVolume = this.#Clamp(volume, 0.0, 1.0);
+    this.#musicVolume = this.Clamp(volume, 0.0, 1.0);
 
     if (this.#musicGainNode != null)
       this.#musicGainNode.gain.value = this.#musicVolume;
   }
 
-  #GetMusicDuration() {
+  #GetMusicDuration(): number {
     if (this.#musicBuffer == null)
       return 0.0;
 
     return this.#musicBuffer.duration;
   }
 
-  #GetMusicTime() {
+  #GetMusicTime(): number {
     if (this.#musicBuffer == null)
       return 0.0;
 
