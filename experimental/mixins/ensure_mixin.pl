@@ -2,8 +2,11 @@ use strict;
 use warnings;
 use v5.38.2;
 
-use File::Basename qw(basename);
+use FindBin;
+use File::Basename qw(basename dirname);
+use File::Spec qw(catfile);
 
+my $script_dir = $FindBin::Bin;
 my $mixin_name = $ARGV[0];
 
 unless ($mixin_name) {
@@ -22,7 +25,7 @@ if ($mixin_name =~ /\.ts$/) {
   ($mixin_name) = $mixin_name =~ /(.*)\.ts/
 }
 
-my $source_file = $mixin_name . ".ts";
+my $source_file = catfile($script_dir, $mixin_name.".ts");
 
 unless (-f $source_file) {
   say "Couldn't find ".$source_file."!";
