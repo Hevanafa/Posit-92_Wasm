@@ -45,11 +45,15 @@ class WebGLMixin extends Posit92 {
       glCompileShader: this.#glCompileShader.bind(this),
 
       glGetShaderParameter: this.#glGetShaderParameter.bind(this),
+      glGetShaderInfoLog: this.#glGetShaderInfoLog.bind(this),
 
       glCreateProgram: this.#glCreateProgram.bind(this),
       glAttachShader: this.#glAttachShader.bind(this),
       glLinkProgram: this.#glLinkProgram.bind(this),
       glUseProgram: this.#glUseProgram.bind(this),
+
+      glGetProgramParameter: this.#glGetProgramParameter.bind(this),
+      glGetProgramInfoLog: this.#glGetProgramInfoLog.bind(this),
 
       glCreateBuffer: this.#glCreateBuffer.bind(this),
       glBindBuffer: this.#glBindBuffer.bind(this),
@@ -149,6 +153,8 @@ class WebGLMixin extends Posit92 {
   #glCreateShader(type: number): number {
     const shader = this.glCtx.createShader(type)!;
     const id = this.#nextShaderId;
+
+    console.log("shader id:", id);
     
     this.#shaders.set(id, shader);
 
@@ -172,7 +178,7 @@ class WebGLMixin extends Posit92 {
     const shader = this.#shaders.get(shaderId);
 
     if (shader == null)
-      throw new Error(`glShaderSource: Missing shader with shaderId: ${shaderId}!`);
+      throw new Error(`glCompileShader: Missing shader with shaderId: ${shaderId}!`);
 
     this.glCtx.compileShader(shader);
   }
@@ -181,10 +187,20 @@ class WebGLMixin extends Posit92 {
     const shader = this.#shaders.get(shaderId);
 
     if (shader == null)
-      throw new Error(`glShaderSource: Missing shader with shaderId: ${shaderId}!`);
+      throw new Error(`glGetShaderParameter: Missing shader with shaderId: ${shaderId}!`);
 
     return this.glCtx.getShaderParameter(shader, param);
   }
+
+  #glGetShaderInfoLog(shaderId: number): string | null {
+    const shader = this.#shaders.get(shaderId);
+
+    if (shader == null)
+      throw new Error(`glGetShaderInfoLog: Missing shader with shaderId: ${shaderId}!`);
+
+    return this.glCtx.getShaderInfoLog(shader);
+  }
+
 
   #glCreateProgram(): number {
     const program = this.glCtx.createProgram();
@@ -227,6 +243,24 @@ class WebGLMixin extends Posit92 {
       throw new Error(`glUseProgram: Missing program with programId: ${programId}!`);
 
     this.glCtx.useProgram(program);
+  }
+
+  #glGetProgramParameter(programId: number, param: GLenum): number {
+    const program = this.#programs.get(programId);
+
+    if (program == null)
+      throw new Error(`glGetProgramParameter: Missing program with programId: ${programId}!`);
+
+    return this.glCtx.getProgramParameter(program, param);
+  }
+
+  #glGetProgramInfoLog(programId: number): string | null {
+    const program = this.#programs.get(programId);
+
+    if (program == null)
+      throw new Error(`glGetProgramInfoLog: Missing program with programId: ${programId}!`);
+
+    return this.glCtx.getProgramInfoLog(program);
   }
 
 
