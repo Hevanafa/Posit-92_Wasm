@@ -88,6 +88,10 @@ implementation
 
 uses Logger, VGA;
 
+const
+  vertexSrc: string = {$I vertex.glsl.inc};
+  fragSrc: string = {$I frag.glsl.inc};
+
 var
   textureId: longword;  { Used by WebGL }
   vertexShader, fragShader, prog: longword;
@@ -115,9 +119,6 @@ const
     1, 1
   );
 
-  vertexSrc: String = {$Include 'shaders/vertex.glsl.inc'};
-  fragSrc: string = {$Include 'shaders/frag.glsl.inc'};
-
 var
   texLoc: longint;
   posBuffer: longword;
@@ -128,6 +129,8 @@ begin
   vertexShader := glCreateShader(GL_VERTEX_SHADER);
   glShaderSource(vertexShader, pchar(vertexSrc));
   glCompileShader(vertexShader);
+
+  { if glgetshaderparameter }
 
   writelog('Vertex shader has been compiled');
 
