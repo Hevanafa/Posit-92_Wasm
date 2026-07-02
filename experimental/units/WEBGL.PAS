@@ -66,7 +66,9 @@ procedure glShaderSource(shaderId: GLHandle; source: PChar); external 'env' name
 procedure glCompileShader(shaderId: GLHandle); external 'env' name 'glCompileShader';
 
 function glGetShaderParameter(shaderId: GLHandle; param: GLenum): longint; external 'env' name 'glGetShaderParameter';
-function glGetShaderInfoLog(shaderId: GLHandle): pchar; external 'env' name 'glGetShaderInfoLog';
+procedure glGetShaderInfoLog(shaderId: GLHandle); external 'env' name 'glGetShaderInfoLog';
+{ High-level API for glGetShaderInfoLog }
+function GetShaderInfoLog(shaderId: GLHandle): string;
 
 function glCreateProgram: longword; external 'env' name 'glCreateProgram';
 procedure glAttachShader(programId: GLHandle; shader: longword); external 'env' name 'glAttachShader';
@@ -74,7 +76,9 @@ procedure glLinkProgram(programId: GLHandle); external 'env' name 'glLinkProgram
 procedure glUseProgram(programId: GLHandle); external 'env' name 'glUseProgram';
 
 function glGetProgramParameter(programId: GLHandle; param: GLenum): longint; external 'env' name 'glGetProgramParameter';
-function glGetProgramInfoLog(programId: longword): PChar; external 'env' name 'glGetProgramInfoLog';
+procedure glGetProgramInfoLog(programId: longword); external 'env' name 'glGetProgramInfoLog';
+{ High-level API for glGetProgramInfoLog }
+function GetProgramInfoLog(programId: longword): string;
 
 function glCreateBuffer: longword; external 'env' name 'glCreateBuffer';
 procedure glBindBuffer(target: longword; bufferId: GLHandle); external 'env' name 'glBindBuffer';
@@ -97,7 +101,7 @@ procedure WebGLPresent;
 
 implementation
 
-uses Conv, Logger, VGA;
+uses Conv, Logger, InteropBuf, VGA;
 
 const
   { Requires the `shaders` folder to be included
@@ -109,6 +113,18 @@ var
   softwareTexture: GLHandle;
   vertexShader, fragShader: GLHandle;
   defaultProgram: GLHandle;
+
+function GetShaderInfoLog(shaderId: GLHandle): string;
+begin
+  glGetShaderInfoLog(shaderId);
+  GetShaderInfoLog := ReadInteropString
+end;
+
+function GetProgramInfoLog(programId: GLHandle): string;
+begin
+  glGetProgramInfoLog(programId);
+  GetProgramInfoLog := ReadInteropString
+end;
 
 procedure SetupWebGLViewport;
 begin
@@ -147,7 +163,7 @@ begin
   writelog('vertex shader id: ' + i32str(vertexShader));
 
   if glGetShaderParameter(vertexShader, GL_COMPILE_STATUS) = 0 then
-    writelog('Vertex shader error: ' + glGetShaderInfoLog(vertexShader))
+    writelog('Vertex shader error: ' + GetShaderInfoLog(vertexShader))
   else
     writelog('Vertex shader has been compiled');
 
@@ -165,7 +181,7 @@ begin
   glLinkProgram(defaultProgram);
 
   if glGetProgramParameter(defaultProgram, GL_LINK_STATUS) = 0 then
-    writelog('Program link error: ' + glGetProgramInfoLog(defaultProgram));
+    writelog('Program link error: ' + GetProgramInfoLog(defaultProgram));
 
   glUseProgram(defaultProgram);
 
