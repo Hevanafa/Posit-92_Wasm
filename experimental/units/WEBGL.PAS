@@ -111,10 +111,14 @@ const
   vertices: array[0..7] of single = (
     -1, -1, 1, -1,
     -1, 1, 1, 1);
+
+  fragSrc: string = `{$Include 'shaders/frag.glsl'}`;
+
 var
   texLoc: longint;
   posBuffer: longword;
   posLoc: longint;
+
 begin
   { Vertex shader - positions a fullscreen quad }
   vertexShader := glCreateShader(GL_VERTEX_SHADER);
@@ -135,16 +139,7 @@ void main() {
   { Fragment shader - samples the texture }
   fragShader := glCreateShader(GL_FRAGMENT_SHADER);
 
-  glShaderSource(fragShader, `
-
-precision mediump float;
-varying vec2 uv;
-uniform sampler2D tex;
-
-void main() {
-  gl_FragColor = texture2D(tex, vec2(uv.x, 1.0 - uv.y));
-}
-  `);
+  glShaderSource(fragShader, pchar(fragSrc));
 
   glCompileShader(fragShader);
   { writeLog('Vertex shader has been compiled'); }
