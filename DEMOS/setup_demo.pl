@@ -6,7 +6,7 @@ use FindBin qw($Bin);
 use Cwd qw(abs_path getcwd);
 use File::Copy qw(copy);
 use File::Spec::Functions qw(catdir catfile);
-use File::Basename qw(basename);
+use File::Basename qw(basename dirname);
 use Term::ANSIColor qw(colored);
 
 use lib $Bin;
@@ -129,8 +129,8 @@ if (grep { $_ eq "--all" } @ARGV) {
 
 # Otherwise handle setup for only 1 demo
 
-my $demo_dir = $demo_or_option;
+my $demo_name = basename(dirname($demo_or_option));
 
-setup_demo $demo_dir;
+setup_demo $demo_name;
 
 say colored("Done!", "bright_green")

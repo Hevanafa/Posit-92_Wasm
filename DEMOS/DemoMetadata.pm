@@ -1,42 +1,35 @@
-
-
 package DemoMetadata;
 
 use strict;
 use warnings;
 use v5.38.2;
 
+use FindBin qw($Bin);
+use File::Spec::Functions qw(catdir catfile);
+use File::Basename qw(basename dirname);
+
 use Exporter "import";
 our @EXPORT_OK = qw(read_mixins);
 
-use Cwd qw(cwd);
-
 my $DEBUG = 0;
-
-# unless ($ARGV[0]) {
-#   say "Usage:";
-#   say "$0 <demo_dir>";
-#   exit 1
-# }
+my $project_root = catdir($Bin, "..");
 
 sub read_mixins {
   my @mixins = ();
 
-  my $original_dir = cwd;
-  my ($demo_dir) = @_;  # $ARGV[0] =~ /([a-z_]+)/;
+  # Normalise demo name
+  my ($demo_name) = @_;  # $ARGV[0] =~ /([a-z_]+)/;
+  $demo_name = basename(dirname($demo_name));
+
+  my $demo_dir = catdir($project_root, "DEMOS", $demo_name);
 
   unless (-d $demo_dir) {
     say "Couldn't find ".$demo_dir."!";
     return @mixins
   }
 
-  if ($DEBUG) {
-    say "chdir to ".$demo_dir."..."
-  }
-
-  chdir $demo_dir;
-
-  open my $fh, "<", "game.lpr";
+  my $lpr_file = catfile($demo_dir, "game.lpr");
+  open my $fh, "<", $lpr_file;
 
   my $line;
   my $skipped = 0;
@@ -80,12 +73,6 @@ sub read_mixins {
   }
 
   close $fh;
-
-  if ($DEBUG) {
-    say "Returning to ".$original_dir."..."
-  }
-
-  chdir $original_dir;
 
   @mixins
 }
