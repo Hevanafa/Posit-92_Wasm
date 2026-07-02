@@ -109,11 +109,14 @@ end;
 procedure SetupWebGLShaders;
 const
   vertices: array[0..7] of single = (
-    -1, -1, 1, -1,
-    -1, 1, 1, 1);
+    -1, -1,
+    1, -1,
+    -1, 1,
+    1, 1
+  );
 
-  vertexSrc: String = `{$Include 'shaders/vertex.glsl'}`;
-  fragSrc: string = `{$Include 'shaders/frag.glsl'}`;
+  vertexSrc: String = {$Include 'shaders/vertex.glsl.inc'};
+  fragSrc: string = {$Include 'shaders/frag.glsl.inc'};
 
 var
   texLoc: longint;
@@ -142,14 +145,14 @@ begin
   glLinkProgram(prog);
   glUseProgram(prog);
 
-  texLoc := glGetUniformLocation(prog, 'tex');
+  texLoc := glGetUniformLocation(prog, 'u_tex');
   glUniform1i(texLoc, 0);
 
   posBuffer := glCreateBuffer;
   glBindBuffer(GL_ARRAY_BUFFER, posBuffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), @vertices, GL_STATIC_DRAW);
 
-  posLoc := glGetAttribLocation(prog, 'pos');
+  posLoc := glGetAttribLocation(prog, 'a_pos');
   glEnableVertexAttribArray(posLoc);
   glVertexAttribPointer(posLoc, 2, GL_FLOAT, false, 0, 0);
 end;
