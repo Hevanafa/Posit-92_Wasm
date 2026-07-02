@@ -2,39 +2,48 @@ use strict;
 use warnings;
 use v5.38.0;
 
-use Cwd qw(abs_path);
+use FindBin qw($Bin);
 use File::Copy qw(copy);
 use File::Spec::Functions qw(catfile);
 use File::Basename qw(basename);
 use File::Copy::Recursive qw(dircopy);
 use Term::ANSIColor qw(colored);
 
-my $dest = abs_path(".");
+my $script_dir = $Bin;
+
+my $project_root = catdir($Bin, "..");
+
+my $engine_dir = catdir($project_root, "experimental", "engine");
+my $scripts_dir = catdir($project_root, "scripts");
+my $units_dir = catdir($project_root, "experimental", "units");
 
 # Copy engine JS
 
 eval {
-  system "perl ../scripts/ensure_engine_js.pl";
+  my @args = (
+    catdir($engine_dir, "ensure_engine_js.pl")
+  );
+
+  system "perl", @args;
   1
 };
-
-chdir $dest;
 
 # Copy build scripts
 
 say "Copying build scripts...";
 
-my $scripts_dir = abs_path("../scripts");
 my @scripts = (
-  "clean.pl", "make.pl", "dist.pl",
+  "clean.pl",
+  "make.pl",
+  "dist.pl",
   "server.ts"
 );
 
 for (@scripts) {
-  my $filename = basename($_);
-
-  copy(catfile($scripts_dir, $_), catfile($dest, $filename))
-    or warn "Couldn't copy $_: $!";
+  copy(
+    catfile($scripts_dir, $_),
+    catfile($script_dir, $_))
+      or warn "Couldn't copy $_: $!";
 }
 
 # Copy engine units
@@ -44,20 +53,22 @@ say "Copying engine units...";
 mkdir "shared" unless -d "shared";
 mkdir "units" unless -d "units";
 
-for (glob "../experimental/units/*.{pas,PAS}") {
+for (glob catdir($units_dir, "*.{pas,PAS}")) {
   my $filename = basename($_);
 
-  copy($_, catfile($dest, "shared/$filename"))
-    or warn "Couldn't copy $_: $!";
+  copy(
+    $_,
+    catfile($script_dir, "shared/$filename"))
+      or warn "Couldn't copy $_: $!";
 }
 
-# Pull files from hello_demoscene
+# TODO: Pull files from hello_demoscene
 
 say "Cloning hello_demoscene...";
 
 dircopy("../DEMOS/hello_demoscene", $dest);
 
-# Handle project.lpi
+# TODO: Handle project.lpi
 
 my $project_info_file = "project.lpi";
 my $other_unit_dirs = "units;shared";
@@ -86,7 +97,7 @@ open $fh, ">", $project_info_file;
 say $fh $_ for @lines;
 close $fh;
 
-# Final copy step
+# TODO: Final copy step
 
 my $engine_js_path = "../experimental/engine/posit-92.js";
 
