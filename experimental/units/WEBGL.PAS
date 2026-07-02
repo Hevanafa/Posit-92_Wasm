@@ -66,7 +66,7 @@ procedure glShaderSource(shaderId: GLHandle; source: PChar); external 'env' name
 procedure glCompileShader(shaderId: GLHandle); external 'env' name 'glCompileShader';
 
 function glGetShaderParameter(shaderId: GLHandle; param: GLenum): longint; external 'env' name 'glGetShaderParameter';
-function glGetShaderInfoLog(shaderId: GLHandle): pchar; external 'env' name 'glGetShaderParameter';
+function glGetShaderInfoLog(shaderId: GLHandle): pchar; external 'env' name 'glGetShaderInfoLog';
 
 function glCreateProgram: longword; external 'env' name 'glCreateProgram';
 procedure glAttachShader(programId: GLHandle; shader: longword); external 'env' name 'glAttachShader';
@@ -74,7 +74,7 @@ procedure glLinkProgram(programId: GLHandle); external 'env' name 'glLinkProgram
 procedure glUseProgram(programId: GLHandle); external 'env' name 'glUseProgram';
 
 function glGetProgramParameter(programId: GLHandle; param: GLenum): longint; external 'env' name 'glGetProgramParameter';
-function glGetProgramInfoLog(programId: longword): pchar; external 'env' name 'glGetProgramInfoLog';
+function glGetProgramInfoLog(programId: longword): PChar; external 'env' name 'glGetProgramInfoLog';
 
 function glCreateBuffer: longword; external 'env' name 'glCreateBuffer';
 procedure glBindBuffer(target: longword; bufferId: GLHandle); external 'env' name 'glBindBuffer';
@@ -97,7 +97,7 @@ procedure WebGLPresent;
 
 implementation
 
-uses Logger, VGA;
+uses Conv, Logger, VGA;
 
 const
   { Requires the `shaders` folder to be included
@@ -143,6 +143,8 @@ begin
   vertexShaderId := glCreateShader(GL_VERTEX_SHADER);
   glShaderSource(vertexShaderId, pchar(vertexSrc));
   glCompileShader(vertexShaderId);
+
+  writelog('vertex shader id: ' + i32str(vertexShaderId));
 
   if glGetShaderParameter(vertexShaderId, GL_COMPILE_STATUS) = 0 then
     writelog('Vertex shader error: ' + glGetShaderInfoLog(vertexShaderId))
