@@ -3,6 +3,7 @@ use warnings;
 use v5.38.2;
 
 use FindBin qw($Bin);
+use File::Spec::Functions qw(catfile);
 use File::Which qw(which);
 
 my $script_dir = $Bin;
@@ -19,4 +20,11 @@ unless (which "bun") {
   exit 1
 }
 
-system "bun build $source_file --outdir $script_dir"
+my @args = (
+  "build",
+  catfile($script_dir, $source_file),
+  "--outdir",
+  $script_dir
+);
+
+system "bun", @args
