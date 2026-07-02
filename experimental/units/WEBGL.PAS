@@ -106,15 +106,15 @@ const
   fragSrc: string = {$I frag.glsl.inc};
 
 var
-  vgaTextureId: longword;
-  vertexShaderId, fragShaderId: longword;
-  defaultProgramId: longword;
+  softwareTexture: GLHandle;
+  vertexShader, fragShader: GLHandle;
+  defaultProgram: GLHandle;
 
 procedure SetupWebGLViewport;
 begin
   glViewport(0, 0, vgaWidth, vgaHeight);
-  vgaTextureId := glCreateTexture;
-  glBindTexture(GL_TEXTURE_2D, vgaTextureId);
+  softwareTexture := glCreateTexture;
+  glBindTexture(GL_TEXTURE_2D, softwareTexture);
 
   { Enable nearest neighbour filter }
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -140,43 +140,43 @@ var
 
 begin
   { Vertex shader - positions a fullscreen quad }
-  vertexShaderId := glCreateShader(GL_VERTEX_SHADER);
-  glShaderSource(vertexShaderId, pchar(vertexSrc));
-  glCompileShader(vertexShaderId);
+  vertexShader := glCreateShader(GL_VERTEX_SHADER);
+  glShaderSource(vertexShader, pchar(vertexSrc));
+  glCompileShader(vertexShader);
 
-  writelog('vertex shader id: ' + i32str(vertexShaderId));
+  writelog('vertex shader id: ' + i32str(vertexShader));
 
-  if glGetShaderParameter(vertexShaderId, GL_COMPILE_STATUS) = 0 then
-    writelog('Vertex shader error: ' + glGetShaderInfoLog(vertexShaderId))
+  if glGetShaderParameter(vertexShader, GL_COMPILE_STATUS) = 0 then
+    writelog('Vertex shader error: ' + glGetShaderInfoLog(vertexShader))
   else
     writelog('Vertex shader has been compiled');
 
   { Fragment shader - samples the texture }
-  fragShaderId := glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(fragShaderId, pchar(fragSrc));
-  glCompileShader(fragShaderId);
+  fragShader := glCreateShader(GL_FRAGMENT_SHADER);
+  glShaderSource(fragShader, pchar(fragSrc));
+  glCompileShader(fragShader);
 
   writeLog('Fragment shader has been compiled');
 
   { Link the vertex & fragment shaders }
-  defaultProgramId := glCreateProgram;
-  glAttachShader(defaultProgramId, vertexShaderId);
-  glAttachShader(defaultProgramId, fragShaderId);
-  glLinkProgram(defaultProgramId);
+  defaultProgram := glCreateProgram;
+  glAttachShader(defaultProgram, vertexShader);
+  glAttachShader(defaultProgram, fragShader);
+  glLinkProgram(defaultProgram);
 
-  if glGetProgramParameter(defaultProgramId, GL_LINK_STATUS) = 0 then
-    writelog('Program link error: ' + glGetProgramInfoLog(defaultProgramId));
+  if glGetProgramParameter(defaultProgram, GL_LINK_STATUS) = 0 then
+    writelog('Program link error: ' + glGetProgramInfoLog(defaultProgram));
 
-  glUseProgram(defaultProgramId);
+  glUseProgram(defaultProgram);
 
-  texLoc := glGetUniformLocation(defaultProgramId, 'u_tex');
+  texLoc := glGetUniformLocation(defaultProgram, 'u_tex');
   glUniform1i(texLoc, 0);
 
   posBuffer := glCreateBuffer;
   glBindBuffer(GL_ARRAY_BUFFER, posBuffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), @vertices, GL_STATIC_DRAW);
 
-  posLoc := glGetAttribLocation(defaultProgramId, 'a_pos');
+  posLoc := glGetAttribLocation(defaultProgram, 'a_pos');
   glEnableVertexAttribArray(posLoc);
   glVertexAttribPointer(posLoc, 2, GL_FLOAT, false, 0, 0);
 end;
@@ -190,7 +190,7 @@ begin
 }
 
   glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, vgaTextureId);
+  glBindTexture(GL_TEXTURE_2D, softwareTexture);
   glTexImage2D(
     GL_TEXTURE_2D, 0, GL_RGBA,
     320, 200, 0,
