@@ -19,6 +19,7 @@ sub read_mixins {
 
   # Normalise demo name
   my ($demo_name) = @_;  # $ARGV[0] =~ /([a-z_]+)/;
+  
   $demo_name = basename(dirname($demo_name));
 
   my $demo_dir = catdir($project_root, "DEMOS", $demo_name);

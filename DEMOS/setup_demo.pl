@@ -43,17 +43,21 @@ eval {
 };
 
 sub setup_demo {
-  my $demo_dir = shift;
+  my $demo_name = shift;
 
-  unless ($demo_dir) {
-    say "Missing $demo_dir parameter!";
+  unless ($demo_name) {
+    say "Missing $demo_name parameter!";
     return
   }
 
-  # Normalise $demo_dir
-  ($demo_dir) = $demo_dir =~ /([a-z_]+)/;
+  # Normalise $demo_name
+  say "demo_name: ".$demo_name;
 
-  $demo_dir = catdir($project_root, "DEMOS", $demo_dir);
+  $demo_name = basename(dirname($demo_name));
+
+  my $demo_dir = catdir($project_root, "DEMOS", $demo_name);
+
+  say "demo_dir: ".$demo_dir;
 
   unless (-d $demo_dir) {
     say "Couldn't find ".$demo_dir."!";
@@ -67,7 +71,7 @@ sub setup_demo {
 
   # Handle mixins
 
-  my @mixins = read_mixins $demo_dir;
+  my @mixins = read_mixins $demo_name;
 
   # print join " -- ", @mixins;
 
@@ -85,7 +89,7 @@ sub setup_demo {
       copy(
         catfile($mixins_dir, $mixin_name.".js"),
         catfile($demo_dir, $mixin_name.".js"))
-        or warn "Couldn't copy mixin: $mixin_name"
+          or warn "Couldn't copy mixin: $mixin_name"
     }
   }
 
@@ -103,8 +107,8 @@ sub setup_demo {
   for (@scripts) {
     copy(
       catfile($scripts_dir, $_),
-      catfile($demo_dir, $_))
-      or warn "Couldn't copy $_: $!";
+      $demo_dir)
+        or warn "Couldn't copy $_: $!";
   }
 }
 
@@ -129,8 +133,6 @@ if (grep { $_ eq "--all" } @ARGV) {
 
 # Otherwise handle setup for only 1 demo
 
-my $demo_name = basename(dirname($demo_or_option));
-
-setup_demo $demo_name;
+setup_demo $demo_or_option;
 
 say colored("Done!", "bright_green")
