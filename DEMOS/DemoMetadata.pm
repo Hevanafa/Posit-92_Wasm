@@ -29,6 +29,13 @@ sub read_mixins {
   my $lpr_file = catfile($demo_dir, "game.lpr");
   say "lpr_file: ".$lpr_file;
 
+  unless (-f $lpr_file) {
+    say "Missing game.lpr for demo ".$demo_name."!";
+    say "Likely using an older version of Posit-92 (WASM)";
+
+    return @mixins
+  }
+
   open my $fh, "<", $lpr_file;
 
   my $line;

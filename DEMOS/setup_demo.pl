@@ -114,13 +114,13 @@ sub setup_demo {
 if (grep { $_ eq "--all" } @ARGV) {
   say "--all option is used";
 
-  for my $demo_dir (grep { -d } glob "*") {
-    say "Demo dir: ".$demo_dir;
+  for my $demo_dir (grep { -d } glob catdir($project_root, "DEMOS", "*")) {
+    # say "Demo dir: ".$demo_dir;
 
-    # TODO: actually do the setup
-    # setup_demo $demo_dir;
-    
-    say ""
+    my $demo_name = basename($demo_dir);
+    say "Handling ".$demo_name."...";
+
+    setup_demo $demo_name
   }
 
   say colored("Done!", "bright_green");
