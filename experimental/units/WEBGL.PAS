@@ -89,6 +89,8 @@ implementation
 uses Logger, VGA;
 
 const
+  { Requires the `shaders` folder to be included
+    in the Project settings > Paths }
   vertexSrc: string = {$I vertex.glsl.inc};
   fragSrc: string = {$I frag.glsl.inc};
 
