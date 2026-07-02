@@ -16,13 +16,10 @@ my $project_root = catdir($Bin, "..");
 
 sub read_mixins {
   my @mixins = ();
-
-  # Normalise demo name
-  my ($demo_name) = @_;  # $ARGV[0] =~ /([a-z_]+)/;
-  
-  $demo_name = basename(dirname($demo_name));
+  my $demo_name = shift;  # $ARGV[0] =~ /([a-z_]+)/;
 
   my $demo_dir = catdir($project_root, "DEMOS", $demo_name);
+  say "demo_dir: ".$demo_dir;
 
   unless (-d $demo_dir) {
     say "Couldn't find ".$demo_dir."!";
@@ -30,6 +27,8 @@ sub read_mixins {
   }
 
   my $lpr_file = catfile($demo_dir, "game.lpr");
+  say "lpr_file: ".$lpr_file;
+
   open my $fh, "<", $lpr_file;
 
   my $line;

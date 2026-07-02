@@ -50,10 +50,7 @@ sub setup_demo {
     return
   }
 
-  # Normalise $demo_name
   say "demo_name: ".$demo_name;
-
-  $demo_name = basename(dirname($demo_name));
 
   my $demo_dir = catdir($project_root, "DEMOS", $demo_name);
 
