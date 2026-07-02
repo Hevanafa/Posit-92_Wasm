@@ -5,7 +5,7 @@ use v5.38.2;
 use FindBin qw($Bin);
 use Cwd qw(abs_path getcwd);
 use File::Copy qw(copy);
-use File::Spec::Functions qw(catdir, catfile);
+use File::Spec::Functions qw(catdir catfile);
 use File::Basename qw(basename);
 use Term::ANSIColor qw(colored);
 
@@ -21,6 +21,7 @@ my $project_root = catdir($Bin, "..");
 my $engine_dir = catdir($project_root, "experimental", "engine");
 my $engine_js_path = catfile($engine_dir, "posit-92.js");
 
+my $mixins_dir = catdir($project_root, "experimental", "mixins");
 my $scripts_dir = catdir($project_root, "scripts");
 
 my $demo_or_option = $ARGV[0];
@@ -59,36 +60,33 @@ sub setup_demo {
     exit 1
   }
 
-  # Return to DEMOS
-
-  chdir $start_dir;
-
-  setup_demo $demo_dir;
-  my $target_dir_abs = abs_path($target_dir);
-
   # Copy engine JS
 
   say "Copying " . basename($engine_js_path) . "...";
-  copy($engine_js_path, catfile($target_dir, basename($engine_js_path)));
+  copy($engine_js_path, catfile($demo_dir, basename($engine_js_path)));
 
   # Handle mixins
 
-  my @mixins = read_mixins $target_dir;
+  my @mixins = read_mixins $demo_dir;
+
   # print join " -- ", @mixins;
 
   if (@mixins) {
     say "Copying mixin files...";
 
-    chdir "../experimental/mixins/";
-
     for my $mixin_name (@mixins) {
-      system "perl ensure_mixin.pl ".$mixin_name;
+      my @args = (
+        catdir($mixins_dir, "ensure_mixin.pl"),
+        $mixin_name
+      );
 
-      copy($mixin_name.".js", catfile($target_dir_abs, $mixin_name.".js"))
+      system "perl", @args;
+
+      copy(
+        catfile($mixins_dir, $mixin_name.".js"),
+        catfile($demo_dir, $mixin_name.".js"))
         or warn "Couldn't copy mixin: $mixin_name"
     }
-
-    chdir $start_dir;
   }
 
   # Copy build scripts
@@ -96,12 +94,16 @@ sub setup_demo {
   say "Copying build scripts...";
 
   my @scripts = (
-    "clean.pl", "make_demo.pl", "dist.pl",
+    "clean.pl",
+    "make_demo.pl",
+    "dist.pl",
     "server.ts"
   );
 
   for (@scripts) {
-    copy(catfile($scripts_dir, $_), catfile($demo_dir, $_))
+    copy(
+      catfile($scripts_dir, $_),
+      catfile($demo_dir, $_))
       or warn "Couldn't copy $_: $!";
   }
 }
