@@ -33,8 +33,8 @@ if (!$demo_or_option) {
   exit 1
 }
 
-say "Broken for now!";
-exit 1;
+# say "Broken for now!";
+# exit 1;
 
 # Ensure engine JS
 eval {
