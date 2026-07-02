@@ -1,9 +1,15 @@
+{
+  Title: WebGL Demo
+  Mixins: webgl
+}
+
 library Game;
 
 {$Mode ObjFPC}
 {$H-}
 
 uses
+  EngineCore, EngineFonts,
   Keyboard, Mouse,
   ImgRef, ImgRefFast, Logger,
   Timing, VGA, WasmMemMgr, WebGL,
@@ -21,49 +27,39 @@ var
   drawOnce: boolean;
 
 { Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
+procedure SignalDone; external 'env' name 'SignalDone';
 
-procedure drawMouse;
+procedure DrawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-
-procedure init;
-begin
-  initMemMgr;
-  initBuffer;
-  initDeltaTime;
-
-  setupWebGLViewport;
-  setupWebGLShaders;
-end;
-
-procedure afterInit;
+procedure OnReady;
 begin
   { Initialise game state here }
-  hideCursor;
-  drawOnce := false;
+  HideCursor;
+
+  drawOnce := false
 end;
 
-procedure update;
+procedure Update;
 begin
-  updateDeltaTime;
+  UpdateDeltaTime;
 
-  updateMouse;
+  UpdateMouse;
 
-  { Your update logic here }
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
-    if lastEsc then signalDone;
+  { Your Update logic here }
+  if lastEsc <> IsKeyDown(SC_ESC) then begin
+    lastEsc := IsKeyDown(SC_ESC);
+    if lastEsc then SignalDone;
   end;
 
-  gameTime := gameTime + dt
+  gameTime := gameTime + DeltaTime;
 end;
 
 { Draw in WebGL context }
 { Test code }
-procedure testDraw;
+{ procedure TestDraw;
 var
   a: integer;
 begin
@@ -81,43 +77,45 @@ begin
   glClearColor(1.0, 0.4, 0.4, 1.0);
   glClear(GL_COLOR_BUFFER_BIT);
 
-  flushWebGL
+  PresentWebGL
 end;
+}
 
 
 { Draw in WebGL context }
-procedure draw;
+procedure Draw;
 var
   s: string;
   w: word;
 begin
 {
-  testDraw; exit;
+  TestDraw; exit;
 }
 
   { CPU rendering code }
-  cls($FF6495ED);
+  Cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    Spr(imgDosuEXE[1], 148, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    Spr(imgDosuEXE[0], 148, 88);
 
   s := 'Hello from Posit-92 + WebAssembly + WebGL!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  w := MeasureDefault(s);
+  PrintDefault(s, (vgaWidth - w) div 2, 120);
 
-  drawMouse;
-  flushWebGL
+  DrawMouse;
+
+  { Finalise software rendering }
+  VgaUpload;
+  WebGLPresent
 end;
 
 
 exports
-  { Main game procedures }
-  init,
-  afterInit,
-  update,
-  draw;
+  OnReady,
+  Update,
+  Draw;
 
 begin
 { Starting point is intentionally left empty }
