@@ -112,6 +112,7 @@ const
     -1, -1, 1, -1,
     -1, 1, 1, 1);
 
+  vertexSrc: String = `{$Include 'shaders/vertex.glsl'}`;
   fragSrc: string = `{$Include 'shaders/frag.glsl'}`;
 
 var
@@ -122,27 +123,17 @@ var
 begin
   { Vertex shader - positions a fullscreen quad }
   vertexShader := glCreateShader(GL_VERTEX_SHADER);
-
-  glShaderSource(vertexShader, `
-
-attribute vec2 pos;
-varying vec2 uv;
-
-void main() {
-  uv = pos * 0.5 + 0.5;
-  gl_Position = vec4(pos, 0.0, 1.0);
-}
-  `);
-
+  glShaderSource(vertexShader, pchar(vertexSrc));
   glCompileShader(vertexShader);
+
+  writelog('Vertex shader has been compiled');
 
   { Fragment shader - samples the texture }
   fragShader := glCreateShader(GL_FRAGMENT_SHADER);
-
   glShaderSource(fragShader, pchar(fragSrc));
-
   glCompileShader(fragShader);
-  { writeLog('Vertex shader has been compiled'); }
+
+  writeLog('Fragment shader has been compiled');
 
   { Link the vertex & fragment shaders }
   prog := glCreateProgram;
