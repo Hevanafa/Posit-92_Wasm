@@ -10,7 +10,7 @@ unit Version;
 interface
 
 const
-  Posit92_Version = '0.1.8';
+  Posit92_Version = '0.2';
 
 implementation
 

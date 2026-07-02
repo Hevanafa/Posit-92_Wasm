@@ -160,7 +160,7 @@ type Posit92Options = {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Posit92 {
-  static version = "0.1.8";
+  static version = "0.2";
 
   readonly #wasmSource = "game.wasm";
 
