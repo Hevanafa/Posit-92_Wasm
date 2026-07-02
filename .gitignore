@@ -20,6 +20,7 @@ DEMOS/*/*.pl
 DEMOS/*/posit-92.js
 DEMOS/*/*.d.ts
 DEMOS/*/*.js.map
+*.glsl.inc
 
 # Mixin files
 DEMOS/*/bigint.js
