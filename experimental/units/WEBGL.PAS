@@ -42,48 +42,53 @@ const
   GL_TEXTURE_WRAP_T = $2803;
   GL_CLAMP_TO_EDGE = $812F;
 
-procedure glClearColor(const r, g, b, a: single); external 'env' name 'glClearColor';
-procedure glClear(const mask: longword); external 'env' name 'glClear';
-procedure glViewport(const x, y, width, height: longint); external 'env' name 'glViewport';
+type
+  GLHandle = longword;
+  GLenum = longint;
 
-function glCreateTexture: longword; external 'env' name 'glCreateTexture';
-procedure glBindTexture(const target, texture: longword); external 'env' name 'glBindTexture';
-procedure glTexParameteri(const target, pname, param: longword); external 'env' name 'glTexParameteri';
+procedure glClearColor(r, g, b, a: single); external 'env' name 'glClearColor';
+procedure glClear(mask: longword); external 'env' name 'glClear';
+procedure glViewport(x, y, width, height: longint); external 'env' name 'glViewport';
+
+function glCreateTexture: GLHandle; external 'env' name 'glCreateTexture';
+procedure glBindTexture(target, textureId: GLHandle); external 'env' name 'glBindTexture';
+procedure glTexParameteri(target, pname, param: longword); external 'env' name 'glTexParameteri';
 
 procedure glTexImage2D(
-  const target, level, internalFormat,
-    width, height, border,
-    format, pixelType: longword;
-  const pixels: pointer); external 'env' name 'glTexImage2D';
+  target, level, internalFormat,
+  width, height, border,
+  format, pixelType: longword;
+  pixels: pointer
+); external 'env' name 'glTexImage2D';
 
-function glCreateShader(const shaderType: longword): longword; external 'env' name 'glCreateShader';
-procedure glShaderSource(const shaderId: longword; const source: PChar); external 'env' name 'glShaderSource';
-procedure glCompileShader(const shaderId: longword); external 'env' name 'glCompileShader';
+function glCreateShader(shaderType: longword): longword; external 'env' name 'glCreateShader';
+procedure glShaderSource(shaderId: GLHandle; source: PChar); external 'env' name 'glShaderSource';
+procedure glCompileShader(shaderId: GLHandle); external 'env' name 'glCompileShader';
 
-function glGetShaderParameter(const shaderId, param: longword): longint; external 'env' name 'glGetShaderParameter';
-function glGetShaderInfoLog(const shaderId: longword): pchar; external 'env' name 'glGetShaderParameter';
+function glGetShaderParameter(shaderId: GLHandle; param: GLenum): longint; external 'env' name 'glGetShaderParameter';
+function glGetShaderInfoLog(shaderId: GLHandle): pchar; external 'env' name 'glGetShaderParameter';
 
 function glCreateProgram: longword; external 'env' name 'glCreateProgram';
-procedure glAttachShader(const programId, shader: longword); external 'env' name 'glAttachShader';
-procedure glLinkProgram(const programId: longword); external 'env' name 'glLinkProgram';
-procedure glUseProgram(const programId: longword); external 'env' name 'glUseProgram';
+procedure glAttachShader(programId: GLHandle; shader: longword); external 'env' name 'glAttachShader';
+procedure glLinkProgram(programId: GLHandle); external 'env' name 'glLinkProgram';
+procedure glUseProgram(programId: GLHandle); external 'env' name 'glUseProgram';
 
-function glGetProgramParameter(const programId, param: longword): longint; external 'env' name 'glGetProgramParameter';
-function glGetProgramInfoLog(const programId: longword): pchar; external 'env' name 'glGetProgramInfoLog';
+function glGetProgramParameter(programId: GLHandle; param: GLenum): longint; external 'env' name 'glGetProgramParameter';
+function glGetProgramInfoLog(programId: longword): pchar; external 'env' name 'glGetProgramInfoLog';
 
 function glCreateBuffer: longword; external 'env' name 'glCreateBuffer';
-procedure glBindBuffer(const target, bufferId: longword); external 'env' name 'glBindBuffer';
-procedure glBufferData(const target: longword; const size: longint; const data: pointer; const usage: longword); external 'env' name 'glBufferData';
-function glGetAttribLocation(const programId: longword; const name: PChar): longint; external 'env' name 'glGetAttribLocation';
+procedure glBindBuffer(target: longword; bufferId: GLHandle); external 'env' name 'glBindBuffer';
+procedure glBufferData(target: longword; size: longint; data: pointer; usage: longword); external 'env' name 'glBufferData';
+function glGetAttribLocation(programId: longword; name: PChar): longint; external 'env' name 'glGetAttribLocation';
 
-procedure glEnableVertexAttribArray(const idx: longword); external 'env' name 'glEnableVertexAttribArray';
-procedure glVertexAttribPointer(const idx, size, attrType: longword; const normalized: boolean; const stride, offset: longint); external 'env' name 'glVertexAttribPointer';
-procedure glDrawArrays(const mode: longword; const first, count: longint); external 'env' name 'glDrawArrays';
+procedure glEnableVertexAttribArray(idx: longword); external 'env' name 'glEnableVertexAttribArray';
+procedure glVertexAttribPointer(idx, size, attrType: longword; normalized: boolean; stride, offset: longint); external 'env' name 'glVertexAttribPointer';
+procedure glDrawArrays(mode: longword; first, count: longint); external 'env' name 'glDrawArrays';
 
-function glGetUniformLocation(const programId: longword; const name: PChar): longint; external 'env' name 'glGetUniformLocation';
-procedure glUniform1i(const locationId, value: longint); external 'env' name 'glUniform1i';
+function glGetUniformLocation(programId: GLHandle; name: PChar): longint; external 'env' name 'glGetUniformLocation';
+procedure glUniform1i(locationId: GLHandle; value: longint); external 'env' name 'glUniform1i';
 
-procedure glActiveTexture(const textureId: longword); external 'env' name 'glActiveTexture';
+procedure glActiveTexture(textureId: GLHandle); external 'env' name 'glActiveTexture';
 
 procedure SetupWebGLViewport;
 procedure SetupWebGLShaders;
@@ -157,8 +162,8 @@ begin
   glAttachShader(defaultProgramId, fragShaderId);
   glLinkProgram(defaultProgramId);
 
-  { if glgetprogramparameter(defaultProgramId, GL_LINK_STATUS) = 0 then
-    writelog('Program link error: ' + glgetprograminfolog(defaultProgramId)); }
+  if glGetProgramParameter(defaultProgramId, GL_LINK_STATUS) = 0 then
+    writelog('Program link error: ' + glGetProgramInfoLog(defaultProgramId));
 
   glUseProgram(defaultProgramId);
 

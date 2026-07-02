@@ -37,14 +37,14 @@ class WebGLMixin extends Posit92 {
 
       glCreateTexture: this.#glCreateTexture.bind(this),
       glBindTexture: this.#glBindTexture.bind(this),
-      glTexParameteri: this.#glTextParameteri.bind(this),
+      glTexParameteri: this.#glTexParameteri.bind(this),
       glTexImage2D: this.#glTexImage2D.bind(this),
 
       glCreateShader: this.#glCreateShader.bind(this),
       glShaderSource: this.#glShaderSource.bind(this),
       glCompileShader: this.#glCompileShader.bind(this),
 
-      // glGetShaderParameter: this.#glGetShaderParameter.bind(this),
+      glGetShaderParameter: this.#glGetShaderParameter.bind(this),
 
       glCreateProgram: this.#glCreateProgram.bind(this),
       glAttachShader: this.#glAttachShader.bind(this),
@@ -119,7 +119,7 @@ class WebGLMixin extends Posit92 {
     this.glCtx.bindTexture(target, texture);
   }
 
-  #glTextParameteri(target: number, pname: number, param: number): void {
+  #glTexParameteri(target: number, pname: number, param: number): void {
     this.glCtx.texParameteri(target, pname, param);
   }
 
@@ -175,6 +175,15 @@ class WebGLMixin extends Posit92 {
       throw new Error(`glShaderSource: Missing shader with shaderId: ${shaderId}!`);
 
     this.glCtx.compileShader(shader);
+  }
+
+  #glGetShaderParameter(shaderId: number, param: GLenum): number {
+    const shader = this.#shaders.get(shaderId);
+
+    if (shader == null)
+      throw new Error(`glShaderSource: Missing shader with shaderId: ${shaderId}!`);
+
+    return this.glCtx.getShaderParameter(shader, param);
   }
 
   #glCreateProgram(): number {
