@@ -192,13 +192,16 @@ class WebGLMixin extends Posit92 {
     return this.glCtx.getShaderParameter(shader, param);
   }
 
-  #glGetShaderInfoLog(shaderId: number): string | null {
+  /**
+   * This loads a string into the interop buffer
+   */
+  #glGetShaderInfoLog(shaderId: number): void {
     const shader = this.#shaders.get(shaderId);
 
     if (shader == null)
       throw new Error(`glGetShaderInfoLog: Missing shader with shaderId: ${shaderId}!`);
 
-    return this.glCtx.getShaderInfoLog(shader);
+    this.WriteInteropBuffer(this.glCtx.getShaderInfoLog(shader) ?? "");
   }
 
 
@@ -254,13 +257,16 @@ class WebGLMixin extends Posit92 {
     return this.glCtx.getProgramParameter(program, param);
   }
 
-  #glGetProgramInfoLog(programId: number): string | null {
+  /**
+   * This loads a string into the interop buffer
+   */
+  #glGetProgramInfoLog(programId: number): void {
     const program = this.#programs.get(programId);
 
     if (program == null)
       throw new Error(`glGetProgramInfoLog: Missing program with programId: ${programId}!`);
 
-    return this.glCtx.getProgramInfoLog(program);
+    this.WriteInteropBuffer(this.glCtx.getProgramInfoLog(program) ?? "");
   }
 
 
