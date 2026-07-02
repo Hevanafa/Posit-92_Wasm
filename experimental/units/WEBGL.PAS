@@ -57,27 +57,29 @@ procedure glTexImage2D(
   const pixels: pointer); external 'env' name 'glTexImage2D';
 
 function glCreateShader(const shaderType: longword): longword; external 'env' name 'glCreateShader';
-procedure glShaderSource(const shader: longword; const source: PChar); external 'env' name 'glShaderSource';
-procedure glCompileShader(const shader: longword); external 'env' name 'glCompileShader';
+procedure glShaderSource(const shaderId: longword; const source: PChar); external 'env' name 'glShaderSource';
+procedure glCompileShader(const shaderId: longword); external 'env' name 'glCompileShader';
+
+function glGetShaderParameter(const shaderId, pname: longword): longint; external 'env' name 'glGetShaderParameter';
 
 function glCreateProgram: longword; external 'env' name 'glCreateProgram';
-procedure glAttachShader(const prog, shader: longword); external 'env' name 'glAttachShader';
-procedure glLinkProgram(const prog: longword); external 'env' name 'glLinkProgram';
-procedure glUseProgram(const prog: longword); external 'env' name 'glUseProgram';
+procedure glAttachShader(const programId, shader: longword); external 'env' name 'glAttachShader';
+procedure glLinkProgram(const programId: longword); external 'env' name 'glLinkProgram';
+procedure glUseProgram(const programId: longword); external 'env' name 'glUseProgram';
 
 function glCreateBuffer: longword; external 'env' name 'glCreateBuffer';
-procedure glBindBuffer(const target, buffer: longword); external 'env' name 'glBindBuffer';
+procedure glBindBuffer(const target, bufferId: longword); external 'env' name 'glBindBuffer';
 procedure glBufferData(const target: longword; const size: longint; const data: pointer; const usage: longword); external 'env' name 'glBufferData';
-function glGetAttribLocation(const prog: longword; const name: PChar): longint; external 'env' name 'glGetAttribLocation';
+function glGetAttribLocation(const programId: longword; const name: PChar): longint; external 'env' name 'glGetAttribLocation';
 
 procedure glEnableVertexAttribArray(const idx: longword); external 'env' name 'glEnableVertexAttribArray';
 procedure glVertexAttribPointer(const idx, size, attrType: longword; const normalized: boolean; const stride, offset: longint); external 'env' name 'glVertexAttribPointer';
 procedure glDrawArrays(const mode: longword; const first, count: longint); external 'env' name 'glDrawArrays';
 
-function glGetUniformLocation(const prog: longword; const name: PChar): longint; external 'env' name 'glGetUniformLocation';
+function glGetUniformLocation(const programId: longword; const name: PChar): longint; external 'env' name 'glGetUniformLocation';
 procedure glUniform1i(const locationId, value: longint); external 'env' name 'glUniform1i';
 
-procedure glActiveTexture(const texture: longword); external 'env' name 'glActiveTexture';
+procedure glActiveTexture(const textureId: longword); external 'env' name 'glActiveTexture';
 
 procedure SetupWebGLViewport;
 procedure SetupWebGLShaders;
@@ -132,8 +134,9 @@ begin
   glShaderSource(vertexShader, pchar(vertexSrc));
   glCompileShader(vertexShader);
 
-  { if glgetshaderparameter }
-
+  { if glgetshaderparameter(vertexShader, GL_COMPILE_STATUS) = 0 then
+    writelog('Vertex shader error: ' + glgetshaderinfolog(vertexShader))
+  else }
   writelog('Vertex shader has been compiled');
 
   { Fragment shader - samples the texture }
@@ -148,6 +151,10 @@ begin
   glAttachShader(prog, vertexShader);
   glAttachShader(prog, fragShader);
   glLinkProgram(prog);
+
+  { if glgetprogramparameter(prog, GL_LINK_STATUS) = 0 then
+    writelog('Program link error: ' + glgetprograminfolog(prog)); }
+
   glUseProgram(prog);
 
   texLoc := glGetUniformLocation(prog, 'u_tex');

@@ -34,8 +34,8 @@ class WebGLMixin extends Posit92 {
       glClearColor: this.#glClearColor.bind(this),
       glClear: this.#glClear.bind(this),
       glViewport: this.#glViewport.bind(this),
-      glCreateTexture: this.#glCreateTexture.bind(this),
 
+      glCreateTexture: this.#glCreateTexture.bind(this),
       glBindTexture: this.#glBindTexture.bind(this),
       glTexParameteri: this.#glTextParameteri.bind(this),
       glTexImage2D: this.#glTexImage2D.bind(this),
@@ -43,6 +43,9 @@ class WebGLMixin extends Posit92 {
       glCreateShader: this.#glCreateShader.bind(this),
       glShaderSource: this.#glShaderSource.bind(this),
       glCompileShader: this.#glCompileShader.bind(this),
+
+      // glGetShaderParameter: this.#glGetShaderParameter.bind(this),
+
       glCreateProgram: this.#glCreateProgram.bind(this),
       glAttachShader: this.#glAttachShader.bind(this),
       glLinkProgram: this.#glLinkProgram.bind(this),
@@ -315,7 +318,7 @@ class WebGLMixin extends Posit92 {
     this.glCtx.uniform1i(loc, value);
   }
 
-  #glActiveTexture(texture: number): void {
-    this.glCtx.activeTexture(texture);
+  #glActiveTexture(textureId: number): void {
+    this.glCtx.activeTexture(textureId);
   }
 }
