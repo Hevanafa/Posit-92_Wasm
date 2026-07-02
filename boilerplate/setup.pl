@@ -4,7 +4,7 @@ use v5.38.0;
 
 use FindBin qw($Bin);
 use File::Copy qw(copy);
-use File::Spec::Functions qw(catfile);
+use File::Spec::Functions qw(catfile catdir);
 use File::Basename qw(basename);
 use File::Copy::Recursive qw(dircopy);
 use Term::ANSIColor qw(colored);
@@ -16,6 +16,8 @@ my $project_root = catdir($Bin, "..");
 my $engine_dir = catdir($project_root, "experimental", "engine");
 my $scripts_dir = catdir($project_root, "scripts");
 my $units_dir = catdir($project_root, "experimental", "units");
+
+my $demoscene_dir = catdir($project_root, "DEMOS", "hello_demoscene");
 
 # Copy engine JS
 
@@ -62,15 +64,15 @@ for (glob catdir($units_dir, "*.{pas,PAS}")) {
       or warn "Couldn't copy $_: $!";
 }
 
-# TODO: Pull files from hello_demoscene
+# Pull files from hello_demoscene
 
 say "Cloning hello_demoscene...";
 
-dircopy("../DEMOS/hello_demoscene", $dest);
+dircopy($demoscene_dir, $script_dir);
 
-# TODO: Handle project.lpi
+# Handle project.lpi
 
-my $project_info_file = "project.lpi";
+my $project_info_file = catfile($script_dir, "project.lpi");
 my $other_unit_dirs = "units;shared";
 
 say "Processing $project_info_file...";
@@ -97,12 +99,12 @@ open $fh, ">", $project_info_file;
 say $fh $_ for @lines;
 close $fh;
 
-# TODO: Final copy step
+# Final copy step
 
-my $engine_js_path = "../experimental/engine/posit-92.js";
+my $engine_js_path = catfile($engine_dir, "posit-92.js");
 
 say "Copying " . basename($engine_js_path) . "...";
-copy $engine_js_path, catfile($dest, basename($engine_js_path));
+copy $engine_js_path, catfile($script_dir, basename($engine_js_path));
 
 say colored("Setup complete!", "bright_green");
 say "Run perl .\\make.pl to build the WebAssembly, and then";
