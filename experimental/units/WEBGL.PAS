@@ -101,7 +101,7 @@ procedure WebGLPresent;
 
 implementation
 
-uses Conv, Logger, InteropBuf, VGA;
+uses Conv, Logger, InteropBuf, Panic, VGA;
 
 const
   { Requires the `shaders` folder to be included
@@ -160,10 +160,10 @@ begin
   glShaderSource(vertexShader, pchar(vertexSrc));
   glCompileShader(vertexShader);
 
-  writelog('vertex shader id: ' + i32str(vertexShader));
+  { writelog('vertex shader id: ' + i32str(vertexShader)); }
 
   if glGetShaderParameter(vertexShader, GL_COMPILE_STATUS) = 0 then
-    writelog('Vertex shader error: ' + GetShaderInfoLog(vertexShader))
+    PanicHalt('Vertex shader error: ' + GetShaderInfoLog(vertexShader))
   else
     writelog('Vertex shader has been compiled');
 
@@ -172,7 +172,10 @@ begin
   glShaderSource(fragShader, pchar(fragSrc));
   glCompileShader(fragShader);
 
-  writeLog('Fragment shader has been compiled');
+  if glGetShaderParameter(fragShader, GL_COMPILE_STATUS) = 0 then
+    PanicHalt('Fragment shader error: ' + GetShaderInfoLog(fragShader))
+  else
+    writeLog('Fragment shader has been compiled');
 
   { Link the vertex & fragment shaders }
   defaultProgram := glCreateProgram;
@@ -181,7 +184,7 @@ begin
   glLinkProgram(defaultProgram);
 
   if glGetProgramParameter(defaultProgram, GL_LINK_STATUS) = 0 then
-    writelog('Program link error: ' + GetProgramInfoLog(defaultProgram));
+    PanicHalt('Program link error: ' + GetProgramInfoLog(defaultProgram));
 
   glUseProgram(defaultProgram);
 
