@@ -98,9 +98,11 @@ class WebGLMixin extends Posit92 {
 
   #glCreateTexture(): number {
     const texture = this.glCtx.createTexture();
-    const id = this.#nextTextureId++;
+    const id = this.#nextTextureId;
 
     this.#textures.set(id, texture);
+
+    this.#nextTextureId++;
 
     return id;
   }
@@ -143,9 +145,11 @@ class WebGLMixin extends Posit92 {
 
   #glCreateShader(type: number): number {
     const shader = this.glCtx.createShader(type)!;
-    const id = this.#nextShaderId++;
+    const id = this.#nextShaderId;
     
     this.#shaders.set(id, shader);
+
+    this.#nextShaderId++;
 
     return id;
   }
@@ -172,9 +176,11 @@ class WebGLMixin extends Posit92 {
 
   #glCreateProgram(): number {
     const program = this.glCtx.createProgram();
-    const id = this.#nextProgramId++;
+    const id = this.#nextProgramId;
     
     this.#programs.set(id, program);
+
+    this.#nextProgramId++;
 
     return id;
   }
@@ -214,9 +220,10 @@ class WebGLMixin extends Posit92 {
 
   #glCreateBuffer(): number {
     const buffer = this.glCtx.createBuffer();
-    const id = this.#nextBufferId++;
+    const id = this.#nextBufferId;
 
     this.#buffers.set(id, buffer);
+    this.#nextBufferId++;
 
     return id;
   }
@@ -282,6 +289,8 @@ class WebGLMixin extends Posit92 {
   #glGetUniformLocation(programId: number, namePtr: number): number {
     const program = this.#programs.get(programId);
     const name = this.#ReadCString(namePtr);
+
+    console.log("glGetUniformLocation name:", name);
 
     if (program == null)
       throw new Error(`glGetUniformLocation: Missing program with programId ${programId}!`);
