@@ -5,7 +5,7 @@ use v5.38.2;
 use FindBin qw($Bin);
 use Cwd qw(abs_path getcwd);
 use File::Copy qw(copy);
-use File::Spec::Functions qw(catdir catfile);
+use File::Spec::Functions qw(catdir catfile splitpath);
 use File::Basename qw(basename dirname);
 use Term::ANSIColor qw(colored);
 
@@ -130,6 +130,7 @@ if (grep { $_ eq "--all" } @ARGV) {
 
 # Otherwise handle setup for only 1 demo
 
-setup_demo $demo_or_option;
+my @path_parts = splitpath($demo_or_option);
+setup_demo $path_parts[-1];
 
 say colored("Done!", "bright_green")
