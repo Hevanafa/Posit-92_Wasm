@@ -23,10 +23,9 @@ DEMOS/*/*.js.map
 *.glsl.inc
 
 # Mixin files
-DEMOS/*/bigint.js
-DEMOS/*/gamepad.js
-DEMOS/*/sounds.js
-DEMOS/*/webgl.js
+DEMOS/*/*.js
+
+!DEMOS/*/game.js
 
 # Bun build scripts for demo projects
 DEMOS/*/*.ts
@@ -64,4 +63,5 @@ DEMOS/*/lib/
 experimental/engine/*.d.ts
 experimental/engine/*.js
 experimental/engine/*.js.map
+
 experimental/mixins/*.js
