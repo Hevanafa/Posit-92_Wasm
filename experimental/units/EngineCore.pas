@@ -58,11 +58,12 @@ var
 begin
   inc(AssetTotalCount);
 
-  imgHandle := FindEmptyImageRefSlot;
+  imgHandle := FindUnusedImageRefSlot;
   WriteInteropString(path);
   JsRequestImage(imgHandle);
 
   imageRefs[imgHandle] := default(TImageRef);
+  imageRefs[imgHandle].status := AssetStatusLoading;
 
   RequestImage := imgHandle
 end;

@@ -46,7 +46,7 @@ const
   SprFlipBoth = SprFlipHorizontal or SprFlipVertical;
 
 procedure InitImgRef;
-function FindEmptyImageRefSlot: longint;
+function FindUnusedImageRefSlot: longint;
 procedure RegisterImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint); public name 'RegisterImageRef';
 
 function NewImage(const width, height: smallint): longint;
@@ -86,17 +86,18 @@ begin
     imageRefs[a] := default(TImageRef);
 end;
 
-function FindEmptyImageRefSlot: longint;
+function FindUnusedImageRefSlot: longint;
 var
   a: longint;
 begin
   for a:=1 to high(imageRefs) do
-    if not IsImageSet(a) then begin
-      FindEmptyImageRefSlot := a;
+    { if not IsImageSet(a) then begin }
+    if imageRefs[a].status = AssetStatusPending then begin
+      FindUnusedImageRefSlot := a;
       exit
     end;
 
-  FindEmptyImageRefSlot := -1
+  FindUnusedImageRefSlot := -1
 end;
 
 procedure RegisterImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint);
@@ -130,7 +131,7 @@ begin
   if height <= 0 then
     PanicHalt('newImage: Invalid height: ' + I32Str(height));
 
-  slot := FindEmptyImageRefSlot;
+  slot := FindUnusedImageRefSlot;
   if slot < 0 then PanicHalt('Image ref pool is full!');
   
   allocSize := width * height * 4;
@@ -190,7 +191,8 @@ begin
 {$endif}
 
   { IsImageSet := (imageRefs[imgHandle].width > 0) and (imageRefs[imgHandle].height > 0) }
-  IsImageSet := (imageRefs[imgHandle].allocSize > 0)
+  { IsImageSet := (imageRefs[imgHandle].allocSize > 0) }
+  IsImageSet := imageRefs[imgHandle].status = AssetStatusReady
 end;
 
 procedure AssertImageSet(const varName: string; const imgHandle: longint);
