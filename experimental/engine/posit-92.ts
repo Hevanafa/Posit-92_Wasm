@@ -23,7 +23,7 @@ type WasmExports = {
   GetInteropBufCapacity: () => number,
   SetInteropBufLen: (value: number) => void,
 
-  // EngineCore.pas
+  // P92Core.pas
   InitEngine: () => void,
   InitLoadingState: () => void;
   SetCGAFontHandle: (value: number) => void,
@@ -31,6 +31,7 @@ type WasmExports = {
   IsEngineReady: () => boolean,
   EngineUpdate: () => void,
   EngineDraw: () => void,
+  DrawFPS: () => void,
 
   // IncAssetReadyCount: () => void,
   PascalImageLoaded: (imgHandle: number, w: number, h: number, pixelDataPtr: number) => void;
@@ -1184,6 +1185,8 @@ class Posit92 {
 
         this.#wasm.exports.Update();
         this.#wasm.exports.Draw();
+
+        this.#wasm.exports.DrawFPS();
       }
     }
 

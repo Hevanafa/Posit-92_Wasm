@@ -24,6 +24,7 @@ function IsEngineReady: boolean; public name 'IsEngineReady';
 
 procedure EngineUpdate; public name 'EngineUpdate';
 procedure EngineDraw; public name 'EngineDraw';
+procedure DrawFPS; public name 'DrawFPS';
 
 procedure Print(const txt: string; const x, y: smallint);
 
@@ -31,7 +32,7 @@ procedure Print(const txt: string; const x, y: smallint);
 implementation
 
 uses
-  Conv, WasmMemMgr, Loading, Logger,
+  Conv, WasmMemMgr, FPS, Loading, Logger,
   InteropBuf, Timing, VGA, WasmHost,
   Mouse,
   P92AssetRegistry, SoftwareTexDraw
@@ -53,6 +54,7 @@ begin
 
   InitDeltaTime;
   InitAssetRegistry;
+  InitFPSCounter;
 
 {$ifdef UseWebGL}
   SetupWebGLViewport;
@@ -88,6 +90,7 @@ begin
 
   if engineRunState = ersReady then begin
     UpdateDeltaTime;
+    IncrementFPS;
     UpdateMouse;
   end;
 end;
@@ -98,6 +101,11 @@ begin
 
   if engineRunState = ersLoading then
     RenderLoadingScreen;
+end;
+
+procedure DrawFPS;
+begin
+  print('FPS: ' + i32str(GetLastFPS), VgaWidth - 50, 0)
 end;
 
 procedure Print(const txt: string; const x, y: smallint);
