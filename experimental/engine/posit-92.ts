@@ -52,9 +52,7 @@ type WasmExports = {
   InitHeapRegion: (startAddr: number, poolSize: number, heapSize: number) => void,
   WasmGetMem: (bytes: number) => number,
 
-  // Primary unit
-  BeginIntroState: () => void,
-  BeginLoadingState: () => void,
+  IsEngineReady: () => boolean,
 
   OnReady: () => void,
   Update: () => void,
@@ -482,10 +480,6 @@ class Posit92 {
     this.#InitKeyboard();
     this.#InitMouse();
     this.#LoadMidnightOffset();
-  }
-
-  BeginIntro(): void {
-    this.#wasm.exports.BeginIntroState();
   }
 
   #AddOutOfFocusFix(): void {
