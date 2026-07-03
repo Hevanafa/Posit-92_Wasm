@@ -12,15 +12,8 @@ uses
   SoftwareTex, SoftwareTexDraw, Timing, VGA,
   Assets;
 
-type
-  TP92GameStates = (
-    GameStateLoading,
-    GameStatePlaying
-  );
-
 var
   { Game state variables }
-  p92GameState: TP92GameStates;
   gameTime: double;
 
 procedure DrawMouse;
@@ -30,8 +23,6 @@ end;
 
 procedure LoadGameAssets;
 begin
-  p92GameState := GameStateLoading;
-
   writelog('LoadGameAssets call');
   imgCursor := RequestImage('assets/images/cursor.png');
 
@@ -63,7 +54,7 @@ end;
 
 procedure Draw;
 begin
-  if p92GameState = GameStateLoading then begin
+  if engineRunState = ersLoading then begin
     RenderLoadingScreen;
     exit
   end;

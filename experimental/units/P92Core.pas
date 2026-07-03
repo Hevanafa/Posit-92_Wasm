@@ -2,7 +2,18 @@ unit P92Core;
 
 interface
 
+type
+  TEngineRunStates = (
+    ersBoot,
+    ersLoading,
+    ersPlaying
+  );
+
+var
+  engineRunState: TEngineRunStates;
+
 procedure InitEngine; public name 'InitEngine';
+procedure InitLoadingState; public name 'InitLoadingState';
 
 
 implementation
@@ -16,6 +27,8 @@ uses
 
 procedure InitEngine;
 begin
+  engineRunState := ersBoot;
+
   InitHeapMgr;
   InitInteropBuffer;
   InitDeltaTime;
@@ -25,6 +38,11 @@ begin
   SetupWebGLViewport;
   SetupWebGLShaders;
 {$endif}
+end;
+
+procedure InitLoadingState;
+begin
+  engineRunState := ersLoading
 end;
 
 end.
