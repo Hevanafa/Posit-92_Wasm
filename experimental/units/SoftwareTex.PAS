@@ -34,9 +34,6 @@ const
   SprFlipVertical = 2;
   SprFlipBoth = SprFlipHorizontal or SprFlipVertical;
 
-procedure InitSoftwareTex;
-function FindUnusedTextureSlot: longint;
-
 function NewTexture(const width, height: smallint): longint;
 function CopyTexture(const imgHandle: longint): longint;
 procedure FreeTexture(const imgHandle: longint);
@@ -85,10 +82,13 @@ begin
   dataPtr := PByte(getmem(allocSize));
   fillchar(dataPtr^, allocSize, 0);
 
-  imageRefs[slot].width := width;
-  imageRefs[slot].height := height;
-  imageRefs[slot].allocSize := allocSize;
-  imageRefs[slot].pixelData := dataPtr;
+  imageRefs[slot].texture.width := width;
+  imageRefs[slot].texture.height := height;
+  imageRefs[slot].texture.allocSize := allocSize;
+  imageRefs[slot].texture.pixelData := dataPtr;
+
+  imageRefs[slot].status := AssetStatusReady;
+  imageRefs[slot].errorCode := 0;
 
   NewTexture := slot
 end;
@@ -110,19 +110,19 @@ end;
 procedure FreeTexture(const imgHandle: longint);
 begin
   if (imgHandle < 1) or (imgHandle >= MaxTextures) then exit;
-  if imageRefs[imgHandle].pixelData = nil then exit;
+  if imageRefs[imgHandle].texture.pixelData = nil then exit;
 
 {$ifdef WASM}
-  WasmFreeMem(imageRefs[imgHandle].pixelData);
+  WasmFreeMem(imageRefs[imgHandle].texture.pixelData);
 {$endif}
 {$ifdef Windows}
   FreeMem(imageRefs[imgHandle].dataPtr);
 {$endif}
 
-  imageRefs[imgHandle].width := 0;
-  imageRefs[imgHandle].height := 0;
-  imageRefs[imgHandle].allocSize := 0;
-  imageRefs[imgHandle].pixelData := nil
+  imageRefs[imgHandle].texture.width := 0;
+  imageRefs[imgHandle].texture.height := 0;
+  imageRefs[imgHandle].texture.allocSize := 0;
+  imageRefs[imgHandle].texture.pixelData := nil
 end;
 
 

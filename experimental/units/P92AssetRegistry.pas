@@ -2,7 +2,10 @@ unit P92AssetRegistry;
 
 interface
 
-uses BMFont;
+uses BMFont, SoftwareTex;
+
+const
+  MaxTextures = 256;
 
 type
   TAssetStatus = (
@@ -12,9 +15,19 @@ type
     AssetStatusFailed
   );
 
+  TSoftwareTexRef = record
+    texture: TSoftwareTex;
+    status: TAssetStatus;
+    errorCode: smallint;
+  end;
+
 var
+  imageRefs: array[1..MaxTextures] of TSoftwareTexRef;
   AssetReadyCount,
   AssetTotalCount: longword;
+
+procedure InitAssetRegistry;
+function FindUnusedTextureSlot: longint;
 
 procedure IncAssetReadyCount; public name 'IncAssetReadyCount';
 
@@ -30,22 +43,9 @@ procedure PascalImageFailed(const imgHandle: longint; const errorCode: smallint)
 
 implementation
 
-uses Conv, SoftwareTex, InteropBuf, Panic;
+uses Conv, InteropBuf, Panic;
 
-const
-  MaxTextures = 256;
-
-type
-  TSoftwareTexRef = record
-    texture: TSoftwareTex;
-    status: TAssetStatus;
-    errorCode: smallint;
-  end;
-
-var
-  imageRefs: array[1..MaxTextures] of TSoftwareTexRef;
-
-procedure InitRegistry;
+procedure InitAssetRegistry;
 var
   a: word;
 begin

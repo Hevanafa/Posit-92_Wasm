@@ -19,7 +19,7 @@ begin
   InitHeapMgr;
   InitInteropBuffer;
   InitDeltaTime;
-  InitSoftwareTex;
+  InitAssetRegistry;
 
   AssetReadyCount := 0;
   AssetTotalCount := 0;
