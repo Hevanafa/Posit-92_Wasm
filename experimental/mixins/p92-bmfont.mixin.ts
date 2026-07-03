@@ -19,27 +19,28 @@ type BMFontWasmImports = WasmImports & {
 };
 
 class BMFontMixin extends Posit92 {
+  /**
+   * @override
+   */
   SetupImportObject(): void {
     const { env } = super.WasmImportObject;
     
     Object.assign(env, {
-      JsRequestBMFont: this.#RequestBMFont.bind(this),
+      JsRequestBMFont: this.#RequestBMFont.bind(this)
     });
   }
 
-  #NewBMFontGlyph(): TBMFontGlyph {
-    return {
-      id: 0,
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-      xoffset: 0,
-      yoffset: 0,
-      xadvance: 0,
-      lineHeight: 0
-    };
-  }
+  #NewBMFontGlyph = (): TBMFontGlyph => ({
+    id: 0,
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    xoffset: 0,
+    yoffset: 0,
+    xadvance: 0,
+    lineHeight: 0
+  });
 
   async LoadBMFont(url: string, fontPtr: number, fontGlyphsPtr: number): Promise<void> {
     this.AssertString(url);
