@@ -78,10 +78,11 @@ end;
 
 procedure EngineUpdate;
 begin
-  if AllAssetsReady then begin
-    engineRunState := ersReady;
-    writelog('ersReady');
-  end;
+  if engineRunState = ersLoading then
+    if AllAssetsReady then begin
+      engineRunState := ersReady;
+      writelog('ersReady');
+    end;
 end;
 
 procedure EngineDraw;
