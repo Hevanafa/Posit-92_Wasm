@@ -9,7 +9,7 @@ class BigIntMixin extends Posit92 {
   SetupImportObject(): void {
     const { env } = super.WasmImportObject;
 
-    console.log("SetupImportObject");
+    // console.log("SetupImportObject");
 
     Object.assign(env, {
       JsBigIntFetchRegA: this.#BigIntFetchRegA.bind(this),
