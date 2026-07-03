@@ -20,6 +20,11 @@ begin
   Spr(imgCursor, mouseX, mouseY)
 end;
 
+procedure LoadGameAssets;
+begin
+  imgDosuExe[0] := RequestImage('assets/images/dosu_0.png')
+end;
+
 { Called after LoadGameAssets is finished }
 procedure OnReady;
 begin

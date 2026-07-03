@@ -15,6 +15,10 @@ type WasmExports = {
   DefaultFontPtr: () => number;
   DefaultFontGlyphsPtr: () => number;
 
+  LoadBootAssets: () => void;
+  LoadIntroAssets: () => void;
+  LoadGameAssets: () => void;
+
   // InteropBuf.pas
   GetInteropBufPtr: () => number,
   GetInteropBufLen: () => number,
@@ -23,6 +27,7 @@ type WasmExports = {
 
   // EngineCore.pas
   InitEngine: () => void,
+  IncAssetReadyCount: () => void,
 
   // IntroScr.pas
   SetImgPosit92Logo: (imgHandle: number) => void;
@@ -524,6 +529,7 @@ class Posit92 {
   async LoadGameAssets(): Promise<void> {}
   
   async #RequestAssetLoad(): Promise<void> {
+    this.#wasm.exports.LoadGameAssets();
     await this.LoadGameAssets();
   }
 
@@ -551,6 +557,7 @@ class Posit92 {
     wasmMemory.set(imageData.data, wasmPtr);
 
     this.#wasm.exports.RegisterImageRef(imgHandle, wasmPtr, img.width, img.height);
+    this.#wasm.exports.IncAssetReadyCount();
   }
 
 
