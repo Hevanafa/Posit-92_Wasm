@@ -78,7 +78,7 @@ end;
 
 procedure EngineUpdate;
 begin
-  if AssetReadyCount >= AssetTotalCount then begin
+  if AllAssetsReady then begin
     engineRunState := ersReady;
     writelog('ersReady');
   end;

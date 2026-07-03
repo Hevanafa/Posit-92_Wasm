@@ -109,7 +109,7 @@ type WasmImports = {
     VgaUpload: () => void,
     VgaPresent: () => void,
 
-    RequestAssetLoad: () => void
+    // RequestAssetLoad: () => void
   }
 }
 
@@ -249,9 +249,9 @@ class Posit92 {
       // GetLoadingActual: this.#GetLoadingActual.bind(this),
       // GetLoadingTotal: this.#GetLoadingTotal.bind(this),
 
-      // EngineCore
+      // P92Core
       JsRequestImage: this.#RequestImage.bind(this),
-      RequestAssetLoad: this.#RequestAssetLoad.bind(this),
+      // RequestAssetLoad: this.#RequestAssetLoad.bind(this),
       JsRequestBMFont: this.RequestBMFont.bind(this),
 
       // Fullscreen
@@ -533,14 +533,12 @@ class Posit92 {
     throw new Error("LoadAssets has been moved to LoadGameAssets");
   }
 
-  async LoadGameAssets(): Promise<void> {
-    this.#wasm.exports.InitLoadingState();
-    this.#wasm.exports.LoadGameAssets();
-  }
+  // async LoadGameAssets(): Promise<void> {
+  // }
   
-  async #RequestAssetLoad(): Promise<void> {
-    await this.LoadGameAssets();
-  }
+  // async #RequestAssetLoad(): Promise<void> {
+  //   await this.LoadGameAssets();
+  // }
 
   async #RequestImage(imgHandle: number): Promise<void> {
     const url = this.ReadInteropBuffer();
@@ -1532,7 +1530,9 @@ class Posit92 {
     this.#StartLoop();
 
     // Pass the state control to Pascal
-    this.LoadGameAssets();
+    // this.LoadGameAssets();
+    this.#wasm.exports.InitLoadingState();
+    this.#wasm.exports.LoadGameAssets();
   }
 
   #Loop = (currentTime: number): void => {

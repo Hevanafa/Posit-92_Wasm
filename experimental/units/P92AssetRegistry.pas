@@ -48,10 +48,11 @@ procedure PascalImageFailed(const imgHandle: longint; const errorCode: smallint)
 
 implementation
 
-uses Conv, InteropBuf, Panic;
+uses Conv, InteropBuf, Logger, Panic;
 
 function AllAssetsReady: boolean;
 begin
+  writelog('AllAssetsReady call');
   AllAssetsReady := AssetReadyCount >= AssetTotalCount
 end;
 
