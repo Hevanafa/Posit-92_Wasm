@@ -59,6 +59,8 @@ type WasmImports = {
     GetLoadingActual: () => number,
     GetLoadingTotal: () => number,
 
+    JsRequestImage: (imgHandle: number) => Promise<void>,
+
     HideCursor: () => void,
     ShowCursor: () => void,
 
@@ -233,6 +235,9 @@ class Posit92 {
       GetLoadingActual: this.#GetLoadingActual.bind(this),
       GetLoadingTotal: this.#GetLoadingTotal.bind(this),
 
+      JsRequestImage: this.#RequestImage.bind(this),
+      RequestAssetLoad: this.#RequestAssetLoad.bind(this),
+
       // Fullscreen
       ToggleFullscreen: this.#ToggleFullscreen.bind(this),
       EndFullscreen: this.#EndFullscreen.bind(this),
@@ -267,8 +272,7 @@ class Posit92 {
       HideCursor: this.#HideCursor.bind(this),
       ShowCursor: this.#ShowCursor.bind(this),
       FitCanvas: this.#FitCanvas.bind(this),
-      HideLoadingOverlay: this.#HideLoadingOverlay.bind(this),
-      RequestAssetLoad: this.#RequestAssetLoad.bind(this)
+      HideLoadingOverlay: this.#HideLoadingOverlay.bind(this)
     }
   };
 
@@ -521,6 +525,32 @@ class Posit92 {
   
   async #RequestAssetLoad(): Promise<void> {
     await this.LoadGameAssets();
+  }
+
+  async #RequestImage(imgHandle: number): Promise<void> {
+    const url = this.ReadInteropBuffer();
+
+    const img = await this.LoadImageFromURL(url);
+
+    // Copy image
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = img.width;
+    tempCanvas.height = img.height;
+    
+    const tempCtx = tempCanvas.getContext("2d");
+    if (tempCtx == null)
+      throw new Error("Error getting 2D canvas context");
+
+    tempCtx.drawImage(img, 0, 0);
+
+    const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
+
+    const wasmMemory = new Uint8Array(this.#wasm.exports.memory.buffer);
+    const byteSize = img.width * img.height * 4;
+    const wasmPtr = this.#wasm.exports.WasmGetMem(byteSize);
+    wasmMemory.set(imageData.data, wasmPtr);
+
+    this.#wasm.exports.RegisterImageRef(imgHandle, wasmPtr, img.width, img.height);
   }
 
 

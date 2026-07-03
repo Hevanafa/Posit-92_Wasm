@@ -34,6 +34,7 @@ const
   SprFlipVertical = 2;
   SprFlipBoth = SprFlipHorizontal or SprFlipVertical;
 
+function FindEmptyImageRefSlot: longint;
 procedure RegisterImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint); public name 'RegisterImageRef';
 
 function NewImage(const width, height: smallint): longint;
