@@ -10,7 +10,7 @@ type
   TEngineRunStates = (
     ersBoot = 1,
     ersLoading = 2,
-    ersPlaying = 3
+    ersReady = 3
   );
 
 var
@@ -19,6 +19,8 @@ var
 procedure InitEngine; public name 'InitEngine';
 procedure InitLoadingState; public name 'InitLoadingState';
 procedure SetCGAFontHandle(value: longint); public name 'SetCGAFontHandle';
+
+function IsEngineReady: boolean; public name 'IsEngineReady';
 
 procedure Print(const txt: string; const x, y: smallint);
 
@@ -60,6 +62,11 @@ procedure SetCGAFontHandle(value: longint);
 begin
   writelog('SetCGAFontHandle ' + i32str(value));
   cgaFontHandle := value
+end;
+
+function IsEngineReady: boolean;
+begin
+  IsEngineReady := engineRunState = ersReady
 end;
 
 procedure Print(const txt: string; const x, y: smallint);
