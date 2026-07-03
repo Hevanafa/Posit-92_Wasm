@@ -114,6 +114,7 @@ end;
 
 procedure RequestBMFont(const path: string; const fontPtr: PBMFont; const fontGlyphsPtr: PBMFontGlyph);
 begin
+  inc(AssetTotalCount);
   WriteInteropString(path);
   JsRequestBMFont(fontPtr, fontGlyphsPtr)
 end;

@@ -30,7 +30,7 @@ begin
   imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
   imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 
-  { TODO: RequestBMFont(''); }
+  RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt', DefaultFontPtr, DefaultFontGlyphsPtr);
 end;
 
 { Called after LoadGameAssets is finished }

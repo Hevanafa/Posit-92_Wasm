@@ -247,7 +247,7 @@ class Posit92 {
 
       // P92Core
       JsRequestImage: this.#RequestImage.bind(this),
-      JsRequestBMFont: this.RequestBMFont.bind(this),
+      JsRequestBMFont: this.#RequestBMFont.bind(this),
 
       // Fullscreen
       ToggleFullscreen: this.#ToggleFullscreen.bind(this),
@@ -557,6 +557,8 @@ class Posit92 {
     const byteSize = img.width * img.height * 4;
     const wasmPtr = this.#wasm.exports.WasmGetMem(byteSize);
     wasmMemory.set(imageData.data, wasmPtr);
+
+    console.log("RequestImage", imgHandle);
 
     this.#wasm.exports.PascalImageLoaded(imgHandle, img.width, img.height, wasmPtr);
   }
@@ -959,8 +961,11 @@ class Posit92 {
     console.log("loadBMFont", fontface, "completed");
   }
 
-  async RequestBMFont(fontPtr: number, fontGlyphsPtr: number): Promise<void> {
+  async #RequestBMFont(fontPtr: number, fontGlyphsPtr: number): Promise<void> {
     const url = this.ReadInteropBuffer();
+
+    console.log("RequestBMFont url", url);
+
     this.AssertNumber(fontPtr);
     this.AssertNumber(fontGlyphsPtr);
 
