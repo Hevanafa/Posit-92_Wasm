@@ -24,6 +24,7 @@ end;
 procedure LoadGameAssets;
 begin
   writelog('LoadGameAssets call');
+
   {
   imgCursor := RequestImage('assets/images/cursor.png');
 

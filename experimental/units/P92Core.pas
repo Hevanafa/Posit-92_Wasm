@@ -20,11 +20,13 @@ procedure InitEngine; public name 'InitEngine';
 procedure InitLoadingState; public name 'InitLoadingState';
 procedure SetCGAFontHandle(value: longint); public name 'SetCGAFontHandle';
 
+procedure Print(const txt: string; const x, y: smallint);
+
 
 implementation
 
 uses
-  WasmMemMgr, Logger, InteropBuf, P92AssetRegistry, SoftwareTexDraw, Timing
+  Conv, WasmMemMgr, Logger, InteropBuf, P92AssetRegistry, SoftwareTexDraw, Timing
 {$ifdef UseWebGL}
   , WebGL
 {$endif}
@@ -56,10 +58,11 @@ end;
 
 procedure SetCGAFontHandle(value: longint);
 begin
+  writelog('SetCGAFontHandle ' + i32str(value));
   cgaFontHandle := value
 end;
 
-procedure print(txt: string; x, y: smallint);
+procedure Print(const txt: string; const x, y: smallint);
 var
   c: char;
   left: smallint;

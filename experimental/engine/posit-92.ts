@@ -28,7 +28,8 @@ type WasmExports = {
   // EngineCore.pas
   InitEngine: () => void,
   InitLoadingState: () => void;
-  
+  SetCGAFontHandle: (value: number) => void,
+
   // IncAssetReadyCount: () => void,
   PascalImageLoaded: (imgHandle: number, w: number, h: number, pixelDataPtr: number) => void;
   PascalImageFailed: (imgHandle: number, errorCode: number) => void;
@@ -522,7 +523,8 @@ class Posit92 {
   }
 
   async #LoadDefaultFont(): Promise<void> {
-    this.LoadImage("assets/CGA8x8.png");
+    this.#wasm.exports.SetCGAFontHandle(
+      await this.LoadImage("assets/CGA8x8.png"));
 
     // await this.LoadBMFont(
     //   "assets/fonts/nokia_cellphone_fc_8.txt",
