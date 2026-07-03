@@ -43,11 +43,11 @@ var
 begin
   inc(AssetTotalCount);
 
-  imgHandle := FindUnusedImageRefSlot;
+  imgHandle := FindUnusedTextureSlot;
   WriteInteropString(path);
   JsRequestImage(imgHandle);
 
-  imageRefs[imgHandle] := default(TImageRef);
+  imageRefs[imgHandle] := default(TSoftwareTex);
   imageRefs[imgHandle].status := AssetStatusLoading;
 
   RequestImage := imgHandle

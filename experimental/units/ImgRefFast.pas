@@ -59,15 +59,15 @@ uses Logger, Conv, ImgRef, Maths, Panic, VGA;
 
 procedure Spr(const imgHandle: longint; const x, y: smallint);
 var
-  image: PImageRef;
+  image: PSoftwareTex;
   px, py: smallint;
   offset: longword;
   a: byte; { alpha }
   colour: longword;
 begin
-  if not IsImageSet(imgHandle) then exit;
+  if not IsTextureSet(imgHandle) then exit;
 
-  image := GetImagePtr(imgHandle);
+  image := GetTexturePtr(imgHandle);
 
   if image^.allocSize = 0 then
     PanicHalt('imgHandle ' + I32Str(imgHandle) + ' allocSize is 0!');
@@ -90,12 +90,12 @@ end;
 
 procedure SprClear(const imgHandle: longint; const colour: longword);
 var
-  image: PImageRef;
+  image: PSoftwareTex;
   px, py: smallint;
 begin
-  if not IsImageSet(imgHandle) then exit;
+  if not IsTextureSet(imgHandle) then exit;
 
-  image := GetImagePtr(imgHandle);
+  image := GetTexturePtr(imgHandle);
 
   { fillchar(image^.pixelData, image^.width * image^.height * 4, 0); }
   for py:=0 to image^.height - 1 do
@@ -108,16 +108,16 @@ procedure SprRegion(
   const srcX, srcY, srcW, srcH: smallint;
   const destX, destY: smallint);
 var
-  image: PImageRef;
+  image: PSoftwareTex;
   a, b: smallint;
   sx, sy: smallint;
   srcPos: longword;
   alpha: byte;
   colour: longword;
 begin
-  if not IsImageSet(imgHandle) then exit;
+  if not IsTextureSet(imgHandle) then exit;
 
-  image := GetImagePtr(imgHandle);
+  image := GetTexturePtr(imgHandle);
 
   for b:=0 to srcH - 1 do
   for a:=0 to srcW - 1 do begin
@@ -142,13 +142,13 @@ var
   sx, sy: smallint;
   dx, dy: smallint;
   srcPos: longword;
-  image: PImageRef;
+  image: PSoftwareTex;
   alpha: byte;
   scaleX, scaleY: double;
   colour: longword;
 begin
-  if not IsImageSet(imgHandle) then exit;
-  image := GetImagePtr(imgHandle);
+  if not IsTextureSet(imgHandle) then exit;
+  image := GetTexturePtr(imgHandle);
 
   scaleX := image^.width / destWidth;
   scaleY := image^.height / destHeight;
@@ -177,13 +177,13 @@ procedure SprRegionStretch(
 var
   sx, sy: smallint;
   dx, dy: smallint;
-  image: PImageRef;
+  image: PSoftwareTex;
   alpha: byte;
   scaleX, scaleY: double;
   colour: longword;
 begin
-  if not IsImageSet(imgHandle) then exit;
-  image := GetImagePtr(imgHandle);
+  if not IsTextureSet(imgHandle) then exit;
+  image := GetTexturePtr(imgHandle);
 
   scaleX := srcWidth / destWidth;
   scaleY := srcHeight / destHeight;
@@ -214,15 +214,15 @@ procedure SprRegionSolid(
   const destX, destY: smallint;
   const colour: longword);
 var
-  image: PImageRef;
+  image: PSoftwareTex;
   a, b: smallint;
   sx, sy: smallint;
   srcPos: longword;
   alpha: byte;
 begin
-  if not IsImageSet(imgHandle) then exit;
+  if not IsTextureSet(imgHandle) then exit;
 
-  image := GetImagePtr(imgHandle);
+  image := GetTexturePtr(imgHandle);
 
   for b:=0 to srcH - 1 do
   for a:=0 to srcW - 1 do begin
@@ -247,7 +247,7 @@ var
   sx, sy: smallint;
   dx, dy: smallint;
   srcPos: longword;
-  image: PImageRef;
+  image: PSoftwareTex;
   alpha: byte;
   colour: longword;
 begin
@@ -256,9 +256,9 @@ begin
     exit
   end;
 
-  if not IsImageSet(imgHandle) then exit;
+  if not IsTextureSet(imgHandle) then exit;
 
-  image := GetImagePtr(imgHandle);
+  image := GetTexturePtr(imgHandle);
 
   for sy := 0 to image^.height - 1 do
   for sx := 0 to image^.width - 1 do begin
@@ -294,7 +294,7 @@ var
   dx, dy: smallint;
   srcPos: longword;
   srcX, srcY: smallint;
-  image: PImageRef;
+  image: PSoftwareTex;
 
   alpha: byte;
   colour: longword;
@@ -303,8 +303,8 @@ var
   halfW, halfH: smallint;
   maxRadius: smallint;
 begin
-  if not IsImageSet(imgHandle) then exit;
-  image := GetImagePtr(imgHandle);
+  if not IsTextureSet(imgHandle) then exit;
+  image := GetTexturePtr(imgHandle);
 
   { Negative for inverse transform }
   cosAngle := cos(-rotation);
@@ -341,17 +341,17 @@ end;
 
 procedure SprToDest(const src, dest: longint; const x, y: smallint);
 var
-  srcImage, destImage: PImageRef;
+  srcImage, destImage: PSoftwareTex;
   startX, endX, startY, endY: word;
   a, b: smallint;
   srcOffset: longword;
   alpha: byte;
   colour: longword;
 begin
-  if not IsImageSet(src) or not IsImageSet(dest) then exit;
+  if not IsTextureSet(src) or not IsTextureSet(dest) then exit;
 
-  srcImage := GetImagePtr(src);
-  destImage := GetImagePtr(dest);
+  srcImage := GetTexturePtr(src);
+  destImage := GetTexturePtr(dest);
 
   startX := trunc(max(0, -x));
   startY := trunc(max(0, -y));
@@ -374,17 +374,17 @@ procedure SprRegionToDest(
   const srcX, srcY, srcW, srcH: smallint;
   const destX, destY: smallint);
 var
-  srcImage, destImage: PImageRef;
+  srcImage, destImage: PSoftwareTex;
   px, py: smallint;
   sx, sy: smallint;
   srcPos: longword;
   alpha: byte;
   colour: longword;
 begin
-  if not IsImageSet(src) or not IsImageSet(dest) then exit;
+  if not IsTextureSet(src) or not IsTextureSet(dest) then exit;
 
-  srcImage := GetImagePtr(src);
-  destImage := GetImagePtr(dest);
+  srcImage := GetTexturePtr(src);
+  destImage := GetTexturePtr(dest);
 
   for py:=0 to srcH - 1 do
   for px:=0 to srcW - 1 do begin
@@ -406,16 +406,16 @@ end;
 { flip: Use SprFlip enum }
 procedure SprFlipInPlace(const imgHandle: longint; const flip: smallint);
 var
-  image: PImageRef;
+  image: PSoftwareTex;
   px, py: smallint;
   halfW, halfH: smallint;
   tempColour: longword;
   pos1, pos2: longint;
 begin
   if flip = SprFlipNone then exit;
-  if not IsImageSet(imgHandle) then exit;
+  if not IsTextureSet(imgHandle) then exit;
 
-  image := GetImagePtr(imgHandle);
+  image := GetTexturePtr(imgHandle);
 
   { Horizontal flip }
   if (flip and SprFlipHorizontal) <> 0 then begin

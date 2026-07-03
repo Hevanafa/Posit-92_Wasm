@@ -19,7 +19,7 @@ begin
   InitHeapMgr;
   InitInteropBuffer;
   InitDeltaTime;
-  InitImgRef;
+  InitSoftwareTex;
 
   AssetReadyCount := 0;
   AssetTotalCount := 0;

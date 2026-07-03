@@ -125,7 +125,7 @@ begin
   for a:=0 to high(srcFontGlyphs) do
     destFontGlyphs[a] := srcFontGlyphs[a];
 
-  destFont.imgHandle := CopyImage(srcFont.imgHandle)
+  destFont.imgHandle := CopyTexture(srcFont.imgHandle)
 end;
 
 procedure FreeBMFont(
@@ -136,7 +136,7 @@ var
   a: Word;
 begin
   if freeImgHandle then
-    FreeImage(font.imgHandle);
+    FreeTexture(font.imgHandle);
 
   fillchar(font, sizeof(TBMFont), 0);
   for a:=0 to high(fontGlyphs) do
@@ -264,7 +264,7 @@ var
 begin
   PrintBMFontCharToDest := 0;
 
-  if not IsImageSet(destHandle) then exit;
+  if not IsTextureSet(destHandle) then exit;
 
   charcode := ord(ch);
 
