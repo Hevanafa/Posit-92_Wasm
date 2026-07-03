@@ -245,13 +245,8 @@ class Posit92 {
     env: {
       _haltproc: this.#HandleHaltProc.bind(this),
 
-      // Loading
-      // GetLoadingActual: this.#GetLoadingActual.bind(this),
-      // GetLoadingTotal: this.#GetLoadingTotal.bind(this),
-
       // P92Core
       JsRequestImage: this.#RequestImage.bind(this),
-      // RequestAssetLoad: this.#RequestAssetLoad.bind(this),
       JsRequestBMFont: this.RequestBMFont.bind(this),
 
       // Fullscreen
@@ -450,10 +445,10 @@ class Posit92 {
     const loadedKB = Math.ceil(loaded / 1024);
 
     if (isNaN(total))
-      this.SetLoadingText(`Downloading engine (${ loadedKB } KB)`);
+      this.#SetLoadingText(`Downloading engine (${ loadedKB } KB)`);
     else {
       const totalKB = Math.ceil(total / 1024);
-      this.SetLoadingText(`Downloading engine (${ loadedKB } KB / ${ totalKB } KB)`);
+      this.#SetLoadingText(`Downloading engine (${ loadedKB } KB / ${ totalKB } KB)`);
     }
   }
 
@@ -563,8 +558,6 @@ class Posit92 {
     const wasmPtr = this.#wasm.exports.WasmGetMem(byteSize);
     wasmMemory.set(imageData.data, wasmPtr);
 
-    // this.#wasm.exports.RegisterImageRef(imgHandle, wasmPtr, img.width, img.height);
-    // this.#wasm.exports.IncAssetReadyCount();
     this.#wasm.exports.PascalImageLoaded(imgHandle, img.width, img.height, wasmPtr);
   }
 
@@ -648,24 +641,6 @@ class Posit92 {
 
     return handle;
   }
-
-  /**
-   * Used in asset counter
-   */
-  // #loadingActual = 0;
-
-  // #GetLoadingActual(): number {
-  //   return this.#loadingActual;
-  // }
-
-  /**
-   * Used in asset counter
-   */
-  // #loadingTotal = 0;
-
-  // #GetLoadingTotal(): number {
-  //   return this.#loadingTotal;
-  // }
 
   async #LoadSingleImage(key: string, path: string): Promise<LoadImageReturn> {
     return this.LoadImage(path).then(handle => {
@@ -752,7 +727,6 @@ class Posit92 {
 
   async LoadBMFontFromManifest(manifest: BMFontManifest): Promise<void> {
     const entries = Object.entries(manifest);
-    // console.log(entries);
 
     const promises = entries.map(([key, params]) => {
       const setter = this.WasmInstance.exports[params.setter];
@@ -781,8 +755,6 @@ class Posit92 {
 
     const results = await Promise.all(promises);
 
-    // console.log("BMFont results", results);
-
     const failures = results.filter(item => item.setterPtr == 0 || item.glyphSetterPtr == 0);
 
     if (failures.length > 0) {
@@ -796,25 +768,10 @@ class Posit92 {
     // for (const item of results) ;
   }
 
-  // IncLoadingActual(): void {
-  //   this.#loadingActual++;
-  // }
-
-  // SetLoadingActual(value: number): void {
-  //   this.AssertNumber(value);
-  //   this.#loadingActual = value;
-  // }
-
-  // IncLoadingTotal(count: number): void {
-  //   this.#loadingTotal += count;
-  // }
-
-  // SetLoadingTotal(value: number): void {
-  //   this.AssertNumber(value);
-  //   this.#loadingTotal = value;
-  // }
-
-  SetLoadingText(text: string): void {
+  /**
+   * This is available before boot -- the "loading engine" text
+   */
+  #SetLoadingText(text: string): void {
     const div = document.querySelector("#loading-overlay > div");
     if (div == null) return;
     div.innerHTML = text;
@@ -824,7 +781,7 @@ class Posit92 {
     const div = document.getElementById("loading-overlay");
     if (div == null) return;
     div.classList.add("hidden");
-    this.SetLoadingText("");
+    this.#SetLoadingText("");
   }
 
   async Sleep(ms: number): Promise<void> {
