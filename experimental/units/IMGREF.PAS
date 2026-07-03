@@ -18,7 +18,7 @@ unit ImgRef;
 
 interface
 
-uses EngineCore;
+uses P92Core;
 
 const
   MaxImageRefs = 256;

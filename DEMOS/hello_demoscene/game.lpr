@@ -5,7 +5,7 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  EngineCore, EngineFonts, WasmHost,
+  P92Core, EngineFonts, WasmHost,
   Logger, Loading, Fullscreen,
   Keyboard, Mouse,
   ImgRefFast, Timing, VGA,
@@ -27,6 +27,8 @@ begin
 
   imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
   imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
+
+  { TODO: RequestBMFont(''); }
 end;
 
 { Called after LoadGameAssets is finished }
