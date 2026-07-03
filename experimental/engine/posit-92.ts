@@ -1536,18 +1536,8 @@ class Posit92 {
     this.#AddResizeListener();
     this.#StartLoop();
 
-    if (showIntro) {
-      // Loading
-      if (Object.hasOwn(this.#wasm.exports, "BeginLoadingState"))
-        this.#wasm.exports.BeginLoadingState();
-
-      this.LoadGameAssets();
-
-      // Ready
-      // this.#wasm.exports.OnReady();
-    } else
-      // Pass the state control to Pascal
-      this.#wasm.exports.BeginIntroState();
+    // Pass the state control to Pascal
+    this.LoadGameAssets();
   }
 
   #Loop = (currentTime: number): void => {
