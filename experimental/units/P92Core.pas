@@ -24,7 +24,6 @@ function IsEngineReady: boolean; public name 'IsEngineReady';
 
 procedure EngineUpdate; public name 'EngineUpdate';
 procedure EngineDraw; public name 'EngineDraw';
-procedure DrawFPS; public name 'DrawFPS';
 
 procedure Print(const txt: string; const x, y: smallint);
 
@@ -101,15 +100,6 @@ begin
 
   if engineRunState = ersLoading then
     RenderLoadingScreen;
-end;
-
-procedure DrawFPS;
-begin
-  print('FPS: ' + i32str(GetLastFPS), VgaWidth - 100, 0);
-
-  print('lastFPS: ' + i32str(lastFPS), VgaWidth - 160, 16);
-  print('actualFPS: ' + i32str(actualFPS), VgaWidth - 160, 24);
-  print('lastFPSTime: ' + f32str(lastFPSTime), VgaWidth - 160, 32);
 end;
 
 procedure Print(const txt: string; const x, y: smallint);
