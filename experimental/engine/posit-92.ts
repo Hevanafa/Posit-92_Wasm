@@ -1516,8 +1516,10 @@ class Posit92 {
         this.#wasm.exports.EngineUpdate();
         this.#wasm.exports.EngineDraw();
       } else {
-        if (!this.#userReady)
+        if (!this.#userReady) {
+          this.#userReady = true;
           this.#wasm.exports.OnReady();
+        }
 
         this.#wasm.exports.Update();
         this.#wasm.exports.Draw();
