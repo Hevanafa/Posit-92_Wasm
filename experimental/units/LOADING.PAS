@@ -21,7 +21,7 @@ implementation
 
 uses
   Conv, VGA,
-  EngineFonts;
+  P92Fonts;
 
 procedure RenderLoadingScreen;
 var

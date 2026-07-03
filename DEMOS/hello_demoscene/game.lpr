@@ -5,7 +5,7 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  P92Core, EngineFonts, WasmHost,
+  P92Core, P92Fonts, WasmHost,
   Logger, Loading, Fullscreen,
   Keyboard, Mouse,
   ImgRefFast, Timing, VGA,
