@@ -13,9 +13,9 @@
   },
   "files": [
     "../engine/posit-92.ts",
-    "./bigint.ts",
-    "./gamepad.ts",
-    "./sounds.ts",
-    "./webgl.ts"
+    "./p92-bigint.mixin.ts",
+    "./p92-gamepad.mixin.ts",
+    "./p92-sounds.mixin.ts",
+    "./p92-webgl.mixin.ts"
   ]
 }
