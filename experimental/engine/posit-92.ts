@@ -990,7 +990,6 @@ class Posit92 {
 
     const fontGlyphs: Map<number, TBMFontGlyph> = new Map();
     let glyphCount = 0;
-    let imgHandle = 0;
     const spacing = [0, 0];
 
     for (const line of lines) {
@@ -999,8 +998,6 @@ class Posit92 {
       pairs = txtLine.split(" ").map(part => <StringPair>part.split("="));
 
       if (txtLine.startsWith("info")) {
-        // [k, v] = <StringPair>(pairs.find(pair => pair[0] == "face"));
-
         for (const [k, v] of pairs) {
           switch (k) {
             case "face":
@@ -1065,9 +1062,10 @@ class Posit92 {
     // fontMem.setInt32(offset + 4, imgHandle, true);
 
     // Load font bitmap
+
     this.WriteInteropBuffer(filename);
+    // This uses a reserved imgHandle provided by RequestBMFont from Pascal side
     await this.#RequestImage(fontMem.getInt32(offset + 4, true));
-    //imgHandle = await this.LoadImage(filename);
 
     // Load glyphs
     const glyphsMem = new DataView(this.#wasm.exports.memory.buffer, fontGlyphsPtr);
