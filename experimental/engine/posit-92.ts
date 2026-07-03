@@ -204,7 +204,7 @@ class Posit92 {
   }
 
   /**
-   * Used in `getTimer`
+   * Used in `GetTimer`
    */
   #midnightOffset = 0;
 
@@ -450,13 +450,14 @@ class Posit92 {
   }
 
   async InitRuntime(): Promise<void> {
+    this.#LoadMidnightOffset();
     await this.#InitWebAssembly();
     this.#InitWasmMemory();
+    
     this.#wasm.exports.InitEngine();
 
     this.#InitKeyboard();
     this.#InitMouse();
-    this.#LoadMidnightOffset();
   }
 
   #AddOutOfFocusFix(): void {
@@ -1185,8 +1186,6 @@ class Posit92 {
 
         this.#wasm.exports.Update();
         this.#wasm.exports.Draw();
-
-        this.#wasm.exports.DrawFPS();
       }
     }
 
