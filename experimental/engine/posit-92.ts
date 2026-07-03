@@ -45,8 +45,8 @@ type WasmExports = {
   InitHeapRegion: (startAddr: number, poolSize: number, heapSize: number) => void,
   WasmGetMem: (bytes: number) => number,
 
-  // IMGREF.PAS
-  RegisterImageRef: (imgHandle: number, dataPtr: number, width: number, height: number) => void;
+  // SoftwareTex.pas
+  RegisterSoftwareTex: (imgHandle: number, dataPtr: number, width: number, height: number) => void;
 
   // Primary unit
   BeginIntroState: () => void,
@@ -644,7 +644,7 @@ class Posit92 {
     this.#images.push(null);
     // this.#images.push(imageData);  // Keep data in JS for reference
 
-    this.#wasm.exports.RegisterImageRef(handle, wasmPtr, img.width, img.height);
+    this.#wasm.exports.RegisterSoftwareTex(handle, wasmPtr, img.width, img.height);
 
     return handle;
   }

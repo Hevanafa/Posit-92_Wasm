@@ -47,7 +47,6 @@ const
 
 procedure InitSoftwareTex;
 function FindUnusedTextureSlot: longint;
-procedure RegisterTexture(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint); public name 'RegisterTexture';
 
 function NewTexture(const width, height: smallint): longint;
 function CopyTexture(const imgHandle: longint): longint;
@@ -98,25 +97,6 @@ begin
     end;
 
   FindUnusedTextureSlot := -1
-end;
-
-procedure RegisterTexture(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint);
-begin
-  if (imgHandle < 1) or (imgHandle >= high(imageRefs)) then
-    PanicHalt('Invalid image handle: ' + I32Str(imgHandle));
-
-  if (imageRefs[imgHandle].allocSize > 0) then
-    PanicHalt('Image handle ' + I32Str(imgHandle) + ' already used! (allocSize > 0)');
-
-  with imageRefs[imgHandle] do begin
-    width := w;
-    height := h;
-    allocSize := longword(w) * longword(h) * 4;
-    pixelData := dataPtr;
-
-    status := AssetStatusReady;
-    errorCode := 0
-  end;
 end;
 
 function NewTexture(const width, height: smallint): longint;

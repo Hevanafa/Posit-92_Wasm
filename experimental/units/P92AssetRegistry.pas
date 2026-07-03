@@ -20,6 +20,7 @@ procedure IncAssetReadyCount; public name 'IncAssetReadyCount';
 
 procedure JsRequestImage(imgHandle: longint); external 'env' name 'JsRequestImage';
 function RequestImage(const path: string): longint;
+procedure RegisterSoftwareTex(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint); public name 'RegisterSoftwareTex';
 
 procedure JsRequestBMFont(fontPtr: PBMFont; fontGlyphsPtr: PBMFontGlyph); external 'env' name 'JsRequestBMFont';
 procedure RequestBMFont(const path: string; const fontPtr: PBMFont; const fontGlyphsPtr: PBMFontGlyph);
@@ -30,7 +31,26 @@ procedure PascalImageFailed(const imgHandle: longint; const errorCode: smallint)
 
 implementation
 
-uses SoftwareTex, InteropBuf;
+uses Conv, SoftwareTex, InteropBuf, Panic;
+
+procedure RegisterSoftwareTex(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint);
+begin
+  if (imgHandle < 1) or (imgHandle >= high(imageRefs)) then
+    PanicHalt('Invalid image handle: ' + I32Str(imgHandle));
+
+  if (imageRefs[imgHandle].allocSize > 0) then
+    PanicHalt('Image handle ' + I32Str(imgHandle) + ' already used! (allocSize > 0)');
+
+  with imageRefs[imgHandle] do begin
+    width := w;
+    height := h;
+    allocSize := longword(w) * longword(h) * 4;
+    pixelData := dataPtr;
+
+    status := AssetStatusReady;
+    errorCode := 0
+  end;
+end;
 
 procedure IncAssetReadyCount;
 begin
