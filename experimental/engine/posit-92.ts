@@ -670,7 +670,8 @@ class Posit92 {
   async #LoadSingleImage(key: string, path: string): Promise<LoadImageReturn> {
     return this.LoadImage(path).then(handle => {
       // On success
-      this.IncLoadingActual();
+      // TODO: this.IncLoadingActual();
+
       return { key, path, handle };
     });
   }
@@ -680,7 +681,8 @@ class Posit92 {
       (path, index) => 
         this.LoadImage(path).then(handle => {
           // On success
-          this.IncLoadingActual();
+          // TODO: this.IncLoadingActual();
+
           return { key, path, handle, index };
         }));
 
@@ -771,7 +773,8 @@ class Posit92 {
 
       return this.LoadBMFont(params.path, setterPtr, glyphSetterPtr).then(() => {
         // On success
-        this.IncLoadingActual();
+        // TODO: this.IncLoadingActual();
+
         return { key, path: params.path, setterPtr, glyphSetterPtr };
       });
     });
@@ -853,8 +856,8 @@ class Posit92 {
       ? Object.keys(this.AssetManifest.bmfonts).length
       : 0;
     
-    this.SetLoadingActual(0);
-    this.SetLoadingTotal(imageCount + soundCount + bmfontCount);
+    // TODO: this.SetLoadingActual(0);
+    // TODO: this.SetLoadingTotal(imageCount + soundCount + bmfontCount);
   }
 
 
