@@ -19,7 +19,7 @@ procedure InitLoadingState; public name 'InitLoadingState';
 implementation
 
 uses
-  WasmMemMgr, InteropBuf, P92AssetRegistry, Timing
+  WasmMemMgr, Logger, InteropBuf, P92AssetRegistry, Timing
 {$ifdef UseWebGL}
   , WebGL
 {$endif}
@@ -42,7 +42,8 @@ end;
 
 procedure InitLoadingState;
 begin
-  engineRunState := ersLoading
+  engineRunState := ersLoading;
+  writelog('Entered loading state');
 end;
 
 end.

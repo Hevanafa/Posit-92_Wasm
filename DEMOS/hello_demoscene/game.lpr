@@ -24,10 +24,12 @@ end;
 procedure LoadGameAssets;
 begin
   writelog('LoadGameAssets call');
+  {
   imgCursor := RequestImage('assets/images/cursor.png');
 
   imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
   imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
+  }
 
   { TODO: RequestBMFont(''); }
 end;
@@ -55,7 +57,8 @@ end;
 procedure Draw;
 begin
   if engineRunState = ersLoading then begin
-    RenderLoadingScreen;
+    cls($FF555580);
+    { RenderLoadingScreen; }
     exit
   end;
 

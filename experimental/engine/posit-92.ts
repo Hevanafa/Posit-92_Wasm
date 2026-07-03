@@ -27,6 +27,7 @@ type WasmExports = {
 
   // EngineCore.pas
   InitEngine: () => void,
+  InitLoadingState: () => void;
   
   // IncAssetReadyCount: () => void,
   PascalImageLoaded: (imgHandle: number, w: number, h: number, pixelDataPtr: number) => void;
@@ -521,19 +522,18 @@ class Posit92 {
   }
 
   async #LoadDefaultFont(): Promise<void> {
-    await this.LoadBMFont(
-      "assets/fonts/nokia_cellphone_fc_8.txt",
-      this.WasmInstance.exports.DefaultFontPtr(),
-      this.WasmInstance.exports.DefaultFontGlyphsPtr());
+    this.LoadImage("assets/CGA8x8.png");
+
+    // await this.LoadBMFont(
+    //   "assets/fonts/nokia_cellphone_fc_8.txt",
+    //   this.WasmInstance.exports.DefaultFontPtr(),
+    //   this.WasmInstance.exports.DefaultFontGlyphsPtr());
   }
 
   async LoadAssets(): Promise<void> {
     throw new Error("LoadAssets has been moved to LoadGameAssets");
   }
 
-  /**
-   * Overridden by the inherited `Game` class
-   */
   async LoadGameAssets(): Promise<void> {
     this.#wasm.exports.InitLoadingState();
     this.#wasm.exports.LoadGameAssets();
