@@ -140,6 +140,8 @@ type Posit92Options = {
 
   /**
    * Default: 60
+   * 
+   * 0 matches the screen's refresh rate
    */
   fps?: number;
 
@@ -1162,9 +1164,34 @@ class Posit92 {
     this.#wasm.exports.LoadGameAssets();
   }
 
+  #PerformLoop(): void {
+    if (!this.#wasm.exports.IsEngineReady()) {
+      this.#wasm.exports.EngineUpdate();
+      this.#wasm.exports.EngineDraw();
+      return;
+    }
+
+    this.#wasm.exports.EngineUpdate();
+
+    if (!this.#userReady) {
+      this.#userReady = true;
+      this.#wasm.exports.OnReady();
+    }
+
+    this.#wasm.exports.Update();
+    this.#wasm.exports.Draw();
+  }
+
   #Loop = (currentTime: number): void => {
     if (this.#done) {
       this.Cleanup();
+      return;
+    }
+
+    if (this.bootOptions.fps == 0) {
+      this.#PerformLoop();
+      requestAnimationFrame(this.#Loop);
+      
       return;
     }
 
@@ -1173,20 +1200,7 @@ class Posit92 {
     if (elapsed >= this.#FrameTime) {
       this.#lastFrameTime = currentTime - (elapsed % this.#FrameTime);  // Carry over extra time
 
-      if (!this.#wasm.exports.IsEngineReady()) {
-        this.#wasm.exports.EngineUpdate();
-        this.#wasm.exports.EngineDraw();
-      } else {
-        this.#wasm.exports.EngineUpdate();
-
-        if (!this.#userReady) {
-          this.#userReady = true;
-          this.#wasm.exports.OnReady();
-        }
-
-        this.#wasm.exports.Update();
-        this.#wasm.exports.Draw();
-      }
+      this.#PerformLoop();
     }
 
     requestAnimationFrame(this.#Loop);

@@ -32,7 +32,7 @@ class Game extends BMFontMixin {
 }
 
 async function Main() {
-  const game = new Game("game", { skipIntro: true });
+  const game = new Game("game", { skipIntro: true, fps: 0 });
   game.Start();
 }
 
