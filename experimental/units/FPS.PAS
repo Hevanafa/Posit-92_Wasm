@@ -12,6 +12,10 @@ unit FPS;
 
 interface
 
+var
+  actualFPS, lastFPS: smallint;
+  lastFPSTime: double; { in seconds }
+
 procedure InitFPSCounter;
 procedure IncrementFPS;
 
@@ -23,15 +27,11 @@ implementation
 uses
   Conv, Timing, VGA;
 
-var
-  actualFPS, lastFPS: smallint;
-  lastFPSTime: double; { in seconds }
-
 procedure InitFPSCounter;
 begin
   actualFPS := 0;
   lastFPS := 0;
-  lastFPSTime := getTimer;
+  lastFPSTime := GetTimer;
 end;
 
 procedure IncrementFPS;
