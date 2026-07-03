@@ -1,9 +1,10 @@
 {
-  Maths unit - Part of Posit-92 game engine
-  Hevanafa
+  Maths unit
+  Part of Posit-92 game engine
+  By Hevanafa
 }
 
-unit Maths;
+unit P92Maths;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
@@ -24,7 +25,7 @@ function ArcTan2(const y, x: double): double;
 
 implementation
 
-uses Panic;
+uses P92Panic;
 
 function clamp(const value, min, max: double): double;
 begin

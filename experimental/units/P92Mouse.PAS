@@ -1,11 +1,12 @@
 {
-  Mouse - Part of Posit-92 game engine
-  Hevanafa
+  Mouse unit
+  Part of Posit-92 game engine
+  By Hevanafa
 
   Contains a subset of the DOS version
 }
 
-unit Mouse;
+unit P92Mouse;
 
 {$Mode ObjFPC}
 {$H+}{$J-}

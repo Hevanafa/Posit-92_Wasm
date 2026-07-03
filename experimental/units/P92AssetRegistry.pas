@@ -48,7 +48,7 @@ procedure PascalImageFailed(const imgHandle: longint; const errorCode: smallint)
 
 implementation
 
-uses Conv, InteropBuf, Logger, Panic;
+uses Conv, InteropBuf, P92Logger, P92Panic;
 
 function AllAssetsReady: boolean;
 begin

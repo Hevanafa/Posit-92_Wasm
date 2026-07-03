@@ -3,10 +3,10 @@
   Part of Posit-92 game engine
 }
 
-unit Keyboard;
+unit P92Keyboard;
 
 {$Mode ObjFPC}
-{$H+}{$J-}
+{$J-}
 
 interface
 

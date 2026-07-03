@@ -31,9 +31,9 @@ procedure Print(const txt: string; const x, y: smallint);
 implementation
 
 uses
-  Conv, WasmMemMgr, FPS, Loading, Logger,
-  InteropBuf, Timing, VGA, WasmHost,
-  Mouse,
+  Conv, WasmMemMgr, FPS, P92Loading, P92Logger,
+  InteropBuf, P92Timing, VGA, WasmHost,
+  P92Mouse,
   P92AssetRegistry, SoftwareTexDraw
 {$ifdef UseWebGL}
   , WebGL

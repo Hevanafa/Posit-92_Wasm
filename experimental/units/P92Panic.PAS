@@ -5,7 +5,7 @@
   Mainly used to halt the program immediately & output an error message to the console
 }
 
-unit Panic;
+unit P92Panic;
 
 {$Mode ObjFPC}
 {$H-}{$J-}

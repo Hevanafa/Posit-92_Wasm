@@ -7,9 +7,9 @@ library Game;
 uses
   P92Core, P92Fonts, WasmHost,
   P92AssetRegistry, Conv, FPS,
-  Logger, Loading,
-  Keyboard, Mouse,
-  SoftwareTex, SoftwareTexDraw, Timing, VGA,
+  P92Logger, P92Loading,
+  P92Keyboard, P92Mouse,
+  SoftwareTex, SoftwareTexDraw, P92Timing, VGA,
   Assets;
 
 var

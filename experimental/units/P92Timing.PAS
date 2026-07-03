@@ -3,7 +3,7 @@
   Hevanafa
 }
 
-unit Timing;
+unit P92Timing;
 
 {$Mode ObjFPC}
 {$H+}{$J-}

@@ -55,7 +55,7 @@ procedure UnsafeSprPset(const image: PSoftwareTex; const x, y: smallint; const c
 implementation
 
 uses
-  Conv, Logger, Maths, Panic, P92AssetRegistry,
+  Conv, P92Logger, P92Maths, P92Panic, P92AssetRegistry,
 {$ifdef WASM}
   WasmHeap,
 {$endif}

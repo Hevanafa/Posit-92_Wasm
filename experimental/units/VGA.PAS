@@ -58,7 +58,7 @@ implementation
 
 {$ifdef WASM}
 uses
-  Logger,
+  P92Logger,
   WasmHeap;
 {$endif}
 {$ifdef Windows}

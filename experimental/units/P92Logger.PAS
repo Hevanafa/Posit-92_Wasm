@@ -5,7 +5,7 @@
   Trimmed down version of LOGGER.PAS from Posit-92
 }
 
-unit Logger;
+unit P92Logger;
 
 {$Mode ObjFPC}
 {$H+}
