@@ -8,7 +8,7 @@ procedure InitEngine; public name 'InitEngine';
 implementation
 
 uses
-  WasmMemMgr, ImgRef, InteropBuf, P92AssetRegistry, Timing
+  WasmMemMgr, SoftwareTex, InteropBuf, P92AssetRegistry, Timing
 {$ifdef UseWebGL}
   , WebGL
 {$endif}

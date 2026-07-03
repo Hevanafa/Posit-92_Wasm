@@ -30,7 +30,7 @@ procedure PascalImageFailed(const imgHandle: longint; const errorCode: smallint)
 
 implementation
 
-uses ImgRef, InteropBuf;
+uses SoftwareTex, InteropBuf;
 
 procedure IncAssetReadyCount;
 begin

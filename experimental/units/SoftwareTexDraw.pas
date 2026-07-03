@@ -53,7 +53,8 @@ procedure SprFlipInPlace(const imgHandle: longint; const flip: smallint);
 
 implementation
 
-uses Logger, Conv, ImgRef, Maths, Panic, VGA;
+uses
+  Logger, Conv, SoftwareTex, Maths, Panic, VGA;
 
 procedure Spr(const imgHandle: longint; const x, y: smallint);
 var
