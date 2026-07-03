@@ -1541,10 +1541,10 @@ class Posit92 {
       if (Object.hasOwn(this.#wasm.exports, "BeginLoadingState"))
         this.#wasm.exports.BeginLoadingState();
 
-      await this.LoadGameAssets();
+      this.LoadGameAssets();
 
       // Ready
-      this.#wasm.exports.OnReady();
+      // this.#wasm.exports.OnReady();
     } else
       // Pass the state control to Pascal
       this.#wasm.exports.BeginIntroState();
