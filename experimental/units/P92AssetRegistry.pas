@@ -26,6 +26,8 @@ var
   AssetReadyCount,
   AssetTotalCount: longword;
 
+function AllAssetsReady: boolean;
+
 procedure InitAssetRegistry;
 function FindUnusedTextureSlot: longint;
 
@@ -42,6 +44,11 @@ procedure PascalImageFailed(const imgHandle: longint; const errorCode: smallint)
 implementation
 
 uses Conv, InteropBuf, Panic;
+
+function AllAssetsReady: boolean;
+begin
+  AllAssetsReady := AssetReadyCount >= AssetTotalCount
+end;
 
 procedure InitAssetRegistry;
 var
@@ -69,11 +76,6 @@ begin
 end;
 
 
-procedure IncAssetReadyCount;
-begin
-  inc(AssetReadyCount)
-end;
-
 function RequestImage(const path: string): longint;
 var
   imgHandle: longint;
@@ -86,8 +88,6 @@ begin
 
   textures[imgHandle] := default(TSoftwareTexEntry);
   textures[imgHandle].status := AssetStatusLoading;
-
-  inc(AssetTotalCount);
 
   RequestImage := imgHandle
 end;
