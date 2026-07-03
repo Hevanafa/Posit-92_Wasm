@@ -30,6 +30,10 @@ type WasmExports = {
   InitLoadingState: () => void;
   SetCGAFontHandle: (value: number) => void,
 
+  IsEngineReady: () => boolean,
+  EngineUpdate: () => void,
+  EngineDraw: () => void,
+
   // IncAssetReadyCount: () => void,
   PascalImageLoaded: (imgHandle: number, w: number, h: number, pixelDataPtr: number) => void;
   PascalImageFailed: (imgHandle: number, errorCode: number) => void;
@@ -52,8 +56,7 @@ type WasmExports = {
   InitHeapRegion: (startAddr: number, poolSize: number, heapSize: number) => void,
   WasmGetMem: (bytes: number) => number,
 
-  IsEngineReady: () => boolean,
-
+  // Entry point
   OnReady: () => void,
   Update: () => void,
   Draw: () => void
@@ -225,7 +228,7 @@ class Posit92 {
    */
   #midnightOffset = 0;
 
-
+  #userReady = false;
   #done = false;
 
   /**
@@ -1510,8 +1513,6 @@ class Posit92 {
     }
   }
 
-  // Main game loop
-
   async Start(): Promise<void> {
     const showIntro = this.bootOptions.skipIntro == true;
 
@@ -1544,8 +1545,17 @@ class Posit92 {
 
     if (elapsed >= this.#FrameTime) {
       this.#lastFrameTime = currentTime - (elapsed % this.#FrameTime);  // Carry over extra time
-      this.Update();
-      this.Draw();
+
+      if (!this.#wasm.exports.IsEngineReady) {
+        this.#wasm.exports.EngineUpdate();
+        this.#wasm.exports.EngineDraw();
+      } else {
+        if (!this.#userReady)
+          this.#wasm.exports.OnReady();
+
+        this.#wasm.exports.Update();
+        this.#wasm.exports.Draw();
+      }
     }
 
     requestAnimationFrame(this.#Loop);
@@ -1554,7 +1564,4 @@ class Posit92 {
   #StartLoop(): void {
     requestAnimationFrame(this.#Loop);
   }
-
-  Update(): void { this.#wasm.exports.Update(); }
-  Draw(): void { this.#wasm.exports.Draw(); }
 }
