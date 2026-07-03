@@ -1546,7 +1546,7 @@ class Posit92 {
     if (elapsed >= this.#FrameTime) {
       this.#lastFrameTime = currentTime - (elapsed % this.#FrameTime);  // Carry over extra time
 
-      if (!this.#wasm.exports.IsEngineReady) {
+      if (!this.#wasm.exports.IsEngineReady()) {
         this.#wasm.exports.EngineUpdate();
         this.#wasm.exports.EngineDraw();
       } else {
