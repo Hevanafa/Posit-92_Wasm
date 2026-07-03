@@ -80,7 +80,7 @@ begin
     { offset to ImageData buffer }
     offset := (px + py * image^.width) * 4;
 
-    a := image^.dataPtr[offset + 3];
+    a := image^.pixelData[offset + 3];
     if a < 255 then continue;
 
     colour := UnsafeSprPget(image, px, py);
@@ -97,7 +97,7 @@ begin
 
   image := GetImagePtr(imgHandle);
 
-  { fillchar(image^.dataPtr, image^.width * image^.height * 4, 0); }
+  { fillchar(image^.pixelData, image^.width * image^.height * 4, 0); }
   for py:=0 to image^.height - 1 do
   for px:=0 to image^.width - 1 do
     UnsafeSprPset(image, px, py, colour);
@@ -128,7 +128,7 @@ begin
     sy := srcY + b;
     srcPos := (sx + sy * image^.width) * 4;
 
-    alpha := image^.dataPtr[srcPos + 3];
+    alpha := image^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
     colour := UnsafeSprPget(image, sx, sy);
@@ -162,7 +162,7 @@ begin
     sy := trunc(dy * scaleY);
 
     srcPos := (sx + sy * image^.width) * 4;
-    alpha := image^.dataPtr[srcPos + 3];
+    alpha := image^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
     colour := UnsafeSprPget(image, sx, sy);
@@ -233,7 +233,7 @@ begin
     sy := srcY + b;
     srcPos := (sx + sy * image^.width) * 4;
 
-    alpha := image^.dataPtr[srcPos + 3];
+    alpha := image^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
     { colour := UnsafeSprPget(image, sx, sy); }
@@ -263,7 +263,7 @@ begin
   for sy := 0 to image^.height - 1 do
   for sx := 0 to image^.width - 1 do begin
     srcPos := (sx + sy * image^.width) * 4;
-    alpha := image^.dataPtr[srcPos + 3];
+    alpha := image^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
     dx := x + sx;
@@ -330,7 +330,7 @@ begin
       or (srcY < 0) or (srcY >= image^.height) then continue;
 
     srcPos := (srcX + srcY * image^.width) * 4;
-    alpha := image^.dataPtr[srcPos + 3];
+    alpha := image^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
     colour := UnsafeSprPget(image, srcX, srcY);
@@ -361,7 +361,7 @@ begin
   for b:=startY to endY - 1 do
   for a:=startX to endX - 1 do begin
     srcOffset := (a + b * srcImage^.width) * 4;
-    alpha := srcImage^.dataPtr[srcOffset + 3];
+    alpha := srcImage^.pixelData[srcOffset + 3];
     if alpha < 255 then continue;
 
     colour := UnsafeSprPget(srcImage, a, b);
@@ -395,7 +395,7 @@ begin
     sy := srcY + py;
     srcPos := (sx + sy * srcImage^.width) * 4;
 
-    alpha := srcImage^.dataPtr[srcPos + 3];
+    alpha := srcImage^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
     colour := UnsafeSprPget(srcImage, sx, sy);
@@ -427,9 +427,9 @@ begin
       pos2 := ((image^.width - 1 - px) + py * image^.width) * 4;
 
       { Swap RGBA }
-      tempColour := PLongword(@image^.dataPtr[pos1])^;
-      PLongword(@image^.dataPtr[pos1])^ := PLongword(@image^.dataPtr[pos2])^;
-      PLongword(@image^.dataPtr[pos2])^ := tempColour
+      tempColour := PLongword(@image^.pixelData[pos1])^;
+      PLongword(@image^.pixelData[pos1])^ := PLongword(@image^.pixelData[pos2])^;
+      PLongword(@image^.pixelData[pos2])^ := tempColour
     end;
   end;
 
@@ -443,9 +443,9 @@ begin
       pos2 := (px + (image^.height - 1 - py) * image^.width) * 4;
 
       { Swap RGBA }
-      tempColour := PLongword(@image^.dataPtr[pos1])^;
-      PLongword(@image^.dataPtr[pos1])^ := PLongword(@image^.dataPtr[pos2])^;
-      Plongword(@image^.dataPtr[pos2])^ := tempColour
+      tempColour := PLongword(@image^.pixelData[pos1])^;
+      PLongword(@image^.pixelData[pos1])^ := PLongword(@image^.pixelData[pos2])^;
+      Plongword(@image^.pixelData[pos2])^ := tempColour
     end;
   end;
 end;

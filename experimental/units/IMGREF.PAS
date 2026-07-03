@@ -18,13 +18,15 @@ unit ImgRef;
 
 interface
 
+uses EngineCore;
+
 type
   PImageRef = ^TImageRef;
   TImageRef = record
     width: smallint;
     height: smallint;
-    allocSize: longword;
-    dataPtr: PByte;
+    { allocSize: longword; }
+    pixelData: PByte;
   end;
 
 const
@@ -97,7 +99,7 @@ begin
   imageRefs[imgHandle].width := w;
   imageRefs[imgHandle].height := h;
   imageRefs[imgHandle].allocSize := longword(w) * longword(h) * 4;
-  imageRefs[imgHandle].dataPtr := dataPtr
+  imageRefs[imgHandle].pixelData := dataPtr
 end;
 
 function NewImage(const width, height: smallint): longint;
@@ -122,7 +124,7 @@ begin
   imageRefs[slot].width := width;
   imageRefs[slot].height := height;
   imageRefs[slot].allocSize := allocSize;
-  imageRefs[slot].dataPtr := dataPtr;
+  imageRefs[slot].pixelData := dataPtr;
 
   NewImage := slot
 end;
@@ -137,17 +139,17 @@ begin
   slot := NewImage(src^.width, src^.height);
   dest := GetImagePtr(slot);
 
-  move(src^.dataPtr^, dest^.dataPtr^, src^.allocSize);
+  move(src^.pixelData^, dest^.pixelData^, src^.allocSize);
   CopyImage := slot
 end;
 
 procedure FreeImage(const imgHandle: longint);
 begin
   if (imgHandle < 1) or (imgHandle >= MaxImageRefs) then exit;
-  if imageRefs[imgHandle].dataPtr = nil then exit;
+  if imageRefs[imgHandle].pixelData = nil then exit;
 
 {$ifdef WASM}
-  WasmFreeMem(imageRefs[imgHandle].dataPtr);
+  WasmFreeMem(imageRefs[imgHandle].pixelData);
 {$endif}
 {$ifdef Windows}
   FreeMem(imageRefs[imgHandle].dataPtr);
@@ -156,7 +158,7 @@ begin
   imageRefs[imgHandle].width := 0;
   imageRefs[imgHandle].height := 0;
   imageRefs[imgHandle].allocSize := 0;
-  imageRefs[imgHandle].dataPtr := nil
+  imageRefs[imgHandle].pixelData := nil
 end;
 
 
@@ -251,15 +253,15 @@ begin
   offset := (x + y * image^.width) * 4;
 
   UnsafeSprPget :=
-    (image^.dataPtr[offset + 3] shl 24)
-    or (image^.dataPtr[offset] shl 16)
-    or (image^.dataPtr[offset + 1] shl 8)
-    or image^.dataPtr[offset + 2]
+    (image^.pixelData[offset + 3] shl 24)
+    or (image^.pixelData[offset] shl 16)
+    or (image^.pixelData[offset + 1] shl 8)
+    or image^.pixelData[offset + 2]
 end;
 
 function UnsafeSprGetAlpha(const image: PImageRef; const x, y: smallint): byte;
 begin
-  UnsafeSprGetAlpha := image^.dataPtr[
+  UnsafeSprGetAlpha := image^.pixelData[
     (x + y * image^.width) * 4 + 3]
 end;
 
@@ -271,10 +273,10 @@ begin
   offset := (x + y * image^.width) * 4;
 
   { Order: RGBA }
-  image^.dataPtr[offset] := colour shr 16 and $FF;
-  image^.dataPtr[offset + 1] := colour shr 8 and $FF;
-  image^.dataPtr[offset + 2] := colour and $FF;
-  image^.dataPtr[offset + 3] := colour shr 24 and $FF;
+  image^.pixelData[offset] := colour shr 16 and $FF;
+  image^.pixelData[offset + 1] := colour shr 8 and $FF;
+  image^.pixelData[offset + 2] := colour and $FF;
+  image^.pixelData[offset + 3] := colour shr 24 and $FF;
 end;
 
 end.

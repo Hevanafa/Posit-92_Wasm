@@ -2,6 +2,14 @@ unit EngineCore;
 
 interface
 
+type
+  TAssetStatus = (
+    AssetStatusPending,
+    AssetStatusLoading,
+    AssetStatusReady,
+    AssetStatusFailed
+  );
+
 var AssetReadyCount, AssetTotalCount: longint;
 
 procedure InitEngine; public name 'InitEngine';
