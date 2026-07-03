@@ -1,12 +1,12 @@
 {
-  ImgRef unit - Part of Posit-92 game engine
+  SoftwareTex unit - Part of Posit-92 game engine
   Hevanafa
 
   Base unit for ImgRefFast and ImgRefComp
   Most of the procedures & functions here are based on Bitmap and SprFast units
 }
 
-unit ImgRef;
+unit SoftwareTex;
 
 {$Mode ObjFPC}
 {$H+}{$J-}

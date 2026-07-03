@@ -1,11 +1,10 @@
 { 
-  ImgRefFast unit - Part of Posit-92 game engine
-  Hevanafa
-  
-  Based on SprFast unit
+  SoftwareTexDraw unit
+  Part of Posit-92 game engine
+  By Hevanafa
 }
 
-unit ImgRefFast;
+unit SoftwareTexDraw;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
@@ -15,7 +14,6 @@ unit ImgRefFast;
 
 interface
 
-{ spr with TImageRef }
 procedure Spr(const imgHandle: longint; const x, y: smallint);
 
 procedure SprClear(const imgHandle: longint; const colour: longword);

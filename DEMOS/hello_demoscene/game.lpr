@@ -9,7 +9,7 @@ uses
   P92AssetRegistry,
   Logger, Loading, Fullscreen,
   Keyboard, Mouse,
-  ImgRefFast, Timing, VGA,
+  SoftwareTex, ImgRefFast, Timing, VGA,
   Assets;
 
 var

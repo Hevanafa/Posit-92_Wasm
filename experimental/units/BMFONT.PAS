@@ -82,7 +82,7 @@ implementation
 
 uses
   Conv, Logger,
-  ImgRef, ImgRefFast;
+  SoftwareTex, ImgRefFast;
 
 { Returns glyph.xadvance }
 function PrintBMFontChar(
