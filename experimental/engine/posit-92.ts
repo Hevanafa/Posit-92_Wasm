@@ -45,9 +45,6 @@ type WasmExports = {
   InitHeapRegion: (startAddr: number, poolSize: number, heapSize: number) => void,
   WasmGetMem: (bytes: number) => number,
 
-  // SoftwareTex.pas
-  RegisterSoftwareTex: (imgHandle: number, dataPtr: number, width: number, height: number) => void;
-
   // Primary unit
   BeginIntroState: () => void,
   BeginLoadingState: () => void,

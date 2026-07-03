@@ -18,11 +18,6 @@ unit SoftwareTex;
 
 interface
 
-uses P92AssetRegistry;
-
-const
-  MaxTextures = 256;
-
 type
   PSoftwareTex = ^TSoftwareTex;
   TSoftwareTex = record
@@ -30,13 +25,7 @@ type
     height: smallint;
     allocSize: longword;
     pixelData: PByte;
-
-    status: TAssetStatus;
-    errorCode: smallint;
   end;
-
-var
-  imageRefs: array[1..MaxTextures] of TSoftwareTex;
 
 const
   { SprFlips enum }
@@ -69,35 +58,13 @@ procedure UnsafeSprPset(const image: PSoftwareTex; const x, y: smallint; const c
 implementation
 
 uses
-  Conv, Logger, Maths, Panic,
+  Conv, Logger, Maths, Panic, P92AssetRegistry,
 {$ifdef WASM}
   WasmHeap,
 {$endif}
 {$ifdef Windows}
 {$endif}
   VGA;
-
-procedure InitSoftwareTex;
-var
-  a: word;
-begin
-  for a := 1 to high(imageRefs) do
-    imageRefs[a] := default(TSoftwareTex);
-end;
-
-function FindUnusedTextureSlot: longint;
-var
-  a: longint;
-begin
-  for a:=1 to high(imageRefs) do
-    { if not IsTextureSet(a) then begin }
-    if imageRefs[a].status = AssetStatusPending then begin
-      FindUnusedTextureSlot := a;
-      exit
-    end;
-
-  FindUnusedTextureSlot := -1
-end;
 
 function NewTexture(const width, height: smallint): longint;
 var

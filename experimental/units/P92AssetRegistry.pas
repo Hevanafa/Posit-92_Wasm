@@ -20,7 +20,6 @@ procedure IncAssetReadyCount; public name 'IncAssetReadyCount';
 
 procedure JsRequestImage(imgHandle: longint); external 'env' name 'JsRequestImage';
 function RequestImage(const path: string): longint;
-procedure RegisterSoftwareTex(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint); public name 'RegisterSoftwareTex';
 
 procedure JsRequestBMFont(fontPtr: PBMFont; fontGlyphsPtr: PBMFontGlyph); external 'env' name 'JsRequestBMFont';
 procedure RequestBMFont(const path: string; const fontPtr: PBMFont; const fontGlyphsPtr: PBMFontGlyph);
@@ -33,24 +32,41 @@ implementation
 
 uses Conv, SoftwareTex, InteropBuf, Panic;
 
-procedure RegisterSoftwareTex(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint);
-begin
-  if (imgHandle < 1) or (imgHandle >= high(imageRefs)) then
-    PanicHalt('Invalid image handle: ' + I32Str(imgHandle));
+const
+  MaxTextures = 256;
 
-  if (imageRefs[imgHandle].allocSize > 0) then
-    PanicHalt('Image handle ' + I32Str(imgHandle) + ' already used! (allocSize > 0)');
-
-  with imageRefs[imgHandle] do begin
-    width := w;
-    height := h;
-    allocSize := longword(w) * longword(h) * 4;
-    pixelData := dataPtr;
-
-    status := AssetStatusReady;
-    errorCode := 0
+type
+  TSoftwareTexRef = record
+    texture: TSoftwareTex;
+    status: TAssetStatus;
+    errorCode: smallint;
   end;
+
+var
+  imageRefs: array[1..MaxTextures] of TSoftwareTexRef;
+
+procedure InitRegistry;
+var
+  a: word;
+begin
+  for a := 1 to high(imageRefs) do
+    imageRefs[a] := default(TSoftwareTexRef);
 end;
+
+function FindUnusedTextureSlot: longint;
+var
+  a: longint;
+begin
+  for a:=1 to high(imageRefs) do
+    { if not IsTextureSet(a) then begin }
+    if imageRefs[a].status = AssetStatusPending then begin
+      FindUnusedTextureSlot := a;
+      exit
+    end;
+
+  FindUnusedTextureSlot := -1
+end;
+
 
 procedure IncAssetReadyCount;
 begin
@@ -67,7 +83,7 @@ begin
   WriteInteropString(path);
   JsRequestImage(imgHandle);
 
-  imageRefs[imgHandle] := default(TSoftwareTex);
+  imageRefs[imgHandle] := default(TSoftwareTexRef);
   imageRefs[imgHandle].status := AssetStatusLoading;
 
   RequestImage := imgHandle
@@ -81,10 +97,16 @@ end;
 
 procedure PascalImageLoaded(const imgHandle: longint; const w, h: smallint; const pixelData: pointer);
 begin
-  imageRefs[imgHandle].width := w;
-  imageRefs[imgHandle].height := h;
-  imageRefs[imgHandle].allocSize := w * h * 4;
-  imageRefs[imgHandle].pixelData := pixelData;
+  if (imgHandle < 1) or (imgHandle >= high(imageRefs)) then
+    PanicHalt('Invalid image handle: ' + I32Str(imgHandle));
+
+  if (imageRefs[imgHandle].texture.allocSize > 0) then
+    PanicHalt('Image handle ' + I32Str(imgHandle) + ' already used! (allocSize > 0)');
+
+  imageRefs[imgHandle].texture.width := w;
+  imageRefs[imgHandle].texture.height := h;
+  imageRefs[imgHandle].texture.allocSize := w * h * 4;
+  imageRefs[imgHandle].texture.pixelData := pixelData;
 
   imageRefs[imgHandle].status := AssetStatusReady;
   imageRefs[imgHandle].errorCode := 0
