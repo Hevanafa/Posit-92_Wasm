@@ -22,7 +22,9 @@ end;
 
 procedure LoadGameAssets;
 begin
-  imgDosuExe[0] := RequestImage('assets/images/dosu_0.png')
+  writelog('LoadGameAssets call');
+  imgDosuExe[0] := RequestImage('assets/images/dosu_0.png');
+  imgDosuExe[1] := RequestImage('assets/images/dosu_1.png');
 end;
 
 { Called after LoadGameAssets is finished }
@@ -63,7 +65,8 @@ begin
 end;
 
 exports
-  OnReady, Update, Draw;
+  LoadGameAssets, OnReady,
+  Update, Draw;
 
 begin
 { Starting point is intentionally left empty }

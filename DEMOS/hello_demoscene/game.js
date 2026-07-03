@@ -4,25 +4,27 @@
  * Experimental boilerplate without the intro
  */
 class Game extends Posit92 {
-  AssetManifest = {
-    images: {
-      cursor: "assets/images/cursor.png",
-      dosu_exe: [
-        "assets/images/dosu_1.png",
-        "assets/images/dosu_2.png"
-      ]
-      // Add more image assets here
-    },
-    sounds: new Map([
-      // Add sound assets here
-    ])
-  }
+  // AssetManifest = {
+  //   images: {
+  //     cursor: "assets/images/cursor.png",
+  //     dosu_exe: [
+  //       "assets/images/dosu_1.png",
+  //       "assets/images/dosu_2.png"
+  //     ]
+  //     // Add more image assets here
+  //   },
+  //   sounds: new Map([
+  //     // Add sound assets here
+  //   ])
+  // }
 
-  /**
-   * @override
-   */
+  // /**
+  //  * @override
+  //  */
   async LoadGameAssets() {
-    await this.LoadImagesFromManifest(this.AssetManifest.images);
+    super.LoadGameAssets();
+    // await this.LoadImagesFromManifest(this.AssetManifest.images);
+    
     // Sounds can be loaded later
   }
 }

@@ -529,10 +529,11 @@ class Posit92 {
   /**
    * Overridden by the inherited `Game` class
    */
-  async LoadGameAssets(): Promise<void> {}
+  async LoadGameAssets(): Promise<void> {
+    this.#wasm.exports.LoadGameAssets();
+  }
   
   async #RequestAssetLoad(): Promise<void> {
-    this.#wasm.exports.LoadGameAssets();
     await this.LoadGameAssets();
   }
 
