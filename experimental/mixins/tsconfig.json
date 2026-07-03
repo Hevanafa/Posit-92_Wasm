@@ -13,7 +13,9 @@
   },
   "files": [
     "../engine/posit-92.ts",
+
     "./p92-bigint.mixin.ts",
+    "./p92-bmfont.mixin.ts",
     "./p92-gamepad.mixin.ts",
     "./p92-sounds.mixin.ts",
     "./p92-webgl.mixin.ts"

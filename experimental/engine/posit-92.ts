@@ -115,18 +115,6 @@ type StringPair = [string, string];
 
 type WebAssemblyInstance = WebAssembly.Instance & { exports: WasmExports };
 
-type TBMFontGlyph = {
-  id: number,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  xoffset: number,
-  yoffset: number,
-  xadvance: number,
-  lineHeight: number
-}
-
 type LoadImageReturn = {
   key: string;
   path: string;
