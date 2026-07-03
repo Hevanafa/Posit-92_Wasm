@@ -31,42 +31,42 @@ class WebGLMixin extends Posit92 {
 
     Object.assign(env, {
       // WebGL
-      glClearColor: this.#glClearColor.bind(this),
-      glClear: this.#glClear.bind(this),
-      glViewport: this.#glViewport.bind(this),
+      GLClearColor: this.#GLClearColor.bind(this),
+      GLClear: this.#GLClear.bind(this),
+      GLViewport: this.#GLViewport.bind(this),
 
-      glCreateTexture: this.#glCreateTexture.bind(this),
-      glBindTexture: this.#glBindTexture.bind(this),
-      glTexParameteri: this.#glTexParameteri.bind(this),
-      glTexImage2D: this.#glTexImage2D.bind(this),
+      GLCreateTexture: this.#GLCreateTexture.bind(this),
+      GLBindTexture: this.#GLBindTexture.bind(this),
+      GLTexParameteri: this.#GLTexParameteri.bind(this),
+      GLTexImage2D: this.#GLTexImage2D.bind(this),
 
-      glCreateShader: this.#glCreateShader.bind(this),
-      glShaderSource: this.#glShaderSource.bind(this),
-      glCompileShader: this.#glCompileShader.bind(this),
+      GLCreateShader: this.#GLCreateShader.bind(this),
+      GLShaderSource: this.#GLShaderSource.bind(this),
+      GLCompileShader: this.#GLCompileShader.bind(this),
 
-      glGetShaderParameter: this.#glGetShaderParameter.bind(this),
-      glGetShaderInfoLog: this.#glGetShaderInfoLog.bind(this),
+      GLGetShaderParameter: this.#GLGetShaderParameter.bind(this),
+      GLGetShaderInfoLog: this.#GLGetShaderInfoLog.bind(this),
 
-      glCreateProgram: this.#glCreateProgram.bind(this),
-      glAttachShader: this.#glAttachShader.bind(this),
-      glLinkProgram: this.#glLinkProgram.bind(this),
-      glUseProgram: this.#glUseProgram.bind(this),
+      GLCreateProgram: this.#GLCreateProgram.bind(this),
+      GLAttachShader: this.#GLAttachShader.bind(this),
+      GLLinkProgram: this.#GLLinkProgram.bind(this),
+      GLUseProgram: this.#GLUseProgram.bind(this),
 
-      glGetProgramParameter: this.#glGetProgramParameter.bind(this),
-      glGetProgramInfoLog: this.#glGetProgramInfoLog.bind(this),
+      GLGetProgramParameter: this.#GLGetProgramParameter.bind(this),
+      GLGetProgramInfoLog: this.#GLGetProgramInfoLog.bind(this),
 
-      glCreateBuffer: this.#glCreateBuffer.bind(this),
-      glBindBuffer: this.#glBindBuffer.bind(this),
-      glBufferData: this.#glBufferData.bind(this),
-      glGetAttribLocation: this.#glGetAttribLocation.bind(this),
-      glEnableVertexAttribArray: this.#glEnableVertexAttribArray.bind(this),
-      glVertexAttribPointer: this.#glVertexAttribPointer.bind(this),
-      glDrawArrays: this.#glDrawArrays.bind(this),
+      GLCreateBuffer: this.#GLCreateBuffer.bind(this),
+      GLBindBuffer: this.#GLBindBuffer.bind(this),
+      GLBufferData: this.#GLBufferData.bind(this),
+      GLGetAttribLocation: this.#GLGetAttribLocation.bind(this),
+      GLEnableVertexAttribArray: this.#GLEnableVertexAttribArray.bind(this),
+      GLVertexAttribPointer: this.#GLVertexAttribPointer.bind(this),
+      GLDrawArrays: this.#GLDrawArrays.bind(this),
 
-      glGetUniformLocation: this.#glGetUniformLocation.bind(this),
-      glUniform1i: this.#glUniform1i.bind(this),
+      GLGetUniformLocation: this.#GLGetUniformLocation.bind(this),
+      GLUniform1i: this.#GLUniform1i.bind(this),
 
-      glActiveTexture: this.#glActiveTexture.bind(this)
+      GLActiveTexture: this.#GLActiveTexture.bind(this)
     });
   }
 
@@ -90,20 +90,20 @@ class WebGLMixin extends Posit92 {
    * @param b 0.0 .. 1.0
    * @param a 0.0 .. 1.0
    */
-  #glClearColor(r: number, g: number, b: number, a: number): void {
+  #GLClearColor(r: number, g: number, b: number, a: number): void {
     this.glCtx.clearColor(r, g, b, a);
   }
 
-  #glClear(mask: number): void {
+  #GLClear(mask: number): void {
     this.glCtx.clear(mask);
   }
 
-  #glViewport(x: number, y: number, w: number, h: number): void {
+  #GLViewport(x: number, y: number, w: number, h: number): void {
     this.glCtx.viewport(x, y, w, h);
   }
 
 
-  #glCreateTexture(): number {
+  #GLCreateTexture(): number {
     const texture = this.glCtx.createTexture();
     const id = this.#nextTextureId;
 
@@ -114,7 +114,7 @@ class WebGLMixin extends Posit92 {
     return id;
   }
 
-  #glBindTexture(target: number, textureId: number): void {
+  #GLBindTexture(target: number, textureId: number): void {
     const texture = this.#textures.get(textureId);
     
     if (texture == null)
@@ -123,11 +123,11 @@ class WebGLMixin extends Posit92 {
     this.glCtx.bindTexture(target, texture);
   }
 
-  #glTexParameteri(target: number, pname: number, param: number): void {
+  #GLTexParameteri(target: number, pname: number, param: number): void {
     this.glCtx.texParameteri(target, pname, param);
   }
 
-  #glTexImage2D(
+  #GLTexImage2D(
     target: number,
     level: number,
     internalFormat: number,
@@ -150,7 +150,7 @@ class WebGLMixin extends Posit92 {
   }
 
 
-  #glCreateShader(type: number): number {
+  #GLCreateShader(type: number): number {
     const shader = this.glCtx.createShader(type)!;
     const id = this.#nextShaderId;
 
@@ -163,7 +163,7 @@ class WebGLMixin extends Posit92 {
     return id;
   }
 
-  #glShaderSource(shaderId: number, sourcePtr: number): void {
+  #GLShaderSource(shaderId: number, sourcePtr: number): void {
     const shader = this.#shaders.get(shaderId);
 
     if (shader == null)
@@ -174,7 +174,7 @@ class WebGLMixin extends Posit92 {
     this.glCtx.shaderSource(shader, source);
   }
 
-  #glCompileShader(shaderId: number): void {
+  #GLCompileShader(shaderId: number): void {
     const shader = this.#shaders.get(shaderId);
 
     if (shader == null)
@@ -183,7 +183,7 @@ class WebGLMixin extends Posit92 {
     this.glCtx.compileShader(shader);
   }
 
-  #glGetShaderParameter(shaderId: number, param: GLenum): number {
+  #GLGetShaderParameter(shaderId: number, param: GLenum): number {
     const shader = this.#shaders.get(shaderId);
 
     if (shader == null)
@@ -195,7 +195,7 @@ class WebGLMixin extends Posit92 {
   /**
    * This loads a string into the interop buffer
    */
-  #glGetShaderInfoLog(shaderId: number): void {
+  #GLGetShaderInfoLog(shaderId: number): void {
     const shader = this.#shaders.get(shaderId);
 
     if (shader == null)
@@ -205,7 +205,7 @@ class WebGLMixin extends Posit92 {
   }
 
 
-  #glCreateProgram(): number {
+  #GLCreateProgram(): number {
     const program = this.glCtx.createProgram();
     const id = this.#nextProgramId;
     
@@ -216,7 +216,7 @@ class WebGLMixin extends Posit92 {
     return id;
   }
 
-  #glAttachShader(programId: number, shaderId: number): void {
+  #GLAttachShader(programId: number, shaderId: number): void {
     const program = this.#programs.get(programId);
 
     if (program == null)
@@ -230,7 +230,7 @@ class WebGLMixin extends Posit92 {
     this.glCtx.attachShader(program, shader);
   }
 
-  #glLinkProgram(programId: number): void {
+  #GLLinkProgram(programId: number): void {
     const program = this.#programs.get(programId);
 
     if (program == null)
@@ -239,7 +239,7 @@ class WebGLMixin extends Posit92 {
     this.glCtx.linkProgram(program);
   }
 
-  #glUseProgram(programId: number): void {
+  #GLUseProgram(programId: number): void {
     const program = this.#programs.get(programId);
 
     if (program == null)
@@ -248,7 +248,7 @@ class WebGLMixin extends Posit92 {
     this.glCtx.useProgram(program);
   }
 
-  #glGetProgramParameter(programId: number, param: GLenum): number {
+  #GLGetProgramParameter(programId: number, param: GLenum): number {
     const program = this.#programs.get(programId);
 
     if (program == null)
@@ -260,7 +260,7 @@ class WebGLMixin extends Posit92 {
   /**
    * This loads a string into the interop buffer
    */
-  #glGetProgramInfoLog(programId: number): void {
+  #GLGetProgramInfoLog(programId: number): void {
     const program = this.#programs.get(programId);
 
     if (program == null)
@@ -270,7 +270,7 @@ class WebGLMixin extends Posit92 {
   }
 
 
-  #glCreateBuffer(): number {
+  #GLCreateBuffer(): number {
     const buffer = this.glCtx.createBuffer();
     const id = this.#nextBufferId;
 
@@ -280,7 +280,7 @@ class WebGLMixin extends Posit92 {
     return id;
   }
 
-  #glBindBuffer(target: number, bufferId: number): void {
+  #GLBindBuffer(target: number, bufferId: number): void {
     const buffer = this.#buffers.get(bufferId);
 
     if (buffer == null)
@@ -289,7 +289,7 @@ class WebGLMixin extends Posit92 {
     this.glCtx.bindBuffer(target, buffer);
   }
 
-  #glBufferData(target: number, size: number, dataPtr: number, usage: GLenum): void {
+  #GLBufferData(target: number, size: number, dataPtr: number, usage: GLenum): void {
     const data = new Float32Array(
       this.WasmInstance.exports.memory.buffer,
       dataPtr,
@@ -299,7 +299,7 @@ class WebGLMixin extends Posit92 {
     this.glCtx.bufferData(target, data, usage);
   }
 
-  #glGetAttribLocation(programId: number, namePtr: number): number {
+  #GLGetAttribLocation(programId: number, namePtr: number): number {
     const program = this.#programs.get(programId);
 
     if (program == null)
@@ -310,11 +310,11 @@ class WebGLMixin extends Posit92 {
     return this.glCtx.getAttribLocation(program, name);
   }
 
-  #glEnableVertexAttribArray(idx: number): void {
+  #GLEnableVertexAttribArray(idx: number): void {
     this.glCtx.enableVertexAttribArray(idx);
   }
 
-  #glVertexAttribPointer(
+  #GLVertexAttribPointer(
     idx: number,
     size: number,
     type: number,
@@ -325,7 +325,7 @@ class WebGLMixin extends Posit92 {
     this.glCtx.vertexAttribPointer(idx, size, type, normalized, stride, offset);
   }
 
-  #glDrawArrays(mode: number, first: number, count: number): void {
+  #GLDrawArrays(mode: number, first: number, count: number): void {
     let err = this.glCtx.getError();
     if (err != 0)
       throw new Error("WebGL error before draw: " + err);
@@ -338,7 +338,7 @@ class WebGLMixin extends Posit92 {
   }
 
 
-  #glGetUniformLocation(programId: number, namePtr: number): number {
+  #GLGetUniformLocation(programId: number, namePtr: number): number {
     const program = this.#programs.get(programId);
     const name = this.#ReadCString(namePtr);
 
@@ -358,7 +358,7 @@ class WebGLMixin extends Posit92 {
     return id;
   }
 
-  #glUniform1i(locationId: number, value: number): void {
+  #GLUniform1i(locationId: number, value: number): void {
     const loc = this.#uniformLocations.get(locationId);
 
     if (loc == null)
@@ -367,7 +367,7 @@ class WebGLMixin extends Posit92 {
     this.glCtx.uniform1i(loc, value);
   }
 
-  #glActiveTexture(textureId: number): void {
+  #GLActiveTexture(textureId: number): void {
     this.glCtx.activeTexture(textureId);
   }
 }
