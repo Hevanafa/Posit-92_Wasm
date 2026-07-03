@@ -21,7 +21,7 @@ function RequestImage(const path: string): longint;
 implementation
 
 uses
-  WasmMemMgr, InteropBuf, Timing, ImgRef
+  WasmMemMgr, ImgRef, InteropBuf, Timing
 {$ifdef UseWebGL}
   , WebGL
 {$endif}
@@ -32,6 +32,7 @@ begin
   InitHeapMgr;
   InitInteropBuffer;
   InitDeltaTime;
+  InitImgRef;
 
   AssetReadyCount := 0;
   AssetTotalCount := 0;
@@ -56,6 +57,8 @@ begin
   imgHandle := FindEmptyImageRefSlot;
   WriteInteropString(path);
   JsRequestImage(imgHandle);
+
+  imageRefs[imgHandle] := default(TImageRef);
 
   RequestImage := imgHandle
 end;

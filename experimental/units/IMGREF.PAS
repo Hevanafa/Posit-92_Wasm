@@ -20,14 +20,23 @@ interface
 
 uses EngineCore;
 
+const
+  MaxImageRefs = 256;
+
 type
   PImageRef = ^TImageRef;
   TImageRef = record
     width: smallint;
     height: smallint;
-    { allocSize: longword; }
+    allocSize: longword;
     pixelData: PByte;
+
+    status: TAssetStatus;
+    errorCode: smallint;
   end;
+
+var
+  imageRefs: array[1..MaxImageRefs] of TImageRef;
 
 const
   { SprFlips enum }
@@ -36,6 +45,7 @@ const
   SprFlipVertical = 2;
   SprFlipBoth = SprFlipHorizontal or SprFlipVertical;
 
+procedure InitImgRef;
 function FindEmptyImageRefSlot: longint;
 procedure RegisterImageRef(const imgHandle: longint; const dataPtr: PByte; const w, h: smallint); public name 'RegisterImageRef';
 
@@ -68,12 +78,13 @@ uses
 {$endif}
   VGA;
 
-const
-  MaxImageRefs = 256;
-
+procedure InitImgRef;
 var
-  imageRefs: array[1..MaxImageRefs] of TImageRef;
-
+  a: word;
+begin
+  for a := 1 to high(imageRefs) do
+    imageRefs[a] := default(TImageRef);
+end;
 
 function FindEmptyImageRefSlot: longint;
 var
@@ -96,10 +107,15 @@ begin
   if (imageRefs[imgHandle].allocSize > 0) then
     PanicHalt('Image handle ' + I32Str(imgHandle) + ' already used! (allocSize > 0)');
 
-  imageRefs[imgHandle].width := w;
-  imageRefs[imgHandle].height := h;
-  imageRefs[imgHandle].allocSize := longword(w) * longword(h) * 4;
-  imageRefs[imgHandle].pixelData := dataPtr
+  with imageRefs[imgHandle] do begin
+    width := w;
+    height := h;
+    allocSize := longword(w) * longword(h) * 4;
+    pixelData := dataPtr;
+
+    status := AssetStatusReady;
+    errorCode := 0
+  end;
 end;
 
 function NewImage(const width, height: smallint): longint;
