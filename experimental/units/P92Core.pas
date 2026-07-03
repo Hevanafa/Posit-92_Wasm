@@ -47,6 +47,9 @@ begin
 
   InitHeapMgr;
   InitInteropBuffer;
+
+  writelog('ersBoot');
+
   InitDeltaTime;
   InitAssetRegistry;
 
@@ -59,7 +62,7 @@ end;
 procedure InitLoadingState;
 begin
   engineRunState := ersLoading;
-  writelog('Entered loading state');
+  writelog('ersLoading');
 end;
 
 procedure SetCGAFontHandle(value: longint);
@@ -75,7 +78,10 @@ end;
 
 procedure EngineUpdate;
 begin
-
+  if AssetReadyCount >= AssetTotalCount then begin
+    engineRunState := ersReady;
+    writelog('ersReady');
+  end;
 end;
 
 procedure EngineDraw;
