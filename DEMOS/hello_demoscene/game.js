@@ -2,8 +2,10 @@
 
 /**
  * Experimental boilerplate without the intro
+ * 
+ * Game < BMFontMixin < Posit92
  */
-class Game extends Posit92 {
+class Game extends BMFontMixin {
   // AssetManifest = {
   //   images: {
   //     cursor: "assets/images/cursor.png",
