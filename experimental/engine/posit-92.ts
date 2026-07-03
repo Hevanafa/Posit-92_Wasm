@@ -974,6 +974,8 @@ class Posit92 {
     const res = await fetch(url);
     const text = await res.text();
 
+    this.#wasm.exports.IncLoadingActual();
+
     const lines = text.endsWith("\r\n") ? text.split("\r\n") : text.split("\n");
 
     let txtLine = "";

@@ -116,7 +116,7 @@ procedure RequestBMFont(const path: string; const fontPtr: PBMFont; const fontGl
 var
   imgHandle: longint;
 begin
-  inc(AssetTotalCount);
+  inc(AssetTotalCount, 2);
 
   imgHandle := FindUnusedTextureSlot;
 
