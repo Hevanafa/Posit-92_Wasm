@@ -37,6 +37,11 @@ type WasmExports = {
   SetImgFPCLogo: (imgHandle: number) => void;
   SetImgWasmLogo: (imgHandle: number) => void;
 
+  // P92AssetRegistry.pas
+  IncLoadingActual: () => void;
+  SetLoadingActual: (value: number) => void;
+  SetLoadingTotal: (value: number) => void;
+
   // VGA.PAS
   GetSurfacePtr: () => number,
   InitVideoMem: (width: number, height: number, startAddr: number) => void,
@@ -667,7 +672,7 @@ class Posit92 {
   async #LoadSingleImage(key: string, path: string): Promise<LoadImageReturn> {
     return this.LoadImage(path).then(handle => {
       // On success
-      // TODO: this.IncLoadingActual();
+      this.#wasm.exports.IncLoadingActual();
 
       return { key, path, handle };
     });
@@ -678,7 +683,7 @@ class Posit92 {
       (path, index) => 
         this.LoadImage(path).then(handle => {
           // On success
-          // TODO: this.IncLoadingActual();
+          this.#wasm.exports.IncLoadingActual();
 
           return { key, path, handle, index };
         }));
@@ -770,7 +775,7 @@ class Posit92 {
 
       return this.LoadBMFont(params.path, setterPtr, glyphSetterPtr).then(() => {
         // On success
-        // TODO: this.IncLoadingActual();
+        this.#wasm.exports.IncLoadingActual();
 
         return { key, path: params.path, setterPtr, glyphSetterPtr };
       });
@@ -853,8 +858,8 @@ class Posit92 {
       ? Object.keys(this.AssetManifest.bmfonts).length
       : 0;
     
-    // TODO: this.SetLoadingActual(0);
-    // TODO: this.SetLoadingTotal(imageCount + soundCount + bmfontCount);
+    this.#wasm.exports.SetLoadingActual(0);
+    this.#wasm.exports.SetLoadingTotal(imageCount + soundCount + bmfontCount);
   }
 
 

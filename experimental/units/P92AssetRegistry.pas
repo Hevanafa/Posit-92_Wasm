@@ -28,6 +28,11 @@ var
 
 function AllAssetsReady: boolean;
 
+{ Temporary fix for legacy procedures that still use a metafile }
+procedure IncLoadingActual; public name 'IncLoadingActual';
+procedure SetLoadingActual(value: longint); public name 'SetLoadingActual';
+procedure SetLoadingTotal(value: longint); public name 'SetLoadingTotal';
+
 procedure InitAssetRegistry;
 function FindUnusedTextureSlot: longint;
 
@@ -48,6 +53,21 @@ uses Conv, InteropBuf, Panic;
 function AllAssetsReady: boolean;
 begin
   AllAssetsReady := AssetReadyCount >= AssetTotalCount
+end;
+
+procedure IncLoadingActual;
+begin
+  inc(AssetReadyCount)
+end;
+
+procedure SetLoadingActual(value: longint);
+begin
+  AssetReadyCount := value
+end;
+
+procedure SetLoadingTotal(value: longint);
+begin
+  AssetTotalCount := value
 end;
 
 procedure InitAssetRegistry;
