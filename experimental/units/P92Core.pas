@@ -21,9 +21,6 @@ begin
   InitDeltaTime;
   InitAssetRegistry;
 
-  AssetReadyCount := 0;
-  AssetTotalCount := 0;
-
 {$ifdef UseWebGL}
   SetupWebGLViewport;
   SetupWebGLShaders;

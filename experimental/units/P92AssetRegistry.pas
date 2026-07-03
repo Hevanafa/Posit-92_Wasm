@@ -29,8 +29,6 @@ var
 procedure InitAssetRegistry;
 function FindUnusedTextureSlot: longint;
 
-procedure IncAssetReadyCount; public name 'IncAssetReadyCount';
-
 procedure JsRequestImage(imgHandle: longint); external 'env' name 'JsRequestImage';
 function RequestImage(const path: string): longint;
 
@@ -49,6 +47,9 @@ procedure InitAssetRegistry;
 var
   a: word;
 begin
+  AssetReadyCount := 0;
+  AssetTotalCount := 0;
+
   for a := 1 to high(textures) do
     textures[a] := default(TSoftwareTexEntry);
 end;
@@ -86,6 +87,8 @@ begin
   textures[imgHandle] := default(TSoftwareTexEntry);
   textures[imgHandle].status := AssetStatusLoading;
 
+  inc(AssetTotalCount);
+
   RequestImage := imgHandle
 end;
 
@@ -109,7 +112,9 @@ begin
   textures[imgHandle].texture.pixelData := pixelData;
 
   textures[imgHandle].status := AssetStatusReady;
-  textures[imgHandle].errorCode := 0
+  textures[imgHandle].errorCode := 0;
+
+  inc(AssetReadyCount);
 end;
 
 procedure PascalImageFailed(const imgHandle: longint; const errorCode: smallint);
