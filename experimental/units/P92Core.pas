@@ -33,6 +33,7 @@ implementation
 uses
   Conv, WasmMemMgr, Loading, Logger,
   InteropBuf, Timing, VGA, WasmHost,
+  Mouse,
   P92AssetRegistry, SoftwareTexDraw
 {$ifdef UseWebGL}
   , WebGL
@@ -84,6 +85,11 @@ begin
       engineRunState := ersReady;
       writelog('ersReady');
     end;
+
+  if engineRunState = ersReady then begin
+    UpdateDeltaTime;
+    UpdateMouse;
+  end;
 end;
 
 procedure EngineDraw;

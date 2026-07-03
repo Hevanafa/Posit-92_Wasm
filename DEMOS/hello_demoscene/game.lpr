@@ -45,9 +45,6 @@ end;
 
 procedure Update;
 begin
-  UpdateDeltaTime;
-  UpdateMouse;
-
   if IsKeyDown(SC_ESCAPE) then SignalDone;
 
   gameTime := gameTime + DeltaTime
