@@ -27,10 +27,10 @@ type WasmExports = {
 
   // EngineCore.pas
   InitEngine: () => void,
+  
   // IncAssetReadyCount: () => void,
   PascalImageLoaded: (imgHandle: number, w: number, h: number, pixelDataPtr: number) => void;
   PascalImageFailed: (imgHandle: number, errorCode: number) => void;
-
 
   // IntroScr.pas
   SetImgPosit92Logo: (imgHandle: number) => void;
@@ -68,6 +68,7 @@ type WasmImports = {
     GetLoadingTotal: () => number,
 
     JsRequestImage: (imgHandle: number) => Promise<void>,
+    JsRequestBMFont: (fontPtr: number, fontGlyphsPtr: number) => Promise<void>,
 
     HideCursor: () => void,
     ShowCursor: () => void,
@@ -243,8 +244,10 @@ class Posit92 {
       GetLoadingActual: this.#GetLoadingActual.bind(this),
       GetLoadingTotal: this.#GetLoadingTotal.bind(this),
 
+      // EngineCore
       JsRequestImage: this.#RequestImage.bind(this),
       RequestAssetLoad: this.#RequestAssetLoad.bind(this),
+      JsRequestBMFont: this.RequestBMFont.bind(this),
 
       // Fullscreen
       ToggleFullscreen: this.#ToggleFullscreen.bind(this),
@@ -870,10 +873,10 @@ class Posit92 {
     };
   }
 
-  async LoadBMFont(url: string, fontPtrRef: number, fontGlyphsPtrRef: number): Promise<void> {
+  async LoadBMFont(url: string, fontPtr: number, fontGlyphsPtr: number): Promise<void> {
     this.AssertString(url);
-    this.AssertNumber(fontPtrRef);
-    this.AssertNumber(fontGlyphsPtrRef);
+    this.AssertNumber(fontPtr);
+    this.AssertNumber(fontGlyphsPtr);
 
     const res = await fetch(url);
     const text = await res.text();
@@ -956,9 +959,6 @@ class Posit92 {
     // Load font bitmap
     imgHandle = await this.LoadImage(filename);
 
-    const fontPtr = fontPtrRef;
-    const glyphsPtr = fontGlyphsPtrRef;
-
     // Load TBMFont
     const fontMem = new DataView(this.#wasm.exports.memory.buffer, fontPtr);
 
@@ -973,7 +973,7 @@ class Posit92 {
     fontMem.setInt32(offset + 4, imgHandle, true);
 
     // Load glyphs
-    const glyphsMem = new DataView(this.#wasm.exports.memory.buffer, glyphsPtr);
+    const glyphsMem = new DataView(this.#wasm.exports.memory.buffer, fontGlyphsPtr);
 
     for (const charID of fontGlyphs.keys()) {
       const glyph = fontGlyphs.get(charID)!;
