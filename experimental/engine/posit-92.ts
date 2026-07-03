@@ -64,8 +64,8 @@ type WasmImports = {
     HideLoadingOverlay: () => void,
 
     // Loading
-    GetLoadingActual: () => number,
-    GetLoadingTotal: () => number,
+    //GetLoadingActual: () => number,
+    //GetLoadingTotal: () => number,
 
     JsRequestImage: (imgHandle: number) => Promise<void>,
     JsRequestBMFont: (fontPtr: number, fontGlyphsPtr: number) => Promise<void>,
@@ -241,8 +241,8 @@ class Posit92 {
       _haltproc: this.#HandleHaltProc.bind(this),
 
       // Loading
-      GetLoadingActual: this.#GetLoadingActual.bind(this),
-      GetLoadingTotal: this.#GetLoadingTotal.bind(this),
+      // GetLoadingActual: this.#GetLoadingActual.bind(this),
+      // GetLoadingTotal: this.#GetLoadingTotal.bind(this),
 
       // EngineCore
       JsRequestImage: this.#RequestImage.bind(this),
@@ -652,20 +652,20 @@ class Posit92 {
   /**
    * Used in asset counter
    */
-  #loadingActual = 0;
+  // #loadingActual = 0;
 
-  #GetLoadingActual(): number {
-    return this.#loadingActual;
-  }
+  // #GetLoadingActual(): number {
+  //   return this.#loadingActual;
+  // }
 
   /**
    * Used in asset counter
    */
-  #loadingTotal = 0;
+  // #loadingTotal = 0;
 
-  #GetLoadingTotal(): number {
-    return this.#loadingTotal;
-  }
+  // #GetLoadingTotal(): number {
+  //   return this.#loadingTotal;
+  // }
 
   async #LoadSingleImage(key: string, path: string): Promise<LoadImageReturn> {
     return this.LoadImage(path).then(handle => {
@@ -793,23 +793,23 @@ class Posit92 {
     // for (const item of results) ;
   }
 
-  IncLoadingActual(): void {
-    this.#loadingActual++;
-  }
+  // IncLoadingActual(): void {
+  //   this.#loadingActual++;
+  // }
 
-  SetLoadingActual(value: number): void {
-    this.AssertNumber(value);
-    this.#loadingActual = value;
-  }
+  // SetLoadingActual(value: number): void {
+  //   this.AssertNumber(value);
+  //   this.#loadingActual = value;
+  // }
 
-  IncLoadingTotal(count: number): void {
-    this.#loadingTotal += count;
-  }
+  // IncLoadingTotal(count: number): void {
+  //   this.#loadingTotal += count;
+  // }
 
-  SetLoadingTotal(value: number): void {
-    this.AssertNumber(value);
-    this.#loadingTotal = value;
-  }
+  // SetLoadingTotal(value: number): void {
+  //   this.AssertNumber(value);
+  //   this.#loadingTotal = value;
+  // }
 
   SetLoadingText(text: string): void {
     const div = document.querySelector("#loading-overlay > div");

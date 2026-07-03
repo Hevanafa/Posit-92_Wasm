@@ -18,7 +18,7 @@ unit ImgRef;
 
 interface
 
-uses P92Core;
+uses P92AssetRegistry;
 
 const
   MaxImageRefs = 256;
