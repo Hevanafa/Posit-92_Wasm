@@ -16,7 +16,11 @@ procedure InitEngine; public name 'InitEngine';
 
 procedure IncAssetReadyCount; public name 'IncAssetReadyCount';
 procedure JsRequestImage(imgHandle: longint); external 'env' name 'JsRequestImage';
+
 function RequestImage(const path: string): longint;
+procedure PascalImageLoaded(const imgHandle: longint; const w, h: smallint; const pixelData: pointer); public name 'PascalImageLoaded';
+procedure PascalImageFailed(const imgHandle: longint; const errorCode: smallint); public name 'PascalImageFailed';
+
 
 implementation
 
@@ -61,6 +65,23 @@ begin
   imageRefs[imgHandle] := default(TImageRef);
 
   RequestImage := imgHandle
+end;
+
+procedure PascalImageLoaded(const imgHandle: longint; const w, h: smallint; const pixelData: pointer);
+begin
+  imageRefs[imgHandle].width := w;
+  imageRefs[imgHandle].height := h;
+  imageRefs[imgHandle].allocSize := w * h * 4;
+  imageRefs[imgHandle].pixelData := pixelData;
+
+  imageRefs[imgHandle].status := AssetStatusReady;
+  imageRefs[imgHandle].errorCode := 0
+end;
+
+procedure PascalImageFailed(const imgHandle: longint; const errorCode: smallint);
+begin
+  imageRefs[imgHandle].status := AssetStatusFailed;
+  imageRefs[imgHandle].errorCode := errorCode;
 end;
 
 end.

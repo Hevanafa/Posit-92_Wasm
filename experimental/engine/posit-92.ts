@@ -27,7 +27,10 @@ type WasmExports = {
 
   // EngineCore.pas
   InitEngine: () => void,
-  IncAssetReadyCount: () => void,
+  // IncAssetReadyCount: () => void,
+  PascalImageLoaded: (imgHandle: number, w: number, h: number, pixelDataPtr: number) => void;
+  PascalImageFailed: (imgHandle: number, errorCode: number) => void;
+
 
   // IntroScr.pas
   SetImgPosit92Logo: (imgHandle: number) => void;
@@ -556,8 +559,9 @@ class Posit92 {
     const wasmPtr = this.#wasm.exports.WasmGetMem(byteSize);
     wasmMemory.set(imageData.data, wasmPtr);
 
-    this.#wasm.exports.RegisterImageRef(imgHandle, wasmPtr, img.width, img.height);
-    this.#wasm.exports.IncAssetReadyCount();
+    // this.#wasm.exports.RegisterImageRef(imgHandle, wasmPtr, img.width, img.height);
+    // this.#wasm.exports.IncAssetReadyCount();
+    this.#wasm.exports.PascalImageLoaded(imgHandle, img.width, img.height, wasmPtr);
   }
 
 
