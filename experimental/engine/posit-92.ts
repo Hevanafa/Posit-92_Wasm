@@ -641,7 +641,7 @@ class Posit92 {
     this.#images.push(null);
     // this.#images.push(imageData);  // Keep data in JS for reference
 
-    this.#wasm.exports.RegisterSoftwareTex(handle, wasmPtr, img.width, img.height);
+    this.#wasm.exports.PascalImageLoaded(handle, img.width, img.height, wasmPtr);
 
     return handle;
   }

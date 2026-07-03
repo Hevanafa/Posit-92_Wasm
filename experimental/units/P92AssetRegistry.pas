@@ -15,14 +15,14 @@ type
     AssetStatusFailed
   );
 
-  TSoftwareTexRef = record
+  TSoftwareTexEntry = record
     texture: TSoftwareTex;
     status: TAssetStatus;
     errorCode: smallint;
   end;
 
 var
-  imageRefs: array[1..MaxTextures] of TSoftwareTexRef;
+  textures: array[1..MaxTextures] of TSoftwareTexEntry;
   AssetReadyCount,
   AssetTotalCount: longword;
 
@@ -49,17 +49,17 @@ procedure InitAssetRegistry;
 var
   a: word;
 begin
-  for a := 1 to high(imageRefs) do
-    imageRefs[a] := default(TSoftwareTexRef);
+  for a := 1 to high(textures) do
+    textures[a] := default(TSoftwareTexEntry);
 end;
 
 function FindUnusedTextureSlot: longint;
 var
   a: longint;
 begin
-  for a:=1 to high(imageRefs) do
+  for a:=1 to high(textures) do
     { if not IsTextureSet(a) then begin }
-    if imageRefs[a].status = AssetStatusPending then begin
+    if textures[a].status = AssetStatusPending then begin
       FindUnusedTextureSlot := a;
       exit
     end;
@@ -83,8 +83,8 @@ begin
   WriteInteropString(path);
   JsRequestImage(imgHandle);
 
-  imageRefs[imgHandle] := default(TSoftwareTexRef);
-  imageRefs[imgHandle].status := AssetStatusLoading;
+  textures[imgHandle] := default(TSoftwareTexEntry);
+  textures[imgHandle].status := AssetStatusLoading;
 
   RequestImage := imgHandle
 end;
@@ -97,25 +97,25 @@ end;
 
 procedure PascalImageLoaded(const imgHandle: longint; const w, h: smallint; const pixelData: pointer);
 begin
-  if (imgHandle < 1) or (imgHandle >= high(imageRefs)) then
+  if (imgHandle < 1) or (imgHandle >= high(textures)) then
     PanicHalt('Invalid image handle: ' + I32Str(imgHandle));
 
-  if (imageRefs[imgHandle].texture.allocSize > 0) then
+  if (textures[imgHandle].texture.allocSize > 0) then
     PanicHalt('Image handle ' + I32Str(imgHandle) + ' already used! (allocSize > 0)');
 
-  imageRefs[imgHandle].texture.width := w;
-  imageRefs[imgHandle].texture.height := h;
-  imageRefs[imgHandle].texture.allocSize := w * h * 4;
-  imageRefs[imgHandle].texture.pixelData := pixelData;
+  textures[imgHandle].texture.width := w;
+  textures[imgHandle].texture.height := h;
+  textures[imgHandle].texture.allocSize := w * h * 4;
+  textures[imgHandle].texture.pixelData := pixelData;
 
-  imageRefs[imgHandle].status := AssetStatusReady;
-  imageRefs[imgHandle].errorCode := 0
+  textures[imgHandle].status := AssetStatusReady;
+  textures[imgHandle].errorCode := 0
 end;
 
 procedure PascalImageFailed(const imgHandle: longint; const errorCode: smallint);
 begin
-  imageRefs[imgHandle].status := AssetStatusFailed;
-  imageRefs[imgHandle].errorCode := errorCode;
+  textures[imgHandle].status := AssetStatusFailed;
+  textures[imgHandle].errorCode := errorCode;
 end;
 
 end.

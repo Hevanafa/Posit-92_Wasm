@@ -82,13 +82,13 @@ begin
   dataPtr := PByte(getmem(allocSize));
   fillchar(dataPtr^, allocSize, 0);
 
-  imageRefs[slot].texture.width := width;
-  imageRefs[slot].texture.height := height;
-  imageRefs[slot].texture.allocSize := allocSize;
-  imageRefs[slot].texture.pixelData := dataPtr;
+  textures[slot].texture.width := width;
+  textures[slot].texture.height := height;
+  textures[slot].texture.allocSize := allocSize;
+  textures[slot].texture.pixelData := dataPtr;
 
-  imageRefs[slot].status := AssetStatusReady;
-  imageRefs[slot].errorCode := 0;
+  textures[slot].status := AssetStatusReady;
+  textures[slot].errorCode := 0;
 
   NewTexture := slot
 end;
@@ -110,19 +110,19 @@ end;
 procedure FreeTexture(const imgHandle: longint);
 begin
   if (imgHandle < 1) or (imgHandle >= MaxTextures) then exit;
-  if imageRefs[imgHandle].texture.pixelData = nil then exit;
+  if textures[imgHandle].texture.pixelData = nil then exit;
 
 {$ifdef WASM}
-  WasmFreeMem(imageRefs[imgHandle].texture.pixelData);
+  WasmFreeMem(textures[imgHandle].texture.pixelData);
 {$endif}
 {$ifdef Windows}
   FreeMem(imageRefs[imgHandle].dataPtr);
 {$endif}
 
-  imageRefs[imgHandle].texture.width := 0;
-  imageRefs[imgHandle].texture.height := 0;
-  imageRefs[imgHandle].texture.allocSize := 0;
-  imageRefs[imgHandle].texture.pixelData := nil
+  textures[imgHandle].texture.width := 0;
+  textures[imgHandle].texture.height := 0;
+  textures[imgHandle].texture.allocSize := 0;
+  textures[imgHandle].texture.pixelData := nil
 end;
 
 
@@ -137,9 +137,9 @@ begin
   if imgHandle <= 0 then exit;
 {$endif}
 
-  { IsTextureSet := (imageRefs[imgHandle].width > 0) and (imageRefs[imgHandle].height > 0) }
-  { IsTextureSet := (imageRefs[imgHandle].allocSize > 0) }
-  IsTextureSet := imageRefs[imgHandle].status = AssetStatusReady
+  { IsTextureSet := (textures[imgHandle].width > 0) and (textures[imgHandle].height > 0) }
+  { IsTextureSet := (textures[imgHandle].allocSize > 0) }
+  IsTextureSet := textures[imgHandle].status = AssetStatusReady
 end;
 
 procedure AssertTextureSet(const varName: string; const imgHandle: longint);
@@ -150,7 +150,7 @@ end;
 
 function GetTexturePtr(const imgHandle: longint): PSoftwareTex;
 begin
-  GetTexturePtr := @imageRefs[imgHandle]
+  GetTexturePtr := @textures[imgHandle]
 end;
 
 
