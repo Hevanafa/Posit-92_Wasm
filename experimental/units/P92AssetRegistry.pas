@@ -113,10 +113,19 @@ begin
 end;
 
 procedure RequestBMFont(const path: string; const fontPtr: PBMFont; const fontGlyphsPtr: PBMFontGlyph);
+var
+  imgHandle: longint;
 begin
   inc(AssetTotalCount);
+
+  imgHandle := FindUnusedTextureSlot;
+
+  fontptr^.imgHandle := imgHandle;
+  textures[imgHandle] := default(TSoftwareTexEntry);
+  textures[imgHandle].status := AssetStatusLoading;
+
   WriteInteropString(path);
-  JsRequestBMFont(fontPtr, fontGlyphsPtr)
+  JsRequestBMFont(fontPtr, fontGlyphsPtr);
 end;
 
 procedure PascalImageLoaded(const imgHandle: longint; const w, h: smallint; const pixelData: pointer);

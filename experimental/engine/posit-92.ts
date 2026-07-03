@@ -535,6 +535,11 @@ class Posit92 {
   //   await this.LoadGameAssets();
   // }
 
+  /**
+   * Called from Pascal side
+   * 
+   * The URL is obtained from the interop buffer
+   */
   async #RequestImage(imgHandle: number): Promise<void> {
     const url = this.ReadInteropBuffer();
 
@@ -966,9 +971,6 @@ class Posit92 {
 
     console.log("RequestBMFont url", url);
 
-    this.AssertNumber(fontPtr);
-    this.AssertNumber(fontGlyphsPtr);
-
     const res = await fetch(url);
     const text = await res.text();
 
@@ -1047,9 +1049,6 @@ class Posit92 {
 
     console.log("Loaded", glyphCount, "glyphs");
 
-    // Load font bitmap
-    imgHandle = await this.LoadImage(filename);
-
     // Load TBMFont
     const fontMem = new DataView(this.#wasm.exports.memory.buffer, fontPtr);
 
@@ -1061,7 +1060,12 @@ class Posit92 {
     fontMem.setUint16(offset, lineHeight, true);
     fontMem.setUint8(offset + 2, spacing[0]);
     fontMem.setUint8(offset + 3, spacing[1]);
-    fontMem.setInt32(offset + 4, imgHandle, true);
+    // fontMem.setInt32(offset + 4, imgHandle, true);
+
+    // Load font bitmap
+    this.WriteInteropBuffer(filename);
+    await this.#RequestImage(fontMem.getInt32(offset + 4, true));
+    //imgHandle = await this.LoadImage(filename);
 
     // Load glyphs
     const glyphsMem = new DataView(this.#wasm.exports.memory.buffer, fontGlyphsPtr);
