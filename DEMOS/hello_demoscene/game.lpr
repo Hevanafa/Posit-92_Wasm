@@ -58,14 +58,7 @@ end;
 procedure Draw;
 begin
   if engineRunState = ersLoading then begin
-    cls($FF555580);
-
-    print('Hello with the default font!', 0, 0);
-
-    VgaUpload;
-    VgaPresent;
-
-    { RenderLoadingScreen; }
+    RenderLoadingScreen;
     exit
   end;
 

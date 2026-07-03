@@ -8,9 +8,9 @@ interface
 
 type
   TEngineRunStates = (
-    ersBoot,
-    ersLoading,
-    ersPlaying
+    ersBoot = 1,
+    ersLoading = 2,
+    ersPlaying = 3
   );
 
 var
