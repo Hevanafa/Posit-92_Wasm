@@ -2,6 +2,8 @@ unit EngineCore;
 
 interface
 
+uses BMFont;
+
 type
   TAssetStatus = (
     AssetStatusPending,
@@ -15,9 +17,13 @@ var AssetReadyCount, AssetTotalCount: longint;
 procedure InitEngine; public name 'InitEngine';
 
 procedure IncAssetReadyCount; public name 'IncAssetReadyCount';
-procedure JsRequestImage(imgHandle: longint); external 'env' name 'JsRequestImage';
 
+procedure JsRequestImage(imgHandle: longint); external 'env' name 'JsRequestImage';
 function RequestImage(const path: string): longint;
+
+procedure JsRequestBMFont(fontPtr: PBMFont; fontGlyphsPtr: PBMFontGlyph); external 'env' name 'JsRequestBMFont';
+procedure RequestBMFont(const path: string; const fontPtr: PBMFont; const fontGlyphsPtr: PBMFontGlyph);
+
 procedure PascalImageLoaded(const imgHandle: longint; const w, h: smallint; const pixelData: pointer); public name 'PascalImageLoaded';
 procedure PascalImageFailed(const imgHandle: longint; const errorCode: smallint); public name 'PascalImageFailed';
 
@@ -66,6 +72,12 @@ begin
   imageRefs[imgHandle].status := AssetStatusLoading;
 
   RequestImage := imgHandle
+end;
+
+procedure RequestBMFont(const path: string; const fontPtr: PBMFont; const fontGlyphsPtr: PBMFontGlyph);
+begin
+  WriteInteropString(path);
+  JsRequestBMFont(fontPtr, fontGlyphsPtr)
 end;
 
 procedure PascalImageLoaded(const imgHandle: longint; const w, h: smallint; const pixelData: pointer);
