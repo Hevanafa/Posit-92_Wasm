@@ -15,8 +15,6 @@ type WasmExports = {
   DefaultFontPtr: () => number;
   DefaultFontGlyphsPtr: () => number;
 
-  LoadBootAssets: () => void;
-  LoadIntroAssets: () => void;
   LoadGameAssets: () => void;
 
   // InteropBuf.pas
@@ -1496,7 +1494,6 @@ class Posit92 {
     this.#StartLoop();
 
     // Pass the state control to Pascal
-    // this.LoadGameAssets();
     this.#wasm.exports.InitLoadingState();
     this.#wasm.exports.LoadGameAssets();
   }
@@ -1517,7 +1514,7 @@ class Posit92 {
         this.#wasm.exports.EngineDraw();
       } else {
         this.#wasm.exports.EngineUpdate();
-        
+
         if (!this.#userReady) {
           this.#userReady = true;
           this.#wasm.exports.OnReady();
