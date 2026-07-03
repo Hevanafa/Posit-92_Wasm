@@ -62,8 +62,6 @@ begin
   PrintDefaultCentred('Hello world!', VgaWidth div 2, 120);
 
   DrawMouse;
-
-  print('gettimer: ' + f32str(GetTimer), 8, 24);
   DrawFPS;
 
   VgaUpload;
