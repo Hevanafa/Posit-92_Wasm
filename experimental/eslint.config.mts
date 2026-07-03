@@ -14,8 +14,8 @@ export default defineConfig([
       "semi": ["warn", "always"],
       "semi-style": ["error", "last"],
 
+      "@typescript-eslint/strict-boolean-expressions": "error",
       "@typescript-eslint/explicit-function-return-type": "error",
-
       "@typescript-eslint/no-unused-vars": "off"
     }
   },
