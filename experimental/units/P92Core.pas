@@ -31,8 +31,9 @@ procedure Print(const txt: string; const x, y: smallint);
 implementation
 
 uses
-  Conv, WasmMemMgr, Loading, Logger, InteropBuf,
-  P92AssetRegistry, SoftwareTexDraw, Timing, VGA
+  Conv, WasmMemMgr, Loading, Logger,
+  InteropBuf, Timing, VGA, WasmHost,
+  P92AssetRegistry, SoftwareTexDraw
 {$ifdef UseWebGL}
   , WebGL
 {$endif}
@@ -62,6 +63,7 @@ end;
 procedure InitLoadingState;
 begin
   engineRunState := ersLoading;
+  FitCanvas;
   writelog('ersLoading');
 end;
 

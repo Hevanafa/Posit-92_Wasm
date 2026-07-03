@@ -52,7 +52,6 @@ uses Conv, InteropBuf, Logger, Panic;
 
 function AllAssetsReady: boolean;
 begin
-  writelog('AllAssetsReady call');
   AllAssetsReady := AssetReadyCount >= AssetTotalCount
 end;
 
