@@ -57,11 +57,6 @@ end;
 
 procedure Draw;
 begin
-  if engineRunState = ersLoading then begin
-    RenderLoadingScreen;
-    exit
-  end;
-
   Cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then

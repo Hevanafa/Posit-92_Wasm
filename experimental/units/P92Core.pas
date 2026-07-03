@@ -22,13 +22,17 @@ procedure SetCGAFontHandle(value: longint); public name 'SetCGAFontHandle';
 
 function IsEngineReady: boolean; public name 'IsEngineReady';
 
+procedure EngineUpdate; public name 'EngineUpdate';
+procedure EngineDraw; public name 'EngineDraw';
+
 procedure Print(const txt: string; const x, y: smallint);
 
 
 implementation
 
 uses
-  Conv, WasmMemMgr, Logger, InteropBuf, P92AssetRegistry, SoftwareTexDraw, Timing
+  Conv, WasmMemMgr, Loading, Logger, InteropBuf,
+  P92AssetRegistry, SoftwareTexDraw, Timing, VGA
 {$ifdef UseWebGL}
   , WebGL
 {$endif}
@@ -67,6 +71,19 @@ end;
 function IsEngineReady: boolean;
 begin
   IsEngineReady := engineRunState = ersReady
+end;
+
+procedure EngineUpdate;
+begin
+
+end;
+
+procedure EngineDraw;
+begin
+  cls($FF000000);
+
+  if engineRunState = ersLoading then
+    RenderLoadingScreen;
 end;
 
 procedure Print(const txt: string; const x, y: smallint);
