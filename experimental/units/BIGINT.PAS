@@ -35,7 +35,7 @@ function BigIntFetchResult: string;
 
 implementation
 
-uses Conv, InteropBuf;
+uses P92Conversions, P92InteropBuf;
 
 {
   Verbs used for data flow:

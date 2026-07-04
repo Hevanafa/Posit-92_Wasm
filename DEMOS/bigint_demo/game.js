@@ -1,6 +1,9 @@
 "use strict";
 
-class Game extends BigIntMixin {
+const BigIntMix = (Base) => class Base extends BigIntMixin {}
+const BMFontMix = (Base) => class Base extends BMFontMixin {}
+
+class Game extends BMFontMix(BigIntMix) {
   AssetManifest = {
     images: {
       cursor: "assets/images/cursor.png"

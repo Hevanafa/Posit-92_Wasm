@@ -6,35 +6,22 @@
 library Game;
 
 {$Mode ObjFPC}
+{$H+}{$J-}
 
 uses
-  EngineCore, EngineFonts, WasmHost,
-  BigInt, InteropBuf, Logger,
-  Conv, FPS, ImgRefFast,
-  Loading, Keyboard, Mouse,
-  Timing, VGA,
+  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
+  BigInt, P92InteropBuf, P92Logger,
+  P92Conversions, P92FPS,
+  P92SoftwareTexDraw,
+  P92Keyboard, P92Mouse,
+  P92Timing, P92VGA,
   Assets;
-
-type
-  TGameStates = (
-    GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
-  );
-
-const
-  SC_ESC = $01;
-  SC_SPACE = $39;
-
-  SC_LEFT = $4B;
-  SC_RIGHT = $4D;
 
 var
   lastEsc: boolean;
   lastLeft, lastRight: boolean;
 
   { Game state variables }
-  actualGameState: TGameStates;
   gameTime: double;
 
   points: string; { BigInt }
@@ -51,21 +38,19 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure BeginLoadingState;
+procedure LoadGameAssets;
 begin
-  actualGameState := GameStateLoading;
-  fitCanvas;
-
-  RequestAssetLoad
+  imgCursor := RequestImage('assets/images/cursor.png');
+  imgDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  imgDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
-procedure BeginPlayingState;
+procedure OnReady;
 begin
   hideCursor;
   fitCanvas;
 
   { Initialise game state here }
-  actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
   points := '1234';
@@ -107,11 +92,6 @@ begin
   writeLog('compare(a, b) = ' + BigIntFetchResult);
 end;
 
-procedure OnReady;
-begin
-  BeginPlayingState
-end;
-
 
 procedure PrintCentred(const text: string; const y: integer);
 var
@@ -129,8 +109,8 @@ begin
   updateMouse;
 
   { Your Update logic here }
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
+  if lastEsc <> isKeyDown(SC_ESCAPE) then begin
+    lastEsc := isKeyDown(SC_ESCAPE);
 
     if lastEsc then begin
       writeLog('ESC is pressed!');
@@ -176,11 +156,6 @@ end;
 
 procedure Draw;
 begin
-  if actualGameState = GameStateLoading then begin
-    renderLoadingScreen;
-    exit
-  end;
-
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
@@ -202,8 +177,6 @@ begin
 end;
 
 exports
-  BeginLoadingState,
-  { Main game procedures }
   OnReady, Update, Draw;
 
 begin
