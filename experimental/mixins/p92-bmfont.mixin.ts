@@ -18,9 +18,6 @@ type BMFontWasmImports = WasmImports & {
   }
 };
 
-// Obligatory for mixins
-type Constructor<T = {}> = new (...args: any[]) => T;
-
 interface IBMFont {
   // List the public members
 }
