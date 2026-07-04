@@ -5,7 +5,7 @@
   Base unit for SoftwareTexDraw and ImgRefComp
   Most of the procedures & functions here are based on Bitmap and SprFast units
   
-  The term "texture" used in this unit is strictly in the context of software rendering
+  The term "texture" used in this unit is strictly in the context of CPU rendering
 }
 
 unit SoftwareTex;
