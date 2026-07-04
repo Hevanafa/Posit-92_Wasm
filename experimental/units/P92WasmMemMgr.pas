@@ -6,7 +6,7 @@
   High-level wrapper for WasmHeap
 }
 
-unit WasmMemMgr;
+unit P92WasmMemMgr;
 
 {$Mode ObjFPC}
 {$Notes OFF}
