@@ -485,10 +485,14 @@ class Posit92 {
    * Loads assets owned by the engine
    */
   async #LoadBootAssets(): Promise<void> {
-    if (this.bootOptions.defaultFont == null
-      || this.bootOptions.defaultFont == true)
-      await this.#LoadDefaultFont();
+    await this.#LoadBootFont();
   }
+
+  async #LoadBootFont(): Promise<void> {
+    this.#wasm.exports.SetCGAFontHandle(
+      await this.LoadImage("assets/CGA8x8.png"));
+  }
+
 
   async #LoadIntroAssets(): Promise<void> {
     this.WasmInstance.exports.SetImgPosit92Logo(
@@ -499,16 +503,6 @@ class Posit92 {
 
     this.WasmInstance.exports.SetImgWasmLogo(
       await this.LoadImage("assets/images/wasm_logo.png"));
-  }
-
-  async #LoadDefaultFont(): Promise<void> {
-    this.#wasm.exports.SetCGAFontHandle(
-      await this.LoadImage("assets/CGA8x8.png"));
-
-    // await this.LoadBMFont(
-    //   "assets/fonts/nokia_cellphone_fc_8.txt",
-    //   this.WasmInstance.exports.DefaultFontPtr(),
-    //   this.WasmInstance.exports.DefaultFontGlyphsPtr());
   }
 
   /**
