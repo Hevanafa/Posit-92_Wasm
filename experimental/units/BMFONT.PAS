@@ -81,7 +81,7 @@ procedure PrintBMFontToDest(
 implementation
 
 uses
-  Conv, P92Logger,
+  P92Conversions, P92Logger,
   SoftwareTex, SoftwareTexDraw;
 
 { Returns glyph.xadvance }

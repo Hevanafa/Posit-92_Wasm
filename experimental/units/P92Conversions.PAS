@@ -1,9 +1,10 @@
 {
-  Common conversion utility unit - Part of Posit-92 game engine
-  Hevanafa
+  Common conversion utility unit that doesn't rely on SysUtils
+  Part of Posit-92 game engine
+  By Hevanafa
 }
 
-unit Conv;
+unit P92Conversions;
 
 {$Mode ObjFPC}
 {$H-}{$J+}

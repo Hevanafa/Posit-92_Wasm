@@ -31,7 +31,7 @@ procedure Print(const txt: string; const x, y: smallint);
 implementation
 
 uses
-  Conv, WasmMemMgr, FPS, P92Loading, P92Logger,
+  P92Conversions, WasmMemMgr, FPS, P92Loading, P92Logger,
   InteropBuf, P92Timing, VGA, WasmHost,
   P92Mouse,
   P92AssetRegistry, SoftwareTexDraw

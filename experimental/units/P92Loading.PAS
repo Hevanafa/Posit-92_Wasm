@@ -18,8 +18,7 @@ procedure RenderLoadingScreen;
 implementation
 
 uses
-  Conv, VGA,
-  P92Core, P92AssetRegistry;
+  P92Core, P92Conversions, P92AssetRegistry, VGA;
 
 procedure RenderLoadingScreen;
 var

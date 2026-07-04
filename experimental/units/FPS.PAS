@@ -22,7 +22,7 @@ procedure DrawFPS;
 implementation
 
 uses
-  P92Core, Conv, P92Timing, VGA;
+  P92Core, P92Conversions, P92Timing, VGA;
 
 var
   actualFPS, lastFPS: smallint;

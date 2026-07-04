@@ -58,7 +58,7 @@ procedure SprFlipInPlace(const texHandle: longint; const flip: smallint);
 implementation
 
 uses
-  P92Logger, Conv, SoftwareTex, P92Maths, P92Panic, VGA;
+  P92Logger, P92Conversions, SoftwareTex, P92Maths, P92Panic, VGA;
 
 procedure Spr(const texHandle: longint; const x, y: smallint);
 var

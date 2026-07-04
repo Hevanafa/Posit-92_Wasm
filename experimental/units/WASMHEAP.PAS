@@ -40,7 +40,7 @@ function GetHeapEnd: longword;
 
 implementation
 
-uses Conv, P92Panic;
+uses P92Conversions, P92Panic;
 
 type
   { Memory block header }

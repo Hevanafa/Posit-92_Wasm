@@ -57,7 +57,7 @@ procedure UnsafeSprPset(const texture: PSoftwareTex; const x, y: smallint; const
 implementation
 
 uses
-  Conv, P92Logger, P92Maths, P92Panic, P92AssetRegistry,
+  P92Conversions, P92Logger, P92Maths, P92Panic, P92AssetRegistry,
 {$ifdef WASM}
   WasmHeap,
 {$endif}
