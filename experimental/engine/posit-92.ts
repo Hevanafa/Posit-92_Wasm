@@ -26,6 +26,9 @@ type WasmExports = {
   GetInteropBufCapacity: () => number,
   SetInteropBufLen: (value: number) => void,
 
+  // P92Fonts.pas
+  LoadDefaultFont: () => void;
+
   // P92Core.pas
   InitEngine: () => void,
   InitLoadingState: () => void;

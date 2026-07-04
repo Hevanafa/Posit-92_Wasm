@@ -38,8 +38,6 @@ begin
   imgCursor := RequestImage('assets/images/cursor.png');
   imgDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
   imgDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
-
-  RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt', DefaultFontPtr, DefaultFontGlyphsPtr)
 end;
 
 procedure OnReady;

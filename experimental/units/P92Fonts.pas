@@ -4,11 +4,10 @@ interface
 
 uses P92BMFont;
 
-{ BMFont boilerplate }
 procedure LoadDefaultFont; public name 'LoadDefaultFont';
 
-function DefaultFontPtr: PBMFont; public name 'DefaultFontPtr';
-function DefaultFontGlyphsPtr: PBMFontGlyph; public name 'DefaultFontGlyphsPtr';
+function DefaultFontPtr: PBMFont;
+function DefaultFontGlyphsPtr: PBMFontGlyph;
 
 procedure PrintDefault(const text: string; const x, y: integer);
 procedure PrintDefaultCentred(const text: string; const cx, y: integer);

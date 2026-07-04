@@ -58,8 +58,6 @@ end;
 
 procedure LoadGameAssets;
 begin
-  RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt', DefaultFontPtr, DefaultFontGlyphsPtr);
-
   imgCursor := RequestImage('assets/images/cursor.png');
 
   imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
