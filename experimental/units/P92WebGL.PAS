@@ -1,6 +1,7 @@
 {
-  WebGL unit - Part of Posit-92 game engine
-  Hevanafa
+  WebGL unit
+  Part of Posit-92 game engine
+  By Hevanafa
 
   A thin 1:1 wrapper around WebGL
 }
@@ -13,6 +14,7 @@ unit P92WebGL;
 
 interface
 
+{$ifdef UseWebGL}
 const
   GL_COLOR_BUFFER_BIT = $00004000;
   GL_DEPTH_BUFFER_BIT = $00000100;
@@ -102,10 +104,12 @@ procedure GLActiveTexture(textureId: GLHandle); external 'env' name 'GLActiveTex
 procedure SetupWebGLViewport;
 procedure SetupWebGLShaders;
 procedure WebGLPresent;
+{$endif}
 
 
 implementation
 
+{$ifdef UseWebGL}
 uses P92Conversions, P92Logger, P92InteropBuf, P92Panic, P92VGA;
 
 const
@@ -223,5 +227,6 @@ begin
 
   GLDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
 end;
+{$endif}
 
 end.
