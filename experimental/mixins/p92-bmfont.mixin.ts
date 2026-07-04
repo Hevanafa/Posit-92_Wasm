@@ -18,7 +18,11 @@ type BMFontWasmImports = WasmImports & {
   }
 };
 
-class BMFontMixin extends Posit92 {
+// Obligatory for mixins
+type Constructor<T = {}> = new (...args: any[]) => T;
+
+const BMFontMixin = <T extends Constructor<Posit92>>(Base: T) =>
+class extends Base {
   /**
    * @override
    */
