@@ -37,8 +37,8 @@ unless (-f $source_file) {
 
 say "Generating p92-".$mixin_name.".mixin.js...";
 
-say "ensure_mixin.pl: $make_script";
-say "ensure_mixin.pl: $source_file";
+# say "ensure_mixin.pl: $make_script";
+# say "ensure_mixin.pl: $source_file";
 
 my @args = ($make_script, $source_file);
 

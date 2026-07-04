@@ -81,9 +81,13 @@ sub setup_demo {
 
       system "perl", @args;
 
+      # say "Mixin paths:";
+      # say catfile($mixins_dir, $mixin_filename);
+      # say catfile($demo_dir, $mixin_filename);
+
       copy(
-        catfile($mixins_dir, $mixin_filename.".js"),
-        catfile($demo_dir, $mixin_filename.".js"))
+        catfile($mixins_dir, $mixin_filename),
+        catfile($demo_dir, $mixin_filename))
           or warn "Couldn't copy mixin: $mixin_filename"
     }
   }
