@@ -5,7 +5,7 @@
   Similar to ImgRefFast but with a proper alpha blending logic
 }
 
-unit SoftwareTexComp;
+unit P92SoftwareTexComp;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
@@ -13,15 +13,15 @@ unit SoftwareTexComp;
 interface
 
 { Based on SprComp unit }
-procedure sprAlpha(const imgHandle: longint; const x, y: smallint; opacity: double);
-procedure sprBlend(const imgHandle: longint; const x, y: smallint);
+procedure SprAlpha(const imgHandle: longint; const x, y: smallint; opacity: double);
+procedure SprBlend(const imgHandle: longint; const x, y: smallint);
 
 
 implementation
 
 uses P92SoftwareTex, P92Maths, P92VGA;
 
-procedure sprAlpha(const imgHandle: longint; const x, y: smallint; opacity: double);
+procedure SprAlpha(const imgHandle: longint; const x, y: smallint; opacity: double);
 var
   image: PImageRef;
   px, py: smallint;
@@ -49,7 +49,7 @@ begin
   end;
 end;
 
-procedure sprBlend(const imgHandle: longint; const x, y: smallint);
+procedure SprBlend(const imgHandle: longint; const x, y: smallint);
 var
   image: PImageRef;
   px, py: smallint;

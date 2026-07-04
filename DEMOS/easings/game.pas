@@ -7,7 +7,7 @@ uses
   P92Core, P92WasmHost,
   P92Colour, P92FPS,
   P92Graphics,
-  P92SoftwareTex, P92SoftwareTexDraw, ImgRefComp,
+  P92SoftwareTex, P92SoftwareTexDraw, P92SoftwareTexComp,
   P92Keyboard, P92Mouse,
   Lerp, P92Logger, P92Maths,
   P92Timing, P92VGA,
@@ -251,8 +251,8 @@ begin
       x := trunc(lerpLinear(startX, endX, perc));
   end;
 
-  sprAlpha(imgDosuEXE[0], startX, 88, 0.5);
-  sprAlpha(imgDosuEXE[0], endX, 88, 0.5);
+  SprAlpha(imgDosuEXE[0], startX, 88, 0.5);
+  SprAlpha(imgDosuEXE[0], endX, 88, 0.5);
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], x, 88)
