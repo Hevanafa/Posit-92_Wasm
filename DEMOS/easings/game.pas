@@ -49,7 +49,7 @@ var
   subDemoNames: array[0..DemoStateInOutSine - 1] of string;
 
   startX, endX: integer;
-  xLerpTimer: TLerpTimer;
+  xEasingTimer: TEasingTimer;
 
 procedure DrawMouse;
 begin
@@ -83,7 +83,7 @@ begin
 
   startX := 120;
   endX := vgaWidth - 25;
-  initLerp(xLerpTimer, gameTime, 2.0);
+  InitEasing(xEasingTimer, gameTime, 2.0);
 end;
 
 procedure OnReady;
@@ -147,7 +147,7 @@ begin
     lastSpacebar := isKeyDown(SC_SPACE);
 
     if lastSpacebar then
-      initLerp(xLerpTimer, gameTime, 2.0);
+      InitEasing(xEasingTimer, gameTime, 2.0);
   end;
 
   if lastPageUp <> isKeyDown(SC_PAGEUP) then begin
@@ -186,28 +186,28 @@ begin
 
   Line(startX, 100, endX, 100, Cyan);
 
-  perc := getLerpPerc(xLerpTimer, gameTime);
+  perc := GetEasingPerc(xEasingTimer, gameTime);
 
   case actualDemoState of
     DemoStateLinear:
-      x := trunc(lerpLinear(startX, endX, perc));
+      x := trunc(LerpLinear(startX, endX, perc));
 
     DemoStateInQuad:
-      x := trunc(lerpEaseInQuad(startX, endX, perc));
+      x := trunc(LerpEaseInQuad(startX, endX, perc));
     DemoStateOutQuad:
-      x := trunc(lerpEaseOutQuad(startX, endX, perc));
+      x := trunc(LerpEaseOutQuad(startX, endX, perc));
     DemoStateInOutQuad:
-      x := trunc(lerpEaseInOutQuad(startX, endX, perc));
+      x := trunc(LerpEaseInOutQuad(startX, endX, perc));
 
     DemoStateInSine:
-      x := trunc(lerpEaseInSine(startX, endX, perc));
+      x := trunc(LerpEaseInSine(startX, endX, perc));
     DemoStateOutSine:
-      x := trunc(lerpEaseOutSine(startX, endX, perc));
+      x := trunc(LerpEaseOutSine(startX, endX, perc));
     DemoStateInOutSine:
-      x := trunc(lerpEaseInOutSine(startX, endX, perc));
+      x := trunc(LerpEaseInOutSine(startX, endX, perc));
 
     else { Not implemented defaults to Linear }
-      x := trunc(lerpLinear(startX, endX, perc));
+      x := trunc(LerpLinear(startX, endX, perc));
   end;
 
   SprAlpha(imgDosuEXE[0], startX, 88, 0.5);

@@ -15,130 +15,138 @@ unit P92Easings;
 interface
 
 type
-  { Stateless lerp timer
+  { Stateless easing timer
     Requires a pair of start & end values }
-  TLerpTimer = record
+  TEasingTimer = record
     startTick, endTick: double;
   end;
 
-procedure initLerp(var lt: TLerpTimer; const startTick, duration: double);
-function newLerp(const startTick, duration: double): TLerpTimer;
-function getLerpPerc(const lt: TLerpTimer; const t: double): double;
-function isLerpComplete(const lt: TLerpTimer; const t: double): boolean;
+procedure InitEasing(var lt: TEasingTimer; const startTick, duration: double);
 
-function lerpLinear(const a, z: double; perc: double): double;
+function NewEasingTimer(const startTick, duration: double): TEasingTimer;
+function GetEasingPerc(const lt: TEasingTimer; const t: double): double;
+function IsEasingComplete(const lt: TEasingTimer; const t: double): boolean;
 
-function lerpEaseInQuad(const a, z, perc: double): double;
-function lerpEaseOutQuad(const a, z, perc: double): double;
-function lerpEaseInOutQuad(const a, z, perc: double): double;
+{
+  Helper functions
+  These call both:
+  - Percentage normalisation
+  - Performs easing with the provided start & end values (a and z)
+}
 
-function lerpEaseInSine(const a, z, perc: double): double;
-function lerpEaseOutSine(const a, z, perc: double): double;
-function lerpEaseInOutSine(const a, z, perc: double): double;
+function LerpLinear(const a, z: double; perc: double): double;
+
+function LerpEaseInQuad(const a, z, perc: double): double;
+function LerpEaseOutQuad(const a, z, perc: double): double;
+function LerpEaseInOutQuad(const a, z, perc: double): double;
+
+function LerpEaseInSine(const a, z, perc: double): double;
+function LerpEaseOutSine(const a, z, perc: double): double;
+function LerpEaseInOutSine(const a, z, perc: double): double;
 
 
 implementation
 
 uses P92Maths, P92Timing;
 
-procedure initLerp(var lt: TLerpTimer; const startTick, duration: double);
+procedure InitEasing(var lt: TEasingTimer; const startTick, duration: double);
 begin
   lt.startTick := startTick;
   lt.endTick := startTick + duration;
 end;
 
-function newLerp(const startTick, duration: double): TLerpTimer;
+function NewEasingTimer(const startTick, duration: double): TEasingTimer;
 begin
-  newLerp.startTick := startTick;
-  newLerp.endTick := startTick + duration;
+  NewEasingTimer.startTick := startTick;
+  NewEasingTimer.endTick := startTick + duration;
 end;
 
-function getLerpPerc(const lt: TLerpTimer; const t: double): double;
+function GetEasingPerc(const lt: TEasingTimer; const t: double): double;
 begin
-  getLerpPerc := clamp((t - lt.startTick) / (lt.endTick - lt.startTick), 0.0, 1.0)
+  GetEasingPerc := clamp((t - lt.startTick) / (lt.endTick - lt.startTick), 0.0, 1.0)
 end;
 
-function isLerpComplete(const lt: TLerpTimer; const t: double): boolean;
+function IsEasingComplete(const lt: TEasingTimer; const t: double): boolean;
 begin
-  isLerpComplete := t >= lt.endTick
+  IsEasingComplete := t >= lt.endTick
 end;
 
 
 { Begin easing functions }
 
-function easeInQuad(const perc: double): double;
+function EaseInQuad(const perc: double): double;
 begin
-  easeInQuad := perc * perc
+  EaseInQuad := perc * perc
 end;
 
-function easeOutQuad(const perc: double): double;
+function EaseOutQuad(const perc: double): double;
 begin
-  easeOutQuad := 1 - (1 - perc) * (1 - perc)
+  EaseOutQuad := 1 - (1 - perc) * (1 - perc)
 end;
 
-function easeInOutQuad(const perc: double): double;
+function EaseInOutQuad(const perc: double): double;
 var
   n: double;
 begin
   if perc < 0.5 then
-    easeInOutQuad := 2 * perc * perc
+    EaseInOutQuad := 2 * perc * perc
   else begin
     n := -2 * perc + 2;
-    easeInOutQuad := 1 - n * n / 2;
+    EaseInOutQuad := 1 - n * n / 2;
   end;
 end;
 
-function easeInSine(const perc: double): double;
+function EaseInSine(const perc: double): double;
 begin
-  easeInSine := 1 - cos(perc * pi / 2.0)
+  EaseInSine := 1 - cos(perc * pi / 2.0)
 end;
 
-function easeOutSine(const perc: double): double;
+function EaseOutSine(const perc: double): double;
 begin
-  easeOutSine := sin(perc * pi / 2.0)
+  EaseOutSine := sin(perc * pi / 2.0)
 end;
 
-function easeInOutSine(const perc: double): double;
+function EaseInOutSine(const perc: double): double;
 begin
-  easeInOutSine := -(cos(pi * perc) - 1.0) / 2.0
+  EaseInOutSine := -(cos(pi * perc) - 1.0) / 2.0
 end;
 
 
-function lerpLinear(const a, z: double; perc: double): double;
+function LerpLinear(const a, z: double; perc: double): double;
 begin
   perc := clamp(perc, 0.0, 1.0);
-  lerpLinear := a + perc * (z - a)
+  LerpLinear := a + perc * (z - a)
 end;
 
-function lerpEaseInQuad(const a, z, perc: double): double;
+function LerpEaseInQuad(const a, z, perc: double): double;
 begin
-  lerpEaseInQuad := a + easeInQuad(perc) * (z - a)
+  LerpEaseInQuad := a + EaseInQuad(perc) * (z - a)
 end;
 
-function lerpEaseOutQuad(const a, z, perc: double): double;
+function LerpEaseOutQuad(const a, z, perc: double): double;
 begin
-  lerpEaseOutQuad := a + easeOutQuad(perc) * (z - a)
+  LerpEaseOutQuad := a + EaseOutQuad(perc) * (z - a)
 end;
 
-function lerpEaseInOutQuad(const a, z, perc: double): double;
+function LerpEaseInOutQuad(const a, z, perc: double): double;
 begin
-  lerpEaseInOutQuad := a + easeInOutQuad(perc) * (z - a)
+  LerpEaseInOutQuad := a + EaseInOutQuad(perc) * (z - a)
 end;
 
 
-function lerpEaseInSine(const a, z, perc: double): double;
+function LerpEaseInSine(const a, z, perc: double): double;
 begin
-  lerpEaseInSine := a + easeInSine(perc) * (z - a)
+  LerpEaseInSine := a + EaseInSine(perc) * (z - a)
 end;
 
-function lerpEaseOutSine(const a, z, perc: double): double;
+function LerpEaseOutSine(const a, z, perc: double): double;
 begin
-  lerpEaseOutSine := a + easeOutSine(perc) * (z - a)
+  LerpEaseOutSine := a + EaseOutSine(perc) * (z - a)
 end;
 
-function lerpEaseInOutSine(const a, z, perc: double): double;
+function LerpEaseInOutSine(const a, z, perc: double): double;
 begin
-  lerpEaseInOutSine := a + easeInOutSine(perc) * (z - a)
+  LerpEaseInOutSine := a + EaseInOutSine(perc) * (z - a)
 end;
 
 end.
