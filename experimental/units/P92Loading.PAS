@@ -18,7 +18,8 @@ procedure RenderLoadingScreen;
 implementation
 
 uses
-  P92Core, P92Conversions, P92AssetRegistry, P92VGA;
+  P92Core, P92Conversions, P92AssetRegistry,
+  P92VGA, P92WebGL;
 
 procedure RenderLoadingScreen;
 var
@@ -30,7 +31,11 @@ begin
   Print(s, 8, 16);
 
   VgaUpload;
-  VgaPresent
+{$ifdef UseWebGL}
+  WebGLPresent;
+{$else}
+  VgaPresent;
+{$endif}
 end;
 
 end.

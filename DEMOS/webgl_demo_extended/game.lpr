@@ -10,7 +10,7 @@ library Game;
 
 uses
   P92Core, P92Fonts, P92AssetRegistry,
-  P92WasmHost, P92Logger,
+  P92WasmHost, P92Logger, P92Loading,
   P92Keyboard, P92Mouse,
   P92Tex, P92TexDraw,
   P92Timing, P92VGA, P92WebGL,
@@ -26,6 +26,16 @@ var
 procedure DrawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
+end;
+
+procedure LoadGameAssets;
+begin
+  RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt', DefaultFontPtr, DefaultFontGlyphsPtr);
+
+  imgCursor := RequestImage('assets/images/cursor.png');
+
+  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
+  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
 procedure OnReady;
@@ -104,6 +114,7 @@ end;
 
 
 exports
+  LoadGameAssets,
   OnReady,
   Update,
   Draw;
