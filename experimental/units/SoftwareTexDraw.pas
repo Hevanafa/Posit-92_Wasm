@@ -72,10 +72,6 @@ begin
 
   texture := GetTexturePtr(texHandle);
 
-  { TODO: Remove this because IsTextureSet already handled it }
-  if texture^.allocSize = 0 then
-    PanicHalt('texHandle ' + I32Str(texHandle) + ' allocSize is 0!');
-  
   for py:=0 to texture^.height - 1 do
   for px:=0 to texture^.width - 1 do begin
     if (x + px > ClipX2) or (x + px < ClipX1)
