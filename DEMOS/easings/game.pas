@@ -4,19 +4,14 @@ library Game;
 {$H+}{$J-}
 
 uses
-  Conv, Colour, FPS, Fullscreen,
-  Graphics, ImgRef, ImgRefFast, ImgRefComp,
-  Keyboard, Lerp, Loading, Logger,
-  Maths, Mouse,
-  Timing, WasmMemMgr, VGA,
+  P92Core, P92WasmHost,
+  P92Colour, P92FPS,
+  P92Graphics,
+  P92SoftwareTex, P92SoftwareTexDraw, ImgRefComp,
+  P92Keyboard, P92Mouse,
+  Lerp, P92Logger, P92Maths,
+  P92Timing, P92VGA,
   Assets;
-
-type
-  TGameStates = (
-    GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
-  );
 
 const
   SC_ESC = $01;
