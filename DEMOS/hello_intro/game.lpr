@@ -17,8 +17,7 @@ uses
 type
   TGameStates = (
     GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
+    GameStatePlaying = 2
   );
 
 const
@@ -61,13 +60,6 @@ begin
   introSlideEndTick := getTimer + 2.0;
 end;
 
-procedure BeginLoadingState;
-begin
-  actualGameState := GameStateLoading;
-  FitCanvas;
-  RequestAssetLoad
-end;
-
 procedure BeginPlayingState;
 begin
   HideCursor;
@@ -83,7 +75,7 @@ end;
 
 procedure OnReady;
 begin
-  BeginPlayingState
+  BeginIntroState
 end;
 
 procedure Update;
@@ -115,7 +107,7 @@ begin
 
     if introSlide > IntroSlides then begin
       UnloadIntro;
-      BeginLoadingState
+      BeginPlayingState
     end;
 
     exit
@@ -137,7 +129,7 @@ end;
 
 procedure Draw;
 begin
-  if actualGameState in [GameStateIntro, GameStateLoading] then
+  if actualGameState = GameStateIntro then
   case actualGameState of
     GameStateIntro: begin
       RenderIntro(introSlide);
@@ -148,10 +140,6 @@ begin
 
       exit
     end;
-    GameStateLoading: begin
-      RenderLoadingScreen;
-      exit
-    end else
   end;
 
   Cls(CornflowerBlue);
@@ -171,9 +159,9 @@ begin
 end;
 
 exports
-  BeginIntroState,
-  BeginLoadingState,
-  OnReady, Update, Draw;
+  LoadGameAssets,
+  OnReady,
+  Update, Draw;
 
 begin
 { Starting point is intentionally left empty }

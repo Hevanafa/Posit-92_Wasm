@@ -7,12 +7,12 @@ class Game extends BMFontMixin(Posit92) {
   /**
    * @override
    */
-  OnWasmProgress(loaded, total) {
-    const loadedKB = Math.ceil(loaded / 1024);
-    const totalKB = Math.ceil(total / 1024);
+  // OnWasmProgress(loaded, total) {
+  //   const loadedKB = Math.ceil(loaded / 1024);
+  //   const totalKB = Math.ceil(total / 1024);
 
-    this.SetLoadingText(`Downloading engine... ${loadedKB} / ${totalKB} KB`)
-  }
+  //   this.SetLoadingText(`Downloading engine... ${loadedKB} / ${totalKB} KB`)
+  // }
 }
 
 async function Main() {

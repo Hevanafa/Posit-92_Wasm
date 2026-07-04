@@ -9,9 +9,6 @@ unit P92WasmHost;
 
 interface
 
-{ Only used in BeginLoadingState }
-procedure RequestAssetLoad; external 'env' name 'RequestAssetLoad';
-
 { Use this to set `done` to true }
 procedure SignalDone; external 'env' name 'SignalDone';
 
