@@ -71,17 +71,17 @@ uses P92Maths, P92Graphics;
 
 procedure drawZone(const zone: TZone; const colour: longword);
 begin
-  rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), colour)
+  Rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), colour)
 end;
 
 procedure drawPhysicsBody(const body: TPhysicsBody; const colour: longword);
 begin
-  rect(trunc(body.x), trunc(body.y), trunc(body.x + body.width), trunc(body.y + body.height), colour)
+  Rect(trunc(body.x), trunc(body.y), trunc(body.x + body.width), trunc(body.y + body.height), colour)
 end;
 
 procedure drawCircleZone(const zone: TCircle; const colour: longword);
 begin
-  circ(trunc(zone.cx), trunc(zone.cy), trunc(zone.radius), colour)
+  Circ(trunc(zone.cx), trunc(zone.cy), trunc(zone.radius), colour)
 end;
 
 function getDist(const a, b: TPoint): double;

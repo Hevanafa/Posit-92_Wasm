@@ -13,71 +13,72 @@ interface
 
 uses P92Geometry;
 
-function getAlpha(const colour: longword): byte;
-function solidify(const colour: longword): longword;
+function GetAlpha(const colour: longword): byte;
+{ Raises the alpha to $FF or leaves it at $00 }
+function SolidColour(const colour: longword): longword;
 
-procedure circ(const cx, cy, radius: smallint; const colour: longword);
-procedure circfill(const cx, cy, radius: smallint; const colour: longword);
+procedure Circ(const cx, cy, radius: smallint; const colour: longword);
+procedure CircFill(const cx, cy, radius: smallint; const colour: longword);
 
-procedure rect(x0, y0, x1, y1: smallint; const colour: longword);
-procedure rectfill(x0, y0, x1, y1: smallint; const colour: longword);
-procedure hline(x0, x1, y: smallint; const colour: longword);
+procedure Rect(x0, y0, x1, y1: smallint; const colour: longword);
+procedure RectFill(x0, y0, x1, y1: smallint; const colour: longword);
+procedure HLine(x0, x1, y: smallint; const colour: longword);
 { procedure hline2(x0, x1, y: smallint; const colour: longword); }
-procedure vline(x, y0, y1: smallint; const colour: longword);
+procedure VLine(x, y0, y1: smallint; const colour: longword);
 { procedure vline2(x, y0, y1: smallint; const colour: longword); }
 
-procedure line(x0, y0, x1, y1: smallint; const colour: longword);
-procedure lineThick(x0, y0, x1, y1, thickness: smallint; const colour: longword);
+procedure Line(x0, y0, x1, y1: smallint; const colour: longword);
+procedure LineThick(x0, y0, x1, y1, thickness: smallint; const colour: longword);
 
-procedure ellipse(const cx, cy, rx, ry: smallint; const colour: longword);
-procedure ellipsefill(const cx, cy, rx, ry: smallint; const colour: longword);
+procedure Ellipse(const cx, cy, rx, ry: smallint; const colour: longword);
+procedure Ellipsefill(const cx, cy, rx, ry: smallint; const colour: longword);
 
-procedure tri(x0, y0, x1, y1, x2, y2: smallint; const colour: longword);
-procedure trifill(x1, y1, x2, y2, x3, y3: smallint; const colour: longword);
+procedure Tri(x0, y0, x1, y1, x2, y2: smallint; const colour: longword);
+procedure TriFill(x1, y1, x2, y2, x3, y3: smallint; const colour: longword);
 
-procedure polygon(points: array of TPoint; const colour: longword);
-procedure polygonPtr(points: PPoint; const count: smallint; const colour: longword);
+procedure Polygon(points: array of TPoint; const colour: longword);
+procedure PolygonPtr(points: PPoint; const count: smallint; const colour: longword);
 
-procedure arc(
+procedure Arc(
   const cx, cy, radius: smallint;
   const startRad, endRad: double;
   const colour: longword);
-procedure pie(
+procedure Pie(
   const cx, cy, radius: smallint;
   const startRad, endRad: double;
   const colour: longword);
 
-procedure rectRound(x0, y0, x1, y1, radius: smallint; const colour: longword);
+procedure RectRound(x0, y0, x1, y1, radius: smallint; const colour: longword);
 
 
 implementation
 
 uses P92VGA;
 
-function getAlpha(const colour: longword): byte;
+function GetAlpha(const colour: longword): byte;
 begin
-  getAlpha := colour shr 24 and $FF
+  GetAlpha := colour shr 24 and $FF
 end;
 
-function solidify(const colour: longword): longword;
+function SolidColour(const colour: longword): longword;
 begin
   if colour and $FF000000 > 0 then
-    solidify := (colour or $FF000000)
+    SolidColour := (colour or $FF000000)
   else
-    solidify := colour
+    SolidColour := colour
 end;
 
-procedure circ(const cx, cy, radius: smallint; const colour: longword);
+procedure Circ(const cx, cy, radius: smallint; const colour: longword);
 var
   x, y, p: smallint;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
+  if GetAlpha(colour) = 0 then exit;
 
   x := 0;
   y := radius;
   p := 3 - 2 * radius;
-  solid := solidify(colour);
+  solid := SolidColour(colour);
 
   while x <= y do begin
     pset(cx + x, cy + y, solid);
@@ -99,18 +100,18 @@ begin
   end;
 end;
 
-procedure circfill(const cx, cy, radius: smallint; const colour: longword);
+procedure CircFill(const cx, cy, radius: smallint; const colour: longword);
 var
   x, y, p: smallint;
   a: smallint;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
+  if GetAlpha(colour) = 0 then exit;
 
   x := 0;
   y := radius;
   p := 3 - 2 * radius;
-  solid := solidify(colour);
+  solid := SolidColour(colour);
 
   while x <= y do begin
     for a:=cx-x to cx+x do begin
@@ -133,13 +134,13 @@ begin
   end;
 end;
 
-procedure rect(x0, y0, x1, y1: smallint; const colour: longword);
+procedure Rect(x0, y0, x1, y1: smallint; const colour: longword);
 var
   a, b, temp: smallint;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
-  solid := solidify(colour);
+  if GetAlpha(colour) = 0 then exit;
+  solid := SolidColour(colour);
 
   if x0 > x1 then begin
     temp := x0; x0 := x1; x1 := temp
@@ -157,13 +158,13 @@ begin
   end;
 end;
 
-procedure rectfill(x0, y0, x1, y1: smallint; const colour: longword);
+procedure RectFill(x0, y0, x1, y1: smallint; const colour: longword);
 var
   b, temp: smallint;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
-  solid := solidify(colour);
+  if GetAlpha(colour) = 0 then exit;
+  solid := SolidColour(colour);
 
   if x0 > x1 then begin
     temp := x0; x0 := x1; x1 := temp
@@ -172,16 +173,16 @@ begin
     temp := y0; y0 := y1; y1 := temp
   end;
   for b:=y0 to y1 do
-    hline(x0, x1, b, solid);
+    HLine(x0, x1, b, solid);
 end;
 
-procedure legacyHline(x0, x1, y: smallint; const colour: longword);
+procedure LegacyHLine(x0, x1, y: smallint; const colour: longword);
 var
   x: smallint;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
-  solid := solidify(colour);
+  if GetAlpha(colour) = 0 then exit;
+  solid := SolidColour(colour);
 
   if x1 < x0 then begin
     x := x0; x0 := x1; x1 := x
@@ -191,13 +192,13 @@ begin
     pset(x, y, solid);
 end;
 
-procedure hline(x0, x1, y: smallint; const colour: longword);
+procedure HLine(x0, x1, y: smallint; const colour: longword);
 var
   x: smallint;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
-  solid := solidify(colour);
+  if GetAlpha(colour) = 0 then exit;
+  solid := SolidColour(colour);
 
   if (y < clipY1) or (y > clipY2) then exit;
 
@@ -212,14 +213,14 @@ begin
     unsafePset(x, y, solid);
 end;
 
-procedure legacyVline(x, y0, y1: smallint; const colour: longword);
+procedure LegacyVLine(x, y0, y1: smallint; const colour: longword);
 var
   temp, a: smallint;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
+  if GetAlpha(colour) = 0 then exit;
   if (x < 0) or (x >= vgaWidth) then exit;
-  solid := solidify(colour);
+  solid := SolidColour(colour);
 
   if y0 > y1 then begin
     temp := y0; y0 := y1; y1 := temp
@@ -233,15 +234,15 @@ begin
   end;
 end;
 
-procedure vline(x, y0, y1: smallint; const colour: longword);
+procedure VLine(x, y0, y1: smallint; const colour: longword);
 var
   y, temp: smallint;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
+  if GetAlpha(colour) = 0 then exit;
   if (x < clipX1) or (x > clipX2) then exit;
 
-  solid := solidify(colour);
+  solid := SolidColour(colour);
 
   if y1 < y0 then begin
     temp := y0; y0 := y1; y1 := temp
@@ -256,21 +257,21 @@ begin
 end;
 
 
-procedure line(x0, y0, x1, y1: smallint; const colour: longword);
+procedure Line(x0, y0, x1, y1: smallint; const colour: longword);
 var
   dx, dy, sx, sy, err, e2: smallint;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
-  solid := solidify(colour);
+  if GetAlpha(colour) = 0 then exit;
+  solid := SolidColour(colour);
 
   if x0 = x1 then begin
-    vline(x0, y0, y1, solid);
+    VLine(x0, y0, y1, solid);
     exit
   end;
 
   if y0 = y1 then begin
-    hline(x0, x1, y0, solid);
+    HLine(x0, x1, y0, solid);
     exit
   end;
 
@@ -300,7 +301,7 @@ begin
   pset(x0, y0, solid)
 end;
 
-procedure lineThick(x0, y0, x1, y1, thickness: smallint; const colour: longword);
+procedure LineThick(x0, y0, x1, y1, thickness: smallint; const colour: longword);
 var
   dx, dy, len: double;
   perpX, perpY: double;  { perpendicular }
@@ -308,19 +309,19 @@ var
   a, halfThick: smallint;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
-  solid := solidify(colour);
+  if GetAlpha(colour) = 0 then exit;
+  solid := SolidColour(colour);
 
   if thickness <= 0 then exit;
   if thickness = 1 then begin
-    line(x0, y0, x1, y1, solid);
+    Line(x0, y0, x1, y1, solid);
     exit
   end;
 
   { Calculate direction vector }
   dx := x1 - x0;
   dy := y1 - y0;
-  len := sqrt(dx * dx + dy * dy);  { line length }
+  len := sqrt(dx * dx + dy * dy);  { Line length }
 
   if len = 0 then exit;
 
@@ -336,7 +337,7 @@ begin
     if ((thickness and 1) = 0) and (a > 0) then offset := a - 0.5;
     if ((thickness and 1) = 0) and (a < 0) then offset := a + 0.5;
 
-    line(
+    Line(
       round(x0 + perpX * offset),
       round(y0 + perpY * offset),
       round(x1 + perpX * offset),
@@ -346,15 +347,15 @@ begin
 end;
 
 
-procedure ellipse(const cx, cy, rx, ry: smallint; const colour: longword);
+procedure Ellipse(const cx, cy, rx, ry: smallint; const colour: longword);
 var
   x, y: smallint;
   rx2, ry2, tworx2, twory2: smallint;
   p: smallint;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
-  solid := solidify(colour);
+  if GetAlpha(colour) = 0 then exit;
+  solid := SolidColour(colour);
 
   x := 0; y := ry;
   rx2 := rx * rx;
@@ -405,15 +406,15 @@ begin
 end;
 
 
-procedure ellipsefill(const cx, cy, rx, ry: smallint; const colour: longword);
+procedure Ellipsefill(const cx, cy, rx, ry: smallint; const colour: longword);
 var
   x, y: smallint;
   rx2, ry2, tworx2, twory2: smallint;
   p: smallint;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
-  solid := solidify(colour);
+  if GetAlpha(colour) = 0 then exit;
+  solid := SolidColour(colour);
 
   x := 0; y := ry;
   rx2 := rx * rx;
@@ -425,8 +426,8 @@ begin
   p := round(ry2 - (rx2 * ry) + (rx2 / 4));
   
   while (twory2 * x) <= (tworx2 * y) do begin
-    hline(cx - x, cx + x, cy + y, solid);
-    hline(cx - x, cx + x, cy - y, solid);
+    HLine(cx - x, cx + x, cy + y, solid);
+    HLine(cx - x, cx + x, cy - y, solid);
 
     if p < 0 then
       p := p + twory2 * x + ry2
@@ -445,8 +446,8 @@ begin
     - rx2 * ry2);
 
   while y >= 0 do begin
-    hline(cx - x, cx + x, cy + y, solid);
-    hline(cx - x, cx + x, cy - y, solid);
+    HLine(cx - x, cx + x, cy + y, solid);
+    HLine(cx - x, cx + x, cy - y, solid);
 
     if p > 0 then
       p := p - tworx2 * y + rx2
@@ -459,27 +460,27 @@ begin
   end;
 end;
 
-procedure tri(x0, y0, x1, y1, x2, y2: smallint; const colour: longword);
+procedure Tri(x0, y0, x1, y1, x2, y2: smallint; const colour: longword);
 var
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
-  solid := solidify(colour);
+  if GetAlpha(colour) = 0 then exit;
+  solid := SolidColour(colour);
 
-  line(x0, y0, x1, y1, solid);
-  line(x1, y1, x2, y2, solid);
-  line(x0, y0, x2, y2, solid)
+  Line(x0, y0, x1, y1, solid);
+  Line(x1, y1, x2, y2, solid);
+  Line(x0, y0, x2, y2, solid)
 end;
 
-procedure trifill(x1, y1, x2, y2, x3, y3: smallint; const colour: longword);
+procedure TriFill(x1, y1, x2, y2, x3, y3: smallint; const colour: longword);
 var
   temp, minY, maxY, y: smallint;
   xa, xb: single;
   dxa, dxb: single;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
-  solid := solidify(colour);
+  if GetAlpha(colour) = 0 then exit;
+  solid := SolidColour(colour);
 
   { Handle bubble sort }
   if y1 > y2 then begin
@@ -507,7 +508,7 @@ begin
     dxb := (x2 - x1) / (y2 - y1);  { short edge }
 
     for y:=y1 to y2 - 1 do begin
-      hline(round(xa), round(xb), y, solid);
+      HLine(round(xa), round(xb), y, solid);
       xa := xa + dxa;
       xb := xb + dxb
     end;
@@ -522,7 +523,7 @@ begin
     dxb := (x3 - x2) / (y3 - y2);
 
     for y:=y2 to y3 do begin
-      hline(round(xa), round(xb), y, solid);
+      HLine(round(xa), round(xb), y, solid);
       xa := xa + dxa;
       xb := xb + dxb
     end;
@@ -530,34 +531,34 @@ begin
 end;
 
 
-procedure polygon(points: array of TPoint; const colour: longword);
+procedure Polygon(points: array of TPoint; const colour: longword);
 var
   a, last: smallint;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
-  solid := solidify(colour);
+  if GetAlpha(colour) = 0 then exit;
+  solid := SolidColour(colour);
 
   { Skip if it doesn't form at least a line }
   if length(points) < 2 then exit;
 
   last := high(points);
   for a:=0 to last - 1 do
-    line(round(points[a].x), round(points[a].y),
+    Line(round(points[a].x), round(points[a].y),
       round(points[a + 1].x), round(points[a + 1].y), solid);
 
-  line(round(points[last].x), round(points[last].y),
+  Line(round(points[last].x), round(points[last].y),
     round(points[0].x), round(points[0].y), solid);
 end;
 
-procedure polygonPtr(points: PPoint; const count: smallint; const colour: longword);
+procedure PolygonPtr(points: PPoint; const count: smallint; const colour: longword);
 var
   a: smallint;
   solid: longword;
   p: PPoint;
 begin
-  if getAlpha(colour) = 0 then exit;
-  solid := solidify(colour);
+  if GetAlpha(colour) = 0 then exit;
+  solid := SolidColour(colour);
 
   { Skip if it doesn't form at least a line }
   if count < 2 then exit;
@@ -569,13 +570,13 @@ begin
     inc(p)
   end;
 
-  { Close the polygon }
-  line(round(p^.x), round(p^.y),
+  { Close the Polygon }
+  Line(round(p^.x), round(p^.y),
     round(points^.x), round(points^.y), solid);
 end;
 
 
-procedure arc(
+procedure Arc(
   const cx, cy, radius: smallint;
   const startRad, endRad: double;
   const colour: longword);
@@ -585,12 +586,12 @@ var
   first: boolean;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
-  solid := solidify(colour);
+  if GetAlpha(colour) = 0 then exit;
+  solid := SolidColour(colour);
 
   if radius <= 0 then exit;
 
-  { Draw the arc }
+  { Draw the Arc }
   step := 1.0 / radius;
   if step > 0.1 then step := 0.1;
 
@@ -605,7 +606,7 @@ begin
     y := cy + round(sin(angle) * radius);
 
     if not first then
-      line(prevX, prevY, x, y, solid)
+      Line(prevX, prevY, x, y, solid)
     else
       first := false;
 
@@ -618,10 +619,10 @@ begin
   y := cy + round(sin(endRad) * radius);
 
   if not first then
-    line(prevX, prevY, x, y, solid);
+    Line(prevX, prevY, x, y, solid);
 end;
 
-procedure pie(
+procedure Pie(
   const cx, cy, radius: smallint;
   const startRad, endRad: double;
   const colour: longword);
@@ -631,12 +632,12 @@ var
   first: boolean;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
-  solid := solidify(colour);
+  if GetAlpha(colour) = 0 then exit;
+  solid := SolidColour(colour);
 
   if radius <= 0 then exit;
 
-  { Draw the arc }
+  { Draw the Arc }
   step := 1.0 / radius;
   if step > 0.1 then step := 0.1;
 
@@ -651,7 +652,7 @@ begin
     y := cy + round(sin(angle) * radius);
 
     if not first then
-      trifill(cx, cy, prevX, prevY, x, y, solid)
+      TriFill(cx, cy, prevX, prevY, x, y, solid)
     else
       first := false;
 
@@ -664,17 +665,17 @@ begin
   y := cy + round(sin(endRad) * radius);
 
   if not first then
-    trifill(cx, cy, prevX, prevY, x, y, solid);
+    TriFill(cx, cy, prevX, prevY, x, y, solid);
 end;
 
 
-procedure rectRound(x0, y0, x1, y1, radius: smallint; const colour: longword);
+procedure RectRound(x0, y0, x1, y1, radius: smallint; const colour: longword);
 var
   temp, maxRadius: smallint;
   solid: longword;
 begin
-  if getAlpha(colour) = 0 then exit;
-  solid := solidify(colour);
+  if GetAlpha(colour) = 0 then exit;
+  solid := SolidColour(colour);
 
   { Sort coordinates }
   if x1 < x0 then begin
@@ -693,22 +694,22 @@ begin
   if radius < 0 then radius := 0;
 
   if radius = 0 then begin
-    rect(x0, y0, x1, y1, colour);
+    Rect(x0, y0, x1, y1, colour);
     exit
   end;
 
   { Handle edges }
-  hline(x0 + radius, x1 - radius, y0, solid);
-  hline(x0 + radius, x1 - radius, y1, solid);
+  HLine(x0 + radius, x1 - radius, y0, solid);
+  HLine(x0 + radius, x1 - radius, y1, solid);
 
-  vline(x0, y0 + radius, y1 - radius, solid);
-  vline(x1, y0 + radius, y1 - radius, solid);
+  VLine(x0, y0 + radius, y1 - radius, solid);
+  VLine(x1, y0 + radius, y1 - radius, solid);
 
   { Handle corners }
-  arc(x0 + radius, y0 + radius, radius, pi, 3 / 2 * pi, solid);
-  arc(x1 - radius, y0 + radius, radius, 3 / 2 * pi, 2 * pi, solid);
-  arc(x0 + radius, y1 - radius, radius, pi / 2, pi, solid);
-  arc(x1 - radius, y1 - radius, radius, 0, pi / 2, solid);
+  Arc(x0 + radius, y0 + radius, radius, pi, 3 / 2 * pi, solid);
+  Arc(x1 - radius, y0 + radius, radius, 3 / 2 * pi, 2 * pi, solid);
+  Arc(x0 + radius, y1 - radius, radius, pi / 2, pi, solid);
+  Arc(x1 - radius, y1 - radius, radius, 0, pi / 2, solid);
 end;
 
 

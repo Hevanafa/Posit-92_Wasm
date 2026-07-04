@@ -82,25 +82,25 @@ begin
     spr(imgDosuEXE[0], 148, 88);
   }
 
-  circ(50, 50, 10, $80FF5555);
-  circfill(80, 50, 10, $80FFAA55);
+  Circ(50, 50, 10, $80FF5555);
+  CircFill(80, 50, 10, $80FFAA55);
 
-  { rect(110, 50, 130, 70, $80FFFF55); }
-  rectRound(110, 50, 130, 70, 5, $80FFFF55);
-  rectfill(140, 50, 160, 70, $8055FF55);
+  { Rect(110, 50, 130, 70, $80FFFF55); }
+  RectRound(110, 50, 130, 70, 5, $80FFFF55);
+  RectFill(140, 50, 160, 70, $8055FF55);
 
-  ellipse(50, 80, 20, 10, $805555FF);
-  ellipsefill(80, 80, 20, 10, $8055AAFF);
+  Ellipse(50, 80, 20, 10, $805555FF);
+  Ellipsefill(80, 80, 20, 10, $8055AAFF);
 
-  tri(50, 110, 70, 120, 40, 130, $80AA55AA);
-  trifill(80, 110, 100, 120, 70, 130, $80FF55FF);
+  Tri(50, 110, 70, 120, 40, 130, $80AA55AA);
+  TriFill(80, 110, 100, 120, 70, 130, $80FF55FF);
 
-  polygonPtr(@testPoints[0], length(testPoints), $80FF5555);
+  PolygonPtr(@testPoints[0], length(testPoints), $80FF5555);
 
-  arc(160, 100, 50, 0, pi, $FFFF5555);
-  pie(160, 100, 50, pi / 4, 3 * pi / 4, $FF55FF55);
+  Arc(160, 100, 50, 0, pi, $FFFF5555);
+  Pie(160, 100, 50, pi / 4, 3 * pi / 4, $FF55FF55);
 
-  lineThick(50, 50, 200, 150, 15, $FFFF5555);
+  LineThick(50, 50, 200, 150, 15, $FFFF5555);
 
   DrawMouse;
 
