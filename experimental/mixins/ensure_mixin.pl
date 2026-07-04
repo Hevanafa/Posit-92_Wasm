@@ -27,12 +27,24 @@ if ($mixin_name =~ /\.ts$/) {
   ($mixin_name) = $mixin_name =~ /(.*)\.ts/
 }
 
-my $source_file = catfile($script_dir, $mixin_name.".ts");
+my $mixin_filename = "p92-$mixin_name.mixin.ts";
+my $source_file = catfile($script_dir, $mixin_filename);
 
 unless (-f $source_file) {
   say "Couldn't find ".$source_file."!";
   exit 1
 }
 
-say "Generating ".$mixin_name.".js...";
-system "perl $make_script $source_file"
+say "Generating p92-".$mixin_name.".mixin.js...";
+
+say "ensure_mixin.pl: $make_script";
+say "ensure_mixin.pl: $source_file";
+
+my @args = ($make_script, $source_file);
+
+# say "ensure_mixin.pl args: " . (join " -- ", @args);
+system "perl", @args;
+
+# system "perl $make_script $source_file";
+
+say "Done generating!"

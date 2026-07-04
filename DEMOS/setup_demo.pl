@@ -50,11 +50,7 @@ sub setup_demo {
     return
   }
 
-  say "demo_name: ".$demo_name;
-
   my $demo_dir = catdir($project_root, "DEMOS", $demo_name);
-
-  say "demo_dir: ".$demo_dir;
 
   unless (-d $demo_dir) {
     say "Couldn't find ".$demo_dir."!";
@@ -76,6 +72,8 @@ sub setup_demo {
     say "Copying mixin files...";
 
     for my $mixin_name (@mixins) {
+      my $mixin_filename = "p92-$mixin_name.mixin.js";
+
       my @args = (
         catdir($mixins_dir, "ensure_mixin.pl"),
         $mixin_name
@@ -84,9 +82,9 @@ sub setup_demo {
       system "perl", @args;
 
       copy(
-        catfile($mixins_dir, $mixin_name.".js"),
-        catfile($demo_dir, $mixin_name.".js"))
-          or warn "Couldn't copy mixin: $mixin_name"
+        catfile($mixins_dir, $mixin_filename.".js"),
+        catfile($demo_dir, $mixin_filename.".js"))
+          or warn "Couldn't copy mixin: $mixin_filename"
     }
   }
 
