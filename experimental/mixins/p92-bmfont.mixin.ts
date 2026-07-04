@@ -21,6 +21,10 @@ type BMFontWasmImports = WasmImports & {
 // Obligatory for mixins
 type Constructor<T = {}> = new (...args: any[]) => T;
 
+interface IBMFont {
+  // List the public members
+}
+
 const BMFontMixin = <T extends Constructor<Posit92>>(Base: T) =>
 class extends Base {
   /**
@@ -346,4 +350,4 @@ class extends Base {
 
     // for (const item of results) ;
   }
-}
+} as Constructor<IBMFont> & T;
