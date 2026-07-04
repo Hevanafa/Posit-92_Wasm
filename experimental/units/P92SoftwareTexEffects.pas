@@ -1,4 +1,4 @@
-unit SprEffects;
+unit P92SoftwareTexEffects;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
