@@ -9,15 +9,12 @@ library Game;
 {$H-}
 
 uses
-  P92Core, P92Fonts, P92AssetRegistry, P92Logger,
+  P92Core, P92Fonts, P92AssetRegistry,
+  P92WasmHost, P92Logger,
   P92Keyboard, P92Mouse,
-  P92SoftwareTex, P92SoftwareTexDraw,
+  P92Tex, P92TexDraw,
   P92Timing, P92VGA, P92WebGL,
   Assets;
-
-const
-  SC_ESC = $01;
-  SC_SPACE = $39;
 
 var
   lastEsc: boolean;
@@ -25,9 +22,6 @@ var
   { Init your game state here }
   gameTime: double;
   drawOnce: boolean;
-
-{ Use this to set `done` to true }
-procedure SignalDone; external 'env' name 'SignalDone';
 
 procedure DrawMouse;
 begin
@@ -39,18 +33,15 @@ begin
   { Initialise game state here }
   HideCursor;
 
-  drawOnce := false
+  drawOnce := false;
+  gameTime := 0.0;
 end;
 
 procedure Update;
 begin
-  UpdateDeltaTime;
-
-  UpdateMouse;
-
   { Your Update logic here }
-  if lastEsc <> IsKeyDown(SC_ESC) then begin
-    lastEsc := IsKeyDown(SC_ESC);
+  if lastEsc <> IsKeyDown(SC_ESCAPE) then begin
+    lastEsc := IsKeyDown(SC_ESCAPE);
     if lastEsc then SignalDone;
   end;
 
