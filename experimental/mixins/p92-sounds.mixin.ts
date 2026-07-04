@@ -106,7 +106,8 @@ class SoundsMixin extends Base {
   async LoadSoundsFromManifest(manifest: Map<number, string>): Promise<void> {
     const entries = Array.from(manifest.entries());
 
-    this.WasmInstance.exports.IncAssetTotalCount(manifest.size);
+    // TODO: Track this via AssetManager
+    // this.WasmInstance.exports.IncAssetTotalCount(manifest.size);
 
     const promises = entries.map(([key, url]) =>
       this.LoadSound(key, url)
@@ -118,7 +119,10 @@ class SoundsMixin extends Base {
           console.error("Failed to load sound: " + url, err);
           return { key, url, success: false };
         })
-        .finally(() => { this.WasmInstance.exports.IncAssetReadyCount(); })
+        .finally(() => {
+          // TODO: Track this via AssetManager
+          // this.WasmInstance.exports.IncAssetReadyCount();
+        })
     );
 
     const results = await Promise.all(promises);
