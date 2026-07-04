@@ -1,9 +1,10 @@
 {
-  BMFont - Part of Posit-92 game engine
-  Hevanafa
+  BMFont
+  Part of Posit-92 game engine
+  By Hevanafa
 }
 
-unit BMFont;
+unit P92BMFont;
 
 {$Mode ObjFPC}
 {$H+}{$J-}

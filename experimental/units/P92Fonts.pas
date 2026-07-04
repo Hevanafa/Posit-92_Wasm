@@ -2,7 +2,7 @@ unit P92Fonts;
 
 interface
 
-uses BMFont;
+uses P92BMFont;
 
 { BMFont boilerplate }
 function DefaultFontPtr: PBMFont; public name 'DefaultFontPtr';
