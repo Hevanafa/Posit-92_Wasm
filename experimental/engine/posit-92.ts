@@ -508,10 +508,6 @@ class Posit92 {
     //   this.WasmInstance.exports.DefaultFontGlyphsPtr());
   }
 
-  async LoadAssets(): Promise<void> {
-    throw new Error("LoadAssets has been moved to LoadGameAssets");
-  }
-
   /**
    * Called from Pascal side
    * 
@@ -1175,6 +1171,9 @@ class Posit92 {
 
     // Pass the state control to Pascal
     this.#wasm.exports.InitLoadingState();
+
+    if (this.bootOptions.defaultFont == true)
+      this.#wasm.exports.LoadDefaultFont();
 
     // Some demos don't even use assets
     if (Object.hasOwn(this.#wasm.exports, "LoadGameAssets"))

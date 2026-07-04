@@ -5,6 +5,8 @@ interface
 uses P92BMFont;
 
 { BMFont boilerplate }
+procedure LoadDefaultFont; public name 'LoadDefaultFont';
+
 function DefaultFontPtr: PBMFont; public name 'DefaultFontPtr';
 function DefaultFontGlyphsPtr: PBMFontGlyph; public name 'DefaultFontGlyphsPtr';
 
@@ -15,9 +17,18 @@ function MeasureDefault(const text: string): word;
 
 implementation
 
+uses P92AssetRegistry;
+
 var
   defaultFont: TBMFont;
   defaultFontGlyphs: array[32..126] of TBMFontGlyph;
+
+procedure LoadDefaultFont;
+begin
+  RequestBMFont(
+    'assets/fonts/nokia_cellphone_fc_8.txt',
+    DefaultFontPtr, DefaultFontGlyphsPtr)
+end;
 
 function DefaultFontPtr: PBMFont;
 begin
