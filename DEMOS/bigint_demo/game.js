@@ -1,22 +1,7 @@
 "use strict";
 
-function asMixin(MixinClass) {
-  return (Base) => {
-    class Mixed extends Base {}
-    Object.getOwnPropertyNames(MixinClass.prototype).forEach(name => {
-      if (name !== 'constructor')
-        Mixed.prototype[name] = MixinClass.prototype[name];
-    });
-    Object.defineProperty(Mixed, 'name', { value: MixinClass.name });
-    return Mixed;
-  };
-}
-
-const withBMFont = asMixin(BMFontMixin);
-const withBigInt = asMixin(BigIntMixin);
-
 // Compose: innermost mixin applies first
-class Game extends withBigInt(withBMFont(Posit92)) {
+class Game extends BigIntMixin(BMFontMixin(Posit92)) {
   AssetManifest = {
     images: {
       cursor: "assets/images/cursor.png"
