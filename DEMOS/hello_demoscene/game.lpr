@@ -23,14 +23,12 @@ end;
 
 procedure LoadGameAssets;
 begin
-  writelog('LoadGameAssets call');
-
+  RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt', DefaultFontPtr, DefaultFontGlyphsPtr);
+  
   imgCursor := RequestImage('assets/images/cursor.png');
 
   imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
   imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
-
-  RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt', DefaultFontPtr, DefaultFontGlyphsPtr);
 end;
 
 { Called after LoadGameAssets is finished }

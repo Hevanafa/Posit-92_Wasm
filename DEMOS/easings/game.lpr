@@ -56,6 +56,16 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
+procedure LoadGameAssets;
+begin
+  RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt', DefaultFontPtr, DefaultFontGlyphsPtr);
+
+  imgCursor := RequestImage('assets/images/cursor.png');
+
+  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
+  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
+end;
+
 function GetDemoStateName(const state: integer): string;
 begin
   result := '';
@@ -240,7 +250,7 @@ begin
 end;
 
 exports
-  OnReady, Update, Draw;
+  LoadGameAssets, OnReady, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
