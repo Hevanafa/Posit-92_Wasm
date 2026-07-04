@@ -259,7 +259,7 @@ begin
   else
     spr(imgDosuEXE[0], x, 88);
 
-  circfill(30, 130, 10, lerpColour(Red, Purple, perc));
+  circfill(30, 130, 10, LerpColour(Red, Purple, perc));
   circfill(60, 130, 10, HSVtoRGB(perc, 1.0, 0.5));
 
   { Begin HUD }
