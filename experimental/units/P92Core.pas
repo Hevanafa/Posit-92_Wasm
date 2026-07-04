@@ -33,7 +33,7 @@ implementation
 uses
   P92Conversions, P92WasmMemMgr,
   P92FPS, P92Loading, P92Logger,
-  InteropBuf, P92Timing,
+  P92InteropBuf, P92Timing,
   P92Mouse,
   P92AssetRegistry, P92SoftwareTexDraw,
   P92VGA, P92WasmHost

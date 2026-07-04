@@ -1,4 +1,4 @@
-unit InteropBuf;
+unit P92InteropBuf;
 
 {$Mode ObjFPC}
 {$H+}

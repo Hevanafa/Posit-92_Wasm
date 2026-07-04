@@ -34,7 +34,7 @@ procedure WriteLog(const msg: string);
 
 implementation
 
-uses InteropBuf;
+uses P92InteropBuf;
 
 {$ifdef Windows}
 uses CRT;
