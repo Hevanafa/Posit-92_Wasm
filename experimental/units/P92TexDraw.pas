@@ -1,12 +1,12 @@
 { 
-  SoftwareTexDraw unit
+  Texture Draw unit
   Part of Posit-92 game engine
   By Hevanafa
 
   The term "texture" used in this unit is strictly in the context of CPU rendering
 }
 
-unit P92SoftwareTexDraw;
+unit P92TexDraw;
 
 {$Mode ObjFPC}
 {$H+}{$J-}

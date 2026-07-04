@@ -1,5 +1,5 @@
 {
-  SoftwareTex unit - Part of Posit-92 game engine
+  Base texture unit - Part of Posit-92 game engine
   Hevanafa
 
   Base unit for SoftwareTexDraw and ImgRefComp
@@ -8,7 +8,7 @@
   The term "texture" used in this unit is strictly in the context of CPU rendering
 }
 
-unit P92SoftwareTex;
+unit P92Tex;
 
 {$Mode ObjFPC}
 {$H+}{$J-}

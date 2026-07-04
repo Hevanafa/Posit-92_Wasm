@@ -1,11 +1,12 @@
 {
-  Composite Blitting unit - Part of Posit-92 game engine
+  Composite blitting unit
+  Part of Posit-92 game engine
   Hevanafa
 
   Similar to ImgRefFast but with a proper alpha blending logic
 }
 
-unit P92SoftwareTexComp;
+unit P92TexComp;
 
 {$Mode ObjFPC}
 {$H+}{$J-}

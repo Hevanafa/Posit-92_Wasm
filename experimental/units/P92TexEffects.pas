@@ -1,4 +1,4 @@
-unit P92SoftwareTexEffects;
+unit P92TexEffects;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
