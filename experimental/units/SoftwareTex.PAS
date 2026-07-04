@@ -37,21 +37,21 @@ const
   SprFlipBoth = SprFlipHorizontal or SprFlipVertical;
 
 function NewTexture(const width, height: smallint): longint;
-function CopyTexture(const imgHandle: longint): longint;
-procedure FreeTexture(const imgHandle: longint);
+function CopyTexture(const texHandle: longint): longint;
+procedure FreeTexture(const texHandle: longint);
 
-function IsTextureSet(const imgHandle: longint): boolean;
-procedure AssertTextureSet(const varName: string; const imgHandle: longint);
-function GetTexturePtr(const imgHandle: longint): PSoftwareTex;
+function IsTextureSet(const texHandle: longint): boolean;
+procedure AssertTextureSet(const varName: string; const texHandle: longint);
+function GetTexturePtr(const texHandle: longint): PSoftwareTex;
 
-function GetTextureWidth(const imgHandle: longint): smallint;
-procedure SetTextureWidth(const imgHandle: longint; const value: smallint);
-function GetTextureHeight(const imgHandle: longint): smallint;
-procedure SetTextureHeight(const imgHandle: longint; const value: smallint);
+function GetTextureWidth(const texHandle: longint): smallint;
+procedure SetTextureWidth(const texHandle: longint; const value: smallint);
+function GetTextureHeight(const texHandle: longint): smallint;
+procedure SetTextureHeight(const texHandle: longint; const value: smallint);
 
-function UnsafeSprPget(const image: PSoftwareTex; const x, y: smallint): longword;
-function UnsafeSprGetAlpha(const image: PSoftwareTex; const x, y: smallint): byte;
-procedure UnsafeSprPset(const image: PSoftwareTex; const x, y: smallint; const colour: longword);
+function UnsafeSprPget(const texture: PSoftwareTex; const x, y: smallint): longword;
+function UnsafeSprGetAlpha(const texture: PSoftwareTex; const x, y: smallint): byte;
+procedure UnsafeSprPset(const texture: PSoftwareTex; const x, y: smallint; const colour: longword);
 
 
 implementation
@@ -72,13 +72,13 @@ var
   dataPtr: PByte;
 begin
   if width <= 0 then
-    PanicHalt('newImage: Invalid width: ' + I32Str(width));
+    PanicHalt('NewTexture: Invalid width: ' + I32Str(width));
 
   if height <= 0 then
-    PanicHalt('newImage: Invalid height: ' + I32Str(height));
+    PanicHalt('NewTexture: Invalid height: ' + I32Str(height));
 
   slot := FindUnusedTextureSlot;
-  if slot < 0 then PanicHalt('Image ref pool is full!');
+  if slot < 0 then PanicHalt('Software texture pool is full!');
   
   allocSize := width * height * 4;
   dataPtr := PByte(getmem(allocSize));
@@ -95,13 +95,16 @@ begin
   NewTexture := slot
 end;
 
-{ imgHandle: Source image handle }
-function CopyTexture(const imgHandle: longint): longint;
+{
+  Makes a copy of the source texture
+  Returns: a new texture handle
+}
+function CopyTexture(const texHandle: longint): longint;
 var
   slot: longint;
   src, dest: PSoftwareTex;
 begin
-  src := GetTexturePtr(imgHandle);
+  src := GetTexturePtr(texHandle);
   slot := NewTexture(src^.width, src^.height);
   dest := GetTexturePtr(slot);
 
@@ -109,26 +112,26 @@ begin
   CopyTexture := slot
 end;
 
-procedure FreeTexture(const imgHandle: longint);
+procedure FreeTexture(const texHandle: longint);
 begin
-  if (imgHandle < 1) or (imgHandle >= MaxTextures) then exit;
-  if textures[imgHandle].texture.pixelData = nil then exit;
+  if (texHandle < 1) or (texHandle >= MaxTextures) then exit;
+  if textures[texHandle].texture.pixelData = nil then exit;
 
 {$ifdef WASM}
-  WasmFreeMem(textures[imgHandle].texture.pixelData);
+  WasmFreeMem(textures[texHandle].texture.pixelData);
 {$endif}
 {$ifdef Windows}
   FreeMem(imageRefs[imgHandle].dataPtr);
 {$endif}
 
-  textures[imgHandle].texture.width := 0;
-  textures[imgHandle].texture.height := 0;
-  textures[imgHandle].texture.allocSize := 0;
-  textures[imgHandle].texture.pixelData := nil
+  textures[texHandle].texture.width := 0;
+  textures[texHandle].texture.height := 0;
+  textures[texHandle].texture.allocSize := 0;
+  textures[texHandle].texture.pixelData := nil
 end;
 
 
-function IsTextureSet(const imgHandle: longint): boolean;
+function IsTextureSet(const texHandle: longint): boolean;
 begin
   IsTextureSet := false;
 
@@ -136,114 +139,116 @@ begin
   if imgHandle <= 0 then
     panicHalt('Invalid imgHandle: ' + i32str(imgHandle));
 {$else}
-  if imgHandle <= 0 then exit;
+  if texHandle <= 0 then exit;
 {$endif}
 
-  { IsTextureSet := (textures[imgHandle].width > 0) and (textures[imgHandle].height > 0) }
-  { IsTextureSet := (textures[imgHandle].allocSize > 0) }
-  IsTextureSet := textures[imgHandle].status = AssetStatusReady
+  { IsTextureSet := (textures[texHandle].width > 0) and (textures[texHandle].height > 0) }
+  { IsTextureSet := (textures[texHandle].allocSize > 0) }
+  IsTextureSet := textures[texHandle].status = AssetStatusReady
 end;
 
-procedure AssertTextureSet(const varName: string; const imgHandle: longint);
+procedure AssertTextureSet(const varName: string; const texHandle: longint);
 begin
-  if not IsTextureSet(imgHandle) then
+  if not IsTextureSet(texHandle) then
     PanicHalt(varName + ' is unset!');
 end;
 
-function GetTexturePtr(const imgHandle: longint): PSoftwareTex;
+function GetTexturePtr(const texHandle: longint): PSoftwareTex;
 begin
-  GetTexturePtr := @textures[imgHandle]
+  GetTexturePtr := @textures[texHandle]
 end;
 
 
-function GetTextureWidth(const imgHandle: longint): smallint;
+function GetTextureWidth(const texHandle: longint): smallint;
 var
-  image: PSoftwareTex;
+  texture: PSoftwareTex;
 begin
   GetTextureWidth := 0;
-  if not IsTextureSet(imgHandle) then exit;
+  if not IsTextureSet(texHandle) then exit;
 
-  image := GetTexturePtr(imgHandle);
-  GetTextureWidth := image^.width
+  texture := GetTexturePtr(texHandle);
+  GetTextureWidth := texture^.width
 end;
 
-procedure SetTextureWidth(const imgHandle: longint; const value: smallint);
+procedure SetTextureWidth(const texHandle: longint; const value: smallint);
 var
-  image: PSoftwareTex;
+  texture: PSoftwareTex;
 begin
-  if not IsTextureSet(imgHandle) then exit;
+  if not IsTextureSet(texHandle) then exit;
+
   if value <= 0 then
-    PanicHalt('setImageWidth: Invalid width: ' + I32Str(value));
+    PanicHalt('SetTextureWidth: Invalid width: ' + I32Str(value));
 
-  image := GetTexturePtr(imgHandle);
+  texture := GetTexturePtr(texHandle);
 
-  if value * image^.height * 4 > image^.allocSize then
-    PanicHalt('setImageWidth: New size exceeds the allocated buffer!');
+  if value * texture^.height * 4 > texture^.allocSize then
+    PanicHalt('SetTextureWidth: New size exceeds the allocated buffer!');
 
-  image^.width := value
+  texture^.width := value
 end;
 
 
-function GetTextureHeight(const imgHandle: longint): smallint;
+function GetTextureHeight(const texHandle: longint): smallint;
 var
-  image: PSoftwareTex;
+  texture: PSoftwareTex;
 begin
   GetTextureHeight := 0;
-  if not IsTextureSet(imgHandle) then exit;
+  if not IsTextureSet(texHandle) then exit;
 
-  image := GetTexturePtr(imgHandle);
-  GetTextureHeight := image^.height
+  texture := GetTexturePtr(texHandle);
+  GetTextureHeight := texture^.height
 end;
 
-procedure SetTextureHeight(const imgHandle: longint; const value: smallint);
+procedure SetTextureHeight(const texHandle: longint; const value: smallint);
 var
-  image: PSoftwareTex;
+  texture: PSoftwareTex;
 begin
-  if not IsTextureSet(imgHandle) then exit;
+  if not IsTextureSet(texHandle) then exit;
+
   if value <= 0 then
-    PanicHalt('setImageHeight: Invalid width: ' + I32Str(value));
+    PanicHalt('SetTextureHeight: Invalid height: ' + I32Str(value));
 
-  image := GetTexturePtr(imgHandle);
+  texture := GetTexturePtr(texHandle);
 
-  if image^.width * value * 4 > image^.allocSize then
-    PanicHalt('setImageHeight: New size exceeds the allocated buffer!');
+  if texture^.width * value * 4 > texture^.allocSize then
+    PanicHalt('SetTextureHeight: New size exceeds the allocated buffer!');
 
-  image^.height := value
+  texture^.height := value
 end;
 
 
-{ Assuming image isn't nil & the bounds are known }
-function UnsafeSprPget(const image: PSoftwareTex; const x, y: smallint): longword;
+{ Assuming the texture isn't nil & the bounds are known }
+function UnsafeSprPget(const texture: PSoftwareTex; const x, y: smallint): longword;
 var
   offset: longword;
 begin
-  offset := (x + y * image^.width) * 4;
+  offset := (x + y * texture^.width) * 4;
 
   UnsafeSprPget :=
-    (image^.pixelData[offset + 3] shl 24)
-    or (image^.pixelData[offset] shl 16)
-    or (image^.pixelData[offset + 1] shl 8)
-    or image^.pixelData[offset + 2]
+    (texture^.pixelData[offset + 3] shl 24)
+    or (texture^.pixelData[offset] shl 16)
+    or (texture^.pixelData[offset + 1] shl 8)
+    or texture^.pixelData[offset + 2]
 end;
 
-function UnsafeSprGetAlpha(const image: PSoftwareTex; const x, y: smallint): byte;
+function UnsafeSprGetAlpha(const texture: PSoftwareTex; const x, y: smallint): byte;
 begin
-  UnsafeSprGetAlpha := image^.pixelData[
-    (x + y * image^.width) * 4 + 3]
+  UnsafeSprGetAlpha := texture^.pixelData[
+    (x + y * texture^.width) * 4 + 3]
 end;
 
 
-procedure UnsafeSprPset(const image: PSoftwareTex; const x, y: smallint; const colour: longword);
+procedure UnsafeSprPset(const texture: PSoftwareTex; const x, y: smallint; const colour: longword);
 var
   offset: longword;
 begin
-  offset := (x + y * image^.width) * 4;
+  offset := (x + y * texture^.width) * 4;
 
   { Order: RGBA }
-  image^.pixelData[offset] := colour shr 16 and $FF;
-  image^.pixelData[offset + 1] := colour shr 8 and $FF;
-  image^.pixelData[offset + 2] := colour and $FF;
-  image^.pixelData[offset + 3] := colour shr 24 and $FF;
+  texture^.pixelData[offset] := colour shr 16 and $FF;
+  texture^.pixelData[offset + 1] := colour shr 8 and $FF;
+  texture^.pixelData[offset + 2] := colour and $FF;
+  texture^.pixelData[offset + 3] := colour shr 24 and $FF;
 end;
 
 end.
