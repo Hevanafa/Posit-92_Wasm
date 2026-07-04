@@ -23,22 +23,22 @@ uses P92SoftwareTex, P92Maths, P92VGA;
 
 procedure SprAlpha(const imgHandle: longint; const x, y: smallint; opacity: double);
 var
-  image: PImageRef;
+  texture: PSoftwareTex;
   px, py: smallint;
   colour: longword;
   alpha: byte;
 begin
-  if not isImageSet(imgHandle) then exit;
+  if not IsTextureSet(imgHandle) then exit;
 
-  image := getImagePtr(imgHandle);
+  texture := GetTexturePtr(imgHandle);
   opacity := clamp(opacity, 0.0, 1.0);
 
-  for py := 0 to image^.height - 1 do
-  for px := 0 to image^.width - 1 do begin
+  for py := 0 to texture^.height - 1 do
+  for px := 0 to texture^.width - 1 do begin
     if (x + px > clipX2) or (x + px < clipX1)
       or (y + py > clipY2) or (y + py < clipY1) then continue;
 
-    colour := unsafeSprPget(image, px, py);
+    colour := unsafeSprPget(texture, px, py);
     alpha := colour shr 24;
     if alpha = 0 then continue;
     
@@ -51,20 +51,20 @@ end;
 
 procedure SprBlend(const imgHandle: longint; const x, y: smallint);
 var
-  image: PImageRef;
+  texture: PSoftwareTex;
   px, py: smallint;
   colour: longword;
 begin
-  if not isImageSet(imgHandle) then exit;
+  if not IsTextureSet(imgHandle) then exit;
 
-  image := getImagePtr(imgHandle);
+  texture := GetTexturePtr(imgHandle);
 
-  for py := 0 to image^.height - 1 do
-  for px := 0 to image^.width - 1 do begin
+  for py := 0 to texture^.height - 1 do
+  for px := 0 to texture^.width - 1 do begin
     if (x + px > clipX2) or (x + px < clipX1)
       or (y + py > clipY2) or (y + py < clipY1) then continue;
 
-    colour := unsafeSprPget(image, px, py);
+    colour := unsafeSprPget(texture, px, py);
     psetBlend(x + px, y + py, colour)
   end;
 end;
