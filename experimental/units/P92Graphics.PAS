@@ -11,7 +11,7 @@ unit P92Graphics;
 
 interface
 
-uses Shapes;
+uses P92Geometry;
 
 function getAlpha(const colour: longword): byte;
 function solidify(const colour: longword): longword;

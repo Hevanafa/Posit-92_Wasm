@@ -1,11 +1,12 @@
 {
-  Shapes unit - Part of Posit-92 game engine
+  Geometry unit
+  Part of Posit-92 game engine
   Hevanafa
 
   Contains primitive types: point, zone, physics body & circle
 }
 
-unit Shapes;
+unit P92Geometry;
 
 {$Mode ObjFPC}
 {$H+}{$J-}

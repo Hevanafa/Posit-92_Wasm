@@ -8,7 +8,7 @@ uses
   P92Loading,
   P92Keyboard, P92Mouse,
   P92SoftwareTex, P92SoftwareTexDraw,
-  P92Graphics, P92Timing, Shapes, P92VGA,
+  P92Graphics, P92Timing, P92Geometry, P92VGA,
   Assets;
 
 const
