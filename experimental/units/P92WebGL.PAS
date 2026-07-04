@@ -5,7 +5,7 @@
   A thin 1:1 wrapper around WebGL
 }
 
-unit WebGL;
+unit P92WebGL;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
@@ -106,7 +106,7 @@ procedure WebGLPresent;
 
 implementation
 
-uses Conv, Logger, InteropBuf, Panic, VGA;
+uses P92Conversions, P92Logger, P92InteropBuf, P92Panic, P92VGA;
 
 const
   { Requires the `shaders` folder to be included

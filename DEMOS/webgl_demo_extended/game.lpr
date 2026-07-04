@@ -9,10 +9,10 @@ library Game;
 {$H-}
 
 uses
-  EngineCore, EngineFonts,
-  Keyboard, Mouse,
-  ImgRef, ImgRefFast, Logger,
-  Timing, VGA, WasmMemMgr, WebGL,
+  P92Core, P92Fonts, P92AssetRegistry, P92Logger,
+  P92Keyboard, P92Mouse,
+  P92SoftwareTex, P92SoftwareTexDraw,
+  P92Timing, P92VGA, P92WebGL,
   Assets;
 
 const

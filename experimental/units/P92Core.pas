@@ -38,7 +38,7 @@ uses
   P92AssetRegistry, P92SoftwareTexDraw,
   P92VGA, P92WasmHost
 {$ifdef UseWebGL}
-  , WebGL
+  , P92WebGL
 {$endif}
   ;
 
