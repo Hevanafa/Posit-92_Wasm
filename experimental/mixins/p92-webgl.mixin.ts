@@ -4,8 +4,8 @@
  * Part of Posit-92 game engine
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-class WebGLMixin extends Posit92 {
+globalThis.WebGLMixin = <T extends Constructor<Posit92>>(Base: T) =>
+class WebGLMixin extends Base {
   #textures: Map<number, WebGLTexture> = new Map();
   #nextTextureId = 1;
 
