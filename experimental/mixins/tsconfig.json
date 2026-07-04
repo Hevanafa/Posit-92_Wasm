@@ -14,6 +14,7 @@
   "files": [
     "../engine/posit-92.ts",
 
+    "./mixins.d.ts",
     "./p92-bigint.mixin.ts",
     "./p92-bmfont.mixin.ts",
     "./p92-gamepad.mixin.ts",
