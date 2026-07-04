@@ -1173,7 +1173,10 @@ class Posit92 {
 
     // Pass the state control to Pascal
     this.#wasm.exports.InitLoadingState();
-    this.#wasm.exports.LoadGameAssets();
+
+    // Some demos don't even use assets
+    if (Object.hasOwn(this.#wasm.exports, "LoadGameAssets"))
+      this.#wasm.exports.LoadGameAssets();
   }
 
   #PerformLoop(): void {
