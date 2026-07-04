@@ -12,6 +12,8 @@ globalThis.BigIntMixin = <T extends Constructor<Posit92>>(Base: T) =>
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class BigIntMixin extends Base {
   SetupImportObject(): void {
+    super.SetupImportObject();
+    
     const { env } = super.WasmImportObject;
 
     // console.log("SetupImportObject");

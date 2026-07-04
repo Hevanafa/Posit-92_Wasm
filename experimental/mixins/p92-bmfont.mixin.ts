@@ -28,6 +28,8 @@ class BMFontMixin extends Base {
    * @override
    */
   SetupImportObject(): void {
+    super.SetupImportObject();
+    
     const { env } = super.WasmImportObject;
     
     Object.assign(env, {
