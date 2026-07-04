@@ -29,7 +29,7 @@ procedure UnloadIntro;
 implementation
 
 uses
-  P92Fonts, P92SoftwareTex, P92SoftwareTexDraw, P92VGA;
+  P92Fonts, P92Tex, P92TexDraw, P92VGA;
 
 procedure SetImgPosit92Logo(const imgHandle: longint);
 begin

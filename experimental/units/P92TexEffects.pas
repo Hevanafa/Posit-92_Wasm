@@ -14,7 +14,7 @@ procedure ReplaceColour(const texHandle: longint; const oldColour, newColour: lo
 
 implementation
 
-uses P92SoftwareTex, P92SoftwareTexDraw, P92VGA;
+uses P92Tex, P92TexDraw, P92VGA;
 
 procedure SprOutline(const texHandle: longint; const x, y: smallint; const colour: longword);
 var

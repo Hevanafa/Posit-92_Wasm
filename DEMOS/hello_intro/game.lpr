@@ -9,7 +9,7 @@ uses
   P92Logger, P92WasmHost, P92Loading,
   P92Conversions, P92FPS,
   P92Keyboard, P92Mouse,
-  P92Tex, P92SoftwareTexDraw, P92SoftwareTexEffects,
+  P92Tex, P92TexDraw, P92TexEffects,
   P92Timing, P92VGA,
   Assets, IntroScr;
 
