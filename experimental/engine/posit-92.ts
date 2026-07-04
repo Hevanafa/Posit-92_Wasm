@@ -34,13 +34,13 @@ type WasmExports = {
   DrawFPS: () => void,
 
   // IncAssetReadyCount: () => void,
-  PascalImageLoaded: (imgHandle: number, w: number, h: number, pixelDataPtr: number) => void;
-  PascalImageFailed: (imgHandle: number, errorCode: number) => void;
+  PascalImageLoaded: (texHandle: number, w: number, h: number, pixelDataPtr: number) => void;
+  PascalImageFailed: (texHandle: number, errorCode: number) => void;
 
   // IntroScr.pas
-  SetImgPosit92Logo: (imgHandle: number) => void;
-  SetImgFPCLogo: (imgHandle: number) => void;
-  SetImgWasmLogo: (imgHandle: number) => void;
+  SetImgPosit92Logo: (texHandle: number) => void;
+  SetImgFPCLogo: (texHandle: number) => void;
+  SetImgWasmLogo: (texHandle: number) => void;
 
   // P92AssetRegistry.pas
   IncLoadingActual: () => void;
@@ -67,7 +67,7 @@ type WasmImports = {
 
     HideLoadingOverlay: () => void,
 
-    JsRequestImage: (imgHandle: number) => Promise<void>,
+    JsRequestImage: (texHandle: number) => Promise<void>,
 
     HideCursor: () => void,
     ShowCursor: () => void,
@@ -515,7 +515,7 @@ class Posit92 {
    * 
    * The URL is obtained from the interop buffer
    */
-  async RequestImage(imgHandle: number): Promise<void> {
+  async RequestImage(texHandle: number): Promise<void> {
     const url = this.ReadInteropBuffer();
 
     const img = await this.LoadImageFromURL(url);
@@ -538,9 +538,7 @@ class Posit92 {
     const wasmPtr = this.#wasm.exports.WasmGetMem(byteSize);
     wasmMemory.set(imageData.data, wasmPtr);
 
-    console.log("RequestImage", imgHandle);
-
-    this.#wasm.exports.PascalImageLoaded(imgHandle, img.width, img.height, wasmPtr);
+    this.#wasm.exports.PascalImageLoaded(texHandle, img.width, img.height, wasmPtr);
   }
 
 
@@ -584,6 +582,7 @@ class Posit92 {
     });
   }
 
+  // TODO: Remove this because the texture registry is now owned by Pascal
   // Used in loadImage
   #images: Array<ImageData | null> = [];
 
