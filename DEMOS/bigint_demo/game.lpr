@@ -28,11 +28,6 @@ var
   formattedPoints: string;
   scientificPoints: string;
 
-procedure DrawFPS;
-begin
-  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
-end;
-
 procedure DrawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
@@ -43,6 +38,8 @@ begin
   imgCursor := RequestImage('assets/images/cursor.png');
   imgDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
   imgDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
+
+  RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt', DefaultFontPtr, DefaultFontGlyphsPtr)
 end;
 
 procedure OnReady;
@@ -103,11 +100,6 @@ end;
 
 procedure Update;
 begin
-  updateDeltaTime;
-  incrementFPS;
-
-  updateMouse;
-
   { Your Update logic here }
   if lastEsc <> isKeyDown(SC_ESCAPE) then begin
     lastEsc := isKeyDown(SC_ESCAPE);
@@ -177,7 +169,8 @@ begin
 end;
 
 exports
-  OnReady, Update, Draw;
+  LoadGameAssets, OnReady,
+  Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
