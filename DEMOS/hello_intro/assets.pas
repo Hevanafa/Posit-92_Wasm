@@ -4,20 +4,12 @@ unit Assets;
 
 interface
 
-uses BMFont;
-
 var
   imgCursor: longint;
   imgDosuEXE: array[0..1] of longint;
 
-{ Asset boilerplate }
-procedure SetImgCursor(const imgHandle: longint); public name 'SetImgCursor';
-procedure SetImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'SetImgDosuEXE';
-
 
 implementation
-
-uses Conv;
 
 procedure SetImgCursor(const imgHandle: longint);
 begin

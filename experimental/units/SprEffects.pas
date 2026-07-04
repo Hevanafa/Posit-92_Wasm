@@ -5,79 +5,80 @@ unit SprEffects;
 
 interface
 
-procedure SprOutline(const imgHandle: longint; const x, y: smallint; const colour: longword);
+procedure SprOutline(const texHandle: longint; const x, y: smallint; const colour: longword);
 { This procedure only processes solid pixels }
-procedure SprShadow(const imgHandle: longint; const x, y: smallint; const offsetX, offsetY: smallint; const colour: longword);
-{ Replaces 1 colour of an image, in-place }
-procedure ReplaceColour(const imgHandle: longint; const oldColour, newColour: longword);
+procedure SprShadow(const texHandle: longint; const x, y: smallint; const offsetX, offsetY: smallint; const colour: longword);
+{ Replaces 1 colour of a texture, in-place }
+procedure ReplaceColour(const texHandle: longint; const oldColour, newColour: longword);
 
 
 implementation
 
-uses ImgRef, ImgRefFast, VGA;
+uses P92SoftwareTex, P92SoftwareTexDraw, P92VGA;
 
-procedure SprOutline(const imgHandle: longint; const x, y: smallint; const colour: longword);
+procedure SprOutline(const texHandle: longint; const x, y: smallint; const colour: longword);
 var
   a, b: smallint;
-  image: PImageRef;
+  texture: PSoftwareTex;
 begin
-  if not isImageSet(imgHandle) then exit;
+  if not IsTextureSet(texHandle) then exit;
 
-  image := getImagePtr(imgHandle);
+  texture := GetTexturePtr(texHandle);
 
   { Within sprite bounds }
-  for b:=0 to image^.height - 1 do
-    for a:=0 to image^.width - 1 do begin
+  for b:=0 to texture^.height - 1 do
+    for a:=0 to texture^.width - 1 do begin
       { Skip this solid pixel }
-      if unsafeSprGetAlpha(image, a, b) > 0 then continue;
+      if unsafeSprGetAlpha(texture, a, b) > 0 then continue;
 
       { Check 4 neighbours }
-      if (b - 1 >= 0) and (unsafeSprGetAlpha(image, a, b - 1) > 0)
-        or (b + 1 < image^.height) and (unsafeSprGetAlpha(image, a, b + 1) > 0)
-        or (a - 1 >= 0) and (unsafeSprGetAlpha(image, a - 1, b) > 0)
-        or (a + 1 < image^.width) and (unsafeSprGetAlpha(image, a + 1, b) > 0) then
+      if (b - 1 >= 0) and (unsafeSprGetAlpha(texture, a, b - 1) > 0)
+        or (b + 1 < texture^.height) and (unsafeSprGetAlpha(texture, a, b + 1) > 0)
+        or (a - 1 >= 0) and (unsafeSprGetAlpha(texture, a - 1, b) > 0)
+        or (a + 1 < texture^.width) and (unsafeSprGetAlpha(texture, a + 1, b) > 0) then
         pset(x + a, y + b, colour);
     end;
   
   { Padding area }
   { top & bottom }
-  for a:=0 to image^.width - 1 do begin
-    if unsafeSprGetAlpha(image, a, 0) > 0 then
+  for a:=0 to texture^.width - 1 do begin
+    if unsafeSprGetAlpha(texture, a, 0) > 0 then
       pset(x + a, y - 1, colour);
 
-    if unsafeSprGetAlpha(image, a, image^.height - 1) > 0 then
-      pset(x + a, y + image^.height, colour);
+    if unsafeSprGetAlpha(texture, a, texture^.height - 1) > 0 then
+      pset(x + a, y + texture^.height, colour);
   end;
 
   { left & right }
-  for b:=0 to image^.height - 1 do begin
-    if unsafeSprGetAlpha(image, 0, b) > 0 then
+  for b:=0 to texture^.height - 1 do begin
+    if unsafeSprGetAlpha(texture, 0, b) > 0 then
       pset(x - 1, y + b, colour);
 
-    if unsafeSprGetAlpha(image, image^.width - 1, b) > 0 then
-      pset(x + image^.width, y + b, colour);
+    if unsafeSprGetAlpha(texture, texture^.width - 1, b) > 0 then
+      pset(x + texture^.width, y + b, colour);
   end;
 
-  spr(imgHandle, x, y)
+  spr(texHandle, x, y)
 end;
 
 
-procedure SprShadow(const imgHandle: longint; const x, y: smallint; const offsetX, offsetY: smallint; const colour: longword);
+procedure SprShadow(const texHandle: longint; const x, y: smallint; const offsetX, offsetY: smallint; const colour: longword);
 var
   a, b: smallint;
   destX, destY: smallint;
-  image: PImageRef;
+  texture: PSoftwareTex;
   alpha: byte;
 begin
-  if not isImageSet(imgHandle) then exit;
-  image := getImagePtr(imgHandle);
+  if not IsTextureSet(texHandle) then exit;
+
+  texture := GetTexturePtr(texHandle);
 
   alpha := colour shr 24 and $FF;
   if alpha = 0 then exit;
 
-  for b:=0 to image^.height - 1 do
-  for a:=0 to image^.width - 1 do begin
-    if unsafeSprGetAlpha(image, a, b) < 255 then continue;
+  for b:=0 to texture^.height - 1 do
+  for a:=0 to texture^.width - 1 do begin
+    if unsafeSprGetAlpha(texture, a, b) < 255 then continue;
 
     destX := x + a + offsetX;
     destY := y + b + offsetY;
@@ -91,22 +92,22 @@ begin
       unsafePsetBlend(destX, destY, colour);
   end;
   
-  spr(imgHandle, x, y)
+  spr(texHandle, x, y)
 end;
 
-procedure ReplaceColour(const imgHandle: longint; const oldColour, newColour: longword);
+procedure ReplaceColour(const texHandle: longint; const oldColour, newColour: longword);
 var
   a, b: word;
-  image: PImageRef;
+  texture: PSoftwareTex;
 begin
-  if not isImageSet(imgHandle) then exit;
+  if not IsTextureSet(texHandle) then exit;
 
-  image := getImagePtr(imgHandle);
+  texture := GetTexturePtr(texHandle);
 
-  for b:=0 to image^.height - 1 do
-  for a:=0 to image^.width - 1 do
-    if unsafeSprPget(image, a, b) = oldColour then
-      unsafeSprPset(image, a, b, newColour);
+  for b:=0 to texture^.height - 1 do
+  for a:=0 to texture^.width - 1 do
+    if unsafeSprPget(texture, a, b) = oldColour then
+      unsafeSprPset(texture, a, b, newColour);
 end;
 
 end.

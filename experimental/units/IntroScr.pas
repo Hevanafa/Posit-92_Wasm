@@ -29,7 +29,7 @@ procedure UnloadIntro;
 implementation
 
 uses
-  EngineFonts, ImgRef, ImgRefFast, VGA;
+  P92Fonts, P92SoftwareTex, P92SoftwareTexDraw, P92VGA;
 
 procedure SetImgPosit92Logo(const imgHandle: longint);
 begin
@@ -74,9 +74,9 @@ end;
 
 procedure UnloadIntro;
 begin
-  FreeImage(imgPosit92Logo);
-  FreeImage(imgFPCLogo);
-  FreeImage(imgWasmLogo);
+  FreeTexture(imgPosit92Logo);
+  FreeTexture(imgFPCLogo);
+  FreeTexture(imgWasmLogo);
 end;
 
 end.

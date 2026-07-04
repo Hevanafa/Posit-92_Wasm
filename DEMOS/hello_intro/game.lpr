@@ -5,13 +5,13 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  SysUtils,
-  EngineCore, EngineFonts, Logger, WasmHost,
-  IntroScr, Loading, Fullscreen,
-  Conv, FPS,
-  Keyboard, Mouse,
-  ImgRef, ImgRefFast, SprEffects,
-  Timing, VGA,
+  P92Core, P92Fonts, P92AssetRegistry,
+  P92Logger, P92WasmHost,
+  IntroScr, P92Loading,
+  P92Conversions, P92FPS,
+  P92Keyboard, P92Mouse,
+  P92SoftwareTex, P92SoftwareTexDraw, SprEffects,
+  P92Timing, P92VGA,
   Assets;
 
 type
@@ -37,14 +37,19 @@ var
   gameTime: double;
 
 
-procedure DrawFPS;
-begin
-  PrintDefault('FPS:' + i32str(GetLastFPS), 240, 0);
-end;
-
 procedure DrawMouse;
 begin
   Spr(imgCursor, mouseX, mouseY)
+end;
+
+procedure LoadGameAssets;
+begin
+  RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt', DefaultFontPtr, DefaultFontGlyphsPtr);
+
+  imgCursor := RequestImage('assets/images/cursor.png');
+
+  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
+  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
 procedure BeginIntroState;
@@ -85,9 +90,6 @@ procedure Update;
 var
   shouldSkip: boolean;
 begin
-  UpdateDeltaTime;
-  IncrementFPS;
-
   if actualGameState = GameStateIntro then begin
     shouldSkip := false;
 
@@ -119,16 +121,7 @@ begin
     exit
   end;
 
-  if actualGameState = GameStateLoading then begin
-    if GetLoadingActual >= GetLoadingTotal then
-      BeginPlayingState;
-
-    exit
-  end;
-
   { Handle inputs }
-  UpdateMouse;
-
   if lastEsc <> IsKeyDown(SC_ESCAPE) then begin
     lastEsc := IsKeyDown(SC_ESCAPE);
 
