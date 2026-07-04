@@ -7,7 +7,7 @@ uses
   P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
   P92Colour, P92FPS,
   P92Graphics,
-  P92SoftwareTex, P92SoftwareTexDraw, P92SoftwareTexComp,
+  P92Tex, P92TexDraw, P92TexComp,
   P92Keyboard, P92Mouse,
   P92Easings, P92Logger, P92Maths,
   P92Timing, P92VGA,

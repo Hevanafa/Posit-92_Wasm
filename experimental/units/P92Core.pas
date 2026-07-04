@@ -35,7 +35,7 @@ uses
   P92FPS, P92Loading, P92Logger,
   P92InteropBuf, P92Timing,
   P92Mouse,
-  P92AssetRegistry, P92SoftwareTexDraw,
+  P92AssetRegistry, P92TexDraw,
   P92VGA, P92WasmHost
 {$ifdef UseWebGL}
   , P92WebGL

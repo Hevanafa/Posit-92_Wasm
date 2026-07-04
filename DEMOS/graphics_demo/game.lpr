@@ -7,7 +7,7 @@ uses
   P92Conversions, P92WasmHost, P92AssetRegistry,
   P92Loading,
   P92Keyboard, P92Mouse,
-  P92SoftwareTex, P92SoftwareTexDraw,
+  P92Tex, P92TexDraw,
   P92Graphics, P92Timing, P92Geometry, P92VGA,
   Assets;
 
