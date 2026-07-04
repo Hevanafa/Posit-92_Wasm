@@ -2,8 +2,10 @@
   SoftwareTex unit - Part of Posit-92 game engine
   Hevanafa
 
-  Base unit for ImgRefFast and ImgRefComp
+  Base unit for SoftwareTexDraw and ImgRefComp
   Most of the procedures & functions here are based on Bitmap and SprFast units
+  
+  The term "texture" used in this unit is strictly in the context of software rendering
 }
 
 unit SoftwareTex;
