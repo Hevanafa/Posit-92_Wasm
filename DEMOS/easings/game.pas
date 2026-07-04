@@ -4,7 +4,7 @@ library Game;
 {$H+}{$J-}
 
 uses
-  P92Core, P92WasmHost,
+  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
   P92Colour, P92FPS,
   P92Graphics,
   P92SoftwareTex, P92SoftwareTexDraw, P92SoftwareTexComp,
@@ -44,7 +44,6 @@ var
   lastPageUp, lastPageDown: boolean;
 
   { Game state variables }
-  actualGameState: TGameStates;
   gameTime: double;
   actualDemoState: integer;
   subDemoNames: array[0..DemoStateInOutSine - 1] of string;
@@ -52,28 +51,12 @@ var
   startX, endX: integer;
   xLerpTimer: TLerpTimer;
 
-{ Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure loadAssets; external 'env' name 'loadAssets';
-
-procedure drawFPS;
-begin
-  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
-end;
-
-procedure drawMouse;
+procedure DrawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure beginLoadingState;
-begin
-  actualGameState := GameStateLoading;
-  fitCanvas;
-  loadAssets
-end;
-
-function getDemoStateName(const state: integer): string;
+function GetDemoStateName(const state: integer): string;
 begin
   result := '';
 
@@ -89,7 +72,7 @@ begin
     { DemoStateAlpha: result := 'Sprite Alpha'; }
   end;
 
-  getDemoStateName := result
+  GetDemoStateName := result
 end;
 
 procedure changeState(const state: integer);
@@ -103,7 +86,7 @@ begin
   initLerp(xLerpTimer, gameTime, 2.0);
 end;
 
-procedure beginPlayingState;
+procedure OnReady;
 var
   a: word;
 begin
@@ -111,13 +94,12 @@ begin
   fitCanvas;
 
   { Initialise game state here }
-  actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
   changeState(DemoStateInOutQuad);
 
   for a:=0 to high(subDemoNames) do
-    subDemoNames[a] := getDemoStateName(a + 1);
+    subDemoNames[a] := GetDemoStateName(a + 1);
 end;
 
 
@@ -130,7 +112,7 @@ var
   lineHeight: word;
   widgetWidth, widgetHeight: word;
 begin
-  lineHeight := defaultFont.lineHeight + 2;
+  lineHeight := DefaultFontPtr^.lineHeight + 2;
 
   widgetWidth := 100;
   widgetHeight := lineHeight * (high(items) + 1);
@@ -150,26 +132,8 @@ begin
 end;
 
 
-procedure init;
+procedure Update;
 begin
-  initHeapMgr;
-  initDeltaTime;
-  initFPSCounter;
-end;
-
-procedure afterInit;
-begin
-  beginPlayingState
-end;
-
-procedure update;
-begin
-  updateDeltaTime;
-  incrementFPS;
-
-  updateMouse;
-
-  { Your update logic here }
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
 
@@ -210,22 +174,17 @@ begin
     end;
   end;
 
-  gameTime := gameTime + dt
+  gameTime := gameTime + DeltaTime;
 end;
 
-procedure draw;
+procedure Draw;
 var
   perc: double;
   x: integer;
 begin
-  if actualGameState = GameStateLoading then begin
-    renderLoadingScreen;
-    exit
-  end;
+  Cls(DarkBlue);
 
-  cls(DarkBlue);
-
-  line(startX, 100, endX, 100, Cyan);
+  Line(startX, 100, endX, 100, Cyan);
 
   perc := getLerpPerc(xLerpTimer, gameTime);
 
@@ -273,16 +232,15 @@ begin
   printDefault('Spacebar - Restart easing', 8, vgaHeight - 28);
   printDefault('Page up / down - Choose between demos', 8, vgaHeight - 18);
 
-  drawMouse;
+  DrawMouse;
   drawFPS;
 
-  vgaFlush
+  VgaUpload;
+  VgaPresent
 end;
 
 exports
-  { Main game procedures }
-  beginLoadingState,
-  init, afterInit, update, draw;
+  OnReady, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
