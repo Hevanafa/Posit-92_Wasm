@@ -63,7 +63,7 @@ uses
 {$endif}
 {$ifdef Windows}
 {$endif}
-  VGA;
+  P92VGA;
 
 function NewTexture(const width, height: smallint): longint;
 var

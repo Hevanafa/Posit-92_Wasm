@@ -60,7 +60,7 @@ implementation
 uses
   P92Logger, P92Conversions,
   P92SoftwareTex, P92Maths,
-  P92Panic, VGA;
+  P92Panic, P92VGA;
 
 procedure Spr(const texHandle: longint; const x, y: smallint);
 var

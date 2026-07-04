@@ -36,7 +36,7 @@ uses
   InteropBuf, P92Timing,
   P92Mouse,
   P92AssetRegistry, P92SoftwareTexDraw,
-  VGA, WasmHost
+  P92VGA, WasmHost
 {$ifdef UseWebGL}
   , WebGL
 {$endif}

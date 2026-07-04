@@ -1,9 +1,10 @@
 {
-  VGA unit - Part of Posit-92 game engine
-  Hevanafa
+  VGA unit
+  Part of Posit-92 game engine
+  By Hevanafa
 }
 
-unit VGA;
+unit P92VGA;
 
 {$Mode ObjFPC}
 {$H+}{$J-}

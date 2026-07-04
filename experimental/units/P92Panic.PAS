@@ -1,6 +1,7 @@
 {
-  Panic unit - Part of Posit-92 game engine
-  Hevanafa
+  Panic unit
+  Part of Posit-92 game engine
+  By Hevanafa
 
   Mainly used to halt the program immediately & output an error message to the console
 }
@@ -22,7 +23,7 @@ procedure PanicHalt(const msg: string);
 implementation
 
 {$ifdef WASM}
-uses VGA;
+uses P92VGA;
 {$endif}
 {$ifdef Windows}
 uses Logger, Windows;
