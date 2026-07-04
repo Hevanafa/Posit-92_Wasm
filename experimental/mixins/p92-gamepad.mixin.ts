@@ -4,6 +4,8 @@ class GamepadMixin extends Base {
   #gamepadIndex = -1;
 
   SetupImportObject(): void {
+    super.SetupImportObject();
+    
     const { env } = super.WasmImportObject;
 
     Object.assign(env, {

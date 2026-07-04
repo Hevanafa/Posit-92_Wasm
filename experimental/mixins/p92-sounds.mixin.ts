@@ -42,6 +42,8 @@ class SoundsMixin extends Base {
   #musicPlaying = false;
 
   SetupImportObject(): void {
+    super.SetupImportObject();
+
     const { env } = this.WasmImportObject;
 
     Object.assign(env, {

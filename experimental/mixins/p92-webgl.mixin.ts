@@ -25,9 +25,9 @@ class WebGLMixin extends Base {
    * @override
    */
   SetupImportObject(): void {
-    const { env } = this.WasmImportObject;
+    super.SetupImportObject();
 
-    console.log("SetupImportObject call");
+    const { env } = this.WasmImportObject;
 
     Object.assign(env, {
       // WebGL
