@@ -582,10 +582,16 @@ class Posit92 {
     });
   }
 
-  // TODO: Remove this because the texture registry is now owned by Pascal
-  // Used in loadImage
+  /**
+   * Used in loadImage
+   * 
+   * @deprecated Remove this because the texture registry is now owned by Pascal
+   */
   #images: Array<ImageData | null> = [];
 
+  /**
+   * @deprecated The texture registry is now owned by Pascal
+   */
   async LoadImage(url: string): Promise<number> {
     this.AssertString(url);
 
@@ -623,6 +629,9 @@ class Posit92 {
     return handle;
   }
 
+  /**
+   * @deprecated The texture registry is now owned by Pascal
+   */
   async #LoadSingleImage(key: string, path: string): Promise<LoadImageReturn> {
     return this.LoadImage(path).then(handle => {
       // On success
@@ -632,6 +641,9 @@ class Posit92 {
     });
   }
 
+  /**
+   * @deprecated The texture registry is now owned by Pascal
+   */
   async #LoadImageArray(key: string, paths: Array<string>): Promise<Array<LoadImageArrayReturn>> {
     const promises = paths.map(
       (path, index) => 
@@ -652,6 +664,7 @@ class Posit92 {
    * 
    * For example: `SetImgCursor, SetImgHandCursor`
    * 
+   * @deprecated The texture registry is now owned by Pascal
    * @param manifest - Key-value pairs of `"asset_key": "image_path"`
    */
   async LoadImagesFromManifest(manifest: ImageManifest): Promise<void> {
