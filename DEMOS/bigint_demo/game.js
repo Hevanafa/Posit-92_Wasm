@@ -1,9 +1,22 @@
 "use strict";
 
-const BigIntMix = (Base) => class Base extends BigIntMixin {}
-const BMFontMix = (Base) => class Base extends BMFontMixin {}
+function asMixin(MixinClass) {
+  return (Base) => {
+    class Mixed extends Base {}
+    Object.getOwnPropertyNames(MixinClass.prototype).forEach(name => {
+      if (name !== 'constructor')
+        Mixed.prototype[name] = MixinClass.prototype[name];
+    });
+    Object.defineProperty(Mixed, 'name', { value: MixinClass.name });
+    return Mixed;
+  };
+}
 
-class Game extends BMFontMix(BigIntMix) {
+const withBMFont = asMixin(BMFontMixin);
+const withBigInt = asMixin(BigIntMixin);
+
+// Compose: innermost mixin applies first
+class Game extends withBigInt(withBMFont(Posit92)) {
   AssetManifest = {
     images: {
       cursor: "assets/images/cursor.png"
@@ -28,6 +41,10 @@ class Game extends BMFontMix(BigIntMix) {
     // Add more assets as necessary
   }
 }
+
+console.log(Game.name);
+console.log(Object.getPrototypeOf(Game).name);
+console.log("SetupImportObject", BMFontMixin.SetupImportObject)
 
 async function Main() {
   const game = new Game("game");
