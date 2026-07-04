@@ -3,7 +3,7 @@
   Hevanafa
 }
 
-unit Graphics;
+unit P92Graphics;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
@@ -52,7 +52,7 @@ procedure rectRound(x0, y0, x1, y1, radius: smallint; const colour: longword);
 
 implementation
 
-uses VGA;
+uses P92VGA;
 
 function getAlpha(const colour: longword): byte;
 begin

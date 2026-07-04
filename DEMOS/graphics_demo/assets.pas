@@ -28,7 +28,7 @@ procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public na
 
 implementation
 
-uses Conv;
+uses P92Conversions;
 
 { Begin BMFont boilerplate}
 

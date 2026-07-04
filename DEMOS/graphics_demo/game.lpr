@@ -4,19 +4,12 @@ library Game;
 {$H+}{$J-}
 
 uses
-  Conv, Fullscreen,
-  Loading, Keyboard, Mouse,
-  ImgRef, ImgRefFast,
-  Graphics, Shapes, Timing,
-  WasmMemMgr, VGA,
+  P92Conversions, P92WasmHost,
+  P92Loading,
+  P92Keyboard, P92Mouse,
+  P92SoftwareTex, P92SoftwareTexDraw,
+  P92Graphics, P92Timing, Shapes, P92VGA,
   Assets;
-
-type
-  TGameStates = (
-    GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
-  );
 
 const
   SC_ESC = $01;
@@ -26,33 +19,20 @@ var
   lastEsc: boolean;
 
   { Game state variables }
-  actualGameState: TGameStates;
   gameTime: double;
   testPoints: array [0..3] of TPoint;
 
-{ Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure loadAssets; external 'env' name 'loadAssets';
-
-procedure drawMouse;
+procedure DrawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure beginLoadingState;
-begin
-  actualGameState := GameStateLoading;
-  fitCanvas;
-  loadAssets
-end;
-
-procedure beginPlayingState;
+procedure OnReady;
 begin
   hideCursor;
   fitCanvas;
 
   { Initialise game state here }
-  actualGameState := GameStatePlaying;
   gameTime := 0.0;
   
   testPoints[0].x := 100; testPoints[0].y := 50;
@@ -61,45 +41,24 @@ begin
   testPoints[3].x := 50;  testPoints[3].y := 100;
 end;
 
-procedure init;
+procedure Update;
 begin
-  initHeapMgr;
-  initDeltaTime
-end;
-
-procedure afterInit;
-begin
-  beginPlayingState
-end;
-
-procedure update;
-begin
-  updateDeltaTime;
-
-  updateMouse;
-
-  { Your update logic here }
+  { Your Update logic here }
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
     if lastEsc then signalDone;
   end;
 
-  gameTime := gameTime + dt
+  gameTime := gameTime + deltatime
 end;
 
-procedure draw;
+procedure Draw;
 var
   w: integer;
   s: string;
   startTick, endTick: double;
-  { a: word; }
   a: longword;
 begin
-  if actualGameState = GameStateLoading then begin
-    renderLoadingScreen;
-    exit
-  end;
-
   cls($FF6495ED);
 
   { Benchmarking segment }
@@ -143,14 +102,14 @@ begin
 
   lineThick(50, 50, 200, 150, 15, $FFFF5555);
 
-  drawMouse;
-  vgaFlush
+  DrawMouse;
+
+  VgaUpload;
+  VgaPresent
 end;
 
 exports
-  { Main game procedures }
-  beginLoadingState,
-  init, afterInit, update, draw;
+  OnReady, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
