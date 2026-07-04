@@ -38,7 +38,7 @@ function lerpEaseInOutSine(const a, z, perc: double): double;
 
 implementation
 
-uses Maths, Timing;
+uses P92Maths, P92Timing;
 
 procedure initLerp(var lt: TLerpTimer; const startTick, duration: double);
 begin

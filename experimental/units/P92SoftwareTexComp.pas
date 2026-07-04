@@ -5,7 +5,7 @@
   Similar to ImgRefFast but with a proper alpha blending logic
 }
 
-unit ImgRefComp;
+unit SoftwareTexComp;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
@@ -19,7 +19,7 @@ procedure sprBlend(const imgHandle: longint; const x, y: smallint);
 
 implementation
 
-uses ImgRef, Maths, VGA;
+uses P92SoftwareTex, P92Maths, P92VGA;
 
 procedure sprAlpha(const imgHandle: longint; const x, y: smallint; opacity: double);
 var

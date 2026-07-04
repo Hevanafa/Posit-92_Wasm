@@ -1,4 +1,4 @@
-unit Colour;
+unit P92Colour;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
