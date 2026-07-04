@@ -28,10 +28,23 @@ function GetEasingPerc(const lt: TEasingTimer; const t: double): double;
 function IsEasingComplete(const lt: TEasingTimer; const t: double): boolean;
 
 {
+  Base easing functions
+  perc: 0.0 .. 1.0 (must be clamped manually)
+}
+
+function EaseInQuad(const perc: double): double;
+function EaseOutQuad(const perc: double): double;
+function EaseInOutQuad(const perc: double): double;
+
+function EaseInSine(const perc: double): double;
+function EaseOutSine(const perc: double): double;
+function EaseInOutSine(const perc: double): double;
+
+{
   Helper functions
   These call both:
   - Percentage normalisation
-  - Performs easing with the provided start & end values (a and z)
+  - Performs interpolation using easing with the provided start & end values (a and z)
 }
 
 function LerpLinear(const a, z: double; perc: double): double;
