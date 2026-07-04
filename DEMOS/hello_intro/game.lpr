@@ -6,13 +6,12 @@ library Game;
 
 uses
   P92Core, P92Fonts, P92AssetRegistry,
-  P92Logger, P92WasmHost,
-  IntroScr, P92Loading,
+  P92Logger, P92WasmHost, P92Loading,
   P92Conversions, P92FPS,
   P92Keyboard, P92Mouse,
   P92SoftwareTex, P92SoftwareTexDraw, SprEffects,
   P92Timing, P92VGA,
-  Assets;
+  Assets, IntroScr;
 
 type
   TGameStates = (
@@ -140,6 +139,7 @@ begin
 
       exit
     end;
+  else
   end;
 
   Cls(CornflowerBlue);
