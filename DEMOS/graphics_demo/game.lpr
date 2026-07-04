@@ -4,7 +4,7 @@ library Game;
 {$H+}{$J-}
 
 uses
-  P92Conversions, P92WasmHost,
+  P92Conversions, P92WasmHost, P92AssetRegistry,
   P92Loading,
   P92Keyboard, P92Mouse,
   P92SoftwareTex, P92SoftwareTexDraw,
