@@ -5,7 +5,7 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  EngineCore, Logger, VGA;
+  P92Core, P92AssetRegistry, P92Logger, P92VGA;
 
 procedure OnReady;
 begin

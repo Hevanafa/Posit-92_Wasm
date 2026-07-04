@@ -3,7 +3,7 @@
 /**
  * Minimal Boilerplate
  */
-class Game extends Posit92 {
+class Game extends BMFontMixin(Posit92) {
 }
 
 /**
