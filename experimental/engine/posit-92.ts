@@ -506,34 +506,45 @@ class Posit92 {
   }
 
   /**
-   * Called from Pascal side
+   * Called from the Pascal side
    * 
    * The URL is obtained from the interop buffer
+   * 
+   * @param texHandle Reserved by the asset registry in Pascal side
    */
   async RequestImage(texHandle: number): Promise<void> {
     const url = this.ReadInteropBuffer();
 
-    const img = await this.LoadImageFromURL(url);
+    try {
+      const img = await this.LoadImageFromURL(url);
 
-    // Copy image
-    const tempCanvas = document.createElement("canvas");
-    tempCanvas.width = img.width;
-    tempCanvas.height = img.height;
-    
-    const tempCtx = tempCanvas.getContext("2d");
-    if (tempCtx == null)
-      throw new Error("Error getting 2D canvas context");
+      // Copy image
+      const tempCanvas = document.createElement("canvas");
+      tempCanvas.width = img.width;
+      tempCanvas.height = img.height;
+      
+      const tempCtx = tempCanvas.getContext("2d");
+      if (tempCtx == null)
+        throw new Error("Error getting 2D canvas context");
 
-    tempCtx.drawImage(img, 0, 0);
+      tempCtx.drawImage(img, 0, 0);
 
-    const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
+      const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
 
-    const wasmMemory = new Uint8Array(this.#wasm.exports.memory.buffer);
-    const byteSize = img.width * img.height * 4;
-    const wasmPtr = this.#wasm.exports.WasmGetMem(byteSize);
-    wasmMemory.set(imageData.data, wasmPtr);
+      const wasmMemory = new Uint8Array(this.#wasm.exports.memory.buffer);
+      const byteSize = img.width * img.height * 4;
+      const wasmPtr = this.#wasm.exports.WasmGetMem(byteSize);
+      wasmMemory.set(imageData.data, wasmPtr);
 
-    this.#wasm.exports.PascalImageLoaded(texHandle, img.width, img.height, wasmPtr);
+      this.#wasm.exports.PascalImageLoaded(texHandle, img.width, img.height, wasmPtr);
+    } catch (error: unknown) {
+      if (error instanceof Error)
+        console.error("Failed to fetch image", error.message);
+      else
+        console.error("Failed to fetch image", error);
+
+      this.#wasm.exports.PascalImageFailed(texHandle, 0);
+    }
   }
 
 
