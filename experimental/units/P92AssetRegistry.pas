@@ -2,7 +2,7 @@ unit P92AssetRegistry;
 
 interface
 
-uses BMFont, SoftwareTex;
+uses BMFont, P92SoftwareTex;
 
 const
   MaxTextures = 256;

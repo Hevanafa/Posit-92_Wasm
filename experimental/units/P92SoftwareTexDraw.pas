@@ -6,7 +6,7 @@
   The term "texture" used in this unit is strictly in the context of CPU rendering
 }
 
-unit SoftwareTexDraw;
+unit P92SoftwareTexDraw;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
@@ -58,7 +58,9 @@ procedure SprFlipInPlace(const texHandle: longint; const flip: smallint);
 implementation
 
 uses
-  P92Logger, P92Conversions, SoftwareTex, P92Maths, P92Panic, VGA;
+  P92Logger, P92Conversions,
+  P92SoftwareTex, P92Maths,
+  P92Panic, VGA;
 
 procedure Spr(const texHandle: longint; const x, y: smallint);
 var

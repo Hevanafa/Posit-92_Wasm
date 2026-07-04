@@ -31,10 +31,12 @@ procedure Print(const txt: string; const x, y: smallint);
 implementation
 
 uses
-  P92Conversions, WasmMemMgr, FPS, P92Loading, P92Logger,
-  InteropBuf, P92Timing, VGA, WasmHost,
+  P92Conversions, WasmMemMgr,
+  FPS, P92Loading, P92Logger,
+  InteropBuf, P92Timing,
   P92Mouse,
-  P92AssetRegistry, SoftwareTexDraw
+  P92AssetRegistry, P92SoftwareTexDraw,
+  VGA, WasmHost
 {$ifdef UseWebGL}
   , WebGL
 {$endif}

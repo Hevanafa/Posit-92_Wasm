@@ -9,7 +9,7 @@ uses
   P92AssetRegistry, P92Conversions, FPS,
   P92Logger, P92Loading,
   P92Keyboard, P92Mouse,
-  SoftwareTex, SoftwareTexDraw, P92Timing, VGA,
+  P92SoftwareTex, P92SoftwareTexDraw, P92Timing, VGA,
   Assets;
 
 var

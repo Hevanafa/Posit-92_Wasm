@@ -82,7 +82,7 @@ implementation
 
 uses
   P92Conversions, P92Logger,
-  SoftwareTex, SoftwareTexDraw;
+  P92SoftwareTex, P92SoftwareTexDraw;
 
 { Returns glyph.xadvance }
 function PrintBMFontChar(

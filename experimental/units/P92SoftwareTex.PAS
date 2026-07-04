@@ -8,7 +8,7 @@
   The term "texture" used in this unit is strictly in the context of CPU rendering
 }
 
-unit SoftwareTex;
+unit P92SoftwareTex;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
