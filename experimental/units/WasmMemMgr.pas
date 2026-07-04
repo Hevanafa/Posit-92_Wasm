@@ -1,6 +1,7 @@
 {
-  Wasm Memory Manager - Part of Posit-92 game engine
-  Hevanafa
+  Wasm Memory Manager
+  Part of Posit-92 game engine
+  By Hevanafa
   
   High-level wrapper for WasmHeap
 }
@@ -17,7 +18,7 @@ procedure InitHeapMgr;
 
 implementation
 
-uses WasmHeap;
+uses P92WasmHeap;
 
 var
   customMemMgr: TMemoryManager;

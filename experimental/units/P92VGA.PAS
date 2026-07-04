@@ -60,7 +60,7 @@ implementation
 {$ifdef WASM}
 uses
   P92Logger,
-  WasmHeap;
+  P92WasmHeap;
 {$endif}
 {$ifdef Windows}
 uses

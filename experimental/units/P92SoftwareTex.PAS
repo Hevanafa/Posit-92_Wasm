@@ -59,7 +59,7 @@ implementation
 uses
   P92Conversions, P92Logger, P92Maths, P92Panic, P92AssetRegistry,
 {$ifdef WASM}
-  WasmHeap,
+  P92WasmHeap,
 {$endif}
 {$ifdef Windows}
 {$endif}

@@ -15,7 +15,7 @@
 {$Mode ObjFPC}
 {$H+}{$J-}
 
-unit WasmHeap;
+unit P92WasmHeap;
 
 interface
 
