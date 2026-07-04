@@ -18,7 +18,12 @@ type BMFontWasmImports = WasmImports & {
   }
 };
 
-class BMFontMixin extends Posit92 {
+interface IBMFont {
+  // Dummy interface
+}
+
+globalThis.BMFontMixin = <T extends Constructor<Posit92>>(Base: T) =>
+class BMFontMixin extends Base {
   /**
    * @override
    */
@@ -342,4 +347,4 @@ class BMFontMixin extends Posit92 {
 
     // for (const item of results) ;
   }
-};
+} as Constructor<IBMFont> & T;
