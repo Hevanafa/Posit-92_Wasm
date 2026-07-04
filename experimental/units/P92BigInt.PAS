@@ -6,7 +6,7 @@
   This unit requires the mixin `BigIntMixin`
 }
 
-unit BigInt;
+unit P92BigInt;
 
 {$Mode ObjFPC}
 {$H+}

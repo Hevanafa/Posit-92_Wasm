@@ -10,12 +10,12 @@ library Game;
 
 uses
   P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
-  BigInt, P92InteropBuf, P92Logger,
+  P92InteropBuf, P92Logger,
   P92Conversions, P92FPS,
   P92SoftwareTexDraw,
   P92Keyboard, P92Mouse,
   P92Timing, P92VGA,
-  Assets;
+  P92BigInt, Assets;
 
 var
   lastEsc: boolean;
