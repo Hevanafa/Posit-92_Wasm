@@ -5,7 +5,7 @@
   Part of Posit-92 game engine
 }
 
-unit WasmHost;
+unit P92WasmHost;
 
 interface
 
