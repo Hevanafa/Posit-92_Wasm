@@ -3,8 +3,9 @@
  * 
  * Part of Posit-92 game engine
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-class SoundsMixin extends Posit92 {
+
+globalThis.SoundsMixin = <T extends Constructor<Posit92>>(Base: T) =>
+class SoundsMixin extends Base {
   #audioContext: AudioContext | null = null;
 
   #sounds: Map<number, AudioBuffer> = new Map();
@@ -105,7 +106,7 @@ class SoundsMixin extends Posit92 {
   async LoadSoundsFromManifest(manifest: Map<number, string>): Promise<void> {
     const entries = Array.from(manifest.entries());
 
-    this.IncLoadingTotal(manifest.size);
+    this.WasmInstance.exports.IncAssetTotalCount(manifest.size);
 
     const promises = entries.map(([key, url]) =>
       this.LoadSound(key, url)
@@ -117,7 +118,7 @@ class SoundsMixin extends Posit92 {
           console.error("Failed to load sound: " + url, err);
           return { key, url, success: false };
         })
-        .finally(() => { this.IncLoadingActual(); })
+        .finally(() => { this.WasmInstance.exports.IncAssetReadyCount(); })
     );
 
     const results = await Promise.all(promises);

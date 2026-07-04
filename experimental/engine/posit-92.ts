@@ -36,7 +36,6 @@ type WasmExports = {
   EngineDraw: () => void,
   DrawFPS: () => void,
 
-  // IncAssetReadyCount: () => void,
   PascalImageLoaded: (texHandle: number, w: number, h: number, pixelDataPtr: number) => void;
   PascalImageFailed: (texHandle: number, errorCode: number) => void;
 
