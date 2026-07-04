@@ -6,9 +6,6 @@ type ImageManifest = Record<string, string | string[]>;
 type SoundManifest = Map<number, string>;
 type BMFontManifest = Map<string, { path: string, setter: string, glyphSetter: string }>;
 
-// Used by mixins
-type Constructor<T = {}> = new (...args: any[]) => T;
-
 /**
  * The type definitions here are copied from Pascal except for `memory`
  */
