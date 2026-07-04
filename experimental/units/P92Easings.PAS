@@ -1,12 +1,13 @@
 {
-  Lerp unit - Part of Posit-92 game engine
-  Hevanafa
+  Easings unit
+  Part of Posit-92 game engine
+  By Hevanafa
 
   Generic unit that contains easing functions
   All the time / tick units are in seconds
 }
 
-unit Lerp;
+unit P92Easings;
 
 {$Mode ObjFPC}
 {$H+}{$J-}

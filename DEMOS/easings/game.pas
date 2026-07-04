@@ -9,7 +9,7 @@ uses
   P92Graphics,
   P92SoftwareTex, P92SoftwareTexDraw, P92SoftwareTexComp,
   P92Keyboard, P92Mouse,
-  Lerp, P92Logger, P92Maths,
+  P92Easings, P92Logger, P92Maths,
   P92Timing, P92VGA,
   Assets;
 
