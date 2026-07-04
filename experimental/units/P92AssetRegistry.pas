@@ -29,9 +29,9 @@ var
 function AllAssetsReady: boolean;
 
 { Temporary fix for legacy procedures that still use a metafile }
-procedure IncLoadingActual; public name 'IncLoadingActual';
-procedure SetLoadingActual(value: longint); public name 'SetLoadingActual';
-procedure SetLoadingTotal(value: longint); public name 'SetLoadingTotal';
+procedure IncAssetReadyCount; public name 'IncAssetReadyCount';
+procedure SetAssetReadyCount(value: longint); public name 'SetAssetReadyCount';
+procedure SetAssetTotalCount(value: longint); public name 'SetAssetTotalCount';
 
 procedure InitAssetRegistry;
 function FindUnusedTextureSlot: longint;
@@ -55,17 +55,17 @@ begin
   AllAssetsReady := AssetReadyCount >= AssetTotalCount
 end;
 
-procedure IncLoadingActual;
+procedure IncAssetReadyCount;
 begin
   inc(AssetReadyCount)
 end;
 
-procedure SetLoadingActual(value: longint);
+procedure SetAssetReadyCount(value: longint);
 begin
   AssetReadyCount := value
 end;
 
-procedure SetLoadingTotal(value: longint);
+procedure SetAssetTotalCount(value: longint);
 begin
   AssetTotalCount := value
 end;

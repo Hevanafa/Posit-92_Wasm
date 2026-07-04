@@ -43,9 +43,9 @@ type WasmExports = {
   SetImgWasmLogo: (texHandle: number) => void;
 
   // P92AssetRegistry.pas
-  IncLoadingActual: () => void;
-  SetLoadingActual: (value: number) => void;
-  SetLoadingTotal: (value: number) => void;
+  IncAssetReadyCount: () => void;
+  SetAssetReadyCount: (value: number) => void;
+  SetAssetTotalCount: (value: number) => void;
 
   // VGA.PAS
   GetSurfacePtr: () => number,
@@ -635,7 +635,7 @@ class Posit92 {
   async #LoadSingleImage(key: string, path: string): Promise<LoadImageReturn> {
     return this.LoadImage(path).then(handle => {
       // On success
-      this.#wasm.exports.IncLoadingActual();
+      this.#wasm.exports.IncAssetReadyCount();
 
       return { key, path, handle };
     });
@@ -649,7 +649,7 @@ class Posit92 {
       (path, index) => 
         this.LoadImage(path).then(handle => {
           // On success
-          this.#wasm.exports.IncLoadingActual();
+          this.#wasm.exports.IncAssetReadyCount();
 
           return { key, path, handle, index };
         }));
@@ -765,8 +765,8 @@ class Posit92 {
       ? Object.keys(this.AssetManifest.bmfonts).length
       : 0;
     
-    this.#wasm.exports.SetLoadingActual(0);
-    this.#wasm.exports.SetLoadingTotal(imageCount + soundCount + bmfontCount);
+    this.#wasm.exports.SetAssetReadyCount(0);
+    this.#wasm.exports.SetAssetTotalCount(imageCount + soundCount + bmfontCount);
   }
 
 

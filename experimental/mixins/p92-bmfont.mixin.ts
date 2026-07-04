@@ -180,7 +180,7 @@ class BMFontMixin extends Posit92 {
     const res = await fetch(url);
     const text = await res.text();
 
-    this.WasmInstance.exports.IncLoadingActual();
+    this.WasmInstance.exports.IncAssetReadyCount();
 
     const lines = text.endsWith("\r\n") ? text.split("\r\n") : text.split("\n");
 
@@ -322,7 +322,7 @@ class BMFontMixin extends Posit92 {
 
       return this.LoadBMFont(params.path, setterPtr, glyphSetterPtr).then(() => {
         // On success
-        this.WasmInstance.exports.IncLoadingActual();
+        this.WasmInstance.exports.IncAssetReadyCount();
 
         return { key, path: params.path, setterPtr, glyphSetterPtr };
       });
