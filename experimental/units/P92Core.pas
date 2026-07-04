@@ -32,7 +32,7 @@ implementation
 
 uses
   P92Conversions, WasmMemMgr,
-  FPS, P92Loading, P92Logger,
+  P92FPS, P92Loading, P92Logger,
   InteropBuf, P92Timing,
   P92Mouse,
   P92AssetRegistry, P92SoftwareTexDraw,

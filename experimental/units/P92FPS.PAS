@@ -5,7 +5,7 @@
   Mandatory for FPS (frames per second) counting
 }
 
-unit FPS;
+unit P92FPS;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
