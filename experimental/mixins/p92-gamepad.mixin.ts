@@ -1,5 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-class GamepadMixin extends Posit92 {
+globalThis.GamepadMixin = <T extends Constructor<Posit92>>(Base: T) =>
+class GamepadMixin extends Base {
   #debug = true;
   #gamepadIndex = -1;
 
@@ -69,4 +69,4 @@ class GamepadMixin extends Posit92 {
     this.#InitGamepad();
     await super.InitRuntime();
   }
-}
+};

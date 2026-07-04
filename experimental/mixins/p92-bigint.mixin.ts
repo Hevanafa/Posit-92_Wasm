@@ -4,12 +4,7 @@ type BigIntWasmExports = WasmExports & {
   GetBigIntBPtr: () => number;
 };
 
-interface IBigInt {
-  // Dummy interface
-}
-
 globalThis.BigIntMixin = <T extends Constructor<Posit92>>(Base: T) =>
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class BigIntMixin extends Base {
   SetupImportObject(): void {
     super.SetupImportObject();
@@ -171,4 +166,4 @@ class BigIntMixin extends Base {
     } else
       this.WriteInteropBuffer(n.toString());
   }
-} as Constructor<IBigInt> & T;
+};
