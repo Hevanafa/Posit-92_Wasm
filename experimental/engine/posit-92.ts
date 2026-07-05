@@ -1194,11 +1194,6 @@ class Posit92 {
     // Pass the state control to Pascal
     this.#wasm.exports.P92Boot();
     
-    // this.#wasm.exports.InitLoadingState();
-
-    // if (this.bootOptions.defaultFont == true)
-    //   this.#wasm.exports.LoadDefaultFont();
-
     // const showIntro = this.bootOptions.skipIntro == true;
 
     // if (showIntro)

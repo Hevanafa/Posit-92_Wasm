@@ -115,15 +115,15 @@ begin
     if AllAssetsReady then
       InitPreloadState;
     exit
-  end;
+  end
 
-  if engineRunState = ersPreload then begin
+  else if engineRunState = ersPreload then begin
     if AllAssetsReady then
       InitReadyState;
     exit
-  end;
+  end
 
-  if engineRunState = ersReady then begin
+  else if engineRunState = ersReady then begin
     UpdateDeltaTime;
     IncrementFPS;
     UpdateMouse;
