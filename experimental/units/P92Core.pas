@@ -17,11 +17,12 @@ var
   engineRunState: TEngineRunStates;
 
 procedure InitEngine; public name 'InitEngine';
-procedure InitLoadingState; public name 'InitLoadingState';
 procedure SetCGAFontHandle(value: longint); public name 'SetCGAFontHandle';
 
 function IsEngineReady: boolean; public name 'IsEngineReady';
 
+procedure P92Boot; public name 'P92Boot';
+procedure InvokeOnPreload; external 'env' name 'InvokeOnPreload';
 procedure P92Update; public name 'P92Update';
 procedure P92Draw; public name 'P92Draw';
 
@@ -63,13 +64,6 @@ begin
 {$endif}
 end;
 
-procedure InitLoadingState;
-begin
-  engineRunState := ersPreload;
-  FitCanvas;
-  writelog('ersLoading');
-end;
-
 procedure SetCGAFontHandle(value: longint);
 begin
   writelog('SetCGAFontHandle ' + i32str(value));
@@ -88,17 +82,23 @@ end;
 
 procedure P92Update;
 begin
-  if engineRunState = ersBoot then
+  if engineRunState = ersBoot then begin
     if AllAssetsReady then begin
       engineRunState := ersPreload;
+      FitCanvas;
+      InvokeOnPreload;
       writelog('ersPreload');
     end;
+    exit
+  end;
 
-  if engineRunState = ersPreload then
+  if engineRunState = ersPreload then begin
     if AllAssetsReady then begin
       engineRunState := ersReady;
       writelog('ersReady');
     end;
+    exit
+  end;
 
   if engineRunState = ersReady then begin
     UpdateDeltaTime;

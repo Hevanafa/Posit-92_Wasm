@@ -20,7 +20,7 @@ type WasmExports = {
 
   // P92Core
   InitEngine: () => void,
-  InitLoadingState: () => void;
+  // InitLoadingState: () => void;
   SetCGAFontHandle: (value: number) => void,
 
   // P92Fonts
@@ -84,6 +84,8 @@ type WasmImports = {
 
     HideCursor: () => void,
     ShowCursor: () => void,
+
+    InvokeOnPreload: () => void;
 
     // Fullscreen
     ToggleFullscreen: () => void,
@@ -246,6 +248,7 @@ class Posit92 {
 
       // P92Core
       JsRequestImage: this.RequestImage.bind(this),
+      InvokeOnPreload: this.#OnPreload.bind(this),
 
       // Fullscreen
       ToggleFullscreen: this.#ToggleFullscreen.bind(this),
@@ -1183,10 +1186,12 @@ class Posit92 {
     // if (this.bootOptions.defaultFont == true)
     //   this.#wasm.exports.LoadDefaultFont();
 
-    // this.#wasm.exports.OnPreload?.();
-
     // if (showIntro)
     //   await this.#LoadIntroAssets();
+  }
+
+  #OnPreload(): void {
+    this.#wasm.exports.OnPreload?.();
   }
 
   #PerformLoop(): void {

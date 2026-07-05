@@ -24,6 +24,7 @@ end;
 
 procedure OnPreload;
 begin
+  writelog('OnPreload call');
   imgCursor := RequestImage('assets/images/cursor.png');
 
   imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
