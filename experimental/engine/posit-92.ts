@@ -60,7 +60,14 @@ type WasmExports = {
   WasmGetMem: (bytes: number) => number,
 
   // Events
+
+  /**
+   * Optional
+   */
   OnPreload: () => void;
+  /**
+   * Optional, triggered after the asset registry reports completion
+   */
   OnReady: () => void;
   Update: () => void;
   Draw: () => void;
@@ -1199,7 +1206,7 @@ class Posit92 {
 
     if (!this.#userReady) {
       this.#userReady = true;
-      this.#wasm.exports.OnReady();
+      this.#wasm.exports.OnReady?.();
     }
 
     this.#wasm.exports.Update();
