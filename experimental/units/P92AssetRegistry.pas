@@ -98,7 +98,6 @@ var
   a: longint;
 begin
   for a:=1 to high(textures) do
-    { if not IsTextureSet(a) then begin }
     if textures[a].status = AssetStatusEmpty then begin
       FindUnusedTextureSlot := a;
       exit
@@ -107,6 +106,18 @@ begin
   FindUnusedTextureSlot := -1
 end;
 
+function FindUnusedBMFontSlot: longint;
+var
+  a: longint;
+begin
+  for a:=1 to high(bmfonts) do
+    if bmfonts[a].status = AssetStatusEmpty then begin
+      FindUnusedBMFontSlot := a;
+      exit
+    end;
+
+  FindUnusedBMFontSlot := -1
+end;
 
 function RequestImage(const path: string): longint;
 var
@@ -126,9 +137,16 @@ end;
 
 procedure RequestBMFont(const path: string; const fontPtr: PBMFont; const fontGlyphsPtr: PBMFontGlyph);
 var
+  bmfontIdx: longint;
   texHandle: longint;
 begin
-  { TODO: Actually register the asset }
+  bmfontIdx := FindUnusedBMFontSlot;
+
+  if bmfontIdx < 0 then
+    PanicHalt('RequestBMFont: BMFont slots are full!');
+
+  bmfonts[bmfontIdx] := default(TBMFontEntry);
+  bmfonts[bmfontIdx].status := AssetStatusLoading;
 
   inc(AssetTotalCount, 2);
 
