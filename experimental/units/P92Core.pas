@@ -36,12 +36,12 @@ procedure Print(const txt: string; const x, y: smallint);
 implementation
 
 uses
+  P92Fonts, P92AssetRegistry, P92WasmHost,
   P92Conversions, P92WasmMemMgr,
   P92FPS, P92Loading, P92Logger,
   P92InteropBuf, P92Timing,
   P92Mouse,
-  P92Fonts, P92AssetRegistry, P92TexDraw,
-  P92VGA, P92WasmHost
+  P92TexDraw, P92VGA
 {$ifdef UseWebGL}
   , P92WebGL
 {$endif}

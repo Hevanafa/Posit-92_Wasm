@@ -61,7 +61,8 @@ procedure PascalBMFontFailed(const bmfontHandle: longint; const errorCode: small
 
 implementation
 
-uses P92Conversions, P92InteropBuf, P92Logger, P92Panic;
+uses
+  P92Conversions, P92InteropBuf, P92Logger, P92Panic;
 
 function AllAssetsReady: boolean;
 begin
