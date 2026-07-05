@@ -25,9 +25,10 @@ type WasmExports = {
 
   // P92Fonts
   LoadDefaultFont: () => void;
-  IsEngineReady: () => boolean,
-  P92Update: () => void,
-  P92Draw: () => void,
+  IsEngineReady: () => boolean;
+  P92Boot: () => void;
+  P92Update: () => void;
+  P92Draw: () => void;
 
   // P92AssetRegistry
   IncAssetReadyCount: () => void;
@@ -159,6 +160,8 @@ type Posit92Options = {
 
   /**
    * Default: true
+   * 
+   * @deprecated
    */
   skipIntro?: boolean;
 
@@ -490,23 +493,10 @@ class Posit92 {
     this.#ShowCursor();
   }
 
-  #OnBoot() {
-    this.#LoadBootAssets();
-  }
 
   /**
-   * Loads assets owned by the engine
+   * @deprecated
    */
-  async #LoadBootAssets(): Promise<void> {
-    await this.#LoadBootFont();
-  }
-
-  async #LoadBootFont(): Promise<void> {
-    this.#wasm.exports.SetCGAFontHandle(
-      await this.LoadImage("assets/CGA8x8.png"));
-  }
-
-
   async #LoadIntroAssets(): Promise<void> {
     this.WasmInstance.exports.SetImgPosit92Logo(
       await this.LoadImage("assets/images/posit-92_32px.png"));
@@ -1173,30 +1163,30 @@ class Posit92 {
   }
 
   async Start(): Promise<void> {
-    const showIntro = this.bootOptions.skipIntro == true;
+    // const showIntro = this.bootOptions.skipIntro == true;
 
     // WebAssembly init & stuff
     await this.InitRuntime();
     this.#HideLoadingOverlay();
 
-    // Boot
-    this.#OnBoot();
-    
     // Engine stuff
+
     this.#AddOutOfFocusFix();
     this.#AddResizeListener();
     this.#StartLoop();
 
     // Pass the state control to Pascal
-    this.#wasm.exports.InitLoadingState();
+    this.#wasm.exports.P92Boot();
+    
+    // this.#wasm.exports.InitLoadingState();
 
-    if (this.bootOptions.defaultFont == true)
-      this.#wasm.exports.LoadDefaultFont();
+    // if (this.bootOptions.defaultFont == true)
+    //   this.#wasm.exports.LoadDefaultFont();
 
-    this.#wasm.exports.OnPreload?.();
+    // this.#wasm.exports.OnPreload?.();
 
-    if (showIntro)
-      await this.#LoadIntroAssets();
+    // if (showIntro)
+    //   await this.#LoadIntroAssets();
   }
 
   #PerformLoop(): void {

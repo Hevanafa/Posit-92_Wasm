@@ -9,7 +9,7 @@ interface
 type
   TEngineRunStates = (
     ersBoot = 1,
-    ersLoading = 2,
+    ersPreload = 2,
     ersReady = 3
   );
 
@@ -65,7 +65,7 @@ end;
 
 procedure InitLoadingState;
 begin
-  engineRunState := ersLoading;
+  engineRunState := ersPreload;
   FitCanvas;
   writelog('ersLoading');
 end;
@@ -81,9 +81,20 @@ begin
   IsEngineReady := engineRunState = ersReady
 end;
 
+procedure P92Boot;
+begin
+  cgaFontHandle := RequestImage('assets/CGA8x8.png');
+end;
+
 procedure P92Update;
 begin
-  if engineRunState = ersLoading then
+  if engineRunState = ersBoot then
+    if AllAssetsReady then begin
+      engineRunState := ersPreload;
+      writelog('ersPreload');
+    end;
+
+  if engineRunState = ersPreload then
     if AllAssetsReady then begin
       engineRunState := ersReady;
       writelog('ersReady');
@@ -100,7 +111,7 @@ procedure P92Draw;
 begin
   cls($FF000000);
 
-  if engineRunState = ersLoading then
+  if engineRunState = ersPreload then
     RenderLoadingScreen;
 end;
 
