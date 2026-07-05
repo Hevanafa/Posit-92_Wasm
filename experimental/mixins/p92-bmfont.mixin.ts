@@ -195,10 +195,18 @@ class BMFontMixin extends Base {
     try {
       console.log("RequestBMFont url", url);
       const res = await fetch(url);
+
+      if (!res.ok) {
+        console.error("RequestBMFont: HTTP status:", res.status);
+        this.WasmInstanceExports.PascalBMFontFailed(bmfontHandle, 1);
+        
+        return;
+      }
+
       fontData = await res.text();
     } catch (error) {
       if (error instanceof Error)
-        console.error("RequestBMFont: Failed to download BMFont data:", error);
+        console.error("RequestBMFont:", error);
 
       this.WasmInstanceExports.PascalBMFontFailed(bmfontHandle, 1);
 

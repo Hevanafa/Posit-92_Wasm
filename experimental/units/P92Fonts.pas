@@ -24,8 +24,12 @@ var
 
 procedure LoadDefaultFont;
 begin
-  RequestBMFont(
+  { RequestBMFont(
     'assets/fonts/nokia_cellphone_fc_8.txt',
+    DefaultFontPtr, DefaultFontGlyphsPtr); }
+
+  RequestBMFont(
+    'assets/fonts/imaginary.txt',
     DefaultFontPtr, DefaultFontGlyphsPtr)
 end;
 
