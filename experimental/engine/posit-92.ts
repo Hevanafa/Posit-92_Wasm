@@ -18,44 +18,44 @@ type WasmExports = {
   DefaultFontPtr: () => number;
   DefaultFontGlyphsPtr: () => number;
 
-
-  // InteropBuf.pas
-  GetInteropBufPtr: () => number,
-  GetInteropBufLen: () => number,
-  GetInteropBufCapacity: () => number,
-  SetInteropBufLen: (value: number) => void,
-
-  // P92Fonts.pas
-  LoadDefaultFont: () => void;
-
-  // P92Core.pas
+  // P92Core
   InitEngine: () => void,
   InitLoadingState: () => void;
   SetCGAFontHandle: (value: number) => void,
 
+  // P92Fonts
+  LoadDefaultFont: () => void;
   IsEngineReady: () => boolean,
-  EngineUpdate: () => void,
-  EngineDraw: () => void,
-  DrawFPS: () => void,
+  P92Update: () => void,
+  P92Draw: () => void,
+
+  // P92AssetRegistry
+  IncAssetReadyCount: () => void;
+  SetAssetReadyCount: (value: number) => void;
+  SetAssetTotalCount: (value: number) => void;
 
   PascalImageLoaded: (texHandle: number, w: number, h: number, pixelDataPtr: number) => void;
   PascalImageFailed: (texHandle: number, errorCode: number) => void;
+
+  // FPS
+  DrawFPS: () => void,
+
+  // InteropBuf
+  GetInteropBufPtr: () => number,
+  GetInteropBufLen: () => number,
+  GetInteropBufCapacity: () => number,
+  SetInteropBufLen: (value: number) => void,
 
   // IntroScr.pas
   SetImgPosit92Logo: (texHandle: number) => void;
   SetImgFPCLogo: (texHandle: number) => void;
   SetImgWasmLogo: (texHandle: number) => void;
 
-  // P92AssetRegistry.pas
-  IncAssetReadyCount: () => void;
-  SetAssetReadyCount: (value: number) => void;
-  SetAssetTotalCount: (value: number) => void;
-
-  // VGA.PAS
+  // VGA
   GetSurfacePtr: () => number,
   InitVideoMem: (width: number, height: number, startAddr: number) => void,
 
-  // WASMHEAP.PAS
+  // WasmHeap
   InitHeapRegion: (startAddr: number, poolSize: number, heapSize: number) => void,
   WasmGetMem: (bytes: number) => number,
 
@@ -488,6 +488,10 @@ class Posit92 {
    */
   Cleanup(): void {
     this.#ShowCursor();
+  }
+
+  #OnBoot() {
+    this.#LoadBootAssets();
   }
 
   /**
@@ -1176,11 +1180,8 @@ class Posit92 {
     this.#HideLoadingOverlay();
 
     // Boot
-    await this.#LoadBootAssets();
+    this.#OnBoot();
     
-    if (!showIntro)
-      await this.#LoadIntroAssets();
-
     // Engine stuff
     this.#AddOutOfFocusFix();
     this.#AddResizeListener();
@@ -1193,16 +1194,19 @@ class Posit92 {
       this.#wasm.exports.LoadDefaultFont();
 
     this.#wasm.exports.OnPreload?.();
+
+    if (showIntro)
+      await this.#LoadIntroAssets();
   }
 
   #PerformLoop(): void {
     if (!this.#wasm.exports.IsEngineReady()) {
-      this.#wasm.exports.EngineUpdate();
-      this.#wasm.exports.EngineDraw();
+      this.#wasm.exports.P92Update();
+      this.#wasm.exports.P92Draw();
       return;
     }
 
-    this.#wasm.exports.EngineUpdate();
+    this.#wasm.exports.P92Update();
 
     if (!this.#userReady) {
       this.#userReady = true;

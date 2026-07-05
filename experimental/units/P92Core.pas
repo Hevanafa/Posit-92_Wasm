@@ -22,8 +22,8 @@ procedure SetCGAFontHandle(value: longint); public name 'SetCGAFontHandle';
 
 function IsEngineReady: boolean; public name 'IsEngineReady';
 
-procedure EngineUpdate; public name 'EngineUpdate';
-procedure EngineDraw; public name 'EngineDraw';
+procedure P92Update; public name 'P92Update';
+procedure P92Draw; public name 'P92Draw';
 
 procedure Print(const txt: string; const x, y: smallint);
 
@@ -81,7 +81,7 @@ begin
   IsEngineReady := engineRunState = ersReady
 end;
 
-procedure EngineUpdate;
+procedure P92Update;
 begin
   if engineRunState = ersLoading then
     if AllAssetsReady then begin
@@ -96,7 +96,7 @@ begin
   end;
 end;
 
-procedure EngineDraw;
+procedure P92Draw;
 begin
   cls($FF000000);
 
