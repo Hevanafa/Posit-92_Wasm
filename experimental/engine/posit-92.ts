@@ -77,26 +77,28 @@ type WasmImports = {
   env: {
     _haltproc: (n: number) => void,
 
-    HideLoadingOverlay: () => void,
 
     JsRequestImage: (texHandle: number) => Promise<void>,
     JsGetBootOptionBoolean: () => boolean;
 
-    HideCursor: () => void,
-    ShowCursor: () => void,
+    // WasmHost
+    SignalDone: () => void,
 
+    ShowCursor: () => void,
+    HideCursor: () => void,
+    FitCanvas: () => void,
+    HideLoadingOverlay: () => void,
+
+    ToggleFullscreen: () => void,
+    GetFullscreenState: () => boolean,
+    EndFullscreen: () => void,
+
+    // P92Core
     InvokeOnPreload: () => void;
     InvokeOnReady: () => void;
 
-    // Fullscreen
-    ToggleFullscreen: () => void,
-    EndFullscreen: () => void,
-    GetFullscreenState: () => boolean,
-    FitCanvas: () => void,
-
     // Keyboard
     IsKeyDown: (scancode: number) => boolean,
-    SignalDone: () => void,
 
     // Logger
     WriteLogF32: (value: number) => void,
@@ -252,14 +254,20 @@ class Posit92 {
       InvokeOnPreload: this.#OnPreload.bind(this),
       InvokeOnReady: this.#OnReady.bind(this),
 
-      // Fullscreen
+      // WasmHost
+      SignalDone: this.#SignalDone.bind(this),
+
+      ShowCursor: this.#ShowCursor.bind(this),
+      HideCursor: this.#HideCursor.bind(this),
+      FitCanvas: this.#FitCanvas.bind(this),
+      HideLoadingOverlay: this.#HideLoadingOverlay.bind(this),
+
       ToggleFullscreen: this.#ToggleFullscreen.bind(this),
-      EndFullscreen: this.#EndFullscreen.bind(this),
       GetFullscreenState: this.#GetFullscreenState.bind(this),
+      EndFullscreen: this.#EndFullscreen.bind(this),
 
       // Keyboard
       IsKeyDown: this.#IsKeyDown.bind(this),
-      SignalDone: this.#SignalDone.bind(this),
 
       // Logger
       WriteLogF32: value => console.log("Pascal (f32):", value),
@@ -281,12 +289,6 @@ class Posit92 {
       // VGA
       VgaUpload: this.#VgaUpload.bind(this),
       VgaPresent: this.#VgaPresent.bind(this),
-
-      // WasmHost
-      HideCursor: this.#HideCursor.bind(this),
-      ShowCursor: this.#ShowCursor.bind(this),
-      FitCanvas: this.#FitCanvas.bind(this),
-      HideLoadingOverlay: this.#HideLoadingOverlay.bind(this)
     }
   };
 
@@ -569,12 +571,74 @@ class Posit92 {
   }
 
 
+  #ShowCursor(): void {
+    this.#canvas.style.removeProperty("cursor");
+  }
+
   #HideCursor(): void {
     this.#canvas.style.cursor = "none";
   }
 
-  #ShowCursor(): void {
-    this.#canvas.style.removeProperty("cursor");
+  #AddResizeListener(): void {
+    window.addEventListener("resize", this.#HandleResize.bind(this));
+  }
+
+  #HandleResize(): void {
+    this.#FitCanvas();
+  }
+
+  #FitCanvas(): void {
+    const aspectRatio = this.#vgaWidth / this.#vgaHeight;
+
+    const [windowWidth, windowHeight] = [window.innerWidth, window.innerHeight];
+    const windowRatio = windowWidth / windowHeight;
+
+    let w = 0, h = 0;
+    if (windowRatio > aspectRatio) {
+      h = windowHeight;
+      w = h * aspectRatio;
+    } else {
+      w = windowWidth;
+      h = w / aspectRatio;
+    }
+
+    if (this.#canvas != null) {
+      this.#canvas.style.width = w + "px";
+      this.#canvas.style.height = h + "px";
+    }
+  }
+
+  /**
+   * This is available before boot -- the "loading engine" text
+   */
+  #SetLoadingText(text: string): void {
+    const div = document.querySelector("#loading-overlay > div");
+    if (div == null) return;
+    div.innerHTML = text;
+  }
+
+  #HideLoadingOverlay(): void {
+    const div = document.getElementById("loading-overlay");
+    if (div == null) return;
+    div.classList.add("hidden");
+    this.#SetLoadingText("");
+  }
+
+
+  #ToggleFullscreen(): void {
+    if (!this.#GetFullscreenState())
+      this.#canvas.requestFullscreen();
+    else
+      document.exitFullscreen();
+  }
+
+  #GetFullscreenState(): boolean {
+    return document.fullscreenElement != null;
+  }
+  
+  #EndFullscreen(): void {
+    if (this.#GetFullscreenState())
+      document.exitFullscreen();
   }
 
   /**
@@ -746,22 +810,6 @@ class Posit92 {
     }
   }
 
-
-  /**
-   * This is available before boot -- the "loading engine" text
-   */
-  #SetLoadingText(text: string): void {
-    const div = document.querySelector("#loading-overlay > div");
-    if (div == null) return;
-    div.innerHTML = text;
-  }
-
-  #HideLoadingOverlay(): void {
-    const div = document.getElementById("loading-overlay");
-    if (div == null) return;
-    div.classList.add("hidden");
-    this.#SetLoadingText("");
-  }
 
   async Sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -1131,53 +1179,6 @@ class Posit92 {
   #VgaPresent(): void {
     if (this.#surface != null)
       this.canvasCtx.putImageData(this.#surface, 0, 0);
-  }
-
-  // Fullscreen.pas
-
-  #AddResizeListener(): void {
-    window.addEventListener("resize", this.#HandleResize.bind(this));
-  }
-
-  #GetFullscreenState(): boolean {
-    return document.fullscreenElement != null;
-  }
-
-  #ToggleFullscreen(): void {
-    if (!this.#GetFullscreenState())
-      this.#canvas.requestFullscreen();
-    else
-      document.exitFullscreen();
-  }
-
-  #EndFullscreen(): void {
-    if (this.#GetFullscreenState())
-      document.exitFullscreen();
-  }
-
-  #HandleResize(): void {
-    this.#FitCanvas();
-  }
-
-  #FitCanvas(): void {
-    const aspectRatio = this.#vgaWidth / this.#vgaHeight;
-
-    const [windowWidth, windowHeight] = [window.innerWidth, window.innerHeight];
-    const windowRatio = windowWidth / windowHeight;
-
-    let w = 0, h = 0;
-    if (windowRatio > aspectRatio) {
-      h = windowHeight;
-      w = h * aspectRatio;
-    } else {
-      w = windowWidth;
-      h = w / aspectRatio;
-    }
-
-    if (this.#canvas != null) {
-      this.#canvas.style.width = w + "px";
-      this.#canvas.style.height = h + "px";
-    }
   }
 
   async Start(): Promise<void> {
