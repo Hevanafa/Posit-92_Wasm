@@ -23,9 +23,10 @@ procedure InitEngine; public name 'InitEngine';
 procedure SetCGAFontHandle(value: longint); public name 'SetCGAFontHandle';
 
 function IsEngineReady: boolean; public name 'IsEngineReady';
+procedure InvokeOnPreload; external 'env' name 'InvokeOnPreload';
+procedure InvokeOnReady; external 'env' name 'InvokeOnReady';
 
 procedure P92Boot; public name 'P92Boot';
-procedure InvokeOnPreload; external 'env' name 'InvokeOnPreload';
 procedure P92Update; public name 'P92Update';
 procedure P92Draw; public name 'P92Draw';
 
@@ -98,7 +99,7 @@ begin
   if GetBootOptionBoolean('defaultFont') then
     LoadDefaultFont;
 
-  InvokeOnPreload;
+  InvokeOnPreload
 end;
 
 procedure P92Update;
@@ -113,6 +114,7 @@ begin
     if AllAssetsReady then begin
       engineRunState := ersReady;
       writelog('ersReady');
+      InvokeOnReady;
     end;
     exit
   end;

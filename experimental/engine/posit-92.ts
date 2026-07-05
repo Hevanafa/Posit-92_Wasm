@@ -86,6 +86,7 @@ type WasmImports = {
     ShowCursor: () => void,
 
     InvokeOnPreload: () => void;
+    InvokeOnReady: () => void;
 
     // Fullscreen
     ToggleFullscreen: () => void,
@@ -229,7 +230,6 @@ class Posit92 {
    */
   #midnightOffset = 0;
 
-  #userReady = false;
   #done = false;
 
   /**
@@ -250,6 +250,7 @@ class Posit92 {
       JsRequestImage: this.RequestImage.bind(this),
       JsGetBootOptionBoolean: this.#GetBootOptionBoolean.bind(this),
       InvokeOnPreload: this.#OnPreload.bind(this),
+      InvokeOnReady: this.#OnReady.bind(this),
 
       // Fullscreen
       ToggleFullscreen: this.#ToggleFullscreen.bind(this),
@@ -1180,8 +1181,6 @@ class Posit92 {
   }
 
   async Start(): Promise<void> {
-    // const showIntro = this.bootOptions.skipIntro == true;
-
     // WebAssembly init & stuff
     await this.InitRuntime();
     this.#HideLoadingOverlay();
@@ -1200,12 +1199,18 @@ class Posit92 {
     // if (this.bootOptions.defaultFont == true)
     //   this.#wasm.exports.LoadDefaultFont();
 
+    // const showIntro = this.bootOptions.skipIntro == true;
+
     // if (showIntro)
     //   await this.#LoadIntroAssets();
   }
 
   #OnPreload(): void {
     this.#wasm.exports.OnPreload?.();
+  }
+
+  #OnReady(): void {
+    this.#wasm.exports.OnReady?.();
   }
 
   #PerformLoop(): void {
@@ -1216,11 +1221,6 @@ class Posit92 {
     }
 
     this.#wasm.exports.P92Update();
-
-    if (!this.#userReady) {
-      this.#userReady = true;
-      this.#wasm.exports.OnReady?.();
-    }
 
     this.#wasm.exports.Update();
     this.#wasm.exports.Draw();
