@@ -22,7 +22,7 @@ begin
   Spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure LoadGameAssets;
+procedure OnPreload;
 begin
   imgCursor := RequestImage('assets/images/cursor.png');
 
@@ -30,7 +30,6 @@ begin
   imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
-{ Called after LoadGameAssets is finished }
 procedure OnReady;
 begin
   HideCursor;
@@ -66,7 +65,7 @@ begin
 end;
 
 exports
-  LoadGameAssets, OnReady,
+  OnPreload, OnReady,
   Update, Draw;
 
 begin
