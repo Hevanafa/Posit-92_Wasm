@@ -190,14 +190,24 @@ class BMFontMixin extends Base {
   async #RequestBMFont(bmfontHandle: number, fontPtr: number, fontGlyphsPtr: number): Promise<void> {
     const url = this.ReadInteropBuffer();
 
-    console.log("RequestBMFont url", url);
+    let fontData = "";
 
-    const res = await fetch(url);
-    const text = await res.text();
+    try {
+      console.log("RequestBMFont url", url);
+      const res = await fetch(url);
+      fontData = await res.text();
+    } catch (error) {
+      if (error instanceof Error)
+        console.error("RequestBMFont: Failed to download BMFont data:", error);
+
+      this.WasmInstanceExports.PascalBMFontFailed(bmfontHandle, 1);
+
+      return;
+    }
 
     this.WasmInstance.exports.IncAssetReadyCount();
 
-    const lines = text.endsWith("\r\n") ? text.split("\r\n") : text.split("\n");
+    const lines = fontData.endsWith("\r\n") ? fontData.split("\r\n") : fontData.split("\n");
 
     let txtLine = "";
     let pairs: Array<StringPair>;
@@ -280,13 +290,10 @@ class BMFontMixin extends Base {
     fontMem.setUint16(offset, lineHeight, true);
     fontMem.setUint8(offset + 2, spacing[0]);
     fontMem.setUint8(offset + 3, spacing[1]);
-    // fontMem.setInt32(offset + 4, imgHandle, true);
 
-    // Load font bitmap
-
-    this.WriteInteropBuffer(filename);
     // This uses a reserved imgHandle provided by RequestBMFont from Pascal side
-    await this.RequestImage(fontMem.getInt32(offset + 4, true));
+    const texHandleOffset = offset + 4;
+    // fontMem.setInt32(offset + 4, imgHandle, true);
 
     // Load glyphs
     const glyphsMem = new DataView(this.WasmInstanceExports.memory.buffer, fontGlyphsPtr);
@@ -313,6 +320,18 @@ class BMFontMixin extends Base {
     }
 
     console.log("RequestBMFont", fontface, "completed");
+
+    // Load font bitmap
+    try {
+      this.WriteInteropBuffer(filename);
+      await this.RequestImage(fontMem.getInt32(texHandleOffset, true));
+    } catch (error) {
+      if (error instanceof Error)
+        console.error("RequestBMFont: Failed when downloading the BMFont image:", error);
+
+      this.WasmInstanceExports.PascalBMFontFailed(bmfontHandle, 2);
+      return;
+    }
 
     this.WasmInstanceExports.PascalBMFontLoaded(bmfontHandle);
   }
