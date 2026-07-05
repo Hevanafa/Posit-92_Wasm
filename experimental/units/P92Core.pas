@@ -80,15 +80,20 @@ begin
   cgaFontHandle := RequestImage('assets/CGA8x8.png');
 end;
 
+procedure InitPreloadState;
+begin
+  engineRunState := ersPreload;
+  writelog('ersPreload');
+  FitCanvas;
+
+  InvokeOnPreload;
+end;
+
 procedure P92Update;
 begin
   if engineRunState = ersBoot then begin
-    if AllAssetsReady then begin
-      engineRunState := ersPreload;
-      FitCanvas;
-      InvokeOnPreload;
-      writelog('ersPreload');
-    end;
+    if AllAssetsReady then
+      InitPreloadState;
     exit
   end;
 
