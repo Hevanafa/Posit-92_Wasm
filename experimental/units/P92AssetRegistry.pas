@@ -36,14 +36,14 @@ procedure SetAssetTotalCount(value: longint); public name 'SetAssetTotalCount';
 procedure InitAssetRegistry;
 function FindUnusedTextureSlot: longint;
 
-procedure JsRequestImage(imgHandle: longint); external 'env' name 'JsRequestImage';
+procedure JsRequestImage(texHandle: longint); external 'env' name 'JsRequestImage';
 function RequestImage(const path: string): longint;
 
 procedure JsRequestBMFont(fontPtr: PBMFont; fontGlyphsPtr: PBMFontGlyph); external 'env' name 'JsRequestBMFont';
 procedure RequestBMFont(const path: string; const fontPtr: PBMFont; const fontGlyphsPtr: PBMFontGlyph);
 
-procedure PascalImageLoaded(const imgHandle: longint; const w, h: smallint; const pixelData: pointer); public name 'PascalImageLoaded';
-procedure PascalImageFailed(const imgHandle: longint; const errorCode: smallint); public name 'PascalImageFailed';
+procedure PascalImageLoaded(const texHandle: longint; const w, h: smallint; const pixelData: pointer); public name 'PascalImageLoaded';
+procedure PascalImageFailed(const texHandle: longint; const errorCode: smallint); public name 'PascalImageFailed';
 
 
 implementation
@@ -98,59 +98,60 @@ end;
 
 function RequestImage(const path: string): longint;
 var
-  imgHandle: longint;
+  texHandle: longint;
 begin
   inc(AssetTotalCount);
 
-  imgHandle := FindUnusedTextureSlot;
+  texHandle := FindUnusedTextureSlot;
   WriteInteropString(path);
-  JsRequestImage(imgHandle);
+  JsRequestImage(texHandle);
 
-  textures[imgHandle] := default(TSoftwareTexEntry);
-  textures[imgHandle].status := AssetStatusLoading;
+  textures[texHandle] := default(TSoftwareTexEntry);
+  textures[texHandle].status := AssetStatusLoading;
 
-  RequestImage := imgHandle
+  RequestImage := texHandle
 end;
 
 procedure RequestBMFont(const path: string; const fontPtr: PBMFont; const fontGlyphsPtr: PBMFontGlyph);
 var
-  imgHandle: longint;
+  texHandle: longint;
 begin
   inc(AssetTotalCount, 2);
 
-  imgHandle := FindUnusedTextureSlot;
+  { Reserve the texture handle}
+  texHandle := FindUnusedTextureSlot;
 
-  fontptr^.imgHandle := imgHandle;
-  textures[imgHandle] := default(TSoftwareTexEntry);
-  textures[imgHandle].status := AssetStatusLoading;
+  fontptr^.texHandle := texHandle;
+  textures[texHandle] := default(TSoftwareTexEntry);
+  textures[texHandle].status := AssetStatusLoading;
 
   WriteInteropString(path);
   JsRequestBMFont(fontPtr, fontGlyphsPtr);
 end;
 
-procedure PascalImageLoaded(const imgHandle: longint; const w, h: smallint; const pixelData: pointer);
+procedure PascalImageLoaded(const texHandle: longint; const w, h: smallint; const pixelData: pointer);
 begin
-  if (imgHandle < 1) or (imgHandle >= high(textures)) then
-    PanicHalt('Invalid image handle: ' + I32Str(imgHandle));
+  if (texHandle < 1) or (texHandle >= high(textures)) then
+    PanicHalt('Invalid texture handle: ' + I32Str(texHandle));
 
-  if (textures[imgHandle].texture.allocSize > 0) then
-    PanicHalt('Image handle ' + I32Str(imgHandle) + ' already used! (allocSize > 0)');
+  if (textures[texHandle].texture.allocSize > 0) then
+    PanicHalt('Texture handle ' + I32Str(texHandle) + ' already used! (allocSize > 0)');
 
-  textures[imgHandle].texture.width := w;
-  textures[imgHandle].texture.height := h;
-  textures[imgHandle].texture.allocSize := w * h * 4;
-  textures[imgHandle].texture.pixelData := pixelData;
+  textures[texHandle].texture.width := w;
+  textures[texHandle].texture.height := h;
+  textures[texHandle].texture.allocSize := w * h * 4;
+  textures[texHandle].texture.pixelData := pixelData;
 
-  textures[imgHandle].status := AssetStatusReady;
-  textures[imgHandle].errorCode := 0;
+  textures[texHandle].status := AssetStatusReady;
+  textures[texHandle].errorCode := 0;
 
   inc(AssetReadyCount);
 end;
 
-procedure PascalImageFailed(const imgHandle: longint; const errorCode: smallint);
+procedure PascalImageFailed(const texHandle: longint; const errorCode: smallint);
 begin
-  textures[imgHandle].status := AssetStatusFailed;
-  textures[imgHandle].errorCode := errorCode;
+  textures[texHandle].status := AssetStatusFailed;
+  textures[texHandle].errorCode := errorCode;
 end;
 
 end.

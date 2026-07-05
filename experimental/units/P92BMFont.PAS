@@ -26,7 +26,7 @@ type
     filename: string[63];  { 64 bytes }
     lineHeight: word;  { 2 bytes }
     spacing: array[0..1] of byte; { x, y }
-    imgHandle: longint;  { 84th byte }
+    texHandle: longint;  { 84th byte }
   end;
 
 { This procedure creates a new ImgRef instance }
@@ -105,7 +105,7 @@ begin
     glyph := fontGlyphs[glyphIdx];
 
     SprRegion(
-      font.imgHandle,
+      font.texHandle,
       glyph.x, glyph.y,
       glyph.width, glyph.height,
       x + glyph.xoffset, y + glyph.yoffset);
@@ -126,7 +126,7 @@ begin
   for a:=0 to high(srcFontGlyphs) do
     destFontGlyphs[a] := srcFontGlyphs[a];
 
-  destFont.imgHandle := CopyTexture(srcFont.imgHandle)
+  destFont.texHandle := CopyTexture(srcFont.texHandle)
 end;
 
 procedure FreeBMFont(
@@ -137,7 +137,7 @@ var
   a: Word;
 begin
   if freeImgHandle then
-    FreeTexture(font.imgHandle);
+    FreeTexture(font.texHandle);
 
   fillchar(font, sizeof(TBMFont), 0);
   for a:=0 to high(fontGlyphs) do
@@ -215,7 +215,7 @@ begin
     glyph := fontGlyphs[glyphIdx];
 
     SprRegionSolid(
-      font.imgHandle,
+      font.texHandle,
       glyph.x, glyph.y,
       glyph.width, glyph.height,
       x + glyph.xoffset, y + glyph.yoffset,
@@ -276,7 +276,7 @@ begin
     glyph := fontGlyphs[glyphIdx];
 
     SprRegionToDest(
-      font.imgHandle,
+      font.texHandle,
       destHandle,
       glyph.x, glyph.y,
       glyph.width, glyph.height,
