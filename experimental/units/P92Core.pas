@@ -102,6 +102,13 @@ begin
   InvokeOnPreload
 end;
 
+procedure InitReadyState;
+begin
+  engineRunState := ersReady;
+  writelog('ersReady');
+  InvokeOnReady
+end;
+
 procedure P92Update;
 begin
   if engineRunState = ersBoot then begin
@@ -111,11 +118,8 @@ begin
   end;
 
   if engineRunState = ersPreload then begin
-    if AllAssetsReady then begin
-      engineRunState := ersReady;
-      writelog('ersReady');
-      InvokeOnReady;
-    end;
+    if AllAssetsReady then
+      InitReadyState;
     exit
   end;
 
