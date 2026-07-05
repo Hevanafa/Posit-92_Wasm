@@ -18,7 +18,6 @@ type WasmExports = {
   DefaultFontPtr: () => number;
   DefaultFontGlyphsPtr: () => number;
 
-  LoadGameAssets: () => void;
 
   // InteropBuf.pas
   GetInteropBufPtr: () => number,
@@ -60,10 +59,11 @@ type WasmExports = {
   InitHeapRegion: (startAddr: number, poolSize: number, heapSize: number) => void,
   WasmGetMem: (bytes: number) => number,
 
-  // Entry point
-  OnReady: () => void,
-  Update: () => void,
-  Draw: () => void
+  // Events
+  OnPreload: () => void;
+  OnReady: () => void;
+  Update: () => void;
+  Draw: () => void;
 };
 
 type WasmImports = {
@@ -156,6 +156,8 @@ type Posit92Options = {
   skipIntro?: boolean;
 
   /**
+   * Loads the default BMFont
+   * 
    * Default: true
    */
   defaultFont?: boolean;
@@ -1183,9 +1185,7 @@ class Posit92 {
     if (this.bootOptions.defaultFont == true)
       this.#wasm.exports.LoadDefaultFont();
 
-    // Some demos don't even use assets
-    if (Object.hasOwn(this.#wasm.exports, "LoadGameAssets"))
-      this.#wasm.exports.LoadGameAssets();
+    this.#wasm.exports.OnPreload?.();
   }
 
   #PerformLoop(): void {
