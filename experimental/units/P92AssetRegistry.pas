@@ -9,7 +9,7 @@ const
 
 type
   TAssetStatus = (
-    AssetStatusPending,
+    AssetStatusEmpty,
     AssetStatusLoading,
     AssetStatusReady,
     AssetStatusFailed
@@ -21,8 +21,17 @@ type
     errorCode: smallint;
   end;
 
+  TBMFontEntry = record
+    fontPtr: PBMFont;
+    glyphsPtr: PBMFontGlyph;
+    status: TAssetStatus;
+    errorCode: smallint;
+  end;
+
 var
   textures: array[1..MaxTextures] of TSoftwareTexEntry;
+  bmfonts: array[1..9] of TBMFontEntry;
+
   AssetReadyCount,
   AssetTotalCount: longword;
 
@@ -79,6 +88,9 @@ begin
 
   for a := 1 to high(textures) do
     textures[a] := default(TSoftwareTexEntry);
+
+  for a:=1 to high(bmfonts) do
+    bmfonts[a] := default(TBMFontEntry);
 end;
 
 function FindUnusedTextureSlot: longint;
@@ -87,7 +99,7 @@ var
 begin
   for a:=1 to high(textures) do
     { if not IsTextureSet(a) then begin }
-    if textures[a].status = AssetStatusPending then begin
+    if textures[a].status = AssetStatusEmpty then begin
       FindUnusedTextureSlot := a;
       exit
     end;
@@ -116,6 +128,8 @@ procedure RequestBMFont(const path: string; const fontPtr: PBMFont; const fontGl
 var
   texHandle: longint;
 begin
+  { TODO: Actually register the asset }
+
   inc(AssetTotalCount, 2);
 
   { Reserve the texture handle}
@@ -128,6 +142,8 @@ begin
   WriteInteropString(path);
   JsRequestBMFont(fontPtr, fontGlyphsPtr);
 end;
+
+{ Report asset state to Pascal }
 
 procedure PascalImageLoaded(const texHandle: longint; const w, h: smallint; const pixelData: pointer);
 begin
