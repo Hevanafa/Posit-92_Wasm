@@ -54,6 +54,9 @@ class BMFontMixin extends Base {
     return <BMFontWasmExports>this.WasmInstance.exports;
   }
 
+  /**
+   * @deprecated
+   */
   async LoadBMFont(url: string, fontPtr: number, fontGlyphsPtr: number): Promise<void> {
     this.AssertString(url);
     this.AssertNumber(fontPtr);
@@ -314,18 +317,21 @@ class BMFontMixin extends Base {
     this.WasmInstanceExports.PascalBMFontLoaded(bmfontHandle);
   }
 
+  /**
+   * @deprecated
+   */
   async LoadBMFontFromManifest(manifest: BMFontManifest): Promise<void> {
     const entries = Object.entries(manifest);
 
     const promises = entries.map(([key, params]) => {
-      const setter = this.WasmInstanceExports[params.setter];
+      const setter = (<any>this.WasmInstanceExports)[params.setter];
 
       if (typeof setter != "function") {
         console.error("loadBMFontFromManifest: Missing setter", setter);
         return { key, setterPtr: 0 };
       }
 
-      const glyphSetter = this.WasmInstanceExports[params.glyphSetter];
+      const glyphSetter = (<any>this.WasmInstanceExports)[params.glyphSetter];
 
       if (typeof glyphSetter != "function") {
         console.error("loadBMFontFromManifest: Missing glyphSetter", params.glyphSetter);
