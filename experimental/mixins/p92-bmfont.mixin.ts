@@ -12,6 +12,11 @@ type TBMFontGlyph = {
   lineHeight: number
 }
 
+type BMFontWasmExports = WasmExports & {
+  PascalBMFontLoaded: (bmfontHandle: number) => void;
+  PascalBMFontFailed: (bmfontHandle: number, errorCode: number) => void;
+}
+
 type BMFontWasmImports = WasmImports & {
   env: {
     JsRequestBMFont: (fontPtr: number, fontGlyphsPtr: number) => Promise<void>
@@ -44,6 +49,10 @@ class BMFontMixin extends Base {
     xadvance: 0,
     lineHeight: 0
   });
+
+  get WasmInstanceExports(): BMFontWasmExports {
+    return <BMFontWasmExports>this.WasmInstance.exports;
+  }
 
   async LoadBMFont(url: string, fontPtr: number, fontGlyphsPtr: number): Promise<void> {
     this.AssertString(url);
@@ -175,7 +184,7 @@ class BMFontMixin extends Base {
     console.log("loadBMFont", fontface, "completed");
   }
 
-  async #RequestBMFont(fontPtr: number, fontGlyphsPtr: number): Promise<void> {
+  async #RequestBMFont(bmfontHandle: number, fontPtr: number, fontGlyphsPtr: number): Promise<void> {
     const url = this.ReadInteropBuffer();
 
     console.log("RequestBMFont url", url);
@@ -258,7 +267,7 @@ class BMFontMixin extends Base {
     console.log("Loaded", glyphCount, "glyphs");
 
     // Load TBMFont
-    const fontMem = new DataView(this.WasmInstance.exports.memory.buffer, fontPtr);
+    const fontMem = new DataView(this.WasmInstanceExports.memory.buffer, fontPtr);
 
     let offset = 0;
     offset += 16;  // Skip fontface string
@@ -277,7 +286,7 @@ class BMFontMixin extends Base {
     await this.RequestImage(fontMem.getInt32(offset + 4, true));
 
     // Load glyphs
-    const glyphsMem = new DataView(this.WasmInstance.exports.memory.buffer, fontGlyphsPtr);
+    const glyphsMem = new DataView(this.WasmInstanceExports.memory.buffer, fontGlyphsPtr);
 
     for (const charID of fontGlyphs.keys()) {
       const glyph = fontGlyphs.get(charID)!;
@@ -300,21 +309,23 @@ class BMFontMixin extends Base {
       glyphsMem.setInt16(glyphOffset + 14, glyph.xadvance, true);
     }
 
-    console.log("loadBMFont", fontface, "completed");
+    console.log("RequestBMFont", fontface, "completed");
+
+    this.WasmInstanceExports.PascalBMFontLoaded(bmfontHandle);
   }
 
   async LoadBMFontFromManifest(manifest: BMFontManifest): Promise<void> {
     const entries = Object.entries(manifest);
 
     const promises = entries.map(([key, params]) => {
-      const setter = this.WasmInstance.exports[params.setter];
+      const setter = this.WasmInstanceExports[params.setter];
 
       if (typeof setter != "function") {
         console.error("loadBMFontFromManifest: Missing setter", setter);
         return { key, setterPtr: 0 };
       }
 
-      const glyphSetter = this.WasmInstance.exports[params.glyphSetter];
+      const glyphSetter = this.WasmInstanceExports[params.glyphSetter];
 
       if (typeof glyphSetter != "function") {
         console.error("loadBMFontFromManifest: Missing glyphSetter", params.glyphSetter);

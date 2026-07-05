@@ -48,12 +48,16 @@ function FindUnusedTextureSlot: longint;
 procedure JsRequestImage(texHandle: longint); external 'env' name 'JsRequestImage';
 function RequestImage(const path: string): longint;
 
-procedure JsRequestBMFont(fontPtr: PBMFont; fontGlyphsPtr: PBMFontGlyph); external 'env' name 'JsRequestBMFont';
+procedure JsRequestBMFont(bmfontHandle: longint; fontPtr: PBMFont; fontGlyphsPtr: PBMFontGlyph); external 'env' name 'JsRequestBMFont';
 procedure RequestBMFont(const path: string; const fontPtr: PBMFont; const fontGlyphsPtr: PBMFontGlyph);
+
+{ Reporting procedures }
 
 procedure PascalImageLoaded(const texHandle: longint; const w, h: smallint; const pixelData: pointer); public name 'PascalImageLoaded';
 procedure PascalImageFailed(const texHandle: longint; const errorCode: smallint); public name 'PascalImageFailed';
 
+procedure PascalBMFontLoaded(const bmfontHandle: longint); public name 'PascalBMFontLoaded';
+procedure PascalBMFontFailed(const bmfontHandle: longint; const errorCode: smallint); public name 'PascalBMFontFailed';
 
 implementation
 
@@ -137,16 +141,16 @@ end;
 
 procedure RequestBMFont(const path: string; const fontPtr: PBMFont; const fontGlyphsPtr: PBMFontGlyph);
 var
-  bmfontIdx: longint;
+  bmfontHandle: longint;
   texHandle: longint;
 begin
-  bmfontIdx := FindUnusedBMFontSlot;
+  bmfontHandle := FindUnusedBMFontSlot;
 
-  if bmfontIdx < 0 then
+  if bmfontHandle < 0 then
     PanicHalt('RequestBMFont: BMFont slots are full!');
 
-  bmfonts[bmfontIdx] := default(TBMFontEntry);
-  bmfonts[bmfontIdx].status := AssetStatusLoading;
+  bmfonts[bmfontHandle] := default(TBMFontEntry);
+  bmfonts[bmfontHandle].status := AssetStatusLoading;
 
   inc(AssetTotalCount, 2);
 
@@ -158,7 +162,7 @@ begin
   textures[texHandle].status := AssetStatusLoading;
 
   WriteInteropString(path);
-  JsRequestBMFont(fontPtr, fontGlyphsPtr);
+  JsRequestBMFont(bmfontHandle, fontPtr, fontGlyphsPtr);
 end;
 
 { Report asset state to Pascal }
@@ -167,9 +171,6 @@ procedure PascalImageLoaded(const texHandle: longint; const w, h: smallint; cons
 begin
   if (texHandle < 1) or (texHandle >= high(textures)) then
     PanicHalt('Invalid texture handle: ' + I32Str(texHandle));
-
-  if (textures[texHandle].texture.allocSize > 0) then
-    PanicHalt('Texture handle ' + I32Str(texHandle) + ' already used! (allocSize > 0)');
 
   textures[texHandle].texture.width := w;
   textures[texHandle].texture.height := h;
@@ -186,6 +187,18 @@ procedure PascalImageFailed(const texHandle: longint; const errorCode: smallint)
 begin
   textures[texHandle].status := AssetStatusFailed;
   textures[texHandle].errorCode := errorCode;
+end;
+
+procedure PascalBMFontLoaded(const bmfontHandle: longint);
+begin
+  bmfonts[bmfontHandle].status := AssetStatusReady;
+  bmfonts[bmfontHandle].errorCode := 0
+end;
+
+procedure PascalBMFontFailed(const bmfontHandle: longint; const errorCode: smallint);
+begin
+  bmfonts[bmfontHandle].status := AssetStatusFailed;
+  bmfonts[bmfontHandle].errorCode := errorCode
 end;
 
 end.
