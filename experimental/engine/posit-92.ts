@@ -81,6 +81,7 @@ type WasmImports = {
     HideLoadingOverlay: () => void,
 
     JsRequestImage: (texHandle: number) => Promise<void>,
+    JsGetBootOptionBoolean: () => boolean;
 
     HideCursor: () => void,
     ShowCursor: () => void,
@@ -248,6 +249,7 @@ class Posit92 {
 
       // P92Core
       JsRequestImage: this.RequestImage.bind(this),
+      JsGetBootOptionBoolean: this.#GetBootOptionBoolean.bind(this),
       InvokeOnPreload: this.#OnPreload.bind(this),
 
       // Fullscreen
@@ -509,6 +511,19 @@ class Posit92 {
 
     this.WasmInstance.exports.SetImgWasmLogo(
       await this.LoadImage("assets/images/wasm_logo.png"));
+  }
+
+  #GetBootOptionBoolean(): boolean {
+    const key = this.ReadInteropBuffer();
+
+    if (Object.hasOwn(this.bootOptions, key)) {
+      const options = <any>this.bootOptions;
+      if (typeof options[key] == "boolean")
+        return options[key];
+      else
+        throw new Error("bootOptions[" + key + "] is not a valid boolean: " + options[key]);
+    } else
+      throw new Error("Unknown boot option key: " + key);
   }
 
   /**

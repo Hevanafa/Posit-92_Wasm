@@ -16,6 +16,9 @@ type
 var
   engineRunState: TEngineRunStates;
 
+function GetBootOptionBoolean(key: string): boolean;
+function JsGetBootOptionBoolean: boolean; external 'env' name 'JsGetBootOptionBoolean';
+
 procedure InitEngine; public name 'InitEngine';
 procedure SetCGAFontHandle(value: longint); public name 'SetCGAFontHandle';
 
