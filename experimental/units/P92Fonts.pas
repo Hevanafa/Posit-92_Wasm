@@ -4,7 +4,7 @@ interface
 
 uses P92BMFont;
 
-procedure LoadDefaultFont; public name 'LoadDefaultFont';
+procedure LoadDefaultFont;
 
 function DefaultFontPtr: PBMFont;
 function DefaultFontGlyphsPtr: PBMFontGlyph;

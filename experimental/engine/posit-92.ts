@@ -24,7 +24,6 @@ type WasmExports = {
   SetCGAFontHandle: (value: number) => void,
 
   // P92Fonts
-  LoadDefaultFont: () => void;
   IsEngineReady: () => boolean;
   P92Boot: () => void;
   P92Update: () => void;

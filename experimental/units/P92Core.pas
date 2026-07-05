@@ -39,7 +39,7 @@ uses
   P92FPS, P92Loading, P92Logger,
   P92InteropBuf, P92Timing,
   P92Mouse,
-  P92AssetRegistry, P92TexDraw,
+  P92Fonts, P92AssetRegistry, P92TexDraw,
   P92VGA, P92WasmHost
 {$ifdef UseWebGL}
   , P92WebGL
@@ -48,6 +48,12 @@ uses
 
 var
   cgaFontHandle: longint;
+
+function GetBootOptionBoolean(key: string): boolean;
+begin
+  WriteInteropString(key);
+  GetBootOptionBoolean := JsGetBootOptionBoolean
+end;
 
 procedure InitEngine;
 begin
@@ -88,6 +94,9 @@ begin
   engineRunState := ersPreload;
   writelog('ersPreload');
   FitCanvas;
+
+  if GetBootOptionBoolean('defaultFont') then
+    LoadDefaultFont;
 
   InvokeOnPreload;
 end;
