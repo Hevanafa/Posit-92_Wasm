@@ -35,11 +35,9 @@ begin
 
   Print('Fatal Error', 8, 8);
 
-  Print(msg, 8, 24);
+  PrintWrap(msg, 8, 24, VgaWidth - 16);
 
-  { TODO: add the type and path }
-
-  Print('Check Console for details', 8, VgaHeight - 8);
+  Print('Check Console for details', 8, VgaHeight - 16);
 
   VgaUpload;
 {$ifdef P92_WEBGL}

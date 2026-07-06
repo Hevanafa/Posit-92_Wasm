@@ -33,7 +33,7 @@ procedure P92Draw; public name 'P92Draw';
 
 procedure PrintChar(const c: char; const x, y: smallint);
 procedure Print(const txt: string; const x, y: smallint);
-{ procedure PrintWrap(const txt: string; const x, y, wrap: smallint); }
+procedure PrintWrap(const txt: string; x, y, wrapWidth: smallint);
 
 
 implementation
@@ -163,7 +163,7 @@ procedure PrintChar(const c: char; const x, y: smallint);
 var
   row, col: smallint;
 begin
-  if not (ord(c) in [0..255]) then exit;
+  if not (ord(c) in [1..255]) then exit;
 
   row := ord(c) div 16;
   col := ord(c) mod 16;
@@ -186,6 +186,30 @@ begin
     PrintChar(c, left, y);
     inc(left, 8)
   end;
+end;
+
+procedure PrintWrap(const txt: string; x, y, wrapWidth: smallint);
+var
+  c: char;
+  left: smallint;
+begin
+  left := 0;
+
+  for c in txt do begin
+    if c = #10 then begin
+      left := 0;
+      inc(y, 8);
+    end;
+
+    PrintChar(c, x + left, y);
+    inc(left, 8);
+
+    if left >= wrapWidth then begin
+      left := 0;
+      inc(y, 8);
+    end;
+  end;
+
 end;
 
 end.
