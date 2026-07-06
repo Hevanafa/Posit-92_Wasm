@@ -534,16 +534,17 @@ class Posit92 {
       console.error(error);
 
       const lines = [
-        "Failed to load image", "",
+        "Failed to load image",
+        "",
         "Path: " + url
       ];
 
-      if (Object.hasOwn(error, "message"))
+      if (error instanceof Error)
         lines.push("Reason: " + error.message);
       else
         lines.push("Reason: " + error);
 
-      this.#PanicHaltDisplay(lines.join("\n"));
+      this.PanicHaltDisplay(lines.join("\n"));
 
       this.#wasm.exports.PascalImageFailed(texHandle, 0);
     }
@@ -638,7 +639,6 @@ class Posit92 {
     if (typeof value != "string")
       throw new Error(`Expected a string, but received ${typeof value}`);
   }
-
 
   async LoadImageFromURL(url: string): Promise<HTMLImageElement> {
     this.AssertString(url);
@@ -1130,7 +1130,10 @@ class Posit92 {
     throw new Error(`PANIC: ${msg}`);
   }
 
-  #PanicHaltDisplay(msg: string): void {
+  /**
+   * Public for mixins
+   */
+  PanicHaltDisplay(msg: string): void {
     this.WriteInteropBuffer(msg);
     this.WasmInstance.exports.PascalPanicHaltDisplay();
   }
