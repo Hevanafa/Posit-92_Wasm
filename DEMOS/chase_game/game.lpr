@@ -1,3 +1,8 @@
+{
+  Chase game demo
+  Mixins: bmfont
+}
+
 library Game;
 
 {$Mode ObjFPC}
@@ -5,21 +10,15 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  Loading, Fullscreen,
-  Conv, FPS, Graphics, Logger,
-  Keyboard, Mouse,
-  ImgRef, ImgRefFast,
-  Maths, Timing, WasmMemMgr,
-  Shapes, Panic, VGA,
+  P92Core, P92Conversions, P92FPS, P92Graphics,
+  P92Logger, P92WasmHost, P92Fonts,
+  P92Keyboard, P92Mouse,
+  P92Tex, P92TexDraw,
+  P92Geometry, P92Maths, P92Timing,
+  P92Panic, P92VGA,
   Assets;
 
 type
-  TGameStates = (
-    GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
-  );
-
   TEnemyStates = (
     EnemyStateSpawning = 1,
     EnemyStateActive = 2,
@@ -50,24 +49,12 @@ const
 
 var
   { Game State }
-  actualGameState: TGameStates;
   gameTime: double;
   playerBody: TPhysicsBody;
   isCaught, isWin: boolean;
 
   enemies: array[0..2] of PEnemy;
 
-
-{ Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure hideCursor; external 'env' name 'hideCursor';
-procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
-procedure loadAssets; external 'env' name 'loadAssets';
-
-procedure drawFPS;
-begin
-  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
-end;
 
 procedure drawMouse;
 begin
@@ -117,14 +104,12 @@ begin
 end;
 
 
-procedure beginLoadingState;
+procedure OnPreload;
 begin
-  actualGameState := GameStateLoading;
-  fitCanvas;
-  loadAssets
+
 end;
 
-procedure beginPlayingState;
+procedure OnReady;
 var
   a: word;
 begin
@@ -132,7 +117,6 @@ begin
   fitCanvas;
 
   { Initialise game state here }
-  actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
   isCaught := false;
@@ -150,37 +134,19 @@ begin
 end;
 
 
-procedure init;
-begin
-  initHeapMgr;
-  initDeltaTime;
-  initFPSCounter
-end;
-
-procedure afterInit;
-begin
-  beginPlayingState
-end;
-
-procedure update;
+procedure Update;
 var
   a: word;
   angle: double;
   dx, dy: double;
 begin
-  updateDeltaTime;
-  incrementFPS;
-
-  { Handle inputs }
-  updateMouse;
-
-  if isKeyDown(SC_ESCAPE) then signalDone;
+  if IsKeyDown(SC_ESCAPE) then signalDone;
 
   if not isCaught and not isWin then begin
-    if isKeyDown(sc_w) then playerBody.y := playerBody.y - velocity * dt;
-    if isKeyDown(SC_S) then playerBody.y := playerBody.y + velocity * dt;
-    if isKeyDown(sc_a) then playerBody.x := playerBody.x - velocity * dt;
-    if isKeyDown(SC_D) then playerBody.x := playerBody.x + velocity * dt;
+    if isKeyDown(sc_w) then playerBody.y := playerBody.y - velocity * DeltaTime;
+    if isKeyDown(SC_S) then playerBody.y := playerBody.y + velocity * DeltaTime;
+    if isKeyDown(sc_a) then playerBody.x := playerBody.x - velocity * DeltaTime;
+    if isKeyDown(SC_D) then playerBody.x := playerBody.x + velocity * DeltaTime;
   end;
 
   if getAliveEnemyCount < 3 then
@@ -206,8 +172,8 @@ begin
           break
         end;
 
-      enemies[a]^.body.x := enemies[a]^.body.x + enemies[a]^.body.vx * dt;
-      enemies[a]^.body.y := enemies[a]^.body.y + enemies[a]^.body.vy * dt;
+      enemies[a]^.body.x := enemies[a]^.body.x + enemies[a]^.body.vx * DeltaTime;
+      enemies[a]^.body.y := enemies[a]^.body.y + enemies[a]^.body.vy * DeltaTime;
 
       if zoneIntersects(
         physicsBodyToZone(playerBody),
@@ -230,7 +196,7 @@ begin
     isWin := true;
 
   if not isCaught then
-    gameTime := gameTime + dt;
+    gameTime := gameTime + DeltaTime;
 end;
 
 
@@ -240,19 +206,13 @@ var
   s: string;
   w: integer;
   remainingTime: double;
-
 begin
-  if actualGameState = GameStateLoading then begin
-    renderLoadingScreen;
-    exit
-  end;
-
   cls(CornflowerBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], vgaWidth - getImageWidth(imgDosuEXE[1]) - 10, 120)
+    spr(imgDosuEXE[1], vgaWidth - GetTextureWidth(imgDosuEXE[1]) - 10, 120)
   else
-    spr(imgDosuEXE[0], vgaWidth - getImageWidth(imgDosuEXE[1]) - 10, 120);
+    spr(imgDosuEXE[0], vgaWidth - GetTextureWidth(imgDosuEXE[1]) - 10, 120);
 
   if isCaught then
     s := 'You are caught!'
@@ -294,12 +254,13 @@ begin
   drawMouse;
   drawFPS;
 
-  vgaFlush
+  VgaUpload;
+  VgaPresent
 end;
 
 exports
-  beginLoadingState,
-  init, afterInit, update, draw;
+  OnPreload, OnReady,
+  Update, draw;
 
 begin
 { Starting point is intentionally left empty }
