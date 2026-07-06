@@ -11,7 +11,7 @@ my @args = (
   "-Tembedded",
   "-Fuunits",
   "-Fushared",
-  "-dWASM",
+  "-dP92_WASM",
   "-o$output_file",
   $primary_unit
 );

@@ -12,7 +12,7 @@ my @args = (
   "-Pwasm32",
   "-Tembedded",
   "-Fu../../experimental/units",
-  "-dWASM",
+  "-dP92_WASM",
   "-o$output_file",
   $primary_unit
 );
