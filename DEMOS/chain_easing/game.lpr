@@ -43,8 +43,7 @@ const
 var
   lastEsc: boolean;
 
-  { Init your game state here }
-  actualGameState: TGameStates;
+  { Game state variables }
   gameTime: double;
 
   { Easing chain state variables }
@@ -70,12 +69,11 @@ begin
   imgDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
   imgDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 
-  imgBlinky := RequestImage('assets/images/cursor.png');
+  imgBlinky := RequestImage('assets/images/blinky.png');
 end;
 
 procedure OnReady;
 begin
-  actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
   InitImmediateGUI(true);
@@ -103,13 +101,6 @@ var
   perc: double;
   x: double;
 begin
-  updateDeltaTime;
-  incrementFPS;
-
-  updateGUILastMouseButton;
-  updateMouse;
-  updateGUIMousePoint;
-
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
 
@@ -168,8 +159,6 @@ begin
       end;
     end;
   end;
-
-  resetWidgetIndices
 end;
 
 procedure Draw;

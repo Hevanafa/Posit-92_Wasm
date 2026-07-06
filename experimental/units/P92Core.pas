@@ -42,6 +42,9 @@ uses
   P92InteropBuf, P92Timing,
   P92Mouse,
   P92TexDraw, P92VGA
+{$ifdef P92_IMMEDIATE_GUI}
+  , P92ImmediateGUI
+{$endif}
 {$ifdef UseWebGL}
   , P92WebGL
 {$endif}
@@ -126,7 +129,17 @@ begin
   else if engineRunState = ersReady then begin
     UpdateDeltaTime;
     IncrementFPS;
+
+{$ifdef P92_IMMEDIATE_GUI}
+    ResetWidgetIndices;
+
+    UpdateGUILastMouseButton;
     UpdateMouse;
+    UpdateGUIMousePoint;
+
+{$else}
+    UpdateMouse;
+{$endif}
   end;
 end;
 
