@@ -10,7 +10,8 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  P92Core, P92Conversions, P92FPS, P92Graphics,
+  P92Core, P92Conversions, P92AssetRegistry,
+  P92FPS, P92Graphics,
   P92Logger, P92WasmHost, P92Fonts,
   P92Keyboard, P92Mouse,
   P92Tex, P92TexDraw,
@@ -103,10 +104,12 @@ begin
   enemy^.activeTick := gameTime + 2.0;
 end;
 
-
 procedure OnPreload;
 begin
+  imgCursor := RequestImage('assets/images/cursor.png');
 
+  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
+  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
 procedure OnReady;
@@ -200,7 +203,7 @@ begin
 end;
 
 
-procedure draw;
+procedure Draw;
 var
   a: word;
   s: string;
@@ -260,7 +263,7 @@ end;
 
 exports
   OnPreload, OnReady,
-  Update, draw;
+  Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
