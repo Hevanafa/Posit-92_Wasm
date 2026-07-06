@@ -60,7 +60,7 @@
     </Linking>
     <Other>
       <WriteFPCLogo Value="False"/>
-      <CustomOptions Value="-dWASM -dUseWebGL"/>
+      <CustomOptions Value="-dP92_WASM -dP92_WEBGL"/>
       <ExecuteAfter>
         <Command Value="cmd.exe /c move /Y game_wasm game.wasm"/>
       </ExecuteAfter>
