@@ -1,6 +1,6 @@
 {
   Title: BigInt demo
-  Mixins: bigint
+  Mixins: bmfont, bigint
 }
 
 library Game;
@@ -33,7 +33,7 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure LoadGameAssets;
+procedure OnPreload;
 begin
   imgCursor := RequestImage('assets/images/cursor.png');
   imgDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
@@ -167,7 +167,7 @@ begin
 end;
 
 exports
-  LoadGameAssets, OnReady,
+  OnPreload, OnReady,
   Update, Draw;
 
 begin

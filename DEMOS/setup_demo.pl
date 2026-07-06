@@ -97,7 +97,7 @@ sub setup_demo {
   say "Copying build scripts...";
 
   my @scripts = (
-    "clean.pl",
+    "clean_demo.pl",
     "make_demo.pl",
     "dist.pl",
     "server.ts"
