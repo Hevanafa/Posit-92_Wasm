@@ -642,8 +642,6 @@ class Posit92 {
 
   /** Used by `RequestImage` */
   async LoadImageFromURL(url: string): Promise<HTMLImageElement> {
-    this.AssertString(url);
-
     const res = await fetch(url);
 
     if (!res.ok)
