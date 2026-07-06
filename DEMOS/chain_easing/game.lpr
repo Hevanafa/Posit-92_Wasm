@@ -1,3 +1,8 @@
+{
+  Chain Easing demo
+  Mixins: bmfont
+}
+
 library Game;
 
 {$Mode ObjFPC}
@@ -11,7 +16,7 @@ uses
   P92Tex, P92TexDraw, P92TexEffects,
   P92Easings, ImmediateGUI,
   P92Timing,
-  PostProc, P92VGA,
+  P92PostProc, P92VGA,
   Assets;
 
 type

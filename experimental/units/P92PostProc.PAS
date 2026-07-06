@@ -4,7 +4,7 @@
   By Hevanafa
 }
 
-unit PostProc;
+unit P92PostProc;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
