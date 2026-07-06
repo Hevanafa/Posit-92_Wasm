@@ -46,11 +46,6 @@ type WasmExports = {
   GetInteropBufCapacity: () => number,
   SetInteropBufLen: (value: number) => void,
 
-  // IntroScr.pas
-  SetImgPosit92Logo: (texHandle: number) => void;
-  SetImgFPCLogo: (texHandle: number) => void;
-  SetImgWasmLogo: (texHandle: number) => void;
-
   // VGA
   GetSurfacePtr: () => number,
   InitVideoMem: (width: number, height: number, startAddr: number) => void,
@@ -162,13 +157,6 @@ type Posit92Options = {
    * 0 matches the screen's refresh rate
    */
   fps?: number;
-
-  /**
-   * Default: true
-   * 
-   * @deprecated
-   */
-  skipIntro?: boolean;
 
   /**
    * Loads the default BMFont
@@ -319,7 +307,6 @@ class Posit92 {
     let vgaWidth = defaultVgaWidth;
     let renderer = "2d";
     let fps = 60;
-    let skipIntro = true;
     let defaultFont = true;
 
     if (typeof vgaWidthOrOptions == "object") {
@@ -336,9 +323,6 @@ class Posit92 {
         fps = options.fps;
       }
 
-      if (options.skipIntro != null)
-        skipIntro = options.skipIntro;
-
       if (options.defaultFont != null)
         defaultFont = options.defaultFont;
     } else {
@@ -351,7 +335,6 @@ class Posit92 {
       vgaHeight,
       renderer,
       fps,
-      skipIntro,
       defaultFont
     };
   }
@@ -500,20 +483,6 @@ class Posit92 {
     this.#ShowCursor();
   }
 
-
-  /**
-   * @deprecated
-   */
-  async #LoadIntroAssets(): Promise<void> {
-    this.WasmInstance.exports.SetImgPosit92Logo(
-      await this.LoadImage("assets/images/posit-92_32px.png"));
-
-    this.WasmInstance.exports.SetImgFPCLogo(
-      await this.LoadImage("assets/images/fpc_logo.png"));
-
-    this.WasmInstance.exports.SetImgWasmLogo(
-      await this.LoadImage("assets/images/wasm_logo.png"));
-  }
 
   #GetBootOptionBoolean(): boolean {
     const key = this.ReadInteropBuffer();
@@ -1194,11 +1163,6 @@ class Posit92 {
 
     // Pass the state control to Pascal
     this.#wasm.exports.P92Boot();
-    
-    // const showIntro = this.bootOptions.skipIntro == true;
-
-    // if (showIntro)
-    //   await this.#LoadIntroAssets();
   }
 
   #OnPreload(): void {
