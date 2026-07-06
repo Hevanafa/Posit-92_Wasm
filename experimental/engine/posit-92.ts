@@ -73,7 +73,6 @@ type WasmImports = {
   env: {
     _haltproc: (n: number) => void,
 
-
     JsRequestImage: (texHandle: number) => Promise<void>,
     JsGetBootOptionBoolean: () => boolean;
 
