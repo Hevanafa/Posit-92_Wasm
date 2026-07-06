@@ -530,13 +530,15 @@ class Posit92 {
       wasmMemory.set(imageData.data, wasmPtr);
 
       this.#wasm.exports.PascalImageLoaded(texHandle, img.width, img.height, wasmPtr);
-    } catch (error: unknown) {
+    } catch (error: any) {
+      console.error(error);
+
       const lines = [
         "Failed to load image", "",
         "Path: " + url
       ];
 
-      if (error instanceof Error)
+      if (Object.hasOwn(error, "message"))
         lines.push("Reason: " + error.message);
       else
         lines.push("Reason: " + error);
@@ -640,6 +642,11 @@ class Posit92 {
 
   async LoadImageFromURL(url: string): Promise<HTMLImageElement> {
     this.AssertString(url);
+
+    const res = await fetch(url);
+
+    if (!res.ok)
+      throw new Error(`HTTP status ${res.status}`);
 
     return new Promise((resolve, reject) => {
       const img = new Image();
