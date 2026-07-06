@@ -58,7 +58,7 @@ implementation
 
 uses
   P92Conversions, P92Logger, P92Maths, P92Panic, P92AssetRegistry,
-{$ifdef WASM}
+{$ifdef P92_WASM}
   P92WasmHeap,
 {$endif}
 {$ifdef Windows}
@@ -117,7 +117,7 @@ begin
   if (texHandle < 1) or (texHandle >= MaxTextures) then exit;
   if textures[texHandle].texture.pixelData = nil then exit;
 
-{$ifdef WASM}
+{$ifdef P92_WASM}
   WasmFreeMem(textures[texHandle].texture.pixelData);
 {$endif}
 {$ifdef Windows}

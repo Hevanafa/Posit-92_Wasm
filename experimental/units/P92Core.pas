@@ -45,7 +45,7 @@ uses
 {$ifdef P92_IMMEDIATE_GUI}
   , P92ImmediateGUI
 {$endif}
-{$ifdef UseWebGL}
+{$ifdef P92_WEBGL}
   , P92WebGL
 {$endif}
   ;
@@ -71,7 +71,7 @@ begin
 
   InitAssetRegistry;
 
-{$ifdef UseWebGL}
+{$ifdef P92_WEBGL}
   SetupWebGLViewport;
   SetupWebGLShaders;
 {$endif}

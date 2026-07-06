@@ -19,7 +19,7 @@ type
   PByteArray = ^TByteArray;
   TByteArray = array[0..0] of byte;
 
-{$ifdef WASM}
+{$ifdef P92_WASM}
 procedure VgaUpload; external 'env' name 'VgaUpload';
 procedure VgaPresent; external 'env' name 'VgaPresent';
 {$endif}
@@ -57,7 +57,7 @@ procedure ResetClip;
 
 implementation
 
-{$ifdef WASM}
+{$ifdef P92_WASM}
 uses
   P92Logger,
   P92WasmHeap;

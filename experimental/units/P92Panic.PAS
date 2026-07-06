@@ -13,7 +13,7 @@ unit P92Panic;
 
 interface
 
-{$ifdef WASM}
+{$ifdef P92_WASM}
 procedure JsPanicHalt(const textPtr: PByte; const textLen: word); external 'env' name 'JsPanicHalt';
 {$endif}
 
@@ -22,7 +22,7 @@ procedure PanicHalt(const msg: string);
 
 implementation
 
-{$ifdef WASM}
+{$ifdef P92_WASM}
 uses P92VGA;
 {$endif}
 {$ifdef Windows}
@@ -42,7 +42,7 @@ begin
 end;
 
 {$else}
-{ Default: WASM }
+
 procedure PanicHalt(const msg: string);
 var
   a: word;

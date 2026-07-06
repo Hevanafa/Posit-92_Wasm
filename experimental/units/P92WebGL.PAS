@@ -14,7 +14,7 @@ unit P92WebGL;
 
 interface
 
-{$ifdef UseWebGL}
+{$ifdef P92_WEBGL}
 const
   GL_COLOR_BUFFER_BIT = $00004000;
   GL_DEPTH_BUFFER_BIT = $00000100;
@@ -109,7 +109,7 @@ procedure WebGLPresent;
 
 implementation
 
-{$ifdef UseWebGL}
+{$ifdef P92_WEBGL}
 uses P92Conversions, P92Logger, P92InteropBuf, P92Panic, P92VGA;
 
 const

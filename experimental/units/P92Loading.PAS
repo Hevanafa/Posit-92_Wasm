@@ -31,7 +31,7 @@ begin
   Print(s, 8, 16);
 
   VgaUpload;
-{$ifdef UseWebGL}
+{$ifdef P92_WEBGL}
   WebGLPresent;
 {$else}
   VgaPresent;

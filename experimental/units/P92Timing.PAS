@@ -12,7 +12,7 @@ interface
 
 function DeltaTime: double;
 
-{$ifdef WASM}
+{$ifdef P92_WASM}
 function GetTimer: double; external 'env' name 'GetTimer';
 function GetFullTimer: double; external 'env' name 'GetFullTimer';
 {$endif}

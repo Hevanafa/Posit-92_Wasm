@@ -13,7 +13,7 @@ unit P92Logger;
 
 interface
 
-{$ifdef WASM}
+{$ifdef P92_WASM}
 { Must be registered in importObject }
 procedure WriteLogI32(const value: longint); external 'env' name 'WriteLogI32';
 procedure WriteLogF32(const value: double); external 'env' name 'WriteLogF32';
@@ -47,7 +47,7 @@ var
 {$endif}
 
 
-{$ifdef WASM}
+{$ifdef P92_WASM}
 procedure WriteLog(const msg: string);
 begin
   WriteInteropString(msg);

@@ -22,7 +22,7 @@ const
 var
   mouseX, mouseY, mouseButton: smallint;
 
-{$ifdef WASM}
+{$ifdef P92_WASM}
 { Hide system cursor }
 procedure HideCursor; external 'env' name 'HideCursor';
 { Show system cursor }
@@ -33,7 +33,7 @@ procedure UpdateMouse;
 
 implementation
 
-{$ifdef WASM}
+{$ifdef P92_WASM}
 function GetMouseX: smallint; external 'env' name 'GetMouseX';
 function GetMouseY: smallint; external 'env' name 'GetMouseY';
 function GetMouseButton: smallint; external 'env' name 'GetMouseButton';
