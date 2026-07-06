@@ -21,7 +21,7 @@ type FalloffTypes = (
   FalloffTypeCount
 );
 
-procedure applyGreyscale(const imgHandle: longint);
+procedure applyGreyscale(const texHandle: longint);
 procedure applyFullScanlines;
 procedure applyFullSubtleScanlines;
 procedure applyFullTint(const tint: longword);
@@ -39,31 +39,31 @@ uses
   P92Conversions, P92TexDraw, P92Easings, P92Logger, P92VGA;
 
 var
-  imgBlur: longint;
-  imgBlurPtr: PImageRef;
-  imgChromabe: longint;
-  imgChromabePtr: PImageRef;
+  texBlur: longint;
+  texBlurPtr: PSoftwareTex;
+  texChromabe: longint;
+  texChromabePtr: PSoftwareTex;
 
-  imgVignette: longint;
-  imgVignettePtr: PImageRef;
-  imgPhosphor: longint;
-  imgPhosphorPtr: PImageRef;
+  texVignette: longint;
+  texVignettePtr: PSoftwareTex;
+  texPhosphor: longint;
+  texPhosphorPtr: PSoftwareTex;
 
-procedure applyGreyscale(const imgHandle: longint);
+procedure applyGreyscale(const texHandle: longint);
 var
-  image: PImageRef;
+  texture: PSoftwareTex;
   px, py: smallint;
   r, g, b, a: byte;
   grey: byte;
   colour: longword;
 begin
-  if not isImageSet(imgHandle) then exit;
+  if not IsTextureSet(texHandle) then exit;
 
-  image := getImagePtr(imgHandle);
+  texture := GetTexturePtr(texHandle);
 
-  for py:=0 to image^.height - 1 do
-  for px:=0 to image^.width - 1 do begin
-    colour := unsafeSprPget(image, px, py);
+  for py:=0 to texture^.height - 1 do
+  for px:=0 to texture^.width - 1 do begin
+    colour := unsafeSprPget(texture, px, py);
 
     a := colour shr 24 and $FF;
     r := colour shr 16 and $FF;
@@ -72,7 +72,7 @@ begin
 
     grey := trunc(r * 0.299 + g * 0.587 + b * 0.114);
     colour := ((a shl 8 or grey) shl 8 or grey) shl 8 or grey;
-    unsafeSprPset(image, px, py, colour)
+    unsafeSprPset(texture, px, py, colour)
   end;
 end;
 
@@ -173,9 +173,9 @@ var
 begin
   if radius <= 0 then exit;
 
-  if imgBlurPtr = nil then begin
-    imgBlur := newImage(vgaWidth, vgaHeight);
-    imgBlurPtr := getImagePtr(imgBlur);
+  if texBlurPtr = nil then begin
+    texBlur := NewTexture(vgaWidth, vgaHeight);
+    texBlurPtr := GetTexturePtr(texBlur);
   end;
 
   { Process from VGA (alpha channel is ignored) }
@@ -205,12 +205,12 @@ begin
       green := green div count;
       blue := blue div count;
 
-      { Output to imgBlur }
+      { Output to texBlur }
       colour := ($FF shl 24) or (red shl 16) or (green shl 8) or blue;
-      unsafeSprPset(imgBlurPtr, a, b, colour)
+      unsafeSprPset(texBlurPtr, a, b, colour)
     end;
 
-  spr(imgBlur, 0, 0)
+  spr(texBlur, 0, 0)
 end;
 
 
@@ -222,9 +222,9 @@ var
   redX, blueX: smallint;
   colour: longword;
 begin
-  if imgChromabePtr = nil then begin
-    imgChromabe := newImage(vgaWidth, vgaHeight);
-    imgChromabePtr := getImagePtr(imgChromabe);
+  if texChromabePtr = nil then begin
+    texChromabe := NewTexture(vgaWidth, vgaHeight);
+    texChromabePtr := GetTexturePtr(texChromabe);
   end;
 
   for py:=0 to vgaHeight - 1 do
@@ -248,10 +248,10 @@ begin
       a := greenPixel shr 24 and $FF;  { Use green's alpha }
 
       colour := (a shl 24) or (r shl 16) or (g shl 8) or b;
-      unsafeSprPset(imgChromabePtr, px, py, colour)
+      unsafeSprPset(texChromabePtr, px, py, colour)
     end;
 
-  spr(imgChromabe, 0, 0)
+  spr(texChromabe, 0, 0)
 end;
 
 function getFalloffName(const which: FalloffTypes): string;
@@ -282,9 +282,9 @@ var
   a, r, g, b: byte;
   colour: longword;
 begin
-  if imgVignettePtr = nil then begin
-    imgVignette := newImage(vgaWidth, vgaHeight);
-    imgVignettePtr := getImagePtr(imgVignette);
+  if texVignettePtr = nil then begin
+    texVignette := NewTexture(vgaWidth, vgaHeight);
+    texVignettePtr := GetTexturePtr(texVignette);
   end;
 
   if strength < 0.05 then exit;
@@ -368,10 +368,10 @@ begin
 
     { Render to buffer }
     colour := (a shl 24) or (r shl 16) or (g shl 8) or b;
-    unsafeSprPset(imgVignettePtr, px, py, colour)
+    unsafeSprPset(texVignettePtr, px, py, colour)
   end;
 
-  spr(imgVignette, 0, 0)
+  spr(texVignette, 0, 0)
 end;
 
 { Based on box blur }
@@ -393,9 +393,9 @@ var
 begin
   if radius <= 0 then exit;
 
-  if imgPhosphorPtr = nil then begin
-    imgPhosphor := newImage(vgaWidth, vgaHeight);
-    imgPhosphorPtr := getImagePtr(imgPhosphor);
+  if texPhosphorPtr = nil then begin
+    texPhosphor := NewTexture(vgaWidth, vgaHeight);
+    texPhosphorPtr := GetTexturePtr(texPhosphor);
   end;
 
   { Process from VGA (alpha channel is ignored) }
@@ -425,12 +425,12 @@ begin
       green := green div count;
       blue := blue div count;
 
-      { Output to imgBlur }
+      { Output to texBlur }
       colour := ($FF shl 24) or (red shl 16) or (green shl 8) or blue;
-      unsafeSprPset(imgPhosphorPtr, a, b, colour)
+      unsafeSprPset(texPhosphorPtr, a, b, colour)
     end;
 
-  { spr(imgPhosphor, 0, 0) }
+  { spr(texPhosphor, 0, 0) }
 
   { Blend back to VGA }
   for b:=0 to vgaHeight - 1 do
@@ -442,7 +442,7 @@ begin
       origB := origColour and $FF;
 
       { Get blurred pixel }
-      blurColour := unsafeSprPget(imgPhosphorPtr, a, b);
+      blurColour := unsafeSprPget(texPhosphorPtr, a, b);
       blurR := blurColour shr 16 and $FF;
       blurG := blurColour shr 8 and $FF;
       blurB := blurColour and $FF;
@@ -467,7 +467,7 @@ begin
       unsafePset(a, b, colour)
     end;
 
-  { spr(imgPhosphor, 0, 0) }
+  { spr(texPhosphor, 0, 0) }
 end;
 
 end.
