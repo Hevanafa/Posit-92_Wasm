@@ -18,10 +18,6 @@ const
 var
   imgPosit92Logo, imgFPCLogo, imgWasmLogo: longint;
 
-procedure SetImgPosit92Logo(const imgHandle: longint); public name 'SetImgPosit92Logo';
-procedure SetImgFPCLogo(const imgHandle: longint); public name 'SetImgFPCLogo';
-procedure SetImgWasmLogo(const imgHandle: longint); public name 'SetImgWasmLogo';
-
 procedure RenderIntro(const introSlide: smallint);
 procedure UnloadIntro;
 
@@ -30,21 +26,6 @@ implementation
 
 uses
   P92Fonts, P92Tex, P92TexDraw, P92VGA;
-
-procedure SetImgPosit92Logo(const imgHandle: longint);
-begin
-  imgPosit92Logo := imgHandle
-end;
-
-procedure SetImgFPCLogo(const imgHandle: longint);
-begin
-  imgFPCLogo := imgHandle
-end;
-
-procedure SetImgWasmLogo(const imgHandle: longint);
-begin
-  imgWasmLogo := imgHandle
-end;
 
 procedure RenderIntro(const introSlide: smallint);
 begin

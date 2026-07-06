@@ -1,3 +1,9 @@
+{
+  Boilerplate project with the intro sequence
+  Part of Posit-92 game engine
+  Mixins: bmfont
+}
+
 library Game;
 
 {$Mode ObjFPC}
@@ -40,12 +46,16 @@ begin
   Spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure LoadGameAssets;
+procedure OnPreload;
 begin
   imgCursor := RequestImage('assets/images/cursor.png');
 
   imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
   imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
+
+  imgPosit92Logo := RequestImage('assets/images/posit-92_32px.png');
+  imgFPCLogo := RequestImage('assets/images/fpc_logo.png');
+  imgWasmLogo := RequestImage('assets/images/wasm_logo.png');
 end;
 
 procedure BeginIntroState;
@@ -66,7 +76,7 @@ begin
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
   
-  ReplaceColour(DefaultFontPtr^.imgHandle, $FFFFFFFF, $FF000000);
+  ReplaceColour(DefaultFontPtr^.texHandle, $FFFFFFFF, $FF000000);
 end;
 
 
@@ -157,8 +167,7 @@ begin
 end;
 
 exports
-  LoadGameAssets,
-  OnReady,
+  OnPreload, OnReady,
   Update, Draw;
 
 begin
