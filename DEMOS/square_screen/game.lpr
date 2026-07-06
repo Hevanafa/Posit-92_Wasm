@@ -1,95 +1,65 @@
+{
+  Square Screen demo
+  Part of Posit-92 game engine
+  Mixins: bmfont
+}
+
 library Game;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
 
 uses
-  Fullscreen, Loading,
-  Keyboard, Mouse,
-  ImgRef, ImgRefFast,
-  Timing, WasmMemMgr, VGA,
+  P92AssetRegistry, P92Fonts, P92WasmHost,
+  P92Loading,
+  P92Keyboard, P92Mouse,
+  P92Tex, P92TexDraw,
+  P92Timing, P92VGA,
   Assets;
-
-type
-  TGameStates = (
-    GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
-  );
-
-const
-  SC_ESC = $01;
-  SC_SPACE = $39;
 
 var
   lastEsc: boolean;
 
-  { Init your game state here }
-  actualGameState: TGameStates;
+  { Game state variables }
   gameTime: double;
 
-{ Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure loadAssets; external 'env' name 'loadAssets';
-
-procedure drawMouse;
+procedure DrawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure beginLoadingState;
+procedure OnPreload;
 begin
-  actualGameState := GameStateLoading;
-  fitCanvas;
-  loadAssets
+  imgCursor := RequestImage('assets/images/cursor.png');
+
+  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
+  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
-procedure beginPlayingState;
+procedure OnReady;
 begin
   hideCursor;
   fitCanvas;
 
   { Initialise game state here }
-  actualGameState := GameStatePlaying;
   gameTime := 0.0;
 end;
 
-procedure init;
+procedure Update;
 begin
-  initHeapMgr;
-  initDeltaTime;
-end;
-
-procedure afterInit;
-begin
-  beginPlayingState
-end;
-
-procedure update;
-begin
-  updateDeltaTime;
-
-  updateMouse;
-
-  { Your update logic here }
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
-    if lastEsc then signalDone;
+  if lastEsc <> IsKeyDown(SC_ESCAPE) then begin
+    lastEsc := IsKeyDown(SC_ESCAPE);
+    if lastEsc then SignalDone;
   end;
 
-  gameTime := gameTime + dt
+  gameTime := gameTime + DeltaTime
 end;
 
-procedure draw;
+procedure Draw;
 var
   w: integer;
   s: string;
 begin
-  if actualGameState = GameStateLoading then begin
-    renderLoadingScreen;
-    exit
-  end;
-
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
@@ -98,17 +68,18 @@ begin
     spr(imgDosuEXE[0], 52, 52);
 
   s := 'Hello world!';
-  w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 88);
+  w := MeasureDefault(s);
+  PrintDefault(s, (vgaWidth - w) div 2, 88);
 
-  drawMouse;
-  vgaFlush
+  DrawMouse;
+
+  VgaUpload;
+  VgaPresent
 end;
 
 exports
-  { Main game procedures }
-  beginLoadingState,
-  init, afterInit, update, draw;
+  OnPreload, OnReady,
+  Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
