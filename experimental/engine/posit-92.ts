@@ -648,13 +648,21 @@ class Posit92 {
     if (!res.ok)
       throw new Error(`HTTP status ${res.status}`);
 
-    return new Promise((resolve, reject) => {
-      const img = new Image();
+    // return new Promise((resolve, reject) => {
+    //   const img = new Image();
 
-      img.onload = (): void => { resolve(img); };
-      img.onerror = reject;
-      img.src = url;
-    });
+    //   img.onload = (): void => { resolve(img); };
+    //   img.onerror = reject;
+    //   img.src = url;
+    // });
+
+    const blob = await res.blob();
+
+    const img = new Image();
+    img.src = URL.createObjectURL(blob);
+    await img.decode();
+    URL.revokeObjectURL(img.src);
+    return img;
   }
 
   /**
