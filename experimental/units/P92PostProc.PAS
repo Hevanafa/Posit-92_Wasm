@@ -21,17 +21,17 @@ type FalloffTypes = (
   FalloffTypeCount
 );
 
-procedure applyGreyscale(const texHandle: longint);
-procedure applyFullScanlines;
-procedure applyFullSubtleScanlines;
-procedure applyFullTint(const tint: longword);
-procedure applyFullBoxBlur(const radius: smallint);
-procedure applyFullChromabe;
+procedure ApplyGreyscale(const texHandle: longint);
+procedure ApplyFullScanlines;
+procedure ApplyFullSubtleScanlines;
+procedure ApplyFullTint(const tint: longword);
+procedure ApplyFullBoxBlur(const radius: smallint);
+procedure ApplyFullChromabe;
 
-function getFalloffName(const which: FalloffTypes): string;
-procedure applyFullVignette(const falloffType: FalloffTypes; const strength: double);
+function GetFalloffName(const which: FalloffTypes): string;
+procedure ApplyFullVignette(const falloffType: FalloffTypes; const strength: double);
 
-procedure applyFullPhosphor(const radius: smallint);
+procedure ApplyFullPhosphor(const radius: smallint);
 
 implementation
 
@@ -49,7 +49,7 @@ var
   texPhosphor: longint;
   texPhosphorPtr: PSoftwareTex;
 
-procedure applyGreyscale(const texHandle: longint);
+procedure ApplyGreyscale(const texHandle: longint);
 var
   texture: PSoftwareTex;
   px, py: smallint;
@@ -77,7 +77,7 @@ begin
 end;
 
 
-procedure applyFullScanlines;
+procedure ApplyFullScanlines;
 var
   px, py: word;
   r, g, b: byte;
@@ -106,7 +106,7 @@ begin
   end;
 end;
 
-procedure applyFullSubtleScanlines;
+procedure ApplyFullSubtleScanlines;
 var
   px, py: word;
   r, g, b: byte;
@@ -135,7 +135,7 @@ begin
   end;
 end;
 
-procedure applyFullTint(const tint: longword);
+procedure ApplyFullTint(const tint: longword);
 var
   px, py: word;
   colour: longword;
@@ -164,7 +164,7 @@ begin
 end;
 
 
-procedure applyFullBoxBlur(const radius: smallint);
+procedure ApplyFullBoxBlur(const radius: smallint);
 var
   a, b, c, d: smallint;
   colour: longword;
@@ -214,7 +214,7 @@ begin
 end;
 
 
-procedure applyFullChromabe;
+procedure ApplyFullChromabe;
 var
   px, py: smallint;
   redPixel, greenPixel, bluePixel: longword;
@@ -254,25 +254,25 @@ begin
   spr(texChromabe, 0, 0)
 end;
 
-function getFalloffName(const which: FalloffTypes): string;
+function GetFalloffName(const which: FalloffTypes): string;
 begin
   case which of
     FalloffTypeSmoothstep:
-      getFalloffName := 'Smoothstep';
+      GetFalloffName := 'Smoothstep';
     FalloffTypeLinear:
-      getFalloffName := 'Linear';
+      GetFalloffName := 'Linear';
 
     FalloffTypeEaseInQuad:
-      getFalloffName := 'Ease in quad';
+      GetFalloffName := 'Ease in quad';
     FalloffTypeEaseOutQuad:
-      getFalloffName := 'Ease out quad';
+      GetFalloffName := 'Ease out quad';
 
     else result := 'Unknown falloff type: ' + i32str(ord(which));
   end;
 end;
 
 { strength: Either 0.3 or 0.7 }
-procedure applyFullVignette(const falloffType: FalloffTypes; const strength: double);
+procedure ApplyFullVignette(const falloffType: FalloffTypes; const strength: double);
 var
   px, py: smallint;
   centreX, centreY: double;
@@ -375,7 +375,7 @@ begin
 end;
 
 { Based on box blur }
-procedure applyFullPhosphor(const radius: smallint);
+procedure ApplyFullPhosphor(const radius: smallint);
 const
   { blendAmount: double = 0.7; } { 70% original, 30% blur }
   blendAmount: double = 0.3;  { 30% original, 70% blur }
