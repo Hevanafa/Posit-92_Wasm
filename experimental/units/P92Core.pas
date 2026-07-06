@@ -117,6 +117,8 @@ procedure InitReadyState;
 begin
   engineRunState := ersReady;
   writelog('ersReady');
+  FitCanvas;
+
   HostCallOnReady
 end;
 

@@ -35,7 +35,6 @@ end;
 procedure OnReady;
 begin
   HideCursor;
-  FitCanvas;
 
   { Initialise game state here }
   gameTime := 0.0
