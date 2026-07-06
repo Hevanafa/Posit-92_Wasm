@@ -1,6 +1,7 @@
 {
-  Post-processing unit - Part of Posit-92 game engine
-  Hevanafa
+  Software Post-processing unit
+  Part of Posit-92 game engine
+  By Hevanafa
 }
 
 unit PostProc;
@@ -10,7 +11,7 @@ unit PostProc;
 
 interface
 
-uses ImgRef;
+uses P92Tex;
 
 type FalloffTypes = (
   FalloffTypeSmoothstep,  { default }
@@ -35,7 +36,7 @@ procedure applyFullPhosphor(const radius: smallint);
 implementation
 
 uses
-  Conv, ImgRefFast, Lerp, Logger, VGA;
+  P92Conversions, P92TexDraw, P92Easings, P92Logger, P92VGA;
 
 var
   imgBlur: longint;

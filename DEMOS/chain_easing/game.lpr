@@ -1,15 +1,17 @@
 library Game;
 
 {$Mode ObjFPC}
-{$J-}  { Switch off assignments to typed constants }
+{$H+}
+{$J-}
 
 uses
-  IntroScr, Loading, Fullscreen,
-  Conv, FPS, Logger,
-  Keyboard, Mouse,
-  ImgRef, ImgRefFast,
-  Lerp, ImmedGUI, Timing, WasmHeap, WasmMemMgr,
-  SprEffects, PostProc, VGA,
+  P92Core, P92AssetRegistry,
+  P92Conversions, P92FPS, P92Logger,
+  P92Keyboard, P92Mouse,
+  P92Tex, P92TexDraw, P92TexEffects,
+  P92Easings, ImmediateGUI,
+  P92Timing,
+  PostProc, P92VGA,
   Assets;
 
 type
