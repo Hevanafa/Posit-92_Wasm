@@ -123,19 +123,6 @@ type StringPair = [string, string];
 
 type WebAssemblyInstance = WebAssembly.Instance & { exports: WasmExports };
 
-type LoadImageReturn = {
-  key: string;
-  path: string;
-  handle: number
-};
-
-type LoadImageArrayReturn = {
-  key: string;
-  path: string;
-  handle: number;
-  index: number
-}
-
 type Posit92Options = {
   /**
    * default: 320
