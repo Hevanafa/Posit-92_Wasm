@@ -10,7 +10,7 @@ library Game;
 {$J-}
 
 uses
-  P92Core, P92AssetRegistry,
+  P92Core, P92Fonts, P92AssetRegistry, P92WasmHost,
   P92Conversions, P92FPS, P92Logger,
   P92Keyboard, P92Mouse,
   P92Tex, P92TexDraw, P92TexEffects,
@@ -53,7 +53,7 @@ var
   
   startX, endX: integer;
   startAngle, endAngle: double;
-  chainLerpTimer: TLerpTimer;
+  chainEasingTimer: TEasingTimer;
 
   blinkyX, blinkyY: double;
 
@@ -75,20 +75,15 @@ end;
 
 procedure OnReady;
 begin
-  hideCursor;
-  fitCanvas;
-
-  { Initialise game state here }
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
-  initImmediateGUI;
-  guiSetFont(defaultFont, defaultFontGlyphs);
+  InitImmediateGUI(true);
 
   blinkyX := 160;
   blinkyY := 144;
 
-  replaceColour(defaultFont.imgHandle, $FFFFFFFF, $FF000000)
+  replaceColour(DefaultFontPtr^.texHandle, $FFFFFFFF, $FF000000)
 end;
 
 procedure BeginEasingChain;
@@ -99,7 +94,7 @@ begin
 
   startX := 100;
   endX := 150;
-  initLerp(chainLerpTimer, getTimer, 1.0)
+  InitEasing(chainEasingTimer, getTimer, 1.0)
 end;
 
 
@@ -125,45 +120,45 @@ begin
   end;
 
   if not isChainStarted then begin
-    if isKeyDown(SC_W) then blinkyY := blinkyY - Velocity * dt;
-    if isKeyDown(SC_S) then blinkyY := blinkyY + Velocity * dt;
+    if isKeyDown(SC_W) then blinkyY := blinkyY - Velocity * DeltaTime;
+    if isKeyDown(SC_S) then blinkyY := blinkyY + Velocity * DeltaTime;
 
-    if isKeyDown(SC_A) then blinkyX := blinkyX - Velocity * dt;
-    if isKeyDown(SC_D) then blinkyX := blinkyX + Velocity * dt;
+    if isKeyDown(SC_A) then blinkyX := blinkyX - Velocity * DeltaTime;
+    if isKeyDown(SC_D) then blinkyX := blinkyX + Velocity * DeltaTime;
   end;
 
   { Handle game state updates }
-  gameTime := gameTime + dt;
+  gameTime := gameTime + DeltaTime;
 
   if isChainStarted and not isChainComplete then begin
     { Handle state transition }
-    if isLerpComplete(chainLerpTimer, getTimer) then begin
+    if IsEasingComplete(chainEasingTimer, getTimer) then begin
       case chainIdx of
       0: begin
-        perc := getLerpPerc(chainLerpTimer, getTimer);
+        perc := GetEasingPerc(chainEasingTimer, getTimer);
         x := lerpEaseOutSine(startX, endX, perc);  { current X }
 
         startX := trunc(x);
         endX := endX - 50;
-        initLerp(chainLerpTimer, getTimer, 1.0);
+        InitEasing(chainEasingTimer, getTimer, 1.0);
 
         inc(chainIdx)
       end;
       1: begin
-        perc := getLerpPerc(chainLerpTimer, getTimer);
+        perc := GetEasingPerc(chainEasingTimer, getTimer);
         x := lerpEaseOutSine(startX, endX, perc);  { current X }
         
         startX := trunc(x);
         endX := endX + 100;
         startAngle := 0.0;
         endAngle := 2 * PI;
-        initLerp(chainLerpTimer, getTimer, 2.0);
+        InitEasing(chainEasingTimer, getTimer, 2.0);
 
         inc(chainIdx)
       end;
       2: inc(chainIdx);
       3: begin
-        perc := getLerpPerc(chainLerpTimer, getTimer);
+        perc := GetEasingPerc(chainEasingTimer, getTimer);
         x := lerpEaseOutSine(startX, endX, perc);  { current X }
         blinkyX := x;
 
@@ -182,11 +177,6 @@ var
   perc: double;
   x, angle: double;
 begin
-  if actualGameState = GameStateLoading then begin
-    renderLoadingScreen;
-    exit
-  end;
-
   cls(CornflowerBlue);
 
   if Button('Start Lerp', 50, 50, 80, 20) then
@@ -206,7 +196,7 @@ begin
     case chainIdx of
       2: begin
         { Current state --> apply easing --> handle rendering }
-        perc := getLerpPerc(chainLerpTimer, getTimer);
+        perc := GetEasingPerc(chainEasingTimer, getTimer);
 
         x := lerpEaseOutSine(startX, endX, perc);
         angle := lerpEaseOutSine(startAngle, endAngle, perc);
@@ -214,7 +204,7 @@ begin
         sprRotate(imgBlinky, trunc(x) + 8, trunc(blinkyY) + 8, angle);
       end;
       else begin
-        perc := getLerpPerc(chainLerpTimer, getTimer);
+        perc := GetEasingPerc(chainEasingTimer, getTimer);
         x := lerpEaseOutSine(startX, endX, perc);
         spr(imgBlinky, trunc(x), trunc(blinkyY));
       end

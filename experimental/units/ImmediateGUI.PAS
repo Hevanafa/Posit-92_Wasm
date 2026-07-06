@@ -11,7 +11,7 @@ unit ImmediateGUI;
 interface
 
 uses
-  BMFont, Shapes;
+  P92BMFont, P92Geometry;
 
 type
   TCheckboxState = record
@@ -100,10 +100,10 @@ procedure ProgressBarLabelled(const x, y, width, height: smallint; const perc: d
 implementation
 
 uses
-  EngineFonts, Conv, Graphics,
-  ImgRef, ImgRefFast,
-  Maths, Mouse, Panic, UStrings,
-  VGA;
+  P92Fonts, P92Conversions, P92Graphics,
+  P92Tex, P92TexDraw,
+  P92Maths, P92Mouse, P92Panic, P92Strings,
+  P92VGA;
 
 const
   Black = $FF000000;
@@ -425,8 +425,8 @@ begin
 
   zone.x := x;
   zone.y := y;
-  zone.width := getImageWidth(imgNormal);
-  zone.height := getImageHeight(imgNormal);
+  zone.width := GetTextureWidth(imgNormal);
+  zone.height := GetTextureHeight(imgNormal);
 
   { Update logic }
   thisWidgetID := nextWidgetID;
