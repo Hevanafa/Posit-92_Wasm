@@ -20,7 +20,8 @@ function GetBootOptionBoolean(key: string): boolean;
 function JsGetBootOptionBoolean: boolean; external 'env' name 'JsGetBootOptionBoolean';
 
 procedure InitEngine; public name 'InitEngine';
-procedure SetCGAFontHandle(value: longint); public name 'SetCGAFontHandle';
+function GetCgaFontHandle: longint;
+procedure SetCGAFontHandle(value: longint);
 
 function IsEngineReady: boolean; public name 'IsEngineReady';
 procedure HostCallOnPreload; external 'env' name 'HostCallOnPreload';
@@ -30,6 +31,7 @@ procedure P92Boot; public name 'P92Boot';
 procedure P92Update; public name 'P92Update';
 procedure P92Draw; public name 'P92Draw';
 
+procedure PrintChar(const c: char; const x, y: smallint);
 procedure Print(const txt: string; const x, y: smallint);
 
 
@@ -52,6 +54,11 @@ uses
 
 var
   cgaFontHandle: longint;
+
+function GetCgaFontHandle: longint;
+begin
+  GetCgaFontHandle := cgaFontHandle
+end;
 
 function GetBootOptionBoolean(key: string): boolean;
 begin
@@ -151,6 +158,16 @@ begin
     RenderLoadingScreen;
 end;
 
+procedure PrintChar(const c: char; const x, y: smallint);
+begin
+  if (c < 1) or (c > 255) then exit;
+
+  row := ord(c) div 16;
+  col := ord(c) mod 16;
+
+  SprRegion(cgaFontHandle, col * 8, row * 8, 8, 8, left, y);
+end;
+
 procedure Print(const txt: string; const x, y: smallint);
 var
   c: char;
@@ -160,10 +177,7 @@ begin
   left := x;
 
   for c in txt do begin
-    row := ord(c) div 16;
-    col := ord(c) mod 16;
-
-    SprRegion(cgaFontHandle, col * 8, row * 8, 8, 8, left, y);
+    PrintChar(left, 8);
     inc(left, 8)
   end;
 end;
