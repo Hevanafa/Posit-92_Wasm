@@ -94,8 +94,8 @@ type WasmImports = {
     EndFullscreen: () => void,
 
     // P92Core
-    InvokeOnPreload: () => void;
-    InvokeOnReady: () => void;
+    HostCallOnPreload: () => void;
+    HostCallOnReady: () => void;
 
     // Keyboard
     IsKeyDown: (scancode: number) => boolean,
@@ -251,8 +251,8 @@ class Posit92 {
       // P92Core
       JsRequestImage: this.RequestImage.bind(this),
       JsGetBootOptionBoolean: this.#GetBootOptionBoolean.bind(this),
-      InvokeOnPreload: this.#OnPreload.bind(this),
-      InvokeOnReady: this.#OnReady.bind(this),
+      HostCallOnPreload: this.#OnPreload.bind(this),
+      HostCallOnReady: this.#OnReady.bind(this),
 
       // WasmHost
       SignalDone: this.#SignalDone.bind(this),
