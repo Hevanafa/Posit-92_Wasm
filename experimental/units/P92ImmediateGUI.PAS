@@ -1,9 +1,10 @@
 {
-  Immediate GUI unit - Part of Posit-92 game engine
-  Hevanafa
+  Immediate GUI unit
+  Part of Posit-92 game engine
+  By Hevanafa
 }
 
-unit ImmediateGUI;
+unit P92ImmediateGUI;
 
 {$Mode ObjFPC}
 {$H+}{$J-}

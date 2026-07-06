@@ -14,7 +14,7 @@ uses
   P92Conversions, P92FPS, P92Logger,
   P92Keyboard, P92Mouse,
   P92Tex, P92TexDraw, P92TexEffects,
-  P92Easings, ImmediateGUI,
+  P92Easings, P92ImmediateGUI,
   P92Timing,
   P92PostProc, P92VGA,
   Assets;
