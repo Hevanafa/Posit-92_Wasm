@@ -53,30 +53,22 @@ var
   blinkyX, blinkyY: double;
 
 
-{ Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure hideCursor; external 'env' name 'hideCursor';
-procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
-procedure loadAssets; external 'env' name 'loadAssets';
-
-procedure drawFPS;
-begin
-  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
-end;
-
-procedure drawMouse;
+procedure DrawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure beginLoadingState;
+procedure OnPreload;
 begin
-  actualGameState := GameStateLoading;
-  fitCanvas;
-  loadAssets
+  imgCursor := RequestImage('assets/images/cursor.png');
+
+  imgDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  imgDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
+
+  imgBlinky := RequestImage('assets/images/cursor.png');
 end;
 
-procedure beginPlayingState;
+procedure OnReady;
 begin
   hideCursor;
   fitCanvas;
@@ -94,7 +86,7 @@ begin
   replaceColour(defaultFont.imgHandle, $FFFFFFFF, $FF000000)
 end;
 
-procedure beginEasingChain;
+procedure BeginEasingChain;
 begin
   isChainStarted := true;
   isChainComplete := false;
@@ -106,19 +98,7 @@ begin
 end;
 
 
-procedure init;
-begin
-  initHeapMgr;
-  initDeltaTime;
-  initFPSCounter
-end;
-
-procedure afterInit;
-begin
-  beginPlayingState
-end;
-
-procedure update;
+procedure Update;
 var
   perc: double;
   x: double;
@@ -192,7 +172,7 @@ begin
   resetWidgetIndices
 end;
 
-procedure draw;
+procedure Draw;
 var
   perc: double;
   x, angle: double;
@@ -205,7 +185,7 @@ begin
   cls(CornflowerBlue);
 
   if Button('Start Lerp', 50, 50, 80, 20) then
-    beginEasingChain;
+    BeginEasingChain;
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], 148, 88)
@@ -241,18 +221,16 @@ begin
 
   resetActiveWidget;
 
-  drawMouse;
+  DrawMouse;
   drawFPS;
 
-  vgaFlush
+  VgaUpload;
+  VgaPresent
 end;
 
 exports
-  beginLoadingState,
-  init,
-  afterInit,
-  update,
-  draw;
+  OnPreload, OnReady,
+  Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
