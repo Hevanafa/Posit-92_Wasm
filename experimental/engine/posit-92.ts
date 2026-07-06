@@ -44,6 +44,9 @@ type WasmExports = {
   GetInteropBufCapacity: () => number,
   SetInteropBufLen: (value: number) => void,
 
+  // Panic
+  PascalPanicHaltDisplay: () => void,
+
   // VGA
   GetSurfacePtr: () => number,
   InitVideoMem: (width: number, height: number, startAddr: number) => void,
@@ -528,10 +531,17 @@ class Posit92 {
 
       this.#wasm.exports.PascalImageLoaded(texHandle, img.width, img.height, wasmPtr);
     } catch (error: unknown) {
+      const lines = [
+        "Failed to load image", "",
+        "Path: " + url
+      ];
+
       if (error instanceof Error)
-        console.error("Failed to fetch image", error.message);
+        lines.push("Reason: " + error.message);
       else
-        console.error("Failed to fetch image", error);
+        lines.push("Reason: " + error);
+
+      this.#PanicHaltDisplay(lines.join("\n"));
 
       this.#wasm.exports.PascalImageFailed(texHandle, 0);
     }
@@ -1111,6 +1121,11 @@ class Posit92 {
     this.Cleanup();
 
     throw new Error(`PANIC: ${msg}`);
+  }
+
+  #PanicHaltDisplay(msg: string): void {
+    this.WriteInteropBuffer(msg);
+    this.WasmInstance.exports.PascalPanicHaltDisplay();
   }
 
 

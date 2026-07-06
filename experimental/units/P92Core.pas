@@ -199,7 +199,9 @@ begin
     if c = #10 then begin
       left := 0;
       inc(y, 8);
+      continue;
     end;
+    if c = #13 then continue;
 
     PrintChar(c, x + left, y);
     inc(left, 8);

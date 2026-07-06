@@ -26,8 +26,8 @@ begin
 
   { Scanlines }
   b:=0;
-  while b<vgaHeight do begin
-    for a:=0 to vgaWidth-1 do
+  while b < VgaHeight do begin
+    for a:=0 to VgaWidth - 1 do
       unsafePset(a, b, $FF2A0000);
 
     inc(b, 3)

@@ -14,7 +14,7 @@ unit P92Panic;
 interface
 
 {$ifdef P92_WASM}
-procedure JsPanicHalt(const textPtr: PByte; const textLen: word); external 'env' name 'JsPanicHalt';
+procedure JsPanicHalt(const textPtr: PChar; const textLen: word); external 'env' name 'JsPanicHalt';
 {$endif}
 
 procedure PanicHalt(const msg: string);
@@ -44,14 +44,8 @@ end;
 {$else}
 
 procedure PanicHalt(const msg: string);
-var
-  a: word;
-  msgBuffer: array[0..255] of byte;
 begin
-  for a:=1 to length(msg) do
-    msgBuffer[a-1] := ord(msg[a]);
-
-  JsPanicHalt(@msgBuffer, length(msg));
+  JsPanicHalt(@msg[1], length(msg));
   halt(1)
 end;
 {$endif}
