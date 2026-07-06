@@ -12,7 +12,7 @@ procedure PascalPanicHaltDisplay; public name 'PascalPanicHaltDisplay';
 implementation
 
 uses
-  P92Core, P92InteropBuf, P92Panic, P92VGA
+  P92Core, P92InteropBuf, P92TexDraw, P92Panic, P92VGA
 {$ifdef P92_WEBGL}
   , P92WebGL
 {$endif}
@@ -21,8 +21,6 @@ uses
 procedure PanicHaltDisplay(const msg: string);
 var
   a, b: word;
-  msgBuffer: array[0..255] of byte;
-  height: word;
 begin
   cls($FF550000);
 
@@ -35,11 +33,13 @@ begin
     inc(b, 3)
   end;
 
-  print('Fatal Error', 8, 8);
+  Print('Fatal Error', 8, 8);
 
-  TextLabelWrap(msg, 10, 30, vgaWidth - 20);
+  Print(msg, 8, 24);
 
-  TextLabel('Check Console for details', 10, 40 + height);
+  { TODO: add the type and path }
+
+  Print('Check Console for details', 8, VgaHeight - 8);
 
   VgaUpload;
 {$ifdef P92_WEBGL}

@@ -33,6 +33,7 @@ procedure P92Draw; public name 'P92Draw';
 
 procedure PrintChar(const c: char; const x, y: smallint);
 procedure Print(const txt: string; const x, y: smallint);
+{ procedure PrintWrap(const txt: string; const x, y, wrap: smallint); }
 
 
 implementation
@@ -159,25 +160,30 @@ begin
 end;
 
 procedure PrintChar(const c: char; const x, y: smallint);
+var
+  row, col: smallint;
 begin
-  if (c < 1) or (c > 255) then exit;
+  if not (ord(c) in [0..255]) then exit;
 
   row := ord(c) div 16;
   col := ord(c) mod 16;
 
-  SprRegion(cgaFontHandle, col * 8, row * 8, 8, 8, left, y);
+  SprRegion(
+    cgaFontHandle,
+    col * 8, row * 8,
+    8, 8,
+    x, y)
 end;
 
 procedure Print(const txt: string; const x, y: smallint);
 var
   c: char;
   left: smallint;
-  row, col: smallint;
 begin
   left := x;
 
   for c in txt do begin
-    PrintChar(left, 8);
+    PrintChar(c, left, y);
     inc(left, 8)
   end;
 end;
