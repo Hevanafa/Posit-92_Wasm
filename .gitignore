@@ -29,7 +29,6 @@ DEMOS/*/*.js
 
 # Bun build scripts for demo projects
 DEMOS/*/*.ts
-!DEMOS/square_screen/*.ts
 !DEMOS/dos_display/*.ts
 
 # Snippets
