@@ -20,8 +20,6 @@ type WasmExports = {
 
   // P92Core
   InitEngine: () => void,
-  // InitLoadingState: () => void;
-  SetCGAFontHandle: (value: number) => void,
 
   // P92Fonts
   IsEngineReady: () => boolean;
