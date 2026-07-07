@@ -173,11 +173,12 @@ begin
   ResetActiveWidget;
 {$endif}
 
-  VgaUpload;
 {$ifdef P92_WEBGL}
+  VgaUpload;
   WebGLPresent;
 {$else}
-  VgaPresent
+  VgaUpload;
+  VgaPresent;
 {$endif}
 end;
 
