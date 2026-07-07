@@ -34,7 +34,7 @@ procedure SetMusicVolume(const volume: double); external 'env' name 'SetMusicVol
 
 implementation
 
-uses P92Maths;
+uses P92Conversions, P92Maths, P92PanicDisplay;
 
 var
   soundVolumes: array[1..255] of double;
@@ -45,6 +45,14 @@ var
 begin
   for a:=1 to high(soundVolumes) do
     soundVolumes[a] := 0.0;
+end;
+
+function GetSoundVolume(sndHandle: longint): double;
+begin
+  if (sndHandle < low(soundVolumes)) or (sndHandle > high(soundVolumes)) then
+    PanicHaltDisplay('Invalid sndHandle: ' + I32Str(sndHandle));
+
+  GetSoundVolume := soundVolumes[sndHandle];
 end;
 
 procedure SetSoundVolume(sndHandle: longint; volume: double);

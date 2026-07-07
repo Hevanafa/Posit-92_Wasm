@@ -5,7 +5,8 @@
  */
 
 type SoundWasmExports = WasmExports & {
-  SetSoundVolume: (sndHandle: number; volume: number) => void;
+  GetSoundVolume: (sndHandle: number) => number;
+  SetSoundVolume: (sndHandle: number, volume: number) => void;
 }
 
 globalThis.SoundMixin = <T extends Constructor<Posit92>>(Base: T) =>
@@ -115,7 +116,7 @@ class SoundMixin extends Base {
     console.log("loadSound", key, url);
 
     this.#sounds.set(key, audioBuffer);
-    this.#SetSoundVolume(key, 0.5);
+    this.WasmInstanceExports.SetSoundVolume(key, 0.5);
   }
 
   /**
@@ -160,21 +161,21 @@ class SoundMixin extends Base {
     }
   }
 
-  #PlaySound(key: number): void {
+  #PlaySound(sndHandle: number): void {
     if (this.#audioContext == null)
       throw new Error("PlaySound: audioContext is not initialised!");
 
-    const buffer = this.#sounds.get(key);
+    const buffer = this.#sounds.get(sndHandle);
 
     if (buffer == null) {
-      console.warn("PlaySound: Sound " + key + " is not loaded!");
+      console.warn("PlaySound: Sound " + sndHandle + " is not loaded!");
       return;
     }
 
-    const volume = this.#soundVolumes.get(key) ?? 0.0;
+    const volume = this.WasmInstanceExports.GetSoundVolume(sndHandle);
 
-    if (!this.#soundVolumes.has(key))
-      console.warn("Missing sound volume for key " + key);
+    if (!this.#soundVolumes.has(sndHandle))
+      console.warn("Missing sound volume for key " + sndHandle);
 
     const source = this.#audioContext.createBufferSource();
     const gainNode = this.#audioContext.createGain();
