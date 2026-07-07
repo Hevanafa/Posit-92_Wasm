@@ -9,15 +9,11 @@ library Game;
 {$H-}
 
 uses
-  EngineCore, EngineFonts,
-  Keyboard, Mouse,
-  ImgRef, ImgRefFast, Logger,
-  Timing, VGA, WasmMemMgr, WebGL,
+  P92Core, P92Fonts, P92WasmHost,
+  P92Keyboard, P92Mouse,
+  P92Tex, P92TexDraw,
+  P92Timing, P92VGA, P92WebGL,
   Assets;
-
-const
-  SC_ESC = $01;
-  SC_SPACE = $39;
 
 var
   lastEsc: boolean;
@@ -25,9 +21,6 @@ var
   { Init your game state here }
   gameTime: double;
   drawOnce: boolean;
-
-{ Use this to set `done` to true }
-procedure SignalDone; external 'env' name 'SignalDone';
 
 procedure DrawMouse;
 begin
@@ -49,8 +42,8 @@ begin
   UpdateMouse;
 
   { Your Update logic here }
-  if lastEsc <> IsKeyDown(SC_ESC) then begin
-    lastEsc := IsKeyDown(SC_ESC);
+  if lastEsc <> IsKeyDown(SC_ESCAPE) then begin
+    lastEsc := IsKeyDown(SC_ESCAPE);
     if lastEsc then SignalDone;
   end;
 
@@ -110,8 +103,7 @@ end;
 
 exports
   OnReady,
-  Update,
-  Draw;
+  Update, Draw;
 
 begin
 { Starting point is intentionally left empty }

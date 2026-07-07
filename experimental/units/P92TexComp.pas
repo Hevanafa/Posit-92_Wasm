@@ -20,7 +20,7 @@ procedure SprBlend(const imgHandle: longint; const x, y: smallint);
 
 implementation
 
-uses P92SoftwareTex, P92Maths, P92VGA;
+uses P92Tex, P92Maths, P92VGA;
 
 procedure SprAlpha(const imgHandle: longint; const x, y: smallint; opacity: double);
 var

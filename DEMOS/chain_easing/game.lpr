@@ -20,15 +20,6 @@ uses
   Assets;
 
 const
-  SC_ESC = $01;
-  SC_SPACE = $39;
-  SC_ENTER = $1C;
-  
-  SC_W = $11;
-  SC_A = $1E;
-  SC_S = $1F;
-  SC_D = $20;
-
   Velocity = 100;
 
   CornflowerBlue = $FF6495ED;
@@ -94,8 +85,8 @@ var
   perc: double;
   x: double;
 begin
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
+  if lastEsc <> isKeyDown(SC_ESCAPE) then begin
+    lastEsc := isKeyDown(SC_ESCAPE);
 
     if lastEsc then begin
       writeLog('ESC is pressed!');

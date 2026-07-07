@@ -4,7 +4,7 @@ unit Assets;
 
 interface
 
-uses BMFont;
+uses P92BMFont;
 
 var
   imgCursor: longint;

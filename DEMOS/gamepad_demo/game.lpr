@@ -13,10 +13,6 @@ uses
   Assets;
 
 const
-  SC_ESC = $01;
-  SC_SPACE = $39;
-  SC_ENTER = $1C;
-
   CornflowerBlue = $FF6495ED;
   LightGrey = $FFAAAAAA;
   White = $FFFFFFFF;
@@ -79,8 +75,8 @@ begin
   { Handle inputs }
   UpdateMouse;
 
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
+  if lastEsc <> isKeyDown(SC_ESCAPE) then begin
+    lastEsc := isKeyDown(SC_ESCAPE);
 
     if lastEsc then begin
       writeLog('ESC is pressed!');

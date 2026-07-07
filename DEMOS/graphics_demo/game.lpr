@@ -11,10 +11,6 @@ uses
   P92Graphics, P92Timing, P92Geometry, P92VGA,
   Assets;
 
-const
-  SC_ESC = $01;
-  SC_SPACE = $39;
-
 var
   lastEsc: boolean;
 
@@ -44,8 +40,8 @@ end;
 procedure Update;
 begin
   { Your Update logic here }
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
+  if lastEsc <> isKeyDown(SC_ESCAPE) then begin
+    lastEsc := isKeyDown(SC_ESCAPE);
     if lastEsc then signalDone;
   end;
 

@@ -14,12 +14,6 @@ uses
   Assets;
 
 const
-  SC_ESC = $01;
-  SC_SPACE = $39;
-
-  SC_PAGEUP = $49;
-  SC_PAGEDOWN = $51;
-
   CornflowerBlue = $FF6495ED;
   Cyan = $FF55FFFF;
   DarkBlue = $FF0000AA;
@@ -142,8 +136,8 @@ end;
 
 procedure Update;
 begin
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
+  if lastEsc <> isKeyDown(SC_ESCAPE) then begin
+    lastEsc := isKeyDown(SC_ESCAPE);
 
     if lastEsc then begin
       writeLog('ESC is pressed!');
