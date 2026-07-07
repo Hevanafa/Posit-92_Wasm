@@ -21,9 +21,6 @@ function GetSoundVolume(sndHandle: longint): double; public name 'GetSoundVolume
 procedure SetSoundVolume(sndHandle: longint; volume: double); public name 'SetSoundVolume';
 
 procedure PlayMusic(const key: longint); external 'env' name 'PlayMusic';
-function GetMusicRepeat: boolean; external 'env' name 'GetMusicRepeat';
-procedure SetMusicRepeat(const value: boolean); external 'env' name 'SetMusicRepeat';
-procedure HandleMusicRepeat(const musicKey: smallint);
 procedure PauseMusic; external 'env' name 'PauseMusic';
 procedure StopMusic; external 'env' name 'StopMusic';
 
@@ -32,6 +29,10 @@ procedure SeekMusic(const t: double); external 'env' name 'SeekMusic';
 function GetMusicPlaying: boolean; external 'env' name 'GetMusicPlaying';
 function GetMusicTime: double; external 'env' name 'GetMusicTime';
 function GetMusicDuration: double; external 'env' name 'GetMusicDuration';
+
+function GetMusicRepeat: boolean; external 'env' name 'GetMusicRepeat';
+procedure SetMusicRepeat(const value: boolean); external 'env' name 'SetMusicRepeat';
+procedure HandleMusicRepeat(const musicKey: smallint);
 
 procedure SetMusicVolume(const volume: double); external 'env' name 'SetMusicVolume';
 
@@ -44,6 +45,13 @@ uses
 var
   soundVolumes: array[1..255] of double;
 
+  musicRepeat: boolean;
+  musicVolume: double;
+  { in seconds }
+  musicStartTime, musicPauseTime: double;
+  musicPlaying: boolean;
+
+{ initialises the main audio context }
 procedure JsInitAudio; external 'env' name 'JsInitAudio';
 procedure JsPlaySound(sndHandle: longint); external 'env' name 'JsPlaySound';
 
