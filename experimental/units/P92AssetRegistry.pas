@@ -186,6 +186,8 @@ begin
     PanicHalt('RequestBMFont: BMFont slots are full!');
 
   bmfonts[bmfontHandle] := default(TBMFontEntry);
+  bmfonts[bmfontHandle].fontPtr := fontPtr;
+  bmfonts[bmfontHandle].glyphsPtr := fontGlyphsPtr;
   bmfonts[bmfontHandle].status := AssetStatusLoading;
 
   inc(assetTotalCount);
