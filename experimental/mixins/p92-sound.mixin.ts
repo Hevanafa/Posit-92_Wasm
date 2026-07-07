@@ -5,9 +5,11 @@
  */
 
 type SoundWasmExports = WasmExports & {
+  // AssetRegistry
   PascalSoundLoaded: (sndHandle: number) => void,
   PascalSoundFailed: (sndHandle: number) => void,
 
+  // Sounds
   GetSoundVolume: (sndHandle: number) => number;
   SetSoundVolume: (sndHandle: number, volume: number) => void;
 }

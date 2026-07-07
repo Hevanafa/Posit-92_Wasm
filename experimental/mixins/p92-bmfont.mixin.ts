@@ -13,6 +13,7 @@ type TBMFontGlyph = {
 }
 
 type BMFontWasmExports = WasmExports & {
+  // AssetRegistry
   PascalBMFontLoaded: (bmfontHandle: number) => void;
   PascalBMFontFailed: (bmfontHandle: number, errorCode: number) => void;
 }

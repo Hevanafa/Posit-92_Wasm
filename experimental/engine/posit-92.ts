@@ -15,21 +15,16 @@ type Constructor<T = {}> = new (...args: any[]) => T;
 type WasmExports = {
   memory: WebAssembly.Memory,
 
-  // P92Core
+  // Core
   InitEngine: () => void,
-
-  // P92Fonts
   IsEngineReady: () => boolean;
   P92Boot: () => void;
   P92Update: () => void;
   P92Draw: () => void;
 
-  // P92AssetRegistry
+  // AssetRegistry
   PascalImageLoaded: (texHandle: number, w: number, h: number, pixelDataPtr: number) => void;
   PascalImageFailed: (texHandle: number, errorCode: number) => void;
-
-  // FPS
-  DrawFPS: () => void,
 
   // InteropBuf
   GetInteropBufPtr: () => number,
