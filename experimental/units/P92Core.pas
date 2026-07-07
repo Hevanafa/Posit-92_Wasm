@@ -120,6 +120,10 @@ begin
   writelog('ersReady');
   FitCanvas;
 
+{$ifdef P92_IMMEDIATE_GUI}
+  InitImmediateGUI;
+{$endif}
+
   HostCallOnReady
 end;
 

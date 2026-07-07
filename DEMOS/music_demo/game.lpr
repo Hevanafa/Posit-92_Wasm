@@ -64,8 +64,6 @@ begin
   { Initialise game state here }
   hideCursor;
 
-  InitImmediateGUI;
-
   actualMusicKey := -1;
   isMuted := false;
 
