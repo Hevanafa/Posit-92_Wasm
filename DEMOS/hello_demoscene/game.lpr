@@ -1,3 +1,8 @@
+{
+  Default boilerplate
+  Mixins: bmfont
+}
+
 library Game;
 
 {$Mode ObjFPC}
@@ -6,11 +11,9 @@ library Game;
 
 uses
   P92Core, P92Fonts, P92AssetRegistry, P92WasmHost,
-  P92Conversions, P92FPS,
-  P92Logger, P92Loading,
+  P92Logger,
   P92Keyboard, P92Mouse,
-  P92Tex, P92TexDraw, P92PanicDisplay,
-  P92Timing, P92VGA,
+  P92TexDraw, P92Timing, P92FPS, P92VGA,
   Assets;
 
 var
@@ -26,8 +29,8 @@ procedure OnPreload;
 begin
   imgCursor := RequestImage('assets/images/cursor.png');
 
-  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
-  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
+  imgSpecimenP92[0] := RequestImage('assets/images/specimen_p-92_1.png');
+  imgSpecimenP92[1] := RequestImage('assets/images/specimen_p-92_2.png');
 end;
 
 procedure OnReady;
@@ -50,9 +53,9 @@ begin
   Cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    Spr(imgDosuEXE[1], 148, 88)
+    Spr(imgSpecimenP92[1], 148, 84)
   else
-    Spr(imgDosuEXE[0], 148, 88);
+    Spr(imgSpecimenP92[0], 148, 84);
 
   PrintDefaultCentred('Hello world!', VgaWidth div 2, 120);
 
