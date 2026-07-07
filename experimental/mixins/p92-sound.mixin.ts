@@ -65,6 +65,7 @@ class SoundMixin extends Base {
       JsDestroyMusicPlayer: this.#DestroyMusicPlayer.bind(this),
       
       JsSetMusicBuffer: this.#SetMusicBuffer.bind(this),
+      JsUnsetMusicBuffer: this.#UnsetMusicBuffer.bind(this),
       JsSetMusicVolume: this.#SetMusicVolume.bind(this),
 
       JsResumeMusic: this.#ResumeMusic.bind(this),
@@ -153,6 +154,10 @@ class SoundMixin extends Base {
     this.#musicBuffer = this.#sounds.get(sndHandle)!
   }
 
+  #UnsetMusicBuffer(): void {
+    this.#musicBuffer = null;
+  }
+
   /**
    * Create a new music player node
    */
@@ -162,7 +167,7 @@ class SoundMixin extends Base {
 
     this.#musicPlayer = this.#audioContext.createBufferSource();
     this.#musicGainNode = this.#audioContext.createGain();
-    
+
     // Handle loop manually
     // this.#musicPlayer.loop = this.#musicRepeat;
     // console.log("loop?", this.#musicPlayer.loop);
@@ -244,14 +249,6 @@ class SoundMixin extends Base {
     // Stop the music player, but don't "forget" the pause position
     this.#DestroyMusicPlayer();
     // this.#musicPlaying = false;
-    this.WasmInstanceExports.SetMusicPlaying(false);
-  }
-
-  #StopMusic(): void {
-    this.#DestroyMusicPlayer();
-    this.#musicBuffer = null;
-
-    this.WasmInstanceExports.SetMusicPauseTime(0.0);
     this.WasmInstanceExports.SetMusicPlaying(false);
   }
 

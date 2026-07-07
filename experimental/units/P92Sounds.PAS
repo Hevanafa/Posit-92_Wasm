@@ -56,7 +56,7 @@ var
   soundVolumes: array[1..255] of double;
 
   currentMusicHandle: longint;
-  musicPlaying: boolean;
+  isMusicPlaying: boolean;
   musicRepeat: boolean;
   musicVolume: double;
   { in seconds }
@@ -69,16 +69,17 @@ procedure JsPlaySound(sndHandle: longint); external 'env' name 'JsPlaySound';
 
 procedure JsResumeMusic; external 'env' name 'JsResumeMusic';
 procedure JsPauseMusic; external 'env' name 'JsPauseMusic';
-procedure JsStopMusic; external 'env' name 'JsStopMusic';
 
 procedure JsSetMusicBuffer(sndHandle: longint); external 'env' name 'JsSetMusicBuffer';
+procedure JsUnsetMusicBuffer; external 'env' name 'JsUnsetMusicBuffer';
+
+procedure JsCreateMusicPlayer; external 'env' name 'JsCreateMusicPlayer';
+procedure JsDestroyMusicPlayer; external 'env' name 'JsDestroyMusicPlayer';
+
 procedure JsSetMusicVolume(volume: double); external 'env' name 'JsSetMusicVolume';
 
 function JsGetMusicTime: double; external 'env' name 'JsGetMusicTime';
 function JsGetMusicDuration: double; external 'env' name 'JsGetMusicDuration';
-
-procedure JsResetMusicPlayerNode; external 'env' name 'JsResetMusicPlayerNode';
-procedure JsDestroyMusicPlayerNode; external 'env' name 'JsDestroyMusicPlayerNode';
 
 procedure InitSounds;
 var
@@ -88,7 +89,7 @@ begin
     soundVolumes[a] := 0.0;
 
   currentMusicHandle := 0;
-  musicPlaying := false;
+  isMusicPlaying := false;
   musicRepeat := true;
   musicVolume := 1.0;
   musicStartTime := 0.0;
@@ -125,22 +126,22 @@ end;
 
 procedure PlayMusic(const sndHandle: longint);
 begin
-  if IsMusicLoaded and musicPlaying then exit;
+  if IsMusicLoaded and isMusicPlaying then exit;
 
   { Resuming }
   if IsMusicLoaded then begin
-    JsResetMusicPlayerNode;
+    JsCreateMusicPlayer;
     JsResumeMusic;
     exit
   end;
 
-  JsStopMusic;
+  StopMusic;
 
   currentMusicHandle := sndHandle;
   JsSetMusicBuffer(sndHandle);
 
   musicPauseTime := 0.0;
-  JsResetMusicPlayerNode;
+  JsCreateMusicPlayer;
   JsResumeMusic
 end;
 
@@ -151,7 +152,11 @@ end;
 
 procedure StopMusic;
 begin
-  JsStopMusic
+  JsDestroyMusicPlayer;
+  JsUnsetMusicBuffer;
+
+  musicPauseTime := 0.0;
+  isMusicPlaying := false;
 end;
 
 procedure SeekMusic(t: double);
@@ -163,15 +168,15 @@ begin
 
   duration := JsGetMusicDuration;
   musicPauseTime := clamp(t, 0.0, duration);
-  wasPlaying := musicPlaying;
+  wasPlaying := isMusicPlaying;
 
-  JsDestroyMusicPlayerNode;
-  musicPlaying := false;
+  JsDestroyMusicPlayer;
+  isMusicPlaying := false;
 
   if wasPlaying then begin
-    JsResetMusicPlayerNode;
+    JsCreateMusicPlayer;
     JsResumeMusic;
-    musicPlaying := true;
+    isMusicPlaying := true;
   end;
 end;
 
@@ -187,12 +192,12 @@ end;
 
 function GetMusicPlaying: boolean;
 begin
-  GetMusicPlaying := musicPlaying
+  GetMusicPlaying := isMusicPlaying
 end;
 
 procedure SetMusicPlaying(value: boolean);
 begin
-  musicPlaying := value
+  isMusicPlaying := value
 end;
 
 function GetMusicStartTime: double;
@@ -242,10 +247,10 @@ procedure HandleMusicRepeat(const sndHandle: smallint);
 begin
   if GetMusicPlaying and (JsGetMusicTime >= JsGetMusicDuration - 0.05) then
     if GetMusicRepeat then begin
-      JsStopMusic;
+      StopMusic;
       PlayMusic(sndHandle)
     end else
-      JsStopMusic;
+      StopMusic;
 end;
 
 end.
