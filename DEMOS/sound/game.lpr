@@ -4,37 +4,19 @@ library Game;
 {$H+}{$J-}
 
 uses
-  EngineCore, EngineFonts, WasmHost,
-  Conv, FPS, Fullscreen, Graphics,
-  ImgRef, ImgRefFast,
-  Keyboard, Mouse,
-  Loading, Logger, Panic, Sounds,
-  Timing, VGA,
+  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
+  P92Conversions, P92FPS, P92Graphics,
+  P92Tex, P92TexDraw,
+  P92Keyboard, P92Mouse,
+  P92Logger, P92Sounds,
+  P92Timing, P92VGA,
   Assets;
-
-type
-  TGameStates = (
-    GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
-  );
-
-const
-  SC_ESC = $01;
-  SC_SPACE = $39;
-
-  SC_1 = $02;
-  SC_2 = $03;
-  SC_3 = $04;
-  SC_4 = $05;
-  SC_5 = $06;
 
 var
   lastEsc, lastSpacebar: boolean;
   lastD1, lastD2, lastD3, lastD4, lastD5: boolean;
 
-  { Init your game state here }
-  actualGameState: TGameStates;
+  { Game state variables }
   gameTime: double;
 
 procedure DrawFPS;
@@ -47,20 +29,13 @@ begin
   Spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure BeginLoadingState;
+procedure OnPreload;
 begin
-  actualGameState := GameStateLoading;
-  FitCanvas;
-  RequestAssetLoad
+  { TODO: Load the sound assets here }
 end;
 
-procedure BeginPlayingState;
+procedure OnReady;
 begin
-  actualGameState := GameStatePlaying;
-
-  HideCursor;
-  FitCanvas;
-
   gameTime := 0.0;
 end;
 
@@ -71,11 +46,6 @@ begin
 end;
 
 
-procedure OnReady;
-begin
-  BeginPlayingState
-end;
-
 procedure Update;
 begin
   UpdateDeltaTime;
@@ -84,8 +54,8 @@ begin
   UpdateMouse;
 
   { Your Update logic here }
-  if lastEsc <> IsKeyDown(SC_ESC) then begin
-    lastEsc := IsKeyDown(SC_ESC);
+  if lastEsc <> IsKeyDown(SC_ESCAPE) then begin
+    lastEsc := IsKeyDown(SC_ESCAPE);
 
     if lastEsc then begin
       writeLog('ESC is pressed!');
@@ -132,11 +102,6 @@ var
   w: integer;
   s: string;
 begin
-  if actualGameState = GameStateLoading then begin
-    renderLoadingScreen;
-    exit
-  end;
-
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
@@ -161,10 +126,8 @@ end;
 
 exports
   { Main game procedures }
-  BeginLoadingState,
-  OnReady,
-  Update,
-  Draw;
+  OnPreload, OnReady,
+  Update, Draw;
 
 begin
 { Starting point is intentionally left empty }

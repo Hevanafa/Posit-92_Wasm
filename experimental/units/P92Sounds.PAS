@@ -6,7 +6,7 @@
   Requires SoundsMixin class
 }
 
-unit Sounds;
+unit P92Sounds;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
