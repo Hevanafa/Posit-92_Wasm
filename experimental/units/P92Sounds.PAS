@@ -29,13 +29,18 @@ function GetMusicVolume: double;
 procedure SetMusicVolume(value: double);
 procedure JsSetMusicVolume(volume: double); external 'env' name 'JsSetMusicVolume';
 
-procedure SetMusicStartTime(value: double); public name 'SetMusicStartTime';
-function GetMusicPauseTime: double;
+function GetMusicPlaying: boolean; public name 'GetMusicPlaying';
 procedure SetMusicPlaying(value: boolean); public name 'SetMusicPlaying';
+
+function GetMusicStartTime: double; public name 'GetMusicStartTime';
+procedure SetMusicStartTime(value: double); public name 'SetMusicStartTime';
+
+function GetMusicPauseTime: double; public name 'GetMusicPauseTime';
+procedure SetMusicPauseTime(value: double); public name 'SetMusicPauseTime';
 
 { t: time in seconds }
 procedure SeekMusic(const t: double); external 'env' name 'SeekMusic';
-function GetMusicPlaying: boolean;
+
 function GetMusicTime: double; external 'env' name 'GetMusicTime';
 function GetMusicDuration: double; external 'env' name 'GetMusicDuration';
 
@@ -102,6 +107,21 @@ begin
   soundVolumes[sndHandle] := volume
 end;
 
+function GetMusicPlaying: boolean;
+begin
+  GetMusicPlaying := musicPlaying
+end;
+
+procedure SetMusicPlaying(value: boolean);
+begin
+  musicPlaying := value
+end;
+
+function GetMusicStartTime: double;
+begin
+  GetMusicStartTime := musicStartTime
+end;
+
 procedure SetMusicStartTime(value: double);
 begin
   musicStartTime := value
@@ -112,14 +132,9 @@ begin
   GetMusicPauseTime := musicPauseTime
 end;
 
-procedure SetMusicPlaying(value: boolean);
+procedure SetMusicPauseTime(value: double);
 begin
-  musicPlaying := value
-end;
-
-function GetMusicPlaying: boolean;
-begin
-  GetMusicPlaying := musicPlaying
+  musicPauseTime := value
 end;
 
 procedure PlayMusic(const sndHandle: longint);
