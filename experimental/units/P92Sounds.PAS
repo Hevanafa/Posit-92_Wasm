@@ -24,17 +24,19 @@ procedure PlayMusic(const key: longint); external 'env' name 'PlayMusic';
 procedure PauseMusic; external 'env' name 'PauseMusic';
 procedure StopMusic; external 'env' name 'StopMusic';
 
+function GetMusicVolume: double;
+procedure SetMusicVolume(value: double);
+procedure JsSetMusicVolume(volume: double); external 'env' name 'JsSetMusicVolume';
+
 { t: time in seconds }
 procedure SeekMusic(const t: double); external 'env' name 'SeekMusic';
 function GetMusicPlaying: boolean;
 function GetMusicTime: double; external 'env' name 'GetMusicTime';
 function GetMusicDuration: double; external 'env' name 'GetMusicDuration';
 
-function GetMusicRepeat: boolean; external 'env' name 'GetMusicRepeat';
-procedure SetMusicRepeat(const value: boolean); external 'env' name 'SetMusicRepeat';
+function GetMusicRepeat: boolean; public name 'GetMusicRepeat';
+procedure SetMusicRepeat(const value: boolean); public name 'SetMusicRepeat';
 procedure HandleMusicRepeat(const musicKey: smallint);
-
-procedure SetMusicVolume(const volume: double); external 'env' name 'SetMusicVolume';
 
 
 implementation
@@ -98,6 +100,22 @@ end;
 function GetMusicVolume: double;
 begin
   GetMusicVolume := musicVolume
+end;
+
+procedure SetMusicVolume(value: double);
+begin
+  musicVolume := value;
+  JsSetMusicVolume(value)
+end;
+
+function GetMusicRepeat: boolean;
+begin
+  GetMusicRepeat := musicRepeat
+end;
+
+procedure SetMusicRepeat(const value: boolean);
+begin
+  musicRepeat := value
 end;
 
 { Handle music repeat (only when it is playing)

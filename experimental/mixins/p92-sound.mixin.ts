@@ -12,6 +12,9 @@ type SoundWasmExports = WasmExports & {
   // Sounds
   GetSoundVolume: (sndHandle: number) => number;
   SetSoundVolume: (sndHandle: number, volume: number) => void;
+
+  GetMusicPlaying: () => boolean,
+  GetMusicVolume: () => number
 }
 
 globalThis.SoundMixin = <T extends Constructor<Posit92>>(Base: T) =>
@@ -50,13 +53,11 @@ class SoundMixin extends Base {
       PauseMusic: this.#PauseMusic.bind(this),
       StopMusic: this.#StopMusic.bind(this),
       SeekMusic: this.#SeekMusic.bind(this),
+      
       GetMusicTime: this.#GetMusicTime.bind(this),
       GetMusicDuration: this.#GetMusicDuration.bind(this),
 
-      GetMusicPlaying: () => this.#musicPlaying,
-      GetMusicRepeat: this.#GetMusicRepeat.bind(this),
-      SetMusicRepeat: this.#SetMusicRepeat.bind(this),
-      SetMusicVolume: this.#SetMusicVolume.bind(this),
+      JsSetMusicVolume: this.#SetMusicVolume.bind(this),
     });
   }
 
@@ -155,7 +156,7 @@ class SoundMixin extends Base {
     this.#musicPlayer.buffer = this.#musicBuffer;
     // this.#musicPlayer.loop = this.#musicRepeat;
     // console.log("loop?", this.#musicPlayer.loop);
-    this.#musicGainNode.gain.value = this.#musicVolume;
+    this.#musicGainNode.gain.value = this.WasmInstanceExports.GetMusicVolume();
 
     // Connect the audio graph:
     // music player -> gain -> destination
@@ -173,7 +174,7 @@ class SoundMixin extends Base {
 
   #PlayMusic(key: number): void {
     // If still playing
-    if (this.#musicPlaying && this.#musicBuffer != null)
+    if (this.#musicBuffer != null && this.WasmInstanceExports.GetMusicPlaying())
       return;
 
     // Resuming
@@ -266,22 +267,12 @@ class SoundMixin extends Base {
     }
   }
 
-  #GetMusicRepeat(): boolean {
-    return this.#musicRepeat;
-  }
-
-  #SetMusicRepeat(value: boolean): void {
-    this.#musicRepeat = value;
-  }
-
   /**
    * @param volume 0.0 .. 1.0
    */
   #SetMusicVolume(volume: number): void {
-    this.#musicVolume = this.Clamp(volume, 0.0, 1.0);
-
     if (this.#musicGainNode != null)
-      this.#musicGainNode.gain.value = this.#musicVolume;
+      this.#musicGainNode.gain.value = volume;
   }
 
   #GetMusicDuration(): number {
