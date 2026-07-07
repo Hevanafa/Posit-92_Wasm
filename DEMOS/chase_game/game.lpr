@@ -256,9 +256,6 @@ begin
 
   drawMouse;
   drawFPS;
-
-  VgaUpload;
-  VgaPresent
 end;
 
 exports

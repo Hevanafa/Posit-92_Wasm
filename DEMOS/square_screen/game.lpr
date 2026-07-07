@@ -72,9 +72,6 @@ begin
   PrintDefault(s, (vgaWidth - w) div 2, 88);
 
   DrawMouse;
-
-  VgaUpload;
-  VgaPresent
 end;
 
 exports

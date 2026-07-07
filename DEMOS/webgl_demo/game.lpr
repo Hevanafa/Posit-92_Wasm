@@ -105,10 +105,6 @@ begin
   PrintDefault(s, (vgaWidth - w) div 2, 120);
 
   DrawMouse;
-
-  { Finalise software rendering }
-  VgaUpload;
-  WebGLPresent
 end;
 
 

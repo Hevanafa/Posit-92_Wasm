@@ -103,9 +103,6 @@ begin
   LineThick(50, 50, 200, 150, 15, $FFFF5555);
 
   DrawMouse;
-
-  VgaUpload;
-  VgaPresent
 end;
 
 exports

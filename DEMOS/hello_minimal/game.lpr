@@ -20,9 +20,6 @@ end;
 procedure Draw;
 begin
   Cls($FF101010);
-
-  VgaUpload;
-  VgaPresent
 end;
 
 exports

@@ -206,10 +206,7 @@ begin
   resetActiveWidget;
 
   DrawMouse;
-  drawFPS;
-
-  VgaUpload;
-  VgaPresent
+  DrawFPS;
 end;
 
 exports

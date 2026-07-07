@@ -178,9 +178,6 @@ begin
   drawMouse;
 
   if showFPS.checked then drawFPS;
-
-  VgaUpload;
-  VgaPresent
 end;
 
 exports
