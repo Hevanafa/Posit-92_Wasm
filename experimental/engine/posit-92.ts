@@ -15,9 +15,6 @@ type Constructor<T = {}> = new (...args: any[]) => T;
 type WasmExports = {
   memory: WebAssembly.Memory,
 
-  DefaultFontPtr: () => number;
-  DefaultFontGlyphsPtr: () => number;
-
   // P92Core
   InitEngine: () => void,
 
