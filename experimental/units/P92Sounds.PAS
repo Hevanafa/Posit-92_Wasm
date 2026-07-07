@@ -74,6 +74,7 @@ procedure JsSetMusicBuffer(sndHandle: longint); external 'env' name 'JsSetMusicB
 procedure JsUnsetMusicBuffer; external 'env' name 'JsUnsetMusicBuffer';
 
 procedure JsCreateMusicPlayer; external 'env' name 'JsCreateMusicPlayer';
+procedure JsConnectMusicPlayerGraph; external 'env' name 'JsConnectMusicPlayerGraph';
 procedure JsDestroyMusicPlayer; external 'env' name 'JsDestroyMusicPlayer';
 
 procedure JsSetMusicVolume(volume: double); external 'env' name 'JsSetMusicVolume';

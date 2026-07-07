@@ -59,19 +59,18 @@ class SoundMixin extends Base {
       JsInitAudio: this.#InitAudio.bind(this),
       
       JsPlaySound: this.#PlaySound.bind(this),
+      JsResumeMusic: this.#ResumeMusic.bind(this),
+      JsPauseMusic: this.#PauseMusic.bind(this),
 
+      JsSetMusicBuffer: this.#SetMusicBuffer.bind(this),
+      JsUnsetMusicBuffer: this.#UnsetMusicBuffer.bind(this),
+      
       JsCreateMusicPlayer: this.#CreateMusicPlayer.bind(this),
       JsConnectMusicPlayerGraph: this.#ConnectMusicPlayerGraph.bind(this),
       JsDestroyMusicPlayer: this.#DestroyMusicPlayer.bind(this),
       
-      JsSetMusicBuffer: this.#SetMusicBuffer.bind(this),
-      JsUnsetMusicBuffer: this.#UnsetMusicBuffer.bind(this),
       JsSetMusicVolume: this.#SetMusicVolume.bind(this),
-
-      JsResumeMusic: this.#ResumeMusic.bind(this),
-      JsPauseMusic: this.#PauseMusic.bind(this),
-      JsStopMusic: this.#StopMusic.bind(this),
-
+      
       JsGetMusicTime: this.#GetMusicTime.bind(this),
       JsGetMusicDuration: this.#GetMusicDuration.bind(this)
     });
