@@ -67,7 +67,7 @@ class SoundMixin extends Base {
       JsResumeMusic: this.#ResumeMusic.bind(this),
       JsPauseMusic: this.#PauseMusic.bind(this),
       JsStopMusic: this.#StopMusic.bind(this),
-      
+
       JsSeekMusic: this.#SeekMusic.bind(this),
       
       JsGetMusicTime: this.#GetMusicTime.bind(this),
@@ -261,10 +261,13 @@ class SoundMixin extends Base {
     // Handle looping
     if (this.#musicBuffer != null) {
       const duration = this.#musicBuffer.duration;  // in seconds
+      let musicPauseTime = this.WasmInstanceExports.GetMusicPauseTime();
+
+      while (musicPauseTime >= duration)
+        musicPauseTime -= duration;
       
-      // this.#musicPauseTime %= duration;
       this.WasmInstanceExports.SetMusicPauseTime(
-        this.WasmInstanceExports.GetMusicPauseTime() % duration); // float modulo
+        musicPauseTime);
     }
 
     // Stop the music player, but don't "forget" the pause position
