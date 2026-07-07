@@ -58,7 +58,9 @@ var
 { initialises the main audio context }
 procedure JsInitAudio; external 'env' name 'JsInitAudio';
 procedure JsPlaySound(sndHandle: longint); external 'env' name 'JsPlaySound';
+
 procedure JsPlayMusic; external 'env' name 'JsPlayMusic';
+procedure JsResetMusicPlayerNode; external 'env' name 'JsResetMusicPlayerNode';
 
 procedure InitSounds;
 var
@@ -107,7 +109,7 @@ begin
 
   { Resuming }
   if musicBufferHandle <> 0 then begin
-    ResetMusicPlayerNode;
+    JsResetMusicPlayerNode;
     ResumeMusic;
     exit
   end;
@@ -116,7 +118,7 @@ begin
   musicBufferHandle := sndHandle;
   musicPauseTime := 0.0;
 
-  ResetMusicPlayerNode;
+  JsResetMusicPlayerNode;
   ResumeMusic
 end;
 

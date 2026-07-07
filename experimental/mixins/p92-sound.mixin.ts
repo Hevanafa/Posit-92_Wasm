@@ -49,7 +49,8 @@ class SoundMixin extends Base {
 
       JsRequestSound: this.#RequestSound.bind(this),
 
-      PlayMusic: this.#PlayMusic.bind(this),
+      // PlayMusic: this.#PlayMusic.bind(this),
+      JsResetMusicPlayerNode: this.#ResetMusicPlayerNode.bind(this),
       PauseMusic: this.#PauseMusic.bind(this),
       StopMusic: this.#StopMusic.bind(this),
       SeekMusic: this.#SeekMusic.bind(this),
@@ -215,6 +216,7 @@ class SoundMixin extends Base {
     this.#musicStartTime = this.#audioContext.currentTime - this.#musicPauseTime;
     this.#musicPlaying = true;
   }
+
 
   #PauseMusic(): void {
     if (!this.#musicPlaying || this.#musicPlayer == null)
