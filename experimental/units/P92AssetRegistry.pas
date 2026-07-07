@@ -28,9 +28,15 @@ type
     errorCode: smallint;
   end;
 
+  TSoundEntry = record
+    status: TAssetStatus;
+    errorCode: smallint;
+  end;
+
 var
   textures: array[1..MaxTextures] of TSoftwareTexEntry;
   bmfonts: array[1..9] of TBMFontEntry;
+  sounds: array[1..255] of TSoundEntry;
 
   AssetReadyCount,
   AssetTotalCount: longword;
@@ -45,6 +51,9 @@ function RequestImage(const path: string): longint;
 
 procedure JsRequestBMFont(bmfontHandle: longint; fontPtr: PBMFont; fontGlyphsPtr: PBMFontGlyph); external 'env' name 'JsRequestBMFont';
 procedure RequestBMFont(const path: string; const fontPtr: PBMFont; const fontGlyphsPtr: PBMFontGlyph);
+
+procedure JsRequestSound(sndHandle: longint); external 'env' name 'JsRequestSound';
+function RequestSound(const path: string): longint;
 
 { Reporting procedures }
 
@@ -119,6 +128,19 @@ begin
   FindUnusedBMFontSlot := -1
 end;
 
+function FindUnusedSoundSlot: longint;
+var
+  a: longint;
+begin
+  for a:=1 to high(sounds) do
+    if sounds[a].status = AssetStatusEmpty then begin
+      FindUnusedSoundSlot := a;
+      exit
+    end;
+
+  FindUnusedSoundSlot := -1
+end;
+
 function RequestImage(const path: string): longint;
 var
   texHandle: longint;
@@ -126,11 +148,11 @@ begin
   inc(AssetTotalCount);
 
   texHandle := FindUnusedTextureSlot;
-  WriteInteropString(path);
-  JsRequestImage(texHandle);
-
   textures[texHandle] := default(TSoftwareTexEntry);
   textures[texHandle].status := AssetStatusLoading;
+
+  WriteInteropString(path);
+  JsRequestImage(texHandle);
 
   RequestImage := texHandle
 end;
@@ -159,6 +181,26 @@ begin
 
   WriteInteropString(path);
   JsRequestBMFont(bmfontHandle, fontPtr, fontGlyphsPtr);
+end;
+
+function RequestSound(const path: string): longint;
+var
+  sndHandle: longint;
+begin
+  inc(AssetTotalCount);
+
+  sndHandle := FindUnusedSoundSlot;
+
+  if sndHandle < 0 then
+    PanicHalt('RequestSound: Sound slots are full!');
+
+  sounds[sndHandle] := default(TSoundEntry);
+  sounds[sndHandle].status := AssetStatusLoading;
+
+  WriteInteropString(path);
+  JsRequestSound(sndHandle);
+
+  RequestSound := sndHandle
 end;
 
 { Report asset state to Pascal }

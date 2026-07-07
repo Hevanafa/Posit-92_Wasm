@@ -35,7 +35,8 @@ procedure SetMusicVolume(const volume: double); external 'env' name 'SetMusicVol
 
 implementation
 
-uses P92Conversions, P92Maths, P92PanicDisplay;
+uses
+  P92AssetRegistry, P92Conversions, P92Maths, P92PanicDisplay;
 
 var
   soundVolumes: array[1..255] of double;
