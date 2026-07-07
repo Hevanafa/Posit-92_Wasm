@@ -487,6 +487,8 @@ class Posit92 {
   async RequestImage(texHandle: number): Promise<void> {
     const url = this.ReadInteropBuffer();
 
+    console.log("RequestImage", texHandle, url);
+
     try {
       const img = await this.LoadImageFromURL(url);
 

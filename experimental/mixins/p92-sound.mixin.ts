@@ -122,6 +122,21 @@ class SoundMixin extends Base {
 
       this.WasmInstanceExports.PascalSoundLoaded(sndHandle);
     } catch (error) {
+      console.error("RequestSound failed", error);
+
+      const lines = [
+        "Failed to load sound",
+        "",
+        "Path: " + url
+      ];
+
+      if (error instanceof Error)
+        lines.push("Reason: " + error.message);
+      else
+        lines.push("Reason: " + error);
+
+      this.PanicHaltDisplay(lines.join("\n"));
+
       this.WasmInstanceExports.PascalSoundFailed(sndHandle);
     }
   }

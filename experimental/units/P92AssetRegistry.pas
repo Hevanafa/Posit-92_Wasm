@@ -164,6 +164,7 @@ var
   texHandle: longint;
 begin
   inc(assetTotalCount);
+  WriteLog('RequestImage: inc assetTotalCount');
 
   texHandle := FindUnusedTextureSlot;
   textures[texHandle] := default(TSoftwareTexEntry);
@@ -178,7 +179,6 @@ end;
 procedure RequestBMFont(const path: string; const fontPtr: PBMFont; const fontGlyphsPtr: PBMFontGlyph);
 var
   bmfontHandle: longint;
-  texHandle: longint;
 begin
   bmfontHandle := FindUnusedBMFontSlot;
 
@@ -188,14 +188,17 @@ begin
   bmfonts[bmfontHandle] := default(TBMFontEntry);
   bmfonts[bmfontHandle].status := AssetStatusLoading;
 
-  inc(assetTotalCount, 2);
+  inc(assetTotalCount);
+  WriteLog('RequestBMFont: inc assetTotalCount');
 
   { Reserve the texture handle}
+  {
   texHandle := FindUnusedTextureSlot;
 
   fontptr^.texHandle := texHandle;
   textures[texHandle] := default(TSoftwareTexEntry);
   textures[texHandle].status := AssetStatusLoading;
+  }
 
   WriteInteropString(path);
   JsRequestBMFont(bmfontHandle, fontPtr, fontGlyphsPtr);
@@ -206,6 +209,7 @@ var
   sndHandle: longint;
 begin
   inc(assetTotalCount);
+  WriteLog('RequestSound: inc assetTotalCount');
 
   sndHandle := FindUnusedSoundSlot;
 
@@ -237,6 +241,7 @@ begin
   textures[texHandle].errorCode := 0;
 
   inc(assetReadyCount);
+  WriteLog('Image: inc assetReadyCount');
 end;
 
 procedure PascalImageFailed(texHandle: longint; errorCode: smallint);
@@ -250,10 +255,11 @@ begin
   bmfonts[bmfontHandle].status := AssetStatusReady;
   bmfonts[bmfontHandle].errorCode := 0;
 
-  inc(assetReadyCount);
-
   bmfonts[bmfontHandle].fontPtr^.texHandle :=
     RequestImage(ReadInteropString); { bmfonts[bmfontHandle].fontPtr^.filename }
+
+  inc(assetReadyCount);
+  WriteLog('BMFont: inc assetReadyCount');
 end;
 
 procedure PascalBMFontFailed(bmfontHandle: longint; errorCode: smallint);
@@ -267,7 +273,8 @@ begin
   sounds[sndHandle].status := AssetStatusReady;
   sounds[sndHandle].errorCode := 0;
 
-  inc(assetReadyCount)
+  inc(assetReadyCount);
+  WriteLog('Sound: inc assetReadyCount');
 end;
 
 procedure PascalSoundFailed(sndHandle: longint; errorCode: smallint);
