@@ -64,7 +64,7 @@ class SoundMixin extends Base {
 
       JsSetMusicBuffer: this.#SetMusicBuffer.bind(this),
       JsUnsetMusicBuffer: this.#UnsetMusicBuffer.bind(this),
-      
+
       JsCreateMusicPlayer: this.#CreateMusicPlayer.bind(this),
       JsConnectMusicPlayerGraph: this.#ConnectMusicPlayerGraph.bind(this),
       JsDestroyMusicPlayer: this.#DestroyMusicPlayer.bind(this),
@@ -173,6 +173,15 @@ class SoundMixin extends Base {
   }
 
   #ConnectMusicPlayerGraph() {
+    if (this.#audioContext == null)
+      throw new Error("ConnectMusicPlayerGraph: audioContext is unset");
+
+    if (this.#musicPlayer == null)
+      throw new Error("ConnectMusicPlayerGraph: musicPlayer is unset");
+
+    if (this.#musicGainNode == null)
+      throw new Error("ConnectMusicPlayerGraph: musicGainNode is unset");
+
     this.#musicPlayer.buffer = this.#musicBuffer;
     this.#musicGainNode.gain.value = this.WasmInstanceExports.GetMusicVolume();
 
