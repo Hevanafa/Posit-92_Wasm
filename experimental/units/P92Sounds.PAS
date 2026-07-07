@@ -68,9 +68,9 @@ var
 procedure JsInitAudio; external 'env' name 'JsInitAudio';
 procedure JsPlaySound(sndHandle: longint); external 'env' name 'JsPlaySound';
 
-procedure JsAssignMusicBuffer(sndHandle: longint); external 'env' name 'JsAssignMusicBuffer';
 procedure JsPlayMusic; external 'env' name 'JsPlayMusic';
 procedure JsResetMusicPlayerNode; external 'env' name 'JsResetMusicPlayerNode';
+procedure JsLoadMusicBuffer(sndHandle: longint); external 'env' name 'JsAssignMusicBuffer';
 
 procedure InitSounds;
 var
@@ -150,11 +150,13 @@ begin
   end;
 
   StopMusic;
+
   musicBufferHandle := sndHandle;
-  JsAssignMusicBuffer(sndHandle);
-  musicPauseTime := 0.0;
 
   JsResetMusicPlayerNode;
+  JsLoadMusicBuffer(sndHandle);
+  musicPauseTime := 0.0;
+
   ResumeMusic
 end;
 

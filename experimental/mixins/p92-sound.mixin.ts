@@ -55,12 +55,13 @@ class SoundMixin extends Base {
       JsInitAudio: this.#InitAudio.bind(this),
       
       JsPlaySound: this.#PlaySound.bind(this),
-      JsAssignMusicBuffer: this.#AssignMusicBuffer.bind(this),
 
       JsRequestSound: this.#RequestSound.bind(this),
 
       // PlayMusic: this.#PlayMusic.bind(this),
       JsResetMusicPlayerNode: this.#ResetMusicPlayerNode.bind(this),
+      JsLoadMusicBuffer: this.#LoadMusicBuffer.bind(this),
+      
       PauseMusic: this.#PauseMusic.bind(this),
       StopMusic: this.#StopMusic.bind(this),
       SeekMusic: this.#SeekMusic.bind(this),
@@ -154,9 +155,9 @@ class SoundMixin extends Base {
     // source automatically disconnects when done
   }
 
-  #AssignMusicBuffer(sndHandle: number): void {
+  #LoadMusicBuffer(sndHandle: number): void {
     if (this.#musicPlayer == null)
-      throw new Error("musicPlayer isn't initialised!");
+      throw new Error("musicPlayer is not initialised!");
 
     if (!this.#sounds.has(sndHandle))
       throw new Error("Missing sndHandle " + sndHandle);
@@ -242,15 +243,15 @@ class SoundMixin extends Base {
 
 
   #PauseMusic(): void {
+    if (this.#audioContext == null)
+      throw new Error("PauseMusic: audioContext is not initialised!");
+
     if (this.#musicPlayer == null)
       return;
 
     // if (!this.#musicPlaying)
     if (this.WasmInstanceExports.GetMusicPlaying())
       return;
-
-    if (this.#audioContext == null)
-      throw new Error("PauseMusic: audioContext is not initialised!");
 
     // this.#musicPauseTime = this.#audioContext.currentTime - this.#musicStartTime;
     this.WasmInstanceExports.SetMusicPauseTime(
