@@ -14,6 +14,7 @@ unit P92Sounds;
 interface
 
 procedure PlaySound(const sndHandle: longint);
+
 function GetSoundVolume(sndHandle: longint): double; public name 'GetSoundVolume';
 procedure SetSoundVolume(sndHandle: longint; volume: double); public name 'SetSoundVolume';
 
@@ -54,6 +55,11 @@ begin
   JsInitAudio
 end;
 
+procedure PlaySound(const sndHandle: longint);
+begin
+  JsPlaySound(sndHandle)
+end;
+
 function GetSoundVolume(sndHandle: longint): double;
 begin
   if (sndHandle < low(soundVolumes)) or (sndHandle > high(soundVolumes)) then
@@ -66,11 +72,6 @@ procedure SetSoundVolume(sndHandle: longint; volume: double);
 begin
   volume := clamp(volume, 0.0, 1.0);
   soundVolumes[sndHandle] := volume
-end;
-
-procedure PlaySound(const sndHandle: longint);
-begin
-  JsPlaySound(sndHandle)
 end;
 
 { Handle music repeat (only when it is playing)
