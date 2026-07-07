@@ -45,18 +45,12 @@ end;
 
 procedure OnPreload;
 begin
-  actualGameState := GameStateLoading;
-  fitCanvas;
-  RequestAssetLoad
+
 end;
 
-procedure beginPlayingState;
+procedure OnReady;
 begin
-  hideCursor;
-  fitCanvas;
-
   { Initialise game state here }
-  actualGameState := GameStatePlaying;
   hideCursor;
 
   InitImmediateGUI;
@@ -71,14 +65,9 @@ begin
 
   volumeState.value := 25;
   lastVolume := volumeState.value;
-  setMusicVolume(volumeState.value / 100.0)
+  SetMusicVolume(volumeState.value / 100.0)
 end;
 
-
-procedure OnReady;
-begin
-  beginPlayingState
-end;
 
 function GetMusicTimeStr: string;
 var
@@ -99,8 +88,8 @@ begin
   UpdateGUIMousePoint;
 
   { Your Update logic here }
-  if lastEsc <> IsKeyDown(SC_ESC) then begin
-    lastEsc := IsKeyDown(SC_ESC);
+  if lastEsc <> IsKeyDown(SC_ESCAPE) then begin
+    lastEsc := IsKeyDown(SC_ESCAPE);
     if lastEsc then SignalDone;
   end;
 
@@ -128,11 +117,6 @@ var
   duration, actualTime, seekTime: double;
   dragState: TSliderDragState;
 begin
-  if actualGameState = GameStateLoading then begin
-    RenderLoadingScreen;
-    exit
-  end;
-
   Cls(CornflowerBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
@@ -203,8 +187,8 @@ begin
 end;
 
 exports
-  OnPreload,
-  OnReady, Update, Draw;
+  OnPreload, OnReady,
+  Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
