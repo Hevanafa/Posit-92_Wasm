@@ -13,6 +13,8 @@ unit P92Sounds;
 
 interface
 
+procedure InitSounds;
+
 procedure PlaySound(const sndHandle: longint);
 
 function GetSoundVolume(sndHandle: longint): double; public name 'GetSoundVolume';

@@ -42,7 +42,7 @@ uses
   P92Fonts, P92AssetRegistry, P92WasmHost,
   P92Conversions, P92WasmMemMgr,
   P92FPS, P92Loading, P92Logger,
-  P92InteropBuf, P92Timing,
+  P92Sounds, P92InteropBuf, P92Timing,
   P92Mouse,
   P92TexDraw, P92VGA
 {$ifdef P92_IMMEDIATE_GUI}
@@ -78,6 +78,7 @@ begin
   InitFPSCounter;
 
   InitAssetRegistry;
+  InitSounds;
 
 {$ifdef P92_WEBGL}
   SetupWebGLViewport;
