@@ -21,12 +21,9 @@ function GetSoundVolume(sndHandle: longint): double; public name 'GetSoundVolume
 procedure SetSoundVolume(sndHandle: longint; volume: double); public name 'SetSoundVolume';
 
 procedure PlayMusic(const sndHandle: longint);
-procedure PauseMusic; external 'env' name 'PauseMusic';
-procedure StopMusic; external 'env' name 'StopMusic';
 
 function GetMusicVolume: double; public name 'GetMusicVolume';
 procedure SetMusicVolume(value: double); public name 'SetMusicVolume';
-procedure JsSetMusicVolume(volume: double); external 'env' name 'JsSetMusicVolume';
 
 function GetMusicPlaying: boolean; public name 'GetMusicPlaying';
 procedure SetMusicPlaying(value: boolean); public name 'SetMusicPlaying';
@@ -37,15 +34,9 @@ procedure SetMusicStartTime(value: double); public name 'SetMusicStartTime';
 function GetMusicPauseTime: double; public name 'GetMusicPauseTime';
 procedure SetMusicPauseTime(value: double); public name 'SetMusicPauseTime';
 
-{ t: time in seconds }
-procedure SeekMusic(const t: double); external 'env' name 'SeekMusic';
-
-function GetMusicTime: double; external 'env' name 'GetMusicTime';
-function GetMusicDuration: double; external 'env' name 'GetMusicDuration';
-
 function GetMusicRepeat: boolean; public name 'GetMusicRepeat';
 procedure SetMusicRepeat(const value: boolean); public name 'SetMusicRepeat';
-procedure HandleMusicRepeat(const musicKey: smallint);
+procedure HandleMusicRepeat(const sndHandle: smallint);
 
 
 implementation
@@ -63,9 +54,20 @@ var
   { in seconds }
   musicStartTime, musicPauseTime: double;
 
-{ initialises the main audio context }
+{ initialises the audioContext }
 procedure JsInitAudio; external 'env' name 'JsInitAudio';
+
 procedure JsPlaySound(sndHandle: longint); external 'env' name 'JsPlaySound';
+procedure JsPauseMusic; external 'env' name 'JsPauseMusic';
+procedure JsStopMusic; external 'env' name 'JsStopMusic';
+
+{ t: time in seconds }
+procedure JsSeekMusic(const t: double); external 'env' name 'JsSeekMusic';
+
+procedure JsSetMusicVolume(volume: double); external 'env' name 'JsSetMusicVolume';
+
+function JsGetMusicTime: double; external 'env' name 'JsGetMusicTime';
+function JsGetMusicDuration: double; external 'env' name 'JsGetMusicDuration';
 
 procedure JsPlayMusic; external 'env' name 'JsPlayMusic';
 procedure JsResumeMusic; external 'env' name 'JsResumeMusic';
@@ -108,6 +110,29 @@ begin
   soundVolumes[sndHandle] := volume
 end;
 
+{ Music playback }
+
+procedure PlayMusic(const sndHandle: longint);
+begin
+  if (musicBufferHandle <> 0) and musicPlaying then exit;
+
+  { Resuming }
+  if musicBufferHandle <> 0 then begin
+    JsResetMusicPlayerNode;
+    JsResumeMusic;
+    exit
+  end;
+
+  JsStopMusic;
+
+  musicBufferHandle := sndHandle;
+  JsLoadMusicBuffer(sndHandle);
+
+  musicPauseTime := 0.0;
+  JsResetMusicPlayerNode;
+  JsResumeMusic
+end;
+
 function GetMusicPlaying: boolean;
 begin
   GetMusicPlaying := musicPlaying
@@ -138,27 +163,6 @@ begin
   musicPauseTime := value
 end;
 
-procedure PlayMusic(const sndHandle: longint);
-begin
-  if (musicBufferHandle <> 0) and musicPlaying then exit;
-
-  { Resuming }
-  if musicBufferHandle <> 0 then begin
-    JsResetMusicPlayerNode;
-    JsResumeMusic;
-    exit
-  end;
-
-  StopMusic;
-
-  musicBufferHandle := sndHandle;
-  JsLoadMusicBuffer(sndHandle);
-
-  musicPauseTime := 0.0;
-  JsResetMusicPlayerNode;
-  JsResumeMusic
-end;
-
 function GetMusicVolume: double;
 begin
   GetMusicVolume := musicVolume
@@ -182,14 +186,14 @@ end;
 
 { Handle music repeat (only when it is playing)
   Important: #musicPlayer.loop must be turned off! }
-procedure HandleMusicRepeat(const musicKey: smallint);
+procedure HandleMusicRepeat(const sndHandle: smallint);
 begin
-  if GetMusicPlaying and (GetMusicTime >= GetMusicDuration - 0.05) then
+  if GetMusicPlaying and (JsGetMusicTime >= JsGetMusicDuration - 0.05) then
     if GetMusicRepeat then begin
-      StopMusic;
-      PlayMusic(musicKey)
+      JsStopMusic;
+      PlayMusic(sndHandle)
     end else
-      StopMusic;
+      JsStopMusic;
 end;
 
 end.

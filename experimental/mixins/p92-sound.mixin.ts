@@ -42,7 +42,7 @@ class SoundMixin extends Base {
   #musicGainNode: GainNode | null = null;
 
   /**
-   * Reusable audio buffer data
+   * Reusable audio buffer data, cleared on `StopMusic()`
    */
   #musicBuffer: AudioBuffer | null = null;
 
@@ -52,23 +52,25 @@ class SoundMixin extends Base {
     const { env } = this.WasmImportObject;
 
     Object.assign(env, {
+      // AssetRegistry
+      JsRequestSound: this.#RequestSound.bind(this),
+
+      // Sounds
       JsInitAudio: this.#InitAudio.bind(this),
       
       JsPlaySound: this.#PlaySound.bind(this),
-
-      JsRequestSound: this.#RequestSound.bind(this),
 
       // PlayMusic: this.#PlayMusic.bind(this),
       JsLoadMusicBuffer: this.#LoadMusicBuffer.bind(this),
       JsResetMusicPlayerNode: this.#ResetMusicPlayerNode.bind(this),
       
       JsResumeMusic: this.#ResumeMusic.bind(this),
-      PauseMusic: this.#PauseMusic.bind(this),
-      StopMusic: this.#StopMusic.bind(this),
-      SeekMusic: this.#SeekMusic.bind(this),
+      JsPauseMusic: this.#PauseMusic.bind(this),
+      JsStopMusic: this.#StopMusic.bind(this),
+      JsSeekMusic: this.#SeekMusic.bind(this),
       
-      GetMusicTime: this.#GetMusicTime.bind(this),
-      GetMusicDuration: this.#GetMusicDuration.bind(this),
+      JsGetMusicTime: this.#GetMusicTime.bind(this),
+      JsGetMusicDuration: this.#GetMusicDuration.bind(this),
 
       JsSetMusicVolume: this.#SetMusicVolume.bind(this),
     });
@@ -248,7 +250,7 @@ class SoundMixin extends Base {
       return;
 
     // if (!this.#musicPlaying)
-    if (this.WasmInstanceExports.GetMusicPlaying())
+    if (!this.WasmInstanceExports.GetMusicPlaying())
       return;
 
     // this.#musicPauseTime = this.#audioContext.currentTime - this.#musicStartTime;
