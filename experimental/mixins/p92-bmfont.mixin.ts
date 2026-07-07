@@ -89,7 +89,7 @@ class BMFontMixin extends Base {
       return;
     }
 
-    this.WasmInstance.exports.IncAssetReadyCount();
+    this.WasmInstanceExports.PascalBMFontLoaded(bmfontHandle);
 
     const lines = fontData.endsWith("\r\n") ? fontData.split("\r\n") : fontData.split("\n");
 
@@ -206,6 +206,7 @@ class BMFontMixin extends Base {
     console.log("RequestBMFont", fontface, "completed");
 
     // Load font bitmap
+    // TODO: Move the texture request to Pascal side
     try {
       this.WriteInteropBuffer(filename);
       await this.RequestImage(fontMem.getInt32(texHandleOffset, true));
