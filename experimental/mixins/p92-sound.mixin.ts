@@ -63,7 +63,7 @@ class SoundMixin extends Base {
 
     Object.assign(env, {
       JsInitAudio: this.#InitAudio.bind(this),
-      PlaySound: this.#PlaySound.bind(this),
+      JsPlaySound: this.#PlaySound.bind(this),
 
       PlayMusic: this.#PlayMusic.bind(this),
       PauseMusic: this.#PauseMusic.bind(this),

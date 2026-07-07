@@ -13,7 +13,9 @@ unit P92Sounds;
 
 interface
 
-procedure PlaySound(const key: longint); external 'env' name 'PlaySound';
+procedure PlaySound(const sndHandle: longint);
+function GetSoundVolume(sndHandle: longint): double; public name 'GetSoundVolume';
+procedure SetSoundVolume(sndHandle: longint; volume: double); public name 'SetSoundVolume';
 
 procedure PlayMusic(const key: longint); external 'env' name 'PlayMusic';
 function GetMusicRepeat: boolean; external 'env' name 'GetMusicRepeat';
@@ -28,7 +30,6 @@ function GetMusicPlaying: boolean; external 'env' name 'GetMusicPlaying';
 function GetMusicTime: double; external 'env' name 'GetMusicTime';
 function GetMusicDuration: double; external 'env' name 'GetMusicDuration';
 
-procedure SetSoundVolume(sndHandle: longint; volume: double); public name 'SetSoundVolume';
 procedure SetMusicVolume(const volume: double); external 'env' name 'SetMusicVolume';
 
 
@@ -40,6 +41,7 @@ var
   soundVolumes: array[1..255] of double;
 
 procedure JsInitAudio; external 'env' name 'JsInitAudio';
+procedure JsPlaySound(sndHandle: longint); external 'env' name 'JsPlaySound';
 
 procedure InitSounds;
 var
@@ -63,6 +65,11 @@ procedure SetSoundVolume(sndHandle: longint; volume: double);
 begin
   volume := clamp(volume, 0.0, 1.0);
   soundVolumes[sndHandle] := volume
+end;
+
+procedure PlaySound(const sndHandle: longint);
+begin
+  JsPlaySound(sndHandle)
 end;
 
 { Handle music repeat (only when it is playing)
