@@ -31,18 +31,27 @@ end;
 
 procedure OnPreload;
 begin
-  { TODO: Load the sound assets here }
+  imgCursor := RequestImage('assets/images/cursor.png');
+  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
+  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
+
+  sfxBwonk := RequestSound('assets/sfx/bwonk.ogg');
+  sfxBite := RequestSound('assets/sfx/bite.ogg');
+  sfxBonk := RequestSound('assets/sfx/bonk.ogg');
+  sfxStrum := RequestSound('assets/sfx/strum.ogg');
+  sfxSlip := RequestSound('assets/sfx/slip.ogg');
 end;
 
 procedure OnReady;
 begin
+  HideCursor;
   gameTime := 0.0;
 end;
 
 
 procedure PlayRandomSFX;
 begin
-  PlaySound(1 + random(SfxSlip))
+  PlaySound(1 + random(sfxSlip))
 end;
 
 

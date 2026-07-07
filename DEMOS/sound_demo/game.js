@@ -8,7 +8,7 @@ const
   SfxSlip = 5;
 
 // Game < SoundMixin < Posit92
-class Game extends SoundMixin {
+class Game extends SoundMixin(BMFontMixin(Posit92)) {
   AssetManifest = {
     images: {
       cursor: "assets/images/cursor.png",

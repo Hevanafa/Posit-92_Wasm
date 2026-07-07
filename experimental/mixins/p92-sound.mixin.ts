@@ -106,6 +106,8 @@ class SoundMixin extends Base {
   async #RequestSound(sndHandle: number): Promise<void> {
     const url = this.ReadInteropBuffer();
 
+    console.log("RequestSound", sndHandle, url);
+
     try {
       const response = await fetch(url);
       const arrayBuffer = await response.arrayBuffer();
@@ -114,8 +116,6 @@ class SoundMixin extends Base {
         throw new Error("LoadSound: audioContext is not initialised!");
 
       const audioBuffer = await this.#audioContext.decodeAudioData(arrayBuffer);
-
-      console.log("loadSound", sndHandle, url);
 
       this.#sounds.set(sndHandle, audioBuffer);
       this.WasmInstanceExports.SetSoundVolume(sndHandle, 0.5);
