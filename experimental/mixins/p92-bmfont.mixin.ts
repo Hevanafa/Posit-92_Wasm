@@ -173,10 +173,6 @@ class BMFontMixin extends Base {
     fontMem.setUint8(offset + 2, spacing[0]);
     fontMem.setUint8(offset + 3, spacing[1]);
 
-    // This uses a reserved imgHandle provided by RequestBMFont from Pascal side
-    const texHandleOffset = offset + 4;
-    // fontMem.setInt32(offset + 4, imgHandle, true);
-
     // Load glyphs
     const glyphsMem = new DataView(this.WasmInstanceExports.memory.buffer, fontGlyphsPtr);
 
@@ -202,21 +198,8 @@ class BMFontMixin extends Base {
     }
 
     console.log("RequestBMFont", fontface, "completed");
-    this.WasmInstanceExports.PascalBMFontLoaded(bmfontHandle);
 
-    // Load font bitmap
-    // TODO: Move the texture request to Pascal side
-    try {
-      this.WriteInteropBuffer(filename);
-      await this.RequestImage(fontMem.getInt32(texHandleOffset, true));
-    } catch (error) {
-      if (error instanceof Error)
-        console.error("RequestBMFont: Failed when downloading the BMFont image:", error);
-
-      this.WasmInstanceExports.PascalBMFontFailed(bmfontHandle, 2);
-      return;
-    }
-
+    this.WriteInteropBuffer(filename);
     this.WasmInstanceExports.PascalBMFontLoaded(bmfontHandle);
   }
 };

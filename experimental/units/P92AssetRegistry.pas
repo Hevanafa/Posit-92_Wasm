@@ -252,8 +252,8 @@ begin
 
   inc(assetReadyCount);
 
-  bmfonts[bmfontHandle].fontPtr^.texHandle := RequestImage(
-    bmfonts[bmfontHandle].fontPtr^.filename);
+  bmfonts[bmfontHandle].fontPtr^.texHandle :=
+    RequestImage(ReadInteropString); { bmfonts[bmfontHandle].fontPtr^.filename }
 end;
 
 procedure PascalBMFontFailed(bmfontHandle: longint; errorCode: smallint);
