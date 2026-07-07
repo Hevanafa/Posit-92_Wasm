@@ -4,7 +4,7 @@ unit Assets;
 
 interface
 
-uses BMFont;
+uses P92BMFont;
 
 var
   { for use in loadBMFont }
@@ -37,7 +37,7 @@ procedure SetImgWinPressed(const imgHandle: longint); public name 'SetImgWinPres
 
 implementation
 
-uses Conv;
+uses P92Conversions;
 
 { Begin BMFont boilerplate}
 

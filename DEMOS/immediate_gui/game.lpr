@@ -12,30 +12,18 @@ library Game;
 
 uses
   SysUtils,
-  EngineCore, EngineFonts, WasmHost,
-  BMFont, Conv, FPS, Graphics,
-  ImgRef, ImgRefFast, SprEffects,
-  ImmediateGui,
-  Keyboard, Loading, Logger, Mouse,
-  Panic, Shapes, Timing, VGA,
+  P92Core, P92Fonts, P92WasmHost,
+  P92BMFont, P92Conversions, P92FPS, P92Graphics,
+  P92Tex, P92TexDraw, P92TexEffects,
+  P92ImmediateGUI, P92Loading, P92Logger,
+  P92Keyboard, P92Mouse,
+  P92Panic, P92Geometry, P92Timing, P92VGA,
   Assets;
-
-type
-  TGameStates = (
-    GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
-  );
-
-const
-  SC_ESC = $01;
-  SC_SPACE = $39;
 
 var
   lastEsc: boolean;
 
   { Init your game state here }
-  actualGameState: TGameStates;
   gameTime: double;
   clicks: word;
   showFPS: TCheckboxState;
@@ -58,26 +46,24 @@ begin
     spr(imgCursor, mouseX, mouseY);
 end;
 
-procedure BeginLoadingState;
+procedure OnPreload;
 begin
-  actualGameState := GameStateLoading;
-  RequestAssetLoad
+  { TODO: Load the assets }
 end;
 
-procedure BeginPlayingState;
+procedure OnReady;
 var
   a: word;
 begin
   { Initialise game state here }
   hideCursor;
 
-  actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
   InitImmediateGUI;
   GuiSetFont(DefaultFontPtr^, DefaultFontGlyphsPtr^);
 
-  ReplaceColour(blackFont.imgHandle, $FFFFFFFF, $FF000000);
+  ReplaceColour(blackFont.texHandle, $FFFFFFFF, $FF000000);
 
   clicks := 0;
   showFPS.checked := false;
@@ -92,11 +78,6 @@ begin
 end;
 
 
-procedure OnReady;
-begin
-  BeginPlayingState
-end;
-
 procedure Update;
 begin
   UpdateDeltaTime;
@@ -107,8 +88,8 @@ begin
   UpdateGUIMousePoint;
 
   { Your Update logic here }
-  if lastEsc <> IsKeyDown(SC_ESC) then begin
-    lastEsc := IsKeyDown(SC_ESC);
+  if lastEsc <> IsKeyDown(SC_ESCAPE) then begin
+    lastEsc := IsKeyDown(SC_ESCAPE);
 
     if lastEsc then begin
       WriteLog('ESC is pressed!');
@@ -126,11 +107,6 @@ var
   w: integer;
   s: string;
 begin
-  if actualGameState = GameStateLoading then begin
-    RenderLoadingScreen;
-    exit
-  end;
-
   Spr(imgCursor, 10, 100);
 
   Cls($FF6495ED);
@@ -181,9 +157,8 @@ begin
 end;
 
 exports
-  { Main game procedures }
-  BeginLoadingState,
-  OnReady, Update, Draw;
+  OnPreload, OnReady,
+  Update, Draw;
 
 begin
 { Starting point is intentionally left empty }

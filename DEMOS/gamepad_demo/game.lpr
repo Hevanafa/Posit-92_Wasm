@@ -4,20 +4,13 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  EngineCore, EngineFonts, WasmHost,
-  BMFont, Graphics, Loading, Fullscreen,
-  Conv, FPS, Logger,
-  Keyboard, Mouse, Gamepad,
-  ImgRef, ImgRefFast, SprEffects,
-  Timing, VGA,
+  P92Core, P92Fonts, P92WasmHost,
+  P92BMFont, P92Graphics, P92Loading,
+  P92Conversions, P92FPS, P92Logger,
+  P92Keyboard, P92Mouse, Gamepad,
+  P92Tex, P92TexDraw, P92TexEffects,
+  P92Timing, P92VGA,
   Assets;
-
-type
-  TGameStates = (
-    GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
-  );
 
 const
   SC_ESC = $01;
@@ -33,7 +26,6 @@ var
   lastEsc: boolean;
 
   { Init your game state here }
-  actualGameState: TGameStates;
   gameTime: double;
 
 
@@ -47,11 +39,9 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure BeginLoadingState;
+procedure OnPreload;
 begin
-  actualGameState := GameStateLoading;
-  FitCanvas;
-  RequestAssetLoad
+  { TODO: List the assets to load }
 end;
 
 procedure BeginPlayingState;
@@ -60,12 +50,11 @@ begin
   FitCanvas;
 
   { Initialise game state here }
-  actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
   greyFont := DefaultFontPtr^;
-  greyFont.imgHandle := copyImage(DefaultFontPtr^.imgHandle);
-  replaceColour(greyFont.imgHandle, white, lightgrey)
+  greyFont.texHandle := CopyTexture(DefaultFontPtr^.texHandle);
+  replaceColour(greyFont.texHandle, white, lightgrey)
 end;
 
 procedure StateLabel(const text: string; const x, y: integer; const enabled: boolean);
@@ -109,11 +98,6 @@ var
   s: string;
   leftX, leftY, rightX, rightY: single;
 begin
-  if actualGameState = GameStateLoading then begin
-    renderLoadingScreen;
-    exit
-  end;
-
   cls(CornflowerBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
@@ -187,10 +171,8 @@ begin
 end;
 
 exports
-  BeginLoadingState,
-  OnReady,
-  Update,
-  Draw;
+  OnPreload, OnReady,
+  Update, Draw;
 
 begin
 { Starting point is intentionally left empty }

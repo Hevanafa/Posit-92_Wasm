@@ -19,13 +19,6 @@ uses
   P92PostProc, P92VGA,
   Assets;
 
-type
-  TGameStates = (
-    GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
-  );
-
 const
   SC_ESC = $01;
   SC_SPACE = $39;
