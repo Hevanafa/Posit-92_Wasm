@@ -57,12 +57,6 @@ end;
 
 procedure Update;
 begin
-  UpdateDeltaTime;
-  IncrementFPS;
-
-  UpdateMouse;
-
-  { Your Update logic here }
   if lastEsc <> IsKeyDown(SC_ESCAPE) then begin
     lastEsc := IsKeyDown(SC_ESCAPE);
 
