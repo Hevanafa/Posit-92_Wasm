@@ -241,7 +241,9 @@ end;
 procedure PascalBMFontLoaded(const bmfontHandle: longint);
 begin
   bmfonts[bmfontHandle].status := AssetStatusReady;
-  bmfonts[bmfontHandle].errorCode := 0
+  bmfonts[bmfontHandle].errorCode := 0;
+
+  inc(assetReadyCount)
 end;
 
 procedure PascalBMFontFailed(const bmfontHandle: longint; const errorCode: smallint);
@@ -253,7 +255,9 @@ end;
 procedure PascalSoundLoaded(const sndHandle: longint);
 begin
   sounds[sndHandle].status := AssetStatusReady;
-  sounds[sndHandle].errorCode := 0
+  sounds[sndHandle].errorCode := 0;
+
+  inc(assetReadyCount)
 end;
 
 procedure PascalSoundFailed(const sndHandle: longint; const errorCode: smallint);
