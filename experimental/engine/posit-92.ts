@@ -2,6 +2,8 @@
 
 "use strict";
 
+var debugRequests = true;
+
 type ImageManifest = Record<string, string | string[]>;
 type SoundManifest = Map<number, string>;
 type BMFontManifest = Map<string, { path: string, setter: string, glyphSetter: string }>;
@@ -483,7 +485,8 @@ class Posit92 {
   async RequestImage(texHandle: number): Promise<void> {
     const url = this.ReadInteropBuffer();
 
-    console.log("RequestImage", texHandle, url);
+    if (debugRequests)
+      console.log("RequestImage", texHandle, url);
 
     try {
       const img = await this.LoadImageFromURL(url);

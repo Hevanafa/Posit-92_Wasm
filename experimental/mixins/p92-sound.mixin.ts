@@ -87,7 +87,8 @@ class SoundMixin extends Base {
   async #RequestSound(sndHandle: number): Promise<void> {
     const url = this.ReadInteropBuffer();
 
-    console.log("RequestSound", sndHandle, url);
+    if (debugRequests)
+      console.log("RequestSound", sndHandle, url);
 
     try {
       if (this.#audioContext == null)

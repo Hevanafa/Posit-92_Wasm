@@ -61,6 +61,9 @@ class BMFontMixin extends Base {
   async #RequestBMFont(bmfontHandle: number, fontPtr: number, fontGlyphsPtr: number): Promise<void> {
     const url = this.ReadInteropBuffer();
 
+    if (debugRequests)
+      console.log("ReadInteropBuffer", bmfontHandle, url);
+
     let fontData = "";
 
     try {
@@ -160,7 +163,8 @@ class BMFontMixin extends Base {
       }
     }
 
-    console.log("Loaded", glyphCount, "glyphs");
+    if (debugRequests)
+      console.log("Loaded", glyphCount, "glyphs");
 
     // Load TBMFont
     const fontMem = new DataView(this.WasmInstanceExports.memory.buffer, fontPtr);
@@ -198,7 +202,8 @@ class BMFontMixin extends Base {
       glyphsMem.setInt16(glyphOffset + 14, glyph.xadvance, true);
     }
 
-    console.log("RequestBMFont", fontface, "completed");
+    if (debugRequests)
+      console.log("RequestBMFont", fontface, "completed");
 
     this.WriteInteropBuffer(filename);
     this.WasmInstanceExports.PascalBMFontLoaded(bmfontHandle);
