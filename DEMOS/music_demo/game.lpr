@@ -55,6 +55,8 @@ begin
 
   imgVolumeOn := RequestImage('assets/images/volume_on.png');
   imgVolumeOff := RequestImage('assets/images/volume_off.png');
+
+  bgmClassic := RequestSound('assets/bgm/Georges Bizet - Les Toreadors from Carmen Suite No. 1.ogg');
 end;
 
 procedure OnReady;

@@ -1,13 +1,6 @@
 "use strict";
 
 class Game extends SoundMixin(BMFontMixin(Posit92)) {
-  async LoadGameAssets() {
-    await this.LoadSound(
-      BgmClassic,
-      "assets/bgm/Georges Bizet - Les Toreadors from Carmen Suite No. 1.ogg");
-
-    // Add more assets as necessary
-  }
 }
 
 async function Main() {
