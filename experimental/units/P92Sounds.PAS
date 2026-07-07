@@ -132,6 +132,7 @@ begin
   { Resuming }
   if IsMusicLoaded then begin
     JsCreateMusicPlayer;
+    JsConnectMusicPlayerGraph;
     JsResumeMusic;
     exit
   end;
@@ -143,6 +144,7 @@ begin
 
   musicPauseTime := 0.0;
   JsCreateMusicPlayer;
+  JsConnectMusicPlayerGraph;
   JsResumeMusic
 end;
 
@@ -156,6 +158,7 @@ begin
   JsDestroyMusicPlayer;
   JsUnsetMusicBuffer;
 
+  currentMusicHandle := 0;
   musicPauseTime := 0.0;
   isMusicPlaying := false;
 end;
