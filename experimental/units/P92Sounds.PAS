@@ -179,6 +179,7 @@ begin
 
   if wasPlaying then begin
     JsCreateMusicPlayer;
+    JsConnectMusicPlayerGraph;
     JsResumeMusic;
     isMusicPlaying := true;
   end;
