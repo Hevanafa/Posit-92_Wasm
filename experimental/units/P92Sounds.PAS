@@ -26,7 +26,7 @@ procedure StopMusic; external 'env' name 'StopMusic';
 
 { t: time in seconds }
 procedure SeekMusic(const t: double); external 'env' name 'SeekMusic';
-function GetMusicPlaying: boolean; external 'env' name 'GetMusicPlaying';
+function GetMusicPlaying: boolean;
 function GetMusicTime: double; external 'env' name 'GetMusicTime';
 function GetMusicDuration: double; external 'env' name 'GetMusicDuration';
 
@@ -45,11 +45,11 @@ uses
 var
   soundVolumes: array[1..255] of double;
 
+  musicPlaying: boolean;
   musicRepeat: boolean;
   musicVolume: double;
   { in seconds }
   musicStartTime, musicPauseTime: double;
-  musicPlaying: boolean;
 
 { initialises the main audio context }
 procedure JsInitAudio; external 'env' name 'JsInitAudio';
@@ -61,6 +61,12 @@ var
 begin
   for a:=1 to high(soundVolumes) do
     soundVolumes[a] := 0.0;
+
+  musicPlaying := false;
+  musicRepeat := true;
+  musicVolume := 1.0;
+  musicStartTime := 0.0;
+  musicPauseTime := 0.0;
 
   JsInitAudio
 end;
@@ -82,6 +88,16 @@ procedure SetSoundVolume(sndHandle: longint; volume: double);
 begin
   volume := clamp(volume, 0.0, 1.0);
   soundVolumes[sndHandle] := volume
+end;
+
+function GetMusicPlaying: boolean;
+begin
+  GetMusicPlaying := musicPlaying
+end;
+
+function GetMusicVolume: double;
+begin
+  GetMusicVolume := musicVolume
 end;
 
 { Handle music repeat (only when it is playing)
