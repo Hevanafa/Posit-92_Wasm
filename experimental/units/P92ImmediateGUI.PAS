@@ -11,6 +11,7 @@ unit P92ImmediateGUI;
 
 interface
 
+{$ifdef P92_IMMEDIATE_GUI}
 uses
   P92BMFont, P92Geometry;
 
@@ -96,10 +97,11 @@ function SliderDrag(const x, y, width: smallint; var state: TSliderState; const 
 
 procedure ProgressBar(const x, y, width, height: smallint; const perc: double);
 procedure ProgressBarLabelled(const x, y, width, height: smallint; const perc: double);
-
+{$endif}
 
 implementation
 
+{$ifdef P92_IMMEDIATE_GUI}
 uses
   P92Fonts, P92Conversions, P92Graphics,
   P92Tex, P92TexDraw,
@@ -705,6 +707,6 @@ begin
   w := measureBMFont(activeFont, activeFontGlyphs, percStr);
   TextLabel(percStr, x + (width - w) div 2, y + (height - activeFont.lineHeight) div 2);
 end;
-
+{$endif}
 
 end.
