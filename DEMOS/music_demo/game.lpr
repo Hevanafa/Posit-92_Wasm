@@ -137,7 +137,7 @@ begin
 
   { Music Seeker }
   duration := getMusicDuration;
-  actualTime := getMusicTime;
+  actualTime := GetMusicTime;
 
   dragState := SliderDrag(64, 94, 192, seekerState, 0, 100);
 

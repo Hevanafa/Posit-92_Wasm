@@ -67,7 +67,6 @@ procedure JsPlaySound(sndHandle: longint); external 'env' name 'JsPlaySound';
 
 procedure JsStartMusicPlayer; external 'env' name 'JsStartMusicPlayer';
 procedure JsPauseMusic; external 'env' name 'JsPauseMusic';
-function JsGetMusicPosition: double; external 'env' name 'JsGetMusicPosition';
 
 procedure JsSetMusicBuffer(sndHandle: longint); external 'env' name 'JsSetMusicBuffer';
 procedure JsUnsetMusicBuffer; external 'env' name 'JsUnsetMusicBuffer';
@@ -154,17 +153,20 @@ end;
 
 procedure PauseMusic;
 begin
-  JsPauseMusic
+  isMusicPlaying := false;
+  musicPauseTime := JsGetMusicTime;
+
+  JsDestroyMusicPlayer
 end;
 
 procedure StopMusic;
 begin
-  JsDestroyMusicPlayer;
-  JsUnsetMusicBuffer;
-
+  isMusicPlaying := false;
   currentMusicHandle := 0;
   musicPauseTime := 0.0;
-  isMusicPlaying := false;
+
+  JsDestroyMusicPlayer;
+  JsUnsetMusicBuffer;
 end;
 
 procedure SeekMusic(t: double);

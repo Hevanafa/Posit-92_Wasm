@@ -29,6 +29,8 @@ class SoundMixin extends Base {
 
   #sounds: Map<number, AudioBuffer> = new Map();
 
+  #startTime: number = 0.0;
+
   /**
    * One-shot, dies after `.stop()`
    */
@@ -57,9 +59,9 @@ class SoundMixin extends Base {
       JsInitAudio: this.#InitAudio.bind(this),
       
       JsPlaySound: this.#PlaySound.bind(this),
-      JsStartMusicPlayer: this.#StartMusicPlayer.bind(this),
-      JsPauseMusic: this.#PauseMusic.bind(this),
 
+      // Music playback
+      JsStartMusicPlayer: this.#StartMusicPlayer.bind(this),
       JsSetMusicBuffer: this.#SetMusicBuffer.bind(this),
       JsUnsetMusicBuffer: this.#UnsetMusicBuffer.bind(this),
 
@@ -217,39 +219,9 @@ class SoundMixin extends Base {
     if (this.#musicPlayer == null)
       throw new Error("ResumeMusic: musicPlayer is not initialised!");
 
-    this.#musicPlayer.start(0, this.WasmInstanceExports.GetMusicPauseTime());
-  }
-
-
-  #PauseMusic(): void {
-    if (this.#audioContext == null)
-      throw new Error("PauseMusic: audioContext is not initialised!");
-
-    if (this.#musicPlayer == null)
-      return;
-
-    // if (!this.#musicPlaying)
-    if (!this.WasmInstanceExports.GetMusicPlaying())
-      return;
-
-    // this.#musicPauseTime = this.#audioContext.currentTime - this.#musicStartTime;
-    this.WasmInstanceExports.SetMusicPauseTime(
-      this.#audioContext.currentTime - this.WasmInstanceExports.GetMusicStartTime());
-
-    // Handle looping
-    if (this.#musicBuffer != null) {
-      const duration = this.#musicBuffer.duration;  // in seconds
-      let musicPauseTime = this.WasmInstanceExports.GetMusicPauseTime();
-
-      while (musicPauseTime >= duration)
-        musicPauseTime -= duration;
-      
-      this.WasmInstanceExports.SetMusicPauseTime(
-        musicPauseTime);
-    }
-
-    this.#DestroyMusicPlayer();
-    this.WasmInstanceExports.SetMusicPlaying(false);
+    const musicPauseTime = this.WasmInstanceExports.GetMusicPauseTime();
+    this.#musicPlayer.start(0, musicPauseTime);
+    this.#startTime = this.#audioContext.currentTime - musicPauseTime;
   }
 
   /**
@@ -258,13 +230,6 @@ class SoundMixin extends Base {
   #SetMusicVolume(volume: number): void {
     if (this.#musicGainNode != null)
       this.#musicGainNode.gain.value = volume;
-  }
-
-  #GetMusicDuration(): number {
-    if (this.#musicBuffer == null)
-      return 0.0;
-
-    return this.#musicBuffer.duration;
   }
 
   #GetMusicTime(): number {
@@ -277,9 +242,17 @@ class SoundMixin extends Base {
     if (!this.WasmInstanceExports.GetMusicPlaying())
       return this.WasmInstanceExports.GetMusicPauseTime();
 
-    const elapsed = this.#audioContext.currentTime - this.WasmInstanceExports.GetMusicStartTime();
+    const elapsed =
+      this.#audioContext.currentTime - this.#startTime;
     const duration = this.#GetMusicDuration();
 
     return elapsed % duration;
+  }
+
+  #GetMusicDuration(): number {
+    if (this.#musicBuffer == null)
+      return 0.0;
+
+    return this.#musicBuffer.duration;
   }
 }
