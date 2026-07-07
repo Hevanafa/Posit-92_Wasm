@@ -26,9 +26,7 @@ var
 
   { Game state variables }
   gameTime: double;
-  { Use sound keys }
-  actualMusicKey: integer;
-  
+
   seekerState: TSliderState;
 
   repeatState: TCheckboxState;
@@ -64,14 +62,12 @@ begin
   { Initialise game state here }
   hideCursor;
 
-  actualMusicKey := -1;
-  isMuted := false;
-
   seekerState.value := 0;
 
   repeatState.checked := true;
   lastRepeat := repeatState.checked;
 
+  isMuted := false;
   volumeState.value := 25;
   lastVolume := volumeState.value;
   SetMusicVolume(volumeState.value / 100.0)
@@ -160,20 +156,15 @@ begin
     if ImageButton(129, 116, imgPause, imgPause, imgPause) then
       PauseMusic;
   end else
-    if ImageButton(129, 116, imgPlay, imgPlay, imgPlay) then begin
-      if actualMusicKey < 0 then begin
-        { Starting new }
-        actualMusicKey := BgmClassic;
-        PlayMusic(BgmClassic)
-      end else
-        { Resuming }
-        PlayMusic(actualMusicKey);
-    end;
-  
+    if ImageButton(129, 116, imgPlay, imgPlay, imgPlay) then
+      PlayMusic(BgmClassic);
+
+  { Stop button }
   if ImageButton(161, 116, imgStop, imgStop, imgStop) then
     StopMusic;
 
   { Volume control }
+
   if isMuted or (volumeState.value = 0) then
     spr(imgVolumeOff, 202, 123)
   else
