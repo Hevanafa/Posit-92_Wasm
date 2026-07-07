@@ -9,6 +9,9 @@ class SoundMixin extends Base {
   #audioContext: AudioContext | null = null;
 
   #sounds: Map<number, AudioBuffer> = new Map();
+  /**
+   * @deprecated Will be moved to the Sounds unit
+   */
   #soundVolumes: Map<number, number> = new Map();
 
   /**
@@ -26,19 +29,30 @@ class SoundMixin extends Base {
    */
   #musicBuffer: AudioBuffer | null = null;
 
+  /**
+   * @deprecated
+   */
   #musicRepeat = true;
+  /**
+   * @deprecated
+   */
   #musicVolume = 1.0;
 
   /**
    * in seconds
+   * @deprecated
    */
   #musicStartTime = 0.0;
 
   /**
    * in seconds
+   * @deprecated
    */
   #musicPauseTime = 0.0;
 
+  /**
+   * @deprecated
+   */
   #musicPlaying = false;
 
   SetupImportObject(): void {

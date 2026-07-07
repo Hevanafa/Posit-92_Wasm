@@ -3,5 +3,5 @@ type Posit92ClassFactory = <T extends Constructor<Posit92>>(Base: T) => Construc
 var BMFontMixin: Posit92ClassFactory;
 var BigIntMixin: Posit92ClassFactory;
 var GamepadMixin: Posit92ClassFactory;
-var SoundsMixin: Posit92ClassFactory;
+var SoundMixin: Posit92ClassFactory;
 var WebGLMixin: Posit92ClassFactory;
