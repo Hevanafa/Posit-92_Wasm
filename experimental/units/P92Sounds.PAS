@@ -74,10 +74,10 @@ procedure JsSetMusicVolume(volume: double); external 'env' name 'JsSetMusicVolum
 function JsGetMusicTime: double; external 'env' name 'JsGetMusicTime';
 function JsGetMusicDuration: double; external 'env' name 'JsGetMusicDuration';
 
-procedure JsPlayMusic; external 'env' name 'JsPlayMusic';
+procedure JsLoadMusicBuffer(sndHandle: longint); external 'env' name 'JsLoadMusicBuffer';
 procedure JsResumeMusic; external 'env' name 'JsResumeMusic';
 procedure JsResetMusicPlayerNode; external 'env' name 'JsResetMusicPlayerNode';
-procedure JsLoadMusicBuffer(sndHandle: longint); external 'env' name 'JsLoadMusicBuffer';
+procedure JsDestroyMusicPlayerNode; external 'env' name 'JsDestroyMusicPlayerNode';
 
 procedure InitSounds;
 var

@@ -60,16 +60,14 @@ class SoundMixin extends Base {
       
       JsPlaySound: this.#PlaySound.bind(this),
 
-      // PlayMusic: this.#PlayMusic.bind(this),
       JsLoadMusicBuffer: this.#LoadMusicBuffer.bind(this),
       JsResetMusicPlayerNode: this.#ResetMusicPlayerNode.bind(this),
+      JsDestroyMusicPlayerNode: this.#DestroyMusicPlayerNode.bind(this),
       
       JsResumeMusic: this.#ResumeMusic.bind(this),
       JsPauseMusic: this.#PauseMusic.bind(this),
       JsStopMusic: this.#StopMusic.bind(this),
 
-      JsSeekMusic: this.#SeekMusic.bind(this),
-      
       JsGetMusicTime: this.#GetMusicTime.bind(this),
       JsGetMusicDuration: this.#GetMusicDuration.bind(this),
 
@@ -243,30 +241,6 @@ class SoundMixin extends Base {
 
     this.WasmInstanceExports.SetMusicPauseTime(0.0);
     this.WasmInstanceExports.SetMusicPlaying(false);
-  }
-
-  /**
-   * @param t time in seconds
-   */
-  #SeekMusic(t: number): void {
-    if (this.#musicBuffer == null) return;
-
-    const duration = this.#musicBuffer.duration;
-    t = this.Clamp(t, 0.0, duration);
-
-    // const wasPlaying = this.#musicPlaying;
-    const wasPlaying = this.WasmInstanceExports.GetMusicPlaying();
-
-    // Stop current playback
-    this.#DestroyMusicPlayerNode();
-
-    this.WasmInstanceExports.SetMusicPlaying(false);
-    this.WasmInstanceExports.SetMusicPauseTime(t);
-
-    if (wasPlaying) {
-      this.#ResetMusicPlayerNode();
-      this.#ResumeMusic();
-    }
   }
 
   /**
