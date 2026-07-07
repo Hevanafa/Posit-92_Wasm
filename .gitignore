@@ -23,13 +23,10 @@ DEMOS/*/*.js.map
 *.glsl.inc
 
 # Mixin files
-DEMOS/*/*.js
-
-!DEMOS/*/game.js
+*.mixin.js
 
 # Bun build scripts for demo projects
 DEMOS/*/*.ts
-!DEMOS/dos_display/*.ts
 
 # Snippets
 snippets/wasm_loader/build_dist.ps1
@@ -63,4 +60,4 @@ experimental/engine/*.d.ts
 experimental/engine/*.js
 experimental/engine/*.js.map
 
-experimental/mixins/*.js
+!DEMOS/*/game.js
