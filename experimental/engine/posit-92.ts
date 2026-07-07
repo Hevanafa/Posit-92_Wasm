@@ -649,18 +649,6 @@ class Posit92 {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  /**
-   * Overridable from `game.js`
-   * 
-   * @deprecated
-   */
-  AssetManifest: {
-    images?: ImageManifest,
-    sounds?: SoundManifest,
-    bmfonts?: BMFontManifest
-  } | null = null;
-
-
   Clamp(value: number, min: number, max: number): number {
     this.AssertNumber(value);
     this.AssertNumber(min);
