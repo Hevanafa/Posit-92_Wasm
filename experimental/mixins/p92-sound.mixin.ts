@@ -4,8 +4,8 @@
  * Part of Posit-92 game engine
  */
 
-globalThis.SoundsMixin = <T extends Constructor<Posit92>>(Base: T) =>
-class SoundsMixin extends Base {
+globalThis.SoundMixin = <T extends Constructor<Posit92>>(Base: T) =>
+class SoundMixin extends Base {
   #audioContext: AudioContext | null = null;
 
   #sounds: Map<number, AudioBuffer> = new Map();

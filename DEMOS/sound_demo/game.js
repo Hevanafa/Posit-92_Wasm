@@ -7,8 +7,8 @@ const
   SfxStrum = 4,
   SfxSlip = 5;
 
-// Game < SoundsMixin < Posit92
-class Game extends SoundsMixin {
+// Game < SoundMixin < Posit92
+class Game extends SoundMixin {
   AssetManifest = {
     images: {
       cursor: "assets/images/cursor.png",
