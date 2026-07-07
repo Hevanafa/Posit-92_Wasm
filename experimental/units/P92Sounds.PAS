@@ -36,9 +36,6 @@ procedure SetMusicVolume(value: double); public name 'SetMusicVolume';
 function GetMusicPlaying: boolean; public name 'GetMusicPlaying';
 procedure SetMusicPlaying(value: boolean); public name 'SetMusicPlaying';
 
-function GetMusicStartTime: double; public name 'GetMusicStartTime';
-procedure SetMusicStartTime(value: double); public name 'SetMusicStartTime';
-
 function GetMusicPauseTime: double; public name 'GetMusicPauseTime';
 procedure SetMusicPauseTime(value: double); public name 'SetMusicPauseTime';
 
@@ -59,8 +56,9 @@ var
   isMusicPlaying: boolean;
   musicRepeat: boolean;
   musicVolume: double;
+
   { in seconds }
-  musicStartTime, musicPauseTime: double;
+  musicPauseTime: double;
 
 { initialises the audioContext }
 procedure JsInitAudio; external 'env' name 'JsInitAudio';
@@ -69,6 +67,7 @@ procedure JsPlaySound(sndHandle: longint); external 'env' name 'JsPlaySound';
 
 procedure JsResumeMusic; external 'env' name 'JsResumeMusic';
 procedure JsPauseMusic; external 'env' name 'JsPauseMusic';
+function JsGetMusicPosition: double; external 'env' name 'JsGetMusicPosition';
 
 procedure JsSetMusicBuffer(sndHandle: longint); external 'env' name 'JsSetMusicBuffer';
 procedure JsUnsetMusicBuffer; external 'env' name 'JsUnsetMusicBuffer';
@@ -93,7 +92,6 @@ begin
   isMusicPlaying := false;
   musicRepeat := true;
   musicVolume := 1.0;
-  musicStartTime := 0.0;
   musicPauseTime := 0.0;
 
   JsInitAudio
@@ -150,7 +148,7 @@ end;
 
 procedure PauseMusic;
 begin
-  { TODO: Work on this}
+  JsPauseMusic
 end;
 
 procedure StopMusic;
@@ -203,16 +201,6 @@ end;
 procedure SetMusicPlaying(value: boolean);
 begin
   isMusicPlaying := value
-end;
-
-function GetMusicStartTime: double;
-begin
-  GetMusicStartTime := musicStartTime
-end;
-
-procedure SetMusicStartTime(value: double);
-begin
-  musicStartTime := value
 end;
 
 function GetMusicPauseTime: double;

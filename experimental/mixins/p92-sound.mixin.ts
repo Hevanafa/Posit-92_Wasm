@@ -16,8 +16,6 @@ type SoundWasmExports = WasmExports & {
   GetMusicPlaying: () => boolean;
   SetMusicPlaying: (value: boolean) => void;
 
-  GetMusicStartTime: () => number;
-  SetMusicStartTime: (value: number) => void;
   GetMusicPauseTime: () => number;
   SetMusicPauseTime: (value: number) => number;
 
@@ -223,6 +221,7 @@ class SoundMixin extends Base {
 
     this.WasmInstanceExports.SetMusicStartTime(
       this.#audioContext.currentTime - this.WasmInstanceExports.GetMusicPauseTime());
+    
     this.WasmInstanceExports.SetMusicPlaying(true);
   }
 
@@ -254,9 +253,7 @@ class SoundMixin extends Base {
         musicPauseTime);
     }
 
-    // Stop the music player, but don't "forget" the pause position
     this.#DestroyMusicPlayer();
-    // this.#musicPlaying = false;
     this.WasmInstanceExports.SetMusicPlaying(false);
   }
 
