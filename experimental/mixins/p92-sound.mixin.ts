@@ -141,67 +141,6 @@ class SoundMixin extends Base {
     }
   }
 
-  /**
-   * @deprecated
-   */
-  async LoadSound(key: number, url: string): Promise<void> {
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
-
-    if (this.#audioContext == null)
-      throw new Error("LoadSound: audioContext is not initialised!");
-
-    const audioBuffer = await this.#audioContext.decodeAudioData(arrayBuffer);
-
-    console.log("loadSound", key, url);
-
-    this.#sounds.set(key, audioBuffer);
-    this.WasmInstanceExports.SetSoundVolume(key, 0.5);
-  }
-
-  /**
-   * Load sound files from manifest in parallel
-   * @param manifest Key-value pairs of `"asset_key": "sound_path"`
-   * @deprecated
-   */
-  async LoadSoundsFromManifest(manifest: Map<number, string>): Promise<void> {
-    const entries = Array.from(manifest.entries());
-
-    // TODO: Track this via AssetManager
-    // this.WasmInstance.exports.IncAssetTotalCount(manifest.size);
-
-    const promises = entries.map(([key, url]) =>
-      this.LoadSound(key, url)
-        .then(() => {
-          // On success
-          return { key, url, success: true };
-        })
-        .catch(err => {
-          console.error("Failed to load sound: " + url, err);
-          return { key, url, success: false };
-        })
-        .finally(() => {
-          // TODO: Track this via AssetManager
-          // this.WasmInstance.exports.IncAssetReadyCount();
-        })
-    );
-
-    const results = await Promise.all(promises);
-
-    // Error handling
-
-    const failures = results.filter(item => !item.success);
-
-    if (failures.length > 0) {
-      console.error("Failed to load sounds:");
-      
-      for (const failure of failures)
-        console.error("   " + failure.key + ": " + failure.url);
-
-      throw new Error("Failed to load some sounds");
-    }
-  }
-
   #PlaySound(sndHandle: number): void {
     if (this.#audioContext == null)
       throw new Error("PlaySound: audioContext is not initialised!");
