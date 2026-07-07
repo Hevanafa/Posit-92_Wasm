@@ -61,6 +61,7 @@ class SoundMixin extends Base {
       JsPlaySound: this.#PlaySound.bind(this),
 
       JsCreateMusicPlayer: this.#CreateMusicPlayer.bind(this),
+      JsConnectMusicPlayerGraph: this.#ConnectMusicPlayerGraph.bind(this),
       JsDestroyMusicPlayer: this.#DestroyMusicPlayer.bind(this),
       
       JsSetMusicBuffer: this.#SetMusicBuffer.bind(this),
@@ -161,11 +162,14 @@ class SoundMixin extends Base {
 
     this.#musicPlayer = this.#audioContext.createBufferSource();
     this.#musicGainNode = this.#audioContext.createGain();
-
-    this.#musicPlayer.buffer = this.#musicBuffer;
+    
     // Handle loop manually
     // this.#musicPlayer.loop = this.#musicRepeat;
     // console.log("loop?", this.#musicPlayer.loop);
+  }
+
+  #ConnectMusicPlayerGraph() {
+    this.#musicPlayer.buffer = this.#musicBuffer;
     this.#musicGainNode.gain.value = this.WasmInstanceExports.GetMusicVolume();
 
     // Connect the audio graph:
