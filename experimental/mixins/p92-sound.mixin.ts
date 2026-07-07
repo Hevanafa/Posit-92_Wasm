@@ -65,6 +65,8 @@ class SoundMixin extends Base {
       JsInitAudio: this.#InitAudio.bind(this),
       JsPlaySound: this.#PlaySound.bind(this),
 
+      JsRequestSound: this.LoadSound.bind(this),
+
       PlayMusic: this.#PlayMusic.bind(this),
       PauseMusic: this.#PauseMusic.bind(this),
       StopMusic: this.#StopMusic.bind(this),
@@ -97,6 +99,10 @@ class SoundMixin extends Base {
 
 
   // SOUNDS.PAS
+
+  /**
+   * @deprecated
+   */
   async LoadSound(key: number, url: string): Promise<void> {
     const response = await fetch(url);
     const arrayBuffer = await response.arrayBuffer();
@@ -115,6 +121,7 @@ class SoundMixin extends Base {
   /**
    * Load sound files from manifest in parallel
    * @param manifest Key-value pairs of `"asset_key": "sound_path"`
+   * @deprecated
    */
   async LoadSoundsFromManifest(manifest: Map<number, string>): Promise<void> {
     const entries = Array.from(manifest.entries());
