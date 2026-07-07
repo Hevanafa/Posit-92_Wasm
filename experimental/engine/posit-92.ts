@@ -656,6 +656,8 @@ class Posit92 {
 
   /**
    * Overridable from `game.js`
+   * 
+   * @deprecated
    */
   AssetManifest: {
     images?: ImageManifest,
