@@ -5,6 +5,9 @@
  */
 
 type SoundWasmExports = WasmExports & {
+  PascalSoundLoaded: (sndHandle: number) => void,
+  PascalSoundFailed: (sndHandle: number) => void,
+
   GetSoundVolume: (sndHandle: number) => number;
   SetSoundVolume: (sndHandle: number, volume: number) => void;
 }
@@ -102,20 +105,25 @@ class SoundMixin extends Base {
 
   async #RequestSound(sndHandle: number): Promise<void> {
     const url = this.ReadInteropBuffer();
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
 
-    if (this.#audioContext == null)
-      throw new Error("LoadSound: audioContext is not initialised!");
+    try {
+      const response = await fetch(url);
+      const arrayBuffer = await response.arrayBuffer();
 
-    const audioBuffer = await this.#audioContext.decodeAudioData(arrayBuffer);
+      if (this.#audioContext == null)
+        throw new Error("LoadSound: audioContext is not initialised!");
 
-    console.log("loadSound", sndHandle, url);
+      const audioBuffer = await this.#audioContext.decodeAudioData(arrayBuffer);
 
-    this.#sounds.set(sndHandle, audioBuffer);
-    this.WasmInstanceExports.SetSoundVolume(sndHandle, 0.5);
+      console.log("loadSound", sndHandle, url);
 
-    // TODO: Report to Pascal
+      this.#sounds.set(sndHandle, audioBuffer);
+      this.WasmInstanceExports.SetSoundVolume(sndHandle, 0.5);
+
+      this.WasmInstanceExports.PascalSoundLoaded(sndHandle);
+    } catch (error) {
+      this.WasmInstanceExports.PascalSoundFailed(sndHandle);
+    }
   }
 
   /**
