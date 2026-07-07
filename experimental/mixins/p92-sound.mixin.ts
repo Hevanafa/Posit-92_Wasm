@@ -60,18 +60,18 @@ class SoundMixin extends Base {
       
       JsPlaySound: this.#PlaySound.bind(this),
 
-      JsLoadMusicBuffer: this.#LoadMusicBuffer.bind(this),
-      JsResetMusicPlayerNode: this.#ResetMusicPlayerNode.bind(this),
-      JsDestroyMusicPlayerNode: this.#DestroyMusicPlayerNode.bind(this),
+      JsCreateMusicPlayer: this.#CreateMusicPlayer.bind(this),
+      JsDestroyMusicPlayer: this.#DestroyMusicPlayer.bind(this),
       
+      JsSetMusicBuffer: this.#SetMusicBuffer.bind(this),
+      JsSetMusicVolume: this.#SetMusicVolume.bind(this),
+
       JsResumeMusic: this.#ResumeMusic.bind(this),
       JsPauseMusic: this.#PauseMusic.bind(this),
       JsStopMusic: this.#StopMusic.bind(this),
 
       JsGetMusicTime: this.#GetMusicTime.bind(this),
-      JsGetMusicDuration: this.#GetMusicDuration.bind(this),
-
-      JsSetMusicVolume: this.#SetMusicVolume.bind(this),
+      JsGetMusicDuration: this.#GetMusicDuration.bind(this)
     });
   }
 
@@ -145,7 +145,7 @@ class SoundMixin extends Base {
     // source automatically disconnects when done
   }
 
-  #LoadMusicBuffer(sndHandle: number): void {
+  #SetMusicBuffer(sndHandle: number): void {
     if (!this.#sounds.has(sndHandle))
       throw new Error("Missing sndHandle " + sndHandle);
 
@@ -155,7 +155,7 @@ class SoundMixin extends Base {
   /**
    * Create a new music player node
    */
-  #ResetMusicPlayerNode(): void {
+  #CreateMusicPlayer(): void {
     if (this.#audioContext == null)
       throw new Error("ResetMusicPlayerNode: audioContext is not initialised!");
 
@@ -174,12 +174,20 @@ class SoundMixin extends Base {
     this.#musicGainNode.connect(this.#audioContext.destination);
   }
 
-  #DestroyMusicPlayerNode(): void {
-    if (this.#musicPlayer == null) return;
+  #DestroyMusicPlayer(): void {
+    if (this.#musicPlayer != null) {
+      try {
+        this.#musicPlayer.stop();
+      } catch {}
 
-    this.#musicPlayer.stop();
-    this.#musicPlayer = null;
-    this.#musicGainNode = null;
+      this.#musicPlayer.disconnect();
+      this.#musicPlayer = null;
+    }
+
+    if (this.#musicGainNode != null) {
+      this.#musicGainNode.disconnect();
+      this.#musicGainNode = null;
+    }
   }
 
   /**
@@ -230,13 +238,13 @@ class SoundMixin extends Base {
     }
 
     // Stop the music player, but don't "forget" the pause position
-    this.#DestroyMusicPlayerNode();
+    this.#DestroyMusicPlayer();
     // this.#musicPlaying = false;
     this.WasmInstanceExports.SetMusicPlaying(false);
   }
 
   #StopMusic(): void {
-    this.#DestroyMusicPlayerNode();
+    this.#DestroyMusicPlayer();
     this.#musicBuffer = null;
 
     this.WasmInstanceExports.SetMusicPauseTime(0.0);
