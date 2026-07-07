@@ -23,7 +23,7 @@ procedure SetSoundVolume(sndHandle: longint; volume: double); public name 'SetSo
 { Music playback }
 
 procedure PlayMusic(const sndHandle: longint);
-procedure SeekMusic(const t: double);
+procedure SeekMusic(t: double);
 procedure PauseMusic;
 procedure StopMusic;
 
@@ -68,9 +68,6 @@ procedure JsInitAudio; external 'env' name 'JsInitAudio';
 procedure JsPlaySound(sndHandle: longint); external 'env' name 'JsPlaySound';
 procedure JsPauseMusic; external 'env' name 'JsPauseMusic';
 procedure JsStopMusic; external 'env' name 'JsStopMusic';
-
-{ t: time in seconds }
-procedure JsSeekMusic(const t: double); external 'env' name 'JsSeekMusic';
 
 procedure JsSetMusicVolume(volume: double); external 'env' name 'JsSetMusicVolume';
 
@@ -151,9 +148,30 @@ begin
   JsStopMusic
 end;
 
-procedure SeekMusic(const t: double);
+function MusicLoaded: boolean;
 begin
-  JsSeekMusic(t)
+  MusicLoaded := currentMusicHandle > 0
+end;
+
+procedure SeekMusic(t: double);
+var
+  duration: double;
+  wasPlaying: boolean;
+begin
+  if not MusicLoaded then exit;
+
+  duration := JsGetMusicDuration;
+  musicPauseTime := clamp(t, 0.0, duration);
+  wasPlaying := musicPlaying;
+
+  JsDestroyMusicPlayerNode;
+  musicPlaying := false;
+
+  if wasPlaying then begin
+    JsResetMusicPlayerNode;
+    JsResumeMusic;
+    musicPlaying := true;
+  end;
 end;
 
 function GetMusicDuration: double;
