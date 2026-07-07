@@ -28,10 +28,6 @@ type WasmExports = {
   P92Draw: () => void;
 
   // P92AssetRegistry
-  IncAssetReadyCount: () => void;
-  SetAssetReadyCount: (value: number) => void;
-  SetAssetTotalCount: (value: number) => void;
-
   PascalImageLoaded: (texHandle: number, w: number, h: number, pixelDataPtr: number) => void;
   PascalImageFailed: (texHandle: number, errorCode: number) => void;
 

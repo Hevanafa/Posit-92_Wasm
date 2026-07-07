@@ -37,11 +37,6 @@ var
 
 function AllAssetsReady: boolean;
 
-{ Temporary fix for legacy procedures that still use a metafile }
-procedure IncAssetReadyCount; public name 'IncAssetReadyCount';
-procedure SetAssetReadyCount(value: longint); public name 'SetAssetReadyCount';
-procedure SetAssetTotalCount(value: longint); public name 'SetAssetTotalCount';
-
 procedure InitAssetRegistry;
 function FindUnusedTextureSlot: longint;
 
