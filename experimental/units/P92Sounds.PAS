@@ -65,7 +65,7 @@ procedure JsInitAudio; external 'env' name 'JsInitAudio';
 
 procedure JsPlaySound(sndHandle: longint); external 'env' name 'JsPlaySound';
 
-procedure JsResumeMusic; external 'env' name 'JsResumeMusic';
+procedure JsStartMusicPlayer; external 'env' name 'JsStartMusicPlayer';
 procedure JsPauseMusic; external 'env' name 'JsPauseMusic';
 function JsGetMusicPosition: double; external 'env' name 'JsGetMusicPosition';
 
@@ -123,6 +123,12 @@ begin
   IsMusicLoaded := currentMusicHandle > 0
 end;
 
+procedure StartMusicPlayer;
+begin
+  isMusicPlaying := true;
+  JsStartMusicPlayer
+end;
+
 procedure PlayMusic(const sndHandle: longint);
 begin
   if IsMusicLoaded and isMusicPlaying then exit;
@@ -131,7 +137,7 @@ begin
   if IsMusicLoaded then begin
     JsCreateMusicPlayer;
     JsConnectMusicPlayerGraph;
-    JsResumeMusic;
+    StartMusicPlayer;
     exit
   end;
 
@@ -143,7 +149,7 @@ begin
   musicPauseTime := 0.0;
   JsCreateMusicPlayer;
   JsConnectMusicPlayerGraph;
-  JsResumeMusic
+  StartMusicPlayer
 end;
 
 procedure PauseMusic;
@@ -178,8 +184,7 @@ begin
   if wasPlaying then begin
     JsCreateMusicPlayer;
     JsConnectMusicPlayerGraph;
-    JsResumeMusic;
-    isMusicPlaying := true;
+    StartMusicPlayer
   end;
 end;
 

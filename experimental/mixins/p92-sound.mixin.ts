@@ -57,7 +57,7 @@ class SoundMixin extends Base {
       JsInitAudio: this.#InitAudio.bind(this),
       
       JsPlaySound: this.#PlaySound.bind(this),
-      JsResumeMusic: this.#ResumeMusic.bind(this),
+      JsStartMusicPlayer: this.#StartMusicPlayer.bind(this),
       JsPauseMusic: this.#PauseMusic.bind(this),
 
       JsSetMusicBuffer: this.#SetMusicBuffer.bind(this),
@@ -210,7 +210,7 @@ class SoundMixin extends Base {
    * 
    * Requires `#ResetMusicPlayerNode()` to be called right before this
    */
-  #ResumeMusic(): void {
+  #StartMusicPlayer(): void {
     if (this.#audioContext == null)
       throw new Error("ResumeMusic: audioContext is not initialised!");
 
@@ -218,11 +218,6 @@ class SoundMixin extends Base {
       throw new Error("ResumeMusic: musicPlayer is not initialised!");
 
     this.#musicPlayer.start(0, this.WasmInstanceExports.GetMusicPauseTime());
-
-    this.WasmInstanceExports.SetMusicStartTime(
-      this.#audioContext.currentTime - this.WasmInstanceExports.GetMusicPauseTime());
-    
-    this.WasmInstanceExports.SetMusicPlaying(true);
   }
 
 
