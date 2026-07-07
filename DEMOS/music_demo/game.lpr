@@ -9,35 +9,22 @@ library Game;
 {$J-}
 
 uses
-  EngineCore, EngineFonts, WasmHost,
-  Conv, Fullscreen, Loading, Logger,
-  Keyboard, Mouse,
-  ImmediateGUI, ImgRef, ImgRefFast,
-  Sounds, UStrings, Timing,
-  VGA,
+  P92Core, P92Fonts, P92WasmHost,
+  P92Conversions, P92Loading, P92Logger,
+  P92Keyboard, P92Mouse,
+  P92ImmediateGUI,
+  P92Tex, P92TexDraw,
+  P92Sounds, P92Strings,
+  P92Timing, P92VGA,
   Assets;
 
-type
-  TGameStates = (
-    GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
-  );
-
 const
-  SC_ESC = $01;
-  SC_SPACE = $39;
-
   CornflowerBlue = $FF6495ED;
-
-  { Sound keys -- must be the same as on JS side }
-  BgmClassic = 1;
 
 var
   lastEsc: boolean;
 
   { Game state variables }
-  actualGameState: TGameStates;
   gameTime: double;
   { Use sound keys }
   actualMusicKey: integer;
@@ -56,7 +43,7 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure BeginLoadingState;
+procedure OnPreload;
 begin
   actualGameState := GameStateLoading;
   fitCanvas;
@@ -216,7 +203,7 @@ begin
 end;
 
 exports
-  BeginLoadingState,
+  OnPreload,
   OnReady, Update, Draw;
 
 begin
