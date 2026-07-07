@@ -22,6 +22,7 @@ type SoundWasmExports = WasmExports & {
   SetMusicPauseTime: (value: number) => number;
 
   GetMusicVolume: () => number
+  SetMusicVolume: (value: number) => void;
 }
 
 globalThis.SoundMixin = <T extends Constructor<Posit92>>(Base: T) =>
@@ -52,7 +53,9 @@ class SoundMixin extends Base {
 
     Object.assign(env, {
       JsInitAudio: this.#InitAudio.bind(this),
+      
       JsPlaySound: this.#PlaySound.bind(this),
+      JsAssignMusicBuffer: this.#AssignMusicBuffer.bind(this),
 
       JsRequestSound: this.#RequestSound.bind(this),
 
@@ -151,6 +154,16 @@ class SoundMixin extends Base {
     // source automatically disconnects when done
   }
 
+  #AssignMusicBuffer(sndHandle: number): void {
+    if (this.#musicPlayer == null)
+      throw new Error("musicPlayer isn't initialised!");
+
+    if (!this.#sounds.has(sndHandle))
+      throw new Error("Missing sndHandle " + sndHandle);
+
+    this.#musicPlayer.buffer = this.#sounds.get(sndHandle)!
+  }
+
   /**
    * Create a new music player node
    */
@@ -162,6 +175,7 @@ class SoundMixin extends Base {
     this.#musicGainNode = this.#audioContext.createGain();
 
     this.#musicPlayer.buffer = this.#musicBuffer;
+    // Handle loop manually
     // this.#musicPlayer.loop = this.#musicRepeat;
     // console.log("loop?", this.#musicPlayer.loop);
     this.#musicGainNode.gain.value = this.WasmInstanceExports.GetMusicVolume();
@@ -228,7 +242,11 @@ class SoundMixin extends Base {
 
 
   #PauseMusic(): void {
-    if (!this.#musicPlaying || this.#musicPlayer == null)
+    if (this.#musicPlayer == null)
+      return;
+
+    // if (!this.#musicPlaying)
+    if (this.WasmInstanceExports.GetMusicPlaying())
       return;
 
     if (this.#audioContext == null)
@@ -236,12 +254,15 @@ class SoundMixin extends Base {
 
     // this.#musicPauseTime = this.#audioContext.currentTime - this.#musicStartTime;
     this.WasmInstanceExports.SetMusicPauseTime(
-      this.#audioContext.currentTime - this.#musicStartTime);
+      this.#audioContext.currentTime - this.WasmInstanceExports.GetMusicStartTime());
 
     // Handle looping
     if (this.#musicBuffer != null) {
       const duration = this.#musicBuffer.duration;  // in seconds
-      this.#musicPauseTime %= duration;
+      
+      // this.#musicPauseTime %= duration;
+      this.WasmInstanceExports.SetMusicPauseTime(
+        this.WasmInstanceExports.GetMusicPauseTime() % duration); // float modulo
     }
 
     // Stop the music player, but don't "forget" the pause position
