@@ -658,26 +658,6 @@ class Posit92 {
     bmfonts?: BMFontManifest
   } | null = null;
 
-  InitLoadingScreen(): void {
-    if (this.AssetManifest == null) {
-      console.warn("Missing AssetManifest in " + this.constructor.name);
-      return;
-    }
-
-    const imageCount = this.AssetManifest.images != null
-      ? Object.keys(this.AssetManifest.images).length
-      : 0;
-    const soundCount = this.AssetManifest.sounds != null
-      ? this.AssetManifest.sounds.size
-      : 0;
-    const bmfontCount = this.AssetManifest.bmfonts != null
-      ? Object.keys(this.AssetManifest.bmfonts).length
-      : 0;
-    
-    this.#wasm.exports.SetAssetReadyCount(0);
-    this.#wasm.exports.SetAssetTotalCount(imageCount + soundCount + bmfontCount);
-  }
-
 
   Clamp(value: number, min: number, max: number): number {
     this.AssertNumber(value);
