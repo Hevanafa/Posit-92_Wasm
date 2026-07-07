@@ -51,11 +51,15 @@ function RequestSound(const path: string): longint;
 
 { Reporting procedures }
 
-procedure PascalImageLoaded(const texHandle: longint; const w, h: smallint; const pixelData: pointer); public name 'PascalImageLoaded';
-procedure PascalImageFailed(const texHandle: longint; const errorCode: smallint); public name 'PascalImageFailed';
+procedure PascalImageLoaded(texHandle: longint; w, h: smallint; pixelData: pointer); public name 'PascalImageLoaded';
+procedure PascalImageFailed(texHandle: longint; errorCode: smallint); public name 'PascalImageFailed';
 
-procedure PascalBMFontLoaded(const bmfontHandle: longint); public name 'PascalBMFontLoaded';
-procedure PascalBMFontFailed(const bmfontHandle: longint; const errorCode: smallint); public name 'PascalBMFontFailed';
+procedure PascalBMFontLoaded(bmfontHandle: longint); public name 'PascalBMFontLoaded';
+procedure PascalBMFontFailed(bmfontHandle: longint; errorCode: smallint); public name 'PascalBMFontFailed';
+
+procedure PascalSoundLoaded(sndHandle: longint); public name 'PascalSoundLoaded';
+procedure PascalSoundFailed(sndHandle: longint; errorCode: smallint); public name 'PascalSoundFailed';
+
 
 implementation
 
@@ -106,11 +110,14 @@ begin
   assetReadyCount := 0;
   assetTotalCount := 0;
 
-  for a := 1 to high(textures) do
+  for a:=1 to high(textures) do
     textures[a] := default(TSoftwareTexEntry);
 
   for a:=1 to high(bmfonts) do
     bmfonts[a] := default(TBMFontEntry);
+
+  for a:=1 to high(sounds) do
+    sounds[a] := default(TSoundEntry);
 end;
 
 function FindUnusedTextureSlot: longint;
@@ -216,7 +223,7 @@ end;
 
 { Report asset state to Pascal }
 
-procedure PascalImageLoaded(const texHandle: longint; const w, h: smallint; const pixelData: pointer);
+procedure PascalImageLoaded(texHandle: longint; w, h: smallint; pixelData: pointer);
 begin
   if (texHandle < 1) or (texHandle >= high(textures)) then
     PanicHalt('Invalid texture handle: ' + I32Str(texHandle));
@@ -232,13 +239,13 @@ begin
   inc(assetReadyCount);
 end;
 
-procedure PascalImageFailed(const texHandle: longint; const errorCode: smallint);
+procedure PascalImageFailed(texHandle: longint; errorCode: smallint);
 begin
   textures[texHandle].status := AssetStatusFailed;
   textures[texHandle].errorCode := errorCode;
 end;
 
-procedure PascalBMFontLoaded(const bmfontHandle: longint);
+procedure PascalBMFontLoaded(bmfontHandle: longint);
 begin
   bmfonts[bmfontHandle].status := AssetStatusReady;
   bmfonts[bmfontHandle].errorCode := 0;
@@ -246,13 +253,13 @@ begin
   inc(assetReadyCount)
 end;
 
-procedure PascalBMFontFailed(const bmfontHandle: longint; const errorCode: smallint);
+procedure PascalBMFontFailed(bmfontHandle: longint; errorCode: smallint);
 begin
   bmfonts[bmfontHandle].status := AssetStatusFailed;
   bmfonts[bmfontHandle].errorCode := errorCode
 end;
 
-procedure PascalSoundLoaded(const sndHandle: longint);
+procedure PascalSoundLoaded(sndHandle: longint);
 begin
   sounds[sndHandle].status := AssetStatusReady;
   sounds[sndHandle].errorCode := 0;
@@ -260,7 +267,7 @@ begin
   inc(assetReadyCount)
 end;
 
-procedure PascalSoundFailed(const sndHandle: longint; const errorCode: smallint);
+procedure PascalSoundFailed(sndHandle: longint; errorCode: smallint);
 begin
   sounds[sndHandle].status := AssetStatusFailed;
   sounds[sndHandle].errorCode := errorCode
