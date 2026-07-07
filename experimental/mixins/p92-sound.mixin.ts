@@ -13,6 +13,10 @@ type SoundWasmExports = WasmExports & {
   GetSoundVolume: (sndHandle: number) => number;
   SetSoundVolume: (sndHandle: number, volume: number) => void;
 
+  SetMusicStartTime: (value: number) => void;
+  GetMusicPauseTime: () => number;
+  SetMusicPlaying: (value: boolean) => void;
+
   GetMusicPlaying: () => boolean,
   GetMusicVolume: () => number
 }
@@ -212,9 +216,11 @@ class SoundMixin extends Base {
     if (this.#audioContext == null)
       throw new Error("ResumeMusic: audioContext is not initialised!");
 
-    this.#musicPlayer.start(0, this.#musicPauseTime);
-    this.#musicStartTime = this.#audioContext.currentTime - this.#musicPauseTime;
-    this.#musicPlaying = true;
+    this.#musicPlayer.start(0, this.WasmInstanceExports.GetMusicPauseTime());
+
+    this.WasmInstanceExports.SetMusicStartTime(
+      this.#audioContext.currentTime - this.WasmInstanceExports.GetMusicPauseTime());
+    this.WasmInstanceExports.SetMusicPlaying(true);
   }
 
 
