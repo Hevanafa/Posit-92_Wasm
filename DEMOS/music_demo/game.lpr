@@ -9,7 +9,7 @@ library Game;
 {$J-}
 
 uses
-  P92Core, P92Fonts, P92WasmHost,
+  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
   P92Conversions, P92Loading, P92Logger,
   P92Keyboard, P92Mouse,
   P92ImmediateGUI,
@@ -45,7 +45,16 @@ end;
 
 procedure OnPreload;
 begin
+  imgCursor := RequestImage('assets/images/cursor.png');
+  imgDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  imgDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 
+  imgPlay := RequestImage('assets/images/play.png');
+  imgStop := RequestImage('assets/images/stop.png');
+  imgPause := RequestImage('assets/images/pause.png');
+
+  imgVolumeOn := RequestImage('assets/images/volume_on.png');
+  imgVolumeOff := RequestImage('assets/images/volume_off.png');
 end;
 
 procedure OnReady;
