@@ -166,10 +166,6 @@ class SoundMixin extends Base {
     }
 
     const volume = this.WasmInstanceExports.GetSoundVolume(sndHandle);
-
-    if (!this.#soundVolumes.has(sndHandle))
-      console.warn("Missing sound volume for key " + sndHandle);
-
     const source = this.#audioContext.createBufferSource();
     const gainNode = this.#audioContext.createGain();
 
