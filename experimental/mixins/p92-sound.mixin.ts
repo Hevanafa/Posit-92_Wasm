@@ -65,7 +65,7 @@ class SoundMixin extends Base {
       JsInitAudio: this.#InitAudio.bind(this),
       JsPlaySound: this.#PlaySound.bind(this),
 
-      JsRequestSound: this.LoadSound.bind(this),
+      JsRequestSound: this.#RequestSound.bind(this),
 
       PlayMusic: this.#PlayMusic.bind(this),
       PauseMusic: this.#PauseMusic.bind(this),
@@ -99,6 +99,24 @@ class SoundMixin extends Base {
 
 
   // SOUNDS.PAS
+
+  async #RequestSound(sndHandle: number): Promise<void> {
+    const url = this.ReadInteropBuffer();
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+
+    if (this.#audioContext == null)
+      throw new Error("LoadSound: audioContext is not initialised!");
+
+    const audioBuffer = await this.#audioContext.decodeAudioData(arrayBuffer);
+
+    console.log("loadSound", sndHandle, url);
+
+    this.#sounds.set(sndHandle, audioBuffer);
+    this.WasmInstanceExports.SetSoundVolume(sndHandle, 0.5);
+
+    // TODO: Report to Pascal
+  }
 
   /**
    * @deprecated
