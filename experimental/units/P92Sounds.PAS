@@ -20,7 +20,8 @@ procedure PlaySound(const sndHandle: longint);
 function GetSoundVolume(sndHandle: longint): double; public name 'GetSoundVolume';
 procedure SetSoundVolume(sndHandle: longint; volume: double); public name 'SetSoundVolume';
 
-procedure PlayMusic(const key: longint); external 'env' name 'PlayMusic';
+procedure PlayMusic(const sndHandle: longint);
+procedure ResumeMusic;
 procedure PauseMusic; external 'env' name 'PauseMusic';
 procedure StopMusic; external 'env' name 'StopMusic';
 
@@ -47,6 +48,7 @@ uses
 var
   soundVolumes: array[1..255] of double;
 
+  musicBufferHandle: longint;
   musicPlaying: boolean;
   musicRepeat: boolean;
   musicVolume: double;
@@ -56,6 +58,7 @@ var
 { initialises the main audio context }
 procedure JsInitAudio; external 'env' name 'JsInitAudio';
 procedure JsPlaySound(sndHandle: longint); external 'env' name 'JsPlaySound';
+procedure JsPlayMusic; external 'env' name 'JsPlayMusic';
 
 procedure InitSounds;
 var
@@ -64,6 +67,7 @@ begin
   for a:=1 to high(soundVolumes) do
     soundVolumes[a] := 0.0;
 
+  musicBufferHandle := 0;
   musicPlaying := false;
   musicRepeat := true;
   musicVolume := 1.0;
@@ -95,6 +99,30 @@ end;
 function GetMusicPlaying: boolean;
 begin
   GetMusicPlaying := musicPlaying
+end;
+
+procedure PlayMusic(const sndHandle: longint);
+begin
+  if (musicBufferHandle <> 0) and musicPlaying then exit;
+
+  { Resuming }
+  if musicBufferHandle <> 0 then begin
+    ResetMusicPlayerNode;
+    ResumeMusic;
+    exit
+  end;
+
+  StopMusic;
+  musicBufferHandle := sndHandle;
+  musicPauseTime := 0.0;
+
+  ResetMusicPlayerNode;
+  ResumeMusic
+end;
+
+procedure ResumeMusic;
+begin
+
 end;
 
 function GetMusicVolume: double;

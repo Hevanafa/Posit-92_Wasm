@@ -172,32 +172,32 @@ class SoundMixin extends Base {
     this.#musicGainNode = null;
   }
 
-  #PlayMusic(key: number): void {
-    // If still playing
-    if (this.#musicBuffer != null && this.WasmInstanceExports.GetMusicPlaying())
-      return;
+  // #PlayMusic(key: number): void {
+  //   // If still playing
+  //   if (this.#musicBuffer != null && this.WasmInstanceExports.GetMusicPlaying())
+  //     return;
 
-    // Resuming
-    if (this.#musicBuffer != null) {
-      this.#ResetMusicPlayerNode();
-      this.#ResumeMusic();
-      return;
-    }
+  //   // Resuming
+  //   if (this.#musicBuffer != null) {
+  //     this.#ResetMusicPlayerNode();
+  //     this.#ResumeMusic();
+  //     return;
+  //   }
 
-    this.#StopMusic();
+  //   this.#StopMusic();
 
-    const buffer = this.#sounds.get(key);
-    if (buffer == null) {
-      console.warn("Music " + key + " is not loaded");
-      return;
-    }
+  //   const buffer = this.#sounds.get(key);
+  //   if (buffer == null) {
+  //     console.warn("Music " + key + " is not loaded");
+  //     return;
+  //   }
 
-    this.#musicBuffer = buffer;
-    this.#musicPauseTime = 0.0;
+  //   this.#musicBuffer = buffer;
+  //   this.#musicPauseTime = 0.0;
 
-    this.#ResetMusicPlayerNode();
-    this.#ResumeMusic();
-  }
+  //   this.#ResetMusicPlayerNode();
+  //   this.#ResumeMusic();
+  // }
 
   /**
    * Start playback from a saved position
