@@ -15,7 +15,8 @@ uses
   P92TexDraw,
   P92Keyboard, P92Mouse,
   P92Timing, P92VGA,
-  P92BigInt, Assets;
+  P92BigInt,
+  Assets;
 
 var
   lastEsc: boolean;
