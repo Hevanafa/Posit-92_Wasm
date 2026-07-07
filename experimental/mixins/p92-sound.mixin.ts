@@ -59,9 +59,10 @@ class SoundMixin extends Base {
       JsRequestSound: this.#RequestSound.bind(this),
 
       // PlayMusic: this.#PlayMusic.bind(this),
-      JsResetMusicPlayerNode: this.#ResetMusicPlayerNode.bind(this),
       JsLoadMusicBuffer: this.#LoadMusicBuffer.bind(this),
+      JsResetMusicPlayerNode: this.#ResetMusicPlayerNode.bind(this),
       
+      JsResumeMusic: this.#ResumeMusic.bind(this),
       PauseMusic: this.#PauseMusic.bind(this),
       StopMusic: this.#StopMusic.bind(this),
       SeekMusic: this.#SeekMusic.bind(this),
@@ -156,13 +157,10 @@ class SoundMixin extends Base {
   }
 
   #LoadMusicBuffer(sndHandle: number): void {
-    if (this.#musicPlayer == null)
-      throw new Error("musicPlayer is not initialised!");
-
     if (!this.#sounds.has(sndHandle))
       throw new Error("Missing sndHandle " + sndHandle);
 
-    this.#musicPlayer.buffer = this.#sounds.get(sndHandle)!
+    this.#musicBuffer = this.#sounds.get(sndHandle)!
   }
 
   /**
@@ -225,7 +223,7 @@ class SoundMixin extends Base {
   /**
    * Start playback from a saved position
    * 
-   * Requires `#resetMusicPlayerNode()` to be called right before this
+   * Requires `#ResetMusicPlayerNode()` to be called right before this
    */
   #ResumeMusic(): void {
     if (this.#musicPlayer == null)

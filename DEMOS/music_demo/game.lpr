@@ -157,7 +157,7 @@ begin
   { Play / pause button }
   if isPlaying then begin
     if ImageButton(129, 116, imgPause, imgPause, imgPause) then
-      pauseMusic;
+      PauseMusic;
   end else
     if ImageButton(129, 116, imgPlay, imgPlay, imgPlay) then begin
       if actualMusicKey < 0 then begin

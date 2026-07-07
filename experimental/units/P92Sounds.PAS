@@ -21,7 +21,6 @@ function GetSoundVolume(sndHandle: longint): double; public name 'GetSoundVolume
 procedure SetSoundVolume(sndHandle: longint; volume: double); public name 'SetSoundVolume';
 
 procedure PlayMusic(const sndHandle: longint);
-procedure ResumeMusic;
 procedure PauseMusic; external 'env' name 'PauseMusic';
 procedure StopMusic; external 'env' name 'StopMusic';
 
@@ -69,8 +68,9 @@ procedure JsInitAudio; external 'env' name 'JsInitAudio';
 procedure JsPlaySound(sndHandle: longint); external 'env' name 'JsPlaySound';
 
 procedure JsPlayMusic; external 'env' name 'JsPlayMusic';
+procedure JsResumeMusic; external 'env' name 'JsResumeMusic';
 procedure JsResetMusicPlayerNode; external 'env' name 'JsResetMusicPlayerNode';
-procedure JsLoadMusicBuffer(sndHandle: longint); external 'env' name 'JsAssignMusicBuffer';
+procedure JsLoadMusicBuffer(sndHandle: longint); external 'env' name 'JsLoadMusicBuffer';
 
 procedure InitSounds;
 var
@@ -145,24 +145,18 @@ begin
   { Resuming }
   if musicBufferHandle <> 0 then begin
     JsResetMusicPlayerNode;
-    ResumeMusic;
+    JsResumeMusic;
     exit
   end;
 
   StopMusic;
 
   musicBufferHandle := sndHandle;
-
-  JsResetMusicPlayerNode;
   JsLoadMusicBuffer(sndHandle);
+
   musicPauseTime := 0.0;
-
-  ResumeMusic
-end;
-
-procedure ResumeMusic;
-begin
-
+  JsResetMusicPlayerNode;
+  JsResumeMusic
 end;
 
 function GetMusicVolume: double;
