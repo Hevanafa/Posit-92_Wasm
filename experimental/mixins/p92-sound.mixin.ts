@@ -67,6 +67,7 @@ class SoundMixin extends Base {
       JsResumeMusic: this.#ResumeMusic.bind(this),
       JsPauseMusic: this.#PauseMusic.bind(this),
       JsStopMusic: this.#StopMusic.bind(this),
+      
       JsSeekMusic: this.#SeekMusic.bind(this),
       
       JsGetMusicTime: this.#GetMusicTime.bind(this),

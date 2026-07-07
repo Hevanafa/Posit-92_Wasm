@@ -20,7 +20,15 @@ procedure PlaySound(const sndHandle: longint);
 function GetSoundVolume(sndHandle: longint): double; public name 'GetSoundVolume';
 procedure SetSoundVolume(sndHandle: longint; volume: double); public name 'SetSoundVolume';
 
+{ Music playback }
+
 procedure PlayMusic(const sndHandle: longint);
+procedure SeekMusic(const t: double);
+procedure PauseMusic;
+procedure StopMusic;
+
+function GetMusicDuration: double;
+function GetMusicTime: double;
 
 function GetMusicVolume: double; public name 'GetMusicVolume';
 procedure SetMusicVolume(value: double); public name 'SetMusicVolume';
@@ -47,7 +55,7 @@ uses
 var
   soundVolumes: array[1..255] of double;
 
-  musicBufferHandle: longint;
+  currentMusicHandle: longint;
   musicPlaying: boolean;
   musicRepeat: boolean;
   musicVolume: double;
@@ -81,7 +89,7 @@ begin
   for a:=1 to high(soundVolumes) do
     soundVolumes[a] := 0.0;
 
-  musicBufferHandle := 0;
+  currentMusicHandle := 0;
   musicPlaying := false;
   musicRepeat := true;
   musicVolume := 1.0;
@@ -114,10 +122,10 @@ end;
 
 procedure PlayMusic(const sndHandle: longint);
 begin
-  if (musicBufferHandle <> 0) and musicPlaying then exit;
+  if (currentMusicHandle <> 0) and musicPlaying then exit;
 
   { Resuming }
-  if musicBufferHandle <> 0 then begin
+  if currentMusicHandle <> 0 then begin
     JsResetMusicPlayerNode;
     JsResumeMusic;
     exit
@@ -125,12 +133,37 @@ begin
 
   JsStopMusic;
 
-  musicBufferHandle := sndHandle;
+  currentMusicHandle := sndHandle;
   JsLoadMusicBuffer(sndHandle);
 
   musicPauseTime := 0.0;
   JsResetMusicPlayerNode;
   JsResumeMusic
+end;
+
+procedure PauseMusic;
+begin
+  JsPauseMusic
+end;
+
+procedure StopMusic;
+begin
+  JsStopMusic
+end;
+
+procedure SeekMusic(const t: double);
+begin
+  JsSeekMusic(t)
+end;
+
+function GetMusicDuration: double;
+begin
+  GetMusicDuration := JsGetMusicDuration
+end;
+
+function GetMusicTime: double;
+begin
+  GetMusicTime := JsGetMusicTime
 end;
 
 function GetMusicPlaying: boolean;
