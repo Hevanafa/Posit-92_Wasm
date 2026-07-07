@@ -81,20 +81,9 @@ class SoundMixin extends Base {
     return <SoundWasmExports> this.WasmInstance.exports;
   }
 
-  /**
-   * @override
-   */
-  Cleanup(): void {
-    this.#StopMusic();
-    super.Cleanup();
-  }
-
   #InitAudio(): void {
     this.#audioContext = new AudioContext();
   }
-
-
-  // SOUNDS.PAS
 
   async #RequestSound(sndHandle: number): Promise<void> {
     const url = this.ReadInteropBuffer();
@@ -195,33 +184,6 @@ class SoundMixin extends Base {
     this.#musicGainNode = null;
   }
 
-  // #PlayMusic(key: number): void {
-  //   // If still playing
-  //   if (this.#musicBuffer != null && this.WasmInstanceExports.GetMusicPlaying())
-  //     return;
-
-  //   // Resuming
-  //   if (this.#musicBuffer != null) {
-  //     this.#ResetMusicPlayerNode();
-  //     this.#ResumeMusic();
-  //     return;
-  //   }
-
-  //   this.#StopMusic();
-
-  //   const buffer = this.#sounds.get(key);
-  //   if (buffer == null) {
-  //     console.warn("Music " + key + " is not loaded");
-  //     return;
-  //   }
-
-  //   this.#musicBuffer = buffer;
-  //   this.#musicPauseTime = 0.0;
-
-  //   this.#ResetMusicPlayerNode();
-  //   this.#ResumeMusic();
-  // }
-
   /**
    * Start playback from a saved position
    * 
@@ -279,8 +241,6 @@ class SoundMixin extends Base {
     this.#DestroyMusicPlayerNode();
     this.#musicBuffer = null;
 
-    // this.#musicPauseTime = 0.0;
-    // this.#musicPlaying = false;
     this.WasmInstanceExports.SetMusicPauseTime(0.0);
     this.WasmInstanceExports.SetMusicPlaying(false);
   }
@@ -299,9 +259,6 @@ class SoundMixin extends Base {
 
     // Stop current playback
     this.#DestroyMusicPlayerNode();
-
-    // this.#musicPlaying = false;
-    // this.#musicPauseTime = t;
 
     this.WasmInstanceExports.SetMusicPlaying(false);
     this.WasmInstanceExports.SetMusicPauseTime(t);

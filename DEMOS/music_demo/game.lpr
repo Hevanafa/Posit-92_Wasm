@@ -92,7 +92,10 @@ procedure Update;
 begin
   if lastEsc <> IsKeyDown(SC_ESCAPE) then begin
     lastEsc := IsKeyDown(SC_ESCAPE);
-    if lastEsc then SignalDone;
+    if lastEsc then begin
+      StopMusic;
+      SignalDone;
+    end;
   end;
 
   gameTime := gameTime + DeltaTime;

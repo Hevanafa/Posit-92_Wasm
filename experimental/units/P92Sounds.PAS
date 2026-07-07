@@ -27,8 +27,8 @@ procedure SeekMusic(const t: double);
 procedure PauseMusic;
 procedure StopMusic;
 
-function GetMusicDuration: double;
 function GetMusicTime: double;
+function GetMusicDuration: double;
 
 function GetMusicVolume: double; public name 'GetMusicVolume';
 procedure SetMusicVolume(value: double); public name 'SetMusicVolume';
