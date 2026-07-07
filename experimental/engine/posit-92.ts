@@ -21,6 +21,7 @@ type WasmExports = {
   P92Boot: () => void;
   P92Update: () => void;
   P92Draw: () => void;
+  P92AfterDraw: () => void;
 
   // AssetRegistry
   PascalImageLoaded: (texHandle: number, w: number, h: number, pixelDataPtr: number) => void;
@@ -1019,9 +1020,9 @@ class Posit92 {
     }
 
     this.#wasm.exports.P92Update();
-
     this.#wasm.exports.Update();
     this.#wasm.exports.Draw();
+    this.#wasm.exports.P92AfterDraw();
   }
 
   #Loop = (currentTime: number): void => {

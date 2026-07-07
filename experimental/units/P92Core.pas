@@ -30,6 +30,7 @@ procedure HostCallOnReady; external 'env' name 'HostCallOnReady';
 procedure P92Boot; public name 'P92Boot';
 procedure P92Update; public name 'P92Update';
 procedure P92Draw; public name 'P92Draw';
+procedure P92AfterDraw; public name 'P92AfterDraw';
 
 procedure PrintChar(const c: char; const x, y: smallint);
 procedure Print(const txt: string; const x, y: smallint);
