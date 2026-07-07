@@ -35,32 +35,6 @@ class SoundMixin extends Base {
    */
   #musicBuffer: AudioBuffer | null = null;
 
-  /**
-   * @deprecated
-   */
-  #musicRepeat = true;
-  /**
-   * @deprecated
-   */
-  #musicVolume = 1.0;
-
-  /**
-   * in seconds
-   * @deprecated
-   */
-  #musicStartTime = 0.0;
-
-  /**
-   * in seconds
-   * @deprecated
-   */
-  #musicPauseTime = 0.0;
-
-  /**
-   * @deprecated
-   */
-  #musicPlaying = false;
-
   SetupImportObject(): void {
     super.SetupImportObject();
 
