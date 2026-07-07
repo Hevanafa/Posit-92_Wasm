@@ -52,6 +52,13 @@ uses
 var
   soundVolumes: array[1..255] of double;
 
+{
+  As for music playback, Pascal mainly only needs to know about:
+  - music position
+  - music duration
+  - is the music playing?
+}
+
   currentMusicHandle: longint;
   isMusicPlaying: boolean;
   musicRepeat: boolean;
