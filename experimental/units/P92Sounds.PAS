@@ -118,12 +118,17 @@ end;
 
 { Music playback }
 
+function IsMusicLoaded: boolean;
+begin
+  IsMusicLoaded := currentMusicHandle > 0
+end;
+
 procedure PlayMusic(const sndHandle: longint);
 begin
-  if (currentMusicHandle <> 0) and musicPlaying then exit;
+  if IsMusicLoaded and musicPlaying then exit;
 
   { Resuming }
-  if currentMusicHandle <> 0 then begin
+  if IsMusicLoaded then begin
     JsResetMusicPlayerNode;
     JsResumeMusic;
     exit
@@ -141,7 +146,7 @@ end;
 
 procedure PauseMusic;
 begin
-
+  { TODO: Work on this}
 end;
 
 procedure StopMusic;
@@ -149,17 +154,12 @@ begin
   JsStopMusic
 end;
 
-function MusicLoaded: boolean;
-begin
-  MusicLoaded := currentMusicHandle > 0
-end;
-
 procedure SeekMusic(t: double);
 var
   duration: double;
   wasPlaying: boolean;
 begin
-  if not MusicLoaded then exit;
+  if not IsMusicLoaded then exit;
 
   duration := JsGetMusicDuration;
   musicPauseTime := clamp(t, 0.0, duration);
