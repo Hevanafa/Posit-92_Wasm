@@ -111,8 +111,6 @@ begin
   end;
 
   HandleMusicRepeat(BgmClassic);
-
-  ResetWidgetIndices
 end;
 
 procedure Draw;
@@ -183,12 +181,7 @@ begin
 
   Slider(217, 125, 64, volumeState, 0, 100);
 
-  ResetActiveWidget;
-
   DrawMouse;
-
-  VgaUpload;
-  VgaPresent
 end;
 
 exports

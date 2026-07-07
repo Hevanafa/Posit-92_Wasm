@@ -166,6 +166,20 @@ begin
     RenderLoadingScreen;
 end;
 
+procedure P92AfterDraw;
+begin
+{$ifdef P92_IMMEDIATE_GUI}
+  ResetActiveWidget;
+{$endif}
+
+  VgaUpload;
+{$ifdef P92_WEBGL}
+  WebGLPresent;
+{$else}
+  VgaPresent
+{$endif}
+end;
+
 procedure PrintChar(const c: char; const x, y: smallint);
 var
   row, col: smallint;
