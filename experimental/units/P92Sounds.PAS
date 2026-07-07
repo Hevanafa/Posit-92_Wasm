@@ -153,9 +153,9 @@ end;
 
 procedure PauseMusic;
 begin
-  isMusicPlaying := false;
+  { JsGetMusicTime only knows if the music is playing or not }
   musicPauseTime := JsGetMusicTime;
-
+  isMusicPlaying := false;
   JsDestroyMusicPlayer
 end;
 

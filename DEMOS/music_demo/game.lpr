@@ -127,7 +127,7 @@ begin
   else
     Spr(imgDosuEXE[0], 148, 48);
 
-  Checkbox('Repeat', 50, 125, repeatState);
+  Checkbox('Repeat', 40, 125, repeatState);
 
   isPlaying := getMusicPlaying;
   if isPlaying then
