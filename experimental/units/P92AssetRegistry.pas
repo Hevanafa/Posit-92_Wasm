@@ -250,7 +250,10 @@ begin
   bmfonts[bmfontHandle].status := AssetStatusReady;
   bmfonts[bmfontHandle].errorCode := 0;
 
-  inc(assetReadyCount)
+  inc(assetReadyCount);
+
+  bmfonts[bmfontHandle].fontPtr^.texHandle := RequestImage(
+    bmfonts[bmfontHandle].fontPtr^.filename);
 end;
 
 procedure PascalBMFontFailed(bmfontHandle: longint; errorCode: smallint);
