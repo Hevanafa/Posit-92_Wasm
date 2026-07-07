@@ -62,6 +62,7 @@ class SoundMixin extends Base {
     const { env } = this.WasmImportObject;
 
     Object.assign(env, {
+      JsInitAudio: this.#InitAudio.bind(this),
       PlaySound: this.#PlaySound.bind(this),
 
       PlayMusic: this.#PlayMusic.bind(this),
@@ -80,14 +81,6 @@ class SoundMixin extends Base {
 
   get WasmInstanceExports(): SoundWasmExports {
     return <SoundWasmExports> this.WasmInstance.exports;
-  }
-
-  /**
-   * @override
-   */
-  async InitRuntime(): Promise<void> {
-    this.#InitAudio();
-    await super.InitRuntime();
   }
 
   /**

@@ -39,12 +39,16 @@ uses P92Conversions, P92Maths, P92PanicDisplay;
 var
   soundVolumes: array[1..255] of double;
 
+procedure JsInitAudio; external 'env' name 'JsInitAudio';
+
 procedure InitSounds;
 var
   a: word;
 begin
   for a:=1 to high(soundVolumes) do
     soundVolumes[a] := 0.0;
+
+  JsInitAudio
 end;
 
 function GetSoundVolume(sndHandle: longint): double;
