@@ -4,9 +4,6 @@ interface
 
 uses P92BMFont, P92Tex;
 
-const
-  MaxTextures = 256;
-
 type
   TAssetStatus = (
     AssetStatusEmpty,
@@ -34,13 +31,10 @@ type
   end;
 
 var
-  textures: array[1..MaxTextures] of TSoftwareTexEntry;
-  bmfonts: array[1..9] of TBMFontEntry;
-  sounds: array[1..255] of TSoundEntry;
+  textures: array[1..255] of TSoftwareTexEntry;
 
-  AssetReadyCount,
-  AssetTotalCount: longword;
-
+function GetAssetReadyCount: longword;
+function GetAssetTotalCount: longword;
 function AllAssetsReady: boolean;
 
 procedure InitAssetRegistry;
@@ -68,32 +62,49 @@ implementation
 uses
   P92Conversions, P92InteropBuf, P92Logger, P92Panic;
 
+var
+  bmfonts: array[1..9] of TBMFontEntry;
+  sounds: array[1..255] of TSoundEntry;
+
+  assetReadyCount,
+  assetTotalCount: longword;
+
+function GetAssetReadyCount: longword;
+begin
+  GetAssetReadyCount := assetReadyCount
+end;
+
+function GetAssetTotalCount: longword;
+begin
+  GetAssetTotalCount := assetTotalCount
+end;
+
 function AllAssetsReady: boolean;
 begin
-  AllAssetsReady := AssetReadyCount >= AssetTotalCount
+  AllAssetsReady := assetReadyCount >= assetTotalCount
 end;
 
 procedure IncAssetReadyCount;
 begin
-  inc(AssetReadyCount)
+  inc(assetReadyCount)
 end;
 
 procedure SetAssetReadyCount(value: longint);
 begin
-  AssetReadyCount := value
+  assetReadyCount := value
 end;
 
 procedure SetAssetTotalCount(value: longint);
 begin
-  AssetTotalCount := value
+  assetTotalCount := value
 end;
 
 procedure InitAssetRegistry;
 var
   a: word;
 begin
-  AssetReadyCount := 0;
-  AssetTotalCount := 0;
+  assetReadyCount := 0;
+  assetTotalCount := 0;
 
   for a := 1 to high(textures) do
     textures[a] := default(TSoftwareTexEntry);
@@ -145,7 +156,7 @@ function RequestImage(const path: string): longint;
 var
   texHandle: longint;
 begin
-  inc(AssetTotalCount);
+  inc(assetTotalCount);
 
   texHandle := FindUnusedTextureSlot;
   textures[texHandle] := default(TSoftwareTexEntry);
@@ -170,7 +181,7 @@ begin
   bmfonts[bmfontHandle] := default(TBMFontEntry);
   bmfonts[bmfontHandle].status := AssetStatusLoading;
 
-  inc(AssetTotalCount, 2);
+  inc(assetTotalCount, 2);
 
   { Reserve the texture handle}
   texHandle := FindUnusedTextureSlot;
@@ -187,7 +198,7 @@ function RequestSound(const path: string): longint;
 var
   sndHandle: longint;
 begin
-  inc(AssetTotalCount);
+  inc(assetTotalCount);
 
   sndHandle := FindUnusedSoundSlot;
 
@@ -218,7 +229,7 @@ begin
   textures[texHandle].status := AssetStatusReady;
   textures[texHandle].errorCode := 0;
 
-  inc(AssetReadyCount);
+  inc(assetReadyCount);
 end;
 
 procedure PascalImageFailed(const texHandle: longint; const errorCode: smallint);
@@ -237,6 +248,18 @@ procedure PascalBMFontFailed(const bmfontHandle: longint; const errorCode: small
 begin
   bmfonts[bmfontHandle].status := AssetStatusFailed;
   bmfonts[bmfontHandle].errorCode := errorCode
+end;
+
+procedure PascalSoundLoaded(const sndHandle: longint);
+begin
+  sounds[sndHandle].status := AssetStatusReady;
+  sounds[sndHandle].errorCode := 0
+end;
+
+procedure PascalSoundFailed(const sndHandle: longint; const errorCode: smallint);
+begin
+  sounds[sndHandle].status := AssetStatusFailed;
+  sounds[sndHandle].errorCode := errorCode
 end;
 
 end.

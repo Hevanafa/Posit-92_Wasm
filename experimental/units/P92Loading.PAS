@@ -27,7 +27,7 @@ var
 begin
   Cls($00000000);
 
-  s := 'Progress: ' + I32Str(AssetReadyCount) + ' / ' + I32Str(AssetTotalCount);
+  s := 'Progress: ' + I32Str(GetAssetReadyCount) + ' / ' + I32Str(GetAssetTotalCount);
   Print(s, 8, 16);
 
   VgaUpload;
