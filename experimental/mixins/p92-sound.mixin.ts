@@ -4,15 +4,15 @@
  * Part of Posit-92 game engine
  */
 
+type SoundWasmExports = WasmExports & {
+  SetSoundVolume: (sndHandle: number; volume: number) => void;
+}
+
 globalThis.SoundMixin = <T extends Constructor<Posit92>>(Base: T) =>
 class SoundMixin extends Base {
   #audioContext: AudioContext | null = null;
 
   #sounds: Map<number, AudioBuffer> = new Map();
-  /**
-   * @deprecated Will be moved to the Sounds unit
-   */
-  #soundVolumes: Map<number, number> = new Map();
 
   /**
    * One-shot, dies after `.stop()`
@@ -62,7 +62,6 @@ class SoundMixin extends Base {
 
     Object.assign(env, {
       PlaySound: this.#PlaySound.bind(this),
-      SetSoundVolume: this.#SetSoundVolume.bind(this),
 
       PlayMusic: this.#PlayMusic.bind(this),
       PauseMusic: this.#PauseMusic.bind(this),
@@ -76,6 +75,10 @@ class SoundMixin extends Base {
       SetMusicRepeat: this.#SetMusicRepeat.bind(this),
       SetMusicVolume: this.#SetMusicVolume.bind(this),
     });
+  }
+
+  get WasmInstanceExports(): SoundWasmExports {
+    return <SoundWasmExports> this.WasmInstance.exports;
   }
 
   /**
@@ -316,14 +319,6 @@ class SoundMixin extends Base {
 
   #SetMusicRepeat(value: boolean): void {
     this.#musicRepeat = value;
-  }
-
-  /**
-   * @param volume 0.0 .. 1.0
-   */
-  #SetSoundVolume(key: number, volume: number): void {
-    const clamped = this.Clamp(volume, 0.0, 1.0);
-    this.#soundVolumes.set(key, clamped);
   }
 
   /**

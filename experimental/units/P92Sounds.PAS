@@ -28,11 +28,30 @@ function GetMusicPlaying: boolean; external 'env' name 'GetMusicPlaying';
 function GetMusicTime: double; external 'env' name 'GetMusicTime';
 function GetMusicDuration: double; external 'env' name 'GetMusicDuration';
 
-procedure SetSoundVolume(const key: longint; const volume: double); external 'env' name 'SetSoundVolume';
+procedure SetSoundVolume(sndHandle: longint; volume: double); public name 'SetSoundVolume';
 procedure SetMusicVolume(const volume: double); external 'env' name 'SetMusicVolume';
 
 
 implementation
+
+uses P92Maths;
+
+var
+  soundVolumes: array[1..255] of double;
+
+procedure InitSounds;
+var
+  a: word;
+begin
+  for a:=1 to high(soundVolumes) do
+    soundVolumes[a] := 0.0;
+end;
+
+procedure SetSoundVolume(sndHandle: longint; volume: double);
+begin
+  volume := clamp(volume, 0.0, 1.0);
+  soundVolumes[sndHandle] := volume
+end;
 
 { Handle music repeat (only when it is playing)
   Important: #musicPlayer.loop must be turned off! }
