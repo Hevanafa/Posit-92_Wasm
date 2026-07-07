@@ -102,12 +102,11 @@ class SoundMixin extends Base {
     console.log("RequestSound", sndHandle, url);
 
     try {
-      const response = await fetch(url);
-      const arrayBuffer = await response.arrayBuffer();
-
       if (this.#audioContext == null)
         throw new Error("LoadSound: audioContext is not initialised!");
 
+      const response = await fetch(url);
+      const arrayBuffer = await response.arrayBuffer();
       const audioBuffer = await this.#audioContext.decodeAudioData(arrayBuffer);
 
       this.#sounds.set(sndHandle, audioBuffer);
@@ -229,11 +228,11 @@ class SoundMixin extends Base {
    * Requires `#ResetMusicPlayerNode()` to be called right before this
    */
   #ResumeMusic(): void {
-    if (this.#musicPlayer == null)
-      throw new Error("ResumeMusic: musicPlayer is not initialised!");
-
     if (this.#audioContext == null)
       throw new Error("ResumeMusic: audioContext is not initialised!");
+
+    if (this.#musicPlayer == null)
+      throw new Error("ResumeMusic: musicPlayer is not initialised!");
 
     this.#musicPlayer.start(0, this.WasmInstanceExports.GetMusicPauseTime());
 
