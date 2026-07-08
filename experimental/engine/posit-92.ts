@@ -2,6 +2,7 @@
 
 "use strict";
 
+var debugEngineCalls = true;
 var debugRequests = true;
 
 type ImageManifest = Record<string, string | string[]>;
@@ -1048,10 +1049,18 @@ class Posit92 {
   }
 
   #OnPreload(): void {
+    if (debugEngineCalls)
+      if (!Object.hasOwn(this.#wasm.exports, "OnPreload"))
+        console.warn("OnPreload is not available");
+
     this.#wasm.exports.OnPreload?.();
   }
 
   #OnReady(): void {
+    if (debugEngineCalls)
+      if (!Object.hasOwn(this.#wasm.exports, "OnReady"))
+        console.warn("OnReady is not available");
+
     this.#wasm.exports.OnReady?.();
   }
 
