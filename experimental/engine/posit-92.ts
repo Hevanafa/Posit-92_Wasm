@@ -79,6 +79,8 @@ type WasmImports = {
     GetFullscreenState: () => boolean,
     EndFullscreen: () => void,
 
+    TakeScreenshot: () => void,
+
     // P92Core
     HostCallOnPreload: () => void;
     HostCallOnReady: () => void;
@@ -231,6 +233,8 @@ class Posit92 {
       ToggleFullscreen: this.#ToggleFullscreen.bind(this),
       GetFullscreenState: this.#GetFullscreenState.bind(this),
       EndFullscreen: this.#EndFullscreen.bind(this),
+
+      TakeScreenshot: this.#TakeScreenshot.bind(this),
 
       // Keyboard
       IsKeyDown: this.#IsKeyDown.bind(this),
@@ -599,6 +603,30 @@ class Posit92 {
   #EndFullscreen(): void {
     if (this.#GetFullscreenState())
       document.exitFullscreen();
+  }
+
+  #TakeScreenshot(): void {
+    console.log("TakeScreenshot call")
+    // console.log("canvasID", this.canvasID);
+
+    /**
+     * @type {HTMLCanvasElement}
+     */
+    // const canvas = document.getElementById(this.canvasID);
+
+    const now = new Date();
+
+    const timestampStr =
+      now.toISOString().split("T")[0]
+      + "_"
+      + now.toISOString().split("T")[1].split(".")[0].replace(/:/g,".");
+
+    console.log("timestampStr", timestampStr);
+
+    const anchor = document.createElement("a");
+    anchor.href = this.#canvas.toDataURL();
+    anchor.download = timestampStr + ".png";
+    anchor.click();
   }
 
   /**

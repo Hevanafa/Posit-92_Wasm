@@ -19,29 +19,7 @@ class Game extends SoundMixin(BMFontMixin(Posit92)) {
     const { env } = super._getWasmImportObject();
 
     Object.assign(env, {
-      takeScreenshot: () => {
-        console.log("takeScreenshot call")
-        console.log("canvasID", this.canvasID);
-
-        /**
-         * @type {HTMLCanvasElement}
-         */
-        const canvas = document.getElementById(this.canvasID);
-
-        const now = new Date();
-
-        const timestampStr =
-          now.toISOString().split("T")[0]
-          + "_"
-          + now.toISOString().split("T")[1].split(".")[0].replace(/:/g,".");
-
-        console.log("timestampStr", timestampStr);
-
-        const anchor = document.createElement("a");
-        anchor.href = canvas.toDataURL();
-        anchor.download = timestampStr + ".png";
-        anchor.click();
-      }
+      
     })
   }
 
