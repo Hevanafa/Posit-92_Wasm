@@ -88,34 +88,24 @@ procedure loadAssets; external 'env' name 'loadAssets';
 procedure queryDate; external 'env' name 'queryDate';
 procedure queryTime; external 'env' name 'queryTime';
 
-function getStringBuffer: PByte;
-begin
-  getStringBuffer := @stringBuffer
-end;
-
-procedure setStringBufferLength(const value: word);
-begin
-  stringBufferLength := value
-end;
-
 function makeColour(const fg, bg: byte): byte;
 begin
   makeColour := (bg shl 4) or fg
 end;
 
-procedure cls;
+procedure Cls;
 begin
   fillchar(charBuffer, CharBufferSize, 0);
   cursorLeft := 0;
   cursorTop := 0
 end;
 
-procedure blitChar(const c: char; const x, y: integer; const colour: longword);
+procedure BlitChar(const c: char; const x, y: integer; const colour: longword);
 var
   charcode: byte;
   row, col: word;
 
-  image: PImageRef;
+  texture: PSoftwareTex;
   a, b: integer;
   sx, sy: integer;
   srcPos: longint;
@@ -127,7 +117,7 @@ begin
 
   { Inlined sprRegion
     sprRegion(imgCGAFont, col * 8, row * 8, 8, 8, x, y); }
-  image := getImagePtr(imgCGAFont);
+  texture := GetTexturePtr(imgCGAFont);
 
   for b:=0 to 7 do
   for a:=0 to 7 do begin
@@ -136,20 +126,20 @@ begin
 
     sx := col * 8 + a;
     sy := row * 8 + b;
-    srcPos := (sx + sy * image^.width) * 4;
+    srcPos := (sx + sy * texture^.width) * 4;
 
-    alpha := image^.dataPtr[srcPos + 3];
+    alpha := texture^.pixelData[srcPos + 3];
     if alpha = 255 then
       unsafePset(x + a, y + b, colour);
   end;
 end;
 
-procedure blitCharBG(const c: char; const x, y: integer; const background: longword);
+procedure BlitCharBG(const c: char; const x, y: integer; const background: longword);
 var
   charcode: byte;
   row, col: word;
 
-  image: PImageRef;
+  texture: PSoftwareTex;
   a, b: integer;
   sx, sy: integer;
   srcPos: longint;
@@ -163,7 +153,7 @@ begin
 
   { Inlined sprRegion
     sprRegion(imgCGAFont, col * 8, row * 8, 8, 8, x, y); }
-  image := getImagePtr(imgCGAFont);
+  texture := GetTexturePtr(imgCGAFont);
 
   for b:=0 to 7 do
   for a:=0 to 7 do begin
@@ -172,21 +162,21 @@ begin
 
     sx := col * 8 + a;
     sy := row * 8 + b;
-    srcPos := (sx + sy * image^.width) * 4;
+    srcPos := (sx + sy * texture^.width) * 4;
 
-    alpha := image^.dataPtr[srcPos + 3];
+    alpha := texture^.pixelData[srcPos + 3];
     if alpha = 255 then
       unsafePset(x + a, y + b, background);
   end;
 end;
 
 
-procedure blitText(const text: string; const x, y: integer; const colour, background: longword);
+procedure BlitText(const text: string; const x, y: integer; const colour, background: longword);
 var
   a: word;
   left: integer;
 begin
-  if not isImageSet(imgCGAFont) then begin
+  if not IsTextureSet(imgCGAFont) then begin
     writeLog('blitText: image is unset');
     exit
   end;
@@ -194,8 +184,8 @@ begin
   left := x;
 
   for a:=1 to length(text) do begin
-    blitCharBG(text[a], left, y, background);
-    blitChar(text[a], left, y, colour);
+    BlitCharBG(text[a], left, y, background);
+    BlitChar(text[a], left, y, colour);
     inc(left, 8)
   end;
 end;
@@ -283,7 +273,7 @@ begin
   split(cmd, ' ', words);
   prog := words[0];
   
-  if prog = 'CLS' then cls
+  if prog = 'CLS' then Cls
   else if prog = 'DATE' then begin
     queryDate;
     printLn(strPtrToString(@stringBuffer, stringBufferLength))
@@ -425,7 +415,7 @@ end;
 
 procedure drawFPS;
 begin
-  blitText(
+  BlitText(
     'FPS:' + i32str(getLastFPS),
     240, 0,
     palette[$0E], transparent);
@@ -489,7 +479,7 @@ begin
   currentColour := makeColour(7, 0);
 
   { Welcome message }
-  cls;
+  Cls;
   printLn('');
   printLn('Posit-92 Wasm ' + Posit92_Version);
   printLn('(C) 2025 Hevanafa');
@@ -617,7 +607,7 @@ begin
     c := charBuffer[a + b * BufferWidth];
     if (c = ' ') or (c = chr(0)) then continue;
 
-    blitChar(c,
+    BlitChar(c,
       a * 8, b * 8,
       palette[colourBuffer[a + b * BufferWidth] and $0F])
   end;
@@ -629,7 +619,7 @@ begin
       cursorLeft * 8 + 7, cursorTop * 8 + 7,
       LightGrey);
 
-  { blitText('> ' + currentInput, 30, 30); }
+  { BlitText('> ' + currentInput, 30, 30); }
 
   drawMouse;
   drawFPS;
