@@ -27,8 +27,8 @@ var
 
 procedure LoadDefaultFont;
 begin
-  defaultFont := default(TBMFont);
-  RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt');
+  { defaultFont := default(TBMFont); }
+  { RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt'); }
 end;
 
 function DefaultFontPtr: PBMFont;
