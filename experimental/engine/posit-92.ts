@@ -333,7 +333,7 @@ class Posit92 {
     };
   }
 
-  bootOptions: Posit92Options;
+  #bootOptions: Posit92Options;
 
   constructor(canvasID: string);
   constructor(canvasID: string, vgaWidth: number, vgaHeight: number);
@@ -346,7 +346,7 @@ class Posit92 {
       throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
 
     const options = this.#NormaliseOptions(vgaWidthOrOptions, vgaHeight);
-    this.bootOptions = options;
+    this.#bootOptions = options;
 
     this.#canvas = <HTMLCanvasElement>document.getElementById(canvasID);
     
@@ -481,8 +481,8 @@ class Posit92 {
   #GetBootOptionBoolean(): boolean {
     const key = this.ReadInteropBuffer();
 
-    if (Object.hasOwn(this.bootOptions, key)) {
-      const options = <any>this.bootOptions;
+    if (Object.hasOwn(this.#bootOptions, key)) {
+      const options = <any>this.#bootOptions;
       if (typeof options[key] == "boolean")
         return options[key];
       else
@@ -1074,7 +1074,7 @@ class Posit92 {
       return;
     }
 
-    if (this.bootOptions.fps == 0) {
+    if (this.#bootOptions.fps == 0) {
       this.#PerformLoop();
       requestAnimationFrame(this.#Loop);
       
