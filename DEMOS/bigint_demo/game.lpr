@@ -1,6 +1,6 @@
 {
   Title: BigInt demo
-  Mixins: bmfont, bigint
+  Mixins: bmfont, sound, bigint
 }
 
 library Game;

@@ -1,6 +1,6 @@
 {
   Title: WebGL Demo
-  Mixins: webgl
+  Mixins: bmfont, sound, webgl
 }
 
 library Game;

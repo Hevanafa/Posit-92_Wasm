@@ -1,6 +1,6 @@
 {
   Title: Music demo
-  Mixins: sounds
+  Mixins: bmfont, sound
 }
 
 library Game;

@@ -1,6 +1,6 @@
 {
   Chase game demo
-  Mixins: bmfont
+  Mixins: bmfont, sound
 }
 
 library Game;

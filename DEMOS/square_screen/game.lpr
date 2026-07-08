@@ -1,7 +1,7 @@
 {
   Square Screen demo
   Part of Posit-92 game engine
-  Mixins: bmfont
+  Mixins: bmfont, sound
 }
 
 library Game;
