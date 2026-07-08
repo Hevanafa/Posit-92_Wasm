@@ -19,8 +19,6 @@ const
   BufferHeight = 25;
   CharBufferSize = BufferWidth * BufferHeight;
 
-  BgmJingle = 1;
-
   {Black = $FF000000;}
   Transparent = $00000000;
   Black = $FF202020;

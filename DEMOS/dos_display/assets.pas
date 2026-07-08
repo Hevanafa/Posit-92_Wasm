@@ -8,6 +8,8 @@ var
   imgCursor: longint;
   imgCGAFont: longint;
 
+  bgmJingle: longint;
+
 
 implementation
 
