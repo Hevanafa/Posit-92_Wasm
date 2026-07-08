@@ -55,14 +55,15 @@ var
   w: word;
   c: char;
   s: string;
-  hue: double;
+  hue, v: double;
   left: smallint;
   colour: longword;
 begin
   { Cls($FF6495ED); }
 
   for a:=0 to VgaHeight - 1 do begin
-    colour := HSVtoRGB(137 / 255, 1.0, 38 / 255);
+    v := 64 / 255 + sin((a / 50 - frac(GetTimer)) * 2 * PI) * (32 / 255);
+    colour := HSVtoRGB(137 / 255, 1.0, v);
     hline(0, VgaWidth - 1, a, colour);
   end;
 
@@ -75,7 +76,7 @@ begin
   w := MeasureDefault(s);
   left := (VgaWidth - w) div 2;
 
-  {PrintDefault('Hello world!', left, 120); }
+  { PrintDefault('Hello world!', left, 120); }
   { PrintCharColour('Z', 10, 10, $FFFFFFFF); }
 
   for a:=1 to length(s) do begin
@@ -84,7 +85,8 @@ begin
     hue := (a-1) / length(s) + frac(GetTimer);
     if hue > 1.0 then hue := hue - 1.0;
 
-    inc(left, PrintCharColour(c, left, 120, HSVtoRGB(hue, 1.0, 1.0)));
+    colour := HSVtoRGB(hue, 1.0, 1.0);
+    inc(left, PrintCharColour(c, left, 120, colour));
   end;
 
   DrawMouse;
