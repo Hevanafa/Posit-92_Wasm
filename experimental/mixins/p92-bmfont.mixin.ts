@@ -83,6 +83,7 @@ class BMFontMixin extends Base {
       }
 
       this.WriteBMFontBuffer(await res.text());
+      this.WasmInstanceExports.PascalBMFontLoaded(bmfontHandle);
     } catch (error) {
       if (error instanceof Error)
         console.error("RequestBMFont:", error);
