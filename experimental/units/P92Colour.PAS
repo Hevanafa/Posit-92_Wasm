@@ -61,6 +61,7 @@ function LerpColour(const colourA, colourB: longword; const perc: double): longw
 var
   a, r, g, b: byte;
 begin
+  { Basically start + perc * range }
   a := trunc((colourA shr 24 and $FF) + perc * ((colourB shr 24 and $FF) - (colourA shr 24 and $FF)));
   r := trunc((colourA shr 16 and $FF) + perc * ((colourB shr 16 and $FF) - (colourA shr 16 and $FF)));
   g := trunc((colourA shr 8 and $FF) + perc * ((colourB shr 8 and $FF) - (colourA shr 8 and $FF)));
