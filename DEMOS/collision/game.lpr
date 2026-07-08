@@ -201,12 +201,19 @@ begin
     end;
   end;
 
-  spr(imgSpecimenP92[1], trunc(entityZones[1].x), trunc(entityZones[1].y));
+  { Entities }
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], trunc(entityZones[0].x), trunc(entityZones[0].y))
   else
     spr(imgDosuEXE[0], trunc(entityZones[0].x), trunc(entityZones[0].y));
+
+  if (trunc(gameTime * 4) and 1) > 0 then
+    spr(imgSpecimenP92[0], trunc(entityZones[1].x), trunc(entityZones[1].y))
+  else
+    spr(imgSpecimenP92[1], trunc(entityZones[1].x), trunc(entityZones[1].y));
+
+  { HUD stuff }
 
   printDefault('Mode: ' + GetDemoModeName(actualDemoMode), 10, 10);
 
