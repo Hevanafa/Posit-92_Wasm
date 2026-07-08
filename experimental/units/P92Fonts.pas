@@ -13,6 +13,8 @@ procedure PrintDefault(const text: string; const x, y: integer);
 procedure PrintDefaultCentred(const text: string; const cx, y: integer);
 function MeasureDefault(const text: string): word;
 
+function PrintCharColour(const ch: char; const x, y: integer; const colour: longword): word;
+
 
 implementation
 
@@ -55,6 +57,13 @@ end;
 function MeasureDefault(const text: string): word;
 begin
   MeasureDefault := MeasureBMFont(defaultFont, defaultFontGlyphs, text)
+end;
+
+{ Returns the width of the glyph }
+function PrintCharColour(const ch: char; const x, y: integer; const colour: longword): word;
+begin
+  PrintCharColour := PrintBMFontCharColour(
+    defaultFont, defaultFontGlyphs, ch, x, y, colour)
 end;
 
 end.

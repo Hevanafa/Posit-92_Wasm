@@ -11,7 +11,7 @@ library Game;
 
 uses
   P92Core, P92Fonts, P92AssetRegistry, P92WasmHost,
-  P92Logger,
+  P92Logger, P92BMFont,
   P92Keyboard, P92Mouse,
   P92Graphics, P92TexDraw, P92Colour,
   P92Timing, P92FPS, P92VGA,
@@ -52,6 +52,10 @@ end;
 procedure Draw;
 var
   a: word;
+  w: word;
+  c: char;
+  s: string;
+  left: smallint;
   colour: longword;
 begin
   { Cls($FF6495ED); }
@@ -66,7 +70,15 @@ begin
   else
     Spr(imgSpecimenP92[0], 148, 84);
 
-  PrintDefaultCentred('Hello world!', VgaWidth div 2, 120);
+  s := 'Hello world!';
+  w := MeasureDefault(s);
+  left := (VgaWidth - w) div 2;
+
+  {PrintDefault('Hello world!', left, 120); }
+  { PrintCharColour('Z', 10, 10, $FFFFFFFF); }
+
+  for c in s do
+    inc(left, PrintCharColour(c, left, 120, $FFFFFFFF));
 
   DrawMouse;
   DrawFPS;
