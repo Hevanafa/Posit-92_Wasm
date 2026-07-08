@@ -9,6 +9,7 @@ unit P92WasmHost;
 
 interface
 
+{$ifdef P92_WASM}
 { Use this to set `done` to true }
 procedure SignalDone; external 'env' name 'SignalDone';
 
@@ -20,7 +21,7 @@ procedure HideLoadingOverlay; external 'env' name 'HideLoadingOverlay';
 procedure ToggleFullscreen; external 'env' name 'ToggleFullscreen';
 function GetFullscreenState: boolean; external 'env' name 'GetFullscreenState';
 procedure EndFullscreen; external 'env' name 'EndFullscreen';
-
+{$endif}
 
 implementation
 
