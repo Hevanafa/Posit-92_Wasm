@@ -14,7 +14,7 @@ library Game;
 
 uses
   SysUtils,
-  P92Core, P92Fonts, P92WasmHost,
+  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
   P92BMFont, P92Conversions, P92FPS, P92Graphics,
   P92Tex, P92TexDraw, P92TexEffects,
   P92ImmediateGUI, P92Loading, P92Logger,
@@ -40,7 +40,7 @@ begin
   printDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
-procedure drawMouse;
+procedure DrawMouse;
 begin
   if HasHoveredWidget then
     spr(imgHandCursor, mouseX - 5, mouseY - 1)
@@ -50,7 +50,18 @@ end;
 
 procedure OnPreload;
 begin
-  { TODO: Load the assets }
+  imgCursor := RequestImage('assets/images/cursor.png');
+  imgHandCursor := RequestImage('assets/images/hand.png');
+
+  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
+  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
+
+  imgWinNormal := RequestImage('assets/images/btn_normal.png');
+  imgWinHovered := RequestImage('assets/images/btn_hovered.png');
+  imgWinPressed := RequestImage('assets/images/btn_pressed.png');
+
+  RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt', @blackFont, @blackFontGlyphs);
+  RequestBMFont('assets/fonts/picotron_8px.txt', @picotronFont, @picotronFontGlyphs);
 end;
 
 procedure OnReady;
@@ -61,9 +72,6 @@ begin
   hideCursor;
 
   gameTime := 0.0;
-
-  InitImmediateGUI;
-  GuiSetFont(DefaultFontPtr^, DefaultFontGlyphsPtr^);
 
   ReplaceColour(blackFont.texHandle, $FFFFFFFF, $FF000000);
 
@@ -82,14 +90,6 @@ end;
 
 procedure Update;
 begin
-  UpdateDeltaTime;
-  IncrementFPS;
-
-  UpdateGUILastMouseButton;
-  UpdateMouse;
-  UpdateGUIMousePoint;
-
-  { Your Update logic here }
   if lastEsc <> IsKeyDown(SC_ESCAPE) then begin
     lastEsc := IsKeyDown(SC_ESCAPE);
 
@@ -99,9 +99,7 @@ begin
     end;
   end;
 
-  gameTime := gameTime + DeltaTime;
-
-  ResetWidgetIndices
+  gameTime := gameTime + DeltaTime
 end;
 
 procedure Draw;
@@ -109,8 +107,6 @@ var
   w: integer;
   s: string;
 begin
-  Spr(imgCursor, 10, 100);
-
   Cls($FF6495ED);
 
   GuiSetFont(blackFont, blackFontGlyphs);
@@ -151,9 +147,7 @@ begin
   { TextLabelWrap('This is a very long supercalifragilisticexpialidocious third line!', 10, 160, 100); }
   TextLabelWrap('1st line'#13#10'2nd line'#10'3rd longer line', 10, 160, 100);
 
-  ResetActiveWidget;
-
-  drawMouse;
+  DrawMouse;
 
   if showFPS.checked then drawFPS;
 end;

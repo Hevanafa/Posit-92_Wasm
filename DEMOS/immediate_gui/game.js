@@ -14,25 +14,25 @@ class Game extends SoundMixin(BMFontMixin(Posit92)) {
       win_hovered: "assets/images/btn_hovered.png",
       win_pressed: "assets/images/btn_pressed.png"
     },
-    bmfonts: {
-      blackFont: {
-        path: "assets/fonts/nokia_cellphone_fc_8.txt",
-        setter: "BlackFontPtr",
-        glyphSetter: "BlackFontGlyphsPtr"
-      },
-      picotron: {
-        path: "assets/fonts/picotron_8px.txt",
-        setter: "PicotronFontPtr",
-        glyphSetter: "PicotronFontGlyphsPtr"
-      }
-    }
+    // bmfonts: {
+    //   blackFont: {
+    //     path: "assets/fonts/nokia_cellphone_fc_8.txt",
+    //     setter: "BlackFontPtr",
+    //     glyphSetter: "BlackFontGlyphsPtr"
+    //   },
+    //   picotron: {
+    //     path: "assets/fonts/picotron_8px.txt",
+    //     setter: "PicotronFontPtr",
+    //     glyphSetter: "PicotronFontGlyphsPtr"
+    //   }
+    // }
   }
 
-  async LoadGameAssets() {
-    this.InitLoadingScreen();
-    await this.LoadImagesFromManifest(this.AssetManifest.images);
-    await this.LoadBMFontFromManifest(this.AssetManifest.bmfonts);
-  }
+  // async LoadGameAssets() {
+  //   this.InitLoadingScreen();
+  //   await this.LoadImagesFromManifest(this.AssetManifest.images);
+  //   await this.LoadBMFontFromManifest(this.AssetManifest.bmfonts);
+  // }
 }
 
 async function Main() {
