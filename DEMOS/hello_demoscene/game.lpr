@@ -10,7 +10,7 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  P92Core, P92Fonts, P92AssetRegistry, P92WasmHost,
+  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
   P92Logger,
   P92Keyboard, P92Mouse,
   P92TexDraw, P92Timing, P92FPS, P92VGA,

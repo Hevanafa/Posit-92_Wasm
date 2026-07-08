@@ -52,7 +52,7 @@ function RequestImage(const path: string): longint;
 procedure JsRequestBMFontLegacy(bmfontHandle: longint; fontPtr: PBMFontLegacy; fontGlyphsPtr: PBMFontGlyph); external 'env' name 'JsRequestBMFont';
 procedure RequestBMFontLegacy(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyph);
 
-procedure JsRequestBMFont; external 'env' name 'JsRequestBMFont';
+procedure JsRequestBMFont(bmfontHandle: longint); external 'env' name 'JsRequestBMFont';
 procedure RequestBMFont(const path: string);
 
 function GetBMFontBufferPtr: pointer; public name 'GetBMFontBufferPtr';
@@ -196,9 +196,15 @@ end;
 
 
 procedure RequestBMFont(const path: string);
+var
+  bmfontHandle: longint;
 begin
+  bmfontHandle := FindUnusedBMFontSlot;
+  if bmfontHandle < 0 then
+    PanicHalt('RequestBMFont: BMFont slots are full!');
+
   WriteInteropString(path);
-  JsRequestBMFont;
+  JsRequestBMFont(bmfontHandle);
   inc(assetTotalCount)
 end;
 
