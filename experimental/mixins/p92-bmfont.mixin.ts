@@ -39,7 +39,7 @@ class BMFontMixin extends Base {
     const { env } = super.WasmImportObject;
     
     Object.assign(env, {
-      JsRequestBMFont: this.#RequestBMFontLegacy.bind(this)
+      JsRequestBMFont: this.#RequestBMFont.bind(this)
     });
   }
 
@@ -57,6 +57,55 @@ class BMFontMixin extends Base {
 
   get WasmInstanceExports(): BMFontWasmExports {
     return <BMFontWasmExports>this.WasmInstance.exports;
+  }
+
+  async #RequestBMFont(bmfontHandle: number): Promise<void> {
+    const url = this.ReadInteropBuffer();
+
+    if (debugRequests)
+      console.log("ReadInteropBuffer", bmfontHandle, url);
+
+    try {
+      const res = await fetch(url);
+
+      if (!res.ok) {
+        const lines = [
+          "Failed to load BMFont",
+          "",
+          "Path: " + url,
+          "Reason: HTTP status " + res.status
+        ];
+
+        this.PanicHaltDisplay(lines.join("\n"));
+        this.WasmInstanceExports.PascalBMFontFailed(bmfontHandle, 1);
+        
+        return;
+      }
+
+      this.WriteBMFontBuffer(await res.text());
+    } catch (error) {
+      if (error instanceof Error)
+        console.error("RequestBMFont:", error);
+
+      this.WasmInstanceExports.PascalBMFontFailed(bmfontHandle, 1);
+    }
+  }
+
+  WriteBMFontBuffer(s: string): void {
+    const encoder = new TextEncoder(); // Default: utf-8
+    const bytes = encoder.encode(s);
+
+    const ptr = this.WasmInstanceExports.GetBMFontBufferPtr();
+    const len = bytes.length;
+    const capacity = 32767; // TODO: Replace this with a const
+
+    if (len > capacity)
+      throw new RangeError(`Interop buffer overflow: ${len} > ${capacity}`);
+
+    const memview = new Uint8Array(this.WasmInstanceExports.memory.buffer);
+    memview.set(bytes, ptr);
+
+    this.WasmInstanceExports.SetBMFontBufferLen(len);
   }
 
   /**
