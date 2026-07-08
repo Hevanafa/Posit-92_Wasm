@@ -5,6 +5,7 @@ unit P92Colour;
 
 interface
 
+{ h, s, v: [0.0, 1.0] }
 function HSVtoRGB(h, s, v: double): longword;
 function LerpColour(const colourA, colourB: longword; const perc: double): longword;
 
@@ -13,7 +14,6 @@ implementation
 
 uses P92Maths;
 
-{ h, s, v: [0.0, 1.0] }
 function HSVtoRGB(h, s, v: double): longword;
 var
   r, g, b: byte;

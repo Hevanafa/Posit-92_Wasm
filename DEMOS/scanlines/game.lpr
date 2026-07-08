@@ -13,7 +13,7 @@ uses
   P92Core, P92Fonts, P92AssetRegistry, P92WasmHost,
   P92Logger,
   P92Keyboard, P92Mouse,
-  P92Graphics, P92TexDraw,
+  P92Graphics, P92TexDraw, P92Colour,
   P92Timing, P92FPS, P92VGA,
   Assets;
 
@@ -52,11 +52,14 @@ end;
 procedure Draw;
 var
   a: word;
+  colour: longword;
 begin
   { Cls($FF6495ED); }
 
-  for a:=0 to VgaHeight - 1 do
-    hline(0, VgaWidth - 1, a, $FF6495ED);
+  for a:=0 to VgaHeight - 1 do begin
+    colour := HSVtoRGB(137 / 255, 1.0, 38 / 255);
+    hline(0, VgaWidth - 1, a, colour);
+  end;
 
   if (trunc(gameTime * 4) and 1) > 0 then
     Spr(imgSpecimenP92[1], 148, 84)
