@@ -331,7 +331,7 @@ begin
 
   else if prog = 'JINGLE' then begin
     if not getMusicPlaying then begin
-      playMusic(BgmJingle);
+      playMusic(bgmJingle);
       PrintLn('Playing Jingle Bells by Chiptune Arcade...')
     end;
     
@@ -460,7 +460,10 @@ end;
 
 procedure OnPreload;
 begin
-  { TODO: Load the assets }
+  imgCGAFont := RequestImage('assets/images/CGA8x8.png');
+  imgCursor := RequestImage('assets/images/cursor.png');
+
+  bgmJingle := RequestSound('assets/ogg/Jingle Bells (Chiptune Version) - Chiptune Arcade.ogg');
 end;
 
 procedure OnReady;

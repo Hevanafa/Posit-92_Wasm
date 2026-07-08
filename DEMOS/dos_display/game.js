@@ -1,15 +1,15 @@
 "use strict";
 
 class Game extends SoundMixin(BMFontMixin(Posit92)) {
-  AssetManifest = {
-    images: {
-      CGA_font: "assets/images/CGA8x8.png",
-      cursor: "assets/images/cursor.png"
-    },
-    sounds: new Map([
-      [this.BgmJingle, "assets/ogg/Jingle Bells (Chiptune Version) - Chiptune Arcade.ogg"]
-    ])
-  }
+  // AssetManifest = {
+  //   images: {
+  //     CGA_font: "assets/images/CGA8x8.png",
+  //     cursor: "assets/images/cursor.png"
+  //   },
+  //   sounds: new Map([
+  //     [this.BgmJingle, "assets/ogg/Jingle Bells (Chiptune Version) - Chiptune Arcade.ogg"]
+  //   ])
+  // }
 
   SetupImportObject() {
     super.SetupImportObject();
@@ -34,7 +34,7 @@ class Game extends SoundMixin(BMFontMixin(Posit92)) {
 }
 
 async function Main() {
-  const game = new Game("game", { defaultFont: true });
+  const game = new Game("game");  // TODO: { defaultFont: false }
   await game.Start();
 }
 
