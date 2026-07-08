@@ -1,3 +1,11 @@
+{
+  DOS Display showcase
+  Part of Posit-92 game engine
+  By Hevanafa
+
+  Mixins: bmfont, sound
+}
+
 library Game;
 
 {$Mode ObjFPC}
@@ -260,7 +268,7 @@ procedure HandleCommand(cmd: string);
 var
   lastColour: byte;
   heapSize, freeHeapSize: longword;
-  words: array[0..3] of string;
+  words: array[0..3] of ShortString;
   prog: string;
 begin
   cmd := trim(cmd);
