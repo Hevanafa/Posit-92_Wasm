@@ -1,6 +1,6 @@
 "use strict";
 
-class Game extends BMFontMixin(Posit92) {
+class Game extends SoundMixin(BMFontMixin(Posit92)) {
 }
 
 async function Main() {

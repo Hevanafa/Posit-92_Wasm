@@ -1,3 +1,8 @@
+{
+  Easings demo
+  Mixins: bmfont, sound
+}
+
 library Game;
 
 {$Mode ObjFPC}
@@ -50,7 +55,7 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure LoadGameAssets;
+procedure OnPreload;
 begin
   imgCursor := RequestImage('assets/images/cursor.png');
 
@@ -239,7 +244,7 @@ begin
 end;
 
 exports
-  LoadGameAssets, OnReady, Update, Draw;
+  OnPreload, OnReady, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }

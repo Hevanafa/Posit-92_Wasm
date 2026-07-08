@@ -28,10 +28,8 @@ begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure LoadGameAssets;
-begin
-  imgCursor := RequestImage('assets/images/cursor.png');
-
+procedure OnPreload begin
+  imgCursor := RequestImage('assets/images/cursor.png') 
   imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
   imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 end;
@@ -108,10 +106,8 @@ end;
 
 
 exports
-  LoadGameAssets,
-  OnReady,
-  Update,
-  Draw;
+  OnPreload, OnReady,
+  Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
