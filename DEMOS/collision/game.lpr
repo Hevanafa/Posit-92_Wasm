@@ -1,7 +1,7 @@
 {
   Collision demo
   Part of Posit-92 game engine
-  Mixins: bmfont
+  Mixins: bmfont, sound
 }
 
 library Game;
@@ -10,7 +10,7 @@ library Game;
 {$H-}
 
 uses
-  P92Core, P92Fonts, P92WasmHost,
+  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
   P92Conversions, P92Graphics, IIF,
   P92Keyboard, P92Mouse,
   P92Tex, P92TexDraw, P92Geometry,
@@ -62,7 +62,10 @@ end;
 
 procedure OnPreload;
 begin
-  { TODO: List the assets }
+  imgCursor := RequestImage('assets/images/cursor.png');
+
+  imgDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  imgDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
 procedure OnReady;
@@ -94,11 +97,6 @@ var
   tempZone: TZone;
   tempCircle: TCircle;
 begin
-  updateDeltaTime;
-
-  updateMouse;
-
-  { Your Update logic here }
   if lastEsc <> isKeyDown(SC_ESCAPE) then begin
     lastEsc := isKeyDown(SC_ESCAPE);
     if lastEsc then signalDone;
