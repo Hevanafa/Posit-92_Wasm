@@ -66,6 +66,8 @@ begin
 
   imgDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
   imgDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
+  imgSpecimenP92[0] := RequestImage('assets/images/specimen_p-92_1.png');
+  imgSpecimenP92[1] := RequestImage('assets/images/specimen_p-92_2.png');
 end;
 
 procedure OnReady;
@@ -160,17 +162,17 @@ begin
           u32Iif(zoneIntersects(playerZone, npcZone),
             green, white));
 
-      drawZone(
+      DrawZone(
         npcZone,
         u32Iif(zoneIntersects(playerZone, npcZone),
           white, grey));
     end;
 
     DemoModeCircle: begin
-      if pointInCircle(mouseP, playerCircleZone) then
-        drawCircleZone(playerCircleZone, yellow)
+      if PointInCircle(mouseP, playerCircleZone) then
+        DrawCircleZone(playerCircleZone, yellow)
       else
-        drawCircleZone(
+        DrawCircleZone(
           playerCircleZone,
           u32Iif(circleIntersects(playerCircleZone, npcCircleZone),
             green, white));
@@ -191,7 +193,7 @@ begin
     end;
   end;
 
-  spr(imgDosuEXE[1], trunc(npcZone.x), trunc(npcZone.y));
+  spr(imgSpecimenP92[1], trunc(npcZone.x), trunc(npcZone.y));
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(imgDosuEXE[1], trunc(playerZone.x), trunc(playerZone.y))
