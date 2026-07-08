@@ -11,7 +11,7 @@ uses
   P92Graphics, P92Geometry, P92Tex, P92TexDraw, P92TexEffects,
   P92ImmediateGUI,
   P92Timing, P92VGA,
-  Assets, Perlin;
+  P92Perlin, Assets;
 
 type
   TDemoStates = (
@@ -72,7 +72,7 @@ begin
   gameTime := 0.0;
 
   actualDemoState := DemoStateDynamic2D;
-  initPerlin(gamePerlin, trunc(getTimer));
+  InitPerlin(gamePerlin, trunc(getTimer));
 
   { Only used in the static 2D demo }
   noiseCache := NewTexture(vgaWidth div 2, vgaHeight div 2);
@@ -80,7 +80,7 @@ begin
 
   for b:=0 to vgaHeight div 2 - 1 do
   for a:=0 to vgaWidth div 2 - 1 do begin
-    noiseValue := noise2D(gamePerlin, a * scale, b * scale);
+    noiseValue := Noise2D(gamePerlin, a * scale, b * scale);
 
     grey := round(noiseValue * 255);
 
@@ -175,7 +175,7 @@ begin
   if actualDemoState = DemoState1D then begin
     for a:=0 to vgaWidth-1 do begin
       { Using `scale = 0.05` }
-      noiseValue := noise1D(gamePerlin, (a + gameTime * 10) * 0.05);
+      noiseValue := Noise1D(gamePerlin, (a + gameTime * 10) * 0.05);
       b := round(noiseValue * 40) - 20 + vgaHeight div 2;
 
       pset(a, b, cyan);
@@ -192,7 +192,7 @@ begin
     for b:=0 to vgaHeight div 4 - 1 do
     for a:=0 to vgaWidth div 4 - 1 do begin
       { Using `scale = 0.05` }
-      noiseValue := noise2D(
+      noiseValue := Noise2D(
         gamePerlin,
         (a + offsetX) * 0.05,
         (b + offsetY) * 0.05);
@@ -235,8 +235,6 @@ begin
     buttonColour, lightOrange, red) then
     actualDemoState := DemoStateDynamic2D;
 
-
-
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(
       imgDosuEXE[1],
@@ -252,8 +250,8 @@ begin
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 100);
 
-  drawMouse;
-  drawFPS;
+  DrawMouse;
+  DrawFPS;
 end;
 
 exports

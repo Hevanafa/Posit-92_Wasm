@@ -1,4 +1,4 @@
-unit Perlin;
+unit P92Perlin;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
@@ -9,18 +9,18 @@ interface
     seed: longword;
   end;
 
-procedure initPerlin(var p: TPerlin; const seed: longword);
+procedure InitPerlin(var p: TPerlin; const seed: longword);
 
 { Both these functions return [0.0 .. 1.0] }
-function noise2D(var p: TPerlin; const x, y: double): double;
-function noise1D(var p: TPerlin; const x: double): double;
+function Noise2D(var p: TPerlin; const x, y: double): double;
+function Noise1D(var p: TPerlin; const x: double): double;
 
 
 implementation
 
 uses P92Maths;
 
-procedure initPerlin(var p: TPerlin; const seed: longword);
+procedure InitPerlin(var p: TPerlin; const seed: longword);
 var
   a, b, temp: smallint;
 begin
@@ -43,17 +43,17 @@ begin
     p.permutation[256 + a] := p.permutation[a];
 end;
 
-function fade(const t: double): double;
+function Fade(const t: double): double;
 begin
-  fade := t * t * t * (t * (t * 6 - 15) + 10)
+  Fade := t * t * t * (t * (t * 6 - 15) + 10)
 end;
 
-function grad(const hash: byte; const x, y: double): double;
+function Grad(const hash: byte; const x, y: double): double;
 var
   h: byte;
   u, v: double;
 begin
-  grad := 0.0;
+  Grad := 0.0;
 
   h := hash and $F;
   if h < 8 then u := x else u := y;
@@ -66,23 +66,23 @@ begin
     v := 0;
 
   if (h and 1) = 0 then
-    grad := u
+    Grad := u
   else
-    grad := -u;
+    Grad := -u;
 
   if (h and 2) = 0 then
-    grad := grad + v
+    Grad := Grad + v
   else
-    grad := grad - v;
+    Grad := Grad - v;
 end;
 
-{ The same as lerpLinear with a different parameter order }
-function lerp(const t, a, b: double): double;
+{ The same as linear easing with a different parameter order }
+function Lerp(const t, a, b: double): double;
 begin
-  lerp := a + t * (b - a)
+  Lerp := a + t * (b - a)
 end;
 
-function noise2D(var p: TPerlin; const x, y: double): double;
+function Noise2D(var p: TPerlin; const x, y: double): double;
 var
   xi, yi, aa, ab, ba, bb: longint;
   xf, yf, u, v: double;
@@ -94,21 +94,21 @@ begin
   xf := x - floor(x);
   yf := y - floor(y);
 
-  u := fade(xf);  v := fade(yf);
+  u := Fade(xf);  v := Fade(yf);
 
   aa := p.permutation[p.permutation[xi] + yi];
   ab := p.permutation[p.permutation[xi] + yi + 1];
   ba := p.permutation[p.permutation[xi + 1] + yi];
   bb := p.permutation[p.permutation[xi + 1] + yi + 1];
 
-  x1 := lerp(u, grad(aa, xf, yf), grad(ba, xf - 1, yf));
-  x2 := lerp(u, grad(ab, xf, yf - 1), grad(bb, xf - 1, yf - 1));
-  y1 := lerp(v, x1, x2);
+  x1 := Lerp(u, Grad(aa, xf, yf), Grad(ba, xf - 1, yf));
+  x2 := Lerp(u, Grad(ab, xf, yf - 1), Grad(bb, xf - 1, yf - 1));
+  y1 := Lerp(v, x1, x2);
 
-  noise2D := (y1 + 1) / 2
+  Noise2D := (y1 + 1) / 2
 end;
 
-function noise1D(var p: TPerlin; const x: double): double;
+function Noise1D(var p: TPerlin; const x: double): double;
 var
   xi, a, b: longint;
   xf, u: double;
@@ -117,7 +117,7 @@ begin
   xi := floor(x) and $FF;
   xf := x - floor(x);
 
-  u := fade(xf);
+  u := Fade(xf);
   
   a := p.permutation[xi];
   b := p.permutation[xi + 1];
@@ -133,7 +133,7 @@ begin
   else
     g2 := -(xf - 1);
 
-  noise1D := (lerp(u, g1, g2) + 1) / 2
+  Noise1D := (Lerp(u, g1, g2) + 1) / 2
 end;
 
 end.
