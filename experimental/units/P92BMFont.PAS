@@ -29,6 +29,7 @@ type
     texHandle: longint;  { 84th byte }
   end;
 
+  PBMFont = ^TBMFont;
   TBMFont = record
     texHandle: longint;
     lineHeight: smallint;
@@ -47,26 +48,22 @@ procedure FreeBMFont(
   const freeImgHandle: boolean);
 
 procedure PrintBMFont(
-  const font: TBMFontLegacy;
-  const fontGlyphs: array of TBMFontGlyph;
+  const font: TBMFont;
   const text: string;
   const x, y: smallint);
 
 function MeasureBMFont(
-  const font: TBMFontLegacy;
-  const glyphs: array of TBMFontGlyph;
+  const font: TBMFont;
   const text: string): smallint;
 
 function PrintBMFontCharColour(
-  const font: TBMFontLegacy;
-  const fontGlyphs: array of TBMFontGlyph;
+  const font: TBMFont;
   const ch: char;
   const x, y: smallint;
   const colour: longword): word;
 
 procedure PrintBMFontColour(
-  const font: TBMFontLegacy;
-  const fontGlyphs: array of TBMFontGlyph;
+  const font: TBMFont;
   const text: string;
   const x, y: smallint;
   const colour: longword);
@@ -94,8 +91,7 @@ uses
 
 { Returns glyph.xadvance }
 function PrintBMFontChar(
-  const font: TBMFontLegacy;
-  const fontGlyphs: array of TBMFontGlyph;
+  const font: TBMFont;
   const ch: char;
   const x, y: smallint): smallint;
 var
@@ -107,8 +103,8 @@ begin
 
   glyphIdx := charcode;
 
-  if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
-    glyph := fontGlyphs[glyphIdx];
+  if (glyphIdx in [low(font.glyphs)..high(font.glyphs)]) then begin
+    glyph := font.glyphs[glyphIdx];
 
     SprRegion(
       font.texHandle,
@@ -151,8 +147,7 @@ begin
 end;
 
 procedure PrintBMFont(
-  const font: TBMFontLegacy;
-  const fontGlyphs: array of TBMFontGlyph;
+  const font: TBMFont;
   const text: string;
   const x, y: smallint);
 var
@@ -164,7 +159,7 @@ begin
 
   for a:=1 to length(text) do begin
     ch := text[a];
-    step := PrintBMFontChar(font, fontGlyphs, ch, x + left, y);
+    step := PrintBMFontChar(font, ch, x + left, y);
 
     if a < length(text) then
       inc(left, step + font.spacing[0])
@@ -175,8 +170,7 @@ end;
 
 
 function MeasureBMFont(
-  const font: TBMFontLegacy;
-  const glyphs: array of TBMFontGlyph;
+  const font: TBMFont;
   const text: string): smallint;
 var
   a: word;
@@ -190,19 +184,18 @@ begin
 
     glyphIdx := charcode;
 
-    if (glyphIdx in [low(glyphs)..high(glyphs)]) then begin
+    if (glyphIdx in [low(font.glyphs)..high(font.glyphs)]) then begin
       if a < length(text) then
-        inc(MeasureBMFont, glyphs[glyphIdx].xadvance + font.spacing[0])
+        inc(MeasureBMFont, font.glyphs[glyphIdx].xadvance + font.spacing[0])
       else
-        inc(MeasureBMFont, glyphs[glyphIdx].xadvance);
+        inc(MeasureBMFont, font.glyphs[glyphIdx].xadvance);
     end;
   end;
 end;
 
 { Returns xadvance for the next char }
 function PrintBMFontCharColour(
-  const font: TBMFontLegacy;
-  const fontGlyphs: array of TBMFontGlyph;
+  const font: TBMFont;
   const ch: char;
   const x, y: smallint;
   const colour: longword): word;
@@ -216,8 +209,8 @@ begin
 
   PrintBMFontCharColour := 0;
 
-  if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
-    glyph := fontGlyphs[glyphIdx];
+  if (glyphIdx in [low(font.glyphs)..high(font.glyphs)]) then begin
+    glyph := font.glyphs[glyphIdx];
 
     SprRegionSolid(
       font.texHandle,
@@ -231,8 +224,7 @@ begin
 end;
 
 procedure PrintBMFontColour(
-  const font: TBMFontLegacy;
-  const fontGlyphs: array of TBMFontGlyph;
+  const font: TBMFont;
   const text: string;
   const x, y: smallint;
   const colour: longword);
@@ -244,7 +236,7 @@ begin
 
   for a:=1 to length(text) do begin
     step := PrintBMFontCharColour(
-        font, fontGlyphs,
+        font,
         text[a],
         x + left, y,
         colour);

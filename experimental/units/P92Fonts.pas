@@ -1,13 +1,15 @@
 unit P92Fonts;
 
+{$Mode ObjFPC}
+{$H+}{$J-}
+
 interface
 
 uses P92BMFont;
 
 procedure LoadDefaultFont;
 
-function DefaultFontPtr: PBMFontLegacy;
-function DefaultFontGlyphsPtr: PBMFontGlyph;
+function DefaultFontPtr: PBMFont;
 
 procedure PrintDefault(const text: string; const x, y: integer);
 procedure PrintDefaultCentred(const text: string; const cx, y: integer);
@@ -41,7 +43,7 @@ end;
 
 procedure PrintDefault(const text: string; const x, y: integer);
 begin
-  PrintBMFont(defaultFont, defaultFontGlyphs, text, x, y)
+  PrintBMFont(defaultFont, text, x, y)
 end;
 
 procedure PrintDefaultCentred(const text: string; const cx, y: integer);
@@ -54,14 +56,14 @@ end;
 
 function MeasureDefault(const text: string): word;
 begin
-  MeasureDefault := MeasureBMFont(defaultFont, defaultFontGlyphs, text)
+  MeasureDefault := MeasureBMFont(defaultFont, text)
 end;
 
 { Returns the width of the glyph }
 function PrintCharColour(const ch: char; const x, y: integer; const colour: longword): word;
 begin
   PrintCharColour := PrintBMFontCharColour(
-    defaultFont, defaultFontGlyphs, ch, x, y, colour)
+    defaultFont, ch, x, y, colour)
 end;
 
 end.
