@@ -144,6 +144,13 @@ type Posit92Options = {
    * Default: true
    */
   defaultFont?: boolean;
+
+  /**
+   * Enables the F2 key for screenshot
+   * 
+   * Default: true
+   */
+  enableScreenshotHotkey?: boolean;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -290,6 +297,7 @@ class Posit92 {
     let renderer = "2d";
     let fps = 60;
     let defaultFont = true;
+    let enableScreenshotHotkey = true;
 
     if (typeof vgaWidthOrOptions == "object") {
       const options = vgaWidthOrOptions;
@@ -307,6 +315,9 @@ class Posit92 {
 
       if (options.defaultFont != null)
         defaultFont = options.defaultFont;
+
+      if (options.enableScreenshotHotkey != null)
+        enableScreenshotHotkey = options.enableScreenshotHotkey;
     } else {
       vgaWidth = vgaWidthOrOptions ?? defaultVgaWidth;
       vgaHeight = vgaHeight ?? defaultVgaHeight;
@@ -317,7 +328,8 @@ class Posit92 {
       vgaHeight,
       renderer,
       fps,
-      defaultFont
+      defaultFont,
+      enableScreenshotHotkey
     };
   }
 
