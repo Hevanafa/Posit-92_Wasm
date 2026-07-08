@@ -234,7 +234,7 @@ begin
     IncCursorTop;
 end;
 
-procedure textColour(const colour: byte);
+procedure TextColour(const colour: byte);
 begin
   currentColour := (currentColour and $F0) or (colour and $0F)
 end;
@@ -291,7 +291,7 @@ begin
 
   end else if prog = 'HELP' then begin
     lastColour := currentColour;
-    textColour(9);
+    TextColour(9);
     PrintLn('Available commands');
 
     currentColour := lastColour;
@@ -457,6 +457,24 @@ begin
   snowflakes[idx].brightness := trunc((0.5 + random / 2) * 255)
 end;
 
+procedure InitDefaultFont;
+var
+  a, b: word;
+  texture: PSoftwareTex;
+begin
+  if not IsTextureSet(imgCGAFont) then begin
+    writeLog('initDefaultFont: image is unset');
+    exit
+  end;
+
+  texture := GetTexturePtr(imgCGAFont);
+
+  for b:=0 to GetTextureHeight(imgCGAFont) - 1 do
+  for a:=0 to GetTextureWidth(imgCGAFont) - 1 do
+    if unsafeSprGetAlpha(texture, a, b) = 255 then
+      unsafeSprPset(texture, a, b, LightGrey);
+end;
+
 
 procedure OnPreload;
 begin
@@ -472,6 +490,8 @@ var
   heapSize, freeHeapSize: longword;
 begin
   hideCursor;
+
+  InitDefaultFont;
 
   { Initialise game state here }
   gameTime := 0.0;
@@ -497,24 +517,6 @@ begin
   PrintLn('Type HELP for available commands');
   PrintLn('');
   UpdatePromptLine
-end;
-
-procedure InitDefaultFont;
-var
-  a, b: word;
-  texture: PSoftwareTex;
-begin
-  if not IsTextureSet(imgCGAFont) then begin
-    writeLog('initDefaultFont: image is unset');
-    exit
-  end;
-
-  texture := GetTexturePtr(imgCGAFont);
-
-  for b:=0 to GetTextureHeight(imgCGAFont) - 1 do
-  for a:=0 to GetTextureWidth(imgCGAFont) - 1 do
-    if unsafeSprGetAlpha(texture, a, b) = 255 then
-      unsafeSprPset(texture, a, b, LightGrey);
 end;
 
 procedure Update;
