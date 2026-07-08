@@ -19,8 +19,6 @@ function I8HexStr(const value: byte): string;
 function BoolStr(const value: boolean): string;
 function ParseInt(const text: string): smallint;
 
-function StrPtrToString(const strPtr: PByte; const strLen: byte): ShortString;
-
 
 implementation
 
@@ -78,23 +76,5 @@ begin
     ParseInt := 0
   end;
 end;
-
-
-function StrPtrToString(const strPtr: PByte; const strLen: byte): ShortString;
-var
-  text: string;
-  a: smallint;
-  charPtr: ^byte;
-begin
-  setLength(text, strLen);
-  charPtr := strPtr;
-  for a:=1 to strLen do begin
-    text[a] := char(charPtr^);
-    inc(charPtr)
-  end;
-
-  StrPtrToString := text
-end;
-
 
 end.
