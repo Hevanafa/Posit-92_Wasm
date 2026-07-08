@@ -51,8 +51,12 @@ type
     ersReady = 3
   );
 
+const
+  DebugEngineRunStates = true;
+
 var
   engineRunState: TEngineRunStates;
+  enableDefaultBMFont: boolean;
 
   { Default boot font }
   cgaFontHandle: longint;
@@ -75,7 +79,8 @@ end;
 procedure InitEngine;
 begin
   engineRunState := ersBoot;
-  writelog('ersBoot');
+  if DebugEngineRunStates then
+    writelog('ersBoot');
 
   InitHeapMgr;
   InitInteropBuffer;
@@ -90,12 +95,12 @@ begin
   SetupWebGLShaders;
 {$endif}
 
+  enableDefaultBMFont := GetBootOptionBoolean('defaultFont');
   enableScreenshotHotkey := GetBootOptionBoolean('enableScreenshotHotkey');
 end;
 
 procedure SetCGAFontHandle(value: longint);
 begin
-  writelog('SetCGAFontHandle ' + i32str(value));
   cgaFontHandle := value
 end;
 
@@ -112,10 +117,13 @@ end;
 procedure InitPreloadState;
 begin
   engineRunState := ersPreload;
-  writelog('ersPreload');
+
+  if DebugEngineRunStates then
+    writelog('ersPreload');
+
   FitCanvas;
 
-  if GetBootOptionBoolean('defaultFont') then
+  if enableDefaultBMFont then
     LoadDefaultFont;
 
   HostCallOnPreload
@@ -124,7 +132,10 @@ end;
 procedure InitReadyState;
 begin
   engineRunState := ersReady;
-  writelog('ersReady');
+
+  if DebugEngineRunStates then
+    writelog('ersReady');
+
   FitCanvas;
 
 {$ifdef P92_IMMEDIATE_GUI}
