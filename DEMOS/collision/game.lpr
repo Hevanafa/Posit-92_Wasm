@@ -39,7 +39,8 @@ var
 
   mapBounds: TZone;
 
-  playerZone, npcZone: TZone;
+  entityZones: array[0..1] of TZone;
+  playerEntityID: longint;
   playerCircleZone, npcCircleZone: TCircle;
 
 
@@ -81,22 +82,23 @@ begin
 
   mapBounds := newZone(20, 20, 280, 160);
 
-  playerZone := newZone(155, 95, 24, 24);
-  npcZone := newZone(180, 55, 24, 24);
+  playerEntityID:= 0;
+  entityZones[0] := newZone(155, 95, 24, 24);
+  entityZones[1] := newZone(180, 55, 24, 24);
 
   playerCircleZone.cx := 155;
   playerCircleZone.cy := 95;
   playerCircleZone.radius := 30;
 
-  npcCircleZone.cx := getZoneCX(npcZone);
-  npcCircleZone.cy := getZoneCY(npcZone);
+  npcCircleZone.cx := getZoneCX(entityZones[1]);
+  npcCircleZone.cy := getZoneCY(entityZones[1]);
   npcCircleZone.radius := 30;
 end;
 
 
 procedure Update;
 var
-  tempZone: TZone;
+  playerZone: TZone;
   tempCircle: TCircle;
 begin
   if lastEsc <> isKeyDown(SC_ESCAPE) then begin
@@ -108,9 +110,7 @@ begin
     lastTab := isKeyDown(SC_TAB);
 
     if lastTab then begin
-      tempZone := playerZone;
-      playerZone := npcZone;
-      npcZone := tempZone;
+      playerEntityID := i32Iif(playerEntityID = 0, 1, 0);
 
       tempCircle := playerCircleZone;
       playerCircleZone := npcCircleZone;
@@ -121,6 +121,8 @@ begin
   if isKeyDown(SC_1) then actualDemoMode := DemoModeRect;
   if isKeyDown(SC_2) then actualDemoMode := DemoModeCircle;
   if isKeyDown(SC_3) then actualDemoMode := DemoModeCircleRect;
+
+  playerZone := entityZones[playerEntityID];
 
   if isKeyDown(SC_W) then playerZone.y := playerZone.y - MoveSpeed * DeltaTime;
   if isKeyDown(SC_S) then playerZone.y := playerZone.y + MoveSpeed * DeltaTime;
@@ -139,17 +141,23 @@ begin
   playerCircleZone.cx := getZoneCX(playerZone);
   playerCircleZone.cy := getZoneCY(playerZone);
 
+  entityZones[playerEntityID] := playerZone;
+
   gameTime := gameTime + DeltaTime
 end;
 
 procedure Draw;
 var
   mouseP: TPoint;
+  playerZone, npcZone: TZone;
 begin
   cls($FF6495ED);
 
   mouseP.x := mouseX;
   mouseP.y := mouseY;
+
+  playerZone := entityZones[playerEntityID];
+  npcZone := entityZones[i32Iif(playerEntityID = 0, 1, 0)];
 
   { Rectangle intersection }
   case actualDemoMode of
@@ -193,12 +201,12 @@ begin
     end;
   end;
 
-  spr(imgSpecimenP92[1], trunc(npcZone.x), trunc(npcZone.y));
+  spr(imgSpecimenP92[1], trunc(entityZones[1].x), trunc(entityZones[1].y));
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], trunc(playerZone.x), trunc(playerZone.y))
+    spr(imgDosuEXE[1], trunc(entityZones[0].x), trunc(entityZones[0].y))
   else
-    spr(imgDosuEXE[0], trunc(playerZone.x), trunc(playerZone.y));
+    spr(imgDosuEXE[0], trunc(entityZones[0].x), trunc(entityZones[0].y));
 
   printDefault('Mode: ' + GetDemoModeName(actualDemoMode), 10, 10);
 
