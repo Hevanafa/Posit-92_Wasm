@@ -20,7 +20,7 @@ type BMFontWasmExports = WasmExports & {
 
 type BMFontWasmImports = WasmImports & {
   env: {
-    JsRequestBMFont: (fontPtr: number, fontGlyphsPtr: number) => Promise<void>
+    JsRequestBMFontLegacy: (fontPtr: number, fontGlyphsPtr: number) => Promise<void>
   }
 };
 

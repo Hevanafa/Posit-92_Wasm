@@ -43,8 +43,8 @@ function FindUnusedTextureSlot: longint;
 procedure JsRequestImage(texHandle: longint); external 'env' name 'JsRequestImage';
 function RequestImage(const path: string): longint;
 
-procedure JsRequestBMFont(bmfontHandle: longint; fontPtr: PBMFontLegacy; fontGlyphsPtr: PBMFontGlyphLegacy); external 'env' name 'JsRequestBMFont';
-procedure RequestBMFont(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyphLegacy);
+procedure JsRequestBMFontLegacy(bmfontHandle: longint; fontPtr: PBMFontLegacy; fontGlyphsPtr: PBMFontGlyphLegacy); external 'env' name 'JsRequestBMFont';
+procedure RequestBMFontLegacy(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyphLegacy);
 
 procedure JsRequestSound(sndHandle: longint); external 'env' name 'JsRequestSound';
 function RequestSound(const path: string): longint;
@@ -176,7 +176,7 @@ begin
   RequestImage := texHandle
 end;
 
-procedure RequestBMFont(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyphLegacy);
+procedure RequestBMFontLegacy(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyphLegacy);
 var
   bmfontHandle: longint;
 begin
@@ -203,7 +203,7 @@ begin
   }
 
   WriteInteropString(path);
-  JsRequestBMFont(bmfontHandle, fontPtr, fontGlyphsPtr);
+  JsRequestBMFontLegacy(bmfontHandle, fontPtr, fontGlyphsPtr);
 end;
 
 function RequestSound(const path: string): longint;

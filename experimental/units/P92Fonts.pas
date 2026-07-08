@@ -33,7 +33,7 @@ begin
   for a:=0 to high(defaultFontGlyphs) do
     defaultFontGlyphs[a] := default(TBMFontGlyphLegacy);
 
-  RequestBMFont(
+  RequestBMFontLegacy(
     'assets/fonts/nokia_cellphone_fc_8.txt',
     DefaultFontPtr, DefaultFontGlyphsPtr);
 end;
