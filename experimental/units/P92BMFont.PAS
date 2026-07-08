@@ -98,8 +98,7 @@ var
 begin
   charcode := ord(ch);
 
-  { Assuming the starting charcode is always 32 }
-  glyphIdx := charcode - 32;
+  glyphIdx := charcode;
 
   if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
     glyph := fontGlyphs[glyphIdx];
@@ -182,8 +181,7 @@ begin
   for a:=1 to length(text) do begin
     charcode := ord(text[a]);
 
-    { Assuming the starting charcode is always 32 }
-    glyphIdx := charcode - 32;
+    glyphIdx := charcode;
 
     if (glyphIdx in [low(glyphs)..high(glyphs)]) then begin
       if a < length(text) then
@@ -207,7 +205,7 @@ var
   glyph: TBMFontGlyph;
 begin
   charcode := ord(ch);
-  glyphIdx := charcode - 32;
+  glyphIdx := charcode;
 
   PrintBMFontCharColour := 0;
 
@@ -269,8 +267,7 @@ begin
 
   charcode := ord(ch);
 
-  { Assuming the starting charcode is always 32 }
-  glyphIdx := charcode - 32;
+  glyphIdx := charcode;
 
   if (glyphIdx in [low(fontGlyphs)..high(fontGlyphs)]) then begin
     glyph := fontGlyphs[glyphIdx];

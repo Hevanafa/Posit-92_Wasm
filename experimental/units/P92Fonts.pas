@@ -22,10 +22,17 @@ uses P92AssetRegistry;
 
 var
   defaultFont: TBMFont;
-  defaultFontGlyphs: array[32..126] of TBMFontGlyph;
+  defaultFontGlyphs: array[0..255] of TBMFontGlyph;
 
 procedure LoadDefaultFont;
+var
+  a: word;
 begin
+  defaultFont := default(TBMFont);
+
+  for a:=0 to high(defaultFontGlyphs) do
+    defaultFontGlyphs[a] := default(TBMFontGlyph);
+
   RequestBMFont(
     'assets/fonts/nokia_cellphone_fc_8.txt',
     DefaultFontPtr, DefaultFontGlyphsPtr);

@@ -57,6 +57,7 @@ class BMFontMixin extends Base {
 
   /**
    * Used by Pascal
+   * @deprecated
    */
   async #RequestBMFont(bmfontHandle: number, fontPtr: number, fontGlyphsPtr: number): Promise<void> {
     const url = this.ReadInteropBuffer();
@@ -188,7 +189,7 @@ class BMFontMixin extends Base {
       if (charID < 32 || charID > 126) continue;
 
       // 16 is from the 8 fields of TBMFontGlyph, all 2 bytes
-      const glyphOffset = (charID - 32) * 16;
+      const glyphOffset = charID * 16;
 
       glyphsMem.setUint16(glyphOffset + 0, glyph.id, true);
 
