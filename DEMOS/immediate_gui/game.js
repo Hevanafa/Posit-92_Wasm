@@ -1,6 +1,6 @@
 "use strict";
 
-class Game extends Posit92 {
+class Game extends SoundMixin(BMFontMixin(Posit92)) {
   AssetManifest = {
     images: {
       cursor: "assets/images/cursor.png",
@@ -32,11 +32,6 @@ class Game extends Posit92 {
     this.InitLoadingScreen();
     await this.LoadImagesFromManifest(this.AssetManifest.images);
     await this.LoadBMFontFromManifest(this.AssetManifest.bmfonts);
-
-    // handle = await this.loadImage("assets/images/dosu_2.png");
-    // this.wasmInstance.exports.setImgDosuEXE(handle, 1);
-
-    // Add more assets as necessary
   }
 }
 
