@@ -26,17 +26,12 @@ var
   defaultFont: TBMFont;
 
 procedure LoadDefaultFont;
-var
-  a: word;
 begin
   defaultFont := default(TBMFont);
-
-  RequestBMFontLegacy(
-    'assets/fonts/nokia_cellphone_fc_8.txt',
-    DefaultFontPtr, DefaultFontGlyphsPtr);
+  RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt');
 end;
 
-function DefaultFontPtr: PBMFontLegacy;
+function DefaultFontPtr: PBMFont;
 begin
   DefaultFontPtr := @defaultFont
 end;

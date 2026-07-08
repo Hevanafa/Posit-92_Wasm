@@ -18,9 +18,15 @@ type
     errorCode: smallint;
   end;
 
-  TBMFontEntry = record
+  TBMFontLegacyEntry = record
     fontPtr: PBMFontLegacy;
     glyphsPtr: PBMFontGlyph;
+    status: TAssetStatus;
+    errorCode: smallint;
+  end;
+
+  TBMFontEntry = record
+    fontPtr: PBMFont;
     status: TAssetStatus;
     errorCode: smallint;
   end;
@@ -45,6 +51,9 @@ function RequestImage(const path: string): longint;
 
 procedure JsRequestBMFontLegacy(bmfontHandle: longint; fontPtr: PBMFontLegacy; fontGlyphsPtr: PBMFontGlyph); external 'env' name 'JsRequestBMFont';
 procedure RequestBMFontLegacy(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyph);
+
+procedure JsRequestBMFont; external 'env' name 'JsRequestBMFont';
+procedure RequestBMFont(const path: string);
 
 function GetBMFontBufferPtr: pointer; public name 'GetBMFontBufferPtr';
 function GetBMFontBufferLen: smallint; public name 'GetBMFontBufferLen';
@@ -71,7 +80,7 @@ uses
   P92Conversions, P92InteropBuf, P92Logger, P92Panic;
 
 var
-  bmfonts: array[1..9] of TBMFontEntry;
+  bmfonts: array[1..9] of TBMFontLegacyEntry;
   sounds: array[1..255] of TSoundEntry;
 
   assetReadyCount, assetTotalCount: longword;
@@ -120,7 +129,7 @@ begin
     textures[a] := default(TSoftwareTexEntry);
 
   for a:=1 to high(bmfonts) do
-    bmfonts[a] := default(TBMFontEntry);
+    bmfonts[a] := default(TBMFontLegacyEntry);
 
   for a:=1 to high(sounds) do
     sounds[a] := default(TSoundEntry);
@@ -189,10 +198,8 @@ end;
 procedure RequestBMFont(const path: string);
 begin
   WriteInteropString(path);
-
-  { TODO: Request to JS }
-
-  inc(assetTotalCount);
+  JsRequestBMFont;
+  inc(assetTotalCount)
 end;
 
 procedure RequestBMFontLegacy(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyph);
@@ -204,7 +211,7 @@ begin
   if bmfontHandle < 0 then
     PanicHalt('RequestBMFont: BMFont slots are full!');
 
-  bmfonts[bmfontHandle] := default(TBMFontEntry);
+  bmfonts[bmfontHandle] := default(TBMFontLegacyEntry);
   bmfonts[bmfontHandle].fontPtr := fontPtr;
   bmfonts[bmfontHandle].glyphsPtr := fontGlyphsPtr;
   bmfonts[bmfontHandle].status := AssetStatusLoading;
