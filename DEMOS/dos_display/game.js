@@ -12,16 +12,19 @@ class Game extends SoundMixin(BMFontMixin(Posit92)) {
   }
 
   SetupImportObject() {
-    const { env } = super._getWasmImportObject();
+    super.SetupImportObject();
+
+    const { env } = this.WasmInstance.exports;
 
     Object.assign(env, {
-      queryDate: () => {
-        this.#loadStringBuffer(new Date().toLocaleDateString("en-AU").replace(/\//g, "-"))
+      JsQueryDate: () => {
+        this.WriteInteropBuffer(
+          new Date().toLocaleDateString("en-AU").replace(/\//g, "-"))
       },
-      queryTime: () => {
+      JsQueryTime: () => {
         const now = new Date();
         
-        this.#loadStringBuffer(
+        this.WriteInteropBuffer(
           now.getHours().toString().padStart(2, "0") + ":" +
           now.getMinutes().toString().padStart(2, "0") + ":" +
           now.getSeconds().toString().padStart(2, "0"))

@@ -15,7 +15,7 @@ uses
   P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
   P92Conversions, P92FPS,
   P92Graphics,
-  P92Logger,
+  P92Logger, P92InteropBuf,
   P92Keyboard, P92Mouse,
   P92Tex, P92TexDraw,
   P92Strings, P92Sounds, P92Timing,
@@ -86,9 +86,19 @@ var
   snowflakes: array[0..99] of TSnowParticle;
   nextSpawnTick: double;
 
-procedure queryDate; external 'env' name 'queryDate';
-procedure queryTime; external 'env' name 'queryTime';
+procedure JsQueryDate; external 'env' name 'JsQueryDate';
+function QueryDate: string;
+begin
+  JsQueryDate;
+  QueryDate := ReadInteropString
+end;
 
+procedure JsQueryTime; external 'env' name 'JsQueryTime';
+function QueryTime: string;
+begin
+  JsQueryTime;
+  QueryTime := ReadInteropString
+end;
 
 function MakeColour(const fg, bg: byte): byte;
 begin
@@ -277,11 +287,11 @@ begin
   
   if prog = 'CLS' then Cls
   else if prog = 'DATE' then begin
-    queryDate;
+    QueryDate;
     PrintLn(strPtrToString(@stringBuffer, stringBufferLength))
 
   end else if prog = 'TIME' then begin
-    queryTime;
+    QueryTime;
     PrintLn(strPtrToString(@stringBuffer, stringBufferLength))
 
   end else if prog = 'HELP' then begin
