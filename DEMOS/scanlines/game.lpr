@@ -13,7 +13,7 @@ uses
   P92Core, P92Fonts, P92AssetRegistry, P92WasmHost,
   P92Logger, P92BMFont,
   P92Keyboard, P92Mouse,
-  P92Graphics, P92TexDraw, P92Colour,
+  P92Graphics, P92TexDraw, P92TexEffects, P92Colour,
   P92Timing, P92FPS, P92VGA,
   Assets;
 
@@ -55,6 +55,7 @@ var
   w: word;
   c: char;
   s: string;
+  hue: double;
   left: smallint;
   colour: longword;
 begin
@@ -66,9 +67,9 @@ begin
   end;
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    Spr(imgSpecimenP92[1], 148, 84)
+    SprOutline(imgSpecimenP92[1], 148, 84, $FFFFFFFF)
   else
-    Spr(imgSpecimenP92[0], 148, 84);
+    SprOutline(imgSpecimenP92[0], 148, 84, $FFFFFFFF);
 
   s := 'Hello world!';
   w := MeasureDefault(s);
@@ -79,7 +80,11 @@ begin
 
   for a:=1 to length(s) do begin
     c := s[a];
-    inc(left, PrintCharColour(c, left, 120, HSVtoRGB((a-1) / length(s), 1.0, 1.0)));
+
+    hue := (a-1) / length(s) + frac(GetTimer);
+    if hue > 1.0 then hue := hue - 1.0;
+
+    inc(left, PrintCharColour(c, left, 120, HSVtoRGB(hue, 1.0, 1.0)));
   end;
 
   DrawMouse;
