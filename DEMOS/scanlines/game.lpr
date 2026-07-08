@@ -77,8 +77,10 @@ begin
   {PrintDefault('Hello world!', left, 120); }
   { PrintCharColour('Z', 10, 10, $FFFFFFFF); }
 
-  for c in s do
-    inc(left, PrintCharColour(c, left, 120, $FFFFFFFF));
+  for a:=1 to length(s) do begin
+    c := s[a];
+    inc(left, PrintCharColour(c, left, 120, HSVtoRGB((a-1) / length(s), 1.0, 1.0)));
+  end;
 
   DrawMouse;
   DrawFPS;
