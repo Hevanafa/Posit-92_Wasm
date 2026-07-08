@@ -1,3 +1,11 @@
+{
+  Perlin noise demo
+  Part of Posit-92 game engine
+  By Hevanafa
+
+  Mixins: bmfont, sound
+}
+
 library Game;
 
 {$Mode ObjFPC}
