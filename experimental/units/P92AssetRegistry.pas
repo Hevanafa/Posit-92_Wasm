@@ -124,6 +124,9 @@ begin
 
   for a:=1 to high(sounds) do
     sounds[a] := default(TSoundEntry);
+
+  fillchar(bmfontBuffer, sizeof(bmfontBuffer), 0);
+  bmfontBufferLen := 0;
 end;
 
 function FindUnusedTextureSlot: longint;
@@ -220,6 +223,21 @@ begin
 
   WriteInteropString(path);
   JsRequestBMFontLegacy(bmfontHandle, fontPtr, fontGlyphsPtr);
+end;
+
+function GetBMFontBufferPtr: pointer;
+begin
+  GetBMFontBufferPtr := @bmfontBuffer[0]
+end;
+
+function GetBMFontBufferLen: smallint;
+begin
+  GetBMFontBufferLen := bmfontBufferLen
+end;
+
+procedure SetBMFontBufferLen(value: smallint);
+begin
+  bmfontBufferLen := value
 end;
 
 function RequestSound(const path: string): longint;
