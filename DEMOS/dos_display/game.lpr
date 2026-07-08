@@ -1,71 +1,19 @@
 library Game;
 
 {$Mode ObjFPC}
-{$J-}  { Switch off assignments to typed constants }
+{$H+}{$J-}
 
 uses
-  Conv, FPS, Fullscreen, Graphics,
-  Loading, Logger,
-  Keyboard, Mouse,
-  ImgRef, ImgRefFast,
-  Strings, Sounds, Timing,
-  Version, WasmMemMgr, WasmHeap, VGA,
-  Assets;
-
-type
-  TGameStates = (
-    GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
-  );
+  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
+  P92FPS,
+  P92Graphics,
+  P92Logger,
+  P92Keyboard, P92Mouse,
+  P92Tex, P92TexDraw,
+  P92Strings, P92Sounds, P92Timing,
+  P92Version, VGA, Assets;
 
 const
-  SC_ESC = $01;
-  SC_BACKSPACE = $0E;
-  SC_ENTER = $1C;
-
-  SC_1 = $02;
-  SC_2 = $03;
-  SC_3 = $04;
-  SC_4 = $05;
-  SC_5 = $06;
-  SC_6 = $07;
-  SC_7 = $08;
-  SC_8 = $09;
-  SC_9 = $0A;
-  SC_0 = $0B;
-
-  SC_Q = $10;
-  SC_W = $11;
-  SC_E = $12;
-  SC_R = $13;
-  SC_T = $14;
-  SC_Y = $15;
-  SC_U = $16;
-  SC_I = $17;
-  SC_O = $18;
-  SC_P = $19;
-
-  SC_A = $1E;
-  SC_S = $1F;
-  SC_D = $20;
-  SC_F = $21;
-  SC_G = $22;
-  SC_H = $23;
-  SC_J = $24;
-  SC_K = $25;
-  SC_L = $26;
-
-  SC_Z = $2C;
-  SC_X = $2D;
-  SC_C = $2E;
-  SC_V = $2F;
-  SC_B = $30;
-  SC_N = $31;
-  SC_M = $32;
-
-  SC_SPACE = $39;
-
   BufferWidth = 40;
   BufferHeight = 25;
   CharBufferSize = BufferWidth * BufferHeight;
@@ -114,7 +62,6 @@ type
 
 var
   { Game state }
-  actualGameState: TGameStates;
   gameTime: double;
 
   cursorLeft, cursorTop: integer;
