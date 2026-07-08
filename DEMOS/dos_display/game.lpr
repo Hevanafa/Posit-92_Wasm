@@ -420,7 +420,7 @@ begin
 end;
 
 
-procedure BrawFPS;
+procedure DrawFPS;
 begin
   BlitText(
     'FPS:' + i32str(getLastFPS),
@@ -607,7 +607,7 @@ begin
   { BlitText('> ' + currentInput, 30, 30); }
 
   DrawMouse;
-  BrawFPS;
+  DrawFPS;
 end;
 
 { Requires at least 1 exported member }
