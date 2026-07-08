@@ -35,7 +35,7 @@ class BMFontMixin extends Base {
     const { env } = super.WasmImportObject;
     
     Object.assign(env, {
-      JsRequestBMFont: this.#RequestBMFont.bind(this)
+      JsRequestBMFont: this.#RequestBMFontLegacy.bind(this)
     });
   }
 
@@ -59,7 +59,7 @@ class BMFontMixin extends Base {
    * Used by Pascal
    * @deprecated
    */
-  async #RequestBMFont(bmfontHandle: number, fontPtr: number, fontGlyphsPtr: number): Promise<void> {
+  async #RequestBMFontLegacy(bmfontHandle: number, fontPtr: number, fontGlyphsPtr: number): Promise<void> {
     const url = this.ReadInteropBuffer();
 
     if (debugRequests)
