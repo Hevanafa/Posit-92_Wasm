@@ -95,6 +95,8 @@ begin
   SetupWebGLShaders;
 {$endif}
 
+  { Read boot options }
+
   enableDefaultBMFont := GetBootOptionBoolean('defaultFont');
   enableScreenshotHotkey := GetBootOptionBoolean('enableScreenshotHotkey');
 end;
