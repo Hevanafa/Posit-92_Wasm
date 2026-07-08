@@ -79,9 +79,6 @@ var
   lastKeyStates: set of byte;
   currentInput: string;
 
-  stringBuffer: array[0..255] of byte;
-  stringBufferLength: word;
-
   renderSnow: boolean;
   snowflakes: array[0..99] of TSnowParticle;
   nextSpawnTick: double;
@@ -287,12 +284,10 @@ begin
   
   if prog = 'CLS' then Cls
   else if prog = 'DATE' then begin
-    QueryDate;
-    PrintLn(strPtrToString(@stringBuffer, stringBufferLength))
+    PrintLn(QueryDate)
 
   end else if prog = 'TIME' then begin
-    QueryTime;
-    PrintLn(strPtrToString(@stringBuffer, stringBufferLength))
+    PrintLn(QueryTime);
 
   end else if prog = 'HELP' then begin
     lastColour := currentColour;
@@ -461,7 +456,6 @@ begin
   snowflakes[idx].size := 1 + random(3);
   snowflakes[idx].brightness := trunc((0.5 + random / 2) * 255)
 end;
-
 
 
 procedure OnPreload;
