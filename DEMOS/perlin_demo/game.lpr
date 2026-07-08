@@ -47,7 +47,6 @@ var
 
   gamePerlin: TPerlin;
   noiseCache, imgSmallNoise: longint;  { image handle }
-  blackFont: TBMFont;
 
 
 procedure DrawMouse;
@@ -57,7 +56,10 @@ end;
 
 procedure OnPreload;
 begin
-  { TODO: Load the assets }
+  imgCursor := RequestImage('assets/images/cursor.png');
+
+  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
+  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
 procedure OnReady;
@@ -72,8 +74,9 @@ var
 begin
   hideCursor;
 
-  blackFont := DefaultFontPtr^;
-  blackFont.texHandle := CopyTexture(DefaultFontPtr^.texHandle);
+  { blackFont := DefaultFontPtr^;
+  blackFont.texHandle := CopyTexture(DefaultFontPtr^.texHandle); }
+  CloneBMFont(DefaultFontPtr^, DefaultFontGlyphsPtr^, blackFont, blackFontGlyphs);
   replaceColour(blackFont.texHandle, white, black);
 
   { Initialise game state here }
@@ -139,7 +142,7 @@ begin
   rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), white);
 
   if (getActiveWidget <> thisWidgetID) and (getHotWidget <> thisWidgetID) then
-    printBMFont(blackFont, DefaultFontGlyphsPtr^, caption, trunc(zone.x + 4), trunc(zone.y + 4))
+    printBMFont(blackFont, blackFontGlyphs, caption, trunc(zone.x + 4), trunc(zone.y + 4))
   else
     TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
 
