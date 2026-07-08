@@ -46,6 +46,10 @@ function RequestImage(const path: string): longint;
 procedure JsRequestBMFontLegacy(bmfontHandle: longint; fontPtr: PBMFontLegacy; fontGlyphsPtr: PBMFontGlyph); external 'env' name 'JsRequestBMFont';
 procedure RequestBMFontLegacy(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyph);
 
+function GetBMFontBufferPtr: pointer; public name 'GetBMFontBufferPtr';
+function GetBMFontBufferLen: smallint; public name 'GetBMFontBufferLen';
+procedure SetBMFontBufferLen(value: smallint); public name 'SetBMFontBufferLen';
+
 procedure JsRequestSound(sndHandle: longint); external 'env' name 'JsRequestSound';
 function RequestSound(const path: string): longint;
 
@@ -70,8 +74,10 @@ var
   bmfonts: array[1..9] of TBMFontEntry;
   sounds: array[1..255] of TSoundEntry;
 
-  assetReadyCount,
-  assetTotalCount: longword;
+  assetReadyCount, assetTotalCount: longword;
+
+  bmfontBuffer: array[0..32767] of byte;
+  bmfontBufferLen: smallint;
 
 function GetAssetReadyCount: longword;
 begin
