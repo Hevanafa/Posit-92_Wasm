@@ -4,21 +4,16 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  BMFont, Loading, Fullscreen, Graphics,
-  Conv, FPS, Logger,
-  Keyboard, Mouse,
-  ImgRef, ImgRefFast,
-  ImmediateGUI, SprEffects,
-  Shapes, Timing, WasmMemMgr, VGA,
+  P92Core, P92WasmHost, P92AssetRegistry,
+  P92FPS,
+  P92Fonts, P92BMFont,
+  P92Keyboard, P92Mouse,
+  P92Graphics, P92Geometry, P92Tex, P92TexDraw, P92TexEffects,
+  P92ImmediateGUI,
+  P92Timing, P92VGA,
   Assets, Perlin;
 
 type
-  TGameStates = (
-    GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
-  );
-
   TDemoStates = (
     DemoStateStatic2D = 1,
     DemoStateDynamic2D = 2,
@@ -26,10 +21,6 @@ type
   );
 
 const
-  SC_ESC = $01;
-  SC_SPACE = $39;
-  SC_ENTER = $1C;
-
   CornflowerBlue = $FF6495ED;
   TurboPascalBlue = $FF0000AA;
   White = $FFFFFFFF;
@@ -43,7 +34,6 @@ var
   lastEsc: boolean;
 
   { Game state variables }
-  actualGameState: TGameStates;
   gameTime: double;
   actualDemoState: TDemoStates;
 
@@ -52,59 +42,41 @@ var
   blackFont: TBMFont;
 
 
-{ Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure hideCursor; external 'env' name 'hideCursor';
-procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
-procedure loadAssets; external 'env' name 'loadAssets';
-
-procedure drawFPS;
-begin
-  printDefault('FPS:' + i32str(getLastFPS), 160, 0);
-end;
-
-procedure drawMouse;
+procedure DrawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure beginLoadingState;
+procedure OnPreload;
 begin
-  actualGameState := GameStateLoading;
-  fitCanvas;
-  loadAssets
+  { TODO: Load the assets }
 end;
 
-procedure beginPlayingState;
+procedure OnReady;
 const
   scale: double = 0.05;  { Smaller = more zoomed out }
 var
   a, b: smallint;
 
-  imgNoiseCache: PImageRef;
+  imgNoiseCache: PSoftwareTex;
   noiseValue: double;
   grey: byte;
 begin
   hideCursor;
-  fitCanvas;
 
-  initImmediateGUI;
-  guiSetFont(defaultFont, defaultFontGlyphs);
-
-  blackFont := defaultFont;
-  blackFont.imgHandle := copyImage(defaultFont.imgHandle);
-  replaceColour(blackFont.imgHandle, white, black);
+  blackFont := DefaultFontPtr^;
+  blackFont.texHandle := CopyTexture(DefaultFontPtr^.texHandle);
+  replaceColour(blackFont.texHandle, white, black);
 
   { Initialise game state here }
-  actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
   actualDemoState := DemoStateDynamic2D;
   initPerlin(gamePerlin, trunc(getTimer));
 
   { Only used in the static 2D demo }
-  noiseCache := newImage(vgaWidth div 2, vgaHeight div 2);
-  imgNoiseCache := getImagePtr(noiseCache);
+  noiseCache := NewTexture(vgaWidth div 2, vgaHeight div 2);
+  imgNoiseCache := GetTexturePtr(noiseCache);
 
   for b:=0 to vgaHeight div 2 - 1 do
   for a:=0 to vgaWidth div 2 - 1 do begin
@@ -120,7 +92,7 @@ begin
       or grey);
   end;
 
-  imgSmallNoise := newImage(vgaWidth div 4, vgaHeight div 4);
+  imgSmallNoise := NewTexture(vgaWidth div 4, vgaHeight div 4);
 end;
 
 function DemoButton(
@@ -132,8 +104,6 @@ var
   thisWidgetID: integer;
   buttonColour: longword;
 begin
-  assertFontSet;
-
   zone.x := x;
   zone.y := y;
   zone.width := width;
@@ -161,7 +131,7 @@ begin
   rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), white);
 
   if (getActiveWidget <> thisWidgetID) and (getHotWidget <> thisWidgetID) then
-    printBMFont(blackFont, defaultFontGlyphs, caption, trunc(zone.x + 4), trunc(zone.y + 4))
+    printBMFont(blackFont, DefaultFontGlyphsPtr^, caption, trunc(zone.x + 4), trunc(zone.y + 4))
   else
     TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
 
@@ -173,44 +143,19 @@ begin
 end;
 
 
-procedure init;
+procedure Update;
 begin
-  initHeapMgr;
-  initDeltaTime;
-  initFPSCounter
-end;
+  if lastEsc <> isKeyDown(SC_ESCAPE) then begin
+    lastEsc := isKeyDown(SC_ESCAPE);
 
-procedure afterInit;
-begin
-  beginPlayingState
-end;
-
-procedure update;
-begin
-  updateDeltaTime;
-  incrementFPS;
-
-  { Handle inputs }
-  updateGUILastMouseButton;
-  updateMouse;
-  updateGUIMousePoint;
-
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
-
-    if lastEsc then begin
-      writeLog('ESC is pressed!');
-      signalDone
-    end;
+    if lastEsc then signalDone;
   end;
 
   { Handle game state updates }
-  gameTime := gameTime + dt;
-
-  resetWidgetIndices
+  gameTime := gameTime + DeltaTime
 end;
 
-procedure draw;
+procedure Draw;
 var
   w: integer;
   s: string;
@@ -218,13 +163,9 @@ var
   grey: byte;
   a, b: smallint;
   buttonColour: longword;
-  image: PImageRef;
+  texture: PSoftwareTex;
   offsetX, offsetY: double;
 begin
-  if actualGameState = GameStateLoading then begin
-    renderLoadingScreen; exit
-  end;
-
   cls(TurboPascalBlue);
 
   if actualDemoState = DemoStateStatic2D then
@@ -243,7 +184,7 @@ begin
 
   if actualDemoState = DemoStateDynamic2D then begin
     sprClear(imgSmallNoise, $00000000);
-    image := getImagePtr(imgSmallNoise);
+    texture := GetTexturePtr(imgSmallNoise);
 
     offsetX := getTimer * 2.0;
     offsetY := getTimer * 1.5;
@@ -257,7 +198,7 @@ begin
         (b + offsetY) * 0.05);
 
       grey := round(noiseValue * 255);
-      unsafeSprPset(image, a, b, $FF000000 or (grey shl 16) or (grey shl 8) or grey)
+      unsafeSprPset(texture, a, b, $FF000000 or (grey shl 16) or (grey shl 8) or grey)
     end;
 
     sprStretch(imgSmallNoise, 0, 0, vgaWidth, vgaHeight);
@@ -297,9 +238,15 @@ begin
 
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], (vgaWidth - getImageWidth(imgDosuEXE[1])) div 2, (vgaHeight - getImageHeight(imgDosuEXE[0])) div 2)
+    spr(
+      imgDosuEXE[1],
+      (vgaWidth - GetTextureWidth(imgDosuEXE[1])) div 2,
+      (vgaHeight - GetTextureHeight(imgDosuEXE[0])) div 2)
   else
-    spr(imgDosuEXE[0], (vgaWidth - getImageWidth(imgDosuEXE[0])) div 2, (vgaHeight - getImageHeight(imgDosuEXE[0])) div 2);
+    spr(
+      imgDosuEXE[0],
+      (vgaWidth - GetTextureWidth(imgDosuEXE[0])) div 2,
+      (vgaHeight - GetTextureHeight(imgDosuEXE[0])) div 2);
 
   s := 'Perlin noise in Posit-92!';
   w := measureDefault(s);
@@ -307,15 +254,11 @@ begin
 
   drawMouse;
   drawFPS;
-
-  resetActiveWidget;
-
-  vgaFlush
 end;
 
 exports
-  beginLoadingState,
-  init, afterInit, update, draw;
+  OnPreload, OnReady,
+  Update, Draw;
 
 begin
 { Starting point is intentionally left empty }

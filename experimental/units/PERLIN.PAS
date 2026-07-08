@@ -18,7 +18,7 @@ function noise1D(var p: TPerlin; const x: double): double;
 
 implementation
 
-uses Maths;
+uses P92Maths;
 
 procedure initPerlin(var p: TPerlin; const seed: longword);
 var

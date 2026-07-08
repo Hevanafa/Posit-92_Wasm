@@ -26,7 +26,7 @@
     </RunParams>
     <Units>
       <Unit>
-        <Filename Value="game.pas"/>
+        <Filename Value="game.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Game"/>
       </Unit>
@@ -60,9 +60,9 @@
     </Linking>
     <Other>
       <WriteFPCLogo Value="False"/>
-      <CustomOptions Value="-dP92_WASM"/>
+      <CustomOptions Value="-dP92_WASM -dP92_IMMEDIATE_GUI"/>
       <ExecuteAfter>
-        <Command Value="cmd /c move /Y game_wasm game.wasm"/>
+        <Command Value="cmd.exe /c move /Y game_wasm game.wasm"/>
       </ExecuteAfter>
     </Other>
   </CompilerOptions>
