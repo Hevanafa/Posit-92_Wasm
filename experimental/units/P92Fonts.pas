@@ -7,7 +7,7 @@ uses P92BMFont;
 procedure LoadDefaultFont;
 
 function DefaultFontPtr: PBMFontLegacy;
-function DefaultFontGlyphsPtr: PBMFontGlyphLegacy;
+function DefaultFontGlyphsPtr: PBMFontGlyph;
 
 procedure PrintDefault(const text: string; const x, y: integer);
 procedure PrintDefaultCentred(const text: string; const cx, y: integer);
@@ -21,17 +21,13 @@ implementation
 uses P92AssetRegistry;
 
 var
-  defaultFont: TBMFontLegacy;
-  defaultFontGlyphs: array[0..255] of TBMFontGlyphLegacy;
+  defaultFont: TBMFont;
 
 procedure LoadDefaultFont;
 var
   a: word;
 begin
-  defaultFont := default(TBMFontLegacy);
-
-  for a:=0 to high(defaultFontGlyphs) do
-    defaultFontGlyphs[a] := default(TBMFontGlyphLegacy);
+  defaultFont := default(TBMFont);
 
   RequestBMFontLegacy(
     'assets/fonts/nokia_cellphone_fc_8.txt',
@@ -41,11 +37,6 @@ end;
 function DefaultFontPtr: PBMFontLegacy;
 begin
   DefaultFontPtr := @defaultFont
-end;
-
-function DefaultFontGlyphsPtr: PBMFontGlyphLegacy;
-begin
-  DefaultFontGlyphsPtr := @defaultFontGlyphs
 end;
 
 procedure PrintDefault(const text: string; const x, y: integer);

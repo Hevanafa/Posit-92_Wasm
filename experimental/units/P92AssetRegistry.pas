@@ -20,7 +20,7 @@ type
 
   TBMFontEntry = record
     fontPtr: PBMFontLegacy;
-    glyphsPtr: PBMFontGlyphLegacy;
+    glyphsPtr: PBMFontGlyph;
     status: TAssetStatus;
     errorCode: smallint;
   end;
@@ -43,8 +43,8 @@ function FindUnusedTextureSlot: longint;
 procedure JsRequestImage(texHandle: longint); external 'env' name 'JsRequestImage';
 function RequestImage(const path: string): longint;
 
-procedure JsRequestBMFontLegacy(bmfontHandle: longint; fontPtr: PBMFontLegacy; fontGlyphsPtr: PBMFontGlyphLegacy); external 'env' name 'JsRequestBMFont';
-procedure RequestBMFontLegacy(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyphLegacy);
+procedure JsRequestBMFontLegacy(bmfontHandle: longint; fontPtr: PBMFontLegacy; fontGlyphsPtr: PBMFontGlyph); external 'env' name 'JsRequestBMFont';
+procedure RequestBMFontLegacy(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyph);
 
 procedure JsRequestSound(sndHandle: longint); external 'env' name 'JsRequestSound';
 function RequestSound(const path: string): longint;
@@ -176,7 +176,17 @@ begin
   RequestImage := texHandle
 end;
 
-procedure RequestBMFontLegacy(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyphLegacy);
+
+procedure RequestBMFont(const path: string);
+begin
+  WriteInteropString(path);
+
+  { TODO: Request to JS }
+
+  inc(assetTotalCount);
+end;
+
+procedure RequestBMFontLegacy(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyph);
 var
   bmfontHandle: longint;
 begin
