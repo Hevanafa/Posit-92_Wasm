@@ -44,7 +44,7 @@ uses
   P92Conversions, P92WasmMemMgr,
   P92FPS, P92Loading, P92Logger,
   P92Sounds, P92InteropBuf, P92Timing,
-  P92Mouse,
+  P92Keyboard, P92Mouse,
   P92TexDraw, P92VGA
 {$ifdef P92_IMMEDIATE_GUI}
   , P92ImmediateGUI
@@ -56,6 +56,10 @@ uses
 
 var
   cgaFontHandle: longint;
+
+  { Screenshot feature }
+  lastF2: boolean;
+  enableScreenshotHotkey: boolean;
 
 function GetCgaFontHandle: longint;
 begin
@@ -80,6 +84,8 @@ begin
 
   InitAssetRegistry;
   InitSounds;
+
+  enableScreenshotHotkey := GetBootOptionBoolean('enableScreenshotHotkey');
 
 {$ifdef P92_WEBGL}
   SetupWebGLViewport;
@@ -152,10 +158,17 @@ begin
     UpdateGUILastMouseButton;
     UpdateMouse;
     UpdateGUIMousePoint;
-
 {$else}
     UpdateMouse;
 {$endif}
+
+    if enableScreenshotHotkey then begin
+      if lastF2 <> isKeyDown(SC_F2) then begin
+        lastF2 := isKeyDown(SC_F2);
+
+        if lastF2 then JsTakeScreenshot;
+      end;
+    end;
   end;
 end;
 

@@ -20,8 +20,6 @@ const
   CornflowerBlue = $FF6495ED;
 
 var
-  lastF2: boolean;
-
   { Game state variables }
   gameTime: double;
 
@@ -48,12 +46,6 @@ end;
 procedure Update;
 begin
   if isKeyDown(SC_ESCAPE) then signalDone;
-
-  if lastF2 <> isKeyDown(SC_F2) then begin
-    lastF2 := isKeyDown(SC_F2);
-
-    if lastF2 then JsTakeScreenshot;
-  end;
 
   { Handle game state updates }
   gameTime := gameTime + DeltaTime
