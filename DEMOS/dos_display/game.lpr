@@ -271,8 +271,8 @@ var
   words: array[0..3] of ShortString;
   prog: string;
 begin
-  cmd := trim(cmd);
-  split(cmd, ' ', words);
+  cmd := Trim(cmd);
+  Split(cmd, ' ', words);
   prog := words[0];
   
   if prog = 'CLS' then Cls

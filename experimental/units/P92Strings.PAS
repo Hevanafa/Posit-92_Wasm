@@ -8,28 +8,29 @@
 unit P92Strings;
 
 {$Mode ObjFPC}
-{$H-}{$J-}
+{$H-}  { Uses ShortString }
+{$J-}
 
 interface
 
-function split(text, delim: string; var output: array of string): word;
-function contains(const source, searchStr: string): boolean;
-function startsWith(const source, searchStr: string): boolean;
-function endsWith(const source, searchStr: string): boolean;
-function replaceAll(const source, searchStr, replaceStr: string): string;
-function trimStart(const txt: string): string;
-function trimEnd(const txt: string): string;
-function trim(const txt: string): string;
-function lower(const txt: string): string;
-function upper(const txt: string): string;
-function padStart(text: string; const targetLength: word; const padString: string): string;
-function padEnd(text: string; const targetLength: word; const padString: string): string;
+function Split(text, delim: string; var output: array of string): word;
+function Contains(const source, searchStr: string): boolean;
+function StartsWith(const source, searchStr: string): boolean;
+function EndsWith(const source, searchStr: string): boolean;
+function ReplaceAll(const source, searchStr, replaceStr: string): string;
+function TrimStart(const txt: string): string;
+function TrimEnd(const txt: string): string;
+function Trim(const txt: string): string;
+function Lower(const txt: string): string;
+function Upper(const txt: string): string;
+function PadStart(text: string; const targetLength: word; const padString: string): string;
+function PadEnd(text: string; const targetLength: word; const padString: string): string;
 
 
 implementation
 
 { returns the number of elements }
-function split(text, delim: string; var output: array of string): word;
+function Split(text, delim: string; var output: array of string): word;
 var
   i, p, startPos: word;
   delimLen: word;
@@ -47,7 +48,7 @@ begin
     token := copy(text, startPos, i+p-2-startPos+1);
     output[result] := token;
     inc(result);
-    split := result;
+    Split := result;
     if result > high(output) then exit;
 
     i:=i+p-1+delimLen;
@@ -60,25 +61,25 @@ begin
     output[result] := token;
     inc(result)
   end;
-  split := result
+  Split := result
 end;
 
-function contains(const source, searchStr: string): boolean;
+function Contains(const source, searchStr: string): boolean;
 begin
-  contains := pos(searchStr, source) > 0
+  Contains := pos(searchStr, source) > 0
 end;
 
-function startsWith(const source, searchStr: string): boolean;
+function StartsWith(const source, searchStr: string): boolean;
 begin
-  startsWith := copy(source, 1, length(searchStr)) = searchStr
+  StartsWith := copy(source, 1, length(searchStr)) = searchStr
 end;
 
-function endsWith(const source, searchStr: string): boolean;
+function EndsWith(const source, searchStr: string): boolean;
 begin
-  endsWith := copy(source, length(source) - length(searchStr) + 1, length(searchStr)) = searchStr
+  EndsWith := copy(source, length(source) - length(searchStr) + 1, length(searchStr)) = searchStr
 end;
 
-function replaceAll(const source, searchStr, replaceStr: string): string;
+function ReplaceAll(const source, searchStr, replaceStr: string): string;
 var
   i, foundPos, searchLen: word;
 begin
@@ -97,11 +98,11 @@ begin
     end;
   end;
 
-  replaceAll := result
+  ReplaceAll := result
 end;
 
 
-function trimStart(const txt: string): string;
+function TrimStart(const txt: string): string;
 var
   a, len: smallint;
 begin
@@ -109,26 +110,26 @@ begin
   a := 1;
   while (a <= len) and (txt[a] = ' ') do
     inc(a);
-  trimStart := copy(txt, a, len - a + 1)
+  TrimStart := copy(txt, a, len - a + 1)
 end;
 
-function trimEnd(const txt: string): string;
+function TrimEnd(const txt: string): string;
 var
   a: smallint;
 begin
   a := length(txt);
   while (a>0) and (txt[a] = ' ') do
     dec(a);
-  trimEnd := copy(txt, 1, a)
+  TrimEnd := copy(txt, 1, a)
 end;
 
-function trim(const txt: string): string;
+function Trim(const txt: string): string;
 begin
-  trim := trimEnd(trimStart(txt));
+  Trim := TrimEnd(TrimStart(txt));
 end;
 
 { Similar to Lua & Python's str.lower() }
-function lower(const txt: string): string;
+function Lower(const txt: string): string;
 var
   a: word;
 begin
@@ -136,11 +137,11 @@ begin
   for a:=1 to length(result) do
     if ('A' <= result[a]) and (result[a] <= 'Z') then
       result[a] := chr(ord(result[a]) + 32);
-  lower := result
+  Lower := result
 end;
 
 { Similar to Lua & Python's str.lower() }
-function upper(const txt: string): string;
+function Upper(const txt: string): string;
 var
   a: word;
 begin
@@ -148,23 +149,23 @@ begin
   for a:=1 to length(result) do
     if ('a' <= result[a]) and (result[a] <= 'z') then
       result[a] := chr(ord(result[a]) - 32);
-  upper := result
+  Upper := result
 end;
 
-function padStart(text: string; const targetLength: word; const padString: string): string;
+function PadStart(text: string; const targetLength: word; const padString: string): string;
 begin
   while length(text) < targetLength do
     text := padString + text;
 
-  padStart := text
+  PadStart := text
 end;
 
-function padEnd(text: string; const targetLength: word; const padString: string): string;
+function PadEnd(text: string; const targetLength: word; const padString: string): string;
 begin
   while length(text) < targetLength do
     text := text + padString;
 
-  padEnd := text
+  PadEnd := text
 end;
 
 end.
