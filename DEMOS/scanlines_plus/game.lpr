@@ -70,7 +70,7 @@ begin
     hline(0, VgaWidth - 1, a, colour);
   end;
 
-  scale := 1.0 + abs(sin(frac(GetTimer) * 2 * PI)) * 0.2;
+  scale := 1.0 + abs(sin(frac(GetTimer) * 2 * PI)) * 0.25;
 
   { SprOutline(imgSpecimenP92[1], 148, 84, $FFFFFFFF) }
   x := 160;
@@ -83,7 +83,7 @@ begin
 
   SprStretch(
     imgSpecimenP92[frameIdx],
-    x, y,
+    x - w div 2, y - h div 2,
     w, h);
 
   s := 'Hello world!';
