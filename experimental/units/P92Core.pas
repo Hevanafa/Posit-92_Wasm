@@ -6,16 +6,6 @@ unit P92Core;
 
 interface
 
-type
-  TEngineRunStates = (
-    ersBoot = 1,
-    ersPreload = 2,
-    ersReady = 3
-  );
-
-var
-  engineRunState: TEngineRunStates;
-
 function GetBootOptionBoolean(key: string): boolean;
 function JsGetBootOptionBoolean: boolean; external 'env' name 'JsGetBootOptionBoolean';
 
@@ -54,7 +44,17 @@ uses
 {$endif}
   ;
 
+type
+  TEngineRunStates = (
+    ersBoot = 1,
+    ersPreload = 2,
+    ersReady = 3
+  );
+
 var
+  engineRunState: TEngineRunStates;
+
+  { Default boot font }
   cgaFontHandle: longint;
 
   { Screenshot feature }
@@ -85,12 +85,12 @@ begin
   InitAssetRegistry;
   InitSounds;
 
-  enableScreenshotHotkey := GetBootOptionBoolean('enableScreenshotHotkey');
-
 {$ifdef P92_WEBGL}
   SetupWebGLViewport;
   SetupWebGLShaders;
 {$endif}
+
+  enableScreenshotHotkey := GetBootOptionBoolean('enableScreenshotHotkey');
 end;
 
 procedure SetCGAFontHandle(value: longint);
