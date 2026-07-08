@@ -79,10 +79,11 @@ procedure PascalSoundFailed(sndHandle: longint; errorCode: smallint); public nam
 implementation
 
 uses
+  SysUtils,
   P92Conversions, P92InteropBuf, P92Logger, P92Panic;
 
 var
-  bmfonts: array[1..9] of TBMFontLegacyEntry;
+  bmfonts: array[1..9] of TBMFontEntry;
   sounds: array[1..255] of TSoundEntry;
 
   assetReadyCount, assetTotalCount: longword;
@@ -131,7 +132,7 @@ begin
     textures[a] := default(TSoftwareTexEntry);
 
   for a:=1 to high(bmfonts) do
-    bmfonts[a] := default(TBMFontLegacyEntry);
+    bmfonts[a] := default(TBMFontEntry);
 
   for a:=1 to high(sounds) do
     sounds[a] := default(TSoundEntry);
@@ -304,12 +305,21 @@ begin
 end;
 
 procedure PascalBMFontLoaded(bmfontHandle: longint);
+var
+  s: string;
+  ary: array of string;
 begin
   bmfonts[bmfontHandle].status := AssetStatusReady;
   bmfonts[bmfontHandle].errorCode := 0;
 
-  bmfonts[bmfontHandle].fontPtr^.texHandle :=
-    RequestImage(ReadInteropString); { bmfonts[bmfontHandle].fontPtr^.filename }
+  { TODO: Parse BMFont data }
+  setstring(s, PAnsiChar(@bmfontBuffer[0]), bmfontBufferLen);
+  ary := s.Split(#10);
+  WriteLog(ary[1]);
+
+  { TODO: Request texture download }
+  { bmfonts[bmfontHandle].fontPtr^.texHandle :=
+    RequestImage(ReadInteropString); }
 
   inc(assetReadyCount);
   WriteLog('BMFont: inc assetReadyCount');
