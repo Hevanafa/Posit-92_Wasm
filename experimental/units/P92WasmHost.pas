@@ -21,6 +21,8 @@ procedure HideLoadingOverlay; external 'env' name 'HideLoadingOverlay';
 procedure ToggleFullscreen; external 'env' name 'ToggleFullscreen';
 function GetFullscreenState: boolean; external 'env' name 'GetFullscreenState';
 procedure EndFullscreen; external 'env' name 'EndFullscreen';
+
+procedure JsTakeScreenshot; external 'env' name 'JsTakeScreenshot';
 {$endif}
 
 implementation

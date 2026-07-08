@@ -79,7 +79,7 @@ type WasmImports = {
     GetFullscreenState: () => boolean,
     EndFullscreen: () => void,
 
-    TakeScreenshot: () => void,
+    JsTakeScreenshot: () => void,
 
     // P92Core
     HostCallOnPreload: () => void;
@@ -234,7 +234,7 @@ class Posit92 {
       GetFullscreenState: this.#GetFullscreenState.bind(this),
       EndFullscreen: this.#EndFullscreen.bind(this),
 
-      TakeScreenshot: this.#TakeScreenshot.bind(this),
+      JsTakeScreenshot: this.#TakeScreenshot.bind(this),
 
       // Keyboard
       IsKeyDown: this.#IsKeyDown.bind(this),

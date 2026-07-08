@@ -26,8 +26,6 @@ var
   gameTime: double;
 
 
-procedure takeScreenshot; external 'env' name 'takeScreenshot';
-
 procedure DrawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
@@ -54,7 +52,7 @@ begin
   if lastF2 <> isKeyDown(SC_F2) then begin
     lastF2 := isKeyDown(SC_F2);
 
-    if lastF2 then takeScreenshot;
+    if lastF2 then JsTakeScreenshot;
   end;
 
   { Handle game state updates }
