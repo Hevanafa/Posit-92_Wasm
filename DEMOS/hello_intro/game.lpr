@@ -1,7 +1,7 @@
 {
   Boilerplate project with the intro sequence
   Part of Posit-92 game engine
-  Mixins: bmfont
+  Mixins: bmfont, sound
 }
 
 library Game;
