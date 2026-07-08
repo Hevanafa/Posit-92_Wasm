@@ -1,3 +1,9 @@
+{
+  Screenshot demo
+  Part of Posit-92 game engine
+  Mixins: bmfont, sound
+}
+
 library Game;
 
 {$Mode ObjFPC}
