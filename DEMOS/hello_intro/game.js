@@ -1,22 +1,10 @@
 "use strict";
 
-/**
- * Experimental boilerplate with intro
- */
-class Game extends BMFontMixin(Posit92) {
-  /**
-   * @override
-   */
-  // OnWasmProgress(loaded, total) {
-  //   const loadedKB = Math.ceil(loaded / 1024);
-  //   const totalKB = Math.ceil(total / 1024);
-
-  //   this.SetLoadingText(`Downloading engine... ${loadedKB} / ${totalKB} KB`)
-  // }
+class Game extends SoundMixin(BMFontMixin(Posit92)) {
 }
 
 async function Main() {
-  const game = new Game("game", { skipIntro: false });
+  const game = new Game("game");
   game.Start();
 }
 

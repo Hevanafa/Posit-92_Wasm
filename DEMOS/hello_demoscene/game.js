@@ -9,7 +9,7 @@ class Game extends SoundMixin(BMFontMixin(Posit92)) {
 }
 
 async function Main() {
-  const game = new Game("game", { skipIntro: true, fps: 0 });
+  const game = new Game("game");
   game.Start();
 }
 
