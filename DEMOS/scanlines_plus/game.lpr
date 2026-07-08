@@ -11,9 +11,9 @@ library Game;
 
 uses
   P92Core, P92Fonts, P92AssetRegistry, P92WasmHost,
-  P92Logger, P92BMFont,
+  P92Logger, P92BMFont, P92Iif,
   P92Keyboard, P92Mouse,
-  P92Graphics, P92TexDraw, P92TexEffects, P92Colour,
+  P92Graphics, P92Tex, P92TexDraw, P92TexEffects, P92Colour,
   P92Timing, P92FPS, P92VGA,
   Assets;
 
@@ -52,12 +52,15 @@ end;
 procedure Draw;
 var
   a: word;
-  w: word;
   c: char;
   s: string;
   hue, v: double;
   left: smallint;
+  frameIdx: smallint;
   colour: longword;
+  x, y: smallint;
+  w, h: smallint;
+  scale: double;
 begin
   { Cls($FF6495ED); }
 
@@ -67,10 +70,21 @@ begin
     hline(0, VgaWidth - 1, a, colour);
   end;
 
-  if (trunc(gameTime * 4) and 1) > 0 then
-    SprOutline(imgSpecimenP92[1], 148, 84, $FFFFFFFF)
-  else
-    SprOutline(imgSpecimenP92[0], 148, 84, $FFFFFFFF);
+  scale := 1.0 + abs(sin(frac(GetTimer) * 2 * PI)) * 0.2;
+
+  { SprOutline(imgSpecimenP92[1], 148, 84, $FFFFFFFF) }
+  x := 160;
+  y := 100;
+
+  w := trunc(GetTextureWidth(imgSpecimenP92[1]) * scale);
+  h := trunc(GetTextureHeight(imgSpecimenP92[1]) * scale);
+
+  frameIdx := U16Iif((trunc(gameTime * 4) and 1) > 0, 1, 0);
+
+  SprStretch(
+    imgSpecimenP92[frameIdx],
+    x, y,
+    w, h);
 
   s := 'Hello world!';
   w := MeasureDefault(s);
