@@ -14,7 +14,7 @@ class Game extends SoundMixin(BMFontMixin(Posit92)) {
   SetupImportObject() {
     super.SetupImportObject();
 
-    const { env } = this.WasmInstance.exports;
+    const { env } = this.WasmImportObject;
 
     Object.assign(env, {
       JsQueryDate: () => {
@@ -34,7 +34,7 @@ class Game extends SoundMixin(BMFontMixin(Posit92)) {
 }
 
 async function Main() {
-  const game = new Game("game");
+  const game = new Game("game", { defaultFont: true });
   await game.Start();
 }
 
