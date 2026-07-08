@@ -31,7 +31,10 @@ end;
 
 procedure OnPreload;
 begin
-  { TODO: Load the game assets }
+  imgCursor := RequestImage('assets/images/cursor.png');
+
+  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
+  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
 procedure OnReady;
