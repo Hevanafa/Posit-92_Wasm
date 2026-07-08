@@ -49,11 +49,13 @@ function FindUnusedTextureSlot: longint;
 procedure JsRequestImage(texHandle: longint); external 'env' name 'JsRequestImage';
 function RequestImage(const path: string): longint;
 
-procedure JsRequestBMFontLegacy(bmfontHandle: longint; fontPtr: PBMFontLegacy; fontGlyphsPtr: PBMFontGlyph); external 'env' name 'JsRequestBMFont';
+{
+procedure JsRequestBMFontLegacy(bmfontHandle: longint; fontPtr: PBMFontLegacy; fontGlyphsPtr: PBMFontGlyph); external 'env' name 'JsRequestBMFontLegacy';
 procedure RequestBMFontLegacy(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyph);
+}
 
-{ procedure JsRequestBMFont(bmfontHandle: longint); external 'env' name 'JsRequestBMFont'; }
-{ TODO: procedure RequestBMFont(const path: string); }
+procedure JsRequestBMFont(bmfontHandle: longint); external 'env' name 'JsRequestBMFont';
+procedure RequestBMFont(const path: string);
 
 function GetBMFontBufferPtr: pointer; public name 'GetBMFontBufferPtr';
 function GetBMFontBufferLen: smallint; public name 'GetBMFontBufferLen';
@@ -195,7 +197,6 @@ begin
 end;
 
 
-{
 procedure RequestBMFont(const path: string);
 var
   bmfontHandle: longint;
@@ -208,8 +209,8 @@ begin
   JsRequestBMFont(bmfontHandle);
   inc(assetTotalCount)
 end;
-}
 
+{
 procedure RequestBMFontLegacy(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyph);
 var
   bmfontHandle: longint;
@@ -239,6 +240,7 @@ begin
   WriteInteropString(path);
   JsRequestBMFontLegacy(bmfontHandle, fontPtr, fontGlyphsPtr);
 end;
+}
 
 function GetBMFontBufferPtr: pointer;
 begin
