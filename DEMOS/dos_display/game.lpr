@@ -5,13 +5,14 @@ library Game;
 
 uses
   P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
-  P92FPS,
+  P92Conversions, P92FPS,
   P92Graphics,
   P92Logger,
   P92Keyboard, P92Mouse,
   P92Tex, P92TexDraw,
   P92Strings, P92Sounds, P92Timing,
-  P92Version, VGA, Assets;
+  P92Version, P92WasmMemMgr, P92WasmHeap,
+  VGA, Assets;
 
 const
   BufferWidth = 40;
@@ -79,18 +80,13 @@ var
   snowflakes: array[0..99] of TSnowParticle;
   nextSpawnTick: double;
 
-{ Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure hideCursor; external 'env' name 'hideCursor';
-procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
-procedure loadAssets; external 'env' name 'loadAssets';
-
 procedure queryDate; external 'env' name 'queryDate';
 procedure queryTime; external 'env' name 'queryTime';
 
-function makeColour(const fg, bg: byte): byte;
+
+function MakeColour(const fg, bg: byte): byte;
 begin
-  makeColour := (bg shl 4) or fg
+  MakeColour := (bg shl 4) or fg
 end;
 
 procedure Cls;
@@ -190,7 +186,7 @@ begin
   end;
 end;
 
-procedure scrollBuffer;
+procedure ScrollBuffer;
 var
   row, col: integer;
 begin
@@ -209,20 +205,20 @@ begin
   cursorTop := BufferHeight - 1
 end;
 
-procedure incCursorTop;
+procedure IncCursorTop;
 begin
   cursorLeft := 0;
   inc(cursorTop);
 
   if cursorTop >= BufferHeight then
-    scrollBuffer;
+    ScrollBuffer;
 end;
 
-procedure incCursorLeft;
+procedure IncCursorLeft;
 begin
   inc(cursorLeft);
   if cursorLeft >= BufferWidth then
-    incCursorTop;
+    IncCursorTop;
 end;
 
 procedure textColour(const colour: byte);
@@ -230,24 +226,24 @@ begin
   currentColour := (currentColour and $F0) or (colour and $0F)
 end;
 
-procedure print(const text: string);
+procedure Print(const text: string);
 var
   a: word;
 begin
   for a:=1 to length(text) do begin
     charBuffer[cursorTop * BufferWidth + cursorLeft] := text[a];
     colourBuffer[cursorTop * BufferWidth + cursorLeft] := currentColour;
-    incCursorLeft
+    IncCursorLeft
   end;
 end;
 
-procedure printLn(const text: string);
+procedure PrintLn(const text: string);
 begin
-  print(text);
-  incCursorTop
+  Print(text);
+  IncCursorTop
 end;
 
-procedure updatePromptLine;
+procedure UpdatePromptLine;
 var
   a: word;
 begin
@@ -262,7 +258,7 @@ begin
   cursorLeft := length(currentInput) + 2
 end;
 
-procedure handleCommand(cmd: string);
+procedure HandleCommand(cmd: string);
 var
   lastColour: byte;
   heapSize, freeHeapSize: longword;
@@ -276,48 +272,48 @@ begin
   if prog = 'CLS' then Cls
   else if prog = 'DATE' then begin
     queryDate;
-    printLn(strPtrToString(@stringBuffer, stringBufferLength))
+    PrintLn(strPtrToString(@stringBuffer, stringBufferLength))
 
   end else if prog = 'TIME' then begin
     queryTime;
-    printLn(strPtrToString(@stringBuffer, stringBufferLength))
+    PrintLn(strPtrToString(@stringBuffer, stringBufferLength))
 
   end else if prog = 'HELP' then begin
     lastColour := currentColour;
     textColour(9);
-    printLn('Available commands');
+    PrintLn('Available commands');
 
     currentColour := lastColour;
-    printLn('');
-    printLn('  CLS  Clear screen');
-    printLn('  DATE  Display current date');
-    printLn('  TIME  Display current time');
-    printLn('  HELP  Show this help');
-    printLn('  MEM  Show memory status');
-    printLn('  FREE  Show free memory in bytes');
-    printLn('  DIR  Show a list of files & dirs');
-    printLn('  SNOW  Toggle snow background');
-    printLn('  JINGLE  Play Jingle Bells')
+    PrintLn('');
+    PrintLn('  CLS  Clear screen');
+    PrintLn('  DATE  Display current date');
+    PrintLn('  TIME  Display current time');
+    PrintLn('  HELP  Show this help');
+    PrintLn('  MEM  Show memory status');
+    PrintLn('  FREE  Show free memory in bytes');
+    PrintLn('  DIR  Show a list of files & dirs');
+    PrintLn('  SNOW  Toggle snow background');
+    PrintLn('  JINGLE  Play Jingle Bells')
 
   end else if prog = 'MEM' then begin
-    heapSize := heapEnd - heapStart;
+    heapSize := GetHeapEnd - GetHeapStart;
     freeHeapSize := GetFreeHeapSize;
 
-    printLn('Total heap: ' + i32str(heapSize div 1024) + 'KB');
-    printLn('Used: ' + i32str(heapSize - freeHeapSize) + ' bytes');
-    printLn('Free: ' + i32str(freeHeapSize) + ' bytes');
-    printLn('Heap usage: ' + toFixed((heapSize - freeHeapSize) / heapSize * 100.0, 0) + '%');
+    PrintLn('Total heap: ' + i32str(heapSize div 1024) + 'KB');
+    PrintLn('Used: ' + i32str(heapSize - freeHeapSize) + ' bytes');
+    PrintLn('Free: ' + i32str(freeHeapSize) + ' bytes');
+    PrintLn('Heap usage: ' + toFixed((heapSize - freeHeapSize) / heapSize * 100.0, 0) + '%');
 
   end else if prog = 'FREE' then begin
-    printLn(i32str(GetFreeHeapSize) + ' bytes free')
+    PrintLn(i32str(GetFreeHeapSize) + ' bytes free')
 
   end else if prog = 'DIR' then begin
-    printLn('Volume in drive C is POSIT92');
-    printLn('Directory of C:\');
-    printLn('');
-    printLn('SECRETS  <DIR>  26-12-2025  09:02');
-    printLn('  0 file(s)           0 bytes');
-    printLn('  1 dir(s)      6942067 bytes free');
+    PrintLn('Volume in drive C is POSIT92');
+    PrintLn('Directory of C:\');
+    PrintLn('');
+    PrintLn('SECRETS  <DIR>  26-12-2025  09:02');
+    PrintLn('  0 file(s)           0 bytes');
+    PrintLn('  1 dir(s)      6942067 bytes free');
 
   end else if prog = 'SNOW' then
     renderSnow := not renderSnow
@@ -325,26 +321,26 @@ begin
   else if prog = 'JINGLE' then begin
     if not getMusicPlaying then begin
       playMusic(BgmJingle);
-      printLn('Playing Jingle Bells by Chiptune Arcade...')
+      PrintLn('Playing Jingle Bells by Chiptune Arcade...')
     end;
     
   end else if prog = 'STOP' then begin
     if getMusicPlaying then begin
       stopMusic;
-      printLn('Stopping playback...')
+      PrintLn('Stopping playback...')
     end;
 
   end else
-    printLn('Unknown command: ' + prog);
+    PrintLn('Unknown command: ' + prog);
 end;
 
-procedure appendCurrentInput(const c: char);
+procedure AppendCurrentInput(const c: char);
 begin
   currentInput := currentInput + c;
-  updatePromptLine
+  UpdatePromptLine
 end;
 
-procedure checkKeys;
+procedure CheckKeys;
 var
   scancode: byte;
 begin
@@ -352,56 +348,56 @@ begin
     if isKeyDown(scancode) and not (scancode in lastKeyStates) then
       { handleKeyPress(scancode); }
       case scancode of
-        SC_A: appendCurrentInput('A');
-        SC_B: appendCurrentInput('B');
-        SC_C: appendCurrentInput('C');
-        SC_D: appendCurrentInput('D');
-        SC_E: appendCurrentInput('E');
-        SC_F: appendCurrentInput('F');
-        SC_G: appendCurrentInput('G');
-        SC_H: appendCurrentInput('H');
-        SC_I: appendCurrentInput('I');
-        SC_J: appendCurrentInput('J');
-        SC_K: appendCurrentInput('K');
-        SC_L: appendCurrentInput('L');
-        SC_M: appendCurrentInput('M');
-        SC_N: appendCurrentInput('N');
-        SC_O: appendCurrentInput('O');
-        SC_P: appendCurrentInput('P');
-        SC_Q: appendCurrentInput('Q');
-        SC_R: appendCurrentInput('R');
-        SC_S: appendCurrentInput('S');
-        SC_T: appendCurrentInput('T');
-        SC_U: appendCurrentInput('U');
-        SC_V: appendCurrentInput('V');
-        SC_W: appendCurrentInput('W');
-        SC_X: appendCurrentInput('X');
-        SC_Y: appendCurrentInput('Y');
-        SC_Z: appendCurrentInput('Z');
-        SC_SPACE: appendCurrentInput(' ');
+        SC_A: AppendCurrentInput('A');
+        SC_B: AppendCurrentInput('B');
+        SC_C: AppendCurrentInput('C');
+        SC_D: AppendCurrentInput('D');
+        SC_E: AppendCurrentInput('E');
+        SC_F: AppendCurrentInput('F');
+        SC_G: AppendCurrentInput('G');
+        SC_H: AppendCurrentInput('H');
+        SC_I: AppendCurrentInput('I');
+        SC_J: AppendCurrentInput('J');
+        SC_K: AppendCurrentInput('K');
+        SC_L: AppendCurrentInput('L');
+        SC_M: AppendCurrentInput('M');
+        SC_N: AppendCurrentInput('N');
+        SC_O: AppendCurrentInput('O');
+        SC_P: AppendCurrentInput('P');
+        SC_Q: AppendCurrentInput('Q');
+        SC_R: AppendCurrentInput('R');
+        SC_S: AppendCurrentInput('S');
+        SC_T: AppendCurrentInput('T');
+        SC_U: AppendCurrentInput('U');
+        SC_V: AppendCurrentInput('V');
+        SC_W: AppendCurrentInput('W');
+        SC_X: AppendCurrentInput('X');
+        SC_Y: AppendCurrentInput('Y');
+        SC_Z: AppendCurrentInput('Z');
+        SC_SPACE: AppendCurrentInput(' ');
 
-        SC_1: appendCurrentInput('1');
-        SC_2: appendCurrentInput('2');
-        SC_3: appendCurrentInput('3');
-        SC_4: appendCurrentInput('4');
-        SC_5: appendCurrentInput('5');
-        SC_6: appendCurrentInput('6');
-        SC_7: appendCurrentInput('7');
-        SC_8: appendCurrentInput('8');
-        SC_9: appendCurrentInput('9');
-        SC_0: appendCurrentInput('0');
+        SC_1: AppendCurrentInput('1');
+        SC_2: AppendCurrentInput('2');
+        SC_3: AppendCurrentInput('3');
+        SC_4: AppendCurrentInput('4');
+        SC_5: AppendCurrentInput('5');
+        SC_6: AppendCurrentInput('6');
+        SC_7: AppendCurrentInput('7');
+        SC_8: AppendCurrentInput('8');
+        SC_9: AppendCurrentInput('9');
+        SC_0: AppendCurrentInput('0');
 
         SC_BACKSPACE:
           if length(currentInput) > 0 then begin
             currentInput := copy(currentInput, 1, length(currentInput) - 1);
-            updatePromptLine
+            UpdatePromptLine
           end;
 
         SC_ENTER: begin
-          incCursorTop;
-          handleCommand(currentInput);
+          IncCursorTop;
+          HandleCommand(currentInput);
           currentInput := '';
-          updatePromptLine
+          UpdatePromptLine
         end
       end;
 
@@ -413,7 +409,7 @@ begin
 end;
 
 
-procedure drawFPS;
+procedure BrawFPS;
 begin
   BlitText(
     'FPS:' + i32str(getLastFPS),
@@ -421,12 +417,12 @@ begin
     palette[$0E], transparent);
 end;
 
-procedure drawMouse;
+procedure DrawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
 
-procedure spawnSnowflake;
+procedure SpawnSnowflake;
 var
   a: word;
   idx: integer;
@@ -452,23 +448,19 @@ end;
 
 
 
-procedure beginLoadingState;
+procedure OnPreload;
 begin
-  actualGameState := GameStateLoading;
-  fitCanvas;
-  loadAssets
+  { TODO: Load the assets }
 end;
 
-procedure beginPlayingState;
+procedure OnReady;
 var
   a: word;
   heapSize, freeHeapSize: longword;
 begin
   hideCursor;
-  fitCanvas;
 
   { Initialise game state here }
-  actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
   renderSnow := false;
@@ -476,74 +468,58 @@ begin
     snowflakes[a].active := false;
 
   currentInput := '';
-  currentColour := makeColour(7, 0);
+  currentColour := MakeColour(7, 0);
 
   { Welcome message }
   Cls;
-  printLn('');
-  printLn('Posit-92 Wasm ' + Posit92_Version);
-  printLn('(C) 2025 Hevanafa');
+  PrintLn('');
+  PrintLn('Posit-92 Wasm ' + Posit92_Version);
+  PrintLn('(C) 2025 Hevanafa');
 
-  heapSize := heapEnd - heapStart;
+  heapSize := GetHeapEnd - GetHeapStart;
   freeHeapSize := GetFreeHeapSize;
-  printLn(i32str(heapSize div 1024) + 'KB OK  ' + i32str(freeHeapSize) + ' BYTES FREE');
+  PrintLn(i32str(heapSize div 1024) + 'KB OK  ' + i32str(freeHeapSize) + ' BYTES FREE');
 
-  printLn('');
-  printLn('Type HELP for available commands');
-  printLn('');
-  updatePromptLine
+  PrintLn('');
+  PrintLn('Type HELP for available commands');
+  PrintLn('');
+  UpdatePromptLine
 end;
 
-procedure init;
-begin
-  initHeapMgr;
-  initDeltaTime;
-  initFPSCounter;
-end;
-
-procedure initDefaultFont;
+procedure InitDefaultFont;
 var
   a, b: word;
-  image: PImageRef;
+  texture: PSoftwareTex;
 begin
-  if not isImageSet(imgCGAFont) then begin
+  if not IsTextureSet(imgCGAFont) then begin
     writeLog('initDefaultFont: image is unset');
     exit
   end;
 
-  image := getImagePtr(imgCGAFont);
+  texture := GetTexturePtr(imgCGAFont);
 
-  for b:=0 to getImageHeight(imgCGAFont) - 1 do
-  for a:=0 to getImageWidth(imgCGAFont) - 1 do
-    if unsafeSprGetAlpha(image, a, b) = 255 then
-      unsafeSprPset(image, a, b, LightGrey);
+  for b:=0 to GetTextureHeight(imgCGAFont) - 1 do
+  for a:=0 to GetTextureWidth(imgCGAFont) - 1 do
+    if unsafeSprGetAlpha(texture, a, b) = 255 then
+      unsafeSprPset(texture, a, b, LightGrey);
 end;
 
-procedure afterInit;
-begin
-  beginPlayingState
-end;
-
-procedure update;
+procedure Update;
 var
   a: word;
   drift: double;
 begin
-  updateDeltaTime;
-  incrementFPS;
-  updateMouse;
-  
-  checkKeys;
+  CheckKeys;
 
   if renderSnow then begin
     for a:=0 to high(snowflakes) do begin
       if not snowflakes[a].active then continue;
 
       with snowflakes[a] do begin
-        y := y + vy * dt;
+        y := y + vy * DeltaTime;
 
         drift := sin(y * 0.1 + getTimer * 2.0) * 12.0;
-        x := x + (vx + drift) * dt;
+        x := x + (vx + drift) * DeltaTime;
 
         if y >= vgaHeight then
           active := false;
@@ -552,27 +528,23 @@ begin
 
     if getTimer >= nextSpawnTick then begin
       nextSpawnTick := getTimer + 0.1;
-      spawnSnowflake;
+      SpawnSnowflake;
     end;
   end;
 
   if getMusicPlaying and (getMusicTime >= getMusicDuration - 0.05) then
     stopMusic;
 
-  gameTime := gameTime + dt
+  gameTime := gameTime + DeltaTime;
 end;
 
-procedure draw;
+procedure Draw;
 var
   a, b: integer;
   c: char;
   grey: byte;
   timeOffset: double;
 begin
-  if actualGameState = GameStateLoading then begin
-    renderLoadingScreen; exit
-  end;
-
   vgaCls(black);
 
   if renderSnow then begin
@@ -621,19 +593,15 @@ begin
 
   { BlitText('> ' + currentInput, 30, 30); }
 
-  drawMouse;
-  drawFPS;
-
-  vgaFlush
+  DrawMouse;
+  BrawFPS;
 end;
 
 { Requires at least 1 exported member }
 exports
-  getStringBuffer,
-  setStringBufferLength,
-  initDefaultFont,
-  beginLoadingState,
-  afterInit, update, draw, init;
+  InitDefaultFont,
+  OnPreload, OnReady,
+  Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
