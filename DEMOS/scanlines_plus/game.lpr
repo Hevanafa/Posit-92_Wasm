@@ -86,7 +86,7 @@ begin
     x - w div 2, y - h div 2,
     w, h);
 
-  s := 'Hello world!';
+  s := 'Now with more scanlines!';
   w := MeasureDefault(s);
   left := (VgaWidth - w) div 2;
 
@@ -100,7 +100,7 @@ begin
     if hue > 1.0 then hue := hue - 1.0;
 
     colour := HSVtoRGB(hue, 1.0, 1.0);
-    inc(left, PrintCharColour(c, left, 120, colour));
+    inc(left, PrintCharColour(c, left, 128, colour));
   end;
 
   DrawMouse;
