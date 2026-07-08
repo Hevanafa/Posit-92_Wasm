@@ -10,7 +10,7 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  P92Core, P92Fonts, P92WasmHost,
+  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
   P92Conversions, P92FPS,
   P92Tex, P92TexDraw,
   P92Keyboard, P92Mouse,
@@ -31,7 +31,10 @@ end;
 
 procedure OnPreload;
 begin
-  { TODO: Load the assets }
+  imgCursor := RequestImage('assets/images/cursor.png');
+  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
+  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
+  imgFullscreen := RequestImage('assets/images/fullscreen.png');
 end;
 
 procedure OnReady;
