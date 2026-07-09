@@ -307,15 +307,50 @@ end;
 procedure PascalBMFontLoaded(bmfontHandle: longint);
 var
   s: string;
-  ary: array of string;
+  lines: array of string;
+  line: string;
+  kvPairs: array of string;
+  token: string;
+  pair: array of string; { strictly 2 }
+  k, v: string;
+  idx: smallint;
+  openQuote, closeQuote: smallint;
 begin
   bmfonts[bmfontHandle].status := AssetStatusReady;
   bmfonts[bmfontHandle].errorCode := 0;
 
   { TODO: Parse BMFont data }
   setstring(s, PAnsiChar(@bmfontBuffer[0]), bmfontBufferLen);
-  ary := s.Split(#10);
-  WriteLog(ary[1]);
+  lines := s.Split(#10);
+  WriteLog(lines[1]);
+
+  for line in lines do begin
+    if line.StartsWith('info') then begin
+      kvPairs := line.Split(' ');
+
+      for token in kvPairs do begin
+        pair := token.split('=');
+        k := pair[0];
+        v := pair[1];
+
+        if k = 'face' then begin
+          { Find the first " then the second " }
+          idx := pos('face', line);
+          openQuote := pos('"', line, idx + 1);
+          closeQuote := pos('"', line, openQuote + 1);
+          WriteLog('Font name:' + copy(line, openQuote + 1, closeQuote - openQuote - 1));
+        end
+        else if k = 'spacing' then begin
+          pair := v.Split(',');
+
+          with bmfonts[bmfontHandle].fontPtr^ do begin
+            spacing[0] := ParseInt(pair[0]);
+            spacing[1] := ParseInt(pair[1]);
+          end;
+        end;
+      end;
+    end;
+  end;
 
   { TODO: Request texture download }
   { bmfonts[bmfontHandle].fontPtr^.texHandle :=
