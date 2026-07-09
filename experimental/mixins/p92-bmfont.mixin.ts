@@ -1,5 +1,3 @@
-// type BMFontManifest = Map<string, { path: string, setter: string, glyphSetter: string }>;
-
 type TBMFontGlyph = {
   id: number,
   x: number,
