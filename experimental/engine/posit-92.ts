@@ -161,8 +161,9 @@ class Posit92 {
   readonly #wasmSource = "game.wasm";
 
   // Engine configs
+
   readonly #wasmMemSize = 2 * 1048576;  // 2 MB
-  readonly #stackSize = 256 * 1024;
+  readonly #stackSize = 320 * 1024;
 
   /**
    * assigned in the constructor
@@ -171,18 +172,17 @@ class Posit92 {
   readonly #poolSize = 512 * 1024;
 
   /**
-   * also assigned in the constructor
+   * assigned in the constructor
    */
   #TargetFPS = 60;
   #FrameTime: number;
 
   #vgaWidth: number;
+  #vgaHeight: number;
   
   get VgaWidth(): number {
     return this.#vgaWidth;
   }
-
-  #vgaHeight: number;
 
   get VgaHeight(): number {
     return this.#vgaHeight;
