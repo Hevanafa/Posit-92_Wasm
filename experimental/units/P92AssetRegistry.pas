@@ -60,8 +60,8 @@ function RequestImage(const path: string): TTextureHandle;
 
 { function GetTextureEntryPtr(const texHandle: TTextureHandle): PSoftwareTexEntry; }
 
-function GetBMFontEntryPtr(const bmfontHandle: longint): PBMFontEntry;
-function GetBMFontPtr(const bmfontHandle: longint): PBMFont;
+function BorrowBMFontEntryPtr(const bmfontHandle: longint): PBMFontEntry;
+function BorrowBMFontPtr(const bmfontHandle: longint): PBMFont;
 
 procedure JsRequestBMFont(bmfontHandle: longint); external 'env' name 'JsRequestBMFont';
 function RequestBMFont(const path: string): longint;
@@ -219,7 +219,7 @@ begin
   GetTextureEntryPtr := @textures[texHandle]
 end; }
 
-function GetBMFontEntryPtr(const bmfontHandle: longint): PBMFontEntry;
+function BorrowBMFontEntryPtr(const bmfontHandle: longint): PBMFontEntry;
 begin
   if (bmfontHandle < low(bmfonts)) or (bmfontHandle > high(bmfonts)) then
     PanicHalt('GetBMFontEntry: Invalid bmfontHandle: ' + I32Str(bmfontHandle));
@@ -227,30 +227,32 @@ begin
   if bmfonts[bmfontHandle].status <> AssetStatusReady then
     PanicHalt('Attempting to use bmfont ' + i32str(bmfontHandle));
 
-  GetBMFontEntryPtr := @bmfonts[bmfontHandle]
+  BorrowBMFontEntryPtr := @bmfonts[bmfontHandle]
 end;
 
-function GetBMFontPtr(const bmfontHandle: longint): PBMFont;
+function BorrowBMFontPtr(const bmfontHandle: longint): PBMFont;
 begin
   if bmfonts[bmfontHandle].status <> AssetStatusReady then
     PanicHalt('Attempting to use bmfont ' + i32str(bmfontHandle));
 
-  GetBMFontPtr := @bmfonts[bmfontHandle]
+  BorrowBMFontPtr := @bmfonts[bmfontHandle]
 end;
 
 function RequestBMFont(const path: string): longint;
 var
   handle: longint;
 begin
+  inc(assetTotalCount);
+
   handle := FindUnusedBMFontHandle;
 
   if handle < 0 then
     PanicHalt('RequestBMFont: BMFont handles are full!');
 
   RequestBMFont := handle;
+
   WriteInteropString(path);
-  JsRequestBMFont(handle);
-  inc(assetTotalCount)
+  JsRequestBMFont(handle)
 end;
 
 function GetBMFontBufferPtr: pointer;
@@ -441,7 +443,6 @@ begin
     bmfonts[bmfontHandle].font.glyphs[newGlyph.id] := newGlyph;
   end;
 
-  { TODO: Enable this }
   bmfonts[bmfontHandle].font.texHandle :=
     RequestImage(filename);
 

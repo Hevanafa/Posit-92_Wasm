@@ -8,6 +8,7 @@ interface
 var
   imgCursor: longint;
   imgSpecimenP92: array[0..1] of longint;
+  imgTest: longint;
 
 
 implementation
