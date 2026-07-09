@@ -315,14 +315,15 @@ var
   k, v: string;
   idx: smallint;
   openQuote, closeQuote: smallint;
+  filename: string;
 begin
   bmfonts[bmfontHandle].status := AssetStatusReady;
   bmfonts[bmfontHandle].errorCode := 0;
 
-  { TODO: Parse BMFont data }
+  { Parse BMFont data }
   setstring(s, PAnsiChar(@bmfontBuffer[0]), bmfontBufferLen);
   lines := s.Split(#10);
-  WriteLog(lines[1]);
+  { WriteLog(lines[1]); }
 
   for line in lines do begin
     if line.StartsWith('info') then begin
@@ -377,15 +378,14 @@ begin
           openQuote := pos('"', line, idx + 1);
           closeQuote := pos('"', line, openQuote + 1);
 
-          writelog('Filename: ' + copy(line, openQuote + 1, closeQuote - openQuote - 1))
+          filename := copy(line, openQuote + 1, closeQuote - openQuote - 1);
+
+          writelog('Filename: ' + filename);
+          bmfonts[bmfontHandle].fontPtr^.texHandle := RequestImage(filename);
         end;
       end;
     end;
   end;
-
-  { TODO: Request texture download }
-  { bmfonts[bmfontHandle].fontPtr^.texHandle :=
-    RequestImage(ReadInteropString); }
 
   inc(assetReadyCount);
   WriteLog('BMFont: inc assetReadyCount');
