@@ -57,11 +57,6 @@ function FindUnusedTextureHandle: longint;
 procedure JsRequestImage(texHandle: longint); external 'env' name 'JsRequestImage';
 function RequestImage(const path: string): longint;
 
-{
-procedure JsRequestBMFontLegacy(bmfontHandle: longint; fontPtr: PBMFontLegacy; fontGlyphsPtr: PBMFontGlyph); external 'env' name 'JsRequestBMFontLegacy';
-procedure RequestBMFontLegacy(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyph);
-}
-
 function GetTextureEntryPtr(const texHandle: longint): PSoftwareTexEntry;
 
 function GetBMFontEntryPtr(const bmfontHandle: longint): PBMFontEntry;
@@ -237,38 +232,6 @@ begin
   JsRequestBMFont(handle);
   inc(assetTotalCount)
 end;
-
-{
-procedure RequestBMFontLegacy(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyph);
-var
-  bmfontHandle: longint;
-begin
-  bmfontHandle := FindUnusedBMFontSlot;
-
-  if bmfontHandle < 0 then
-    PanicHalt('RequestBMFont: BMFont slots are full!');
-
-  bmfonts[bmfontHandle] := default(TBMFontLegacyEntry);
-  bmfonts[bmfontHandle].font := fontPtr;
-  bmfonts[bmfontHandle].glyphsPtr := fontGlyphsPtr;
-  bmfonts[bmfontHandle].status := AssetStatusLoading;
-
-  inc(assetTotalCount);
-  WriteLog('RequestBMFont: inc assetTotalCount');
-
-  { Reserve the texture handle}
-  {
-  texHandle := FindUnusedTextureHandle;
-
-  fontptr^.texHandle := texHandle;
-  textures[texHandle] := default(TSoftwareTexEntry);
-  textures[texHandle].status := AssetStatusLoading;
-  }
-
-  WriteInteropString(path);
-  JsRequestBMFontLegacy(bmfontHandle, fontPtr, fontGlyphsPtr);
-end;
-}
 
 function GetBMFontBufferPtr: pointer;
 begin
