@@ -61,6 +61,8 @@ function RequestImage(const path: string): longint;
 function GetTextureEntryPtr(const texHandle: longint): PSoftwareTexEntry;
 
 function GetBMFontEntryPtr(const bmfontHandle: longint): PBMFontEntry;
+function GetBMFontPtr(const bmfontHandle: longint): PBMFont;
+
 procedure JsRequestBMFont(bmfontHandle: longint); external 'env' name 'JsRequestBMFont';
 function RequestBMFont(const path: string): longint;
 
@@ -222,7 +224,18 @@ begin
   if (bmfontHandle < low(bmfonts)) or (bmfontHandle > high(bmfonts)) then
     PanicHalt('GetBMFontEntry: Invalid bmfontHandle: ' + I32Str(bmfontHandle));
 
+  if bmfonts[bmfontHandle].status <> AssetStatusReady then
+    PanicHalt('Attempting to use bmfont ' + i32str(bmfontHandle));
+
   GetBMFontEntryPtr := @bmfonts[bmfontHandle]
+end;
+
+function GetBMFontPtr(const bmfontHandle: longint): PBMFont;
+begin
+  if bmfonts[bmfontHandle].status <> AssetStatusReady then
+    PanicHalt('Attempting to use bmfont ' + i32str(bmfontHandle));
+
+  GetBMFontPtr := @bmfonts[bmfontHandle]
 end;
 
 function RequestBMFont(const path: string): longint;
@@ -323,7 +336,8 @@ begin
 
   setstring(s, PAnsiChar(@bmfontBuffer[0]), bmfontBufferLen);
   lines := s.Split(#10);
-  { WriteLog(lines[1]); }
+
+  filename := '';
 
   { First pass: Parse BMFont header }
 
@@ -383,8 +397,6 @@ begin
           filename := copy(line, openQuote + 1, closeQuote - openQuote - 1);
 
           writelog('Filename: ' + filename);
-          bmfonts[bmfontHandle].font.texHandle :=
-            RequestImage(filename);
         end;
       end;
     end;
@@ -428,6 +440,9 @@ begin
 
     bmfonts[bmfontHandle].font.glyphs[newGlyph.id] := newGlyph;
   end;
+
+  bmfonts[bmfontHandle].font.texHandle :=
+    RequestImage(filename);
 
   { for debugging }
   writelog(

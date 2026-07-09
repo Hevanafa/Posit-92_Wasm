@@ -104,7 +104,7 @@ var
   glyphIdx: smallint;
   glyph: TBMFontGlyph;
 begin
-  fontPtr := @bmfonts[fontHandle].font;
+  fontPtr := GetBMFontPtr(fontHandle);
 
   charcode := ord(ch);
   glyphIdx := charcode;
@@ -162,6 +162,7 @@ var
   ch: char;
   left, step: smallint;
 begin
+  fontPtr := GetBMFontPtr(fontHandle);
   left := 0;
 
   for a:=1 to length(text) do begin
@@ -185,9 +186,8 @@ var
   glyphIdx: smallint;
   charcode: byte;
 begin
+  fontPtr := GetBMFontPtr(fontHandle);
   MeasureBMFont := 0;
-
-  fontPtr := @bmfonts[fontHandle].font;
 
   for a:=1 to length(text) do begin
     charcode := ord(text[a]);
@@ -215,7 +215,7 @@ var
   glyphIdx: smallint;
   glyph: TBMFontGlyph;
 begin
-  fontPtr := @bmfonts[fontHandle].font;
+  fontPtr := GetBMFontPtr(fontHandle);
   charcode := ord(ch);
   glyphIdx := charcode;
 
@@ -254,7 +254,7 @@ begin
         colour);
 
     if a < length(text) then
-      inc(left, step + bmfonts[fontHandle].font.spacing[0])
+      inc(left, step + GetBMFontPtr(fontHandle)^.spacing[0])
     else
       inc(left, step);
   end;
