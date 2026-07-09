@@ -82,7 +82,7 @@ class BMFontMixin extends Base {
     const capacity = this.WasmInstanceExports.GetBMFontBufferCapacity();
 
     if (len > capacity)
-      throw new RangeError(`Interop buffer overflow: ${len} > ${capacity}`);
+      this.PanicHaltDisplay(`BMFont buffer overflow: ${len} > ${capacity}`);
 
     const memview = new Uint8Array(this.WasmInstanceExports.memory.buffer);
     memview.set(bytes, ptr);
