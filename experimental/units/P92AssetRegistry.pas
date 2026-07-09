@@ -333,8 +333,11 @@ end;
 procedure PascalBMFontLoaded(bmfontHandle: longint);
 var
   s: string;
+
   lines: array of string;
   line: string;
+  lineIdx: smallint;
+
   kvPairs: array of string;
   token: string;
   pair: array of string; { strictly 2 }
@@ -342,14 +345,16 @@ var
   idx: smallint;
   openQuote, closeQuote: smallint;
   filename: string;
+  newGlyph: TBMFontGlyph;
 begin
   bmfonts[bmfontHandle].status := AssetStatusReady;
   bmfonts[bmfontHandle].errorCode := 0;
 
-  { Parse BMFont data }
   setstring(s, PAnsiChar(@bmfontBuffer[0]), bmfontBufferLen);
   lines := s.Split(#10);
   { WriteLog(lines[1]); }
+
+  { First pass: Parse BMFont header }
 
   for line in lines do begin
     if line.StartsWith('info') then begin
@@ -407,10 +412,50 @@ begin
           filename := copy(line, openQuote + 1, closeQuote - openQuote - 1);
 
           writelog('Filename: ' + filename);
-          bmfonts[bmfontHandle].font.texHandle := RequestImage(filename);
+          bmfonts[bmfontHandle].font.texHandle :=
+            RequestImage(filename);
         end;
       end;
     end;
+  end;
+
+  { Second pass - parse BMFont glyphs }
+
+  for lineIdx := 0 to high(lines) do begin
+    line := lines[lineIdx];
+
+    if line.StartsWith('chars') then continue;
+
+    while line.Contains('  ') do
+      line := line.Replace('  ', ' ');
+
+    kvPairs := line.Split(' ');
+
+    { Parse the whole glyph first then push }
+    newGlyph := default(TBMFontGlyph);
+
+    for token in kvPairs do begin
+      pair := token.Split('=');
+      k := pair[0];
+      v := pair[1];
+
+      if k = 'x' then
+        newGlyph.x := ParseInt(v)
+      else if k = 'y' then
+        newGlyph.y := ParseInt(v)
+      else if k = 'width' then
+        newGlyph.width := ParseInt(v)
+      else if k = 'height' then
+        newGlyph.height := ParseInt(v)
+      else if k = 'xoffset' then
+        newGlyph.xoffset := ParseInt(v)
+      else if k = 'yoffset' then
+        newGlyph.yoffset := ParseInt(v)
+      else if k = 'xadvance' then
+        newGlyph.xadvance := ParseInt(v);
+    end;
+
+    bmfonts[bmfontHandle].font.glyphs[newGlyph.id] := newGlyph;
   end;
 
   inc(assetReadyCount);
