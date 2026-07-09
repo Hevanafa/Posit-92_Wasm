@@ -331,14 +331,14 @@ end;
 
 procedure ParseBMFontLine(bmfontHandle: longint; line: ShortString);
 var
-  filename: string;
+  filename: shortstring;
   kvPairs: array[0..19] of shortstring;
   token: shortstring;
   k, v: shortstring;
 
   idx: smallint;
   openQuote, closeQuote: smallint;
-  pair: array of shortstring;
+  pair: array[0..1] of shortstring;
 
   newGlyph: TBMFontGlyph;
 
@@ -348,11 +348,11 @@ begin
   { WriteLog('Parsing this line:' + #10 + line); }
 
   { First pass: Parse BMFont header }
-  if line.StartsWith('info') then begin
+  if StartsWith(line, 'info') then begin
     split(line, ' ', kvPairs);
 
     for token in kvPairs do begin
-      pair := token.split('=');
+      split(token, '=', pair);
       k := pair[0];
       v := pair[1];
 
@@ -364,7 +364,7 @@ begin
         WriteLog('Font name:' + copy(line, openQuote + 1, closeQuote - openQuote - 1));
       end
       else if k = 'spacing' then begin
-        pair := v.split(',');
+        split(v, ',', pair);
 
         with bmfonts[bmfontHandle].font do begin
           spacing[0] := ParseInt(pair[0]);
@@ -377,7 +377,7 @@ begin
     split(line, ' ', kvPairs);
 
     for token in kvPairs do begin
-      pair := token.split('=');
+      split(token, '=', pair);
       k := pair[0];
       v := pair[1];
 
@@ -391,7 +391,7 @@ begin
     split(line, ' ', kvPairs);
 
     for token in kvPairs do begin
-      pair := token.split('=');
+      split(token, '=', pair);
       k := pair[0];
       v := pair[1];
 
@@ -410,7 +410,7 @@ begin
   end
 
   { TODO: Parse BMFont glyphs }
-  { else if (not line.StartsWith('chars')) and line.StartsWith('char') then begin
+  else if (not line.StartsWith('chars')) and line.StartsWith('char') then begin
     { for lineIdx := 0 to high(lines) do begin
       line := lines[lineIdx];
 
@@ -420,13 +420,14 @@ begin
       while line.Contains('  ') do
         line := line.Replace('  ', ' ');
 
-      kvPairs := line.Split(' ');
+      { kvPairs := line.Split(' '); }
+      split(line, ' ', kvPairs);
 
       { Parse the whole glyph first then push }
       newGlyph := default(TBMFontGlyph);
 
       for token in kvPairs do begin
-        pair := token.Split('=');
+        split(token, '=', pair);
         k := pair[0];
         v := pair[1];
 
@@ -450,7 +451,7 @@ begin
 
       bmfonts[bmfontHandle].font.glyphs[newGlyph.id] := newGlyph;
     { end; }
-  end; }
+  end;
 end;
 
 procedure PascalBMFontLoaded(bmfontHandle: longint);
