@@ -329,7 +329,7 @@ begin
   end;
 end;
 
-procedure ParseBMFontData(bmfontHandle: longint; const line: string);
+procedure ParseBMFontLine(bmfontHandle: longint; line: string);
 var
   filename: string;
   kvPairs: array of string;
@@ -340,8 +340,12 @@ var
   openQuote, closeQuote: smallint;
   pair: array of string;
 
+  newGlyph: TBMFontGlyph;
+
 begin
   filename := '';
+
+  WriteLog('Parsing this line:' + #10 + line);
 
   { First pass: Parse BMFont header }
   if line.StartsWith('info') then begin
@@ -401,51 +405,50 @@ begin
         writelog('Filename: ' + filename);
       end;
     end;
+  end
+
+  else if (not line.StartsWith('chars')) and line.StartsWith('char') then begin
+    { Parse BMFont glyphs }
+    { for lineIdx := 0 to high(lines) do begin
+      line := lines[lineIdx];
+
+      if line.StartsWith('chars') then continue;
+      if not line.StartsWith('char') then continue; }
+
+      while line.Contains('  ') do
+        line := line.Replace('  ', ' ');
+
+      kvPairs := line.Split(' ');
+
+      { Parse the whole glyph first then push }
+      newGlyph := default(TBMFontGlyph);
+
+      for token in kvPairs do begin
+        pair := token.Split('=');
+        k := pair[0];
+        v := pair[1];
+
+        if k = 'id' then
+          newGlyph.id := ParseInt(v)
+        else if k = 'x' then
+          newGlyph.x := ParseInt(v)
+        else if k = 'y' then
+          newGlyph.y := ParseInt(v)
+        else if k = 'width' then
+          newGlyph.width := ParseInt(v)
+        else if k = 'height' then
+          newGlyph.height := ParseInt(v)
+        else if k = 'xoffset' then
+          newGlyph.xoffset := ParseInt(v)
+        else if k = 'yoffset' then
+          newGlyph.yoffset := ParseInt(v)
+        else if k = 'xadvance' then
+          newGlyph.xadvance := ParseInt(v);
+      end;
+
+      bmfonts[bmfontHandle].font.glyphs[newGlyph.id] := newGlyph;
+    { end; }
   end;
-
-  { Second pass - parse BMFont glyphs }
-
-  {
-  for lineIdx := 0 to high(lines) do begin
-    line := lines[lineIdx];
-
-    if line.StartsWith('chars') then continue;
-    if not line.StartsWith('char') then continue;
-
-    while line.Contains('  ') do
-      line := line.Replace('  ', ' ');
-
-    kvPairs := line.Split(' ');
-
-    { Parse the whole glyph first then push }
-    newGlyph := default(TBMFontGlyph);
-
-    for token in kvPairs do begin
-      pair := token.Split('=');
-      k := pair[0];
-      v := pair[1];
-
-      if k = 'id' then
-        newGlyph.id := ParseInt(v)
-      else if k = 'x' then
-        newGlyph.x := ParseInt(v)
-      else if k = 'y' then
-        newGlyph.y := ParseInt(v)
-      else if k = 'width' then
-        newGlyph.width := ParseInt(v)
-      else if k = 'height' then
-        newGlyph.height := ParseInt(v)
-      else if k = 'xoffset' then
-        newGlyph.xoffset := ParseInt(v)
-      else if k = 'yoffset' then
-        newGlyph.yoffset := ParseInt(v)
-      else if k = 'xadvance' then
-        newGlyph.xadvance := ParseInt(v);
-    end;
-
-    bmfonts[bmfontHandle].font.glyphs[newGlyph.id] := newGlyph;
-  end;
-  }
 end;
 
 procedure PascalBMFontLoaded(bmfontHandle: longint);
@@ -495,7 +498,7 @@ begin
       line[0] := chr(lineLen);
       move(bmfontBuffer[lineStart], line[1], lineLen);
 
-      ParseBMFontData(bmfontHandle, line);
+      ParseBMFontLine(bmfontHandle, line);
 
       lineStart := a + 1;
     end;
@@ -506,12 +509,14 @@ begin
   if lineStart < bmfontBufferLen then begin
     { SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), bmfontBufferLen - lineStart); }
 
+    writelog(format('Line start: %d, Buffer len: %d', [lineStart, bmfontBufferLen]));
+
     lineLen := bmfontBufferLen - lineStart;
     if lineLen > 255 then lineLen := 255;
     line[0] := chr(lineLen);
     move(bmfontBuffer[lineStart], line[1], lineLen);
 
-    ParseBMFontData(bmfontHandle, line);
+    ParseBMFontLine(bmfontHandle, line);
   end;
 
   { lines := s.Split(#10); }
