@@ -106,9 +106,9 @@ var
   newHandle: TTextureHandle;
   src, dest: PSoftwareTex;
 begin
-  src := @textures[texHandle].texture;
+  src := GetTexturePtr(texHandle);
   newHandle := NewTexture(src^.width, src^.height);
-  dest := @textures[newHandle].texture;
+  dest := GetTexturePtr(newHandle);
 
   move(src^.pixelData^, dest^.pixelData^, src^.allocSize);
   CopyTexture := newHandle
@@ -167,7 +167,7 @@ begin
   GetTextureWidth := 0;
   if not IsTextureSet(texHandle) then exit;
 
-  texture := @textures[texHandle].texture;
+  texture := GetTexturePtr(texHandle);
   GetTextureWidth := texture^.width
 end;
 
@@ -180,7 +180,7 @@ begin
   if value <= 0 then
     PanicHalt('SetTextureWidth: Invalid width: ' + I32Str(value));
 
-  texture := @textures[texHandle].texture;
+  texture := GetTexturePtr(texHandle);
 
   if value * texture^.height * 4 > texture^.allocSize then
     PanicHalt('SetTextureWidth: New size exceeds the allocated buffer!');
@@ -196,7 +196,7 @@ begin
   GetTextureHeight := 0;
   if not IsTextureSet(texHandle) then exit;
 
-  texture := @textures[texHandle].texture;
+  texture := GetTexturePtr(texHandle);
   GetTextureHeight := texture^.height
 end;
 
@@ -209,7 +209,7 @@ begin
   if value <= 0 then
     PanicHalt('SetTextureHeight: Invalid height: ' + I32Str(value));
 
-  texture := @textures[texHandle].texture;
+  texture := GetTexturePtr(texHandle);
 
   if texture^.width * value * 4 > texture^.allocSize then
     PanicHalt('SetTextureHeight: New size exceeds the allocated buffer!');
