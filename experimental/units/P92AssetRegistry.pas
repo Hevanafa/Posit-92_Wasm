@@ -349,6 +349,37 @@ begin
           end;
         end;
       end;
+    end
+    else if line.StartsWith('common') then begin
+      kvPairs := line.split(' ');
+
+      for token in kvPairs do begin
+        pair := token.split('=');
+        k := pair[0];
+        v := pair[1];
+
+        if k = 'lineHeight' then begin
+          bmfonts[bmfontHandle].fontPtr^.lineHeight :=
+            ParseInt(v);
+        end;
+      end;
+    end
+    else if line.StartsWith('page') then begin
+      kvPairs := line.split(' ');
+
+      for token in kvPairs do begin
+        pair := token.split('=');
+        k := pair[0];
+        v := pair[1];
+
+        if k = 'file' then begin
+          idx := pos('face', line);
+          openQuote := pos('"', line, idx + 1);
+          closeQuote := pos('"', line, openQuote + 1);
+
+          writelog('Filename: ' + copy(line, openQuote + 1, closeQuote - openQuote - 1))
+        end;
+      end;
     end;
   end;
 
