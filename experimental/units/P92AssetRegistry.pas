@@ -392,7 +392,7 @@ begin
         v := pair[1];
 
         if k = 'file' then begin
-          idx := pos('face', line);
+          idx := pos('file', line);
           openQuote := pos('"', line, idx + 1);
           closeQuote := pos('"', line, openQuote + 1);
 
