@@ -347,7 +347,7 @@ begin
 
   { WriteLog('Parsing this line:' + #10 + line); }
 
-  { First pass: Parse BMFont header }
+  { Parse BMFont header }
   if StartsWith(line, 'info') then begin
     split(line, ' ', kvPairs);
 
@@ -373,7 +373,7 @@ begin
       end;
     end;
   end
-  else if line.StartsWith('common') then begin
+  else if StartsWith(line, 'common') then begin
     split(line, ' ', kvPairs);
 
     for token in kvPairs do begin
@@ -387,7 +387,7 @@ begin
       end;
     end;
   end
-  else if line.StartsWith('page') then begin
+  else if StartsWith(line, 'page') then begin
     split(line, ' ', kvPairs);
 
     for token in kvPairs do begin
@@ -409,8 +409,8 @@ begin
     end;
   end
 
-  { TODO: Parse BMFont glyphs }
-  else if (not line.StartsWith('chars')) and line.StartsWith('char') then begin
+  { Parse BMFont glyphs }
+  else if (not StartsWith(line, 'chars')) and StartsWith(line, 'char') then begin
     { for lineIdx := 0 to high(lines) do begin
       line := lines[lineIdx];
 
@@ -531,8 +531,8 @@ begin
   { lines := s.Split(#10); }
 
   { TODO: Delete this: }
-  inc(assetReadyCount);
-  exit;
+  { inc(assetReadyCount);
+  exit; }
 
   { DumpBMFontGlyphs(bmfontHandle); }
 

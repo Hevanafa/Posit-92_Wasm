@@ -1,6 +1,7 @@
 {
-  Strings unit - Part of Posit-92 game engine
-  Hevanafa
+  Strings unit
+  Part of Posit-92 game engine
+  By Hevanafa
 
   Contains a subset of what SysUtils has for string manipulation
 }
