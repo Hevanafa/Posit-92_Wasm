@@ -403,6 +403,8 @@ begin
         filename := copy(line, openQuote + 1, closeQuote - openQuote - 1);
 
         writelog('Filename: ' + filename);
+        bmfonts[bmfontHandle].font.texHandle :=
+          RequestImage(filename);
       end;
     end;
   end;
@@ -527,12 +529,9 @@ begin
 
   { lines := s.Split(#10); }
 
-  { TODO: Disable this: }
+  { TODO: Delete this: }
   inc(assetReadyCount);
   exit;
-
-  bmfonts[bmfontHandle].font.texHandle :=
-    RequestImage(filename);
 
   { DumpBMFontGlyphs(bmfontHandle); }
 
