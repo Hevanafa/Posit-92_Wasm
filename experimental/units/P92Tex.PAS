@@ -114,7 +114,7 @@ end;
 
 procedure FreeTexture(const texHandle: longint);
 begin
-  if (texHandle < 1) or (texHandle >= high(textures)) then exit;
+  if (texHandle < low(textures)) or (texHandle >= high(textures)) then exit;
   if textures[texHandle].texture.pixelData = nil then exit;
 
 {$ifdef P92_WASM}

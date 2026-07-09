@@ -38,6 +38,11 @@ type
     errorCode: smallint;
   end;
 
+var
+  textures: array[1..255] of TSoftwareTexEntry;
+  bmfonts: array[1..9] of TBMFontEntry;
+  sounds: array[1..255] of TSoundEntry;
+
 function GetAssetReadyCount: longword;
 function GetAssetTotalCount: longword;
 function AllAssetsReady: boolean;
@@ -52,6 +57,8 @@ function RequestImage(const path: string): longint;
 procedure JsRequestBMFontLegacy(bmfontHandle: longint; fontPtr: PBMFontLegacy; fontGlyphsPtr: PBMFontGlyph); external 'env' name 'JsRequestBMFontLegacy';
 procedure RequestBMFontLegacy(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyph);
 }
+
+function GetTextureEntryPtr(const texHandle: longint): PSoftwareTexEntry;
 
 function GetBMFontEntryPtr(const bmfontHandle: longint): PBMFontEntry;
 procedure JsRequestBMFont(bmfontHandle: longint); external 'env' name 'JsRequestBMFont';
@@ -83,10 +90,6 @@ uses
   P92Conversions, P92InteropBuf, P92Logger, P92Panic;
 
 var
-  textures: array[1..255] of TSoftwareTexEntry;
-  bmfonts: array[1..9] of TBMFontEntry;
-  sounds: array[1..255] of TSoundEntry;
-
   assetReadyCount, assetTotalCount: longword;
 
   bmfontBuffer: array[0..32767] of byte;
