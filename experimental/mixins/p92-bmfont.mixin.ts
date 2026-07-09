@@ -20,6 +20,7 @@ type BMFontWasmExports = WasmExports & {
   GetBMFontBufferPtr: () => number;
   GetBMFontBufferLen: () => number;
   SetBMFontBufferLen: (value: number) => void;
+  GetBMFontBufferCapacity: () => number;
 }
 
 globalThis.BMFontMixin = <T extends Constructor<Posit92>>(Base: T) =>
@@ -80,7 +81,7 @@ class BMFontMixin extends Base {
 
     const ptr = this.WasmInstanceExports.GetBMFontBufferPtr();
     const len = bytes.length;
-    const capacity = 32767; // TODO: Replace this with a const
+    const capacity = this.WasmInstanceExports.GetBMFontBufferCapacity();
 
     if (len > capacity)
       throw new RangeError(`Interop buffer overflow: ${len} > ${capacity}`);
@@ -90,4 +91,4 @@ class BMFontMixin extends Base {
 
     this.WasmInstanceExports.SetBMFontBufferLen(len);
   }
-};
+}

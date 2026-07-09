@@ -69,6 +69,7 @@ function RequestBMFont(const path: string): longint;
 function GetBMFontBufferPtr: pointer; public name 'GetBMFontBufferPtr';
 function GetBMFontBufferLen: smallint; public name 'GetBMFontBufferLen';
 procedure SetBMFontBufferLen(value: smallint); public name 'SetBMFontBufferLen';
+function GetBMFontBufferCapacity: smallint; public name 'GetBMFontBufferCapacity';
 
 procedure JsRequestSound(sndHandle: longint); external 'env' name 'JsRequestSound';
 function RequestSound(const path: string): longint;
@@ -90,10 +91,13 @@ implementation
 uses
   P92Conversions, P92InteropBuf, P92Logger, P92Panic, P92Strings;
 
+const
+  BMFontBufferCapacity = 32767;
+
 var
   assetReadyCount, assetTotalCount: longword;
 
-  bmfontBuffer: array[0..32767] of byte;
+  bmfontBuffer: array[0..BMFontBufferCapacity - 1] of byte;
   bmfontBufferLen: smallint;
 
 function GetAssetReadyCount: longword;
@@ -262,6 +266,11 @@ end;
 function GetBMFontBufferLen: smallint;
 begin
   GetBMFontBufferLen := bmfontBufferLen
+end;
+
+function GetBMFontBufferCapacity: smallint;
+begin
+  GetBMFontBufferCapacity := BMFontBufferCapacity
 end;
 
 procedure SetBMFontBufferLen(value: smallint);
@@ -476,7 +485,7 @@ begin
       SetString(line, PAnsiChar(@bmfontBuffer[lineStart]), byteIdx - lineStart);
       ParseBMFontLine(bmfontHandle, line);
 
-      writelog('lineStart: ' + i32str(lineStart));
+      { writelog('lineStart: ' + i32str(lineStart)); }
 
       lineStart := byteIdx + 1
     end;

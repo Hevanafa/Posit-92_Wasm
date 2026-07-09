@@ -4,7 +4,7 @@ class Game extends SoundMixin(BMFontMixin(Posit92)) {
 }
 
 async function Main() {
-  const game = new Game("game", { defaultFont: false });
+  const game = new Game("game");
   game.Start();
 }
 
