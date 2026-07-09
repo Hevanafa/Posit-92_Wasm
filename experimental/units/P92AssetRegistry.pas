@@ -329,133 +329,83 @@ begin
   end;
 end;
 
-procedure PascalBMFontLoaded(bmfontHandle: longint);
+procedure ParseBMFontData(bmfontHandle: longint; const line: string);
 var
-  s: string;
-
-  lines: array of string;
-  lineStart: smallint;
-  line: string; { TODO: Change this to the usual AnsiString }
-  lineIdx: smallint;
-
+  filename: string;
   kvPairs: array of string;
   token: string;
-  pair: array of string; { strictly 2 }
   k, v: string;
+
   idx: smallint;
   openQuote, closeQuote: smallint;
-  filename: string;
-  newGlyph: TBMFontGlyph;
+  pair: array of string;
 
-  a: smallint;
 begin
-  bmfonts[bmfontHandle].status := AssetStatusReady;
-  bmfonts[bmfontHandle].errorCode := 0;
-
-  { Apparently SetString does a heap allocation }
-  { TODO: Fix the heap corruption }
-  { SetString(s, PAnsiChar(@bmfontBuffer[0]), bmfontBufferLen); }
-  writelog(format('buffer len: %d', [bmfontBufferLen]));
-
-  s := '';
-
-  a := 0;
-  lineStart := 0;
-  while a < bmfontBufferLen do begin
-    if bmfontBuffer[a] = 13 then begin
-      inc(a);
-      continue
-    end;
-
-    if bmfontBuffer[a] = 10 then begin
-      SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), a - lineStart);
-
-      { TODO: Parse this line }
-
-      break
-    end;
-
-    inc(a)
-  end;
-
-  if lineStart < bmfontBufferLen then begin
-    SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), bmfontBufferLen - lineStart);
-
-    { TODO: Parse this line }
-  end;
-
-  { lines := s.Split(#10); }
-
-  { TODO: Disable this: }
-  inc(assetReadyCount);
-  exit;
-
   filename := '';
 
   { First pass: Parse BMFont header }
-  for line in lines do begin
-    if line.StartsWith('info') then begin
-      kvPairs := line.Split(' ');
+  if line.StartsWith('info') then begin
+    kvPairs := line.Split(' ');
 
-      for token in kvPairs do begin
-        pair := token.split('=');
-        k := pair[0];
-        v := pair[1];
+    for token in kvPairs do begin
+      pair := token.split('=');
+      k := pair[0];
+      v := pair[1];
 
-        if k = 'face' then begin
-          { Find the first " then the second " }
-          idx := pos('face', line);
-          openQuote := pos('"', line, idx + 1);
-          closeQuote := pos('"', line, openQuote + 1);
-          WriteLog('Font name:' + copy(line, openQuote + 1, closeQuote - openQuote - 1));
-        end
-        else if k = 'spacing' then begin
-          pair := v.Split(',');
+      if k = 'face' then begin
+        { Find the first " then the second " }
+        idx := pos('face', line);
+        openQuote := pos('"', line, idx + 1);
+        closeQuote := pos('"', line, openQuote + 1);
+        WriteLog('Font name:' + copy(line, openQuote + 1, closeQuote - openQuote - 1));
+      end
+      else if k = 'spacing' then begin
+        pair := v.Split(',');
 
-          with bmfonts[bmfontHandle].font do begin
-            spacing[0] := ParseInt(pair[0]);
-            spacing[1] := ParseInt(pair[1]);
-          end;
+        with bmfonts[bmfontHandle].font do begin
+          spacing[0] := ParseInt(pair[0]);
+          spacing[1] := ParseInt(pair[1]);
         end;
       end;
-    end
-    else if line.StartsWith('common') then begin
-      kvPairs := line.split(' ');
+    end;
+  end
+  else if line.StartsWith('common') then begin
+    kvPairs := line.split(' ');
 
-      for token in kvPairs do begin
-        pair := token.split('=');
-        k := pair[0];
-        v := pair[1];
+    for token in kvPairs do begin
+      pair := token.split('=');
+      k := pair[0];
+      v := pair[1];
 
-        if k = 'lineHeight' then begin
-          bmfonts[bmfontHandle].font.lineHeight :=
-            ParseInt(v);
-        end;
+      if k = 'lineHeight' then begin
+        bmfonts[bmfontHandle].font.lineHeight :=
+          ParseInt(v);
       end;
-    end
-    else if line.StartsWith('page') then begin
-      kvPairs := line.split(' ');
+    end;
+  end
+  else if line.StartsWith('page') then begin
+    kvPairs := line.split(' ');
 
-      for token in kvPairs do begin
-        pair := token.split('=');
-        k := pair[0];
-        v := pair[1];
+    for token in kvPairs do begin
+      pair := token.split('=');
+      k := pair[0];
+      v := pair[1];
 
-        if k = 'file' then begin
-          idx := pos('file', line);
-          openQuote := pos('"', line, idx + 1);
-          closeQuote := pos('"', line, openQuote + 1);
+      if k = 'file' then begin
+        idx := pos('file', line);
+        openQuote := pos('"', line, idx + 1);
+        closeQuote := pos('"', line, openQuote + 1);
 
-          filename := copy(line, openQuote + 1, closeQuote - openQuote - 1);
+        filename := copy(line, openQuote + 1, closeQuote - openQuote - 1);
 
-          writelog('Filename: ' + filename);
-        end;
+        writelog('Filename: ' + filename);
       end;
     end;
   end;
 
   { Second pass - parse BMFont glyphs }
 
+  {
   for lineIdx := 0 to high(lines) do begin
     line := lines[lineIdx];
 
@@ -495,11 +445,80 @@ begin
 
     bmfonts[bmfontHandle].font.glyphs[newGlyph.id] := newGlyph;
   end;
+  }
+end;
+
+procedure PascalBMFontLoaded(bmfontHandle: longint);
+var
+  s: string;
+
+  lineStart: smallint;
+  line: ShortString;
+  lineLen: smallint;
+  lineIdx: smallint;
+
+  kvPairs: array of string;
+  token: string;
+  pair: array of string; { strictly 2 }
+  k, v: string;
+  idx: smallint;
+  openQuote, closeQuote: smallint;
+  filename: string;
+  newGlyph: TBMFontGlyph;
+
+  a: smallint;
+begin
+  bmfonts[bmfontHandle].status := AssetStatusReady;
+  bmfonts[bmfontHandle].errorCode := 0;
+
+  { Apparently SetString does a heap allocation }
+  { TODO: Fix the heap corruption }
+  { SetString(s, PAnsiChar(@bmfontBuffer[0]), bmfontBufferLen); }
+  writelog(format('buffer len: %d', [bmfontBufferLen]));
+
+  s := '';
+
+  a := 0;
+  lineStart := 0;
+
+  while a < bmfontBufferLen do begin
+    if bmfontBuffer[a] = 13 then begin
+      inc(a);
+      continue
+    end;
+
+    if bmfontBuffer[a] = 10 then begin
+      { SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), a - lineStart); }
+
+      lineLen := a - lineStart;
+      if lineLen > 255 then lineLen := 255;
+      line[0] := chr(lineLen);
+      move(bmfontBuffer[lineStart], line[1], lineLen);
+
+      ParseBMFontData(bmfontHandle, line);
+
+      lineStart := a + 1;
+    end;
+
+    inc(a)
+  end;
+
+  if lineStart < bmfontBufferLen then begin
+    SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), bmfontBufferLen - lineStart);
+
+    { TODO: Parse this line }
+  end;
+
+  { lines := s.Split(#10); }
+
+  { TODO: Disable this: }
+  inc(assetReadyCount);
+  exit;
 
   bmfonts[bmfontHandle].font.texHandle :=
     RequestImage(filename);
 
-  DumpBMFontGlyphs(bmfontHandle);
+  { DumpBMFontGlyphs(bmfontHandle); }
 
   { for debugging }
   writelog(
