@@ -448,62 +448,50 @@ end;
 
 procedure PascalBMFontLoaded(bmfontHandle: longint);
 var
-  s: string;
-
+  line: string;
   lineStart: smallint;
-  line: ShortString;
   lineLen: longint;
-  lineIdx: smallint;
 
-  kvPairs: array of string;
-  token: string;
-  pair: array of string; { strictly 2 }
-  k, v: string;
-  idx: smallint;
-  openQuote, closeQuote: smallint;
-  filename: string;
-  newGlyph: TBMFontGlyph;
-
-  a: longint;
+  byteIdx: longint;
 begin
   bmfonts[bmfontHandle].status := AssetStatusReady;
   bmfonts[bmfontHandle].errorCode := 0;
 
-  { Apparently SetString does a heap allocation }
-  { SetString(s, PAnsiChar(@bmfontBuffer[0]), bmfontBufferLen); }
+  { Apparently SetString does byteIdx heap allocation }
+  { SetString(line, PAnsiChar(@bmfontBuffer[0]), bmfontBufferLen); }
 
   writelog('buffer len: ' + i32str(bmfontBufferLen));
 
-  s := '';
-  a := 0;
+  line := '';
+  byteIdx := 0;
   lineStart := 0;
 
-  while a < bmfontBufferLen do begin
-    if bmfontBuffer[a] = 13 then begin
-      inc(a);
+  while byteIdx < bmfontBufferLen do begin
+    if bmfontBuffer[byteIdx] = 13 then begin
+      inc(byteIdx);
       continue
     end;
 
-    if bmfontBuffer[a] = 10 then begin
-      SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), a - lineStart);
-      ParseBMFontLine(bmfontHandle, s);
+    if bmfontBuffer[byteIdx] = 10 then begin
+      SetString(line, PAnsiChar(@bmfontBuffer[lineStart]), byteIdx - lineStart);
+      ParseBMFontLine(bmfontHandle, line);
 
       writelog('lineStart: ' + i32str(lineStart));
 
-      lineStart := a + 1
+      lineStart := byteIdx + 1
     end;
 
-    inc(a)
+    inc(byteIdx)
   end;
 
   if lineStart < bmfontBufferLen then begin
-    SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), bmfontBufferLen - lineStart);
+    SetString(line, PAnsiChar(@bmfontBuffer[lineStart]), bmfontBufferLen - lineStart);
 
     { writelog('(Last line)');
     writelog('Line start: ' + i32str(lineStart));
     writelog('Buffer len: ' + i32str(bmfontBufferLen)); }
 
-    ParseBMFontLine(bmfontHandle, s);
+    ParseBMFontLine(bmfontHandle, line);
   end;
 
   { for debugging }
