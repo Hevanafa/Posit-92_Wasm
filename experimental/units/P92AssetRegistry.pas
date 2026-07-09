@@ -329,7 +329,7 @@ begin
   end;
 end;
 
-procedure ParseBMFontLine(bmfontHandle: longint; line: string);
+procedure ParseBMFontLine(bmfontHandle: longint; line: AnsiString);
 var
   filename: string;
   kvPairs: array of string;
@@ -345,7 +345,7 @@ var
 begin
   filename := '';
 
-  WriteLog('Parsing this line:' + #10 + line);
+  { WriteLog('Parsing this line:' + #10 + line); }
 
   { First pass: Parse BMFont header }
   if line.StartsWith('info') then begin
@@ -405,10 +405,10 @@ begin
         writelog('Filename: ' + filename);
       end;
     end;
-  end
+  end;
 
-  else if (not line.StartsWith('chars')) and line.StartsWith('char') then begin
-    { Parse BMFont glyphs }
+  { TODO: Parse BMFont glyphs }
+  { else if (not line.StartsWith('chars')) and line.StartsWith('char') then begin
     { for lineIdx := 0 to high(lines) do begin
       line := lines[lineIdx];
 
@@ -448,7 +448,7 @@ begin
 
       bmfonts[bmfontHandle].font.glyphs[newGlyph.id] := newGlyph;
     { end; }
-  end;
+  end; }
 end;
 
 procedure PascalBMFontLoaded(bmfontHandle: longint);
@@ -457,7 +457,7 @@ var
 
   lineStart: smallint;
   line: ShortString;
-  lineLen: smallint;
+  lineLen: longint;
   lineIdx: smallint;
 
   kvPairs: array of string;
@@ -469,7 +469,7 @@ var
   filename: string;
   newGlyph: TBMFontGlyph;
 
-  a: smallint;
+  a: longint;
 begin
   bmfonts[bmfontHandle].status := AssetStatusReady;
   bmfonts[bmfontHandle].errorCode := 0;
@@ -491,32 +491,38 @@ begin
     end;
 
     if bmfontBuffer[a] = 10 then begin
-      { SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), a - lineStart); }
+      SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), a - lineStart);
 
-      lineLen := a - lineStart;
+      { lineLen := a - lineStart;
       if lineLen > 255 then lineLen := 255;
       line[0] := chr(lineLen);
-      move(bmfontBuffer[lineStart], line[1], lineLen);
+      move(bmfontBuffer[lineStart], line[1], lineLen); }
 
-      ParseBMFontLine(bmfontHandle, line);
+      writelog('lineStart: ' + I32Str(lineStart));
+
+      ParseBMFontLine(bmfontHandle, s);
 
       lineStart := a + 1;
+
+      { TODO: Delete this }
+      { exit }
     end;
 
     inc(a)
   end;
 
   if lineStart < bmfontBufferLen then begin
-    { SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), bmfontBufferLen - lineStart); }
+    SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), bmfontBufferLen - lineStart);
 
+    writelog('(Last line)');
     writelog(format('Line start: %d, Buffer len: %d', [lineStart, bmfontBufferLen]));
 
-    lineLen := bmfontBufferLen - lineStart;
+    { lineLen := bmfontBufferLen - lineStart;
     if lineLen > 255 then lineLen := 255;
     line[0] := chr(lineLen);
-    move(bmfontBuffer[lineStart], line[1], lineLen);
+    move(bmfontBuffer[lineStart], line[1], lineLen); }
 
-    ParseBMFontLine(bmfontHandle, line);
+    ParseBMFontLine(bmfontHandle, s);
   end;
 
   { lines := s.Split(#10); }
