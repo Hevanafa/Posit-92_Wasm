@@ -12,6 +12,7 @@ type
     AssetStatusFailed
   );
 
+  PSoftwareTexEntry = ^TSoftwareTexEntry;
   TSoftwareTexEntry = record
     texture: TSoftwareTex;
     status: TAssetStatus;
@@ -25,21 +26,17 @@ type
     errorCode: smallint;
   end;
 
+  PBMFontEntry = ^TBMFontEntry;
   TBMFontEntry = record
     fontPtr: PBMFont;
     status: TAssetStatus;
     errorCode: smallint;
   end;
-  PBMFontEntry = ^TBMFontEntry;
 
   TSoundEntry = record
     status: TAssetStatus;
     errorCode: smallint;
   end;
-
-{ TODO: Hide this entry }
-var
-  textures: array[1..255] of TSoftwareTexEntry;
 
 function GetAssetReadyCount: longword;
 function GetAssetTotalCount: longword;
@@ -86,6 +83,7 @@ uses
   P92Conversions, P92InteropBuf, P92Logger, P92Panic;
 
 var
+  textures: array[1..255] of TSoftwareTexEntry;
   bmfonts: array[1..9] of TBMFontEntry;
   sounds: array[1..255] of TSoundEntry;
 
@@ -200,6 +198,14 @@ begin
   RequestImage := texHandle
 end;
 
+
+function GetTextureEntryPtr(const texHandle: longint): PSoftwareTexEntry;
+begin
+  if (texHandle < low(textures)) or (texHandle > high(textures)) then
+    PanicHalt('GetTextureEntryPtr: Invalid texHandle: ' + I32Str(texHandle));
+
+  GetTextureEntryPtr := @textures[texHandle]
+end;
 
 function GetBMFontEntryPtr(const bmfontHandle: longint): PBMFontEntry;
 begin
