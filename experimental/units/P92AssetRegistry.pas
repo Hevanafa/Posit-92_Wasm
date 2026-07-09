@@ -30,12 +30,14 @@ type
     status: TAssetStatus;
     errorCode: smallint;
   end;
+  PBMFontEntry = ^TBMFontEntry;
 
   TSoundEntry = record
     status: TAssetStatus;
     errorCode: smallint;
   end;
 
+{ TODO: Hide this entry }
 var
   textures: array[1..255] of TSoftwareTexEntry;
 
@@ -54,8 +56,9 @@ procedure JsRequestBMFontLegacy(bmfontHandle: longint; fontPtr: PBMFontLegacy; f
 procedure RequestBMFontLegacy(const path: string; const fontPtr: PBMFontLegacy; const fontGlyphsPtr: PBMFontGlyph);
 }
 
+function GetBMFontEntry(const bmfontHandle: longint): PBMFontEntry;
 procedure JsRequestBMFont(bmfontHandle: longint); external 'env' name 'JsRequestBMFont';
-procedure RequestBMFont(const path: string);
+function RequestBMFont(const path: string): longint;
 
 function GetBMFontBufferPtr: pointer; public name 'GetBMFontBufferPtr';
 function GetBMFontBufferLen: smallint; public name 'GetBMFontBufferLen';
@@ -198,14 +201,24 @@ begin
 end;
 
 
-procedure RequestBMFont(const path: string);
+function GetBMFontEntry(const bmfontHandle: longint): PBMFontEntry;
+begin
+  if (bmfontHandle < low(bmfonts)) or (bmfontHandle > high(bmfonts)) then
+    PanicHalt('GetBMFontEntry: Invalid bmfontHandle: ' + I32Str(bmfontHandle));
+
+  GetBMFontEntry := @bmfonts[bmfontHandle]
+end;
+
+function RequestBMFont(const path: string): longint;
 var
   bmfontHandle: longint;
 begin
   bmfontHandle := FindUnusedBMFontSlot;
+
   if bmfontHandle < 0 then
     PanicHalt('RequestBMFont: BMFont slots are full!');
 
+  RequestBMFont := bmfontHandle;
   WriteInteropString(path);
   JsRequestBMFont(bmfontHandle);
   inc(assetTotalCount)
