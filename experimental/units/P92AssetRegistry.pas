@@ -41,7 +41,6 @@ type
     errorCode: smallint;
   end;
 
-  TBMFontHandle = type longint;
   TSoundHandle = type longint;
 
 var
@@ -133,14 +132,20 @@ begin
   assetReadyCount := 0;
   assetTotalCount := 0;
 
-  for a:=1 to high(textures) do
+  for a:=1 to high(textures) do begin
     textures[a] := default(TSoftwareTexEntry);
+    textures[a].status := AssetStatusEmpty;
+  end;
 
-  for a:=1 to high(bmfonts) do
+  for a:=1 to high(bmfonts) do begin
     bmfonts[a] := default(TBMFontEntry);
+    bmfonts[a].status := AssetStatusEmpty;
+  end;
 
-  for a:=1 to high(sounds) do
+  for a:=1 to high(sounds) do begin
     sounds[a] := default(TSoundEntry);
+    sounds[a].status := AssetStatusEmpty;
+  end;
 
   fillchar(bmfontBuffer, sizeof(bmfontBuffer), 0);
   bmfontBufferLen := 0;

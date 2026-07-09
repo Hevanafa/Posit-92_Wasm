@@ -37,6 +37,10 @@ type
     glyphs: array[0..255] of TBMFontGlyph;
   end;
 
+  { Used in asset registry }
+  TBMFontHandle = type longint;
+
+
 { This procedure creates a new ImgRef instance }
 procedure CloneBMFontLegacy(
   const srcFont: TBMFontLegacy; const srcFontGlyphs: array of TBMFontGlyph;
@@ -48,22 +52,22 @@ procedure FreeBMFontLegacy(
   const freeImgHandle: boolean);
 
 procedure PrintBMFont(
-  const font: TBMFont;
+  const fontHandle: TBMFontHandle;
   const text: string;
   const x, y: smallint);
 
 function MeasureBMFont(
-  const font: TBMFont;
+  const fontHandle: TBMFontHandle;
   const text: string): smallint;
 
 function PrintBMFontCharColour(
-  const font: TBMFont;
+  const fontHandle: TBMFontHandle;
   const ch: char;
   const x, y: smallint;
   const colour: longword): word;
 
 procedure PrintBMFontColour(
-  const font: TBMFont;
+  const fontHandle: TBMFontHandle;
   const text: string;
   const x, y: smallint;
   const colour: longword);
@@ -86,28 +90,30 @@ procedure PrintBMFontToDest(
 implementation
 
 uses
-  P92Conversions, P92Logger,
+  P92Conversions, P92Logger, P92AssetRegistry,
   P92Tex, P92TexDraw;
 
 { Returns glyph.xadvance }
 function PrintBMFontChar(
-  const font: TBMFont;
+  const fontHandle: TBMFontHandle;
   const ch: char;
   const x, y: smallint): smallint;
 var
+  fontPtr: PBMFont;
   charcode: byte;
   glyphIdx: smallint;
   glyph: TBMFontGlyph;
 begin
-  charcode := ord(ch);
+  fontPtr := @bmfonts[fontHandle].font;
 
+  charcode := ord(ch);
   glyphIdx := charcode;
 
-  if (glyphIdx in [low(font.glyphs)..high(font.glyphs)]) then begin
-    glyph := font.glyphs[glyphIdx];
+  if (glyphIdx in [low(fontPtr^.glyphs)..high(fontPtr^.glyphs)]) then begin
+    glyph := fontPtr^.glyphs[glyphIdx];
 
     SprRegion(
-      font.texHandle,
+      fontPtr^.texHandle,
       glyph.x, glyph.y,
       glyph.width, glyph.height,
       x + glyph.xoffset, y + glyph.yoffset);
@@ -147,10 +153,11 @@ begin
 end;
 
 procedure PrintBMFont(
-  const font: TBMFont;
+  const fontHandle: TBMFontHandle;
   const text: string;
   const x, y: smallint);
 var
+  fontPtr: PBMFont;
   a: word;
   ch: char;
   left, step: smallint;
@@ -159,10 +166,10 @@ begin
 
   for a:=1 to length(text) do begin
     ch := text[a];
-    step := PrintBMFontChar(font, ch, x + left, y);
+    step := PrintBMFontChar(fontHandle, ch, x + left, y);
 
     if a < length(text) then
-      inc(left, step + font.spacing[0])
+      inc(left, step + fontPtr^.spacing[0])
     else
       inc(left, step);
   end;
@@ -170,50 +177,55 @@ end;
 
 
 function MeasureBMFont(
-  const font: TBMFont;
+  const fontHandle: TBMFontHandle;
   const text: string): smallint;
 var
+  fontPtr: PBMFont;
   a: word;
   glyphIdx: smallint;
   charcode: byte;
 begin
   MeasureBMFont := 0;
 
+  fontPtr := @bmfonts[fontHandle].font;
+
   for a:=1 to length(text) do begin
     charcode := ord(text[a]);
 
     glyphIdx := charcode;
 
-    if (glyphIdx in [low(font.glyphs)..high(font.glyphs)]) then begin
+    if (glyphIdx in [low(fontPtr^.glyphs)..high(fontPtr^.glyphs)]) then begin
       if a < length(text) then
-        inc(MeasureBMFont, font.glyphs[glyphIdx].xadvance + font.spacing[0])
+        inc(MeasureBMFont, fontPtr^.glyphs[glyphIdx].xadvance + fontPtr^.spacing[0])
       else
-        inc(MeasureBMFont, font.glyphs[glyphIdx].xadvance);
+        inc(MeasureBMFont, fontPtr^.glyphs[glyphIdx].xadvance);
     end;
   end;
 end;
 
 { Returns xadvance for the next char }
 function PrintBMFontCharColour(
-  const font: TBMFont;
+  const fontHandle: TBMFontHandle;
   const ch: char;
   const x, y: smallint;
   const colour: longword): word;
 var
+  fontPtr: PBMFont;
   charcode: byte;
   glyphIdx: smallint;
   glyph: TBMFontGlyph;
 begin
+  fontPtr := @bmfonts[fontHandle].font;
   charcode := ord(ch);
   glyphIdx := charcode;
 
   PrintBMFontCharColour := 0;
 
-  if (glyphIdx in [low(font.glyphs)..high(font.glyphs)]) then begin
-    glyph := font.glyphs[glyphIdx];
+  if (glyphIdx in [low(fontPtr^.glyphs)..high(fontPtr^.glyphs)]) then begin
+    glyph := fontPtr^.glyphs[glyphIdx];
 
     SprRegionSolid(
-      font.texHandle,
+      fontPtr^.texHandle,
       glyph.x, glyph.y,
       glyph.width, glyph.height,
       x + glyph.xoffset, y + glyph.yoffset,
@@ -224,7 +236,7 @@ begin
 end;
 
 procedure PrintBMFontColour(
-  const font: TBMFont;
+  const fontHandle: TBMFontHandle;
   const text: string;
   const x, y: smallint;
   const colour: longword);
@@ -236,13 +248,13 @@ begin
 
   for a:=1 to length(text) do begin
     step := PrintBMFontCharColour(
-        font,
+        fontHandle,
         text[a],
         x + left, y,
         colour);
 
     if a < length(text) then
-      inc(left, step + font.spacing[0])
+      inc(left, step + bmfonts[fontHandle].font.spacing[0])
     else
       inc(left, step);
   end;
