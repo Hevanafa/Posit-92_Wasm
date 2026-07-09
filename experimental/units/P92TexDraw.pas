@@ -72,7 +72,7 @@ var
 begin
   if not IsTextureSet(texHandle) then exit;
 
-  texture := GetTexturePtr(texHandle);
+  texture := BorrowTexturePtr(texHandle);
 
   for py:=0 to texture^.height - 1 do
   for px:=0 to texture^.width - 1 do begin
@@ -97,7 +97,7 @@ var
 begin
   if not IsTextureSet(texHandle) then exit;
 
-  texture := GetTexturePtr(texHandle);
+  texture := BorrowTexturePtr(texHandle);
 
   for py:=0 to texture^.height - 1 do
   for px:=0 to texture^.width - 1 do
@@ -118,7 +118,7 @@ var
 begin
   if not IsTextureSet(texHandle) then exit;
 
-  texture := GetTexturePtr(texHandle);
+  texture := BorrowTexturePtr(texHandle);
 
   for b:=0 to srcH - 1 do
   for a:=0 to srcW - 1 do begin
@@ -149,7 +149,7 @@ var
   colour: longword;
 begin
   if not IsTextureSet(texHandle) then exit;
-  texture := GetTexturePtr(texHandle);
+  texture := BorrowTexturePtr(texHandle);
 
   scaleX := texture^.width / destWidth;
   scaleY := texture^.height / destHeight;
@@ -184,7 +184,7 @@ var
   colour: longword;
 begin
   if not IsTextureSet(texHandle) then exit;
-  texture := GetTexturePtr(texHandle);
+  texture := BorrowTexturePtr(texHandle);
 
   scaleX := srcWidth / destWidth;
   scaleY := srcHeight / destHeight;
@@ -223,7 +223,7 @@ var
 begin
   if not IsTextureSet(texHandle) then exit;
 
-  texture := GetTexturePtr(texHandle);
+  texture := BorrowTexturePtr(texHandle);
 
   for b:=0 to srcH - 1 do
   for a:=0 to srcW - 1 do begin
@@ -259,7 +259,7 @@ begin
 
   if not IsTextureSet(texHandle) then exit;
 
-  texture := GetTexturePtr(texHandle);
+  texture := BorrowTexturePtr(texHandle);
 
   for sy := 0 to texture^.height - 1 do
   for sx := 0 to texture^.width - 1 do begin
@@ -305,7 +305,7 @@ var
   maxRadius: smallint;
 begin
   if not IsTextureSet(texHandle) then exit;
-  texture := GetTexturePtr(texHandle);
+  texture := BorrowTexturePtr(texHandle);
 
   { Negative for inverse transform }
   cosAngle := cos(-rotation);
@@ -351,8 +351,8 @@ var
 begin
   if not IsTextureSet(src) or not IsTextureSet(dest) then exit;
 
-  srcTex := GetTexturePtr(src);
-  destTex := GetTexturePtr(dest);
+  srcTex := BorrowTexturePtr(src);
+  destTex := BorrowTexturePtr(dest);
 
   startX := trunc(max(0, -x));
   startY := trunc(max(0, -y));
@@ -384,8 +384,8 @@ var
 begin
   if not IsTextureSet(src) or not IsTextureSet(dest) then exit;
 
-  srcTex := GetTexturePtr(src);
-  destTex := GetTexturePtr(dest);
+  srcTex := BorrowTexturePtr(src);
+  destTex := BorrowTexturePtr(dest);
 
   for py:=0 to srcH - 1 do
   for px:=0 to srcW - 1 do begin
@@ -416,7 +416,7 @@ begin
   if flip = SprFlipNone then exit;
   if not IsTextureSet(texHandle) then exit;
 
-  texture := GetTexturePtr(texHandle);
+  texture := BorrowTexturePtr(texHandle);
 
   { Horizontal flip }
   if (flip and SprFlipHorizontal) <> 0 then begin

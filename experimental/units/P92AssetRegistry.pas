@@ -53,12 +53,12 @@ function GetAssetTotalCount: longword;
 function AllAssetsReady: boolean;
 
 procedure InitAssetRegistry;
-function FindUnusedTextureHandle: longint;
+function FindUnusedTextureHandle: TTextureHandle;
 
 procedure JsRequestImage(texHandle: longint); external 'env' name 'JsRequestImage';
-function RequestImage(const path: string): longint;
+function RequestImage(const path: string): TTextureHandle;
 
-function GetTextureEntryPtr(const texHandle: longint): PSoftwareTexEntry;
+{ function GetTextureEntryPtr(const texHandle: TTextureHandle): PSoftwareTexEntry; }
 
 function GetBMFontEntryPtr(const bmfontHandle: longint): PBMFontEntry;
 function GetBMFontPtr(const bmfontHandle: longint): PBMFont;
@@ -75,8 +75,8 @@ function RequestSound(const path: string): longint;
 
 { Reporting procedures }
 
-procedure PascalImageLoaded(texHandle: longint; w, h: smallint; pixelData: pointer); public name 'PascalImageLoaded';
-procedure PascalImageFailed(texHandle: longint; errorCode: smallint); public name 'PascalImageFailed';
+procedure PascalImageLoaded(texHandle: TTextureHandle; w, h: smallint; pixelData: pointer); public name 'PascalImageLoaded';
+procedure PascalImageFailed(texHandle: TTextureHandle; errorCode: smallint); public name 'PascalImageFailed';
 
 procedure PascalBMFontLoaded(bmfontHandle: longint); public name 'PascalBMFontLoaded';
 procedure PascalBMFontFailed(bmfontHandle: longint; errorCode: smallint); public name 'PascalBMFontFailed';
@@ -153,7 +153,7 @@ begin
   bmfontBufferLen := 0;
 end;
 
-function FindUnusedTextureHandle: longint;
+function FindUnusedTextureHandle: TTextureHandle;
 var
   a: longint;
 begin
@@ -192,7 +192,7 @@ begin
   FindUnusedSoundHandle := -1
 end;
 
-function RequestImage(const path: string): longint;
+function RequestImage(const path: string): TTextureHandle;
 var
   texHandle: longint;
 begin
@@ -211,13 +211,13 @@ begin
 end;
 
 
-function GetTextureEntryPtr(const texHandle: longint): PSoftwareTexEntry;
+{ function GetTextureEntryPtr(const texHandle: TTextureHandle): PSoftwareTexEntry;
 begin
   if (texHandle < low(textures)) or (texHandle > high(textures)) then
     PanicHalt('GetTextureEntryPtr: Invalid texHandle: ' + I32Str(texHandle));
 
   GetTextureEntryPtr := @textures[texHandle]
-end;
+end; }
 
 function GetBMFontEntryPtr(const bmfontHandle: longint): PBMFontEntry;
 begin
@@ -291,7 +291,7 @@ end;
 
 { Report asset state to Pascal }
 
-procedure PascalImageLoaded(texHandle: longint; w, h: smallint; pixelData: pointer);
+procedure PascalImageLoaded(texHandle: TTextureHandle; w, h: smallint; pixelData: pointer);
 begin
   if (texHandle < 1) or (texHandle >= high(textures)) then
     PanicHalt('Invalid texture handle: ' + I32Str(texHandle));
@@ -308,7 +308,7 @@ begin
   WriteLog('Image: inc assetReadyCount');
 end;
 
-procedure PascalImageFailed(texHandle: longint; errorCode: smallint);
+procedure PascalImageFailed(texHandle: TTextureHandle; errorCode: smallint);
 begin
   textures[texHandle].status := AssetStatusFailed;
   textures[texHandle].errorCode := errorCode;
@@ -441,6 +441,7 @@ begin
     bmfonts[bmfontHandle].font.glyphs[newGlyph.id] := newGlyph;
   end;
 
+  { TODO: Enable this }
   bmfonts[bmfontHandle].font.texHandle :=
     RequestImage(filename);
 
