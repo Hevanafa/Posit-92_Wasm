@@ -38,7 +38,6 @@ type
     errorCode: smallint;
   end;
 
-  TTextureHandle = type longint;
   TBMFontHandle = type longint;
   TSoundHandle = type longint;
 
@@ -421,6 +420,11 @@ begin
 
     bmfonts[bmfontHandle].font.glyphs[newGlyph.id] := newGlyph;
   end;
+
+  { for debugging }
+  writelog(
+    'Font ' + i32str(bmfontHandle) + ' texHandle: ' +
+    i32str(bmfonts[bmfontHandle].font.texHandle));
 
   inc(assetReadyCount);
   WriteLog('BMFont: inc assetReadyCount');

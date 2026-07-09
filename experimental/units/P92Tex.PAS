@@ -29,6 +29,8 @@ type
     pixelData: PByte;
   end;
 
+  TTextureHandle = type longint;
+
 const
   { SprFlips enum }
   SprFlipNone = 0;
@@ -36,18 +38,18 @@ const
   SprFlipVertical = 2;
   SprFlipBoth = SprFlipHorizontal or SprFlipVertical;
 
-function NewTexture(const width, height: smallint): longint;
-function CopyTexture(const texHandle: longint): longint;
-procedure FreeTexture(const texHandle: longint);
+function NewTexture(const width, height: smallint): TTextureHandle;
+function CopyTexture(const texHandle: TTextureHandle): TTextureHandle;
+procedure FreeTexture(const texHandle: TTextureHandle);
 
-function IsTextureSet(const texHandle: longint): boolean;
+function IsTextureSet(const texHandle: TTextureHandle): boolean;
 procedure AssertTextureSet(const varName: string; const texHandle: longint);
-function GetTexturePtr(const texHandle: longint): PSoftwareTex;
+function GetTexturePtr(const texHandle: TTextureHandle): PSoftwareTex;
 
-function GetTextureWidth(const texHandle: longint): smallint;
-procedure SetTextureWidth(const texHandle: longint; const value: smallint);
-function GetTextureHeight(const texHandle: longint): smallint;
-procedure SetTextureHeight(const texHandle: longint; const value: smallint);
+function GetTextureWidth(const texHandle: TTextureHandle): smallint;
+procedure SetTextureWidth(const texHandle: TTextureHandle; const value: smallint);
+function GetTextureHeight(const texHandle: TTextureHandle): smallint;
+procedure SetTextureHeight(const texHandle: TTextureHandle; const value: smallint);
 
 function UnsafeSprPget(const texture: PSoftwareTex; const x, y: smallint): longword;
 function UnsafeSprGetAlpha(const texture: PSoftwareTex; const x, y: smallint): byte;
@@ -65,9 +67,9 @@ uses
 {$endif}
   P92VGA;
 
-function NewTexture(const width, height: smallint): longint;
+function NewTexture(const width, height: smallint): TTextureHandle;
 var
-  handle: longint;
+  handle: TTextureHandle;
   allocSize: longword;
   dataPtr: PByte;
 begin
@@ -99,20 +101,20 @@ end;
   Makes a copy of the source texture
   Returns: a new texture handle
 }
-function CopyTexture(const texHandle: longint): longint;
+function CopyTexture(const texHandle: TTextureHandle): TTextureHandle;
 var
-  handle: longint;
+  newHandle: TTextureHandle;
   src, dest: PSoftwareTex;
 begin
   src := GetTexturePtr(texHandle);
-  handle := NewTexture(src^.width, src^.height);
-  dest := GetTexturePtr(handle);
+  newHandle := NewTexture(src^.width, src^.height);
+  dest := GetTexturePtr(newHandle);
 
   move(src^.pixelData^, dest^.pixelData^, src^.allocSize);
-  CopyTexture := handle
+  CopyTexture := newHandle
 end;
 
-procedure FreeTexture(const texHandle: longint);
+procedure FreeTexture(const texHandle: TTextureHandle);
 begin
   if (texHandle < low(textures)) or (texHandle >= high(textures)) then exit;
   if textures[texHandle].texture.pixelData = nil then exit;
@@ -131,7 +133,7 @@ begin
 end;
 
 
-function IsTextureSet(const texHandle: longint): boolean;
+function IsTextureSet(const texHandle: TTextureHandle): boolean;
 begin
   IsTextureSet := false;
 
@@ -153,13 +155,13 @@ begin
     PanicHalt(varName + ' is unset!');
 end;
 
-function GetTexturePtr(const texHandle: longint): PSoftwareTex;
+function GetTexturePtr(const texHandle: TTextureHandle): PSoftwareTex;
 begin
   GetTexturePtr := @textures[texHandle]
 end;
 
 
-function GetTextureWidth(const texHandle: longint): smallint;
+function GetTextureWidth(const texHandle: TTextureHandle): smallint;
 var
   texture: PSoftwareTex;
 begin
@@ -170,7 +172,7 @@ begin
   GetTextureWidth := texture^.width
 end;
 
-procedure SetTextureWidth(const texHandle: longint; const value: smallint);
+procedure SetTextureWidth(const texHandle: TTextureHandle; const value: smallint);
 var
   texture: PSoftwareTex;
 begin
@@ -188,7 +190,7 @@ begin
 end;
 
 
-function GetTextureHeight(const texHandle: longint): smallint;
+function GetTextureHeight(const texHandle: TTextureHandle): smallint;
 var
   texture: PSoftwareTex;
 begin
@@ -199,7 +201,7 @@ begin
   GetTextureHeight := texture^.height
 end;
 
-procedure SetTextureHeight(const texHandle: longint; const value: smallint);
+procedure SetTextureHeight(const texHandle: TTextureHandle; const value: smallint);
 var
   texture: PSoftwareTex;
 begin
