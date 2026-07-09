@@ -339,10 +339,12 @@ begin
   setstring(s, PAnsiChar(@bmfontBuffer[0]), bmfontBufferLen);
   lines := s.Split(#10);
 
+  { writelog(copy(s, 1, 20));
+  writelog(i32str(bmfontBufferLen)); }
+
   filename := '';
 
   { First pass: Parse BMFont header }
-
   for line in lines do begin
     if line.StartsWith('info') then begin
       kvPairs := line.Split(' ');
@@ -425,7 +427,9 @@ begin
       k := pair[0];
       v := pair[1];
 
-      if k = 'x' then
+      if k = 'id' then
+        newGlyph.id := ParseInt(v)
+      else if k = 'x' then
         newGlyph.x := ParseInt(v)
       else if k = 'y' then
         newGlyph.y := ParseInt(v)
