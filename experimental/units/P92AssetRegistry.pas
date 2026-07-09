@@ -88,7 +88,6 @@ procedure PascalSoundFailed(sndHandle: longint; errorCode: smallint); public nam
 implementation
 
 uses
-  SysUtils,
   P92Conversions, P92InteropBuf, P92Logger, P92Panic, P92Strings;
 
 var
@@ -417,8 +416,8 @@ begin
       if line.StartsWith('chars') then continue;
       if not line.StartsWith('char') then continue; }
 
-      while line.Contains('  ') do
-        line := line.Replace('  ', ' ');
+      while Contains(line, '  ') do
+        line := ReplaceAll(line, '  ', ' ');
 
       { kvPairs := line.Split(' '); }
       split(line, ' ', kvPairs);
@@ -478,12 +477,11 @@ begin
   bmfonts[bmfontHandle].errorCode := 0;
 
   { Apparently SetString does a heap allocation }
-  { TODO: Fix the heap corruption }
   { SetString(s, PAnsiChar(@bmfontBuffer[0]), bmfontBufferLen); }
-  writelog(format('buffer len: %d', [bmfontBufferLen]));
+
+  writelog('buffer len: ' + i32str(bmfontBufferLen));
 
   s := '';
-
   a := 0;
   lineStart := 0;
 
@@ -505,10 +503,7 @@ begin
 
       ParseBMFontLine(bmfontHandle, s);
 
-      lineStart := a + 1;
-
-      { TODO: Delete this }
-      { exit }
+      lineStart := a + 1
     end;
 
     inc(a)
@@ -518,7 +513,8 @@ begin
     SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), bmfontBufferLen - lineStart);
 
     writelog('(Last line)');
-    writelog(format('Line start: %d, Buffer len: %d', [lineStart, bmfontBufferLen]));
+    writelog('Line start: ' + i32str(lineStart));
+    writelog('Buffer len: ' + i32str(bmfontBufferLen));
 
     { lineLen := bmfontBufferLen - lineStart;
     if lineLen > 255 then lineLen := 255;
