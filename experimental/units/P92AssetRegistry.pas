@@ -162,7 +162,7 @@ begin
   FindUnusedTextureHandle := -1
 end;
 
-function FindUnusedBMFontHandle: longint;
+function FindUnusedBMFontHandle: TBMFontHandle;
 var
   a: longint;
 begin
@@ -193,11 +193,12 @@ var
   texHandle: longint;
 begin
   inc(assetTotalCount);
-  WriteLog('RequestImage: inc assetTotalCount');
 
   texHandle := FindUnusedTextureHandle;
   textures[texHandle] := default(TSoftwareTexEntry);
   textures[texHandle].status := AssetStatusLoading;
+
+  WriteLog('RequestImage handle: ' + i32str(texHandle));
 
   WriteInteropString(path);
   JsRequestImage(texHandle);
