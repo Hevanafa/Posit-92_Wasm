@@ -89,7 +89,7 @@ implementation
 
 uses
   SysUtils,
-  P92Conversions, P92InteropBuf, P92Logger, P92Panic;
+  P92Conversions, P92InteropBuf, P92Logger, P92Panic, P92Strings;
 
 var
   assetReadyCount, assetTotalCount: longword;
@@ -329,16 +329,16 @@ begin
   end;
 end;
 
-procedure ParseBMFontLine(bmfontHandle: longint; line: AnsiString);
+procedure ParseBMFontLine(bmfontHandle: longint; line: ShortString);
 var
   filename: string;
-  kvPairs: array of string;
-  token: string;
-  k, v: string;
+  kvPairs: array[0..19] of shortstring;
+  token: shortstring;
+  k, v: shortstring;
 
   idx: smallint;
   openQuote, closeQuote: smallint;
-  pair: array of string;
+  pair: array of shortstring;
 
   newGlyph: TBMFontGlyph;
 
@@ -349,7 +349,7 @@ begin
 
   { First pass: Parse BMFont header }
   if line.StartsWith('info') then begin
-    kvPairs := line.Split(' ');
+    split(line, ' ', kvPairs);
 
     for token in kvPairs do begin
       pair := token.split('=');
@@ -364,7 +364,7 @@ begin
         WriteLog('Font name:' + copy(line, openQuote + 1, closeQuote - openQuote - 1));
       end
       else if k = 'spacing' then begin
-        pair := v.Split(',');
+        pair := v.split(',');
 
         with bmfonts[bmfontHandle].font do begin
           spacing[0] := ParseInt(pair[0]);
@@ -374,7 +374,7 @@ begin
     end;
   end
   else if line.StartsWith('common') then begin
-    kvPairs := line.split(' ');
+    split(line, ' ', kvPairs);
 
     for token in kvPairs do begin
       pair := token.split('=');
@@ -388,7 +388,7 @@ begin
     end;
   end
   else if line.StartsWith('page') then begin
-    kvPairs := line.split(' ');
+    split(line, ' ', kvPairs);
 
     for token in kvPairs do begin
       pair := token.split('=');
@@ -407,7 +407,7 @@ begin
           RequestImage(filename);
       end;
     end;
-  end;
+  end
 
   { TODO: Parse BMFont glyphs }
   { else if (not line.StartsWith('chars')) and line.StartsWith('char') then begin
