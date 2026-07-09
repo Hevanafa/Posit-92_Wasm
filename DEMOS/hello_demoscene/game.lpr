@@ -57,6 +57,8 @@ begin
   else
     Spr(imgSpecimenP92[0], 148, 84);
 
+  spr(bmfonts[1].font.texHandle, 10, 10);
+
   PrintDefaultCentred('Hello world!', VgaWidth div 2, 120);
 
   DrawMouse;

@@ -38,6 +38,10 @@ type
     errorCode: smallint;
   end;
 
+  TTextureHandle = type longint;
+  TBMFontHandle = type longint;
+  TSoundHandle = type longint;
+
 var
   textures: array[1..255] of TSoftwareTexEntry;
   bmfonts: array[1..9] of TBMFontEntry;
@@ -48,7 +52,7 @@ function GetAssetTotalCount: longword;
 function AllAssetsReady: boolean;
 
 procedure InitAssetRegistry;
-function FindUnusedTextureSlot: longint;
+function FindUnusedTextureHandle: longint;
 
 procedure JsRequestImage(texHandle: longint); external 'env' name 'JsRequestImage';
 function RequestImage(const path: string): longint;
@@ -145,43 +149,43 @@ begin
   bmfontBufferLen := 0;
 end;
 
-function FindUnusedTextureSlot: longint;
+function FindUnusedTextureHandle: longint;
 var
   a: longint;
 begin
   for a:=1 to high(textures) do
     if textures[a].status = AssetStatusEmpty then begin
-      FindUnusedTextureSlot := a;
+      FindUnusedTextureHandle := a;
       exit
     end;
 
-  FindUnusedTextureSlot := -1
+  FindUnusedTextureHandle := -1
 end;
 
-function FindUnusedBMFontSlot: longint;
+function FindUnusedBMFontHandle: longint;
 var
   a: longint;
 begin
   for a:=1 to high(bmfonts) do
     if bmfonts[a].status = AssetStatusEmpty then begin
-      FindUnusedBMFontSlot := a;
+      FindUnusedBMFontHandle := a;
       exit
     end;
 
-  FindUnusedBMFontSlot := -1
+  FindUnusedBMFontHandle := -1
 end;
 
-function FindUnusedSoundSlot: longint;
+function FindUnusedSoundHandle: longint;
 var
   a: longint;
 begin
   for a:=1 to high(sounds) do
     if sounds[a].status = AssetStatusEmpty then begin
-      FindUnusedSoundSlot := a;
+      FindUnusedSoundHandle := a;
       exit
     end;
 
-  FindUnusedSoundSlot := -1
+  FindUnusedSoundHandle := -1
 end;
 
 function RequestImage(const path: string): longint;
@@ -191,7 +195,7 @@ begin
   inc(assetTotalCount);
   WriteLog('RequestImage: inc assetTotalCount');
 
-  texHandle := FindUnusedTextureSlot;
+  texHandle := FindUnusedTextureHandle;
   textures[texHandle] := default(TSoftwareTexEntry);
   textures[texHandle].status := AssetStatusLoading;
 
@@ -222,10 +226,10 @@ function RequestBMFont(const path: string): longint;
 var
   handle: longint;
 begin
-  handle := FindUnusedBMFontSlot;
+  handle := FindUnusedBMFontHandle;
 
   if handle < 0 then
-    PanicHalt('RequestBMFont: BMFont slots are full!');
+    PanicHalt('RequestBMFont: BMFont handles are full!');
 
   RequestBMFont := handle;
   WriteInteropString(path);
@@ -253,7 +257,7 @@ begin
 
   { Reserve the texture handle}
   {
-  texHandle := FindUnusedTextureSlot;
+  texHandle := FindUnusedTextureHandle;
 
   fontptr^.texHandle := texHandle;
   textures[texHandle] := default(TSoftwareTexEntry);
@@ -287,10 +291,10 @@ begin
   inc(assetTotalCount);
   WriteLog('RequestSound: inc assetTotalCount');
 
-  sndHandle := FindUnusedSoundSlot;
+  sndHandle := FindUnusedSoundHandle;
 
   if sndHandle < 0 then
-    PanicHalt('RequestSound: Sound slots are full!');
+    PanicHalt('RequestSound: Sound handles are full!');
 
   sounds[sndHandle] := default(TSoundEntry);
   sounds[sndHandle].status := AssetStatusLoading;

@@ -67,7 +67,7 @@ uses
 
 function NewTexture(const width, height: smallint): longint;
 var
-  slot: longint;
+  handle: longint;
   allocSize: longword;
   dataPtr: PByte;
 begin
@@ -77,22 +77,22 @@ begin
   if height <= 0 then
     PanicHalt('NewTexture: Invalid height: ' + I32Str(height));
 
-  slot := FindUnusedTextureSlot;
-  if slot < 0 then PanicHalt('Software texture pool is full!');
+  handle := FindUnusedTextureHandle;
+  if handle < 0 then PanicHalt('Software texture pool is full!');
   
   allocSize := width * height * 4;
   dataPtr := PByte(getmem(allocSize));
   fillchar(dataPtr^, allocSize, 0);
 
-  textures[slot].texture.width := width;
-  textures[slot].texture.height := height;
-  textures[slot].texture.allocSize := allocSize;
-  textures[slot].texture.pixelData := dataPtr;
+  textures[handle].texture.width := width;
+  textures[handle].texture.height := height;
+  textures[handle].texture.allocSize := allocSize;
+  textures[handle].texture.pixelData := dataPtr;
 
-  textures[slot].status := AssetStatusReady;
-  textures[slot].errorCode := 0;
+  textures[handle].status := AssetStatusReady;
+  textures[handle].errorCode := 0;
 
-  NewTexture := slot
+  NewTexture := handle
 end;
 
 {
@@ -101,15 +101,15 @@ end;
 }
 function CopyTexture(const texHandle: longint): longint;
 var
-  slot: longint;
+  handle: longint;
   src, dest: PSoftwareTex;
 begin
   src := GetTexturePtr(texHandle);
-  slot := NewTexture(src^.width, src^.height);
-  dest := GetTexturePtr(slot);
+  handle := NewTexture(src^.width, src^.height);
+  dest := GetTexturePtr(handle);
 
   move(src^.pixelData^, dest^.pixelData^, src^.allocSize);
-  CopyTexture := slot
+  CopyTexture := handle
 end;
 
 procedure FreeTexture(const texHandle: longint);
