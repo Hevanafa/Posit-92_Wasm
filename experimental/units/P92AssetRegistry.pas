@@ -316,6 +316,19 @@ begin
   textures[texHandle].errorCode := errorCode;
 end;
 
+procedure DumpBMFontGlyphs(bmfontHandle: longint);
+var
+  a: smallint;
+begin
+  for a:=0 to high(bmfonts[bmfontHandle].font.glyphs) do begin
+    with bmfonts[bmfontHandle].font do begin
+      writelog(format('%d - x:%d, y:%d, width:%d, height:%d, xoffset:%d, yoffset:%d, xadvance:%d', [
+        glyphs[a].id, glyphs[a].x, glyphs[a].y, glyphs[a].width, glyphs[a].height, glyphs[a].xoffset, glyphs[a].yoffset, glyphs[a].xadvance
+      ]));
+    end
+  end;
+end;
+
 procedure PascalBMFontLoaded(bmfontHandle: longint);
 var
   s: string;
@@ -332,6 +345,8 @@ var
   openQuote, closeQuote: smallint;
   filename: string;
   newGlyph: TBMFontGlyph;
+
+  a: smallint;
 begin
   bmfonts[bmfontHandle].status := AssetStatusReady;
   bmfonts[bmfontHandle].errorCode := 0;
@@ -450,6 +465,8 @@ begin
 
   bmfonts[bmfontHandle].font.texHandle :=
     RequestImage(filename);
+
+  DumpBMFontGlyphs(bmfontHandle);
 
   { for debugging }
   writelog(
