@@ -1,5 +1,8 @@
 unit P92AssetRegistry;
 
+{$Mode ObjFPC}
+{$H+}{$J-}
+
 interface
 
 uses P92BMFont, P92Tex;
