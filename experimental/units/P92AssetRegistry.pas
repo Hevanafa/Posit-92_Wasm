@@ -353,10 +353,27 @@ begin
 
   { Apparently SetString does a heap allocation }
   { TODO: Fix the heap corruption }
-  SetString(s, PAnsiChar(@bmfontBuffer[0]), bmfontBufferLen);
+  { SetString(s, PAnsiChar(@bmfontBuffer[0]), bmfontBufferLen); }
   writelog(format('buffer len: %d', [bmfontBufferLen]));
+  s := '';
 
-  lines := s.Split(#10);
+  a := 0;
+  while a < bmfontBufferLen do begin
+    if bmfontBuffer[a] = 13 then continue;
+    if bmfontBuffer[a] = 10 then begin
+      setstring(s, PAnsiChar(@bmfontBuffer[0]), a);
+
+      { TODO: Continue on this }
+
+      break
+    end;
+
+    inc(a)
+  end;
+
+  writelog('Test string:' + s);
+
+  { lines := s.Split(#10); }
 
   { TODO: Disable this: }
   inc(assetReadyCount);
