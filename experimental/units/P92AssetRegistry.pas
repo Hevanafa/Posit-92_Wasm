@@ -504,9 +504,14 @@ begin
   end;
 
   if lineStart < bmfontBufferLen then begin
-    SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), bmfontBufferLen - lineStart);
+    { SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), bmfontBufferLen - lineStart); }
 
-    { TODO: Parse this line }
+    lineLen := bmfontBufferLen - lineStart;
+    if lineLen > 255 then lineLen := 255;
+    line[0] := chr(lineLen);
+    move(bmfontBuffer[lineStart], line[1], lineLen);
+
+    ParseBMFontData(bmfontHandle, line);
   end;
 
   { lines := s.Split(#10); }
