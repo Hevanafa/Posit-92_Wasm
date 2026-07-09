@@ -31,7 +31,7 @@ var
 begin
   defaultFont := default(TBMFont);
   bmfontHandle := RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt');
-  GetBMFontEntryPtr(bmfontHandle)^.fontPtr := @defaultFont;
+  bmfonts[bmfontHandle].font := defaultFont;
 end;
 
 function DefaultFontPtr: PBMFont;

@@ -28,7 +28,7 @@ type
 
   PBMFontEntry = ^TBMFontEntry;
   TBMFontEntry = record
-    fontPtr: PBMFont;
+    font: TBMFont;
     status: TAssetStatus;
     errorCode: smallint;
   end;
@@ -244,7 +244,7 @@ begin
     PanicHalt('RequestBMFont: BMFont slots are full!');
 
   bmfonts[bmfontHandle] := default(TBMFontLegacyEntry);
-  bmfonts[bmfontHandle].fontPtr := fontPtr;
+  bmfonts[bmfontHandle].font := fontPtr;
   bmfonts[bmfontHandle].glyphsPtr := fontGlyphsPtr;
   bmfonts[bmfontHandle].status := AssetStatusLoading;
 
@@ -366,7 +366,7 @@ begin
         else if k = 'spacing' then begin
           pair := v.Split(',');
 
-          with bmfonts[bmfontHandle].fontPtr^ do begin
+          with bmfonts[bmfontHandle].font do begin
             spacing[0] := ParseInt(pair[0]);
             spacing[1] := ParseInt(pair[1]);
           end;
@@ -382,7 +382,7 @@ begin
         v := pair[1];
 
         if k = 'lineHeight' then begin
-          bmfonts[bmfontHandle].fontPtr^.lineHeight :=
+          bmfonts[bmfontHandle].font.lineHeight :=
             ParseInt(v);
         end;
       end;
@@ -403,7 +403,7 @@ begin
           filename := copy(line, openQuote + 1, closeQuote - openQuote - 1);
 
           writelog('Filename: ' + filename);
-          bmfonts[bmfontHandle].fontPtr^.texHandle := RequestImage(filename);
+          bmfonts[bmfontHandle].font.texHandle := RequestImage(filename);
         end;
       end;
     end;
