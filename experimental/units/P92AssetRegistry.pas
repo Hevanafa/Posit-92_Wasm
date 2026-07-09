@@ -351,11 +351,16 @@ begin
   bmfonts[bmfontHandle].status := AssetStatusReady;
   bmfonts[bmfontHandle].errorCode := 0;
 
-  setstring(s, PAnsiChar(@bmfontBuffer[0]), bmfontBufferLen);
+  { Apparently SetString does a heap allocation }
+  { TODO: Fix the heap corruption }
+  SetString(s, PAnsiChar(@bmfontBuffer[0]), bmfontBufferLen);
+  writelog(format('buffer len: %d', [bmfontBufferLen]));
+
   lines := s.Split(#10);
 
-  { writelog(copy(s, 1, 20));
-  writelog(i32str(bmfontBufferLen)); }
+  { TODO: Disable this: }
+  inc(assetReadyCount);
+  exit;
 
   filename := '';
 
