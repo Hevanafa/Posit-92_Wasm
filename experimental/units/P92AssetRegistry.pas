@@ -315,6 +315,8 @@ begin
   textures[texHandle].errorCode := errorCode;
 end;
 
+{ Used to help debug BMFont glyphs }
+{
 procedure DumpBMFontGlyphs(bmfontHandle: longint);
 var
   a: smallint;
@@ -327,6 +329,7 @@ begin
     end
   end;
 end;
+}
 
 procedure ParseBMFontLine(bmfontHandle: longint; line: ShortString);
 var
@@ -343,8 +346,6 @@ var
 
 begin
   filename := '';
-
-  { WriteLog('Parsing this line:' + #10 + line); }
 
   { Parse BMFont header }
   if StartsWith(line, 'info') then begin
@@ -410,46 +411,38 @@ begin
 
   { Parse BMFont glyphs }
   else if (not StartsWith(line, 'chars')) and StartsWith(line, 'char') then begin
-    { for lineIdx := 0 to high(lines) do begin
-      line := lines[lineIdx];
+    while Contains(line, '  ') do
+      line := ReplaceAll(line, '  ', ' ');
 
-      if line.StartsWith('chars') then continue;
-      if not line.StartsWith('char') then continue; }
+    Split(line, ' ', kvPairs);
 
-      while Contains(line, '  ') do
-        line := ReplaceAll(line, '  ', ' ');
+    { Parse the whole glyph first then push }
+    newGlyph := default(TBMFontGlyph);
 
-      { kvPairs := line.Split(' '); }
-      split(line, ' ', kvPairs);
+    for token in kvPairs do begin
+      split(token, '=', pair);
+      k := pair[0];
+      v := pair[1];
 
-      { Parse the whole glyph first then push }
-      newGlyph := default(TBMFontGlyph);
+      if k = 'id' then
+        newGlyph.id := ParseInt(v)
+      else if k = 'x' then
+        newGlyph.x := ParseInt(v)
+      else if k = 'y' then
+        newGlyph.y := ParseInt(v)
+      else if k = 'width' then
+        newGlyph.width := ParseInt(v)
+      else if k = 'height' then
+        newGlyph.height := ParseInt(v)
+      else if k = 'xoffset' then
+        newGlyph.xoffset := ParseInt(v)
+      else if k = 'yoffset' then
+        newGlyph.yoffset := ParseInt(v)
+      else if k = 'xadvance' then
+        newGlyph.xadvance := ParseInt(v);
+    end;
 
-      for token in kvPairs do begin
-        split(token, '=', pair);
-        k := pair[0];
-        v := pair[1];
-
-        if k = 'id' then
-          newGlyph.id := ParseInt(v)
-        else if k = 'x' then
-          newGlyph.x := ParseInt(v)
-        else if k = 'y' then
-          newGlyph.y := ParseInt(v)
-        else if k = 'width' then
-          newGlyph.width := ParseInt(v)
-        else if k = 'height' then
-          newGlyph.height := ParseInt(v)
-        else if k = 'xoffset' then
-          newGlyph.xoffset := ParseInt(v)
-        else if k = 'yoffset' then
-          newGlyph.yoffset := ParseInt(v)
-        else if k = 'xadvance' then
-          newGlyph.xadvance := ParseInt(v);
-      end;
-
-      bmfonts[bmfontHandle].font.glyphs[newGlyph.id] := newGlyph;
-    { end; }
+    bmfonts[bmfontHandle].font.glyphs[newGlyph.id] := newGlyph
   end;
 end;
 
@@ -493,15 +486,9 @@ begin
 
     if bmfontBuffer[a] = 10 then begin
       SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), a - lineStart);
-
-      { lineLen := a - lineStart;
-      if lineLen > 255 then lineLen := 255;
-      line[0] := chr(lineLen);
-      move(bmfontBuffer[lineStart], line[1], lineLen); }
-
-      writelog('lineStart: ' + I32Str(lineStart));
-
       ParseBMFontLine(bmfontHandle, s);
+
+      writelog('lineStart: ' + i32str(lineStart));
 
       lineStart := a + 1
     end;
@@ -512,30 +499,19 @@ begin
   if lineStart < bmfontBufferLen then begin
     SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), bmfontBufferLen - lineStart);
 
-    writelog('(Last line)');
+    { writelog('(Last line)');
     writelog('Line start: ' + i32str(lineStart));
-    writelog('Buffer len: ' + i32str(bmfontBufferLen));
-
-    { lineLen := bmfontBufferLen - lineStart;
-    if lineLen > 255 then lineLen := 255;
-    line[0] := chr(lineLen);
-    move(bmfontBuffer[lineStart], line[1], lineLen); }
+    writelog('Buffer len: ' + i32str(bmfontBufferLen)); }
 
     ParseBMFontLine(bmfontHandle, s);
   end;
 
-  { lines := s.Split(#10); }
-
-  { TODO: Delete this: }
-  { inc(assetReadyCount);
-  exit; }
-
+  { for debugging }
   { DumpBMFontGlyphs(bmfontHandle); }
 
-  { for debugging }
-  writelog(
+  { writelog(
     'Font ' + i32str(bmfontHandle) + ' texHandle: ' +
-    i32str(bmfonts[bmfontHandle].font.texHandle));
+    i32str(bmfonts[bmfontHandle].font.texHandle)); }
 
   inc(assetReadyCount);
   WriteLog('BMFont: inc assetReadyCount');
