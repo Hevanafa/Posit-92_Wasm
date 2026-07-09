@@ -30,7 +30,7 @@ end;
 
 procedure PrintDefault(const text: string; const x, y: integer);
 begin
-  PrintBMFont(bmfonts[defaultFontHandle].font, text, x, y)
+  PrintBMFont(defaultFontHandle, text, x, y)
 end;
 
 procedure PrintDefaultCentred(const text: string; const cx, y: integer);
@@ -43,14 +43,14 @@ end;
 
 function MeasureDefault(const text: string): word;
 begin
-  MeasureDefault := MeasureBMFont(bmfonts[defaultFontHandle].font, text)
+  MeasureDefault := MeasureBMFont(defaultFontHandle, text)
 end;
 
 { Returns the width of the glyph }
 function PrintCharColour(const ch: char; const x, y: integer; const colour: longword): word;
 begin
   PrintCharColour := PrintBMFontCharColour(
-    bmfonts[defaultFontHandle].font, ch, x, y, colour)
+    defaultFontHandle, ch, x, y, colour)
 end;
 
 end.
