@@ -410,6 +410,7 @@ begin
     line := lines[lineIdx];
 
     if line.StartsWith('chars') then continue;
+    if not line.StartsWith('char') then continue;
 
     while line.Contains('  ') do
       line := line.Replace('  ', ' ');
