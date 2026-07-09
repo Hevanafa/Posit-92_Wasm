@@ -334,7 +334,8 @@ var
   s: string;
 
   lines: array of string;
-  line: string;
+  lineStart: smallint;
+  line: string; { TODO: Change this to the usual AnsiString }
   lineIdx: smallint;
 
   kvPairs: array of string;
@@ -355,15 +356,21 @@ begin
   { TODO: Fix the heap corruption }
   { SetString(s, PAnsiChar(@bmfontBuffer[0]), bmfontBufferLen); }
   writelog(format('buffer len: %d', [bmfontBufferLen]));
+
   s := '';
 
   a := 0;
+  lineStart := 0;
   while a < bmfontBufferLen do begin
-    if bmfontBuffer[a] = 13 then continue;
-    if bmfontBuffer[a] = 10 then begin
-      setstring(s, PAnsiChar(@bmfontBuffer[0]), a);
+    if bmfontBuffer[a] = 13 then begin
+      inc(a);
+      continue
+    end;
 
-      { TODO: Continue on this }
+    if bmfontBuffer[a] = 10 then begin
+      SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), a - lineStart);
+
+      { TODO: Parse this line }
 
       break
     end;
@@ -371,7 +378,11 @@ begin
     inc(a)
   end;
 
-  writelog('Test string:' + s);
+  if lineStart < bmfontBufferLen then begin
+    SetString(s, PAnsiChar(@bmfontBuffer[lineStart]), bmfontBufferLen - lineStart);
+
+    { TODO: Parse this line }
+  end;
 
   { lines := s.Split(#10); }
 
