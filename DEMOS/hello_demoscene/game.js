@@ -1,10 +1,5 @@
 "use strict";
 
-/**
- * Experimental boilerplate without the intro
- * 
- * Game < BMFontMixin < Posit92
- */
 class Game extends SoundMixin(BMFontMixin(Posit92)) {
 }
 
