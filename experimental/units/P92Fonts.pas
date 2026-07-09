@@ -9,8 +9,6 @@ uses P92BMFont;
 
 procedure LoadDefaultFont;
 
-function DefaultFontPtr: PBMFont;
-
 procedure PrintDefault(const text: string; const x, y: integer);
 procedure PrintDefaultCentred(const text: string; const cx, y: integer);
 function MeasureDefault(const text: string): word;
@@ -23,25 +21,16 @@ implementation
 uses P92AssetRegistry;
 
 var
-  defaultFont: TBMFont;
+  defaultFontHandle: longint;
 
 procedure LoadDefaultFont;
-var
-  bmfontHandle: longint;
 begin
-  defaultFont := default(TBMFont);
-  bmfontHandle := RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt');
-  bmfonts[bmfontHandle].font := defaultFont;
-end;
-
-function DefaultFontPtr: PBMFont;
-begin
-  DefaultFontPtr := @defaultFont
+  defaultFontHandle := RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt')
 end;
 
 procedure PrintDefault(const text: string; const x, y: integer);
 begin
-  PrintBMFont(defaultFont, text, x, y)
+  PrintBMFont(bmfonts[defaultFontHandle].font, text, x, y)
 end;
 
 procedure PrintDefaultCentred(const text: string; const cx, y: integer);
@@ -54,14 +43,14 @@ end;
 
 function MeasureDefault(const text: string): word;
 begin
-  MeasureDefault := MeasureBMFont(defaultFont, text)
+  MeasureDefault := MeasureBMFont(bmfonts[defaultFontHandle].font, text)
 end;
 
 { Returns the width of the glyph }
 function PrintCharColour(const ch: char; const x, y: integer; const colour: longword): word;
 begin
   PrintCharColour := PrintBMFontCharColour(
-    defaultFont, ch, x, y, colour)
+    bmfonts[defaultFontHandle].font, ch, x, y, colour)
 end;
 
 end.
