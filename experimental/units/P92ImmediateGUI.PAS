@@ -146,7 +146,7 @@ begin
   mousePoint.y := 0;
 
   if useDefaultFont then
-    activeFontHandle := GetDefaultFontHandle;
+    GuiSetFont(GetDefaultFontHandle);
 end;
 
 function GetMousePoint: TPoint;
