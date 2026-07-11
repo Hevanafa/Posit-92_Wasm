@@ -132,7 +132,6 @@ if (grep { $_ eq "--all" } @ARGV) {
 
 # Otherwise handle setup for only 1 demo
 
-my @path_parts = splitpath($demo_or_option);
-setup_demo $path_parts[-1];
+setup_demo basename($demo_or_option);
 
 say colored("Done!", "bright_green")
