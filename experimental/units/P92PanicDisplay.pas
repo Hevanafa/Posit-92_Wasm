@@ -5,20 +5,25 @@ unit P92PanicDisplay;
 
 interface
 
-procedure PanicHaltDisplay(const msg: string);
+procedure PanicHaltDisplay(const msg: AnsiString);
+{$ifdef P92_WASM}
 procedure PascalPanicHaltDisplay; public name 'PascalPanicHaltDisplay';
+{$endif}
 
 
 implementation
 
 uses
-  P92Core, P92InteropBuf, P92TexDraw, P92Panic, P92VGA
+  P92Core, P92TexDraw, P92Panic, P92VGA
+{$ifdef P92_WASM}
+  , P92InteropBuf
+{$endif}
 {$ifdef P92_WEBGL}
   , P92WebGL
 {$endif}
   ;
 
-procedure PanicHaltDisplay(const msg: string);
+procedure PanicHaltDisplay(const msg: AnsiString);
 var
   a, b: word;
 begin
@@ -49,9 +54,11 @@ begin
   PanicHalt(msg)
 end;
 
+{$ifdef P92_WASM}
 procedure PascalPanicHaltDisplay;
 begin
   PanicHaltDisplay(ReadInteropString)
 end;
+{$endif}
 
 end.

@@ -6,7 +6,8 @@
 unit P92Graphics;
 
 {$Mode ObjFPC}
-{$H+}{$J-}
+{$H-}  { Use ShortStrings }
+{$J-}  { Don't allow assignments to typed consts }
 {$PointerMath ON}
 
 interface

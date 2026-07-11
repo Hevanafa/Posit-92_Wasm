@@ -11,7 +11,8 @@
 unit P92Tex;
 
 {$Mode ObjFPC}
-{$H+}{$J-}
+{$H-}  { Use ShortStrings }
+{$J-}  { Don't allow assignments to typed consts }
 {$Notes OFF}
 {$B-}  { Enable boolean short-circuiting }
 {$R-}  { Turn off range checks }
@@ -19,6 +20,8 @@ unit P92Tex;
 {Define PanicOnInvalidHandle}
 
 interface
+
+uses P92AssetHandles;
 
 type
   PSoftwareTex = ^TSoftwareTex;
@@ -28,8 +31,6 @@ type
     allocSize: longword;
     pixelData: PByte;
   end;
-
-  TTextureHandle = type longint;
 
 const
   { SprFlips enum }
@@ -62,8 +63,6 @@ uses
   P92Conversions, P92Logger, P92Maths, P92Panic, P92AssetRegistry,
 {$ifdef P92_WASM}
   P92WasmHeap,
-{$endif}
-{$ifdef Windows}
 {$endif}
   P92VGA;
 
@@ -122,9 +121,12 @@ begin
 {$ifdef P92_WASM}
   WasmFreeMem(textures[texHandle].texture.pixelData);
 {$endif}
-{$ifdef Windows}
-  FreeMem(imageRefs[imgHandle].dataPtr);
+{$ifdef P92_SDL2}
+  FreeMem(textures[texHandle].texture.pixelData);
 {$endif}
+
+  textures[texHandle].status := AssetStatusEmpty;
+  textures[texHandle].errorCode := 0;
 
   textures[texHandle].texture.width := 0;
   textures[texHandle].texture.height := 0;

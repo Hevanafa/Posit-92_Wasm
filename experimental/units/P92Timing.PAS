@@ -6,7 +6,8 @@
 unit P92Timing;
 
 {$Mode ObjFPC}
-{$H+}{$J-}
+{$H-}  { Use ShortStrings }
+{$J-}  { Don't allow assignments to typed consts }
 
 interface
 
@@ -17,7 +18,7 @@ function GetTimer: double; external 'env' name 'GetTimer';
 function GetFullTimer: double; external 'env' name 'GetFullTimer';
 {$endif}
 
-{$ifdef Windows}
+{$ifdef P92_SDL2}
 procedure initTiming;
 function getMidnightOffset: double;
 function getTimer: double;
@@ -30,7 +31,7 @@ procedure UpdateDeltaTime;
 
 implementation
 
-{$ifdef Windows}
+{$ifdef P92_SDL2}
 uses SDL2Wrapper, SysUtils;
 {$endif}
 
@@ -57,7 +58,7 @@ begin
 end;
 
 
-{$ifdef Windows}
+{$ifdef P92_SDL2}
 var
   timingInitialised: boolean;
   midnightOffset: double;  { Offset from midnight the day when the app started }

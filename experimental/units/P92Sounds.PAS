@@ -9,16 +9,18 @@
 unit P92Sounds;
 
 {$Mode ObjFPC}
-{$H+}{$J-}
+{$H-}{$J-}
 
 interface
 
-procedure InitSounds;
+uses P92AssetHandles;
 
+procedure InitSounds;
 procedure PlaySound(const sndHandle: longint);
 
-function GetSoundVolume(sndHandle: longint): double; public name 'GetSoundVolume';
-procedure SetSoundVolume(sndHandle: longint; volume: double); public name 'SetSoundVolume';
+{$ifdef P92_WASM}
+function GetSoundVolume(const sndHandle: TSoundHandle): single; public name 'GetSoundVolume';
+procedure SetSoundVolume(const sndHandle: TSoundHandle; volume: single); public name 'SetSoundVolume';
 
 { Music playback }
 
@@ -42,16 +44,29 @@ procedure SetMusicPauseTime(value: double); public name 'SetMusicPauseTime';
 function GetMusicRepeat: boolean; public name 'GetMusicRepeat';
 procedure SetMusicRepeat(const value: boolean); public name 'SetMusicRepeat';
 procedure HandleMusicRepeat(const sndHandle: smallint);
+{$endif}
+{$ifdef P92_SDL2}
+procedure CleanupSounds;
+
+function GetSoundVolume(const sndHandle: TSoundHandle): single;
+procedure SetSoundVolume(const sndHandle: TSoundHandle; volume: single);
+{$endif}
 
 
 implementation
 
+{$ifdef P92_WASM}
 uses
   P92AssetRegistry, P92Conversions, P92Maths, P92PanicDisplay;
+{$endif}
+{$ifdef P92_SDL2}
+uses
+  SysUtils, SDL2_Mixer,
+  P92AssetRegistry, P92Conversions, P92Maths, P92Logger, P92PanicDisplay;
+{$endif}
 
 var
-  soundVolumes: array[1..255] of double;
-
+  soundsInitialised: boolean;
 {
   As for music playback, Pascal mainly only needs to know about:
   - music position
@@ -59,6 +74,8 @@ var
   - is the music playing?
 }
 
+{ Not yet supported in SDL2 mode }
+{$ifdef P92_WASM}
   currentMusicHandle: longint;
   isMusicPlaying: boolean;
   musicRepeat: boolean;
@@ -66,7 +83,9 @@ var
 
   { in seconds }
   musicPauseTime: double;
+{$endif}
 
+{$ifdef P92_WASM}
 { initialises the audioContext }
 procedure JsInitAudio; external 'env' name 'JsInitAudio';
 
@@ -86,13 +105,19 @@ procedure JsSetMusicVolume(volume: double); external 'env' name 'JsSetMusicVolum
 
 function JsGetMusicTime: double; external 'env' name 'JsGetMusicTime';
 function JsGetMusicDuration: double; external 'env' name 'JsGetMusicDuration';
+{$endif}
 
 procedure InitSounds;
 var
   a: word;
 begin
-  for a:=1 to high(soundVolumes) do
-    soundVolumes[a] := 0.0;
+{$ifdef P92_WASM}
+  soundsInitialised := false;
+
+  for a:=1 to high(sounds) do begin
+    sounds[a] := default(TSoundEntry);
+    sounds[a].volume := 1.0
+  end;
 
   currentMusicHandle := 0;
   isMusicPlaying := false;
@@ -100,30 +125,80 @@ begin
   musicVolume := 1.0;
   musicPauseTime := 0.0;
 
-  JsInitAudio
+  JsInitAudio;
+  soundsInitialised := true;
+{$endif}
+{$ifdef P92_SDL2}
+  soundsInitialised := false;
+  writeLog('initSounds begin');
+
+  if Mix_OpenAudio(MIX_DEFAULT_FREQUENCY,
+    MIX_DEFAULT_FORMAT,
+    MIX_DEFAULT_CHANNELS, 2048) < 0 then
+  begin
+    writeLog('initSounds: Couldn''t initialise SDL_Mixer!');
+    exit
+  end;
+
+  for a:=1 to high(sounds) do begin
+    sounds[a] := default(TSoundEntry);
+    sounds[a].volume := 1.0
+  end;
+
+  writeLog('initSounds end');
+  soundsInitialised := true
+{$endif}
 end;
 
 procedure PlaySound(const sndHandle: longint);
+{$ifdef P92_SDL2}
+var
+  sdlVolume: integer;
+{$endif}
 begin
+  if not soundsInitialised then exit;
+  if (sndHandle < 1) or (sndHandle > high(sounds)) then exit;
+
+{$ifdef P92_WASM}
   JsPlaySound(sndHandle)
+{$endif}
+{$ifdef P92_SDL2}
+  if sounds[sndHandle].chunk = nil then begin
+    writeWarn('Warning: Attempting to play a nil sound');
+    exit
+  end;
+
+  sdlVolume := round(sounds[sndHandle].volume * 128);
+  Mix_VolumeChunk(sounds[sndHandle].chunk, sdlVolume);
+
+  { -1: any available channel
+    0: no looping }
+  Mix_PlayChannel(-1, sounds[sndHandle].chunk, 0)
+{$endif}
 end;
 
-function GetSoundVolume(sndHandle: longint): double;
+function GetSoundVolume(const sndHandle: TSoundHandle): single;
 begin
-  if (sndHandle < low(soundVolumes)) or (sndHandle > high(soundVolumes)) then
+  GetSoundVolume := 0.0;
+  if not soundsInitialised then exit;
+
+  if (sndHandle < low(sounds)) or (sndHandle > high(sounds)) then
     PanicHaltDisplay('Invalid sndHandle: ' + I32Str(sndHandle));
 
-  GetSoundVolume := soundVolumes[sndHandle];
+  GetSoundVolume := sounds[sndHandle].volume
 end;
 
-procedure SetSoundVolume(sndHandle: longint; volume: double);
+procedure SetSoundVolume(const sndHandle: TSoundHandle; volume: single);
 begin
-  volume := clamp(volume, 0.0, 1.0);
-  soundVolumes[sndHandle] := volume
+  if not soundsInitialised then exit;
+  if (sndHandle < low(sounds)) or (sndHandle > high(sounds)) then
+    exit;
+
+  sounds[sndHandle].volume := Clamp(volume, 0.0, 1.0)
 end;
 
+{$ifdef P92_WASM}
 { Music playback }
-
 function IsMusicLoaded: boolean;
 begin
   IsMusicLoaded := currentMusicHandle > 0
@@ -259,5 +334,22 @@ begin
     end else
       StopMusic;
 end;
+{$endif}
+
+{$ifdef P92_SDL2}
+procedure CleanupSounds;
+var
+  a: longint;
+begin
+  if not soundsInitialised then exit;
+
+  for a := 1 to high(sounds) do
+    if sounds[a].chunk <> nil then
+      Mix_FreeChunk(sounds[a].chunk);
+
+  Mix_CloseAudio;
+  soundsInitialised := false
+end;
+{$endif}
 
 end.

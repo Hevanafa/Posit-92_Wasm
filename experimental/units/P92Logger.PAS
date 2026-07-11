@@ -8,8 +8,8 @@
 unit P92Logger;
 
 {$Mode ObjFPC}
-{$H+}
-{$J-}
+{$H-}  { Use ShortStrings }
+{$J-}  { Don't allow assignments to typed consts }
 
 interface
 
@@ -20,13 +20,13 @@ procedure WriteLogF32(const value: double); external 'env' name 'WriteLogF32';
 procedure FlushLog; external 'env' name 'FlushLog';
 {$endif}
 
-{$ifdef Windows}
-procedure initLogger;
-procedure closeLogger;
+{$ifdef P92_SDL2}
+procedure InitLogger;
+procedure CloseLogger;
 
-procedure writeLogI32(const value: longint);
-procedure writeLogF32(const value: double);
-procedure writeWarn(const msg: string);
+procedure WriteLogI32(const value: longint);
+procedure WriteLogF32(const value: double);
+procedure WriteWarn(const msg: string);
 {$endif}
 
 procedure WriteLog(const msg: string);
@@ -34,9 +34,11 @@ procedure WriteLog(const msg: string);
 
 implementation
 
+{$ifdef P92_WASM}
 uses P92InteropBuf;
+{$endif}
 
-{$ifdef Windows}
+{$ifdef P92_SDL2}
 uses CRT;
 
 const
@@ -55,8 +57,8 @@ begin
 end;
 {$endif}
 
-{$ifdef Windows}
-procedure initLogger;
+{$ifdef P92_SDL2}
+procedure InitLogger;
 begin
   assign(logFile, logFilename);
   {$I-}
@@ -70,13 +72,13 @@ begin
   end;
 end;
 
-procedure closeLogger;
+procedure CloseLogger;
 begin
   if logOpened then
     close(logFile);
 end;
 
-procedure writeLog(const msg: string);
+procedure WriteLog(const msg: string);
 begin
   textColor(white);
   writeln(msg);
@@ -86,7 +88,7 @@ begin
   flush(logFile)
 end;
 
-procedure writeLogI32(const value: longint);
+procedure WriteLogI32(const value: longint);
 begin
   textColor(lightMagenta);
   writeln(value);
@@ -96,7 +98,7 @@ begin
   flush(logFile)
 end;
 
-procedure writeLogF32(const value: double);
+procedure WriteLogF32(const value: double);
 begin
   textColor(lightMagenta);
   writeln(value);
@@ -106,7 +108,7 @@ begin
   flush(logFile)
 end;
 
-procedure writeWarn(const msg: string);
+procedure WriteWarn(const msg: string);
 begin
   textColor(yellow);
   writeln(msg);

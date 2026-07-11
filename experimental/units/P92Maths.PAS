@@ -7,19 +7,20 @@
 unit P92Maths;
 
 {$Mode ObjFPC}
-{$H+}{$J-}
+{$H-}  { Use ShortStrings }
+{$J-}  { Don't allow assignments to typed consts }
 
 interface
 
-function clamp(const value, min, max: double): double;
-function min(const a, b: double): double;
-function max(const a, b: double): double;
-function deg2rad(const deg: double): double;
-function rad2deg(const rad: double): double;
-function i32power(const i, exp: longint): longint;
-function f32power(const i: double; exp: longint): double;
-function floor(const value: double): longint;
-function ceil(const value: double): longint;
+function Clamp(const value, min, max: double): double;
+function Min(const a, b: double): double;
+function Max(const a, b: double): double;
+function Deg2Rad(const deg: double): double;
+function Rad2Deg(const rad: double): double;
+function I32Power(const i, exp: longint): longint;
+function F32Power(const i: double; exp: longint): double;
+function Floor(const value: double): longint;
+function Ceil(const value: double): longint;
 function ArcTan2(const y, x: double): double;
 
 
@@ -27,82 +28,82 @@ implementation
 
 uses P92Panic;
 
-function clamp(const value, min, max: double): double;
+function Clamp(const value, min, max: double): double;
 begin
   if value < min then
-    clamp := min
+    Clamp := min
   else if value > max then
-    clamp := max
+    Clamp := max
   else
-    clamp := value;
+    Clamp := value;
 end;
 
-function min(const a, b: double): double;
+function Min(const a, b: double): double;
 begin
-  min := 0.0;
-  if a<=b then min:=a
-  else if a>b then min:=b
+  Min := 0.0;
+  if a<=b then Min:=a
+  else if a>b then Min:=b
 end;
 
-function max(const a, b: double): double;
+function Max(const a, b: double): double;
 begin
-  max := 0.0;
-  if a<b then max:=b
-  else if a>=b then max:=a
+  Max := 0.0;
+  if a<b then Max:=b
+  else if a>=b then Max:=a
 end;
 
-function deg2rad(const deg: double): double;
+function Deg2Rad(const deg: double): double;
 begin
-  deg2rad := deg / 180 * pi
+  Deg2Rad := deg / 180 * pi
 end;
 
-function rad2deg(const rad: double): double;
+function Rad2Deg(const rad: double): double;
 begin
-  rad2deg := rad * 180 / pi
+  Rad2Deg := rad * 180 / pi
 end;
 
-function i32power(const i, exp: longint): longint;
+function I32Power(const i, exp: longint): longint;
 var
   a: longint;
 begin
   if exp < 0 then PanicHalt('i32power: Negative exp isn''t supported!');
-  if exp = 0 then begin i32power := 1; exit end;
-  if exp = 1 then begin i32power := i; exit end;
+  if exp = 0 then begin I32Power := 1; exit end;
+  if exp = 1 then begin I32Power := i; exit end;
 
-  i32power := i;
+  I32Power := i;
   for a := 2 to exp do
-    i32power := i32power * i;
+    I32Power := I32Power * i;
 end;
 
-function f32power(const i: double; exp: longint): double;
+function F32Power(const i: double; exp: longint): double;
 var
   a: longint;
 begin
   if exp < 0 then PanicHalt('f32power: Negative exp isn''t supported!');
-  if exp = 0 then begin f32power := 1; exit end;
-  if exp = 1 then begin f32power := i; exit end;
+  if exp = 0 then begin F32Power := 1; exit end;
+  if exp = 1 then begin F32Power := i; exit end;
 
-  f32power := i;
+  F32Power := i;
   for a := 2 to exp do
-    f32power := f32power * i;
+    F32Power := F32Power * i;
 end;
 
-function floor(const value: double): longint;
+function Floor(const value: double): longint;
 begin
   if (value >= 0) or (frac(value) = 0) then
-    floor := trunc(value)
+    Floor := trunc(value)
   else
-    floor := trunc(value) - 1;
+    Floor := trunc(value) - 1;
 end;
 
-function ceil(const value: double): longint;
+function Ceil(const value: double): longint;
 begin
   if frac(value) = 0 then
-    ceil := trunc(value)
+    Ceil := trunc(value)
   else if value > 0 then
-    ceil := trunc(value) + 1
+    Ceil := trunc(value) + 1
   else  { negative numbers }
-    ceil := trunc(value);
+    Ceil := trunc(value);
 end;
 
 { Ref: https://en.wikipedia.org/wiki/Atan2#Definition_and_computation }

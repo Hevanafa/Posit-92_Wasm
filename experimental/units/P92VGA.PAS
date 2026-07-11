@@ -7,7 +7,8 @@
 unit P92VGA;
 
 {$Mode ObjFPC}
-{$H+}{$J-}
+{$H-}  { Use ShortStrings }
+{$J-}  { Don't allow assignments to typed consts }
 {$R-}
 {$Q-}
 
@@ -22,6 +23,12 @@ type
 {$ifdef P92_WASM}
 procedure VgaUpload; external 'env' name 'VgaUpload';
 procedure VgaPresent; external 'env' name 'VgaPresent';
+{$endif}
+
+{$ifdef P92_SDL2}
+{ Uploads the pixel data to the GPU }
+procedure VgaUpload;
+procedure VgaPresent;
 {$endif}
 
 function VgaWidth: smallint;
@@ -62,9 +69,9 @@ uses
   P92Logger,
   P92WasmHeap;
 {$endif}
-{$ifdef Windows}
+{$ifdef P92_SDL2}
 uses
-  Logger;
+  SDL2, P92Logger, P92CoreSDL2;
 {$endif}
 
 var
@@ -84,6 +91,23 @@ function VgaHeight: smallint;
 begin
   VgaHeight := _vgaHeight
 end;
+
+{$ifdef P92_SDL2}
+procedure VgaUpload;
+begin
+  { SDL_SetRenderDrawColor(renderer, $ed, $95, $64, $ff);
+  SDL_RenderClear(renderer); }
+
+  SDL_SetTextureBlendMode(vgaTexture, SDL_BLENDMODE_BLEND);
+  SDL_UpdateTexture(vgaTexture, nil, getSurfacePtr, vgaWidth * 4); { pitch = width * 4 bytes }
+  SDL_RenderCopy(renderer, vgaTexture, nil, nil)
+end;
+
+procedure VgaPresent;
+begin
+  SDL_RenderPresent(renderer)
+end;
+{$endif}
 
 procedure InitVideoMem(const width, height: smallint; const startAddr: PByteArray);
 begin

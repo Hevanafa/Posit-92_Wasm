@@ -9,7 +9,8 @@
 unit P92TexDraw;
 
 {$Mode ObjFPC}
-{$H+}{$J-}
+{$H-}  { Use ShortStrings }
+{$J-}  { Don't allow assignments to typed consts }
 {$B-}  { Enable boolean short-circuiting }
 {$R-}  { Turn off range checks }
 {$Q-}  { Turn off overflow checks }
@@ -354,10 +355,10 @@ begin
   srcTex := BorrowTexturePtr(src);
   destTex := BorrowTexturePtr(dest);
 
-  startX := trunc(max(0, -x));
-  startY := trunc(max(0, -y));
-  endX := trunc(min(srcTex^.width, destTex^.width - x));
-  endY := trunc(min(srcTex^.height, destTex^.height - y));
+  startX := trunc(Max(0, -x));
+  startY := trunc(Max(0, -y));
+  endX := trunc(Min(srcTex^.width, destTex^.width - x));
+  endY := trunc(Min(srcTex^.height, destTex^.height - y));
 
   for b:=startY to endY - 1 do
   for a:=startX to endX - 1 do begin

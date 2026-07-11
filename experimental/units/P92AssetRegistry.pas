@@ -1,11 +1,17 @@
 unit P92AssetRegistry;
 
 {$Mode ObjFPC}
-{$H+}{$J-}
+{$H-}  { Use ShortStrings }
+{$J-}  { Don't allow assignments to typed consts }
 
 interface
 
-uses P92BMFont, P92Tex;
+{$ifdef P92_WASM}
+uses P92AssetHandles, P92BMFont, P92Tex;
+{$endif}
+{$ifdef P92_SDL2}
+uses SDL2_Mixer, P92CoreSDL2, P92BMFont, P92Tex;
+{$endif}
 
 type
   TAssetStatus = (
@@ -36,33 +42,53 @@ type
     errorCode: smallint;
   end;
 
+{$ifdef P92_WASM}
   TSoundEntry = record
+    volume: single;
     status: TAssetStatus;
     errorCode: smallint;
   end;
+{$endif}
 
-  TSoundHandle = type longint;
+{$ifdef P92_SDL2}
+  TSoundEntry = record
+    chunk: PMix_Chunk;
+    { 0.0 .. 1.0 }
+    volume: single;
+    status: TAssetStatus;
+    errorCode: smallint;
+  end;
+{$endif}
+
 
 var
   textures: array[1..255] of TSoftwareTexEntry;
   bmfonts: array[1..9] of TBMFontEntry;
   sounds: array[1..255] of TSoundEntry;
 
+{$ifdef P92_WASM}
 function GetAssetReadyCount: longword;
 function GetAssetTotalCount: longword;
 function AllAssetsReady: boolean;
+{$endif}
 
 procedure InitAssetRegistry;
-function FindUnusedTextureHandle: TTextureHandle;
 
+function FindUnusedTextureHandle: TTextureHandle;
+function FindUnusedBMFontHandle: TBMFontHandle;
+function FindUnusedSoundHandle: TSoundHandle;
+
+{$ifdef P92_WASM}
 procedure JsRequestImage(texHandle: longint); external 'env' name 'JsRequestImage';
 function RequestImage(const path: string): TTextureHandle;
+{$endif}
 
 { function GetTextureEntryPtr(const texHandle: TTextureHandle): PSoftwareTexEntry; }
 
-function BorrowBMFontEntryPtr(const bmfontHandle: longint): PBMFontEntry;
-function BorrowBMFontPtr(const bmfontHandle: longint): PBMFont;
+function BorrowBMFontEntryPtr(const bmfontHandle: TBMFontHandle): PBMFontEntry;
+function BorrowBMFontPtr(const bmfontHandle: TBMFontHandle): PBMFont;
 
+{$ifdef P92_WASM}
 procedure JsRequestBMFont(bmfontHandle: longint); external 'env' name 'JsRequestBMFont';
 function RequestBMFont(const path: string): longint;
 
@@ -84,21 +110,36 @@ procedure PascalBMFontFailed(bmfontHandle: longint; errorCode: smallint); public
 
 procedure PascalSoundLoaded(sndHandle: longint); public name 'PascalSoundLoaded';
 procedure PascalSoundFailed(sndHandle: longint; errorCode: smallint); public name 'PascalSoundFailed';
+{$endif}
+
+{$ifdef P92_SDL2}
+function LoadImage(const filename: string): TTextureHandle;
+function LoadBMFont(const filename: string): TBMFontHandle;
+function HwLoadImage(const filename: string): longint;
+function LoadSound(const filename: string): TSoundHandle;
+{$endif}
 
 
 implementation
 
+{$ifdef P92_WASM}
 uses
-  P92Conversions, P92InteropBuf, P92Logger, P92Panic, P92Strings;
+  P92Conversions, P92Logger, P92Panic, P92Strings, P92InteropBuf;
+{$endif}
+{$ifdef P92_SDL2}
+uses SysUtils, SDL2, SDL2_Image, P92TexRef;
+{$endif}
 
+{$ifdef P92_WASM}
 const
   BMFontBufferCapacity = 32767;
 
 var
-  assetReadyCount, assetTotalCount: longword;
-
   bmfontBuffer: array[0..BMFontBufferCapacity - 1] of byte;
   bmfontBufferLen: smallint;
+
+var
+  assetReadyCount, assetTotalCount: longword;
 
 function GetAssetReadyCount: longword;
 begin
@@ -129,13 +170,16 @@ procedure SetAssetTotalCount(value: longint);
 begin
   assetTotalCount := value
 end;
+{$endif}
 
 procedure InitAssetRegistry;
 var
   a: word;
 begin
+{$ifdef P92_WASM}
   assetReadyCount := 0;
   assetTotalCount := 0;
+{$endif}
 
   for a:=1 to high(textures) do begin
     textures[a] := default(TSoftwareTexEntry);
@@ -152,8 +196,10 @@ begin
     sounds[a].status := AssetStatusEmpty;
   end;
 
+{$ifdef P92_WASM}
   fillchar(bmfontBuffer, sizeof(bmfontBuffer), 0);
   bmfontBufferLen := 0;
+{$endif}
 end;
 
 function FindUnusedTextureHandle: TTextureHandle;
@@ -182,7 +228,7 @@ begin
   FindUnusedBMFontHandle := -1
 end;
 
-function FindUnusedSoundHandle: longint;
+function FindUnusedSoundHandle: TSoundHandle;
 var
   a: longint;
 begin
@@ -195,6 +241,7 @@ begin
   FindUnusedSoundHandle := -1
 end;
 
+{$ifdef P92_WASM}
 function RequestImage(const path: string): TTextureHandle;
 var
   texHandle: longint;
@@ -212,7 +259,7 @@ begin
 
   RequestImage := texHandle
 end;
-
+{$endif}
 
 { function GetTextureEntryPtr(const texHandle: TTextureHandle): PSoftwareTexEntry;
 begin
@@ -222,7 +269,7 @@ begin
   GetTextureEntryPtr := @textures[texHandle]
 end; }
 
-function BorrowBMFontEntryPtr(const bmfontHandle: longint): PBMFontEntry;
+function BorrowBMFontEntryPtr(const bmfontHandle: TBMFontHandle): PBMFontEntry;
 begin
   if (bmfontHandle < low(bmfonts)) or (bmfontHandle > high(bmfonts)) then
     PanicHalt('GetBMFontEntry: Invalid bmfontHandle: ' + I32Str(bmfontHandle));
@@ -233,14 +280,15 @@ begin
   BorrowBMFontEntryPtr := @bmfonts[bmfontHandle]
 end;
 
-function BorrowBMFontPtr(const bmfontHandle: longint): PBMFont;
+function BorrowBMFontPtr(const bmfontHandle: TBMFontHandle): PBMFont;
 begin
-  if bmfonts[bmfontHandle].status <> AssetStatusReady then
-    PanicHalt('Attempting to use bmfont ' + i32str(bmfontHandle));
+  { if bmfonts[bmfontHandle].status <> AssetStatusReady then
+    raise Exception.Create('Attempting to use bmfont ' + i32str(bmfontHandle)); }
 
   BorrowBMFontPtr := @bmfonts[bmfontHandle]
 end;
 
+{$ifdef P92_WASM}
 function RequestBMFont(const path: string): longint;
 var
   handle: longint;
@@ -298,7 +346,242 @@ begin
 
   RequestSound := sndHandle
 end;
+{$endif}
 
+{$ifdef P92_SDL2}
+function LoadImage(const filename: string): TTextureHandle;
+var
+  strBuffer: array[0..255] of char;
+  surface: PSDL_Surface;
+  texHandle: TTextureHandle;
+  texture: PSoftwareTex;
+  src, dest: PByte;
+begin
+  { writeLog('loadImage ' + filename); }
+
+  strpcopy(strBuffer, filename);
+  surface := IMG_Load(strBuffer);
+
+  if surface = nil then begin
+    writeLog('loadImage: Failed to load ' + filename);
+    loadImage := -1;
+    exit
+  end;
+
+  if surface^.format^.BitsPerPixel <> 32 then begin
+    WriteWarn('loadImage: Warning: ' + filename + ' is not 32 BPP!');
+    writeLog('loadImage: Convert it to 32 BPP then reload');
+    SDL_FreeSurface(surface);
+    loadImage := -1;
+    exit
+  end;
+
+  texHandle := NewTexture(surface^.w, surface^.h);
+  texture := BorrowTexturePtr(texHandle);
+
+  src := PByte(surface^.pixels);
+  dest := texture^.pixelData;
+  move(src^, dest^, surface^.w * surface^.h * 4);
+
+  SDL_FreeSurface(surface);
+  loadImage := texHandle
+end;
+
+{ 32 to 126: 0 to 94 }
+function LoadBMFont(const filename: string): TBMFontHandle;
+var
+  fontHandle: TBMFontHandle;
+  font: PBMFont;
+
+  f: text;
+  textureFilename: string;
+  txtLine: string;
+  a: word;
+  pairs: array[0..15] of string;
+  pair: array[0..1] of string;
+  k, v: string;
+  newGlyph: TBMFontGlyph;
+  glyphCount: word;
+begin
+  fontHandle := FindUnusedBMFontHandle;
+
+  bmfonts[fontHandle].status := AssetStatusLoading;
+  bmfonts[fontHandle].errorCode := 0;
+
+  LoadBMFont := fontHandle;
+  font := BorrowBMFontPtr(fontHandle);
+
+  assign(f, filename);
+  {$I-} reset(f); {$I+}
+
+  if IOResult <> 0 then begin
+    writeLog('Failed to open BMFont file: ' + filename);
+    exit
+  end;
+
+  glyphCount := 0;
+
+  while not eof(f) do begin
+    readln(f, txtLine);
+
+    if startsWith(txtLine, 'info') then begin
+      split(txtLine, ' ', pairs);
+
+      for a:=0 to high(pairs) do begin
+        split(pairs[a], '=', pair);
+        k := pair[0]; v := pair[1];
+
+        { writeln('info ', k); }
+
+        { if k = 'face' then
+          font^.face := replaceAll(v, '"', '')
+        else} if k = 'spacing' then begin
+          split(v, ',', pair);
+          font^.spacing[0] := parseInt(pair[0]);
+          font^.spacing[1] := parseInt(pair[1]);
+        end;
+      end;
+
+      { writeLog('font.face:' + font.face) }
+
+    end else if startsWith(txtLine, 'common') then begin
+      split(txtLine, ' ', pairs);
+
+      for a:=0 to high(pairs) do begin
+        split(pairs[a], '=', pair);
+        k := pair[0]; v := pair[1];
+
+        if k = 'lineHeight' then
+          font^.lineHeight := parseInt(v);
+      end;
+
+    end else if startsWith(txtLine, 'page') then begin
+      split(txtLine, ' ', pairs);
+
+      for a:=0 to high(pairs) do begin
+        split(pairs[a], '=', pair);
+        k := pair[0]; v := pair[1];
+
+        if k = 'file' then
+          textureFilename := replaceAll(v, '"', '');
+      end;
+
+    end else if startsWith(txtLine, 'char') and not startsWith(txtLine, 'chars') then begin
+      while contains(txtLine, '  ') do
+        txtLine := replaceAll(txtLine, '  ', ' ');
+
+      newGlyph := default(TBMFontGlyph);
+
+      { Parse the whole line first, then copy the record to the list of font glyphs }
+      split(txtLine, ' ', pairs);
+
+      for a:=0 to high(pairs) do begin
+        split(pairs[a], '=', pair);
+        k := pair[0]; v := pair[1];
+
+        { case-of can't be used with strings in Mode TP }
+        if k = 'id' then
+          newGlyph.id := parseInt(v)
+        else if k = 'x' then
+          newGlyph.x := parseInt(v)
+        else if k = 'y' then
+          newGlyph.y := parseInt(v)
+        else if k = 'width' then
+          newGlyph.width := parseInt(v)
+        else if k = 'height' then
+          newGlyph.height := parseInt(v)
+        else if k = 'xoffset' then
+          newGlyph.xoffset := parseInt(v)
+        else if k = 'yoffset' then
+          newGlyph.yoffset := parseInt(v)
+        else if k = 'xadvance' then
+          newGlyph.xadvance := parseInt(v);
+      end;
+
+      if newGlyph.id in [low(font^.glyphs)..high(font^.glyphs)] then begin
+        font^.glyphs[newGlyph.id] := newGlyph;
+        inc(glyphCount)
+      end;
+    end;
+  end;
+
+  close(f);
+
+  { writeLog('Loaded ' + i32str(glyphCount) + ' glyphs'); }
+  bmfonts[fontHandle].status := AssetStatusReady;
+  bmfonts[fontHandle].errorCode := 0;
+
+  font^.texHandle := LoadImage(textureFilename)
+end;
+
+function HwLoadImage(const filename: string): longint;
+var
+  surface: PSDL_Surface;
+  tex: PSDL_Texture;
+begin
+  surface := IMG_Load(pchar(ansistring(filename)));
+  if surface = nil then begin
+    writelog('IMG_Load failed: ' + SDL_GetError);
+    exit(-1)
+  end;
+
+  tex := SDL_CreateTextureFromSurface(renderer, surface);
+  if tex = nil then begin
+    writelog('CreateTexture failed: ' + SDL_GetError);
+    exit(-1)
+  end;
+
+  SDL_FreeSurface(surface);
+
+  SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
+  hwLoadImage := HwRegisterTexRef(tex, surface^.w, surface^.h);
+
+  { writelog(format('hwLoadImage %d: %s', [hwLoadImage, filename])) }
+end;
+
+
+function LoadSound(const filename: string): TSoundHandle;
+var
+  sndHandle: TSoundHandle;
+  strBuffer: array[0..255] of char;
+  chunk: PMix_Chunk;
+begin
+  sndHandle := FindUnusedSoundHandle;
+
+{
+  writeLog('loadSound:');
+  writeLogI32(key);
+  writeLog(filename);
+}
+
+  { Assuming that SDL2 mixer is always initialised }
+  { if not soundsInitialised then exit; }
+
+  LoadSound := sndHandle;
+
+  fillchar(strBuffer, length(strBuffer), #0);
+  strpcopy(strBuffer, filename);
+  chunk := Mix_LoadWAV(strBuffer);
+
+  if chunk = nil then begin
+    writeLog('loadSound: Failed to load ' + filename);
+    exit
+  end;
+
+  if sounds[sndHandle].chunk <> nil then begin
+    writeLog('loadSound: Warning: Possibly duplicate sound key ' + i32str(sndHandle));
+    Mix_FreeChunk(sounds[sndHandle].chunk);
+    exit
+  end;
+
+  sounds[sndHandle].status := AssetStatusReady;
+  sounds[sndHandle].errorCode := 0;
+  sounds[sndHandle].chunk := chunk;
+  sounds[sndHandle].volume := 1.0;
+end;
+{$endif}
+
+{$ifdef P92_WASM}
 { Report asset state to Pascal }
 
 procedure PascalImageLoaded(texHandle: TTextureHandle; w, h: smallint; pixelData: pointer);
@@ -323,6 +606,7 @@ begin
   textures[texHandle].status := AssetStatusFailed;
   textures[texHandle].errorCode := errorCode;
 end;
+{$endif}
 
 { Used to help debug BMFont glyphs }
 {
@@ -340,6 +624,7 @@ begin
 end;
 }
 
+{$ifdef P92_WASM}
 procedure ParseBMFontLine(bmfontHandle: longint; line: ShortString);
 var
   filename: shortstring;
@@ -534,5 +819,6 @@ begin
   sounds[sndHandle].status := AssetStatusFailed;
   sounds[sndHandle].errorCode := errorCode
 end;
+{$endif}
 
 end.

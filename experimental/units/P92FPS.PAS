@@ -1,6 +1,7 @@
 {
-  FPS unit - Part of Posit-92 game engine
-  Hevanafa
+  FPS unit
+  Part of Posit-92 game engine
+  By Hevanafa
 
   Mandatory for FPS (frames per second) counting
 }
@@ -8,7 +9,8 @@
 unit P92FPS;
 
 {$Mode ObjFPC}
-{$H+}{$J-}
+{$H-}  { Use ShortStrings }
+{$J-}  { Don't allow assignments to typed consts }
 {/$Define Debug}
 
 interface

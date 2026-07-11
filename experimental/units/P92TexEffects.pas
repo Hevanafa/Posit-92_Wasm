@@ -1,7 +1,8 @@
 unit P92TexEffects;
 
 {$Mode ObjFPC}
-{$H+}{$J-}
+{$H-}  { Use ShortStrings }
+{$J-}  { Don't allow assignments to typed consts }
 
 interface
 
@@ -23,7 +24,7 @@ var
 begin
   if not IsTextureSet(texHandle) then exit;
 
-  texture := GetTexturePtr(texHandle);
+  texture := BorrowTexturePtr(texHandle);
 
   { Within sprite bounds }
   for b:=0 to texture^.height - 1 do
@@ -71,7 +72,7 @@ var
 begin
   if not IsTextureSet(texHandle) then exit;
 
-  texture := GetTexturePtr(texHandle);
+  texture := BorrowTexturePtr(texHandle);
 
   alpha := colour shr 24 and $FF;
   if alpha = 0 then exit;
@@ -102,7 +103,7 @@ var
 begin
   if not IsTextureSet(texHandle) then exit;
 
-  texture := GetTexturePtr(texHandle);
+  texture := BorrowTexturePtr(texHandle);
 
   for b:=0 to texture^.height - 1 do
   for a:=0 to texture^.width - 1 do

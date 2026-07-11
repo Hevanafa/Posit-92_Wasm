@@ -7,9 +7,12 @@
 unit P92BMFont;
 
 {$Mode ObjFPC}
-{$H+}{$J-}
+{$H-}  { Use ShortStrings }
+{$J-}  { Don't allow assignments to typed consts }
 
 interface
+
+uses P92AssetHandles;
 
 type
   PBMFontGlyph = ^TBMFontGlyph;
@@ -37,9 +40,6 @@ type
     glyphs: array[0..255] of TBMFontGlyph;
   end;
 
-  { Used in asset registry }
-  TBMFontHandle = type longint;
-
 
 { This procedure creates a new ImgRef instance }
 procedure CloneBMFontLegacy(
@@ -50,6 +50,8 @@ procedure FreeBMFontLegacy(
   var font: TBMFontLegacy;
   var fontGlyphs: array of TBMFontGlyph;
   const freeImgHandle: boolean);
+
+procedure FreeBMFont(const fontHandle: TBMFontHandle);
 
 procedure PrintBMFont(
   const fontHandle: TBMFontHandle;
@@ -150,6 +152,21 @@ begin
   fillchar(font, sizeof(TBMFontLegacy), 0);
   for a:=0 to high(fontGlyphs) do
     fillchar(fontGlyphs[a], sizeof(TBMFontGlyph), 0);
+end;
+
+procedure FreeBMFont(const fontHandle: TBMFontHandle);
+var
+  a: word;
+begin
+  bmfonts[fontHandle].status := AssetStatusEmpty;
+  bmfonts[fontHandle].errorCode := 0;
+
+  fillchar(bmfonts[fontHandle].font, sizeof(TBMFont), 0);
+
+  for a:=0 to high(bmfonts[fontHandle].font.glyphs) do
+    fillchar(bmfonts[fontHandle].font.glyphs[a], sizeof(TBMFontGlyph), 0);
+
+  FreeTexture(BorrowBMFontPtr(fontHandle)^.texHandle)
 end;
 
 procedure PrintBMFont(
