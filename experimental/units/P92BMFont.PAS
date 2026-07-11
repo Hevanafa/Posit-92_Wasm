@@ -41,11 +41,7 @@ type
   end;
 
 
-{ This procedure creates a new ImgRef instance }
-procedure CloneBMFontLegacy(
-  const srcFont: TBMFontLegacy; const srcFontGlyphs: array of TBMFontGlyph;
-  var destFont: TBMFontLegacy; var destFontGlyphs: array of TBMFontGlyph);
-
+function CloneBMFont(const srcFontHandle: TBMFontHandle): TBMFontHandle;
 procedure FreeBMFont(const fontHandle: TBMFontHandle);
 
 procedure PrintBMFont(
@@ -118,20 +114,6 @@ begin
     PrintBMFontChar := glyph.xadvance
   end else
     PrintBMFontChar := 0;
-end;
-
-procedure CloneBMFontLegacy(
-  const srcFont: TBMFontLegacy; const srcFontGlyphs: array of TBMFontGlyph;
-  var destFont: TBMFontLegacy; var destFontGlyphs: array of TBMFontGlyph);
-var
-  a: word;
-begin
-  destFont := srcFont;
-
-  for a:=0 to high(srcFontGlyphs) do
-    destFontGlyphs[a] := srcFontGlyphs[a];
-
-  destFont.texHandle := CopyTexture(srcFont.texHandle)
 end;
 
 function CloneBMFont(const srcFontHandle: TBMFontHandle): TBMFontHandle;
