@@ -13,7 +13,7 @@ interface
 
 {$ifdef P92_IMMEDIATE_GUI}
 uses
-  P92BMFont, P92Geometry;
+  P92AssetHandles, P92BMFont, P92Geometry;
 
 type
   TCheckboxState = record
@@ -49,7 +49,7 @@ function GetMousePoint: TPoint;
 function GetMouseJustPressed: boolean;
 function GetMouseJustReleased: boolean;
 
-function GetActiveFont: PBMFont;
+function GetActiveFontHandle: TBMFontHandle;
 
 function GetHotWidget: smallint;
 procedure SetHotWidget(const widgetID: smallint);
@@ -73,7 +73,7 @@ procedure ResetWidgetIndices;
 { Required: Must be placed at the end of the draw routine }
 procedure ResetActiveWidget;
 
-procedure GuiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
+procedure GuiSetFont(const fontHandle: TBMFontHandle);
 
 function GuiMeasureText(const text: string): word;
 function GuiMeasureTextWrapHeight(text: ShortString; const maxWidth: smallint): word;
@@ -99,11 +99,13 @@ procedure ProgressBar(const x, y, width, height: smallint; const perc: double);
 procedure ProgressBarLabelled(const x, y, width, height: smallint; const perc: double);
 {$endif}
 
+
 implementation
 
 {$ifdef P92_IMMEDIATE_GUI}
 uses
-  P92Fonts, P92Conversions, P92Graphics,
+  P92Fonts, P92AssetRegistry,
+  P92Conversions, P92Graphics,
   P92Tex, P92TexDraw,
   P92Maths, P92Mouse, P92Panic, P92Strings,
   P92VGA;
@@ -130,8 +132,7 @@ var
   lastActiveWidget: smallint;
 
   isFontSet: boolean;
-  activeFont: TBMFont;
-  activeFontGlyphs: array[32..126] of TBMFontGlyph;
+  activeFontHandle: TBMFontHandle;
 
 
 procedure InitImmediateGUI(useDefaultFont: boolean);
@@ -145,7 +146,7 @@ begin
   mousePoint.y := 0;
 
   if useDefaultFont then
-    GuiSetFont(DefaultFontPtr^, DefaultFontGlyphsPtr^);
+    activeFontHandle := GetDefaultFontHandle;
 end;
 
 function GetMousePoint: TPoint;
@@ -163,9 +164,9 @@ begin
   GetMouseJustReleased := mouseJustReleased
 end;
 
-function GetActiveFont: PBMFont;
+function GetActiveFontHandle: TBMFontHandle;
 begin
-  GetActiveFont := @activeFont;
+  GetActiveFontHandle := activeFontHandle
 end;
 
 function GetHotWidget: smallint;
@@ -231,15 +232,10 @@ begin
   if mouseJustReleased and (activeWidget >= 0) then activeWidget := -1;
 end;
 
-procedure GuiSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
-var
-  a: word;
+procedure GuiSetFont(const fontHandle: TBMFontHandle);
 begin
   isFontSet := true;
-  activeFont := font;
-
-  for a := 32 to 126 do
-    activeFontGlyphs[a] := glyphs[a - 32];
+  activeFontHandle := fontHandle
 end;
 
 procedure AssertFontSet;
@@ -252,11 +248,12 @@ end;
 function GuiMeasureText(const text: string): word;
 begin
   AssertFontSet;
-  GuiMeasureText := measureBMFont(activeFont, activeFontGlyphs, text)
+  GuiMeasureText := MeasureBMFont(activeFontHandle, text)
 end;
 
 function GuiMeasureTextWrapHeight(text: ShortString; const maxWidth: smallint): word;
 var
+  fontPtr: PBMFont;
   lines: array[0..9] of ShortString;
   lineCount: smallint;
   words: array[0..99] of ShortString;
@@ -272,6 +269,8 @@ begin
     GuiMeasureTextWrapHeight := 0;
     exit
   end;
+
+  fontPtr := BorrowBMFontPtr(activeFontHandle);
 
   result := 0;
 
@@ -296,11 +295,11 @@ begin
       end else begin
         run := words[a] + ' ';
         runWidth := wordWidth + spaceWidth;
-        inc(result, activeFont.lineHeight);
+        inc(result, fontPtr^.lineHeight);
       end;
     end;
 
-    inc(result, activeFont.lineHeight);
+    inc(result, fontPtr^.lineHeight);
   end;
 
   GuiMeasureTextWrapHeight := result
@@ -312,11 +311,12 @@ end;
 procedure TextLabel(const text: string; const x, y: smallint);
 begin
   AssertFontSet;
-  printBMFont(activeFont, activeFontGlyphs, text, x, y)
+  printBMFont(activeFontHandle, text, x, y)
 end;
 
 procedure TextLabelWrap(text: ShortString; const x, y, maxWidth: smallint);
 var
+  fontPtr: PBMFont;
   lines: array[0..9] of ShortString;
   lineCount: smallint;
   words: array[0..99] of ShortString;
@@ -328,7 +328,10 @@ var
   left, top: word;
 begin
   AssertFontSet;
+
   if maxWidth <= 0 then exit;
+
+  fontPtr := BorrowBMFontPtr(activeFontHandle);
 
   { Process each line }
   text := replaceAll(text, #13#10, #10);
@@ -356,14 +359,14 @@ begin
         runWidth := wordWidth + spaceWidth;
 
         left := x;
-        inc(top, activeFont.lineHeight)
+        inc(top, fontPtr^.lineHeight)
       end;
     end;
 
     if length(run) > 0 then
       TextLabel(run, left, top);
 
-    inc(top, activeFont.lineHeight)
+    inc(top, fontPtr^.lineHeight)
   end;
 end;
 
@@ -462,6 +465,7 @@ end;
 
 procedure ListView(const items: array of string; var state: TListViewState);
 var
+  fontPtr: PBMFont;
   a: word;
   lineHeight: word;
   widgetWidth, widgetHeight: word;
@@ -474,7 +478,9 @@ begin
   { if (items = nil) or (items.count = 0) then exit; }
   if length(items) = 0 then exit;
 
-  lineHeight := activeFont.lineHeight + 2;
+  fontPtr := BorrowBMFontPtr(activeFontHandle);
+
+  lineHeight := fontPtr^.lineHeight + 2;
   widgetWidth := 100;
   widgetHeight := lineHeight * (length(items));
 
@@ -517,6 +523,7 @@ end;
 
 procedure Checkbox(const caption: string; const x, y: smallint; var state: TCheckboxState);
 var
+  fontPtr: PBMFont;
   zone: TZone;
   w: smallint;
   thisWidgetID: smallint;
@@ -524,12 +531,14 @@ var
 begin
   AssertFontSet;
 
+  fontPtr := BorrowBMFontPtr(activeFontHandle);
+
   zone.x := x;
   zone.y := y;
 
   w := GuiMeasureText(caption);
   zone.width := w + 6;
-  zone.height := activeFont.lineHeight;
+  zone.height := fontPtr^.lineHeight;
 
   { Update logic }
   thisWidgetID := nextWidgetID;
@@ -704,8 +713,12 @@ begin
   ProgressBar(x, y, width, height, perc);
   
   percStr := i32str(round(perc * 100)) + '%';
-  w := measureBMFont(activeFont, activeFontGlyphs, percStr);
-  TextLabel(percStr, x + (width - w) div 2, y + (height - activeFont.lineHeight) div 2);
+  w := measureBMFont(activeFontHandle, percStr);
+
+  TextLabel(
+    percStr,
+    x + (width - w) div 2,
+    y + (height - BorrowBMFontPtr(activeFontHandle)^.lineHeight) div 2);
 end;
 {$endif}
 

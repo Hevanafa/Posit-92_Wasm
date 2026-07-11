@@ -737,8 +737,6 @@ procedure PascalBMFontLoaded(bmfontHandle: longint);
 var
   line: string;
   lineStart: smallint;
-  lineLen: longint;
-
   byteIdx: longint;
 begin
   bmfonts[bmfontHandle].status := AssetStatusReady;
