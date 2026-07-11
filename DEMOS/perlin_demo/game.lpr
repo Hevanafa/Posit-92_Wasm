@@ -57,7 +57,6 @@ end;
 procedure OnPreload;
 begin
   imgCursor := RequestImage('assets/images/cursor.png');
-
   imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
   imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 end;
@@ -74,10 +73,8 @@ var
 begin
   hideCursor;
 
-  { blackFont := DefaultFontPtr^;
-  blackFont.texHandle := CopyTexture(DefaultFontPtr^.texHandle); }
-  CloneBMFont(DefaultFontPtr^, DefaultFontGlyphsPtr^, blackFont, blackFontGlyphs);
-  replaceColour(blackFont.texHandle, white, black);
+  blackFont := CloneBMFont(GetDefaultFontHandle);
+  replaceColour(BorrowBMFontPtr(blackFont)^.texHandle, white, black);
 
   { Initialise game state here }
   gameTime := 0.0;
@@ -87,7 +84,7 @@ begin
 
   { Only used in the static 2D demo }
   noiseCache := NewTexture(vgaWidth div 2, vgaHeight div 2);
-  imgNoiseCache := GetTexturePtr(noiseCache);
+  imgNoiseCache := BorrowTexturePtr(noiseCache);
 
   for b:=0 to vgaHeight div 2 - 1 do
   for a:=0 to vgaWidth div 2 - 1 do begin
@@ -142,7 +139,7 @@ begin
   rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), white);
 
   if (getActiveWidget <> thisWidgetID) and (getHotWidget <> thisWidgetID) then
-    printBMFont(blackFont, blackFontGlyphs, caption, trunc(zone.x + 4), trunc(zone.y + 4))
+    PrintBMFont(blackFont, caption, trunc(zone.x + 4), trunc(zone.y + 4))
   else
     TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
 
@@ -195,7 +192,7 @@ begin
 
   if actualDemoState = DemoStateDynamic2D then begin
     sprClear(imgSmallNoise, $00000000);
-    texture := GetTexturePtr(imgSmallNoise);
+    texture := BorrowTexturePtr(imgSmallNoise);
 
     offsetX := getTimer * 2.0;
     offsetY := getTimer * 1.5;
@@ -262,7 +259,7 @@ begin
   printDefault(s, (vgaWidth - w) div 2, 100);
 
   DrawMouse;
-  DrawFPS;
+  DrawFPS
 end;
 
 exports
