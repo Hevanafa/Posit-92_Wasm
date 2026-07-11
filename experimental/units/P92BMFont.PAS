@@ -46,11 +46,6 @@ procedure CloneBMFontLegacy(
   const srcFont: TBMFontLegacy; const srcFontGlyphs: array of TBMFontGlyph;
   var destFont: TBMFontLegacy; var destFontGlyphs: array of TBMFontGlyph);
 
-procedure FreeBMFontLegacy(
-  var font: TBMFontLegacy;
-  var fontGlyphs: array of TBMFontGlyph;
-  const freeImgHandle: boolean);
-
 procedure FreeBMFont(const fontHandle: TBMFontHandle);
 
 procedure PrintBMFont(
@@ -137,21 +132,6 @@ begin
     destFontGlyphs[a] := srcFontGlyphs[a];
 
   destFont.texHandle := CopyTexture(srcFont.texHandle)
-end;
-
-procedure FreeBMFontLegacy(
-  var font: TBMFontLegacy;
-  var fontGlyphs: array of TBMFontGlyph;
-  const freeImgHandle: boolean);
-var
-  a: Word;
-begin
-  if freeImgHandle then
-    FreeTexture(font.texHandle);
-
-  fillchar(font, sizeof(TBMFontLegacy), 0);
-  for a:=0 to high(fontGlyphs) do
-    fillchar(fontGlyphs[a], sizeof(TBMFontGlyph), 0);
 end;
 
 procedure FreeBMFont(const fontHandle: TBMFontHandle);
