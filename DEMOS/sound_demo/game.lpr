@@ -1,3 +1,8 @@
+{
+  Sound demo
+  Mixins: bmfont, sound
+}
+
 library Game;
 
 {$Mode ObjFPC}

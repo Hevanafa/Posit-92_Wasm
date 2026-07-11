@@ -19,7 +19,6 @@ type WasmExports = {
   memory: WebAssembly.Memory,
 
   // Core
-  InitEngine: () => void,
   IsEngineReady: () => boolean;
   P92Boot: () => void;
   P92Update: () => void;
@@ -457,9 +456,6 @@ class Posit92 {
     this.#LoadMidnightOffset();
     await this.#InitWebAssembly();
     this.#InitWasmMemory();
-    
-    this.#wasm.exports.InitEngine();
-
     this.#InitKeyboard();
     this.#InitMouse();
   }
@@ -1036,16 +1032,13 @@ class Posit92 {
   async Start(): Promise<void> {
     // WebAssembly init & stuff
     await this.InitRuntime();
+
+    this.#wasm.exports.P92Boot();
+    
     this.#HideLoadingOverlay();
-
-    // Engine stuff
-
     this.#AddOutOfFocusFix();
     this.#AddResizeListener();
     this.#StartLoop();
-
-    // Pass the state control to Pascal
-    this.#wasm.exports.P92Boot();
   }
 
   #OnPreload(): void {

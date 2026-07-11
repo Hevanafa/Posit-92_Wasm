@@ -143,15 +143,16 @@ end;
 
 procedure P92Boot;
 begin
+{$ifdef P92_WASM}
+  InitHeapMgr;
+  InitInteropBuffer;
+{$endif}
+
   engineRunState := ersBoot;
 
   if DebugEngineRunStates then
     writelog('ersBoot');
 
-{$ifdef P92_WASM}
-  InitHeapMgr;
-  InitInteropBuffer;
-{$endif}
 {$ifdef P92_SDL2}
   InitVideoMem(
     bootConfig.width, bootConfig.height,

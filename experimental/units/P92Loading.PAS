@@ -7,8 +7,7 @@
 unit P92Loading;
 
 {$Mode ObjFPC}
-{$H+}
-{$J-}
+{$H-}{$J-}
 
 interface
 
