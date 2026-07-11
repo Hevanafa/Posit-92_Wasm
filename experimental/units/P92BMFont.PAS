@@ -87,7 +87,7 @@ procedure PrintBMFontToDest(
 implementation
 
 uses
-  P92Conversions, P92Logger, P92AssetRegistry,
+  P92Conversions, P92Logger, P92AssetRegistry, P92PanicDisplay,
   P92Tex, P92TexDraw;
 
 { Returns glyph.xadvance }
@@ -132,6 +132,21 @@ begin
     destFontGlyphs[a] := srcFontGlyphs[a];
 
   destFont.texHandle := CopyTexture(srcFont.texHandle)
+end;
+
+function CloneBMFont(const srcFontHandle: TBMFontHandle): TBMFontHandle;
+var
+  destFontHandle: TBMFontHandle;
+begin
+  destFontHandle := FindUnusedBMFontHandle;
+
+  if destFontHandle < 0 then
+    PanicHaltDisplay('BMFont handles are full!');
+
+  bmfonts[destFontHandle] := bmfonts[srcFontHandle];
+  bmfonts[destFontHandle].font.texHandle := CopyTexture(bmfonts[srcFontHandle].font.texHandle);
+
+  CloneBMFont := destFontHandle
 end;
 
 procedure FreeBMFont(const fontHandle: TBMFontHandle);
