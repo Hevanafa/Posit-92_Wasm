@@ -28,13 +28,6 @@ type
     errorCode: smallint;
   end;
 
-  TBMFontLegacyEntry = record
-    fontPtr: PBMFontLegacy;
-    glyphsPtr: PBMFontGlyph;
-    status: TAssetStatus;
-    errorCode: smallint;
-  end;
-
   PBMFontEntry = ^TBMFontEntry;
   TBMFontEntry = record
     font: TBMFont;
