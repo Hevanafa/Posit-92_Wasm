@@ -41,7 +41,7 @@ procedure SetMusicPauseTime(value: double); public name 'SetMusicPauseTime';
 
 function GetMusicRepeat: boolean; public name 'GetMusicRepeat';
 procedure SetMusicRepeat(const value: boolean); public name 'SetMusicRepeat';
-procedure HandleMusicRepeat(const sndHandle: smallint);
+procedure HandleMusicRepeat(const sndHandle: TSoundHandle);
 {$endif}
 {$ifdef P92_SDL2}
 procedure CleanupSounds;
@@ -86,12 +86,12 @@ var
 { initialises the audioContext }
 procedure JsInitAudio; external 'env' name 'JsInitAudio';
 
-procedure JsPlaySound(sndHandle: longint); external 'env' name 'JsPlaySound';
+procedure JsPlaySound(sndHandle: TSoundHandle); external 'env' name 'JsPlaySound';
 
 procedure JsStartMusicPlayer; external 'env' name 'JsStartMusicPlayer';
 procedure JsPauseMusic; external 'env' name 'JsPauseMusic';
 
-procedure JsSetMusicBuffer(sndHandle: longint); external 'env' name 'JsSetMusicBuffer';
+procedure JsSetMusicBuffer(sndHandle: TSoundHandle); external 'env' name 'JsSetMusicBuffer';
 procedure JsUnsetMusicBuffer; external 'env' name 'JsUnsetMusicBuffer';
 
 procedure JsCreateMusicPlayer; external 'env' name 'JsCreateMusicPlayer';
@@ -319,7 +319,7 @@ end;
 
 { Handle music repeat (only when it is playing)
   Important: #musicPlayer.loop must be turned off! }
-procedure HandleMusicRepeat(const sndHandle: smallint);
+procedure HandleMusicRepeat(const sndHandle: TSoundHandle);
 begin
   if GetMusicPlaying and (JsGetMusicTime >= JsGetMusicDuration - 0.05) then
     if GetMusicRepeat then begin
