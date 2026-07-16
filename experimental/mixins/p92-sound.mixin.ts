@@ -11,7 +11,6 @@ type SoundWasmExports = WasmExports & {
 
   // Sounds
   GetSoundVolume: (sndHandle: number) => number;
-  SetSoundVolume: (sndHandle: number, volume: number) => void;
 
   GetCurrentMusicHandle: () => number;
   GetMusicPlaying: () => boolean;
@@ -97,8 +96,6 @@ class SoundMixin extends Base {
       const audioBuffer = await this.#audioContext.decodeAudioData(arrayBuffer);
 
       this.#sounds.set(sndHandle, audioBuffer);
-      this.WasmInstanceExports.SetSoundVolume(sndHandle, 0.5);
-
       this.WasmInstanceExports.PascalSoundLoaded(sndHandle);
     } catch (error) {
       console.error("RequestSound failed", error);
