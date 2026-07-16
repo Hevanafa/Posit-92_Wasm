@@ -27,6 +27,8 @@ function WasmReAllocMem(const ptr: pointer; const newBytes: longword): pointer;
 function WasmAllocMem(const bytes: longword): pointer; public name 'WasmAllocMem';
 function WasmMemSize(const ptr: pointer): PtrUInt;
 
+procedure JsReportSize(requestedSize: longint); external 'env' name 'JsReportSize';
+
 function GetHeapSize: longword;
 function GetFreeHeapSize: longword;
 
@@ -232,6 +234,8 @@ var
   dataPtr: PByte;
   alignedSize: longword;
 begin
+  JsReportSize(bytes);
+
   if bytes <= PoolSizeClassMax then begin
     WasmGetMem := PoolAlloc(bytes);
     exit

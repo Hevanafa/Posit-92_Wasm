@@ -105,6 +105,9 @@ type WasmImports = {
     GetTimer: () => number,
     GetFullTimer: () => number,
 
+    // WasmHeap
+    JsReportSize: (requestedSize: number) => void,
+
     // VGA
     VgaUpload: () => void,
     VgaPresent: () => void,
@@ -262,6 +265,9 @@ class Posit92 {
       // Timing
       GetTimer: this.#GetTimer.bind(this),
       GetFullTimer: this.#GetFullTimer.bind(this),
+
+      // WasmHeap
+      JsReportSize: this.#ReportSize.bind(this),
 
       // VGA
       VgaUpload: this.#VgaUpload.bind(this),
@@ -1002,6 +1008,12 @@ class Posit92 {
 
   #GetFullTimer(): number {
     return Date.now() / 1000;
+  }
+
+  // WasmHeap.pas
+
+  #ReportSize(requestedSize: number) {
+    console.log("reqSize: " + requestedSize);
   }
 
 
