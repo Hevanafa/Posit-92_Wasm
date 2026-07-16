@@ -20,7 +20,7 @@ procedure PlaySound(const sndHandle: longint);
 
 {$ifdef P92_WASM}
 function GetSoundVolume(const sndHandle: TSoundHandle): single; public name 'GetSoundVolume';
-procedure SetSoundVolume(const sndHandle: TSoundHandle; volume: single); public name 'SetSoundVolume';
+procedure SetSoundVolume(const sndHandle: TSoundHandle; volume: single);
 
 { Music playback }
 
@@ -79,7 +79,6 @@ var
   currentMusicHandle: longint;
   isMusicPlaying: boolean;
   musicRepeat: boolean;
-  musicVolume: double;
 
   { in seconds }
   musicPauseTime: double;
@@ -122,7 +121,6 @@ begin
   currentMusicHandle := 0;
   isMusicPlaying := false;
   musicRepeat := true;
-  musicVolume := 1.0;
   musicPauseTime := 0.0;
 
   JsInitAudio;
@@ -191,10 +189,14 @@ end;
 procedure SetSoundVolume(const sndHandle: TSoundHandle; volume: single);
 begin
   if not soundsInitialised then exit;
+
   if (sndHandle < low(sounds)) or (sndHandle > high(sounds)) then
     exit;
 
-  sounds[sndHandle].volume := Clamp(volume, 0.0, 1.0)
+  sounds[sndHandle].volume := Clamp(volume, 0.0, 1.0);
+
+  if sndHandle = currentMusicHandle then
+    JsSetMusicVolume(value);
 end;
 
 {$ifdef P92_WASM}
@@ -300,11 +302,6 @@ end;
 procedure SetMusicPauseTime(value: double);
 begin
   musicPauseTime := value
-end;
-
-function GetMusicVolume: double;
-begin
-  GetMusicVolume := musicVolume
 end;
 
 procedure SetMusicVolume(value: double);

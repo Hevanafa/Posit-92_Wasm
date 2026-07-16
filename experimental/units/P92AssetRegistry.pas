@@ -186,7 +186,6 @@ begin
 
   for a:=1 to high(sounds) do begin
     sounds[a] := default(TSoundEntry);
-    sounds[a].volume := 1.0;
     sounds[a].status := AssetStatusEmpty;
   end;
 
