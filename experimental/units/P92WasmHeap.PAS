@@ -234,7 +234,9 @@ var
   dataPtr: PByte;
   alignedSize: longword;
 begin
+{$ifdef P92_DEBUG_HEAP}
   JsReportSize(bytes);
+{$endif}
 
   if bytes <= PoolSizeClassMax then begin
     WasmGetMem := PoolAlloc(bytes);
