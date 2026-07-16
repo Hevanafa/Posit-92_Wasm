@@ -13,14 +13,12 @@ type SoundWasmExports = WasmExports & {
   GetSoundVolume: (sndHandle: number) => number;
   SetSoundVolume: (sndHandle: number, volume: number) => void;
 
+  GetCurrentMusicHandle: () => number;
   GetMusicPlaying: () => boolean;
   SetMusicPlaying: (value: boolean) => void;
 
   GetMusicPauseTime: () => number;
   SetMusicPauseTime: (value: number) => number;
-
-  GetMusicVolume: () => number
-  SetMusicVolume: (value: number) => void;
 }
 
 globalThis.SoundMixin = <T extends Constructor<Posit92>>(Base: T) =>
@@ -184,7 +182,8 @@ class SoundMixin extends Base {
       throw new Error("ConnectMusicPlayerGraph: musicGainNode is unset");
 
     this.#musicPlayer.buffer = this.#musicBuffer;
-    this.#musicGainNode.gain.value = this.WasmInstanceExports.GetMusicVolume();
+    this.#musicGainNode.gain.value = this.WasmInstanceExports.GetSoundVolume(
+      this.WasmInstanceExports.GetCurrentMusicHandle());
 
     // Connect the audio graph:
     // music player -> gain -> destination

@@ -16,7 +16,7 @@ interface
 uses P92AssetHandles;
 
 procedure InitSounds;
-procedure PlaySound(const sndHandle: longint);
+procedure PlaySound(const sndHandle: TSoundHandle);
 
 {$ifdef P92_WASM}
 function GetSoundVolume(const sndHandle: TSoundHandle): single; public name 'GetSoundVolume';
@@ -24,16 +24,14 @@ procedure SetSoundVolume(const sndHandle: TSoundHandle; volume: single);
 
 { Music playback }
 
-procedure PlayMusic(const sndHandle: longint);
+procedure PlayMusic(const sndHandle: TSoundHandle);
 procedure SeekMusic(t: double);
 procedure PauseMusic;
 procedure StopMusic;
 
+function GetCurrentMusicHandle: TSoundHandle; public name 'GetCurrentMusicHandle';
 function GetMusicTime: double;
 function GetMusicDuration: double;
-
-function GetMusicVolume: double; public name 'GetMusicVolume';
-procedure SetMusicVolume(value: double); public name 'SetMusicVolume';
 
 function GetMusicPlaying: boolean; public name 'GetMusicPlaying';
 procedure SetMusicPlaying(value: boolean); public name 'SetMusicPlaying';
@@ -76,7 +74,7 @@ var
 
 { Not yet supported in SDL2 mode }
 {$ifdef P92_WASM}
-  currentMusicHandle: longint;
+  currentMusicHandle: TSoundHandle;
   isMusicPlaying: boolean;
   musicRepeat: boolean;
 
@@ -148,7 +146,7 @@ begin
 {$endif}
 end;
 
-procedure PlaySound(const sndHandle: longint);
+procedure PlaySound(const sndHandle: TSoundHandle);
 {$ifdef P92_SDL2}
 var
   sdlVolume: integer;
@@ -196,7 +194,7 @@ begin
   sounds[sndHandle].volume := Clamp(volume, 0.0, 1.0);
 
   if sndHandle = currentMusicHandle then
-    JsSetMusicVolume(value);
+    JsSetMusicVolume(sounds[sndHandle].volume);
 end;
 
 {$ifdef P92_WASM}
@@ -212,7 +210,7 @@ begin
   JsStartMusicPlayer
 end;
 
-procedure PlayMusic(const sndHandle: longint);
+procedure PlayMusic(const sndHandle: TSoundHandle);
 begin
   if IsMusicLoaded and isMusicPlaying then exit;
 
@@ -279,6 +277,11 @@ begin
   GetMusicDuration := JsGetMusicDuration
 end;
 
+function GetCurrentMusicHandle: TSoundHandle;
+begin
+  GetCurrentMusicHandle := currentMusicHandle
+end;
+
 function GetMusicTime: double;
 begin
   GetMusicTime := JsGetMusicTime
@@ -302,12 +305,6 @@ end;
 procedure SetMusicPauseTime(value: double);
 begin
   musicPauseTime := value
-end;
-
-procedure SetMusicVolume(value: double);
-begin
-  musicVolume := value;
-  JsSetMusicVolume(value)
 end;
 
 function GetMusicRepeat: boolean;
