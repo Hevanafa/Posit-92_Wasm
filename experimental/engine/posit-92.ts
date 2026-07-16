@@ -1065,8 +1065,19 @@ class Posit92 {
     }
 
     this.#wasm.exports.P92Update();
-    this.#wasm.exports.Update();
-    this.#wasm.exports.Draw();
+
+    try {
+      this.#wasm.exports.Update();
+    } catch (error) {
+      console.error("Unhandled exception on Update:", error);
+    }
+
+    try {
+      this.#wasm.exports.Draw();
+    } catch (error) {
+      console.error("Unhandled exception on Draw:", error);
+    }
+
     this.#wasm.exports.P92AfterDraw();
   }
 
