@@ -293,6 +293,8 @@ begin
   if handle < 0 then
     PanicHalt('RequestBMFont: BMFont handles are full!');
 
+  bmfonts[handle].status := AssetStatusLoading;
+  bmfonts[handle].errorCode := 0;
   RequestBMFont := handle;
 
   WriteInteropString(path);
