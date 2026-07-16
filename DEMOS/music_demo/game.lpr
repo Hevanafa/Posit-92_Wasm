@@ -70,7 +70,7 @@ begin
   isMuted := false;
   volumeState.value := 25;
   lastVolume := volumeState.value;
-  SetMusicVolume(volumeState.value / 100.0)
+  SetSoundVolume(bgmClassic, volumeState.value / 100.0)
 end;
 
 
@@ -103,7 +103,7 @@ begin
 
   if lastVolume <> volumeState.value then begin
     lastVolume := volumeState.value;
-    SetMusicVolume(volumeState.value / 100.0)
+    SetSoundVolume(bgmClassic, volumeState.value / 100.0)
   end;
 
   HandleMusicRepeat(BgmClassic);
