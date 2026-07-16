@@ -29,7 +29,7 @@ procedure WriteLogF32(const value: double);
 procedure WriteWarn(const msg: string);
 {$endif}
 
-procedure WriteLog(const msg: string);
+procedure WriteLog(const msg: ShortString);
 
 
 implementation
@@ -50,9 +50,12 @@ var
 
 
 {$ifdef P92_WASM}
-procedure WriteLog(const msg: string);
+procedure WriteLog(const msg: ShortString);
 begin
-  WriteInteropString(msg);
+  { WriteInteropString(msg); }
+  if length(msg) > 0 then
+    Move(msg[1], GetInteropBufPtr^, length(msg));
+  SetInteropBufLen(length(msg));
   FlushLog
 end;
 {$endif}
