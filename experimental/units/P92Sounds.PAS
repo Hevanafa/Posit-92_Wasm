@@ -105,16 +105,9 @@ function JsGetMusicDuration: double; external 'env' name 'JsGetMusicDuration';
 {$endif}
 
 procedure InitSounds;
-var
-  a: word;
 begin
 {$ifdef P92_WASM}
   soundsInitialised := false;
-
-  for a:=1 to high(sounds) do begin
-    sounds[a] := default(TSoundEntry);
-    sounds[a].volume := 1.0
-  end;
 
   currentMusicHandle := 0;
   isMusicPlaying := false;
@@ -134,11 +127,6 @@ begin
   begin
     writeLog('initSounds: Couldn''t initialise SDL_Mixer!');
     exit
-  end;
-
-  for a:=1 to high(sounds) do begin
-    sounds[a] := default(TSoundEntry);
-    sounds[a].volume := 1.0
   end;
 
   writeLog('initSounds end');

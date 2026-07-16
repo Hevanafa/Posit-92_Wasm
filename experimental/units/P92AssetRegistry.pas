@@ -187,6 +187,7 @@ begin
   for a:=1 to high(sounds) do begin
     sounds[a] := default(TSoundEntry);
     sounds[a].status := AssetStatusEmpty;
+    sounds[a].volume := 1.0
   end;
 
 {$ifdef P92_WASM}
@@ -333,8 +334,8 @@ begin
   if sndHandle < 0 then
     PanicHalt('RequestSound: Sound handles are full!');
 
-  sounds[sndHandle] := default(TSoundEntry);
   sounds[sndHandle].status := AssetStatusLoading;
+  sounds[sndHandle].errorCode := 0;
 
   WriteInteropString(path);
   JsRequestSound(sndHandle);
