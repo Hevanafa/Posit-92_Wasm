@@ -20,20 +20,20 @@ If you want to use **VSCode** instead of Lazarus, install the **[OmniPascal](htt
 Using `tsc` to transpile both the engine & mixins now works, simply by using:
 
 ```powershell
+cd experimental
 tsc
 ```
 
-in either `experimental\engine` or `experimental\mixins`, it will read `tsconfig.json` relative to each folder
+it will read `tsconfig.json` automatically
 
-The command only requires the latest TypeScript version (along with Node.js \[LTS\]), which can be installed by either one of these:
-
-```powershell
-npm install -g typescript@latest
-```
+The command requires at least TypeScript version 4.6 (along with the latest LTS version of Node.js), which can be installed by either one of these:
 
 ```powershell
-yarn global add typescript@latest
+npm install -g typescript@^4.6.0
+yarn global add typescript@^4.6.0
 ```
+
+This is because Posit-92 extensively uses private class members, which is guaranteed to break even with polyfills
 
 ## Getting Started
 
