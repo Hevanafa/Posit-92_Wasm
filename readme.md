@@ -25,7 +25,7 @@ tsc
 
 in either `experimental\engine` or `experimental\mixins`, it will read `tsconfig.json` relative to each folder
 
-The command only requires the latest TypeScript version and Node.js (LTS), which can be installed by either one of these:
+The command only requires the latest TypeScript version (along with Node.js \[LTS\]), which can be installed by either one of these:
 
 ```powershell
 npm install -g typescript@latest
@@ -50,6 +50,12 @@ Optionally:
 
 1. Run `bun .\server.ts`
 2. Open `http://localhost:8008` in your browser to see if the "Hello world!" actually appears
+
+an alternative is to use `http-server` from NPM
+
+```powershell
+npx http-server -p 8008
+```
 
 ## Boilerplate Overview
 
