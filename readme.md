@@ -15,6 +15,26 @@ I'm using Windows 10 Home (64-bit, version 22H2, build 19045.6575) to build this
 
 If you want to use **VSCode** instead of Lazarus, install the **[OmniPascal](https://marketplace.visualstudio.com/items?itemName=Wosi.omnipascal)** extension by Wosi
 
+**Update 11-08-2026:**
+
+Using `tsc` to transpile both the engine & mixins now works, simply by using:
+
+```powershell
+tsc
+```
+
+in either `experimental\engine` or `experimental\mixins`, it will read `tsconfig.json` relative to each folder
+
+The command only requires the latest TypeScript version and Node.js (LTS), which can be installed by either one of these:
+
+```powershell
+npm install -g typescript@latest
+```
+
+```powershell
+yarn global add typescript@latest
+```
+
 ## Getting Started
 
 1. Open VSCode terminal `Ctrl + ~`
