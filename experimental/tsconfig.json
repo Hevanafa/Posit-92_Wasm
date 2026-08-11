@@ -5,6 +5,7 @@
     "target": "ES2022",
     "lib": ["DOM", "ESNext"],
     "removeComments": true,
+    "noImplicitReturns": true,
     "outDir": ".",
     "rootDir": "./",
     "sourceMap": false,
@@ -12,11 +13,13 @@
     "skipLibCheck": true
   },
   "files": [
-    "./mixins.d.ts",
-    "./p92-bigint.mixin.ts",
-    "./p92-bmfont.mixin.ts",
-    "./p92-gamepad.mixin.ts",
-    "./p92-sound.mixin.ts",
-    "./p92-webgl.mixin.ts"
+    "./engine/posit-92.ts",
+
+    "./mixins/mixins.d.ts",
+    "./mixins/p92-bigint.mixin.ts",
+    "./mixins/p92-bmfont.mixin.ts",
+    "./mixins/p92-gamepad.mixin.ts",
+    "./mixins/p92-sound.mixin.ts",
+    "./mixins/p92-webgl.mixin.ts"
   ]
 }
