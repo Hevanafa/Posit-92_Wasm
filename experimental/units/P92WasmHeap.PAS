@@ -106,11 +106,15 @@ const
   BuddyMaxOrder = 20;  { 1 MB }
   BuddyOrderCount = BuddyMaxOrder - BuddyMinOrder + 1;
 
+  BuddyMaxBlocks = 1 shl (BuddyMaxOrder - BuddyMinOrder); { 2048 }
+
 { Large heap }
 var
   freeLists: array[0..BuddyOrderCount - 1] of PFreeBlock;
   buddyBase: PByte;
   splitBitmap: PByte;
+
+  orderTable: array[0..BuddyMaxBlocks - 1] of byte;
 
 procedure InitPool(const poolSize: longword);
 var
@@ -191,7 +195,9 @@ begin
 
   { Align to the next 16-byte boundary }
   buddyBase := PByte((PtrUInt(base) + bitmapBytes + 15) and not 15);
-  InsertFree(BuddyOrderCount - 1, buddyBase)
+  InsertFree(BuddyOrderCount - 1, buddyBase);
+
+  FillByte(orderTable, SizeOf(orderTable), 0);
 end;
 
 { Buddy address calculation }
@@ -331,6 +337,21 @@ begin
   ToggleBuddyBit := (splitBitmap[bytePos] and bitMask) <> 0
 end;
 
+function BlockIndex(block: PByte): longword; inline;
+begin
+  BlockIndex := (PtrUInt(block) - PtrUInt(buddyBase)) shr BuddyMinOrder;
+end;
+
+procedure StoreOrder(block: PByte; order: smallint); inline;
+begin
+  orderTable[BlockIndex(block)] := order
+end;
+
+function LookupOrder(block: PByte): smallint; inline;
+begin
+  LookupOrder := orderTable[BlockIndex(block)]
+end;
+
 
 function BuddyAlloc(size: longword): pointer;
 var
@@ -372,6 +393,8 @@ begin
   end;
 
   ToggleBuddyBit(order, block);
+  StoreOrder(block, order);
+
   BuddyAlloc := block
 end;
 
