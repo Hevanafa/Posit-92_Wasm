@@ -113,6 +113,26 @@ begin
   writelog('End of TestInterleavedFree');
 end;
 
+procedure TestCrossTierRealloc;
+var
+  p: pointer;
+begin
+  writelog('Begin TestCrossTierRealloc');
+
+  p := getmem(128);
+  p := ReAllocMem(p, 4096);
+
+  assert(p <> nil, 'Realloc to buddy alloc failed');
+
+  p := ReAllocMem(p, 64);
+
+  assert(p <> nil, 'Realloc to bucket alloc failed');
+
+  freemem(p);
+
+  writelog('End of TestCrossTierRealloc');
+end;
+
 procedure OnPreload;
 begin
   imgCursor := RequestImage('assets/images/cursor.png');
@@ -134,6 +154,7 @@ begin
   { TestExhaustAndCoalesce; }
   TestSplitNoOverlap;
   TestInterleavedFree;
+  TestCrossTierRealloc;
 end;
 
 procedure Update;
