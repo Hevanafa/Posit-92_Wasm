@@ -398,6 +398,39 @@ begin
   BuddyAlloc := block
 end;
 
+procedure BuddyFree(block: PByte);
+var
+  order, orderIndex: smallint;
+  buddy: PByte;
+begin
+  order := LookupOrder(block);
+
+  while order < BuddyMaxOrder do begin
+    orderIndex := order - BuddyMinOrder;
+
+    if ToggleBuddyBit(order, block); then begin
+      { Buddy is still allocated, stop here }
+      InsertFree(orderIndex, block);
+      StoreOrder(block, order);
+
+      exit
+    end;
+
+    { Buddy is free }
+    buddy := PByte(
+      PtrUInt(buddyBase)
+      + (PtrUInt(block - buddyBase) xor (1 shl order)));
+    RemoveFree(orderIndex, buddy);
+
+    if PtrUInt(buddy) < PtrUInt(block) then
+      block := buddy;
+
+    inc(order)
+  end;
+
+  InsertFree(BuddyOrderCount - 1, block)
+end;
+
 { Begin generic allocator functions }
 
 function WasmGetMem(const bytes: longword): pointer;
