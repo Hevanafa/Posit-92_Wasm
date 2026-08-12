@@ -29,15 +29,9 @@ function WasmMemSize(const ptr: pointer): PtrUInt;
 
 procedure JsReportSize(requestedSize: longint); external 'env' name 'JsReportSize';
 
-function GetHeapSize: longword;
-function GetFreeHeapSize: longword;
-
 { Debug functions }
-function GetPoolStart: longword;
-function GetPoolEnd: longword;
-function GetHeapStart: longword;
-function GetHeapCurrent: longword;
-function GetHeapEnd: longword;
+function GetBucketAllocStart: longword;
+function GetBucketAllocEnd: longword;
 
 
 implementation
@@ -114,7 +108,7 @@ const
   TotalWeights = 100;
 
 var
-  poolStart, poolEnd: PByte;
+  bucketAllocStart, bucketAllocEnd: PByte;
   buckets: array[0..BucketCount-1] of TBucket;
 
 procedure InitPool(const poolSize: longword);
@@ -126,7 +120,7 @@ var
   regionSize: longword;
   i: smallint;
 begin
-  rollingPtr := poolStart;
+  rollingPtr := bucketAllocStart;
 
   for b:=0 to BucketCount-1 do begin
     regionSize := (poolSize * BucketWeights[b]) div TotalWeights;
@@ -152,8 +146,8 @@ end;
 
 procedure InitHeapRegion(const startAddr, poolSize, heapSize: longword);
 begin
-  poolStart := PByte(startAddr);
-  poolEnd := PByte(startAddr + poolSize);
+  bucketAllocStart := PByte(startAddr);
+  bucketAllocEnd := PByte(startAddr + poolSize);
   InitPool(poolSize)
 
   { TODO: Init for the buddy allocator}
@@ -221,11 +215,6 @@ end;
 
 
 function WasmGetMem(const bytes: longword): pointer;
-var
-  current: PByte;
-  block: PMemBlock;
-  dataPtr: PByte;
-  alignedSize: longword;
 begin
 {$ifdef P92_DEBUG_HEAP}
   JsReportSize(bytes);
@@ -235,8 +224,6 @@ begin
     WasmGetMem := PoolAlloc(bytes);
     exit
   end;
-
-  alignedSize := (bytes + (HeapAlignment - 1)) and not (HeapAlignment - 1);
 
   { TODO: Implement for the buddy allocator}
 end;
@@ -252,8 +239,8 @@ procedure WasmFreeMem(const ptr: pointer);
 begin
   if ptr = nil then exit;
 
-  if (longword(ptr) >= longword(poolStart))
-    and (longword(ptr) < longword(poolEnd)) then begin
+  if (longword(ptr) >= longword(bucketAllocStart))
+    and (longword(ptr) < longword(bucketAllocEnd)) then begin
     PoolFree(ptr);
     exit
   end;
@@ -263,13 +250,9 @@ end;
 
 
 function WasmReAllocMem(const ptr: pointer; const newBytes: longword): pointer;
-var
-  oldBlock, nextBlock: PMemBlock;
-  newPtr: pointer;
-  copySize, alignedSize, availableSpace: longword;
 begin
-  if (longword(ptr) >= longword(poolStart))
-    and (longword(ptr) < longword(poolEnd)) then begin
+  if (longword(ptr) >= longword(bucketAllocStart))
+    and (longword(ptr) < longword(bucketAllocEnd)) then begin
       WasmReAllocMem := PoolAlloc(newBytes);
 
       if WasmReAllocMem <> nil then begin
@@ -324,52 +307,14 @@ begin
   WasmMemSize := block^.size
 end;
 
-function GetHeapSize: longword;
+function GetBucketAllocStart: longword;
 begin
-  GetHeapSize := heapEnd - heapStart
+  GetBucketAllocStart := longword(bucketAllocStart)
 end;
 
-function GetFreeHeapSize: longword;
-var
-  current: PByte;  { current memory offset }
-  block: PMemBlock;
-  freeBytes: longword;
+function GetBucketAllocEnd: longword;
 begin
-  freeBytes := 0;
-
-  current := heapStart;
-  while longword(current) < longword(heapCurrent) do begin
-    block := PMemBlock(current);
-    
-    if not block^.inUse then
-      inc(freeBytes, block^.size);
-
-    inc(current, BlockHeaderSize + block^.size)
-  end;
-
-  inc(freeBytes, longword(heapEnd) - longword(heapCurrent));
-
-  GetFreeHeapSize := freeBytes
-end;
-
-function GetPoolStart: longword;
-begin
-  GetPoolStart := longword(poolStart)
-end;
-
-function GetPoolEnd: longword;
-begin
-  GetPoolEnd := longword(poolEnd)
-end;
-
-function GetHeapStart: longword;
-begin
-  GetHeapStart := longword(heapStart)
-end;
-
-function GetHeapEnd: longword;
-begin
-  GetHeapEnd := longword(heapEnd)
+  GetBucketAllocEnd := longword(bucketAllocEnd)
 end;
 
 end.
