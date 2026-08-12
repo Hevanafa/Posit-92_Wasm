@@ -479,10 +479,14 @@ var
 begin
   if (longword(ptr) >= longword(bucketAllocStart))
     and (longword(ptr) < longword(bucketAllocEnd)) then begin
-      WasmReAllocMem := PoolAlloc(newBytes);
+      WasmReAllocMem := WasmGetMem(newBytes);
 
       if WasmReAllocMem <> nil then begin
-        move(ptr^, WasmReAllocMem^, newBytes);
+        if newBytes < PoolSizeClassMax then
+          move(ptr^, WasmReAllocMem^, newBytes)
+        else
+          move(ptr^, WasmReAllocMem^, PoolSizeClassMax);
+
         PoolFree(ptr)
       end;
 
