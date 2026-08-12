@@ -76,6 +76,8 @@ procedure TestSplitNoOverlap;
 var
   a, b, c: PByte;
 begin
+  writelog('Begin TestSplitNoOverlap');
+
   a := getmem(1 shl 18); { 256KB }
   b := getmem(1 shl 16); { 64KB }
   c := getmem(1 shl 16); { 64KB }
@@ -86,7 +88,29 @@ begin
 
   freemem(c);
   freemem(b);
-  freemem(a)
+  freemem(a);
+
+  writelog('End of TestSplitNoOverlap');
+end;
+
+procedure TestInterleavedFree;
+var
+  a, b, c, d: pointer;
+begin
+  writelog('Begin TestInterleavedFree');
+
+  a := getmem(512);
+  b := getmem(512);
+  c := getmem(512);
+  d := getmem(512);
+
+  { Free them out of order, since only adjacent buddies should merge }
+  freemem(pbyte(b));
+  freemem(pbyte(d));
+  freemem(pbyte(a));  { a + b should coalesce to 1024 }
+  freemem(pbyte(c));  { c + d should coalesce, then merge up }
+
+  writelog('End of TestInterleavedFree');
 end;
 
 procedure OnPreload;
@@ -109,6 +133,7 @@ begin
   TestBasicAllocFree;
   { TestExhaustAndCoalesce; }
   TestSplitNoOverlap;
+  TestInterleavedFree;
 end;
 
 procedure Update;
