@@ -26,6 +26,19 @@ begin
   Spr(imgCursor, mouseX, mouseY)
 end;
 
+procedure TestBasicAllocFree;
+var
+  p1, p2: pointer;
+begin
+  p1 := GetMem(1024);
+  assert(p1 <> nil, 'Alloc 1024 failed');
+  Freemem(p1);
+
+  p2 := GetMem(1024);
+  assert(p2 = p1, 'Expected the same address after free');
+  Freemem(p2);
+end;
+
 procedure OnPreload;
 begin
   imgCursor := RequestImage('assets/images/cursor.png');
@@ -41,7 +54,9 @@ begin
   HideCursor;
 
   { Initialise game state here }
-  gameTime := 0.0
+  gameTime := 0.0;
+
+  TestBasicAllocFree;
 end;
 
 procedure Update;
