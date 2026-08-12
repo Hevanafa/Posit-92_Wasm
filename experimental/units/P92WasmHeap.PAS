@@ -377,7 +377,7 @@ begin
     inc(currentOrder);
 
   { Out of memory }
-  if order > BuddyMaxOrder then exit;
+  if currentOrder > BuddyMaxOrder then exit;
 
   { Take the block from its free list }
   block := PByte(freeLists[currentOrder - BuddyMinOrder]);
@@ -398,6 +398,7 @@ begin
   BuddyAlloc := block
 end;
 
+
 procedure BuddyFree(block: PByte);
 var
   order, orderIndex: smallint;
@@ -408,7 +409,7 @@ begin
   while order < BuddyMaxOrder do begin
     orderIndex := order - BuddyMinOrder;
 
-    if ToggleBuddyBit(order, block); then begin
+    if ToggleBuddyBit(order, block) then begin
       { Buddy is still allocated, stop here }
       InsertFree(orderIndex, block);
       StoreOrder(block, order);
@@ -428,7 +429,8 @@ begin
     inc(order)
   end;
 
-  InsertFree(BuddyOrderCount - 1, block)
+  InsertFree(BuddyOrderCount - 1, block);
+  StoreOrder(block, BuddyMaxOrder)
 end;
 
 { Begin generic allocator functions }
