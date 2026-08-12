@@ -447,6 +447,9 @@ begin
   end;
 
   WasmGetMem := BuddyAlloc(bytes);
+
+  if WasmGetMem = nil then
+    PanicHalt('WasmGetMem: Out of memory. Requested bytes: ' + I32Str(bytes));
 end;
 
 
