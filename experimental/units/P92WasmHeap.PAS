@@ -8,8 +8,8 @@
   Memory layout (2MB default)
   0x000000..0x02FFFF	Pascal stack	(192KB)
   0x030000..0x06E7FF	Video memory	(320x200x4, depending on vgaWidth and vgaHeight)
-  0x06E800..0x0EE7FF	Pool region	(512KB, two-tier tier 1)
-  0x0EE800..0x200000	Heap region	(~1MB, two-tier tier 2)
+  0x06E800..0x0EE7FF	Small heap region	(512KB, two-tier tier 1)
+  0x0EE800..0x200000	Large heap region	(~1MB, two-tier tier 2)
 }
 
 unit P92WasmHeap;
@@ -20,7 +20,7 @@ unit P92WasmHeap;
 
 interface
 
-procedure InitHeapRegion(const startAddr, poolSize, heapSize: longword); public name 'InitHeapRegion';
+procedure InitHeapRegion(const startAddr, smallHeapSize, aLargeHeapSize: longword); public name 'InitHeapRegion';
 
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
 procedure WasmFreeMem(const ptr: pointer); public name 'WasmFreeMem';
@@ -59,6 +59,9 @@ type
     prev, next: PFreeBlock;
   end;
 
+
+var
+  largeHeapSize: longword;
 
 { Small heap }
 
@@ -164,7 +167,7 @@ begin
   bits := 0;
 
   for o:=BuddyMinOrder to order - 1 do
-    inc(bits, heapSize shr(o + 1));
+    inc(bits, largeHeapSize shr(o + 1));
 
   BitmapOffset := bits
 end;
@@ -193,11 +196,13 @@ begin
   BuddyOf := PByte(PtrUInt(block - buddyBase) xor (1 shl (order + BuddyMinOrder)) + PtrUInt(buddyBase));
 end;
 
-procedure InitHeapRegion(const startAddr, poolSize, heapSize: longword);
+procedure InitHeapRegion(const startAddr, smallHeapSize, aLargeHeapSize: longword);
 begin
+  largeHeapSize := aLargeHeapSize;
+
   bucketAllocStart := PByte(startAddr);
-  bucketAllocEnd := PByte(startAddr + poolSize);
-  InitPool(poolSize)
+  bucketAllocEnd := PByte(startAddr + smallHeapSize);
+  InitPool(smallHeapSize)
 
   { TODO: Init for the buddy allocator}
 end;
