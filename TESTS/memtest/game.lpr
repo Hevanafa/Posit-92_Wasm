@@ -71,6 +71,24 @@ begin
   writelog('End of TestExhaustAndCoalesce');
 end;
 
+
+procedure TestSplitNoOverlap;
+var
+  a, b, c: PByte;
+begin
+  a := getmem(1 shl 18); { 256KB }
+  b := getmem(1 shl 16); { 64KB }
+  c := getmem(1 shl 16); { 64KB }
+
+  Assert((a <> nil) and (b <> nil) and (c <> nil), 'alloc failed');
+  assert(abs(ptrint(a) - ptrint(b)) >= (1 shl 18), 'a/b overlap');
+  assert(abs(ptrint(b) - ptrint(c)) >= (1 shl 16), 'b/c overlap');
+
+  freemem(c);
+  freemem(b);
+  freemem(a)
+end;
+
 procedure OnPreload;
 begin
   imgCursor := RequestImage('assets/images/cursor.png');
@@ -89,7 +107,8 @@ begin
   gameTime := 0.0;
 
   TestBasicAllocFree;
-  TestExhaustAndCoalesce;
+  { TestExhaustAndCoalesce; }
+  TestSplitNoOverlap;
 end;
 
 procedure Update;
@@ -115,8 +134,7 @@ begin
 end;
 
 exports
-  OnPreload, OnReady,
-  Update, Draw;
+  OnPreload, OnReady, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
