@@ -446,16 +446,10 @@ begin
     exit
   end;
 
-  { TODO: Implement for the buddy allocator}
+  WasmGetMem := BuddyAlloc(bytes);
 end;
 
 
-{
-  Order:
-  * Mark block as free
-  * Check backward: if the previous block is free, merge into it
-  * Check forward: merge into it if the next block is free
-}
 procedure WasmFreeMem(const ptr: pointer);
 begin
   if ptr = nil then exit;
