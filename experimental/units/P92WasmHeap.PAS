@@ -173,6 +173,8 @@ begin
   BitmapOffset := bits
 end;
 
+procedure InsertFree(orderIndex: smallint; block: PByte); forward;
+
 procedure InitBuddyAllocator(base: PByte; size: longword);
 var
   bitmapBytes: longword;
@@ -187,8 +189,9 @@ begin
   splitBitmap := base;
   FillByte(splitBitmap^, bitmapBytes, 0);
 
-  { TODO: buddyBase := Align16(base + bitmapBytes); }
-  { TODO: InsertFree(BuddyOrderCount - 1, buddyBase ) }
+  { Align to the next 16-byte boundary }
+  buddyBase := PByte((PtrUInt(base) + bitmapBytes + 15) and not 15);
+  InsertFree(BuddyOrderCount - 1, buddyBase)
 end;
 
 { Buddy address calculation }
@@ -374,6 +377,7 @@ end;
 function WasmAllocMem(const bytes: longword): pointer;
 begin
   WasmAllocMem := WasmGetMem(bytes);
+
   if WasmAllocMem <> nil then
     fillchar(WasmAllocMem^, bytes, 0)
 end;
