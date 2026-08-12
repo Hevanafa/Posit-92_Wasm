@@ -277,6 +277,20 @@ begin
 end;
 
 
+procedure InsertFree(orderIndex: smallint; block: PByte);
+var
+  fb: PFreeBlock;
+begin
+  fb := PFreeBlock(block);
+  fb^.next := freeLists[orderIndex];
+  fb^.prev := nil;
+
+  if freeLists[orderIndex] <> nil then
+    freeLists[orderIndex]^.prev := fb;
+
+  freeLists[orderIndex] := fb;
+end;
+
 function WasmGetMem(const bytes: longword): pointer;
 begin
 {$ifdef P92_DEBUG_HEAP}
