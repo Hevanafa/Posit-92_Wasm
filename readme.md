@@ -9,7 +9,9 @@ This project is a port of the original [POSIT-92](https://github.com/Hevanafa/PO
 1. **Lazarus IDE**
 2. **Free Pascal Compiler** which has been configured with `wasm32-embedded` as the target (read **Compiler Setup** section below to see how)
 3. **Perl** to handle most of the build & text processing tasks
-4. **[Bun](https://bun.com/)** (at least v1.3.5) either to transpile the engine code or to start the local HTTP server
+4. Node.js, npm or yarn, TypeScript compiler (`tsc`)
+
+Optional: Bun for users who already use it
 
 I'm using Windows 10 Home (64-bit, version 22H2, build 19045.6575) to build this project
 
@@ -87,6 +89,17 @@ npx http-server -p 8008
    ![wasm32-embedded](./wasm32_embedded.png)
 
 It took me a few retries until the compiler finally completed compiling
+
+## Alternative: Bun
+
+Requires: **[Bun](https://bun.com/)** (at least v1.3.5) either to transpile the engine code or to start the local HTTP server
+
+I decided to move this as optional because of the obscure error message when I tried to get this started on my old laptop from 2017
+
+```text
+(Posit-92 engine folder)> bun build .\posit-92.ts
+error: Cannot read file "C:\": EPERM
+```
 
 ## Credits
 
