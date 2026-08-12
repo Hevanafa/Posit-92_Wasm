@@ -99,7 +99,7 @@ var
 
 const
   BuddyMinOrder = 9;  { 512 bytes }
-  BuddyMaxOrder = 21;  { 2 MB }
+  BuddyMaxOrder = 20;  { 1 MB }
   BuddyOrderCount = BuddyMaxOrder - BuddyMinOrder + 1;
 
 { Large heap }
@@ -139,6 +139,34 @@ begin
     PPoolSlot(rollingPtr)^.next := nil;
     inc(rollingPtr, BucketSizes[b])
   end;
+end;
+
+
+function CalcBitmapSize(size: longword): longword;
+var
+  totalBits: longword;
+  order: smallint;
+begin
+  totalBits := 0;
+
+  for order := BuddyMinOrder to BuddyMaxOrder - 1 do
+    totalBits := totalBits + (size shr (order + 1));
+
+  CalcBitmapSize := (totalBits + 7) shr 3
+end;
+
+function BitmapOffset(order: integer): longword;
+var
+  bits: longword;
+  { order iterator }
+  o: smallint;
+begin
+  bits := 0;
+
+  for o:=BuddyMinOrder to order - 1 do
+    inc(bits, heapSize shr(o + 1));
+
+  BitmapOffset := bits
 end;
 
 procedure InitBuddyAllocator(base: PByte; size: longword);
