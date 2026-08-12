@@ -265,10 +265,11 @@ var
 begin
   b := FindBucket(bytes);
 
-  if b = -1 then PanicHalt('poolAlloc: Unable to allocate a bucket!');
+  if b = -1 then
+    PanicHalt('PoolAlloc: Unable to allocate a bucket! Requested size: ' + I32Str(bytes));
 
   if buckets[b].freeHead = nil then
-    PanicHalt('poolAlloc: No free buckets!');
+    PanicHalt('PoolAlloc: No free buckets!');
 
   slot := buckets[b].freeHead;
   buckets[b].freeHead := slot^.next;
