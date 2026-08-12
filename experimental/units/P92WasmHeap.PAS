@@ -313,12 +313,19 @@ begin
   fb := PFreeBlock(block);
 
   writelog('RemoveFree: order=' + I32Str(orderIndex)
-   + ' block=' + i32str(longword(block))
-   + ' prev=' + i32str(longword(fb^.prev))
-   + ' next=' + I32Str(longword(fb^.next)));
+    + ' block=' + i32str(longword(block))
+    + ' prev=' + i32str(longword(fb^.prev))
+    + ' next=' + I32Str(longword(fb^.next)));
 
-  { TODO: Check if buddy is within the region }
-  { TODO: Check the alignment }
+  { Check if buddy is within the region }
+  if (ptruint(block) < PtrUInt(buddyBase))
+    or (ptruint(block) >= ptruint(buddyBase) + largeHeapSize) then
+    PanicHalt('RemoveFree: block is outside buddy region');
+
+  { Check the alignment }
+  if (ptruint(block) - ptruint(buddyBase))
+    and ((1 shl (orderIndex + BuddyMinOrder)) - 1) <> 0 then
+    PanicHalt('RemoveFree: block misaligned for the order');
 
   if fb^.prev <> nil then
     fb^.prev^.next := fb^.next
