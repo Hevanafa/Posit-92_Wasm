@@ -61,3 +61,7 @@ experimental/engine/*.js
 experimental/engine/*.js.map
 
 !DEMOS/*/game.js
+
+TESTS/*/*.pl
+TESTS/*/*.ts
+TESTS/*/posit-92.js
