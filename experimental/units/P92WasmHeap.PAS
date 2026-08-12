@@ -85,7 +85,7 @@ const
   Anything above this goes to tier 2 free-list heap
 
   This must match the largest value in BucketSizes }
-  PoolSizeClassMax = 512;
+  PoolSizeClassMax = 256;
 
 
 { Weight distribution across buckets
