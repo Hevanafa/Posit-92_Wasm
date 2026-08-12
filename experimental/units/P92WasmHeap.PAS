@@ -9,7 +9,8 @@
   0x000000..0x02FFFF	Pascal stack	(192KB)
   0x030000..0x06E7FF	Video memory	(320x200x4, depending on vgaWidth and vgaHeight)
   0x06E800..0x0EE7FF	Small heap region	(512KB, two-tier tier 1)
-  0x0EE800..0x200000	Large heap region	(~1MB, two-tier tier 2)
+  0x0EE800..0x1EE7FF	Large heap region	(0x100000 bytes, two-tier tier 2)
+  0x1EE801..0x200000    Unused
 }
 
 unit P92WasmHeap;
@@ -198,13 +199,21 @@ end;
 
 procedure InitHeapRegion(const startAddr, smallHeapSize, aLargeHeapSize: longword);
 begin
-  largeHeapSize := aLargeHeapSize;
-
   bucketAllocStart := PByte(startAddr);
   bucketAllocEnd := PByte(startAddr + smallHeapSize);
-  InitPool(smallHeapSize)
+  InitPool(smallHeapSize);
 
-  { TODO: Init for the buddy allocator}
+  { Round down to a power of 2 without using the Math unit }
+  largeHeapSize := aLargeHeapSize;
+
+  largeHeapSize := largeHeapSize or (largeHeapSize shr 1);
+  largeHeapSize := largeHeapSize or (largeHeapSize shr 2);
+  largeHeapSize := largeHeapSize or (largeHeapSize shr 4);
+  largeHeapSize := largeHeapSize or (largeHeapSize shr 8);
+  largeHeapSize := largeHeapSize or (largeHeapSize shr 16);
+  largeHeapSize := (largeHeapSize shr 1) + 1;
+
+  InitBuddyAllocator(pbyte(startAddr + smallHeapSize), largeHeapSize);
 end;
 
 
