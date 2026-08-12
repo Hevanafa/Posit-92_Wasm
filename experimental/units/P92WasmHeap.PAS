@@ -472,6 +472,9 @@ end;
 
 
 function WasmReAllocMem(const ptr: pointer; const newBytes: longword): pointer;
+var
+  oldOrder, newOrder: smallint;
+  oldSize: longword;
 begin
   if (longword(ptr) >= longword(bucketAllocStart))
     and (longword(ptr) < longword(bucketAllocEnd)) then begin
@@ -496,7 +499,31 @@ begin
     exit
   end;
 
-  { TODO: Implement for the buddy allocator }
+  { Buddy allocator impl }
+
+  oldOrder := LookupOrder(PByte(ptr));
+  oldSize := 1 shl oldOrder;
+
+  newOrder := BuddyMinOrder;
+
+  while (1 shl newOrder) newBytes do
+    inc(newOrder);
+
+  if newOrder = oldOrder then begin
+    WasmReAllocMem := ptr;
+    exit
+  end;
+
+  WasmReAllocMem := WasmGetMem(newBytes);
+
+  if WasmReAllocMem <> nil then begin
+    if newBytes < oldSize then
+      move(ptr^, WasmReAllocMem^, newBytes)
+    else
+      move(ptr^, WasmReAllocMem^, oldSize);
+
+    BuddyFree(PByte(ptr));
+  end;
 end;
 
 
