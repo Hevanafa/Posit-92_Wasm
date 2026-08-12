@@ -38,7 +38,7 @@ function GetBucketAllocEnd: longword;
 
 implementation
 
-uses P92Conversions, P92Panic;
+uses P92Logger, P92Conversions, P92Panic;
 
 type
   { Small heap: bucket allocator }
@@ -312,6 +312,14 @@ var
 begin
   fb := PFreeBlock(block);
 
+  writelog('RemoveFree: order=' + I32Str(orderIndex)
+   + ' block=' + i32str(longword(block))
+   + ' prev=' + i32str(longword(fb^.prev))
+   + ' next=' + I32Str(longword(fb^.next)));
+
+  { TODO: Check if buddy is within the region }
+  { TODO: Check the alignment }
+
   if fb^.prev <> nil then
     fb^.prev^.next := fb^.next
   else
@@ -519,9 +527,11 @@ begin
     exit
   end;
 
+  { Attempt to route to the right tier }
   WasmReAllocMem := WasmGetMem(newBytes);
 
   if WasmReAllocMem <> nil then begin
+    { Copy the minimum of old content and new capacity }
     if newBytes < oldSize then
       move(ptr^, WasmReAllocMem^, newBytes)
     else
