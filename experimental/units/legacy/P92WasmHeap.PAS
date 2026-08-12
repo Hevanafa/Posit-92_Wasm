@@ -30,6 +30,7 @@ function WasmMemSize(const ptr: pointer): PtrUInt;
 procedure JsReportSize(requestedSize: longint); external 'env' name 'JsReportSize';
 
 function GetHeapSize: longword;
+{ Get the sum of free heap, not essentially the length of contiguous bytes at the end of heap }
 function GetFreeHeapSize: longword;
 
 { Debug functions }

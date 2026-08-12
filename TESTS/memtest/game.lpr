@@ -14,6 +14,7 @@ uses
   P92Logger,
   P92Keyboard, P92Mouse,
   P92TexDraw, P92Timing, P92FPS, P92VGA,
+  P92WasmHeap,
   Assets;
 
 var

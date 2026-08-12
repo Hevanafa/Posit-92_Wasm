@@ -115,10 +115,6 @@ const
 
 var
   poolStart, poolEnd: PByte;
-  heapStart: PByte;
-  heapEnd: PByte;  { The ceiling for the free-list walk }
-  heapCurrent: PByte;  { where the next new block should go }
-
   buckets: array[0..BucketCount-1] of TBucket;
 
 procedure InitPool(const poolSize: longword);
@@ -158,12 +154,9 @@ procedure InitHeapRegion(const startAddr, poolSize, heapSize: longword);
 begin
   poolStart := PByte(startAddr);
   poolEnd := PByte(startAddr + poolSize);
-
-  heapStart := poolEnd;
-  heapEnd := PByte(longword(heapStart) + heapSize);
-  heapCurrent := heapStart;
-
   InitPool(poolSize)
+
+  { TODO: Init for the buddy allocator}
 end;
 
 
@@ -245,39 +238,7 @@ begin
 
   alignedSize := (bytes + (HeapAlignment - 1)) and not (HeapAlignment - 1);
 
-  { First-fit search }
-  current := heapStart;
-
-  while longword(current) < longword(heapCurrent) do begin
-    block := PMemBlock(current);
-
-    if (not block^.inUse) and (block^.size >= alignedSize) then begin
-      block^.inUse := true;
-      WasmGetMem := pointer(current + BlockHeaderSize);
-      exit
-    end;
-
-    { Find where the next block starts }
-    inc(current, BlockHeaderSize + block^.size)
-  end;
-
-  { Allocate a new block at heapCurrent }
-  block := PMemBlock(heapCurrent);
-
-  if longword(heapCurrent) + BlockHeaderSize + alignedSize > longword(heapEnd) then begin
-    { out of memory }
-    WasmGetMem := nil;
-    exit
-  end;
-
-  { Create a new block }
-  block^.size := alignedSize;
-  block^.inUse := true;
-
-  dataPtr := heapCurrent + BlockHeaderSize;
-  heapCurrent := dataPtr + alignedSize;
-
-  WasmGetMem := pointer(dataPtr)
+  { TODO: Implement for the buddy allocator}
 end;
 
 
@@ -288,9 +249,6 @@ end;
   * Check forward: merge into it if the next block is free
 }
 procedure WasmFreeMem(const ptr: pointer);
-var
-  block, prevBlock, nextBlock: PMemBlock;
-  scanPtr: PMemBlock;
 begin
   if ptr = nil then exit;
 
@@ -300,36 +258,7 @@ begin
     exit
   end;
 
-  { Find the block header & mark it as free }
-  block := PMemBlock(PByte(ptr) - BlockHeaderSize);
-  block^.inUse := false;
-
-  { Backward coalescing logic }
-  prevBlock := nil;
-  scanPtr := PMemBlock(heapStart);
-
-  while scanPtr < block do begin
-    prevBlock := scanPtr;
-    scanPtr := PMemBlock(PByte(scanPtr) + BlockHeaderSize + scanPtr^.size)
-  end;
-
-  if (prevBlock <> nil) and (not prevBlock^.inUse) then
-    inc(prevBlock^.size, BlockHeaderSize + block^.size);
-
-  { Forward coalescing logic
-    It should operate on the surviving block after the backward pass }
-
-  { Determine the surviving block after backward pass }
-  if (prevBlock <> nil) and (not prevBlock^.inUse) then
-    block := prevBlock;
-
-  { Forward coalescing logic operates on the surviving block }
-  nextBlock := PMemBlock(pbyte(block) + BlockHeaderSize + block^.size);
-
-  { Check if the next block exists and is free }
-  if (longword(nextBlock) < longword(heapEnd))
-    and (not nextBlock^.inUse) then
-    inc(block^.size, BlockHeaderSize + nextBlock^.size);
+  { TODO: Implement for the buddy allocator }
 end;
 
 
@@ -362,42 +291,7 @@ begin
     exit
   end;
 
-  alignedSize := (newBytes + (HeapAlignment - 1)) and not (HeapAlignment - 1);
-  oldBlock := PMemBlock(PByte(ptr) - BlockHeaderSize);
-
-  { Handle shrink in-place }
-  if alignedSize <= oldBlock^.size then begin
-    oldBlock^.size := alignedSize;
-    WasmReAllocMem := ptr;
-    exit
-  end;
-
-  { Handle expand in-place if available }
-  nextBlock := PMemBlock(PByte(oldBlock) + BlockHeaderSize + oldBlock^.size);
-
-  if (longword(nextBlock) < longword(heapCurrent)) and not nextBlock^.inUse then begin
-    availableSpace := oldBlock^.size + BlockHeaderSize + nextBlock^.size;
-
-    if alignedSize <= availableSpace then begin
-      oldBlock^.size := alignedSize;
-      WasmReAllocMem := ptr;
-      exit
-    end;
-  end;
-
-  { Can't expand in-place, do full realloc }
-  newPtr := WasmGetMem(newBytes);
-  if newPtr = nil then begin
-    WasmReAllocMem := nil;
-    exit
-  end;
-
-  copySize := oldBlock^.size;
-  if copySize > newBytes then copySize := newBytes;
-  move(ptr^, newPtr^, copySize);
-
-  WasmFreeMem(ptr);
-  WasmReAllocMem := newPtr
+  { TODO: Implement for the buddy allocator }
 end;
 
 
@@ -471,11 +365,6 @@ end;
 function GetHeapStart: longword;
 begin
   GetHeapStart := longword(heapStart)
-end;
-
-function GetHeapCurrent: longword;
-begin
-  GetHeapCurrent := longword(heapCurrent)
 end;
 
 function GetHeapEnd: longword;
