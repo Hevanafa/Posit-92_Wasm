@@ -12,10 +12,11 @@
   0x0EE800..0x200000	Heap region	(~1MB, two-tier tier 2)
 }
 
+unit P92WasmHeap;
+
 {$Mode ObjFPC}
 {$H+}{$J-}
-
-unit P92WasmHeap;
+{$WARN 4056 off : Conversion between ordinals and pointers is not portable}
 
 interface
 
@@ -138,6 +139,30 @@ begin
     PPoolSlot(rollingPtr)^.next := nil;
     inc(rollingPtr, BucketSizes[b])
   end;
+end;
+
+procedure InitBuddyAllocator(base: PByte; size: longword);
+var
+  bitmapBytes: longword;
+  a: word;
+begin
+  buddyBase := base;
+
+  for a:=0 to BuddyOrderCount - 1 do
+    freeLists[a] := nil;
+
+  bitmapBytes := CalcBitmapSize(size);
+  splitBitmap := base;
+  FillByte(splitBitmap^, bitmapBytes, 0);
+
+  { TODO: buddyBase := Align16(base + bitmapBytes); }
+  { TODO: InsertFree(BuddyOrderCount - 1, buddyBase ) }
+end;
+
+{ Buddy address calculation }
+function BuddyOf(block: PByte; order: integer): PByte;
+begin
+  BuddyOf := PByte(PtrUInt(block - buddyBase) xor (1 shl (order + BuddyMinOrder)) + PtrUInt(buddyBase));
 end;
 
 procedure InitHeapRegion(const startAddr, poolSize, heapSize: longword);
