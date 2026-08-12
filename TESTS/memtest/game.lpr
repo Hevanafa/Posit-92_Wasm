@@ -10,7 +10,7 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
+  P92Core, P92Conversions, P92Fonts, P92WasmHost, P92AssetRegistry,
   P92Logger,
   P92Keyboard, P92Mouse,
   P92TexDraw, P92Timing, P92FPS, P92VGA,
@@ -30,6 +30,8 @@ procedure TestBasicAllocFree;
 var
   p1, p2: pointer;
 begin
+  writelog('Begin TestBasicAllocFree');
+
   p1 := GetMem(1024);
   assert(p1 <> nil, 'Alloc 1024 failed');
   Freemem(p1);
@@ -37,6 +39,36 @@ begin
   p2 := GetMem(1024);
   assert(p2 = p1, 'Expected the same address after free');
   Freemem(p2);
+
+  writelog('End of TestBasicAllocFree');
+end;
+
+procedure TestExhaustAndCoalesce;
+var
+  blocks: array[0..2047] of pointer;
+  a: smallint;
+  big: pointer;
+begin
+  writelog('Begin TestExhaustAndCoalesce');
+
+  { Exhaust the memory with 512-byte blocks }
+  for a:=0 to high(blocks) do begin
+    blocks[a] := getmem(512);
+    assert(blocks[a] <> nil, 'Exhaustion at block ' + I32Str(a));
+  end;
+
+  assert(GetMem(512) = nil, 'Should be out-of-memory');
+
+  { Free all }
+  for a:=0 to high(blocks) do
+    freemem(blocks[a]);
+
+  { Full coalescing test }
+  big := GetMem(1 shl 20);  { 20 is obtained from BuddyMaxOrder }
+  assert(big <> nil, 'Coalescing to max order failed');
+  freemem(big);
+
+  writelog('End of TestExhaustAndCoalesce');
 end;
 
 procedure OnPreload;
@@ -57,6 +89,7 @@ begin
   gameTime := 0.0;
 
   TestBasicAllocFree;
+  TestExhaustAndCoalesce;
 end;
 
 procedure Update;
