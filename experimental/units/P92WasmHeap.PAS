@@ -111,6 +111,11 @@ var
   bucketAllocStart, bucketAllocEnd: PByte;
   buckets: array[0..BucketCount-1] of TBucket;
 
+const
+  BuddyMinOrder = 9;  { 512 bytes }
+  BuddyMaxOrder = 21;  { 2 MB }
+  BuddyOrderCount = BuddyMaxOrder - BuddyMinOrder + 1;
+
 procedure InitPool(const poolSize: longword);
 var
   b: smallint; { bucket index }
