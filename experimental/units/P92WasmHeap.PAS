@@ -18,6 +18,7 @@ unit P92WasmHeap;
 {$Mode ObjFPC}
 {$H+}{$J-}
 {$WARN 4056 off : Conversion between ordinals and pointers is not portable}
+{$DEFINE P92_DEBUG_HEAP}
 
 interface
 
@@ -312,10 +313,14 @@ var
 begin
   fb := PFreeBlock(block);
 
+{$ifdef P92_DEBUG_HEAP}
   writelog('RemoveFree: order=' + I32Str(orderIndex)
     + ' block=' + i32str(longword(block))
     + ' prev=' + i32str(longword(fb^.prev))
     + ' next=' + I32Str(longword(fb^.next)));
+
+  if (orderIndex < BuddyMinOrder) or (orderIndex > BuddyMaxOrder) then
+    PanicHalt('RemoveFree: Wrong order index ' + I32Str(orderIndex));
 
   { Check if buddy is within the region }
   if (ptruint(block) < PtrUInt(buddyBase))
@@ -326,6 +331,7 @@ begin
   if (ptruint(block) - ptruint(buddyBase))
     and ((1 shl (orderIndex + BuddyMinOrder)) - 1) <> 0 then
     PanicHalt('RemoveFree: block misaligned for the order');
+{$endif}
 
   if fb^.prev <> nil then
     fb^.prev^.next := fb^.next

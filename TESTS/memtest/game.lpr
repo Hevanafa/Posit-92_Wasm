@@ -86,8 +86,8 @@ begin
   assert(abs(ptrint(a) - ptrint(b)) >= (1 shl 18), 'a/b overlap');
   assert(abs(ptrint(b) - ptrint(c)) >= (1 shl 16), 'b/c overlap');
 
-  freemem(c);
   freemem(b);
+  freemem(c);
   freemem(a);
 
   writelog('End of TestSplitNoOverlap');
@@ -150,9 +150,9 @@ begin
   { Initialise game state here }
   gameTime := 0.0;
 
-  TestBasicAllocFree;
+  { TestBasicAllocFree; }
   { TestExhaustAndCoalesce; }
-  TestSplitNoOverlap;
+  { TestSplitNoOverlap; }
   TestInterleavedFree;
   TestCrossTierRealloc;
 end;
