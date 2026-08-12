@@ -39,16 +39,7 @@ implementation
 uses P92Conversions, P92Panic;
 
 type
-  { Memory block header }
-  PMemBlock = ^TMemBlock;
-  {$Push}
-  {$Align 8}
-  TMemBlock = record
-    size: longword;
-    inUse: boolean;
-  end;
-  {$Pop}
-
+  { Small heap: bucket allocator }
   PPoolSlot = ^TPoolSlot;
   TPoolSlot = record
     next: PPoolSlot;
@@ -61,21 +52,16 @@ type
     regionEnd: pbyte;
   end;
 
+  { Large heap: buddy allocator }
+  PFreeBlock = ^TFreeBlock;
+  TFreeBlock = record
+    prev, next: PFreeBlock;
+  end;
+
+
+{ Small heap }
 
 const
-{ Alignment boundary for all heap allocations,
-  which has the same value as TMemBlock above }
-  HeapAlignment = 8;
-
-
-{ Byte size of TMemBlock header, cached just for clarity
-
-  Every heap block is preceded by this header in memory:
-  [ TMemBlock ][ Usable data ]
-}
-  BlockHeaderSize = sizeof(TMemBlock);
-
-
 { Fixed slot sizes for tier 1 pool buckets, in bytes
 
   Covers typical small FPC allocations:
@@ -84,10 +70,9 @@ const
   * 64: small class instances or short string buffers
   * 128: medium objects
   * 256: larger objects
-  * 512: upper boundary before routing to tier 2 heap
 }
-  BucketSizes: array[0..5] of longword = (16, 32, 64, 128, 256, 512);
-  BucketCount = 6;
+  BucketSizes: array[0..4] of longword = (16, 32, 64, 128, 256);
+  BucketCount = 5;
 
 
 { Allocations at or below this size go to tier 1 pool
@@ -115,6 +100,12 @@ const
   BuddyMinOrder = 9;  { 512 bytes }
   BuddyMaxOrder = 21;  { 2 MB }
   BuddyOrderCount = BuddyMaxOrder - BuddyMinOrder + 1;
+
+{ Large heap }
+var
+  freeLists: array[0..BuddyOrderCount - 1] of PFreeBlock;
+  buddyBase: PByte;
+  splitBitmap: PByte;
 
 procedure InitPool(const poolSize: longword);
 var
@@ -293,7 +284,6 @@ end;
 function WasmMemSize(const ptr: pointer): PtrUInt;
 var
   idx: smallint;
-  block: PMemBlock;
 begin
   if ptr = nil then begin
     WasmMemSize := 0;
@@ -307,9 +297,7 @@ begin
     exit
   end;
 
-  { Heap path }
-  block := PMemBlock(pbyte(ptr) - BlockHeaderSize);
-  WasmMemSize := block^.size
+  { TODO: Implement for the buddy allocator }
 end;
 
 function GetBucketAllocStart: longword;
