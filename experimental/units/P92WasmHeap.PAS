@@ -362,8 +362,17 @@ begin
   block := PByte(freeLists[currentOrder - BuddyMinOrder]);
   RemoveFree(currentOrder - BuddyMinOrder, block);
 
-  { TODO: split to target order }
-  { TODO: Toggle then return the block }
+  { Split down, up to target order }
+  while currentOrder > order do begin
+    dec(currentOrder);
+    half := block + (1 shl currentOrder);
+
+    InsertFree(currentOrder - BuddyMinOrder, half);
+    ToggleBuddyBit(currentOrder, half)
+  end;
+
+  ToggleBuddyBit(order, block);
+  BuddyAlloc := block
 end;
 
 { Begin generic allocator functions }
