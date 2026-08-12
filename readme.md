@@ -11,31 +11,11 @@ This project is a port of the original [POSIT-92](https://github.com/Hevanafa/PO
 3. **Perl** to handle most of the build & text processing tasks
 4. Node.js, npm or yarn, TypeScript compiler (`tsc`)
 
-Optional: Bun for users who already use it
+Optional: Bun for users who already use it, see the section below
 
 I'm using Windows 10 Home (64-bit, version 22H2, build 19045.6575) to build this project
 
 If you want to use **VSCode** instead of Lazarus, install the **[OmniPascal](https://marketplace.visualstudio.com/items?itemName=Wosi.omnipascal)** extension by Wosi
-
-**Update 11-08-2026:**
-
-Using `tsc` to transpile both the engine & mixins now works, simply by using:
-
-```powershell
-cd experimental
-tsc
-```
-
-it will read `tsconfig.json` automatically
-
-The command requires at least TypeScript version 4.6 (along with the latest LTS version of Node.js), which can be installed by either one of these:
-
-```powershell
-npm install -g typescript@^4.6.0
-yarn global add typescript@^4.6.0
-```
-
-This is because Posit-92 extensively uses private class members, which is guaranteed to break even with polyfills
 
 ## Getting Started
 
@@ -48,16 +28,33 @@ This is because Posit-92 extensively uses private class members, which is guaran
 
 When all the steps above is done, you can copy all the files of the `boilerplate` folder to your new project, except for `setup.pl`
 
-Optionally:
-
-1. Run `bun .\server.ts`
-2. Open `http://localhost:8008` in your browser to see if the "Hello world!" actually appears
-
-an alternative is to use `http-server` from NPM
+Then, use `http-server` to spin up a localhost server on port 8008:
 
 ```powershell
 npx http-server -p 8008
 ```
+
+### Preparing the JS runtime scripts
+
+Use `tsc` to transpile both the engine & mixin files, simply by using:
+
+```powershell
+cd experimental
+tsc
+```
+
+it will read `tsconfig.json` automatically and start transpiling the listed TypeScript files to JS
+
+The command requires at least TypeScript version 4.6 (along with the latest LTS version of Node.js), which can be installed by either one of these:
+
+```powershell
+npm install -g typescript@^4.6.0
+yarn global add typescript@^4.6.0
+```
+
+This is because Posit-92 extensively uses private class members, which is guaranteed to break even with polyfills
+
+After that, you can copy the engine's JS runtime and the necessary mixins manually
 
 ## Boilerplate Overview
 
@@ -100,6 +97,13 @@ I decided to move this as optional because of the obscure error message when I t
 (Posit-92 engine folder)> bun build .\posit-92.ts
 error: Cannot read file "C:\": EPERM
 ```
+
+### Starting the localhost server
+
+I made a dedicated server script that can be used specifically with Bun
+
+1. Run `bun .\server.ts`
+2. Open `http://localhost:8008` in your browser to see if the "Hello world!" actually appears
 
 ## Credits
 
