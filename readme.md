@@ -52,7 +52,7 @@ npm install -g typescript@^4.6.0
 yarn global add typescript@^4.6.0
 ```
 
-This is because Posit-92 extensively uses private class members, which is guaranteed to break even with polyfills
+This is because Posit-92 extensively uses private class fields and methods using the `#field` syntax, which is guaranteed to break even with polyfills
 
 After that, you can copy the engine's JS runtime and the necessary mixins manually
 
