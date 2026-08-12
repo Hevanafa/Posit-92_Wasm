@@ -506,7 +506,7 @@ begin
 
   newOrder := BuddyMinOrder;
 
-  while (1 shl newOrder) newBytes do
+  while (1 shl newOrder) < newBytes do
     inc(newOrder);
 
   if newOrder = oldOrder then begin
