@@ -331,6 +331,41 @@ begin
   ToggleBuddyBit := (splitBitmap[bytePos] and bitMask) <> 0
 end;
 
+
+function BuddyAlloc(size: longword): pointer;
+var
+  order, currentOrder: smallint;
+  block, half: PByte;
+begin
+  BuddyAlloc := nil;
+
+  { Find the minimum order that fits }
+  order := BuddyMinOrder;
+
+  while (1 shl order) < size do
+    inc(order);
+
+  { Too large }
+  if order > BuddyMaxOrder then exit;
+
+  { Walk up to find a free block }
+  currentOrder := order;
+
+  while (currentOrder <= BuddyMaxOrder)
+    and (freeLists[currentOrder - BuddyMinOrder] = nil) do
+    inc(currentOrder);
+
+  { Out of memory }
+  if order > BuddyMaxOrder then exit;
+
+  { Take the block from its free list }
+  block := PByte(freeLists[currentOrder - BuddyMinOrder]);
+  RemoveFree(currentOrder - BuddyMinOrder, block);
+
+  { TODO: split to target order }
+  { TODO: Toggle then return the block }
+end;
+
 { Begin generic allocator functions }
 
 function WasmGetMem(const bytes: longword): pointer;
