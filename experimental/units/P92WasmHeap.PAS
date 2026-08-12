@@ -159,7 +159,7 @@ begin
   CalcBitmapSize := (totalBits + 7) shr 3
 end;
 
-function BitmapOffset(order: integer): longword;
+function BitmapOffset(order: smallint): longword;
 var
   bits: longword;
   { order iterator }
@@ -195,9 +195,12 @@ begin
 end;
 
 { Buddy address calculation }
-function BuddyOf(block: PByte; order: integer): PByte;
+function BuddyOf(block: PByte; order: smallint): PByte;
 begin
-  BuddyOf := PByte(PtrUInt(block - buddyBase) xor (1 shl (order + BuddyMinOrder)) + PtrUInt(buddyBase));
+  BuddyOf :=
+    PByte(
+      PtrUInt(block - buddyBase) xor (1 shl (order + BuddyMinOrder))
+      + PtrUInt(buddyBase));
 end;
 
 procedure InitHeapRegion(const startAddr, smallHeapSize, aLargeHeapSize: longword);
@@ -219,6 +222,7 @@ begin
   InitBuddyAllocator(pbyte(startAddr + smallHeapSize), largeHeapSize);
 end;
 
+{ Small heap implementation }
 
 function FindBucket(const bytes: longword): smallint;
 var
@@ -279,6 +283,7 @@ begin
   buckets[b].freeHead := slot
 end;
 
+{ Large heap implementation }
 
 procedure InsertFree(orderIndex: smallint; block: PByte);
 var
@@ -309,6 +314,24 @@ begin
     fb^.next^.prev := fb^.prev;
 end;
 
+function ToggleBuddyBit(order: smallint; block: PByte): boolean;
+var
+  blockIndex, pairIndex, bitOffset: longword;
+  bytePos: longword;
+  bitMask: byte;
+begin
+  blockIndex := (PtrUInt(block) - PtrUInt(buddyBase)) shr order;
+  pairIndex := blockIndex shr 1;
+  bitOffset := BitmapOffset(order) + pairIndex;
+
+  bytePos := bitOffset shr 3;
+  bitMask := 1 shl (bitOffset and 7);
+
+  splitBitmap[bytePos] := splitBitmap[bytePos] xor bitMask;
+  ToggleBuddyBit := (splitBitmap[bytePos] and bitMask) <> 0
+end;
+
+{ Begin generic allocator functions }
 
 function WasmGetMem(const bytes: longword): pointer;
 begin
