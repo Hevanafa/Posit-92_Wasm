@@ -291,6 +291,22 @@ begin
   freeLists[orderIndex] := fb;
 end;
 
+procedure RemoveFree(orderIndex: smallint; block: PByte);
+var
+  fb: PFreeBlock;
+begin
+  fb := PFreeBlock(block);
+
+  if fb^.prev <> nil then
+    fb^.prev^.next := fb^.next
+  else
+    freeLists[orderIndex] := fb^.next;
+
+  if fb^.next <> nil then
+    fb^.next^.prev := fb^.prev;
+end;
+
+
 function WasmGetMem(const bytes: longword): pointer;
 begin
 {$ifdef P92_DEBUG_HEAP}
