@@ -463,7 +463,11 @@ begin
     exit
   end;
 
-  { TODO: Implement for the buddy allocator }
+  if (PtrUInt(ptr) < PtrUInt(buddyBase))
+    or (PtrUInt(ptr) >= PtrUInt(buddyBase) + largeHeapSize) then
+    PanicHalt('WasmFreeMem: pointer outside buddy region');
+
+  BuddyFree(PByte(ptr))
 end;
 
 
