@@ -16,15 +16,15 @@
 {
   Terms used in the buddy allocator
 
-  `order` is the exponent: 2 to the power of `order`
-  `currentOrder` has the same meaning as `order`
-  So, order 9 is 2**9 = 512
+  `absOrder` is the exponent: 2 to the power of `absOrder`
+  `currentOrder` has the same meaning as `absOrder`
+  So, absOrder 9 is 2**9 = 512
 
-  `orderIndex` starts from 0, relative to `BuddyMinOrder`
-  orderIndex 0 is 2**(9+0) = 512
-  orderIndex 1 is 2**(9+1) = 1024
+  `freeListIdx` starts from 0, relative to `BuddyMinOrder`
+  freeListIdx 0 is 2**(9+0) = 512
+  freeListIdx 1 is 2**(9+1) = 1024
 
-  `orderIndex` is an index to `freeLists[]`
+  `freeListIdx` is an index to `freeLists[]`
 }
 
 unit P92WasmHeap;
@@ -169,31 +169,31 @@ end;
 function CalcBitmapSize(size: longword): longword;
 var
   totalBits: longword;
-  order: smallint;
+  absOrder: smallint;
 begin
   totalBits := 0;
 
-  for order := BuddyMinOrder to BuddyMaxOrder - 1 do
-    totalBits := totalBits + (size shr (order + 1));
+  for absOrder := BuddyMinOrder to BuddyMaxOrder - 1 do
+    totalBits := totalBits + (size shr (absOrder + 1));
 
   CalcBitmapSize := (totalBits + 7) shr 3
 end;
 
-function BitmapOffset(order: smallint): longword;
+function BitmapOffset(absOrder: smallint): longword;
 var
   bits: longword;
-  { order iterator }
+  { absOrder iterator }
   o: smallint;
 begin
   bits := 0;
 
-  for o:=BuddyMinOrder to order - 1 do
+  for o:=BuddyMinOrder to absOrder - 1 do
     inc(bits, largeHeapSize shr(o + 1));
 
   BitmapOffset := bits
 end;
 
-procedure InsertFree(orderIndex: smallint; block: PByte); forward;
+procedure InsertFree(freeListIdx: smallint; block: PByte); forward;
 
 procedure InitBuddyAllocator(base: PByte; size: longword);
 var
@@ -299,33 +299,33 @@ end;
 
 { Large heap implementation }
 
-procedure InsertFree(orderIndex: smallint; block: PByte);
+procedure InsertFree(freeListIdx: smallint; block: PByte);
 var
   fb: PFreeBlock;
 begin
 {$ifdef P92_DEBUG_HEAP}
-  writelog('InsertFree: order=' + i32str(orderIndex + BuddyMinOrder)
+  writelog('InsertFree: order=' + i32str(freeListIdx + BuddyMinOrder)
     + ' block=' + I32Str(longword(block)));
 {$endif}
 
   fb := PFreeBlock(block);
-  fb^.next := freeLists[orderIndex];
+  fb^.next := freeLists[freeListIdx];
   fb^.prev := nil;
 
-  if freeLists[orderIndex] <> nil then
-    freeLists[orderIndex]^.prev := fb;
+  if freeLists[freeListIdx] <> nil then
+    freeLists[freeListIdx]^.prev := fb;
 
-  freeLists[orderIndex] := fb;
+  freeLists[freeListIdx] := fb;
 end;
 
-procedure RemoveFree(orderIndex: smallint; block: PByte);
+procedure RemoveFree(freeListIdx: smallint; block: PByte);
 var
   fb: PFreeBlock;
 begin
   fb := PFreeBlock(block);
 
 {$ifdef P92_DEBUG_HEAP}
-  writelog('RemoveFree: order=' + I32Str(orderIndex + BuddyMinOrder)
+  writelog('RemoveFree: order=' + I32Str(freeListIdx + BuddyMinOrder)
     + ' block=' + i32str(longword(block))
     + ' prev=' + i32str(longword(fb^.prev))
     + ' next=' + I32Str(longword(fb^.next)));
@@ -342,28 +342,28 @@ begin
 
   { Check the alignment }
   if (ptruint(block) - ptruint(buddyBase))
-    and ((1 shl (orderIndex + BuddyMinOrder)) - 1) <> 0 then
+    and ((1 shl (freeListIdx + BuddyMinOrder)) - 1) <> 0 then
     PanicHalt('RemoveFree: block misaligned for the order');
 {$endif}
 
   if fb^.prev <> nil then
     fb^.prev^.next := fb^.next
   else
-    freeLists[orderIndex] := fb^.next;
+    freeLists[freeListIdx] := fb^.next;
 
   if fb^.next <> nil then
     fb^.next^.prev := fb^.prev;
 end;
 
-function ToggleBuddyBit(order: smallint; block: PByte): boolean;
+function ToggleBuddyBit(absOrder: smallint; block: PByte): boolean;
 var
   blockIndex, pairIndex, bitOffset: longword;
   bytePos: longword;
   bitMask: byte;
 begin
-  blockIndex := (PtrUInt(block) - PtrUInt(buddyBase)) shr order;
+  blockIndex := (PtrUInt(block) - PtrUInt(buddyBase)) shr absOrder;
   pairIndex := blockIndex shr 1;
-  bitOffset := BitmapOffset(order) + pairIndex;
+  bitOffset := BitmapOffset(absOrder) + pairIndex;
 
   bytePos := bitOffset shr 3;
   bitMask := 1 shl (bitOffset and 7);
@@ -377,9 +377,9 @@ begin
   BlockIndex := (PtrUInt(block) - PtrUInt(buddyBase)) shr BuddyMinOrder;
 end;
 
-procedure StoreOrder(block: PByte; order: smallint); inline;
+procedure StoreOrder(block: PByte; absOrder: smallint); inline;
 begin
-  orderTable[BlockIndex(block)] := order
+  orderTable[BlockIndex(block)] := absOrder
 end;
 
 function LookupOrder(block: PByte): smallint; inline;
@@ -390,23 +390,23 @@ end;
 
 function BuddyAlloc(size: longword): pointer;
 var
-  order, currentOrder: smallint;
+  absOrder, currentOrder: smallint;
   block, half: PByte;
   didSplit: boolean;
 begin
   BuddyAlloc := nil;
 
-  { Find the minimum order that fits }
-  order := BuddyMinOrder;
+  { Find the minimum absOrder that fits }
+  absOrder := BuddyMinOrder;
 
-  while (1 shl order) < size do
-    inc(order);
+  while (1 shl absOrder) < size do
+    inc(absOrder);
 
   { Too large }
-  if order > BuddyMaxOrder then exit;
+  if absOrder > BuddyMaxOrder then exit;
 
   { Walk up to find a free block }
-  currentOrder := order;
+  currentOrder := absOrder;
 
   while (currentOrder <= BuddyMaxOrder)
     and (freeLists[currentOrder - BuddyMinOrder] = nil) do
@@ -419,10 +419,10 @@ begin
   block := PByte(freeLists[currentOrder - BuddyMinOrder]);
   RemoveFree(currentOrder - BuddyMinOrder, block);
 
-  didSplit := currentOrder > order;
+  didSplit := currentOrder > absOrder;
 
-  { Split down, up to target order }
-  while currentOrder > order do begin
+  { Split down, up to target absOrder }
+  while currentOrder > absOrder do begin
     dec(currentOrder);
     half := block + (1 shl currentOrder);
 
@@ -431,9 +431,9 @@ begin
   end;
 
   if not didSplit then
-    ToggleBuddyBit(order, block);
+    ToggleBuddyBit(absOrder, block);
 
-  StoreOrder(block, order);
+  StoreOrder(block, absOrder);
 
   BuddyAlloc := block
 end;
@@ -441,18 +441,18 @@ end;
 
 procedure BuddyFree(block: PByte);
 var
-  order, orderIndex: smallint;
+  absOrder, freeListIdx: smallint;
   buddy: PByte;
 begin
-  order := LookupOrder(block);
+  absOrder := LookupOrder(block);
 
-  while order < BuddyMaxOrder do begin
-    orderIndex := order - BuddyMinOrder;
+  while absOrder < BuddyMaxOrder do begin
+    freeListIdx := absOrder - BuddyMinOrder;
 
-    if ToggleBuddyBit(order, block) then begin
+    if ToggleBuddyBit(absOrder, block) then begin
       { Buddy is still allocated, stop here }
-      InsertFree(orderIndex, block);
-      StoreOrder(block, order);
+      InsertFree(freeListIdx, block);
+      StoreOrder(block, absOrder);
 
       exit
     end;
@@ -460,13 +460,13 @@ begin
     { Buddy is free }
     buddy := PByte(
       PtrUInt(buddyBase)
-      + (PtrUInt(block - buddyBase) xor (1 shl order)));
-    RemoveFree(orderIndex, buddy);
+      + (PtrUInt(block - buddyBase) xor (1 shl absOrder)));
+    RemoveFree(freeListIdx, buddy);
 
     if PtrUInt(buddy) < PtrUInt(block) then
       block := buddy;
 
-    inc(order)
+    inc(absOrder)
   end;
 
   InsertFree(BuddyOrderCount - 1, block);
