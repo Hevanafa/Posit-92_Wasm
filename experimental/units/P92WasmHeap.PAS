@@ -21,7 +21,7 @@ unit P92WasmHeap;
 
 interface
 
-procedure InitHeapRegion(const startAddr, smallHeapSize, aLargeHeapSize: longword); public name 'InitHeapRegion';
+procedure InitHeapRegion(const startAddr, smallHeapSize, largeHeapSize: longword); public name 'InitHeapRegion';
 
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
 procedure WasmFreeMem(const ptr: pointer); public name 'WasmFreeMem';
@@ -108,6 +108,10 @@ var
   bucketAllocStart, bucketAllocEnd: PByte;
   buckets: array[0..BucketCount-1] of TBucket;
 
+
+var
+  heapStart, heapEnd: pbyte;
+  freeListHead: PBlockHeader;
 
 { Slab allocation }
 
@@ -243,6 +247,25 @@ begin
   IsValidBlock := (pbyte(header) >= heapStart) and (pbyte(header) < heapEnd)
 end;
 
+procedure InitLargeHeap(const baseAddr, size: longword);
+var
+  firstBlock: PBlockHeader;
+  payloadSize: longword;
+begin
+  heapStart := pbyte(baseAddr);
+  heapEnd := pbyte(baseAddr + size);
+
+  { Make the entire region a free block }
+  firstBlock := PBlockHeader(heapStart);
+  payloadSize := size - sizeof(TBlockHeader) - sizeof(TBlockFooter);
+
+  SetBlockState(firstBlock, payloadSize, true);
+
+  firstBlock^.prev := nil;
+  firstBlock^.next := nil;
+
+  freeListHead := firstBlock;
+end;
 
 { Begin generic allocator functions }
 
@@ -341,13 +364,16 @@ begin
   { TODO: Implement the large allocator call }
 end;
 
-procedure InitHeapRegion(const startAddr, smallHeapSize, aLargeHeapSize: longword);
+procedure InitHeapRegion(const startAddr, smallHeapSize, largeHeapSize: longword);
+var
+  firstBlock: PBlockHeader;
+  payloadSize: longword;
 begin
   bucketAllocStart := PByte(startAddr);
   bucketAllocEnd := PByte(startAddr + smallHeapSize);
   InitPool(smallHeapSize);
 
-  { TODO: Implement the large allocator call }
+  InitLargeHeap(startAddr + smallHeapSize, largeHeapSize)
 end;
 
 
