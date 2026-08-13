@@ -523,17 +523,21 @@ end;
 function WasmReAllocMem(const ptr: pointer; const newBytes: longword): pointer;
 var
   oldOrder, newOrder: smallint;
+  b: smallint;
   oldSize: longword;
 begin
   if (longword(ptr) >= longword(bucketAllocStart))
     and (longword(ptr) < longword(bucketAllocEnd)) then begin
+      b := FindBucketByPtr(ptr);
+      oldSize := buckets[b].slotSize;
+
       WasmReAllocMem := WasmGetMem(newBytes);
 
       if WasmReAllocMem <> nil then begin
-        if newBytes < PoolSizeClassMax then
+        if newBytes < oldSize then
           move(ptr^, WasmReAllocMem^, newBytes)
         else
-          move(ptr^, WasmReAllocMem^, PoolSizeClassMax);
+          move(ptr^, WasmReAllocMem^, oldSize);
 
         PoolFree(ptr)
       end;
