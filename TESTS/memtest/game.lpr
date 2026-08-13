@@ -162,12 +162,8 @@ begin
   { Optional tests: }
   { TestExhaustAndCoalesce; }
 
-  GetMem(p, 3072);
-
-  writelog('Image alloc at ' + i32str(longword(p)));
-  writelog(' end: ' + i32str(longword(p) + 3072));
-
-  freemem(p);
+  { Object instance tests: }
+  TestSingleInstance;
 end;
 
 procedure Update;
