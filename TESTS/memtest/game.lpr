@@ -16,7 +16,7 @@ uses
   P92Keyboard, P92Mouse,
   P92TexDraw, P92Timing, P92FPS, P92VGA,
   P92WasmHeap,
-  Assets;
+  Assets, ObjectTests;
 
 var
   { Game state variables }
@@ -153,23 +153,21 @@ begin
   { Initialise game state here }
   gameTime := 0.0;
 
+  { Regular tests: }
   TestBasicAllocFree;
-  { TestExhaustAndCoalesce; }
   TestSplitNoOverlap;
   TestInterleavedFree;
   TestCrossTierRealloc;
 
+  { Optional tests: }
+  { TestExhaustAndCoalesce; }
 
-  { Any allocations after this crashes the allocator for some reason }
   GetMem(p, 3072);
 
   writelog('Image alloc at ' + i32str(longword(p)));
   writelog(' end: ' + i32str(longword(p) + 3072));
 
   freemem(p);
-
-  { getmem(p, 512);
-  freemem(p); }
 end;
 
 procedure Update;

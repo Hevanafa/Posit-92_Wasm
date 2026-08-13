@@ -30,6 +30,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Game"/>
       </Unit>
+      <Unit>
+        <Filename Value="objecttests.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ObjectTests"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
