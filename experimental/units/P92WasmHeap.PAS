@@ -55,6 +55,21 @@ type
     regionEnd: pbyte;
   end;
 
+  { Large heap: Free list }
+  PBlockHeader = ^TBlockHeader;
+  TBlockHeader = record
+    size: longword;
+    isFree: boolean;
+    prev: PBlockHeader;
+    next: PBlockHeader;
+  end;
+
+  PBlockFooter = ^TBlockFooter;
+  TBlockFooter = record
+    size: longword;
+    isFree: boolean;
+  end;
+
 
 { Small heap }
 
@@ -92,6 +107,9 @@ const
 var
   bucketAllocStart, bucketAllocEnd: PByte;
   buckets: array[0..BucketCount-1] of TBucket;
+
+
+{ Free-list allocation }
 
 
 procedure InitPool(const poolSize: longword);
