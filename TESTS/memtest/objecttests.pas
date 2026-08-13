@@ -28,6 +28,14 @@ implementation
 
 uses P92Logger, P92Conversions;
 
+procedure Assert(cond: boolean; const msg: string);
+begin
+  if not cond then begin
+    writelog('Assert failed: ' + msg);
+    halt(1)
+  end;
+end;
+
 procedure TestSingleInstance;
 var
   e: TEntity;
@@ -63,7 +71,7 @@ begin
   assert(list.count = 100, 'Count mismatch');
 
   { Random access test }
-  assert(list[50].Name = 'Entity50', 'Lookup failed');
+  assert(list[50].Name = 'Entity51', 'Lookup failed');
 
   writelog('Attempting to delete index 25');
   list.delete(25);
@@ -72,6 +80,8 @@ begin
 
   writelog('Attempting to clear');
   list.clear;
+
+  writelog('Count after clear: ' + i32str(list.count));
 
   for a:=1 to 40 do
     list.add(

@@ -162,6 +162,7 @@ begin
 
   { Object instance tests: }
   TestSingleInstance;
+  TestObjectList;
 end;
 
 procedure Update;
