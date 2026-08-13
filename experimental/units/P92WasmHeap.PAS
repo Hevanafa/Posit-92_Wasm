@@ -216,15 +216,6 @@ begin
   FillByte(orderTable, SizeOf(orderTable), 0);
 end;
 
-{ Buddy address calculation }
-function BuddyOf(block: PByte; order: smallint): PByte;
-begin
-  BuddyOf :=
-    PByte(
-      PtrUInt(block - buddyBase) xor (1 shl (order + BuddyMinOrder))
-      + PtrUInt(buddyBase));
-end;
-
 procedure InitHeapRegion(const startAddr, smallHeapSize, aLargeHeapSize: longword);
 begin
   bucketAllocStart := PByte(startAddr);
