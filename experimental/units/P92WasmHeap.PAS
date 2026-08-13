@@ -267,6 +267,50 @@ begin
   freeListHead := firstBlock;
 end;
 
+procedure RemoveFromFreeList(block: PBlockHeader);
+begin
+  if block^.prev <> nil then
+    block^.prev^.next := block^.next
+  else
+    freeListHead := block^.next;  { was the head }
+
+  if block^.next <> nil then
+    block^.next^.prev := block^.prev;
+
+  block^.prev := nil;
+  block^.next := nil;
+end;
+
+const
+  MinBlockSize = 32;
+
+procedure SplitBlock(block: PBlockHeader; needed: longword);
+var
+  remainder: PBlockHeader;
+  leftover: longword;
+  totalOverhead: longword;
+begin
+  totalOverhead := sizeof(TBlockHeader) + sizeof(TBlockFooter);
+
+  if block^.size < needed + totalOverhead + MinBlockSize then
+    exit;
+
+  leftover := block^.size - needed - totalOverhead;
+
+  SetBlockState(block, needed, block^.isFree);
+
+  remainder := NextBlockInMemory(block);
+  SetBlockState(remainder, leftover, true);
+
+  remainder^.prev := nil;
+  remainder^.next := freeListHead;
+
+  if freeListHead <> nil then
+    freeListHead^.prev := remainder;
+
+  freeListHead := remainder;
+end;
+
 { Begin generic allocator functions }
 
 function WasmGetMem(const bytes: longword): pointer;
@@ -365,9 +409,6 @@ begin
 end;
 
 procedure InitHeapRegion(const startAddr, smallHeapSize, largeHeapSize: longword);
-var
-  firstBlock: PBlockHeader;
-  payloadSize: longword;
 begin
   bucketAllocStart := PByte(startAddr);
   bucketAllocEnd := PByte(startAddr + smallHeapSize);
