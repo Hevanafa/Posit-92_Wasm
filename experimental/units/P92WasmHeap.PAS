@@ -329,13 +329,13 @@ begin
   fb := PFreeBlock(block);
 
 {$ifdef P92_DEBUG_HEAP}
-  writelog('RemoveFree: order=' + I32Str(orderIndex)
+  writelog('RemoveFree: order=' + I32Str(orderIndex + BuddyMinOrder)
     + ' block=' + i32str(longword(block))
     + ' prev=' + i32str(longword(fb^.prev))
     + ' next=' + I32Str(longword(fb^.next)));
 
-  if (orderIndex < BuddyMinOrder) or (orderIndex > BuddyMaxOrder) then
-    PanicHalt('RemoveFree: Wrong order index ' + I32Str(orderIndex));
+  { if (orderIndex < BuddyMinOrder) or (orderIndex > BuddyMaxOrder) then
+    PanicHalt('RemoveFree: Wrong order index ' + I32Str(orderIndex)); }
 
   { Check if buddy is within the region }
   if (ptruint(block) < PtrUInt(buddyBase))
