@@ -350,6 +350,8 @@ end;
 procedure LargeFree(p: pointer);
 var
   header: PBlockHeader;
+  neighbour: PBlockHeader;
+  newSize: longword;
 begin
   if p = nil then exit;
 
@@ -360,6 +362,20 @@ begin
 {$endif}
 
   SetBlockState(header, header^.size, true);
+
+  { absorb the next block }
+  neighbour := NextBlockInMemory(header);
+
+  if IsValidBlock(neighbour) and neighbour^.isFree then begin
+    RemoveFromFreeList(neighbour);
+
+    newSize := header^.size + sizeof(TBlockHeader) + sizeof(TBlockFooter) + neighbour^.size;
+
+    SetBlockState(header, newSize, true);
+  end;
+
+  { TODO: absorb the previous block }
+
   InsertToFreeList(header)
 end;
 
