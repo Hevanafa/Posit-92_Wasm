@@ -119,7 +119,7 @@ var
 
 const
   BuddyMinOrder = 9;  { 512 bytes }
-  BuddyMaxOrder = 19;  { 512 KB }
+  BuddyMaxOrder = 19;  { 512 KB, must match #wasmMemSize in posit-92.ts }
   BuddyOrderCount = BuddyMaxOrder - BuddyMinOrder + 1;
 
   BuddyMaxBlocks = 1 shl (BuddyMaxOrder - BuddyMinOrder); { 2048 }

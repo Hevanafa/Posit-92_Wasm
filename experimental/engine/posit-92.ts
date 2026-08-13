@@ -165,7 +165,12 @@ class Posit92 {
 
   // Engine configs
 
-  readonly #wasmMemSize = 2 * 1048576;  // 2 MB
+  /**
+   * 2 MB
+   * 
+   * `BuddyMaxOrder` in `P92WasmHeap` must be changed too, depending on the largest slice (must be in the power of 2)
+   */
+  readonly #wasmMemSize = 2 * 1048576;
   readonly #stackSize = 320 * 1024;
 
   /**
