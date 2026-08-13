@@ -341,8 +341,13 @@ begin
 
   { Check if buddy is within the region }
   if (ptruint(block) < PtrUInt(buddyBase))
-    or (ptruint(block) >= ptruint(buddyBase) + largeHeapSize) then
+    or (ptruint(block) >= ptruint(buddyBase) + largeHeapSize) then begin
+
+    writelog(
+      'buddyBase=' + I32Str(longword(buddyBase))
+      + ' largeHeapSize=' + i32str(largeHeapSize));
     PanicHalt('RemoveFree: block is outside buddy region');
+  end;
 
   { Check the alignment }
   if (ptruint(block) - ptruint(buddyBase))
