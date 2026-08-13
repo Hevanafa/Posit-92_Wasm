@@ -9,22 +9,7 @@
   0x000000..0x02FFFF	Pascal stack	(192KB)
   0x030000..0x06E7FF	Video memory	(320x200x4, depending on vgaWidth and vgaHeight)
   0x06E800..0x0EE7FF	Slab tier region	(512KB, two-tier tier 1)
-  0x0EE800..0x1EE7FF	Buddy tier region	(0x100000 bytes, two-tier tier 2)
-  0x1EE801..0x200000    Unused
-}
-
-{
-  Terms used in the buddy allocator
-
-  `absOrder` is the exponent: 2 to the power of `absOrder`
-  `currentOrder` has the same meaning as `absOrder`
-  So, absOrder 9 is 2**9 = 512
-
-  `freeListIdx` starts from 0, relative to `BuddyMinOrder`
-  freeListIdx 0 is 2**(9+0) = 512
-  freeListIdx 1 is 2**(9+1) = 1024
-
-  `freeListIdx` is an index to `freeLists[]`
+  0x0EE800..0x200000	Reserved region	(at least 0x100000 bytes, two-tier tier 2)
 }
 
 unit P92WasmHeap;
@@ -70,15 +55,6 @@ type
     regionEnd: pbyte;
   end;
 
-  { Large heap: buddy allocator }
-  PFreeBlock = ^TFreeBlock;
-  TFreeBlock = record
-    prev, next: PFreeBlock;
-  end;
-
-
-var
-  largeHeapSize: longword;
 
 { Small heap }
 
@@ -117,20 +93,6 @@ var
   bucketAllocStart, bucketAllocEnd: PByte;
   buckets: array[0..BucketCount-1] of TBucket;
 
-const
-  BuddyMinOrder = 9;  { 512 bytes }
-  BuddyMaxOrder = 19;  { 512 KB, must match #wasmMemSize in posit-92.ts }
-  BuddyOrderCount = BuddyMaxOrder - BuddyMinOrder + 1;
-
-  BuddyMaxBlocks = 1 shl (BuddyMaxOrder - BuddyMinOrder); { 2048 }
-
-{ Large heap }
-var
-  freeLists: array[0..BuddyOrderCount - 1] of PFreeBlock;
-  buddyBase: PByte;
-  splitBitmap: PByte;
-
-  orderTable: array[0..BuddyMaxBlocks - 1] of byte;
 
 procedure InitPool(const poolSize: longword);
 var
@@ -165,75 +127,6 @@ begin
   end;
 end;
 
-
-function CalcBitmapSize(size: longword): longword;
-var
-  totalBits: longword;
-  absOrder: smallint;
-begin
-  totalBits := 0;
-
-  for absOrder := BuddyMinOrder to BuddyMaxOrder - 1 do
-    totalBits := totalBits + (size shr (absOrder + 1));
-
-  CalcBitmapSize := (totalBits + 7) shr 3
-end;
-
-function BitmapOffset(absOrder: smallint): longword;
-var
-  bits: longword;
-  { absOrder iterator }
-  o: smallint;
-begin
-  bits := 0;
-
-  for o:=BuddyMinOrder to absOrder - 1 do
-    inc(bits, largeHeapSize shr(o + 1));
-
-  BitmapOffset := bits
-end;
-
-procedure InsertFree(freeListIdx: smallint; block: PByte); forward;
-
-procedure InitBuddyAllocator(base: PByte; size: longword);
-var
-  bitmapBytes: longword;
-  a: word;
-begin
-  buddyBase := base;
-
-  for a:=0 to BuddyOrderCount - 1 do
-    freeLists[a] := nil;
-
-  bitmapBytes := CalcBitmapSize(size);
-  splitBitmap := base;
-  FillByte(splitBitmap^, bitmapBytes, 0);
-
-  { Align to the next 16-byte boundary }
-  buddyBase := PByte((PtrUInt(base) + bitmapBytes + 15) and not 15);
-  InsertFree(BuddyOrderCount - 1, buddyBase);
-
-  FillByte(orderTable, SizeOf(orderTable), 0);
-end;
-
-procedure InitHeapRegion(const startAddr, smallHeapSize, aLargeHeapSize: longword);
-begin
-  bucketAllocStart := PByte(startAddr);
-  bucketAllocEnd := PByte(startAddr + smallHeapSize);
-  InitPool(smallHeapSize);
-
-  { Round down to a power of 2 without using the Math unit }
-  largeHeapSize := aLargeHeapSize;
-
-  largeHeapSize := largeHeapSize or (largeHeapSize shr 1);
-  largeHeapSize := largeHeapSize or (largeHeapSize shr 2);
-  largeHeapSize := largeHeapSize or (largeHeapSize shr 4);
-  largeHeapSize := largeHeapSize or (largeHeapSize shr 8);
-  largeHeapSize := largeHeapSize or (largeHeapSize shr 16);
-  largeHeapSize := (largeHeapSize shr 1) + 1;
-
-  InitBuddyAllocator(pbyte(startAddr + smallHeapSize), largeHeapSize);
-end;
 
 { Small heap implementation }
 
@@ -297,205 +190,6 @@ begin
   buckets[b].freeHead := slot
 end;
 
-{ Large heap implementation }
-
-procedure InsertFree(freeListIdx: smallint; block: PByte);
-var
-  fb: PFreeBlock;
-begin
-{$ifdef P92_DEBUG_HEAP}
-  writelog('InsertFree: order=' + i32str(freeListIdx + BuddyMinOrder)
-    + ' block=' + I32Str(longword(block)));
-{$endif}
-
-  fb := PFreeBlock(block);
-  fb^.next := freeLists[freeListIdx];
-  fb^.prev := nil;
-
-  { Canary word }
-  plongword(block + sizeof(TFreeBlock))^ := $DEADBEEF;
-
-  if freeLists[freeListIdx] <> nil then
-    freeLists[freeListIdx]^.prev := fb;
-
-  freeLists[freeListIdx] := fb;
-end;
-
-procedure RemoveFree(freeListIdx: smallint; block: PByte);
-var
-  fb: PFreeBlock;
-begin
-  fb := PFreeBlock(block);
-
-{$ifdef P92_DEBUG_HEAP}
-  if (fb^.next <> nil)
-    and ((PtrUInt(fb^.next) < PtrUInt(buddyBase))
-      or (PtrUInt(fb^.next) >= PtrUInt(buddyBase) + largeHeapSize)) then begin
-    writelog('RemoveFree: CORRUPTED next pointer at block='
-      + I32Str(longword(block))
-      + ' next=' + I32Str(longword(fb^.next)));
-    PanicHalt('RemoveFree: free list corruption detected');
-  end;
-{$endif}
-
-{$ifdef P92_DEBUG_HEAP}
-  writelog('RemoveFree: order=' + I32Str(freeListIdx + BuddyMinOrder)
-    + ' block=' + i32str(longword(block))
-    + ' prev=' + i32str(longword(fb^.prev))
-    + ' next=' + I32Str(longword(fb^.next)));
-
-  { Check if buddy is within the region }
-  if (ptruint(block) < PtrUInt(buddyBase))
-    or (ptruint(block) >= ptruint(buddyBase) + largeHeapSize) then begin
-
-    writelog(
-      'buddyBase=' + I32Str(longword(buddyBase))
-      + ' largeHeapSize=' + i32str(largeHeapSize));
-    PanicHalt('RemoveFree: block is outside buddy region');
-  end;
-
-  { Check the alignment }
-  if (ptruint(block) - ptruint(buddyBase))
-    and ((1 shl (freeListIdx + BuddyMinOrder)) - 1) <> 0 then
-    PanicHalt('RemoveFree: block misaligned for the order');
-{$endif}
-
-  if plongword(block + sizeof(TFreeBlock))^ <> $DEADBEEF then
-    panichalt('RemoveFree: Canary destroyed because of adjacent block overflow at block=' + i32str(longword(block)));
-
-  if fb^.prev <> nil then
-    fb^.prev^.next := fb^.next
-  else
-    freeLists[freeListIdx] := fb^.next;
-
-  if fb^.next <> nil then
-    fb^.next^.prev := fb^.prev;
-end;
-
-function ToggleBuddyBit(absOrder: smallint; block: PByte): boolean;
-var
-  blockIndex, pairIndex, bitOffset: longword;
-  bytePos: longword;
-  bitMask: byte;
-begin
-  blockIndex := (PtrUInt(block) - PtrUInt(buddyBase)) shr absOrder;
-  pairIndex := blockIndex shr 1;
-  bitOffset := BitmapOffset(absOrder) + pairIndex;
-
-  bytePos := bitOffset shr 3;
-  bitMask := 1 shl (bitOffset and 7);
-
-  splitBitmap[bytePos] := splitBitmap[bytePos] xor bitMask;
-  ToggleBuddyBit := (splitBitmap[bytePos] and bitMask) <> 0
-end;
-
-function BlockIndex(block: PByte): longword; inline;
-begin
-  BlockIndex := (PtrUInt(block) - PtrUInt(buddyBase)) shr BuddyMinOrder;
-end;
-
-procedure StoreOrder(block: PByte; absOrder: smallint); inline;
-begin
-  orderTable[BlockIndex(block)] := absOrder
-end;
-
-function LookupOrder(block: PByte): smallint; inline;
-begin
-  LookupOrder := orderTable[BlockIndex(block)]
-end;
-
-
-function BuddyAlloc(size: longword): pointer;
-var
-  absOrder, splitOrder: smallint;
-  block, half: PByte;
-  didSplit: boolean;
-begin
-  BuddyAlloc := nil;
-
-  { Find the minimum absOrder that fits }
-  absOrder := BuddyMinOrder;
-
-  while (1 shl absOrder) < size do
-    inc(absOrder);
-
-  { Too large }
-  if absOrder > BuddyMaxOrder then exit;
-
-  { Walk up to find a free block }
-  splitOrder := absOrder;
-
-  while (splitOrder <= BuddyMaxOrder)
-    and (freeLists[splitOrder - BuddyMinOrder] = nil) do
-    inc(splitOrder);
-
-  { Out of memory }
-  if splitOrder > BuddyMaxOrder then exit;
-
-  { Take the block from its free list }
-  block := PByte(freeLists[splitOrder - BuddyMinOrder]);
-  RemoveFree(splitOrder - BuddyMinOrder, block);
-
-  didSplit := splitOrder > absOrder;
-
-  { Split down, up to target absOrder }
-  while splitOrder > absOrder do begin
-    dec(splitOrder);
-    half := block + (1 shl splitOrder);
-
-    InsertFree(splitOrder - BuddyMinOrder, half);
-    ToggleBuddyBit(splitOrder, half)
-  end;
-
-  if not didSplit then
-    ToggleBuddyBit(absOrder, block);
-
-  StoreOrder(block, absOrder);
-
-{$ifdef P92_DEBUG_HEAP}
-  writelog('BuddyAlloc: addr=' + I32Str(longword(block))
-    + ' size=' + I32Str(size)
-    + ' order=' + I32Str(absOrder)
-    + ' end=' + I32Str(longword(block) + (1 shl absOrder)));
-{$endif}
-
-  BuddyAlloc := block
-end;
-
-
-procedure BuddyFree(block: PByte);
-var
-  absOrder, freeListIdx: smallint;
-  buddy: PByte;
-begin
-  absOrder := LookupOrder(block);
-
-  while absOrder < BuddyMaxOrder do begin
-    freeListIdx := absOrder - BuddyMinOrder;
-
-    if ToggleBuddyBit(absOrder, block) then begin
-      { Buddy is still allocated, stop here }
-      InsertFree(freeListIdx, block);
-      StoreOrder(block, absOrder);
-
-      exit
-    end;
-
-    { Buddy is free }
-    buddy := PByte(
-      PtrUInt(buddyBase)
-      + (PtrUInt(block - buddyBase) xor (1 shl absOrder)));
-    RemoveFree(freeListIdx, buddy);
-
-    if PtrUInt(buddy) < PtrUInt(block) then
-      block := buddy;
-
-    inc(absOrder)
-  end;
-
-  InsertFree(BuddyOrderCount - 1, block);
-  StoreOrder(block, BuddyMaxOrder)
-end;
 
 { Begin generic allocator functions }
 
@@ -510,10 +204,7 @@ begin
     exit
   end;
 
-  WasmGetMem := BuddyAlloc(bytes);
-
-  if WasmGetMem = nil then
-    PanicHalt('WasmGetMem: Out of memory. Requested bytes: ' + I32Str(bytes));
+  { TODO: Implement the large allocator call }
 end;
 
 
@@ -527,17 +218,12 @@ begin
     exit
   end;
 
-  if (PtrUInt(ptr) < PtrUInt(buddyBase))
-    or (PtrUInt(ptr) >= PtrUInt(buddyBase) + largeHeapSize) then
-    PanicHalt('WasmFreeMem: pointer outside buddy region');
-
-  BuddyFree(PByte(ptr))
+  { TODO: Implement the large allocator call }
 end;
 
 
 function WasmReAllocMem(const ptr: pointer; const newBytes: longword): pointer;
 var
-  oldOrder, newOrder: smallint;
   b: smallint;
   oldSize: longword;
 begin
@@ -571,33 +257,7 @@ begin
     exit
   end;
 
-  { Buddy allocator impl }
-
-  oldOrder := LookupOrder(PByte(ptr));
-  oldSize := 1 shl oldOrder;
-
-  newOrder := BuddyMinOrder;
-
-  while (1 shl newOrder) < newBytes do
-    inc(newOrder);
-
-  if newOrder = oldOrder then begin
-    WasmReAllocMem := ptr;
-    exit
-  end;
-
-  { Attempt to route to the right tier }
-  WasmReAllocMem := WasmGetMem(newBytes);
-
-  if WasmReAllocMem <> nil then begin
-    { Copy the minimum of old content and new capacity }
-    if newBytes < oldSize then
-      move(ptr^, WasmReAllocMem^, newBytes)
-    else
-      move(ptr^, WasmReAllocMem^, oldSize);
-
-    BuddyFree(PByte(ptr));
-  end;
+  { TODO: Implement the large allocator call }
 end;
 
 
@@ -625,8 +285,18 @@ begin
     exit
   end;
 
-  WasmMemSize := 1 shl LookupOrder(pbyte(ptr));
+  { TODO: Implement the large allocator call }
 end;
+
+procedure InitHeapRegion(const startAddr, smallHeapSize, aLargeHeapSize: longword);
+begin
+  bucketAllocStart := PByte(startAddr);
+  bucketAllocEnd := PByte(startAddr + smallHeapSize);
+  InitPool(smallHeapSize);
+
+  { TODO: Implement the large allocator call }
+end;
+
 
 function GetBucketAllocStart: longword;
 begin
