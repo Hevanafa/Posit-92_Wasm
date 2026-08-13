@@ -393,6 +393,13 @@ begin
   InsertToFreeList(header)
 end;
 
+function LargeMemSize(const ptr: pointer): PtrUInt;
+var
+  header: PBlockHeader;
+begin
+  header := PBlockHeader(pbyte(ptr) - sizeof(TBlockHeader));
+  LargeMemSize := header^.size
+end;
 
 { Begin generic allocator functions }
 
@@ -487,7 +494,7 @@ begin
     exit
   end;
 
-  { TODO: Implement the large allocator call }
+  WasmMemSize := LargeMemSize(ptr)
 end;
 
 procedure InitHeapRegion(const startAddr, smallHeapSize, largeHeapSize: longword);
