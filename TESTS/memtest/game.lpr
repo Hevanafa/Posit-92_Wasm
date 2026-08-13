@@ -153,11 +153,11 @@ begin
   { Initialise game state here }
   gameTime := 0.0;
 
-  { TestBasicAllocFree; }
+  TestBasicAllocFree;
   { TestExhaustAndCoalesce; }
-  { TestSplitNoOverlap;
+  TestSplitNoOverlap;
   TestInterleavedFree;
-  TestCrossTierRealloc; }
+  TestCrossTierRealloc;
 
 
   { Any allocations after this crashes the allocator for some reason }

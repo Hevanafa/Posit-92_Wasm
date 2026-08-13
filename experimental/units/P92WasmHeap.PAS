@@ -8,8 +8,8 @@
   Memory layout (2MB default)
   0x000000..0x02FFFF	Pascal stack	(192KB)
   0x030000..0x06E7FF	Video memory	(320x200x4, depending on vgaWidth and vgaHeight)
-  0x06E800..0x0EE7FF	Small heap region	(512KB, two-tier tier 1)
-  0x0EE800..0x1EE7FF	Large heap region	(0x100000 bytes, two-tier tier 2)
+  0x06E800..0x0EE7FF	Slab tier region	(512KB, two-tier tier 1)
+  0x0EE800..0x1EE7FF	Buddy tier region	(0x100000 bytes, two-tier tier 2)
   0x1EE801..0x200000    Unused
 }
 
@@ -390,7 +390,7 @@ end;
 
 function BuddyAlloc(size: longword): pointer;
 var
-  absOrder, currentOrder: smallint;
+  absOrder, splitOrder: smallint;
   block, half: PByte;
   didSplit: boolean;
 begin
@@ -406,28 +406,28 @@ begin
   if absOrder > BuddyMaxOrder then exit;
 
   { Walk up to find a free block }
-  currentOrder := absOrder;
+  splitOrder := absOrder;
 
-  while (currentOrder <= BuddyMaxOrder)
-    and (freeLists[currentOrder - BuddyMinOrder] = nil) do
-    inc(currentOrder);
+  while (splitOrder <= BuddyMaxOrder)
+    and (freeLists[splitOrder - BuddyMinOrder] = nil) do
+    inc(splitOrder);
 
   { Out of memory }
-  if currentOrder > BuddyMaxOrder then exit;
+  if splitOrder > BuddyMaxOrder then exit;
 
   { Take the block from its free list }
-  block := PByte(freeLists[currentOrder - BuddyMinOrder]);
-  RemoveFree(currentOrder - BuddyMinOrder, block);
+  block := PByte(freeLists[splitOrder - BuddyMinOrder]);
+  RemoveFree(splitOrder - BuddyMinOrder, block);
 
-  didSplit := currentOrder > absOrder;
+  didSplit := splitOrder > absOrder;
 
   { Split down, up to target absOrder }
-  while currentOrder > absOrder do begin
-    dec(currentOrder);
-    half := block + (1 shl currentOrder);
+  while splitOrder > absOrder do begin
+    dec(splitOrder);
+    half := block + (1 shl splitOrder);
 
-    InsertFree(currentOrder - BuddyMinOrder, half);
-    ToggleBuddyBit(currentOrder, half)
+    InsertFree(splitOrder - BuddyMinOrder, half);
+    ToggleBuddyBit(splitOrder, half)
   end;
 
   if not didSplit then
