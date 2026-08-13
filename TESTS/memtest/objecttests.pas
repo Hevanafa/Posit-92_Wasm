@@ -6,7 +6,8 @@ unit ObjectTests;
 interface
 
 uses
-  SysUtils;
+  SysUtils, FGL;
+  { Classes unit is optional for the class syntax }
 
 type
   TEntity = class
@@ -17,12 +18,15 @@ type
     destructor Destroy; override;
   end;
 
+  TEntityList = specialize TFPGObjectList<TEntity>;
+
 procedure TestSingleInstance;
+procedure TestObjectList;
 
 
 implementation
 
-uses P92Logger;
+uses P92Logger, P92Conversions;
 
 procedure TestSingleInstance;
 var
@@ -39,6 +43,45 @@ begin
   e.free;
 
   writelog('End of TestSingleInstance');
+end;
+
+procedure TestObjectList;
+var
+  list: TEntityList;
+  a: smallint;
+  e: TEntity;
+begin
+  writelog('Begin TestObjectList');
+
+  list := TEntityList.create(true);  { makes it own objects }
+
+  for a:=1 to 100 do
+    list.add(
+      TEntity.create('Entity' + I32Str(a), a * 1.0, a * 2.0));
+
+  writelog('What''s the count? ' + i32str(list.count));
+  assert(list.count = 100, 'Count mismatch');
+
+  { Random access test }
+  assert(list[50].Name = 'Entity50', 'Lookup failed');
+
+  writelog('Attempting to delete index 25');
+  list.delete(25);
+
+  writelog('What''s the count? ' + i32str(list.count));
+
+  writelog('Attempting to clear');
+  list.clear;
+
+  for a:=1 to 40 do
+    list.add(
+      TEntity.create('Entity' + I32Str(a), a * 1.0, a * 2.0));
+
+  writelog('Refill count: ' + i32str(list.count));
+
+  list.free;
+
+  writelog('End of TestObjectList');
 end;
 
 { TEntity }

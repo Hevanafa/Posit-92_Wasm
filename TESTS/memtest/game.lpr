@@ -145,8 +145,6 @@ begin
 end;
 
 procedure OnReady;
-var
-  p: pointer;
 begin
   HideCursor;
 
