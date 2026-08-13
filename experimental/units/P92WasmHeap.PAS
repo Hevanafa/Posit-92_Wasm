@@ -312,6 +312,9 @@ begin
   fb^.next := freeLists[freeListIdx];
   fb^.prev := nil;
 
+  { Canary word }
+  plongword(block + sizeof(TFreeBlock))^ := $DEADBEEF;
+
   if freeLists[freeListIdx] <> nil then
     freeLists[freeListIdx]^.prev := fb;
 
@@ -356,6 +359,9 @@ begin
     and ((1 shl (freeListIdx + BuddyMinOrder)) - 1) <> 0 then
     PanicHalt('RemoveFree: block misaligned for the order');
 {$endif}
+
+  if plongword(block + sizeof(TFreeBlock))^ <> $DEADBEEF then
+    panichalt('RemoveFree: Canary destroyed because of adjacent block overflow at block=' + i32str(longword(block)));
 
   if fb^.prev <> nil then
     fb^.prev^.next := fb^.next
