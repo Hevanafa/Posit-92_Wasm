@@ -452,6 +452,13 @@ begin
 
   StoreOrder(block, absOrder);
 
+{$ifdef P92_DEBUG_HEAP}
+  writelog('BuddyAlloc: addr=' + I32Str(longword(block))
+    + ' size=' + I32Str(size)
+    + ' order=' + I32Str(absOrder)
+    + ' end=' + I32Str(longword(block) + (1 shl absOrder)));
+{$endif}
+
   BuddyAlloc := block
 end;
 
