@@ -380,6 +380,7 @@ function BuddyAlloc(size: longword): pointer;
 var
   order, currentOrder: smallint;
   block, half: PByte;
+  didSplit: boolean;
 begin
   BuddyAlloc := nil;
 
@@ -406,6 +407,8 @@ begin
   block := PByte(freeLists[currentOrder - BuddyMinOrder]);
   RemoveFree(currentOrder - BuddyMinOrder, block);
 
+  didSplit := currentOrder > order;
+
   { Split down, up to target order }
   while currentOrder > order do begin
     dec(currentOrder);
@@ -415,7 +418,9 @@ begin
     ToggleBuddyBit(currentOrder, half)
   end;
 
-  ToggleBuddyBit(order, block);
+  if not didSplit then
+    ToggleBuddyBit(order, block);
+
   StoreOrder(block, order);
 
   BuddyAlloc := block
