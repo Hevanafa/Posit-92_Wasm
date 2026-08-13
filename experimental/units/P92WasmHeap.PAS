@@ -284,6 +284,7 @@ end;
 const
   MinBlockSize = 32;
 
+{ Helper for large alloc }
 procedure SplitBlock(block: PBlockHeader; needed: longword);
 var
   remainder: PBlockHeader;
@@ -311,6 +312,18 @@ begin
   freeListHead := remainder;
 end;
 
+procedure InsertToFreeList(block: PBlockHeader);
+begin
+  block^.prev := nil;
+  block^.next := freeListHead;
+
+  if freeListHead <> nil then
+    freeListHead^.prev := block;
+
+  freeListHead := block
+end;
+
+
 function LargeAlloc(const bytes: longword): pointer;
 var
   current: PBlockHeader;
@@ -334,6 +347,23 @@ begin
   { nil = out of memory }
 end;
 
+procedure LargeFree(p: pointer);
+var
+  header: PBlockHeader;
+begin
+  if p = nil then exit;
+
+  header := PBlockHeader(pbyte(p) - sizeof(TBlockHeader));
+
+{$ifdef P92_DEBUG_HEAP}
+  assert(IsValidBlock(header), 'LargeFree: pointer outside heap');
+{$endif}
+
+  SetBlockState(header, header^.size, true);
+  InsertToFreeList(header)
+end;
+
+
 { Begin generic allocator functions }
 
 function WasmGetMem(const bytes: longword): pointer;
@@ -355,13 +385,12 @@ procedure WasmFreeMem(const ptr: pointer);
 begin
   if ptr = nil then exit;
 
-  if (longword(ptr) >= longword(bucketAllocStart))
-    and (longword(ptr) < longword(bucketAllocEnd)) then begin
+  if (PByte(ptr) >= bucketAllocStart) and (PByte(ptr) < bucketAllocEnd) then begin
     PoolFree(ptr);
     exit
   end;
 
-  { TODO: Implement the large allocator call }
+  LargeFree(ptr);
 end;
 
 
