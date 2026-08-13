@@ -109,8 +109,7 @@ var
   buckets: array[0..BucketCount-1] of TBucket;
 
 
-{ Free-list allocation }
-
+{ Slab allocation }
 
 procedure InitPool(const poolSize: longword);
 var
@@ -145,8 +144,6 @@ begin
   end;
 end;
 
-
-{ Small heap implementation }
 
 function FindBucket(const bytes: longword): smallint;
 var
@@ -241,6 +238,10 @@ begin
   footer^.isFree := isFree;
 end;
 
+function IsValidBlock(header: PBlockHeader): boolean;
+begin
+  IsValidBlock := (pbyte(header) >= heapStart) and (pbyte(header) < heapEnd)
+end;
 
 
 { Begin generic allocator functions }
