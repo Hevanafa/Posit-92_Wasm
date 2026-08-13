@@ -311,6 +311,29 @@ begin
   freeListHead := remainder;
 end;
 
+function LargeAlloc(const bytes: longword): pointer;
+var
+  current: PBlockHeader;
+begin
+  LargeAlloc := nil;
+  current := freeListHead;
+
+  while current <> nil do begin
+    if current^.size >= bytes then begin
+      SplitBlock(current, bytes);  { Shrink if possible }
+      RemoveFromFreeList(current);
+      SetBlockState(current, current^.size, false);
+
+      LargeAlloc := pointer(PByte(current) + SizeOf(TBlockHeader));
+      exit
+    end;
+
+    current := current^.next
+  end;
+
+  { nil = out of memory }
+end;
+
 { Begin generic allocator functions }
 
 function WasmGetMem(const bytes: longword): pointer;
@@ -324,7 +347,7 @@ begin
     exit
   end;
 
-  { TODO: Implement the large allocator call }
+  WasmGetMem := LargeAlloc(bytes);
 end;
 
 
