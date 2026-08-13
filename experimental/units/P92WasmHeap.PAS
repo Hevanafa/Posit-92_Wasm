@@ -209,6 +209,29 @@ begin
 end;
 
 
+{ Large allocator }
+
+function NextBlockInMemory(header: PBlockHeader): PBlockHeader;
+begin
+  NextBlockInMemory := PBlockHeader(
+    PByte(header) + sizeof(TBlockHeader) + header^.size + sizeof(TBlockFooter)
+  );
+end;
+
+function PrevBlockInMemory(header: PBlockHeader): PBlockHeader;
+var
+  prevFooter: PBlockFooter;
+begin
+  prevFooter := PBlockFooter(pbyte(header) - sizeof(TBlockFooter));
+
+  PrevBlockInMemory := PBlockHeader(
+    PByte(header) - sizeof(TBlockFooter) - prevFooter^.size - sizeof(TBlockHeader)
+  )
+end;
+
+
+
+
 { Begin generic allocator functions }
 
 function WasmGetMem(const bytes: longword): pointer;
