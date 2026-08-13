@@ -13,6 +13,20 @@
   0x1EE801..0x200000    Unused
 }
 
+{
+  Terms used in the buddy allocator
+
+  `order` is the exponent: 2 to the power of `order`
+  `currentOrder` has the same meaning as `order`
+  So, order 9 is 2**9 = 512
+
+  `orderIndex` starts from 0, relative to `BuddyMinOrder`
+  orderIndex 0 is 2**(9+0) = 512
+  orderIndex 1 is 2**(9+1) = 1024
+
+  `orderIndex` is an index to `freeLists[]`
+}
+
 unit P92WasmHeap;
 
 {$Mode ObjFPC}
