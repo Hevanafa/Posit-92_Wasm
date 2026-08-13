@@ -145,17 +145,31 @@ begin
 end;
 
 procedure OnReady;
+var
+  p: pointer;
 begin
   HideCursor;
 
   { Initialise game state here }
   gameTime := 0.0;
 
-  TestBasicAllocFree;
+  { TestBasicAllocFree; }
   { TestExhaustAndCoalesce; }
-  { TestSplitNoOverlap; }
-  { TestInterleavedFree; }
-  { TestCrossTierRealloc; }
+  { TestSplitNoOverlap;
+  TestInterleavedFree;
+  TestCrossTierRealloc; }
+
+
+  { Any allocations after this crashes the allocator for some reason }
+  GetMem(p, 3072);
+
+  writelog('Image alloc at ' + i32str(longword(p)));
+  writelog(' end: ' + i32str(longword(p) + 3072));
+
+  freemem(p);
+
+  { getmem(p, 512);
+  freemem(p); }
 end;
 
 procedure Update;
