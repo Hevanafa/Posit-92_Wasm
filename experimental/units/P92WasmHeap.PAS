@@ -369,12 +369,26 @@ begin
   if IsValidBlock(neighbour) and neighbour^.isFree then begin
     RemoveFromFreeList(neighbour);
 
-    newSize := header^.size + sizeof(TBlockHeader) + sizeof(TBlockFooter) + neighbour^.size;
+    newSize :=
+      header^.size + sizeof(TBlockHeader) + sizeof(TBlockFooter)
+      + neighbour^.size;
 
     SetBlockState(header, newSize, true);
   end;
 
-  { TODO: absorb the previous block }
+  { absorb the previous block }
+  neighbour := PrevBlockInMemory(header);
+
+  if IsValidBlock(neighbour) and neighbour^.isFree then begin
+    RemoveFromFreeList(neighbour);
+
+    newSize :=
+      neighbour^.size + sizeof(TBlockHeader) + sizeof(TBlockFooter)
+      + header^.size;
+
+    SetBlockState(neighbour, newSize, true);
+    header := neighbour
+  end;
 
   InsertToFreeList(header)
 end;
