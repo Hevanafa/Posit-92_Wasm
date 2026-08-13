@@ -312,6 +312,11 @@ procedure InsertFree(orderIndex: smallint; block: PByte);
 var
   fb: PFreeBlock;
 begin
+{$ifdef P92_DEBUG_HEAP}
+  writelog('InsertFree: order=' + i32str(orderIndex + BuddyMinOrder)
+    + ' block=' + I32Str(longword(block)));
+{$endif}
+
   fb := PFreeBlock(block);
   fb^.next := freeLists[orderIndex];
   fb^.prev := nil;
@@ -333,9 +338,6 @@ begin
     + ' block=' + i32str(longword(block))
     + ' prev=' + i32str(longword(fb^.prev))
     + ' next=' + I32Str(longword(fb^.next)));
-
-  { if (orderIndex < BuddyMinOrder) or (orderIndex > BuddyMaxOrder) then
-    PanicHalt('RemoveFree: Wrong order index ' + I32Str(orderIndex)); }
 
   { Check if buddy is within the region }
   if (ptruint(block) < PtrUInt(buddyBase))

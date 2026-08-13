@@ -978,7 +978,7 @@ class Posit92 {
 
   #PascalFlushLog(): void {
     const msg = this.ReadInteropBuffer();
-    console.log("WriteLog:", msg);
+    console.trace("WriteLog:", msg);
   }
 
 

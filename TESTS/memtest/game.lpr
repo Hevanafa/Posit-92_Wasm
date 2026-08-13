@@ -8,6 +8,7 @@ library Game;
 {$Mode ObjFPC}
 {$H+}  { Use AnsiStrings }
 {$J-}  { Switch off assignments to typed constants }
+{$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
 
 uses
   P92Core, P92Conversions, P92Fonts, P92WasmHost, P92AssetRegistry,
@@ -150,11 +151,11 @@ begin
   { Initialise game state here }
   gameTime := 0.0;
 
-  { TestBasicAllocFree; }
+  TestBasicAllocFree;
   { TestExhaustAndCoalesce; }
   { TestSplitNoOverlap; }
-  TestInterleavedFree;
-  TestCrossTierRealloc;
+  { TestInterleavedFree; }
+  { TestCrossTierRealloc; }
 end;
 
 procedure Update;

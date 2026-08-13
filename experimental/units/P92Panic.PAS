@@ -18,7 +18,7 @@ interface
 procedure JsPanicHalt(const textPtr: PChar; const textLen: word); external 'env' name 'JsPanicHalt';
 {$endif}
 
-procedure PanicHalt(const msg: AnsiString);
+procedure PanicHalt(const msg: ShortString);
 
 
 implementation
@@ -26,7 +26,7 @@ implementation
 {$ifdef P92_WASM}
 uses P92VGA;
 
-procedure PanicHalt(const msg: AnsiString);
+procedure PanicHalt(const msg: ShortString);
 begin
   JsPanicHalt(@msg[1], length(msg));
   halt(1)
