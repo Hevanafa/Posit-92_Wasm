@@ -601,7 +601,7 @@ begin
     exit
   end;
 
-  { TODO: Implement for the buddy allocator }
+  WasmMemSize := 1 shl LookupOrder(pbyte(ptr));
 end;
 
 function GetBucketAllocStart: longword;
