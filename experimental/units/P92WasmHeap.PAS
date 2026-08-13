@@ -229,6 +229,17 @@ begin
   )
 end;
 
+procedure SetBlockState(header: PBlockHeader; size: longword; isFree: boolean);
+var
+  footer: PBlockFooter;
+begin
+  header^.size := size;
+  header^.isFree := isFree;
+
+  footer := PBlockFooter(pbyte(header) + sizeof(TBlockHeader) + size);
+  footer^.size := size;
+  footer^.isFree := isFree;
+end;
 
 
 
