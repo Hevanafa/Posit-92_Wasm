@@ -325,6 +325,17 @@ begin
   fb := PFreeBlock(block);
 
 {$ifdef P92_DEBUG_HEAP}
+  if (fb^.next <> nil)
+    and ((PtrUInt(fb^.next) < PtrUInt(buddyBase))
+      or (PtrUInt(fb^.next) >= PtrUInt(buddyBase) + largeHeapSize)) then begin
+    writelog('RemoveFree: CORRUPTED next pointer at block='
+      + I32Str(longword(block))
+      + ' next=' + I32Str(longword(fb^.next)));
+    PanicHalt('RemoveFree: free list corruption detected');
+  end;
+{$endif}
+
+{$ifdef P92_DEBUG_HEAP}
   writelog('RemoveFree: order=' + I32Str(freeListIdx + BuddyMinOrder)
     + ' block=' + i32str(longword(block))
     + ' prev=' + i32str(longword(fb^.prev))
