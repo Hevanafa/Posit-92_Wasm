@@ -110,7 +110,7 @@ const
   many of small objects rather than few large ones
 
   The sum must match to TotalWeights }
-  BucketWeights: array[0..5] of longword = (25, 25, 20, 15, 10, 5);
+  BucketWeights: array[0..4] of longword = (30, 25, 20, 15, 10);
   TotalWeights = 100;
 
 var
