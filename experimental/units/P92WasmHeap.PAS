@@ -466,7 +466,19 @@ begin
     exit
   end;
 
-  { TODO: Implement the large allocator call }
+  { Large realloc }
+  oldSize := LargeMemSize(ptr);
+
+  if newBytes = oldSize then begin
+    WasmReAllocMem := ptr;
+    exit
+  end;
+
+  WasmReAllocMem := WasmGetMem(newBytes);
+  if WasmReAllocMem <> nil then begin
+    move(ptr^, WasmReAllocMem^, oldSize);
+    LargeFree(ptr)
+  end;
 end;
 
 
