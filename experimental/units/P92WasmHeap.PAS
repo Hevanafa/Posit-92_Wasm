@@ -16,7 +16,7 @@
 unit P92WasmHeap;
 
 {$Mode ObjFPC}
-{$H+}{$J-}
+{$H-}{$J-}
 {$WARN 4056 off : Conversion between ordinals and pointers is not portable}
 {$DEFINE P92_DEBUG_HEAP}
 
@@ -30,7 +30,8 @@ function WasmReAllocMem(const ptr: pointer; const newBytes: longword): pointer;
 function WasmAllocMem(const bytes: longword): pointer; public name 'WasmAllocMem';
 function WasmMemSize(const ptr: pointer): PtrUInt;
 
-procedure JsReportSize(requestedSize: longint); external 'env' name 'JsReportSize';
+procedure JsReportGetMem(bytes: longint); external 'env' name 'JsReportGetMem';
+procedure JsReportFreeMem(bytes: longint); external 'env' name 'JsReportFreeMem';
 
 { Debug functions }
 function GetBucketAllocStart: longword;
@@ -460,7 +461,7 @@ end;
 function WasmGetMem(const bytes: longword): pointer;
 begin
 {$ifdef P92_DEBUG_HEAP}
-  JsReportSize(bytes);
+  JsReportGetMem(bytes);
 {$endif}
 
   if bytes <= PoolSizeClassMax then begin
