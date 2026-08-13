@@ -119,7 +119,7 @@ var
 
 const
   BuddyMinOrder = 9;  { 512 bytes }
-  BuddyMaxOrder = 20;  { 1 MB }
+  BuddyMaxOrder = 19;  { 512 KB }
   BuddyOrderCount = BuddyMaxOrder - BuddyMinOrder + 1;
 
   BuddyMaxBlocks = 1 shl (BuddyMaxOrder - BuddyMinOrder); { 2048 }
