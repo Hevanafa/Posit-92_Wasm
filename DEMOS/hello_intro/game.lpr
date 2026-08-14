@@ -76,7 +76,9 @@ begin
   actualGameState := GameStatePlaying;
   gameTime := 0.0;
   
-  ReplaceColour(DefaultFontPtr^.texHandle, $FFFFFFFF, $FF000000);
+  ReplaceColour(
+    BorrowBMFontPtr(GetDefaultFontHandle)^.texHandle,
+    $FFFFFFFF, $FF000000);
 end;
 
 
