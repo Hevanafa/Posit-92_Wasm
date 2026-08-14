@@ -31,8 +31,6 @@ begin
 
   imgSpecimenP92[0] := RequestImage('assets/images/specimen_p-92_1.png');
   imgSpecimenP92[1] := RequestImage('assets/images/specimen_p-92_2.png');
-
-  imgTest := RequestImage('assets/fonts/nokia_cellphone_fc_8_0.png');
 end;
 
 procedure OnReady;
@@ -60,6 +58,11 @@ begin
     Spr(imgSpecimenP92[0], 148, 84);
 
   PrintDefaultCentred('Hello world!', VgaWidth div 2, 120);
+
+  PrintDefault('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10, 10);
+  PrintDefault('abcdefghijklmnopqrstuvwxyz', 10, 30);
+  PrintDefault('0123456789', 10, 50);
+  PrintDefault('(){}[],.:;', 10, 70);
 
   DrawMouse;
   DrawFPS;

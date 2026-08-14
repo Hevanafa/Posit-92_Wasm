@@ -33,7 +33,8 @@ end;
 procedure LoadDefaultFont;
 begin
 {$ifdef P92_WASM}
-  defaultFontHandle := RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt')
+  { defaultFontHandle := RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt') }
+  defaultFontHandle := RequestBMFont('assets/fonts/droid_sans_11.txt')
 {$endif}
 
 {$ifdef P92_SDL2}
