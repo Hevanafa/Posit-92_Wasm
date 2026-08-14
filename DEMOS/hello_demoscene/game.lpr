@@ -62,7 +62,7 @@ begin
   PrintDefault('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10, 10);
   PrintDefault('abcdefghijklmnopqrstuvwxyz', 10, 30);
   PrintDefault('0123456789', 10, 50);
-  PrintDefault('(){}[],.:;', 10, 70);
+  PrintDefault('!"#$%&''()*+,-./ :;<=>?@ [\]^_ ` {|}~', 10, 70);
 
   DrawMouse;
   DrawFPS;

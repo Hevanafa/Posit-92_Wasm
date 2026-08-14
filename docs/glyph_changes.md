@@ -25,6 +25,9 @@ Modifications
 - Lowercase "L"
 - Number 1 - added the "floor" or pedestal thing
   - added width by 1
+- Tilde "~"
+  - changed x by -1
+  - added width by 2
 
 Minor tweaks
 
@@ -34,6 +37,9 @@ Minor tweaks
 - The "&" symbol
 - Symbol: Closing bracket
 - Symbol: Both curly brackets
+- Symbol: "?"
+  - reduced width by 1
+  - reduced xadvance by 1
 
 Xadvance adjustments
 
@@ -43,3 +49,7 @@ Xadvance adjustments
   - Added xadvance by 1
 - Uppercase: V, W, X
   - Added xadvance by 1
+- Symbol: "#"
+  - added xadvance by 1
+- The "&" symbol
+  - reduced xadvance by 1
