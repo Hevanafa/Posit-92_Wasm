@@ -137,21 +137,21 @@ type Posit92Options = {
 
   /**
    * Default: 60
-   * 
+   *
    * 0 matches the screen's refresh rate
    */
   fps?: number;
 
   /**
    * Loads the default BMFont
-   * 
+   *
    * Default: true
    */
   defaultFont?: boolean;
 
   /**
    * Enables the F2 key for screenshot
-   * 
+   *
    * Default: true
    */
   enableScreenshotHotkey?: boolean;
@@ -159,7 +159,7 @@ type Posit92Options = {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Posit92 {
-  static version = "0.2";
+  static version = "0.3";
 
   readonly #wasmSource = "game.wasm";
 
@@ -167,7 +167,7 @@ class Posit92 {
 
   /**
    * 2 MB
-   * 
+   *
    * `BuddyMaxOrder` in `P92WasmHeap` must be changed too, depending on the largest slice (must be in the power of 2)
    */
   readonly #wasmMemSize = 2 * 1048576;
@@ -187,7 +187,7 @@ class Posit92 {
 
   #vgaWidth: number;
   #vgaHeight: number;
-  
+
   get VgaWidth(): number {
     return this.#vgaWidth;
   }
@@ -197,9 +197,9 @@ class Posit92 {
   }
 
   #canvas: HTMLCanvasElement;
-  
+
   canvasCtx: CanvasRenderingContext2D = null!;
-  
+
   /**
    * Assigned by WebGLMixin
    */
@@ -284,13 +284,13 @@ class Posit92 {
 
   /**
    * Public for mixins
-   * 
+   *
    * Game code should not modify this directly
    */
   get WasmImportObject(): WasmImports {
     return this.#importObject;
   }
-  
+
   #HandleHaltProc(exitcode: number): void {
     console.log("Programme halted with code:", exitcode);
     this.Cleanup();
@@ -362,7 +362,7 @@ class Posit92 {
     this.#bootOptions = options;
 
     this.#canvas = <HTMLCanvasElement>document.getElementById(canvasID);
-    
+
     this.#vgaWidth = options.vgaWidth!;
     this.#vgaHeight = options.vgaHeight!;
 
@@ -503,9 +503,9 @@ class Posit92 {
 
   /**
    * Called from the Pascal side
-   * 
+   *
    * The URL is obtained from the interop buffer
-   * 
+   *
    * @param texHandle Reserved by the asset registry in Pascal side
    */
   async RequestImage(texHandle: number): Promise<void> {
@@ -521,7 +521,7 @@ class Posit92 {
       const tempCanvas = document.createElement("canvas");
       tempCanvas.width = img.width;
       tempCanvas.height = img.height;
-      
+
       const tempCtx = tempCanvas.getContext("2d");
       if (tempCtx == null)
         throw new Error("Error getting 2D canvas context");
@@ -621,7 +621,7 @@ class Posit92 {
   #GetFullscreenState(): boolean {
     return document.fullscreenElement != null;
   }
-  
+
   #EndFullscreen(): void {
     if (this.#GetFullscreenState())
       document.exitFullscreen();
@@ -988,7 +988,7 @@ class Posit92 {
 
 
   // PANIC.PAS
-  
+
   #PanicHalt(textPtr: number, textLen: number): void {
     const buffer = new Uint8Array(this.#wasm.exports.memory.buffer, textPtr, textLen);
     const msg = new TextDecoder().decode(buffer);
@@ -1046,7 +1046,7 @@ class Posit92 {
 
     this.#surface = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
   }
-  
+
   #VgaPresent(): void {
     if (this.#surface != null)
       this.canvasCtx.putImageData(this.#surface, 0, 0);
@@ -1057,7 +1057,7 @@ class Posit92 {
     await this.InitRuntime();
 
     this.#wasm.exports.P92Boot();
-    
+
     this.#HideLoadingOverlay();
     this.#AddOutOfFocusFix();
     this.#AddResizeListener();
@@ -1113,7 +1113,7 @@ class Posit92 {
     if (this.#bootOptions.fps == 0) {
       this.#PerformLoop();
       requestAnimationFrame(this.#Loop);
-      
+
       return;
     }
 
