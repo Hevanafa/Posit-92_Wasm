@@ -17,7 +17,9 @@ unit P92WasmHeap;
 {$Mode ObjFPC}
 {$H-}{$J-}
 {$WARN 4056 off : Conversion between ordinals and pointers is not portable}
-{$DEFINE P92_DEBUG_HEAP}
+
+{ Enable this to debug GetMem }
+{DEFINE P92_DEBUG_HEAP}
 
 interface
 

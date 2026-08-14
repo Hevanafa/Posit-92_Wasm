@@ -4,19 +4,15 @@ unit Assets;
 
 interface
 
-uses P92BMFont;
+uses
+  P92AssetHandles, P92BMFont;
 
 var
-  { for use in loadBMFont }
-  blackFont: TBMFont;
-  blackFontGlyphs: array[32..126] of TBMFontGlyph;
+  blackFont, picotronFont: TBMFontHandle;
 
-  picotronFont: TBMFont;
-  picotronFontGlyphs: array[32..126] of TBMFontGlyph;
-
-  imgCursor, imgHandCursor: longint;
-  imgDosuEXE: array[0..1] of longint;
-  imgWinNormal, imgWinHovered, imgWinPressed: longint;
+  imgCursor, imgHandCursor: TTextureHandle;
+  imgDosuEXE: array[0..1] of TTextureHandle;
+  imgWinNormal, imgWinHovered, imgWinPressed: TTextureHandle;
 
 
 implementation

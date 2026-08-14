@@ -18,7 +18,7 @@ uses
   P92BMFont, P92Conversions, P92FPS, P92Graphics,
   P92Tex, P92TexDraw, P92TexEffects,
   P92ImmediateGUI, P92Loading, P92Logger,
-  P92Keyboard, P92Mouse,
+  P92Keyboard, P92Mouse, P92WasmHeap,
   P92Panic, P92Geometry, P92Timing, P92VGA,
   Assets;
 
@@ -60,8 +60,8 @@ begin
   imgWinHovered := RequestImage('assets/images/btn_hovered.png');
   imgWinPressed := RequestImage('assets/images/btn_pressed.png');
 
-  RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt', @blackFont, @blackFontGlyphs);
-  RequestBMFont('assets/fonts/picotron_8px.txt', @picotronFont, @picotronFontGlyphs);
+  blackFont := RequestBMFont('assets/fonts/p92_sans_11.txt');
+  picotronFont := RequestBMFont('assets/fonts/picotron_8px.txt');
 end;
 
 procedure OnReady;
@@ -73,7 +73,7 @@ begin
 
   gameTime := 0.0;
 
-  ReplaceColour(blackFont.texHandle, $FFFFFFFF, $FF000000);
+  ReplaceColour(BorrowBMFontPtr(blackFont)^.texHandle, $FFFFFFFF, $FF000000);
 
   clicks := 0;
   showFPS.checked := false;
@@ -109,7 +109,8 @@ var
 begin
   Cls($FF6495ED);
 
-  GuiSetFont(blackFont, blackFontGlyphs);
+  GuiSetFont(blackFont);
+
   if Button('Click me!', 180, 88, 50, 24) then
     inc(clicks);
 
@@ -123,7 +124,7 @@ begin
 
   sprStretch(imgDosuEXE[0], 100, 80, 24, 48);
 
-  GuiSetFont(DefaultFontPtr^, DefaultFontGlyphsPtr^);
+  GuiSetFont(GetDefaultFontHandle);
   Slider(120, 40, 100, sliderValue, 0, 100);
   TextLabel('Slider value: ' + i32str(sliderValue.value), 120, 30);
 
@@ -131,12 +132,12 @@ begin
   w := GuiMeasureText(s);
   TextLabel(s, (vgaWidth - w) div 2, 120);
 
-  GuiSetFont(picotronFont, picotronFontGlyphs);
+  GuiSetFont(picotronFont);
   s := 'Picotron font';
   w := GuiMeasureText(s);
   TextLabel(s, (vgaWidth - w) div 2, 140);
 
-  GuiSetFont(DefaultFontPtr^, DefaultFontGlyphsPtr^);
+  GuiSetFont(GetDefaultFontHandle);
   ProgressBar(10, 80, 80, 10, 0.75);
   ProgressBarLabelled(10, 100, 80, 10, 0.75);
   Checkbox('Show FPS', 10, 60, showFPS);
