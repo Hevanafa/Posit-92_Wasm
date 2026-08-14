@@ -47,7 +47,7 @@ Xadvance adjustments
   - Added xadvance by 2
 - Lowercase "L"
   - Added xadvance by 1
-- Uppercase: C, V, W, X
+- Uppercase: V, W, X
   - Added xadvance by 1
 - Symbol: "#"
   - added xadvance by 1
