@@ -143,11 +143,11 @@ type Posit92Options = {
   TargetFPS?: number;
 
   /**
-   * Loads the default BMFont
+   * Loads the default BMFont. Available in p92-bmfont.mixin.ts
    *
    * Default: true
    */
-  DefaultFont?: boolean;
+  LoadDefaultBMFont?: boolean;
 
   /**
    * Enables the F2 key for screenshot
@@ -309,7 +309,7 @@ class Posit92 {
     let vgaWidth = defaultVgaWidth;
     let renderer = "2d";
     let targetFPS = 60;
-    let defaultFont = true;
+    let loadDefaultBMFont = true;
     let enableScreenshotHotkey = true;
 
     if (typeof vgaWidthOrOptions == "object") {
@@ -326,8 +326,8 @@ class Posit92 {
         targetFPS = options.TargetFPS;
       }
 
-      if (options.DefaultFont != null)
-        defaultFont = options.DefaultFont;
+      if (options.LoadDefaultBMFont != null)
+        loadDefaultBMFont = options.LoadDefaultBMFont;
 
       if (options.EnableScreenshotHotkey != null)
         enableScreenshotHotkey = options.EnableScreenshotHotkey;
@@ -341,7 +341,7 @@ class Posit92 {
       VgaHeight: vgaHeight,
       Renderer: renderer,
       TargetFPS: targetFPS,
-      DefaultFont: defaultFont,
+      LoadDefaultBMFont: loadDefaultBMFont,
       EnableScreenshotHotkey: enableScreenshotHotkey
     };
   }
