@@ -123,38 +123,38 @@ type Posit92Options = {
   /**
    * default: 320
    */
-  vgaWidth?: number;
+  VgaWidth?: number;
 
   /**
    * default: 200
    */
-  vgaHeight?: number;
+  VgaHeight?: number;
 
   /**
    * default: "2d"
    */
-  renderer: "2d" | "webgl" | "experimental-webgl" | string;
+  Renderer: "2d" | "webgl" | "experimental-webgl" | string;
 
   /**
    * Default: 60
    *
    * 0 matches the screen's refresh rate
    */
-  fps?: number;
+  FPS?: number;
 
   /**
    * Loads the default BMFont
    *
    * Default: true
    */
-  defaultFont?: boolean;
+  DefaultFont?: boolean;
 
   /**
    * Enables the F2 key for screenshot
    *
    * Default: true
    */
-  enableScreenshotHotkey?: boolean;
+  EnableScreenshotHotkey?: boolean;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -315,34 +315,34 @@ class Posit92 {
     if (typeof vgaWidthOrOptions == "object") {
       const options = vgaWidthOrOptions;
 
-      vgaWidth = options.vgaWidth ?? defaultVgaWidth;
-      vgaHeight = options.vgaHeight ?? defaultVgaHeight;
+      vgaWidth = options.VgaWidth ?? defaultVgaWidth;
+      vgaHeight = options.VgaHeight ?? defaultVgaHeight;
 
-      if (options.renderer != null)
-        renderer = options.renderer;
+      if (options.Renderer != null)
+        renderer = options.Renderer;
 
-      if (options.fps != null) {
-        this.AssertNumber(options.fps);
-        fps = options.fps;
+      if (options.FPS != null) {
+        this.AssertNumber(options.FPS);
+        fps = options.FPS;
       }
 
-      if (options.defaultFont != null)
-        defaultFont = options.defaultFont;
+      if (options.DefaultFont != null)
+        defaultFont = options.DefaultFont;
 
-      if (options.enableScreenshotHotkey != null)
-        enableScreenshotHotkey = options.enableScreenshotHotkey;
+      if (options.EnableScreenshotHotkey != null)
+        enableScreenshotHotkey = options.EnableScreenshotHotkey;
     } else {
       vgaWidth = vgaWidthOrOptions ?? defaultVgaWidth;
       vgaHeight = vgaHeight ?? defaultVgaHeight;
     }
 
     return {
-      vgaWidth,
-      vgaHeight,
-      renderer,
-      fps,
-      defaultFont,
-      enableScreenshotHotkey
+      VgaWidth: vgaWidth,
+      VgaHeight: vgaHeight,
+      Renderer: renderer,
+      FPS: fps,
+      DefaultFont: defaultFont,
+      EnableScreenshotHotkey: enableScreenshotHotkey
     };
   }
 
@@ -363,15 +363,15 @@ class Posit92 {
 
     this.#canvas = <HTMLCanvasElement>document.getElementById(canvasID);
 
-    this.#vgaWidth = options.vgaWidth!;
-    this.#vgaHeight = options.vgaHeight!;
+    this.#vgaWidth = options.VgaWidth!;
+    this.#vgaHeight = options.VgaHeight!;
 
-    if (options.renderer == "2d")
-      this.canvasCtx = this.#canvas.getContext(options.renderer)!;
-    else if (options.renderer == "webgl")
-      this.glCtx = this.#canvas.getContext(options.renderer)!;
+    if (options.Renderer == "2d")
+      this.canvasCtx = this.#canvas.getContext(options.Renderer)!;
+    else if (options.Renderer == "webgl")
+      this.glCtx = this.#canvas.getContext(options.Renderer)!;
 
-    this.#TargetFPS = options.fps!;
+    this.#TargetFPS = options.FPS!;
     this.#FrameTime = 1000 / this.#TargetFPS;
 
     this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
@@ -1111,7 +1111,7 @@ class Posit92 {
       return;
     }
 
-    if (this.#bootOptions.fps == 0) {
+    if (this.#bootOptions.FPS == 0) {
       this.#PerformLoop();
       requestAnimationFrame(this.#Loop);
 
