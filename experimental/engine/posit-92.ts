@@ -140,7 +140,7 @@ type Posit92Options = {
    *
    * 0 matches the screen's refresh rate
    */
-  FPS?: number;
+  TargetFPS?: number;
 
   /**
    * Loads the default BMFont
@@ -308,7 +308,7 @@ class Posit92 {
 
     let vgaWidth = defaultVgaWidth;
     let renderer = "2d";
-    let fps = 60;
+    let targetFPS = 60;
     let defaultFont = true;
     let enableScreenshotHotkey = true;
 
@@ -321,9 +321,9 @@ class Posit92 {
       if (options.Renderer != null)
         renderer = options.Renderer;
 
-      if (options.FPS != null) {
-        this.AssertNumber(options.FPS);
-        fps = options.FPS;
+      if (options.TargetFPS != null) {
+        this.AssertNumber(options.TargetFPS);
+        targetFPS = options.TargetFPS;
       }
 
       if (options.DefaultFont != null)
@@ -340,7 +340,7 @@ class Posit92 {
       VgaWidth: vgaWidth,
       VgaHeight: vgaHeight,
       Renderer: renderer,
-      FPS: fps,
+      TargetFPS: targetFPS,
       DefaultFont: defaultFont,
       EnableScreenshotHotkey: enableScreenshotHotkey
     };
@@ -371,7 +371,7 @@ class Posit92 {
     else if (options.Renderer == "webgl")
       this.glCtx = this.#canvas.getContext(options.Renderer)!;
 
-    this.#TargetFPS = options.FPS!;
+    this.#TargetFPS = options.TargetFPS!;
     this.#FrameTime = 1000 / this.#TargetFPS;
 
     this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
@@ -1111,7 +1111,7 @@ class Posit92 {
       return;
     }
 
-    if (this.#bootOptions.FPS == 0) {
+    if (this.#bootOptions.TargetFPS == 0) {
       this.#PerformLoop();
       requestAnimationFrame(this.#Loop);
 
