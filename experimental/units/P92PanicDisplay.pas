@@ -33,7 +33,7 @@ begin
   b:=0;
   while b < VgaHeight do begin
     for a:=0 to VgaWidth - 1 do
-      unsafePset(a, b, $FF2A0000);
+      UnsafePSetARGB(a, b, $FF2A0000);
 
     inc(b, 3)
   end;

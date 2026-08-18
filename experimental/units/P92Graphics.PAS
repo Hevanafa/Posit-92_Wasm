@@ -211,7 +211,7 @@ begin
   if x1 > clipX2 then x1 := clipX2;
 
   for x:=x0 to x1 do
-    unsafePset(x, y, solid);
+    UnsafePSetARGB(x, y, solid);
 end;
 
 procedure LegacyVLine(x, y0, y1: smallint; const colour: longword);
@@ -254,7 +254,7 @@ begin
   if y0 > y1 then exit;
 
   for y:=y0 to y1 do
-    unsafePset(x, y, solid);
+    UnsafePSetARGB(x, y, solid);
 end;
 
 

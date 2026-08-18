@@ -87,7 +87,7 @@ begin
     if alpha < 255 then continue;
 
     colour := UnsafeSprPget(texture, px, py);
-    UnsafePset(x + px, y + py, colour)
+    UnsafePSetARGB(x + px, y + py, colour)
   end;
 end;
 
@@ -134,7 +134,7 @@ begin
     if alpha < 255 then continue;
 
     colour := UnsafeSprPget(texture, sx, sy);
-    UnsafePset(destX + a, destY + b, colour);
+    UnsafePSetARGB(destX + a, destY + b, colour);
   end;
 end;
 
@@ -168,7 +168,7 @@ begin
     if alpha < 255 then continue;
 
     colour := UnsafeSprPget(texture, sx, sy);
-    UnsafePset(dx + destX, dy + destY, colour);
+    UnsafePSetARGB(dx + destX, dy + destY, colour);
   end;
 end;
 
@@ -206,7 +206,7 @@ begin
     alpha := colour shr 24;
     if alpha < 255 then continue;
 
-    UnsafePset(dx + destX, dy + destY, colour)
+    UnsafePSetARGB(dx + destX, dy + destY, colour)
   end;
 end;
 
@@ -239,7 +239,7 @@ begin
     if alpha < 255 then continue;
 
     { colour := UnsafeSprPget(texture, sx, sy); }
-    UnsafePset(destX + a, destY + b, colour);
+    UnsafePSetARGB(destX + a, destY + b, colour);
   end;
 end;
 
@@ -286,7 +286,7 @@ begin
       or (dy > ClipY2) or (dy < ClipY1) then continue;
 
     colour := UnsafeSprPget(texture, sx, sy);
-    UnsafePset(dx, dy, colour);
+    UnsafePSetARGB(dx, dy, colour);
   end;
 end;
 
@@ -336,7 +336,7 @@ begin
     if alpha < 255 then continue;
 
     colour := UnsafeSprPget(texture, srcX, srcY);
-    UnsafePset(cx + dx, cy + dy, colour)
+    UnsafePSetARGB(cx + dx, cy + dy, colour)
   end;
 end;
 

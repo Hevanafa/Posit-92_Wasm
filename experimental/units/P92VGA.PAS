@@ -47,8 +47,7 @@ procedure ClsBlend(const colour: longword);
 function UnsafePGet(const x, y: smallint): longword;
 function PGet(const x, y: smallint): longword;
 
-{ colour: AARRGGBB }
-procedure UnsafePSet(const x, y: smallint; const colour: longword);
+procedure UnsafePSetARGB(const x, y: smallint; const ARGB: longword);
 procedure PSet(const x, y: smallint; const colour: longword);
 
 procedure UnsafePSetBlend(const x, y: smallint; const colour: longword);
@@ -152,14 +151,14 @@ begin
   PGet := UnsafePGet(x, y)
 end;
 
-procedure UnsafePSet(const x, y: smallint; const colour: longword); inline;
+procedure UnsafePSetARGB(const x, y: smallint; const ARGB: longword); inline;
 begin
   { ARGB to RGBA }
   PLongWord(@activeSurface^[(y * VgaWidth + x) * 4])^ :=
-    ((colour and $00FF0000) shr 16)
-    or ((colour and $0000FF00))
-    or ((colour and $000000FF) shl 16)
-    or ((colour and $FF000000))
+    ((ARGB and $00FF0000) shr 16)
+    or ((ARGB and $0000FF00))
+    or ((ARGB and $000000FF) shl 16)
+    or ((ARGB and $FF000000))
 end;
 
 procedure PSet(const x, y: smallint; const colour: longword);
@@ -167,7 +166,7 @@ begin
   if (x > _clipX2) or (x < _clipX1) or (y > _clipY2) or (y < _clipX1) then
     exit;
 
-  UnsafePSet(x, y, colour)
+  UnsafePSetARGB(x, y, colour)
 end;
 
 
@@ -239,7 +238,7 @@ begin
 
   { Handle opaque pixel }
   if srcA = 255 then begin
-    UnsafePSet(x, y, colour);
+    UnsafePSetARGB(x, y, colour);
     exit
   end;
 
