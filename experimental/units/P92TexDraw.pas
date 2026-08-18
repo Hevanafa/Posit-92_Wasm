@@ -35,7 +35,7 @@ procedure SprRegionStretch(
   const srcX, srcY, srcWidth, srcHeight: smallint;
   const destX, destY, destWidth, destHeight: smallint);
 
-procedure SprRegionSolid(
+procedure SprRegionTint(
   const texHandle: longint;
   const srcX, srcY, srcW, srcH: smallint;
   const destX, destY: smallint;
@@ -320,7 +320,7 @@ begin
   end;
 end;
 
-procedure SprRegionSolid(
+procedure SprRegionTint(
   const texHandle: longint;
   const srcX, srcY, srcW, srcH: smallint;
   const destX, destY: smallint;
@@ -348,7 +348,6 @@ begin
     alpha := texture^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
-    { colour := UnsafeSprPGet(texture, sx, sy); }
     UnsafePSetARGB(destX + a, destY + b, colour);
   end;
 end;

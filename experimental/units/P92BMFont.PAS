@@ -209,7 +209,7 @@ begin
   if (glyphIdx in [low(fontPtr^.glyphs)..high(fontPtr^.glyphs)]) then begin
     glyph := fontPtr^.glyphs[glyphIdx];
 
-    SprRegionSolid(
+    SprRegionTint(
       fontPtr^.texHandle,
       glyph.x, glyph.y,
       glyph.width, glyph.height,
