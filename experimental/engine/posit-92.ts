@@ -123,12 +123,12 @@ type Posit92Options = {
   /**
    * default: 320
    */
-  VgaWidth?: number;
+  BufferWidth?: number;
 
   /**
    * default: 200
    */
-  VgaHeight?: number;
+  BufferHeight?: number;
 
   /**
    * default: "2d"
@@ -305,18 +305,21 @@ class Posit92 {
     this.#done = true;
   }
 
-  #NormaliseOptions(vgaWidthOrOptions?: number | Posit92Options, vgaHeight?: number): Posit92Options {
-    let vgaWidth = defaultVgaWidth;
+  #NormaliseOptions(
+    bufferWidthOrOptions?: number | Posit92Options,
+    bufferHeight?: number
+  ): Posit92Options {
+    let bufferWidth = this.#DefaultVGAWidth;
     let renderer = "2d";
     let targetFPS = 60;
     let loadDefaultBMFont = true;
     let enableScreenshotHotkey = true;
 
-    if (typeof vgaWidthOrOptions == "object") {
-      const options = vgaWidthOrOptions;
+    if (typeof bufferWidthOrOptions == "object") {
+      const options = bufferWidthOrOptions;
 
-      vgaWidth = options.VgaWidth ?? this.#DefaultVGAWidth;
-      vgaHeight = options.VgaHeight ?? this.#DefaultVGAHeight;
+      bufferWidth = options.BufferWidth;
+      bufferHeight = options.BufferHeight ?? this.#DefaultVGAHeight;
 
       if (options.Renderer != null)
         renderer = options.Renderer;
@@ -332,13 +335,13 @@ class Posit92 {
       if (options.EnableScreenshotHotkey != null)
         enableScreenshotHotkey = options.EnableScreenshotHotkey;
     } else {
-      vgaWidth = vgaWidthOrOptions ?? this.#DefaultVGAWidth;
-      vgaHeight = vgaHeight ?? this.#DefaultVGAHeight;
+      bufferWidth = bufferWidthOrOptions ?? this.#DefaultVGAWidth;
+      bufferHeight = bufferHeight ?? this.#DefaultVGAHeight;
     }
 
     return {
-      VgaWidth: vgaWidth,
-      VgaHeight: vgaHeight,
+      BufferWidth: bufferWidth,
+      BufferHeight: bufferHeight,
       Renderer: renderer,
       TargetFPS: targetFPS,
       LoadDefaultBMFont: loadDefaultBMFont,
@@ -349,28 +352,28 @@ class Posit92 {
   #bootOptions: Posit92Options;
 
   constructor(canvasID: string);
-  constructor(canvasID: string, vgaWidth: number, vgaHeight: number);
+  constructor(canvasID: string, bufferWidth: number, bufferHeight: number);
   constructor(canvasID: string, options: Posit92Options);
 
-  constructor(canvasID: string, vgaWidthOrOptions?: number | Posit92Options, vgaHeight?: number) {
+  constructor(canvasID: string, vgaWidthOrOptions?: number | Posit92Options, bufferHeight?: number) {
     this.AssertString(canvasID);
 
     if (document.getElementById(canvasID) == null)
       throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
 
-    const options = this.#NormaliseOptions(vgaWidthOrOptions, vgaHeight);
+    const options = this.#NormaliseOptions(vgaWidthOrOptions, bufferHeight);
     this.#bootOptions = options;
 
     // this.#canvas = <HTMLCanvasElement>document.getElementById(canvasID);
     this.#canvas = document.createElement("canvas");
     this.#canvas.className = "scale-fit";
-    this.#canvas.setAttribute("width", "" + options.VgaWidth);
-    this.#canvas.setAttribute("height", "" + options.VgaHeight);
+    this.#canvas.setAttribute("width", "" + options.BufferWidth);
+    this.#canvas.setAttribute("height", "" + options.BufferHeight);
 
     document.body.prepend(this.#canvas);
 
-    this.#vgaWidth = options.VgaWidth!;
-    this.#vgaHeight = options.VgaHeight!;
+    this.#vgaWidth = options.BufferWidth!;
+    this.#vgaHeight = options.BufferHeight!;
 
     if (options.Renderer == "2d")
       this.canvasCtx = this.#canvas.getContext(options.Renderer)!;
