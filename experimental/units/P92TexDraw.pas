@@ -18,7 +18,6 @@ unit P92TexDraw;
 interface
 
 procedure Spr(const texHandle: longint; const x, y: smallint);
-procedure SprBase(const texHandle: longint; const x, y: smallint);
 
 procedure SprClear(const texHandle: longint; const colour: longword);
 
@@ -149,6 +148,39 @@ begin
   for py:=0 to texture^.height - 1 do
   for px:=0 to texture^.width - 1 do
     UnsafeSprPSet(texture, px, py, colour);
+end;
+
+procedure SprRegionBase(
+  const texHandle: longint;
+  const srcX, srcY, srcW, srcH: smallint;
+  const destX, destY: smallint);
+var
+  texture: PSoftwareTex;
+  a, b: smallint;
+  sx, sy: smallint;
+  srcPos: longword;
+  alpha: byte;
+  colour: longword;
+begin
+  if not IsTextureSet(texHandle) then exit;
+
+  texture := BorrowTexturePtr(texHandle);
+
+  for b:=0 to srcH - 1 do
+  for a:=0 to srcW - 1 do begin
+    if (destX + a > ClipX2) or (destX + a < ClipX1)
+      or (destY + b > ClipY2) or (destY + b < ClipY1) then continue;
+
+    sx := srcX + a;
+    sy := srcY + b;
+    srcPos := (sx + sy * texture^.width) * 4;
+
+    alpha := texture^.pixelData[srcPos + 3];
+    if alpha < 255 then continue;
+
+    colour := UnsafeSprPGet(texture, sx, sy);
+    UnsafePSetARGB(destX + a, destY + b, colour);
+  end;
 end;
 
 procedure SprRegion(
