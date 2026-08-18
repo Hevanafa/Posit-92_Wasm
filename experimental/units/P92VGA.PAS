@@ -12,7 +12,8 @@ unit P92VGA;
 {$R-}
 {$Q-}
 
-{$Notes OFF}
+{$Inline ON}
+{Notes OFF}
 
 interface
 
@@ -43,15 +44,16 @@ procedure Cls(const colour: longword);
 { colour format: $AARRGGBB }
 procedure ClsBlend(const colour: longword);
 
-function UnsafePget(const x, y: smallint): longword;
-function Pget(const x, y: smallint): longword;
+function UnsafePGet(const x, y: smallint): longword;
+function PGet(const x, y: smallint): longword;
 
-procedure LegacyUnsafePset(const x, y: smallint; const colour: longword);
-procedure UnsafePset(const x, y: smallint; const colour: longword);
-procedure Pset(const x, y: smallint; const colour: longword);
+{ colour: AARRGGBB }
+procedure LegacyUnsafePSet(const x, y: smallint; const colour: longword);
+procedure UnsafePSet(const x, y: smallint; const colour: longword);
+procedure PSet(const x, y: smallint; const colour: longword);
 
-procedure UnsafePsetBlend(const x, y: smallint; const colour: longword);
-procedure PsetBlend(const x, y: smallint; const colour: longword);
+procedure UnsafePSetBlend(const x, y: smallint; const colour: longword);
+procedure PSetBlend(const x, y: smallint; const colour: longword);
 
 function ClipX1: smallint;
 function ClipY1: smallint;
@@ -127,31 +129,31 @@ begin
   GetSurfacePtr := activeSurface
 end;
 
-function UnsafePget(const x, y: smallint): longword;
+function UnsafePGet(const x, y: smallint): longword;
 var
   offset: longword;
 begin
   offset := (x + y * _vgaWidth) * 4;
 
   { RGBA to ARGB }
-  UnsafePget := activeSurface^[offset + 3] shl 24
+  UnsafePGet := activeSurface^[offset + 3] shl 24
     or activeSurface^[offset] shl 16
     or activeSurface^[offset + 1] shl 8
     or activeSurface^[offset + 2]
 end;
 
 { Gets the colour of a pixel }
-function Pget(const x, y: smallint): longword;
+function PGet(const x, y: smallint): longword;
 begin
   if (x >= VgaWidth) or (x < 0) or (y >= VgaHeight) or (y < 0) then begin
-    Pget := 0;
+    PGet := 0;
     exit
   end;
 
-  Pget := UnsafePget(x, y)
+  PGet := UnsafePGet(x, y)
 end;
 
-procedure LegacyUnsafePset(const x, y: smallint; const colour: longword);
+procedure LegacyUnsafePSet(const x, y: smallint; const colour: longword);
 var
   offset: longword;
 begin
@@ -164,7 +166,7 @@ begin
   activeSurface^[offset + 3] := (colour shr 24) and $FF;
 end;
 
-procedure UnsafePset(const x, y: smallint; const colour: longword);
+procedure UnsafePSet(const x, y: smallint; const colour: longword);
 begin
   { ARGB to RGBA }
   PLongWord(@activeSurface^[(y * VgaWidth + x) * 4])^ :=
@@ -174,17 +176,16 @@ begin
     or ((colour and $FF000000))
 end;
 
-{ colour: AARRGGBB }
-procedure Pset(const x, y: smallint; const colour: longword);
+procedure PSet(const x, y: smallint; const colour: longword);
 begin
   if (x > _clipX2) or (x < _clipX1) or (y > _clipY2) or (y < _clipX1) then
     exit;
 
-  UnsafePset(x, y, colour)
+  UnsafePSet(x, y, colour)
 end;
 
 
-procedure LegacyUnsafePsetBlend(const x, y: smallint; const colour: longword);
+procedure LegacyUnsafePSetBlend(const x, y: smallint; const colour: longword);
 var
   srcA, srcR, srcG, srcB: byte;
   destA, destR, destG, destB: byte;
@@ -232,7 +233,7 @@ begin
   activeSurface^[offset + 3] := outA;
 end;
 
-procedure UnsafePsetBlend(const x, y: smallint; const colour: longword);
+procedure UnsafePSetBlend(const x, y: smallint; const colour: longword);
 var
   srcA, srcR, srcG, srcB: byte;
   destA, destR, destG, destB: byte;
@@ -252,7 +253,7 @@ begin
 
   { Handle opaque pixel }
   if srcA = 255 then begin
-    UnsafePset(x, y, colour);
+    UnsafePSet(x, y, colour);
     exit
   end;
 
@@ -272,11 +273,11 @@ begin
     or ((srcA + round(destA * invAlpha)) shl 24)
 end;
 
-procedure PsetBlend(const x, y: smallint; const colour: longword);
+procedure PSetBlend(const x, y: smallint; const colour: longword);
 begin
   if (x > _clipX2) or (x < _clipX1) or (y > _clipY2) or (y < _clipY1) then exit;
 
-  UnsafePsetBlend(x, y, colour)
+  UnsafePSetBlend(x, y, colour)
 end;
 
 procedure Cls(const colour: longword);
@@ -294,7 +295,7 @@ var
 begin
   for b:=0 to VgaHeight - 1 do
   for a:=0 to VgaWidth - 1 do
-    UnsafePsetBlend(a, b, colour);
+    UnsafePSetBlend(a, b, colour);
 end;
 
 function ClipX1: smallint;
