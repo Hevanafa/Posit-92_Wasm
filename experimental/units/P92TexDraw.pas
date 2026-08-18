@@ -195,7 +195,7 @@ var
 
   a, b: smallint;
   sx, sy: smallint;
-  srcPos: longword;
+  srcOffset: longword;
   alpha: byte;
   colour: longword;
 begin
@@ -224,9 +224,9 @@ begin
     rowBase := (srcY + b) * texWidth4 + srcX * 4;
 
     for a := startX to endX do begin
-      srcPos := rowBase + a * 4;
+      srcOffset := rowBase + a * 4;
 
-      alpha := texture^.pixelData[srcPos + 3];
+      alpha := texture^.pixelData[srcOffset + 3];
       if alpha < 255 then continue;
 
       sx := srcX + a;
