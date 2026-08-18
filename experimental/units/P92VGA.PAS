@@ -47,6 +47,8 @@ procedure ClsBlend(const colour: longword);
 function UnsafePGet(const x, y: smallint): longword;
 function PGet(const x, y: smallint): longword;
 
+function ARGBtoRGBA(const colour: longword): longword;
+
 procedure UnsafePSetARGB(const x, y: smallint; const ARGB: longword);
 procedure UnsafePSet(const x, y: smallint; const RGBA: longword);
 procedure PSet(const x, y: smallint; const colour: longword);
@@ -150,6 +152,15 @@ begin
   end;
 
   PGet := UnsafePGet(x, y)
+end;
+
+function ARGBtoRGBA(const colour: longword): longword; inline;
+begin
+  ARGBtoRGBA := (
+       ((colour and $00FF0000) shr 16)
+    or (colour and $0000FF00)
+    or ((colour and $000000FF) shl 16)
+    or (colour and $FF000000))
 end;
 
 procedure UnsafePSetARGB(const x, y: smallint; const ARGB: longword); inline;
