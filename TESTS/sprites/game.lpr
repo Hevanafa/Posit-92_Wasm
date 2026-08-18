@@ -39,9 +39,10 @@ var
   w: word;
 begin
   writelog('DrawOnce call');
-  startTick := GetTimer;
 
   Cls($FF6495ED);
+
+  startTick := GetTimer;
 
   { Original: 0.0710s,
     After using inline: 0.0630s
