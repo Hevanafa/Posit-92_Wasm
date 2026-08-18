@@ -51,7 +51,8 @@ begin
     Spr(imgSpecimenP92[0], random(VgaWidth) - 12, Random(VgaHeight) - 12); }
 
   { Original 5000 ops: 0.1350s
-    After row stride: 0.1300s }
+    After row stride opt: 0.1300s
+    After PGet inlining: 0.0920s }
   for a:=1 to OpCount do
     Spr(imgSpecimenP92[0], random(VgaWidth) - 12, Random(VgaHeight) - 12);
 

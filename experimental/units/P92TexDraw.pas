@@ -102,7 +102,7 @@ begin
 
       UnsafePSet(
         x + px, y + py,
-        UnsafeSprPGet(texture, px, py))
+        PLongWord(@texture^.pixelData[offset])^)
     end;
   end;
 end;
