@@ -194,10 +194,8 @@ var
   rowBase, texWidth4: longword;
 
   a, b: smallint;
-  sx, sy: smallint;
   srcOffset: longword;
   alpha: byte;
-  colour: longword;
 begin
   if not IsTextureSet(texHandle) then exit;
 
@@ -229,10 +227,9 @@ begin
       alpha := texture^.pixelData[srcOffset + 3];
       if alpha < 255 then continue;
 
-      sx := srcX + a;
-      sy := srcY + b;
-      colour := UnsafeSprPGet(texture, sx, sy);
-      UnsafePSetARGB(destX + a, destY + b, colour);
+      UnsafePSet(
+        destX + a, destY + b,
+        PLongWord(@texture^.pixelData[srcOffset])^)
     end;
   end;
 end;
