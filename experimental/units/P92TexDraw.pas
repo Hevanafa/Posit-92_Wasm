@@ -102,7 +102,7 @@ begin
 
       if alpha < 255 then continue;
 
-      PLongWord(@GetSurfacePtr^[destRowBase + (x + px) * 4])^ :=
+      PLongWord(@BorrowSurfacePtr^[destRowBase + (x + px) * 4])^ :=
         PLongWord(@texture^.pixelData[offset])^
     end;
   end;
@@ -201,8 +201,6 @@ var
 begin
   if not IsTextureSet(texHandle) then exit;
 
-  texture := BorrowTexturePtr(texHandle);
-
   { Handle clipping }
 
   startX := 0;
@@ -218,9 +216,10 @@ begin
 
   if (startX > endX) or (startY > endY) then exit;
 
+  texture := BorrowTexturePtr(texHandle);
   texWidth4 := texture^.width * 4;
 
-  surface := GetSurfacePtr;
+  surface := BorrowSurfacePtr;
   vgaWidth4 := VgaWidth * 4;
 
   for b := startY to endY do begin
@@ -235,10 +234,6 @@ begin
 
       PLongWord(@surface^[destRowBase + a * 4])^ :=
         PLongWord(@texture^.pixelData[srcOffset])^;
-
-      { UnsafePSet(
-        destX + a, destY + b,
-        PLongWord(@texture^.pixelData[srcOffset])^) }
     end;
   end;
 end;

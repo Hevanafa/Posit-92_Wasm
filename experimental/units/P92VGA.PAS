@@ -37,7 +37,7 @@ function VgaHeight: smallint;
 
 { Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
 procedure InitVideoMem(const width, height: smallint; const startAddr: PByteArray); public name 'InitVideoMem';
-function GetSurfacePtr: PByteArray; public name 'GetSurfacePtr';
+function BorrowSurfacePtr: PByteArray; public name 'GetSurfacePtr';
 
 { colour format: $AARRGGBB like in QB64 PE }
 procedure Cls(const colour: longword);
@@ -125,9 +125,9 @@ begin
   fillchar(activeSurface^, bufferSize, 0);
 end;
 
-function GetSurfacePtr: PByteArray;
+function BorrowSurfacePtr: PByteArray;
 begin
-  GetSurfacePtr := activeSurface
+  BorrowSurfacePtr := activeSurface
 end;
 
 function UnsafePGet(const x, y: smallint): longword; inline;
@@ -285,7 +285,7 @@ end;
 procedure Cls(const colour: longword);
 begin
   FillDWord(
-    GetSurfacePtr^,
+    BorrowSurfacePtr^,
     VgaWidth * VgaHeight,
     { convert ARGB to RGBA + flip the byte order }
     SwapEndian((colour and $FFFFFF shl 8) or (colour and $FF000000 shr 24)))
