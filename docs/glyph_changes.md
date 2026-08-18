@@ -2,9 +2,9 @@
 
 14-08-2026
 
-Based on Droid Sans
+This font is based on Droid Sans
 
-**BMFont generation**
+**BMFont generation parameters**
 
 Font name: Droid Sans
 Font weight: regular
@@ -16,9 +16,7 @@ Padding:
 
 Spacing: both axes 0
 
-**Letters**
-
-Modifications
+**Larger modifications**
 
 - Lowercase "i"
 - Lowercase "j"
@@ -29,19 +27,27 @@ Modifications
   - changed x by -1
   - added width by 2
 
-Minor tweaks
+**Minor tweaks**
+
+Letters:
 
 - Lowercase: f, g, s, t, x, z
-- Uppercase W
-- Number 2 and 8
-- The "&" symbol
-- Symbol: Closing bracket
-- Symbol: Both curly brackets
-- Symbol: "?"
+- Uppercase & lowercase W
+- Uppercase K
+
+Numbers: 2 and 8
+
+Symbols:
+- Ampersand "&" symbol
+- Closing bracket
+- Both curly brackets
+- Question mark "?" symbol
   - reduced width by 1
   - reduced xadvance by 1
 
 Xadvance adjustments
+
+**Edit 18-08-2026:** Adjust xadvance as necessary, at least it should appear having 1 pixel spacing
 
 - Lowercase "i"
   - Added xadvance by 2
