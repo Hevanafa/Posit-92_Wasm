@@ -80,22 +80,19 @@ begin
 
   texture := BorrowTexturePtr(texHandle);
 
-  startX := max(0, ClipX1 - x);
-  endX := min(texture^.width - 1, ClipX2 - x);
+  startX := trunc(max(0, ClipX1 - x));
+  endX := trunc(min(texture^.width - 1, ClipX2 - x));
 
-  startY := max(0, ClipY1 - y);
-  endY := min(texture^.height - 1, ClipY2 - y);
+  startY := trunc(max(0, ClipY1 - y));
+  endY := trunc(min(texture^.height - 1, ClipY2 - y));
 
   if (startX > endX) or (startY > endY) then exit;
 
-  for py:=0 to texture^.height - 1 do
-    for px:=0 to texture^.width - 1 do begin
-      if (x + px > ClipX2) or (x + px < ClipX1)
-        or (y + py > ClipY2) or (y + py < ClipY1) then continue;
-
+  for py := startY to endY do
+    for px := startX to endX do begin
       offset := (px + py * texture^.width) * 4;
-
       alpha := texture^.pixelData[offset + 3];
+
       if alpha < 255 then continue;
 
       UnsafePSet(

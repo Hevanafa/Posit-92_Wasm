@@ -43,7 +43,8 @@ begin
 
   { Original: 0.0710s,
     After using inline: 0.0630s
-    After using RGBA on the hot path: 0.0600s }
+    After using RGBA on the hot path: 0.0600s
+    After clipping: 0.0270s }
   for a:=1 to 1000 do
     Spr(imgSpecimenP92[0], random(VgaWidth) - 12, Random(VgaHeight) - 12);
 
