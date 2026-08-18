@@ -52,7 +52,8 @@ begin
 
   { Original 5000 ops: 0.1350s
     After row stride opt: 0.1300s
-    After PGet inlining: 0.0920s }
+    After PGet inlining: 0.0920s
+    After pointer dereferencing on both SprPGet and PSet: 0.0560s }
   for a:=1 to OpCount do
     Spr(imgSpecimenP92[0], random(VgaWidth) - 12, Random(VgaHeight) - 12);
 

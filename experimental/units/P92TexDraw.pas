@@ -70,6 +70,7 @@ var
   texture: PSoftwareTex;
   startX, endX, startY, endY: smallint;
   rowBase, stride: longword;
+  destRowBase, destStride: longword;
 
   px, py: smallint;
   { offset to the pixel data }
@@ -90,9 +91,11 @@ begin
   if (startX > endX) or (startY > endY) then exit;
 
   stride := texture^.width * 4;
+  destStride := VgaWidth * 4;
 
   for py := startY to endY do begin
     rowBase := py * stride;
+    destRowBase := (y + py) * destStride;
 
     for px := startX to endX do begin
       offset := rowBase + px * 4;
@@ -100,9 +103,8 @@ begin
 
       if alpha < 255 then continue;
 
-      UnsafePSet(
-        x + px, y + py,
-        PLongWord(@texture^.pixelData[offset])^)
+      PLongWord(@GetSurfacePtr^[destRowBase + (x + px) * 4])^ :=
+        PLongWord(@texture^.pixelData[offset])^
     end;
   end;
 end;
