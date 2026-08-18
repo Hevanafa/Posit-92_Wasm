@@ -8,7 +8,7 @@ interface
 
 uses P92AssetHandles;
 
-procedure LoadDefaultFont;
+procedure LoadDefaultBMFont;
 function GetDefaultFontHandle: TBMFontHandle;
 
 procedure PrintDefault(const text: string; const x, y: integer);
@@ -22,6 +22,12 @@ implementation
 
 uses P92AssetRegistry, P92BMFont, P92Core;
 
+{$IFDEF P92_WASM}
+const
+  { DefaultBMFontPath = 'assets/fonts/nokia_cellphone_fc_8.txt'; }
+  DefaultBMFontPath = 'assets/fonts/p92_sans_11.txt';
+{$ENDIF}
+
 var
   defaultFontHandle: TBMFontHandle;
 
@@ -30,11 +36,10 @@ begin
   GetDefaultFontHandle := defaultFontHandle
 end;
 
-procedure LoadDefaultFont;
+procedure LoadDefaultBMFont;
 begin
 {$ifdef P92_WASM}
-  { defaultFontHandle := RequestBMFont('assets/fonts/nokia_cellphone_fc_8.txt') }
-  defaultFontHandle := RequestBMFont('assets/fonts/p92_sans_11.txt')
+  defaultFontHandle := RequestBMFont(DefaultBMFontPath)
 {$endif}
 
 {$ifdef P92_SDL2}

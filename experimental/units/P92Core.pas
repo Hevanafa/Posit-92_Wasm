@@ -219,7 +219,7 @@ begin
 
 {$ifdef P92_WASM}
   if enableDefaultBMFont then
-    LoadDefaultFont
+    LoadDefaultBMFont
   else
     writelog('InitPreloadState: Skipped loading the default BMFont');
 
