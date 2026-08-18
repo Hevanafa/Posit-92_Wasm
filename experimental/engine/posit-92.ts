@@ -161,6 +161,9 @@ type Posit92Options = {
 class Posit92 {
   static version = "0.3";
 
+  readonly #DefaultVGAWidth = 320;
+  readonly #DefaultVGAHeight = 200;
+
   readonly #wasmSource = "game.wasm";
 
   // Engine configs
@@ -303,9 +306,6 @@ class Posit92 {
   }
 
   #NormaliseOptions(vgaWidthOrOptions?: number | Posit92Options, vgaHeight?: number): Posit92Options {
-    const defaultVgaWidth = 320;
-    const defaultVgaHeight = 200;
-
     let vgaWidth = defaultVgaWidth;
     let renderer = "2d";
     let targetFPS = 60;
@@ -315,8 +315,8 @@ class Posit92 {
     if (typeof vgaWidthOrOptions == "object") {
       const options = vgaWidthOrOptions;
 
-      vgaWidth = options.VgaWidth ?? defaultVgaWidth;
-      vgaHeight = options.VgaHeight ?? defaultVgaHeight;
+      vgaWidth = options.VgaWidth ?? this.#DefaultVGAWidth;
+      vgaHeight = options.VgaHeight ?? this.#DefaultVGAHeight;
 
       if (options.Renderer != null)
         renderer = options.Renderer;
@@ -332,8 +332,8 @@ class Posit92 {
       if (options.EnableScreenshotHotkey != null)
         enableScreenshotHotkey = options.EnableScreenshotHotkey;
     } else {
-      vgaWidth = vgaWidthOrOptions ?? defaultVgaWidth;
-      vgaHeight = vgaHeight ?? defaultVgaHeight;
+      vgaWidth = vgaWidthOrOptions ?? this.#DefaultVGAWidth;
+      vgaHeight = vgaHeight ?? this.#DefaultVGAHeight;
     }
 
     return {
@@ -361,7 +361,13 @@ class Posit92 {
     const options = this.#NormaliseOptions(vgaWidthOrOptions, vgaHeight);
     this.#bootOptions = options;
 
-    this.#canvas = <HTMLCanvasElement>document.getElementById(canvasID);
+    // this.#canvas = <HTMLCanvasElement>document.getElementById(canvasID);
+    this.#canvas = document.createElement("canvas");
+    this.#canvas.className = "scale-fit";
+    this.#canvas.setAttribute("width", "" + options.VgaWidth);
+    this.#canvas.setAttribute("height", "" + options.VgaHeight);
+
+    document.body.prepend(this.#canvas);
 
     this.#vgaWidth = options.VgaWidth!;
     this.#vgaHeight = options.VgaHeight!;
