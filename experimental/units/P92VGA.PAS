@@ -48,6 +48,7 @@ function UnsafePGet(const x, y: smallint): longword;
 function PGet(const x, y: smallint): longword;
 
 procedure UnsafePSetARGB(const x, y: smallint; const ARGB: longword);
+procedure UnsafePSet(const x, y: smallint; const RGBA: longword);
 procedure PSet(const x, y: smallint; const colour: longword);
 
 procedure UnsafePSetBlend(const x, y: smallint; const colour: longword);
@@ -159,6 +160,11 @@ begin
     or ((ARGB and $0000FF00))
     or ((ARGB and $000000FF) shl 16)
     or ((ARGB and $FF000000))
+end;
+
+procedure UnsafePSet(const x, y: smallint; const RGBA: longword);
+begin
+  PLongWord(@activeSurface^[(y * VgaWidth + x) * 4])^ := RGBA
 end;
 
 procedure PSet(const x, y: smallint; const colour: longword);
