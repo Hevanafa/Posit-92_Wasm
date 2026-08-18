@@ -189,6 +189,9 @@ procedure SprRegion(
   const destX, destY: smallint);
 var
   texture: PSoftwareTex;
+
+  startX, endX, startY, endY: smallint;
+
   a, b: smallint;
   sx, sy: smallint;
   srcPos: longword;
@@ -199,21 +202,33 @@ begin
 
   texture := BorrowTexturePtr(texHandle);
 
-  for b:=0 to srcH - 1 do
-  for a:=0 to srcW - 1 do begin
-    if (destX + a > ClipX2) or (destX + a < ClipX1)
-      or (destY + b > ClipY2) or (destY + b < ClipY1) then continue;
+  { Handle clipping }
 
-    sx := srcX + a;
-    sy := srcY + b;
-    srcPos := (sx + sy * texture^.width) * 4;
+  startX := 0;
+  endX := srcW - 1;
+  startY := 0;
+  endY := srcH - 1;
 
-    alpha := texture^.pixelData[srcPos + 3];
-    if alpha < 255 then continue;
+  if destX + startX < ClipX1 then startX := ClipX1 - destX;
+  if destX + endX > ClipX2 then endX := ClipX2 - destX;
 
-    colour := UnsafeSprPGet(texture, sx, sy);
-    UnsafePSetARGB(destX + a, destY + b, colour);
-  end;
+  if destY + startY < ClipY1 then startY := ClipY1 - destY;
+  if destY + endY > ClipY2 then endY := ClipY2 - destY;
+
+  if (startX > endX) or (startY > endY) then exit;
+
+  for b := startY to endY do
+    for a := startX to endX do begin
+      sx := srcX + a;
+      sy := srcY + b;
+      srcPos := (sx + sy * texture^.width) * 4;
+
+      alpha := texture^.pixelData[srcPos + 3];
+      if alpha < 255 then continue;
+
+      colour := UnsafeSprPGet(texture, sx, sy);
+      UnsafePSetARGB(destX + a, destY + b, colour);
+    end;
 end;
 
 { Stretch a sprite with nearest neighbour scaling }

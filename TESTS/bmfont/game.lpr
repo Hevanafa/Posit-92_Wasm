@@ -31,7 +31,7 @@ end;
 
 procedure DrawOnce;
 const
-  OpCount = 1000;
+  OpCount = 5000;
 var
   a: word;
   startTick, endTick: double;
@@ -42,7 +42,11 @@ begin
 
   startTick := GetTimer;
 
-  { Original 1000 ops: 0.0320s }
+  {
+    Original 1000 ops: 0.0320s
+    Original 5000 ops: 0.1680s
+    After eliminating per pixel clipping: 0.0590s
+  }
   for a:=1 to OpCount do
     PrintDefault('Hello world!', random(VgaWidth) - 30, random(VgaHeight + 10) - 20);
 
