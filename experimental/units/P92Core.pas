@@ -105,18 +105,24 @@ type
   );
 
 const
-  DebugEngineRunStates = true;
+  DebugEngineRunStates = false;
 
 var
   engineRunState: TEngineRunStates;
+
+  { assigned in P92Boot }
   enableDefaultBMFont: boolean;
 
   { Default boot font }
   cgaFontHandle: longint;
 
+
+var
   { Screenshot feature }
-  lastF2: boolean;
+
+  { assigned in P92Boot }
   enableScreenshotHotkey: boolean;
+  lastF2: boolean;
 
 function GetCgaFontHandle: longint;
 begin
@@ -180,8 +186,8 @@ begin
 {$ifdef P92_WASM}
   { Read boot options }
 
-  enableDefaultBMFont := GetBootOptionBoolean('defaultFont');
-  enableScreenshotHotkey := GetBootOptionBoolean('enableScreenshotHotkey');
+  enableDefaultBMFont := GetBootOptionBoolean('LoadDefaultBMFont');
+  enableScreenshotHotkey := GetBootOptionBoolean('EnableScreenshotHotkey');
 {$endif}
 
 { Request boot font }
@@ -212,7 +218,11 @@ begin
 {$endif}
 
 {$ifdef P92_WASM}
-  LoadDefaultFont;
+  if enableDefaultBMFont then
+    LoadDefaultFont
+  else
+    writelog('InitPreloadState: Skipped loading the default BMFont');
+
   HostCallOnPreload
 {$endif}
 end;
