@@ -129,7 +129,7 @@ begin
   GetSurfacePtr := activeSurface
 end;
 
-function UnsafePGet(const x, y: smallint): longword;
+function UnsafePGet(const x, y: smallint): longword; inline;
 var
   offset: longword;
 begin
@@ -166,7 +166,7 @@ begin
   activeSurface^[offset + 3] := (colour shr 24) and $FF;
 end;
 
-procedure UnsafePSet(const x, y: smallint; const colour: longword);
+procedure UnsafePSet(const x, y: smallint; const colour: longword); inline;
 begin
   { ARGB to RGBA }
   PLongWord(@activeSurface^[(y * VgaWidth + x) * 4])^ :=
@@ -233,7 +233,7 @@ begin
   activeSurface^[offset + 3] := outA;
 end;
 
-procedure UnsafePSetBlend(const x, y: smallint; const colour: longword);
+procedure UnsafePSetBlend(const x, y: smallint; const colour: longword); inline;
 var
   srcA, srcR, srcG, srcB: byte;
   destA, destR, destG, destB: byte;
