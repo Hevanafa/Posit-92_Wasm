@@ -49,6 +49,7 @@ begin
     After eliminating per pixel clipping: 0.0590s
     After using rowBase: 0.0530s
     After inlining SprPGet: 0.0430s
+    After using pointer arithmetics: 0.330s, 0.280s
   }
   for a:=1 to OpCount do
     PrintDefault('Hello world!', random(VgaWidth) - 30, random(VgaHeight + 10) - 20);

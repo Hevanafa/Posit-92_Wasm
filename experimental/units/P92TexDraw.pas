@@ -189,9 +189,11 @@ procedure SprRegion(
   const destX, destY: smallint);
 var
   texture: PSoftwareTex;
+  surface: PByteArray;
 
   startX, endX, startY, endY: smallint;
-  rowBase, texWidth4: longword;
+  srcRowBase, texWidth4: longword;
+  destRowBase, vgaWidth4: longword;
 
   a, b: smallint;
   srcOffset: longword;
@@ -218,18 +220,25 @@ begin
 
   texWidth4 := texture^.width * 4;
 
+  surface := GetSurfacePtr;
+  vgaWidth4 := VgaWidth * 4;
+
   for b := startY to endY do begin
-    rowBase := (srcY + b) * texWidth4 + srcX * 4;
+    srcRowBase := (srcY + b) * texWidth4 + srcX * 4;
+    destRowBase := (destY + b) * vgaWidth4 + destX * 4;
 
     for a := startX to endX do begin
-      srcOffset := rowBase + a * 4;
+      srcOffset := srcRowBase + a * 4;
 
       alpha := texture^.pixelData[srcOffset + 3];
       if alpha < 255 then continue;
 
-      UnsafePSet(
+      PLongWord(@surface^[destRowBase + a * 4])^ :=
+        PLongWord(@texture^.pixelData[srcOffset])^;
+
+      { UnsafePSet(
         destX + a, destY + b,
-        PLongWord(@texture^.pixelData[srcOffset])^)
+        PLongWord(@texture^.pixelData[srcOffset])^) }
     end;
   end;
 end;
