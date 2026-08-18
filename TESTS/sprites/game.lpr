@@ -29,19 +29,12 @@ begin
 
 end;
 
-procedure DrawOnce;
-const
-  OpCount = 5000;
+
+function TestSpr(const opCount: word): double;
 var
   startTick, endTick: double;
   a: word;
-  s: string;
-  w: word;
 begin
-  writelog('DrawOnce call');
-
-  Cls($FF6495ED);
-
   startTick := GetTimer;
 
   { Original: 0.0710s,
@@ -60,7 +53,22 @@ begin
 
   endTick := GetTimer;
 
-  s := i32str(OpCount) + ' operations done in ' + f32str(endTick - startTick) + 's';
+  TestSpr := endTick - startTick
+end;
+
+procedure DrawOnce;
+const
+  OpCount = 5000;
+var
+  t: double;
+  s: string;
+  w: word;
+begin
+  Cls($FF6495ED);
+
+  t := TestSpr(OpCount);
+
+  s := i32str(OpCount) + ' operations done in ' + f32str(t) + 's';
   w := MeasureDefault(s);
   RectFill(10, VgaHeight - 20, 10 + w, VgaHeight - 20 + BorrowBMFontPtr(GetDefaultFontHandle)^.lineHeight, $FF000000);
   PrintDefault(s, 10, VgaHeight - 20);
