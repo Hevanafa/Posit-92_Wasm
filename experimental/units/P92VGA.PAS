@@ -48,7 +48,6 @@ function UnsafePGet(const x, y: smallint): longword;
 function PGet(const x, y: smallint): longword;
 
 { colour: AARRGGBB }
-procedure LegacyUnsafePSet(const x, y: smallint; const colour: longword);
 procedure UnsafePSet(const x, y: smallint; const colour: longword);
 procedure PSet(const x, y: smallint; const colour: longword);
 
@@ -151,19 +150,6 @@ begin
   end;
 
   PGet := UnsafePGet(x, y)
-end;
-
-procedure LegacyUnsafePSet(const x, y: smallint; const colour: longword);
-var
-  offset: longword;
-begin
-  offset := (y * VgaWidth + x) * 4;
-
-  { ARGB to RGBA }
-  activeSurface^[offset] := (colour shr 16) and $FF;
-  activeSurface^[offset + 1] := (colour shr 8) and $FF;
-  activeSurface^[offset + 2] := colour and $FF;
-  activeSurface^[offset + 3] := (colour shr 24) and $FF;
 end;
 
 procedure UnsafePSet(const x, y: smallint; const colour: longword); inline;
