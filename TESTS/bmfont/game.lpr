@@ -42,7 +42,9 @@ begin
 
   startTick := GetTimer;
 
-  Spr(imgSpecimenP92[0], 148, 84);
+  { Original 1000 ops: 0.0320s }
+  for a:=1 to OpCount do
+    PrintDefault('Hello world!', random(VgaWidth) - 30, random(VgaHeight + 10) - 20);
 
   endTick := GetTimer;
 
