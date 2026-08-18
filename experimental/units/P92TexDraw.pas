@@ -108,6 +108,11 @@ begin
   end;
 end;
 
+{
+  Base version of Spr
+
+  Made readable rather than optimised
+}
 procedure SprBase(const texHandle: longint; const x, y: smallint);
 var
   texture: PSoftwareTex;
@@ -115,6 +120,7 @@ var
   { offset to the pixel data }
   offset: longword;
   alpha: byte;
+  colour: longword;
 begin
   if not IsTextureSet(texHandle) then exit;
 
@@ -130,9 +136,8 @@ begin
       alpha := texture^.pixelData[offset + 3];
       if alpha < 255 then continue;
 
-      UnsafePSet(
-        x + px, y + py,
-        UnsafeSprPGet(texture, px, py))
+      colour := UnsafeSprPGet(texture, px, py);
+      UnsafePSet(x + px, y + py, colour)
     end;
 end;
 
@@ -150,6 +155,11 @@ begin
     UnsafeSprPSet(texture, px, py, colour);
 end;
 
+{
+  Base version of SprRegion
+
+  Made readable rather than optimised
+}
 procedure SprRegionBase(
   const texHandle: longint;
   const srcX, srcY, srcW, srcH: smallint;
@@ -179,7 +189,7 @@ begin
     if alpha < 255 then continue;
 
     colour := UnsafeSprPGet(texture, sx, sy);
-    UnsafePSetARGB(destX + a, destY + b, colour);
+    UnsafePSet(destX + a, destY + b, colour);
   end;
 end;
 
