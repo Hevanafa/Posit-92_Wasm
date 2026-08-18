@@ -191,6 +191,7 @@ var
   texture: PSoftwareTex;
 
   startX, endX, startY, endY: smallint;
+  rowBase, texWidth4: longword;
 
   a, b: smallint;
   sx, sy: smallint;
@@ -217,18 +218,23 @@ begin
 
   if (startX > endX) or (startY > endY) then exit;
 
-  for b := startY to endY do
+  texWidth4 := texture^.width * 4;
+
+  for b := startY to endY do begin
+    rowBase := (srcY + b) * texWidth4 + srcX * 4;
+
     for a := startX to endX do begin
-      sx := srcX + a;
-      sy := srcY + b;
-      srcPos := (sx + sy * texture^.width) * 4;
+      srcPos := rowBase + a * 4;
 
       alpha := texture^.pixelData[srcPos + 3];
       if alpha < 255 then continue;
 
+      sx := srcX + a;
+      sy := srcY + b;
       colour := UnsafeSprPGet(texture, sx, sy);
       UnsafePSetARGB(destX + a, destY + b, colour);
     end;
+  end;
 end;
 
 { Stretch a sprite with nearest neighbour scaling }

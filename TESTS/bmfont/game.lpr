@@ -44,8 +44,10 @@ begin
 
   {
     Original 1000 ops: 0.0320s
+
     Original 5000 ops: 0.1680s
     After eliminating per pixel clipping: 0.0590s
+    After using rowBase: 0.0530s
   }
   for a:=1 to OpCount do
     PrintDefault('Hello world!', random(VgaWidth) - 30, random(VgaHeight + 10) - 20);
