@@ -5,6 +5,8 @@
 var debugEngineCalls = true;
 var debugRequests = true;
 
+// Legacy manifest typedefs
+
 type ImageManifest = Record<string, string | string[]>;
 type SoundManifest = Map<number, string>;
 type BMFontManifest = Map<string, { path: string, setter: string, glyphSetter: string }>;
@@ -58,6 +60,7 @@ type WasmExports = {
   OnReady: () => void;
   Update: () => void;
   Draw: () => void;
+  DrawOnce: () => void;
 };
 
 type WasmImports = {
@@ -1072,7 +1075,12 @@ class Posit92 {
     this.#HideLoadingOverlay();
     this.#AddOutOfFocusFix();
     this.#AddResizeListener();
-    this.#StartLoop();
+
+    if (this.#wasm.exports.DrawOnce != null) {
+      this.#wasm.exports.DrawOnce();
+      this.#wasm.exports.P92AfterDraw();
+    } else
+      this.#StartLoop();
   }
 
   #OnPreload(): void {
