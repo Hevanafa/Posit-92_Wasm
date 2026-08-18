@@ -42,7 +42,8 @@ begin
   Cls($FF6495ED);
 
   { Original: 0.0710s,
-    After using inline: 0.0630s }
+    After using inline: 0.0630s
+    After using RGBA on the hot path: 0.0600s }
   for a:=1 to 1000 do
     Spr(imgSpecimenP92[0], random(VgaWidth) - 12, Random(VgaHeight) - 12);
 

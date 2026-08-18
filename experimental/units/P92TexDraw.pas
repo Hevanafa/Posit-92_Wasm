@@ -17,7 +17,7 @@ unit P92TexDraw;
 
 interface
 
-procedure Spr(const texHandle: longint; const x, y: smallint);
+procedure SprBase(const texHandle: longint; const x, y: smallint);
 
 procedure SprClear(const texHandle: longint; const colour: longword);
 
@@ -63,10 +63,11 @@ uses
   P92Tex, P92Maths,
   P92Panic, P92VGA;
 
-procedure Spr(const texHandle: longint; const x, y: smallint);
+procedure SprBase(const texHandle: longint; const x, y: smallint);
 var
   texture: PSoftwareTex;
   px, py: smallint;
+  { offset to the pixel data }
   offset: longword;
   alpha: byte;
 begin
@@ -75,20 +76,19 @@ begin
   texture := BorrowTexturePtr(texHandle);
 
   for py:=0 to texture^.height - 1 do
-  for px:=0 to texture^.width - 1 do begin
-    if (x + px > ClipX2) or (x + px < ClipX1)
-      or (y + py > ClipY2) or (y + py < ClipY1) then continue;
+    for px:=0 to texture^.width - 1 do begin
+      if (x + px > ClipX2) or (x + px < ClipX1)
+        or (y + py > ClipY2) or (y + py < ClipY1) then continue;
 
-    { offset to the pixel data }
-    offset := (px + py * texture^.width) * 4;
+      offset := (px + py * texture^.width) * 4;
 
-    alpha := texture^.pixelData[offset + 3];
-    if alpha < 255 then continue;
+      alpha := texture^.pixelData[offset + 3];
+      if alpha < 255 then continue;
 
-    UnsafePSet(
-      x + px, y + py,
-      UnsafeSprPGet(texture, px, py))
-  end;
+      UnsafePSet(
+        x + px, y + py,
+        UnsafeSprPGet(texture, px, py))
+    end;
 end;
 
 procedure SprClear(const texHandle: longint; const colour: longword);
@@ -254,7 +254,7 @@ var
   colour: longword;
 begin
   if flip = SprFlipNone then begin
-    Spr(texHandle, x, y);
+    SprBase(texHandle, x, y);
     exit
   end;
 
