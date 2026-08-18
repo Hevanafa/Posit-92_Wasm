@@ -68,8 +68,8 @@ uses
 procedure Spr(const texHandle: longint; const x, y: smallint);
 var
   texture: PSoftwareTex;
-
   startX, endX, startY, endY: smallint;
+  rowBase, stride: longword;
 
   px, py: smallint;
   { offset to the pixel data }
@@ -80,6 +80,7 @@ begin
 
   texture := BorrowTexturePtr(texHandle);
 
+  { Handle clipping }
   startX := trunc(max(0, ClipX1 - x));
   endX := trunc(min(texture^.width - 1, ClipX2 - x));
 
@@ -88,9 +89,13 @@ begin
 
   if (startX > endX) or (startY > endY) then exit;
 
-  for py := startY to endY do
+  stride := texture^.width * 4;
+
+  for py := startY to endY do begin
+    rowBase := py * stride;
+
     for px := startX to endX do begin
-      offset := (px + py * texture^.width) * 4;
+      offset := rowBase + px * 4;
       alpha := texture^.pixelData[offset + 3];
 
       if alpha < 255 then continue;
@@ -99,6 +104,7 @@ begin
         x + px, y + py,
         UnsafeSprPGet(texture, px, py))
     end;
+  end;
 end;
 
 procedure SprBase(const texHandle: longint; const x, y: smallint);

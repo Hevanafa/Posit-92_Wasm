@@ -30,6 +30,8 @@ begin
 end;
 
 procedure DrawOnce;
+const
+  OpCount = 5000;
 var
   startTick, endTick: double;
   a: word;
@@ -45,12 +47,17 @@ begin
     After using inline: 0.0630s
     After using RGBA on the hot path: 0.0600s
     After clipping: 0.0270s }
-  for a:=1 to 1000 do
+  { for a:=1 to 1000 do
+    Spr(imgSpecimenP92[0], random(VgaWidth) - 12, Random(VgaHeight) - 12); }
+
+  { Original 5000 ops: 0.1350s
+    After row stride: 0.1300s }
+  for a:=1 to OpCount do
     Spr(imgSpecimenP92[0], random(VgaWidth) - 12, Random(VgaHeight) - 12);
 
   endTick := GetTimer;
 
-  s := '1000 operations done in ' + f32str(endTick - startTick) + 's';
+  s := i32str(OpCount) + ' operations done in ' + f32str(endTick - startTick) + 's';
   w := MeasureDefault(s);
   RectFill(10, VgaHeight - 20, 10 + w, VgaHeight - 20 + BorrowBMFontPtr(GetDefaultFontHandle)^.lineHeight, $FF000000);
   PrintDefault(s, 10, VgaHeight - 20);
