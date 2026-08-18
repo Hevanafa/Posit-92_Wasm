@@ -1,5 +1,5 @@
 {
-  Default boilerplate
+  BMFont test project
   Mixins: bmfont, sound
 }
 
@@ -15,6 +15,10 @@ uses
   P92Keyboard, P92Mouse, P92Sounds,
   P92TexDraw, P92Timing, P92FPS, P92VGA,
   Assets;
+
+var
+  { Game state variables }
+  gameTime: double;
 
 procedure OnPreload;
 begin
@@ -62,9 +66,37 @@ begin
   PrintDefault(s, 10, VgaHeight - 20);
 end;
 
+procedure Update;
+begin
+  if IsKeyDown(SC_ESCAPE) then SignalDone;
+
+  gameTime := gameTime + DeltaTime
+end;
+
+procedure Draw;
+begin
+  Cls($FF6495ED);
+
+  if (trunc(gameTime * 4) and 1) > 0 then
+    Spr(imgSpecimenP92[1], 148, 84)
+  else
+    Spr(imgSpecimenP92[0], 148, 84);
+
+  PrintDefaultCentred('Hello world!', VgaWidth div 2, 120);
+
+  PrintDefault('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10, 10);
+  PrintDefault('abcdefghijklmnopqrstuvwxyz', 10, 30);
+  PrintDefault('0123456789', 10, 50);
+  PrintDefault('!"#$%&''()*+,-./ :;<=>?@ [\]^_ ` {|}~', 10, 70);
+
+  { DrawMouse; }
+  DrawFPS;
+end;
+
 exports
   OnPreload,
   OnReady,
+  { Update, Draw; }
   DrawOnce;
 
 begin
