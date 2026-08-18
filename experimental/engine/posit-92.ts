@@ -60,6 +60,12 @@ type WasmExports = {
   OnReady: () => void;
   Update: () => void;
   Draw: () => void;
+
+  /**
+   * Has a priority over both Update & Draw
+   *
+   * Exits the app after presenting the buffer
+   */
   DrawOnce: () => void;
 };
 
