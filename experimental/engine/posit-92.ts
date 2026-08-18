@@ -358,14 +358,15 @@ class Posit92 {
   constructor(canvasID: string, vgaWidthOrOptions?: number | Posit92Options, bufferHeight?: number) {
     this.AssertString(canvasID);
 
-    if (document.getElementById(canvasID) == null)
-      throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
+    // if (document.getElementById(canvasID) == null)
+    //   throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
 
     const options = this.#NormaliseOptions(vgaWidthOrOptions, bufferHeight);
     this.#bootOptions = options;
 
     // this.#canvas = <HTMLCanvasElement>document.getElementById(canvasID);
     this.#canvas = document.createElement("canvas");
+    this.#canvas.id = canvasID;
     this.#canvas.className = "scale-fit";
     this.#canvas.setAttribute("width", "" + options.BufferWidth);
     this.#canvas.setAttribute("height", "" + options.BufferHeight);
