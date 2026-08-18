@@ -183,7 +183,7 @@ begin
   if (x > _clipX2) or (x < _clipX1) or (y > _clipY2) or (y < _clipX1) then
     exit;
 
-  UnsafePSetARGB(x, y, colour)
+  UnsafePSet(x, y, ARGBtoRGBA(colour))
 end;
 
 

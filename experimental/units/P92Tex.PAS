@@ -52,9 +52,13 @@ procedure SetTextureWidth(const texHandle: TTextureHandle; const value: smallint
 function GetTextureHeight(const texHandle: TTextureHandle): smallint;
 procedure SetTextureHeight(const texHandle: TTextureHandle; const value: smallint);
 
-function UnsafeSprPget(const texture: PSoftwareTex; const x, y: smallint): longword;
+{ Assuming the texture isn't nil & the bounds are known
+  return colour: RRGGBBAA }
+function UnsafeSprPGet(const texture: PSoftwareTex; const x, y: smallint): longword;
 function UnsafeSprGetAlpha(const texture: PSoftwareTex; const x, y: smallint): byte;
-procedure UnsafeSprPset(const texture: PSoftwareTex; const x, y: smallint; const colour: longword);
+
+{ colour: AARRGGBB }
+procedure UnsafeSprPSet(const texture: PSoftwareTex; const x, y: smallint; const colour: longword);
 
 
 implementation
@@ -219,19 +223,12 @@ begin
   texture^.height := value
 end;
 
-
-{ Assuming the texture isn't nil & the bounds are known }
-function UnsafeSprPget(const texture: PSoftwareTex; const x, y: smallint): longword;
+function UnsafeSprPGet(const texture: PSoftwareTex; const x, y: smallint): longword; inline;
 var
   offset: longword;
 begin
   offset := (x + y * texture^.width) * 4;
-
-  UnsafeSprPget :=
-    (texture^.pixelData[offset + 3] shl 24)
-    or (texture^.pixelData[offset] shl 16)
-    or (texture^.pixelData[offset + 1] shl 8)
-    or texture^.pixelData[offset + 2]
+  UnsafeSprPGet := PLongWord(@texture^.pixelData[offset])^
 end;
 
 function UnsafeSprGetAlpha(const texture: PSoftwareTex; const x, y: smallint): byte;
@@ -241,7 +238,7 @@ begin
 end;
 
 
-procedure UnsafeSprPset(const texture: PSoftwareTex; const x, y: smallint; const colour: longword);
+procedure UnsafeSprPSet(const texture: PSoftwareTex; const x, y: smallint; const colour: longword);
 var
   offset: longword;
 begin

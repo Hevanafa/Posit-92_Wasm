@@ -69,7 +69,6 @@ var
   px, py: smallint;
   offset: longword;
   alpha: byte;
-  colour: longword;
 begin
   if not IsTextureSet(texHandle) then exit;
 
@@ -86,8 +85,9 @@ begin
     alpha := texture^.pixelData[offset + 3];
     if alpha < 255 then continue;
 
-    colour := UnsafeSprPget(texture, px, py);
-    UnsafePSetARGB(x + px, y + py, colour)
+    UnsafePSet(
+      x + px, y + py,
+      UnsafeSprPGet(texture, px, py))
   end;
 end;
 
@@ -102,7 +102,7 @@ begin
 
   for py:=0 to texture^.height - 1 do
   for px:=0 to texture^.width - 1 do
-    UnsafeSprPset(texture, px, py, colour);
+    UnsafeSprPSet(texture, px, py, colour);
 end;
 
 procedure SprRegion(
@@ -133,7 +133,7 @@ begin
     alpha := texture^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
-    colour := UnsafeSprPget(texture, sx, sy);
+    colour := UnsafeSprPGet(texture, sx, sy);
     UnsafePSetARGB(destX + a, destY + b, colour);
   end;
 end;
@@ -167,7 +167,7 @@ begin
     alpha := texture^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
-    colour := UnsafeSprPget(texture, sx, sy);
+    colour := UnsafeSprPGet(texture, sx, sy);
     UnsafePSetARGB(dx + destX, dy + destY, colour);
   end;
 end;
@@ -202,7 +202,7 @@ begin
     if (sx >= texture^.width) or (sx < 0)
       or (sy >= texture^.height) or (sy < 0) then continue;
 
-    colour := UnsafeSprPget(texture, sx, sy);
+    colour := UnsafeSprPGet(texture, sx, sy);
     alpha := colour shr 24;
     if alpha < 255 then continue;
 
@@ -238,7 +238,7 @@ begin
     alpha := texture^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
-    { colour := UnsafeSprPget(texture, sx, sy); }
+    { colour := UnsafeSprPGet(texture, sx, sy); }
     UnsafePSetARGB(destX + a, destY + b, colour);
   end;
 end;
@@ -285,7 +285,7 @@ begin
     if (dx > ClipX2) or (dx < ClipX1)
       or (dy > ClipY2) or (dy < ClipY1) then continue;
 
-    colour := UnsafeSprPget(texture, sx, sy);
+    colour := UnsafeSprPGet(texture, sx, sy);
     UnsafePSetARGB(dx, dy, colour);
   end;
 end;
@@ -335,7 +335,7 @@ begin
     alpha := texture^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
-    colour := UnsafeSprPget(texture, srcX, srcY);
+    colour := UnsafeSprPGet(texture, srcX, srcY);
     UnsafePSetARGB(cx + dx, cy + dy, colour)
   end;
 end;
@@ -366,8 +366,8 @@ begin
     alpha := srcTex^.pixelData[srcOffset + 3];
     if alpha < 255 then continue;
 
-    colour := UnsafeSprPget(srcTex, a, b);
-    UnsafeSprPset(destTex, x + a, y + b, colour)
+    colour := UnsafeSprPGet(srcTex, a, b);
+    UnsafeSprPSet(destTex, x + a, y + b, colour)
   end;
 end;
 
@@ -400,8 +400,8 @@ begin
     alpha := srcTex^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
-    colour := UnsafeSprPget(srcTex, sx, sy);
-    UnsafeSprPset(destTex, destX + px, destY + py, colour);
+    colour := UnsafeSprPGet(srcTex, sx, sy);
+    UnsafeSprPSet(destTex, destX + px, destY + py, colour);
   end;
 end;
 
