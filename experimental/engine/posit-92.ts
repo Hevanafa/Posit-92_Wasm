@@ -1076,11 +1076,7 @@ class Posit92 {
     this.#AddOutOfFocusFix();
     this.#AddResizeListener();
 
-    if (this.#wasm.exports.DrawOnce != null) {
-      this.#wasm.exports.DrawOnce();
-      this.#wasm.exports.P92AfterDraw();
-    } else
-      this.#StartLoop();
+    this.#StartLoop();
   }
 
   #OnPreload(): void {
@@ -1100,6 +1096,19 @@ class Posit92 {
   }
 
   #PerformLoop(): void {
+    if (this.#wasm.exports.DrawOnce != null) {
+      if (!this.#wasm.exports.IsEngineReady()) {
+        this.#wasm.exports.P92Update();
+      } else {
+        this.#wasm.exports.DrawOnce();
+        this.#wasm.exports.P92AfterDraw();
+
+        this.#SignalDone();
+      }
+
+      return;
+    }
+
     if (!this.#wasm.exports.IsEngineReady()) {
       this.#wasm.exports.P92Update();
       this.#wasm.exports.P92Draw();
