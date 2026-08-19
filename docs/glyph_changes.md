@@ -10,11 +10,13 @@ Font name: Droid Sans
 Font weight: regular
 Font size: 11px
 
+Spacing: x=1, y=0
+
 Padding:
 - right: 2
 - bottom: 1
 
-Spacing: both axes 0
+The `xadvance` field will be tweaked using a dedicated script for it: `xadvance_from_width.pl`
 
 **Larger modifications**
 
@@ -42,20 +44,3 @@ Symbols:
 - Closing bracket
 - Both curly brackets
 - Question mark "?" symbol
-  - reduced width by 1
-  - reduced xadvance by 1
-
-Xadvance adjustments
-
-**Edit 18-08-2026:** Adjust xadvance as necessary, at least it should appear having 1 pixel spacing
-
-- Lowercase "i"
-  - Added xadvance by 2
-- Lowercase "L"
-  - Added xadvance by 1
-- Uppercase: V, W, X
-  - Added xadvance by 1
-- Symbol: "#"
-  - added xadvance by 1
-- The "&" symbol
-  - reduced xadvance by 1
