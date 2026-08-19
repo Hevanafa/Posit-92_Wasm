@@ -65,7 +65,7 @@ begin
   blinkyX := 160;
   blinkyY := 144;
 
-  replaceColour(DefaultFontPtr^.texHandle, $FFFFFFFF, $FF000000)
+  ReplaceColour(BorrowBMFontPtr(GetDefaultFontHandle)^.texHandle, $FFFFFFFF, $FF000000)
 end;
 
 procedure BeginEasingChain;
