@@ -21,26 +21,24 @@ The `xadvance` field will be tweaked using a dedicated script for it: `xadvance_
 **Larger modifications**
 
 - Lowercase "i"
+  - add width by 1
 - Lowercase "j"
-- Lowercase "L"
 - Number 1 - added the "floor" or pedestal thing
-  - added width by 1
+  - add width by 1
+- Ampersand "&" symbol
 - Tilde "~"
-  - changed x by -1
-  - added width by 2
+  - add width by 2
 
 **Minor tweaks**
 
 Letters:
 
-- Lowercase: f, g, s, t, x, z
+- Lowercase: f, g, s, l, t, x, z
 - Uppercase & lowercase W
 - Uppercase K
 
 Numbers: 2 and 8
 
 Symbols:
-- Ampersand "&" symbol
-- Closing bracket
+- Opening bracket
 - Both curly brackets
-- Question mark "?" symbol
