@@ -18,7 +18,9 @@ close $fh;
 
   if ($line =~ /^char /) {
     $line =~ /width=(\d+)/;
+
     my $width = $1;
+    $width -= 1;  # xadvance = width - 1
 
     $line =~ s/xadvance=\d+/xadvance=$width/;
     $line
