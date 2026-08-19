@@ -33,6 +33,12 @@ begin
 
 end;
 
+
+procedure DrawMouse;
+begin
+  spr(imgCursor, mouseX, mouseY)
+end;
+
 procedure DrawOnce;
 const
   OpCount = 5000;
@@ -89,15 +95,15 @@ begin
   PrintDefault('0123456789', 10, 50);
   PrintDefault('!"#$%&''()*+,-./ :;<=>?@ [\]^_ ` {|}~', 10, 70);
 
-  { DrawMouse; }
+  DrawMouse;
   DrawFPS;
 end;
 
 exports
   OnPreload,
   OnReady,
-  { Update, Draw; }
-  DrawOnce;
+  Update, Draw;
+  { DrawOnce; }
 
 begin
 { Starting point is intentionally left empty }
