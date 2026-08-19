@@ -1,10 +1,13 @@
+# Script to assign xadvance the same as glyph width
+# Part of Posit-92 game engine
+
 use strict;
 use warnings;
 use v5.38.2;
 
-my $fh;
+my $font_def = "p92_sans_11.txt";
 
-open $fh, "<", "p92_sans_11.txt";
+open my $fh, "<", $font_def;
 
 my @lines = map { chomp; $_ } <$fh>;
 
@@ -24,8 +27,6 @@ close $fh;
   }
 } @lines;
 
-open $fh, ">", "p92_sans_11.txt";
-
+open $fh, ">", $font_def;
 say $fh $_ for @lines;
-
 close $fh
