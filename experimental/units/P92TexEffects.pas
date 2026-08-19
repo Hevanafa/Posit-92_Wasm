@@ -9,8 +9,10 @@ interface
 procedure SprOutline(const texHandle: longint; const x, y: smallint; const colour: longword);
 { This procedure only processes solid pixels }
 procedure SprShadow(const texHandle: longint; const x, y: smallint; const offsetX, offsetY: smallint; const colour: longword);
-{ Replaces 1 colour of a texture, in-place }
-procedure ReplaceColour(const texHandle: longint; const oldColour, newColour: longword);
+
+{ Replaces 1 colour of a texture, in-place
+  Colour: $AARRGGBB }
+procedure ReplaceColour(const texHandle: longint; oldColour, newColour: longword);
 
 
 implementation
@@ -96,7 +98,7 @@ begin
   spr(texHandle, x, y)
 end;
 
-procedure ReplaceColour(const texHandle: longint; const oldColour, newColour: longword);
+procedure ReplaceColour(const texHandle: longint; oldColour, newColour: longword);
 var
   a, b: word;
   texture: PSoftwareTex;
@@ -105,10 +107,13 @@ begin
 
   texture := BorrowTexturePtr(texHandle);
 
+  oldColour := ARGBtoRGBA(oldColour);
+  newColour := ARGBtoRGBA(newColour);
+
   for b:=0 to texture^.height - 1 do
-  for a:=0 to texture^.width - 1 do
-    if unsafeSprPget(texture, a, b) = oldColour then
-      unsafeSprPset(texture, a, b, newColour);
+    for a:=0 to texture^.width - 1 do
+      if UnsafeSprPGet(texture, a, b) = oldColour then
+        UnsafeSprPSet(texture, a, b, newColour);
 end;
 
 end.
