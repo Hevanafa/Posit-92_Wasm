@@ -59,7 +59,7 @@ var
 begin
   if not IsTextureSet(texHandle) then exit;
 
-  texture := GetTexturePtr(texHandle);
+  texture := BorrowTexturePtr(texHandle);
 
   for py:=0 to texture^.height - 1 do
   for px:=0 to texture^.width - 1 do begin
@@ -175,7 +175,7 @@ begin
 
   if texBlurPtr = nil then begin
     texBlur := NewTexture(vgaWidth, vgaHeight);
-    texBlurPtr := GetTexturePtr(texBlur);
+    texBlurPtr := BorrowTexturePtr(texBlur);
   end;
 
   { Process from VGA (alpha channel is ignored) }
@@ -224,7 +224,7 @@ var
 begin
   if texChromabePtr = nil then begin
     texChromabe := NewTexture(vgaWidth, vgaHeight);
-    texChromabePtr := GetTexturePtr(texChromabe);
+    texChromabePtr := BorrowTexturePtr(texChromabe);
   end;
 
   for py:=0 to vgaHeight - 1 do
@@ -237,9 +237,9 @@ begin
       blueX := px - 1;
       if blueX < 0 then blueX := 0;
 
-      redPixel := unsafePget(redX, py);
-      greenPixel := unsafePget(px, py);
-      bluePixel := unsafePget(blueX, py);
+      redPixel := PGet(redX, py);
+      greenPixel := PGet(px, py);
+      bluePixel := PGet(blueX, py);
 
       { Extract each channels }
       r := redPixel shr 16 and $FF;
@@ -284,7 +284,7 @@ var
 begin
   if texVignettePtr = nil then begin
     texVignette := NewTexture(vgaWidth, vgaHeight);
-    texVignettePtr := GetTexturePtr(texVignette);
+    texVignettePtr := BorrowTexturePtr(texVignette);
   end;
 
   if strength < 0.05 then exit;
@@ -395,7 +395,7 @@ begin
 
   if texPhosphorPtr = nil then begin
     texPhosphor := NewTexture(vgaWidth, vgaHeight);
-    texPhosphorPtr := GetTexturePtr(texPhosphor);
+    texPhosphorPtr := BorrowTexturePtr(texPhosphor);
   end;
 
   { Process from VGA (alpha channel is ignored) }
