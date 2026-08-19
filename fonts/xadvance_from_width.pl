@@ -17,11 +17,11 @@ close $fh;
     $line =~ /width=(\d+)/;
     my $width = $1;
 
-    $line =~ s/xadvance=\d+/xadvance=$width/r;
-    return $line
+    $line =~ s/xadvance=\d+/xadvance=$width/;
+    $line
+  } else {
+    $_
   }
-
-  $_
 } @lines;
 
 open $fh, ">", "p92_sans_11.txt";
