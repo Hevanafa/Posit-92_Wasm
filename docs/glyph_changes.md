@@ -10,13 +10,19 @@ Font name: Droid Sans
 Font weight: regular
 Font size: 11px
 
-Spacing: x=1, y=0
+Defaults:
+- Change all `xoffset` to 0
+- Change all `xadvance` to `width - 1`
+   This field will be tweaked using a dedicated script for it: `xadvance_from_width.pl`
 
-Padding:
+Global glyph spacing:
+x=1, y=0
+
+Adjust as necessary especially when the spacing looks too wide
+
+Atlas padding:
 - right: 2
 - bottom: 1
-
-The `xadvance` field will be tweaked using a dedicated script for it: `xadvance_from_width.pl`
 
 **Larger modifications**
 
@@ -33,9 +39,9 @@ The `xadvance` field will be tweaked using a dedicated script for it: `xadvance_
 
 Letters:
 
-- Lowercase: f, g, s, l, t, x, z
-- Uppercase & lowercase W
+- Lowercase: f, g, l, s, t, x, z
 - Uppercase K
+- Uppercase & lowercase W
 
 Numbers: 2 and 8
 
