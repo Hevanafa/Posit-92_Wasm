@@ -10,7 +10,8 @@
     "rootDir": "./",
     "sourceMap": false,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": []
   },
   "files": [
     "./engine/posit-92.ts",
