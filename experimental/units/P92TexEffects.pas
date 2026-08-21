@@ -6,8 +6,11 @@ unit P92TexEffects;
 
 interface
 
+{ colour: $AARRGGBB }
 procedure SprOutline(const texHandle: longint; const x, y: smallint; const colour: longword);
-{ This procedure only processes solid pixels }
+
+{ This procedure only processes solid pixels
+  colour: $AARRGGBB }
 procedure SprShadow(const texHandle: longint; const x, y: smallint; const offsetX, offsetY: smallint; const colour: longword);
 
 { Replaces 1 colour of a texture, in-place
@@ -92,7 +95,7 @@ begin
     if alpha = 255 then
       unsafePset(destX, destY, colour)
     else
-      unsafePsetBlend(destX, destY, colour);
+      UnsafePSetBlend(destX, destY, colour);
   end;
   
   spr(texHandle, x, y)
