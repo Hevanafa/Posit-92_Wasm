@@ -172,7 +172,8 @@ begin
   InitFPSCounter;
 
   InitAssetRegistry;
-  InitSounds;
+  if GetBootOptionBoolean('EnableSounds') then
+    InitSounds;
 
 {$ifdef P92_WEBGL}
   SetupWebGLViewport;
