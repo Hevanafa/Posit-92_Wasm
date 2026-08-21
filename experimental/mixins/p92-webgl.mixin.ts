@@ -107,7 +107,7 @@ class WebGLMixin extends Base {
     const texture = this.glCtx.createTexture();
     const id = this.#nextTextureId;
 
-    this.#textures.set(id, texture);
+    this.#textures.set(id, texture!);
 
     this.#nextTextureId++;
 
@@ -209,7 +209,7 @@ class WebGLMixin extends Base {
     const program = this.glCtx.createProgram();
     const id = this.#nextProgramId;
     
-    this.#programs.set(id, program);
+    this.#programs.set(id, program!);
 
     this.#nextProgramId++;
 
@@ -274,7 +274,7 @@ class WebGLMixin extends Base {
     const buffer = this.glCtx.createBuffer();
     const id = this.#nextBufferId;
 
-    this.#buffers.set(id, buffer);
+    this.#buffers.set(id, buffer!);
     this.#nextBufferId++;
 
     return id;
