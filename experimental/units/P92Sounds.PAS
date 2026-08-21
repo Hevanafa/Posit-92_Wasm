@@ -13,6 +13,7 @@ unit P92Sounds;
 
 interface
 
+{$ifdef P92_ENABLE_SOUNDS}
 uses P92AssetHandles;
 
 procedure InitSounds;
@@ -49,13 +50,15 @@ procedure CleanupSounds;
 function GetSoundVolume(const sndHandle: TSoundHandle): single;
 procedure SetSoundVolume(const sndHandle: TSoundHandle; volume: single);
 {$endif}
+{$endif}
 
 
 implementation
 
+{$ifdef P92_ENABLE_SOUNDS}
 {$ifdef P92_WASM}
 uses
-  P92AssetRegistry, P92Conversions, P92Maths, P92PanicDisplay;
+  P92Logger, P92AssetRegistry, P92Conversions, P92Maths, P92PanicDisplay;
 {$endif}
 {$ifdef P92_SDL2}
 uses
@@ -107,6 +110,8 @@ function JsGetMusicDuration: double; external 'env' name 'JsGetMusicDuration';
 procedure InitSounds;
 begin
 {$ifdef P92_WASM}
+  writelog('InitSounds call');
+
   soundsInitialised := false;
 
   currentMusicHandle := 0;
@@ -332,6 +337,7 @@ begin
   Mix_CloseAudio;
   soundsInitialised := false
 end;
+{$endif}
 {$endif}
 
 end.

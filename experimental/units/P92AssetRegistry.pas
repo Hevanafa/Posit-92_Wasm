@@ -90,8 +90,10 @@ function GetBMFontBufferLen: smallint; public name 'GetBMFontBufferLen';
 procedure SetBMFontBufferLen(value: smallint); public name 'SetBMFontBufferLen';
 function GetBMFontBufferCapacity: smallint; public name 'GetBMFontBufferCapacity';
 
+{$ifdef P92_ENABLE_SOUNDS}
 procedure JsRequestSound(sndHandle: longint); external 'env' name 'JsRequestSound';
 function RequestSound(const path: string): longint;
+{$endif}
 
 { Reporting procedures }
 
@@ -322,6 +324,7 @@ begin
   bmfontBufferLen := value
 end;
 
+{$ifdef P92_ENABLE_SOUNDS}
 function RequestSound(const path: string): longint;
 var
   sndHandle: longint;
@@ -342,6 +345,7 @@ begin
 
   RequestSound := sndHandle
 end;
+{$endif}
 {$endif}
 
 {$ifdef P92_SDL2}

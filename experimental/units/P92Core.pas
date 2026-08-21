@@ -80,7 +80,10 @@ uses
   P92Fonts, P92AssetRegistry,
   P92Conversions,
   P92FPS, P92Logger,
-  P92Sounds, P92Timing,
+{$ifdef P92_ENABLE_SOUNDS}
+  P92Sounds,
+{$endif}
+  P92Timing,
   P92Keyboard, P92Mouse,
   P92TexDraw, P92VGA, P92WasmHost, P92WasmMemMgr, P92InteropBuf, P92Loading
 {$endif}
@@ -172,9 +175,10 @@ begin
   InitFPSCounter;
 
   InitAssetRegistry;
-  if GetBootOptionBoolean('EnableSounds') then
-    InitSounds;
 
+{$ifdef P92_ENABLE_SOUNDS}
+  InitSounds;
+{$endif}
 {$ifdef P92_WEBGL}
   SetupWebGLViewport;
   SetupWebGLShaders;
