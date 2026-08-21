@@ -12,7 +12,7 @@ my @files = (
 );
 
 # TODO: Copy to DEMOS
-# TODO: Copy to TESTS
+# Copy to TESTS
 
 my $tests_dir = "../TESTS";
 
@@ -24,6 +24,10 @@ my @test_dirs = grep {
 
 for my $proj_path (@test_dirs) {
   for (@files) {
-    copy $_, catdir($proj_path, "assets", "fonts");
+    my $dest = catdir($tests_dir, $proj_path, "assets", "fonts");
+
+    my $dest_path = catfile($dest, $_);
+    say "Copying to ".$dest_path;
+    copy $_, $dest
   }
 }
