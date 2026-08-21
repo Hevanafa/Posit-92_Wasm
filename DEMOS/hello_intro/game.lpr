@@ -138,18 +138,14 @@ end;
 
 procedure Draw;
 begin
-  if actualGameState = GameStateIntro then
-  case actualGameState of
-    GameStateIntro: begin
-      RenderIntro(introSlide);
+  if actualGameState = GameStateIntro then begin
+    RenderIntro(introSlide);
 
-      { Debug intro state }
-      PrintDefault('(Intro slide ' + i32str(introSlide) + ')', 30, 30);
-      PrintDefault('Slide end tick: ' + f32str(introSlideEndTick), 30, 40);
+    { Debug intro state }
+    PrintDefault('(Intro slide ' + i32str(introSlide) + ')', 30, 30);
+    PrintDefault('Slide end tick: ' + f32str(introSlideEndTick), 30, 40);
 
-      exit
-    end;
-  else
+    exit
   end;
 
   Cls(CornflowerBlue);
