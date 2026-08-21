@@ -518,16 +518,18 @@ class Posit92 {
 
 
   #GetBootOptionBoolean(): boolean {
-    const key = this.ReadInteropBuffer();
+    const queryKey = this.ReadInteropBuffer();
+    const options = <any>this.#bootOptions;
 
-    if (Object.hasOwn(this.#bootOptions, key)) {
-      const options = <any>this.#bootOptions;
-      if (typeof options[key] == "boolean")
-        return options[key];
-      else
-        throw new Error("bootOptions[" + key + "] is not a valid boolean: " + options[key]);
-    } else
-      throw new Error("Unknown boot option key: " + key);
+    for (const k in options)
+      if (k.toLowerCase() == queryKey) {
+        if (typeof options[k] == "boolean")
+          return options[k];
+        else
+          throw new Error("bootOptions[" + queryKey + "] is not a valid boolean: " + options[queryKey]);
+      }
+
+    throw new Error("Unknown boot option key: " + queryKey);
   }
 
   /**
