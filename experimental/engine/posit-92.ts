@@ -512,7 +512,7 @@ class Posit92 {
     const options = <any>this.#bootOptions;
 
     for (const k in options)
-      if (k.toLowerCase() == queryKey) {
+      if (k.toLowerCase() == queryKey.toLowerCase()) {
         if (typeof options[k] == "boolean")
           return options[k];
         else
