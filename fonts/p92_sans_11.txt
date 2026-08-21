@@ -19,7 +19,7 @@ char id=45   x=39    y=61    width=5     height=2     xoffset=0     yoffset=7   
 char id=46   x=21    y=65    width=3     height=3     xoffset=0     yoffset=8     xadvance=2     page=0  chnl=15
 char id=47   x=88    y=37    width=6     height=9     xoffset=0     yoffset=2     xadvance=5     page=0  chnl=15
 char id=48   x=64    y=29    width=7     height=9     xoffset=0     yoffset=2     xadvance=6     page=0  chnl=15
-char id=49   x=7     y=49    width=5     height=9     xoffset=0     yoffset=2     xadvance=4     page=0  chnl=15
+char id=49   x=7     y=49    width=5     height=9     xoffset=0     yoffset=2     xadvance=6     page=0  chnl=15
 char id=50   x=72    y=28    width=7     height=9     xoffset=0     yoffset=2     xadvance=6     page=0  chnl=15
 char id=51   x=80    y=28    width=7     height=9     xoffset=0     yoffset=2     xadvance=6     page=0  chnl=15
 char id=52   x=0     y=40    width=7     height=9     xoffset=0     yoffset=2     xadvance=6     page=0  chnl=15
