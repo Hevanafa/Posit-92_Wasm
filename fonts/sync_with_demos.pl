@@ -10,3 +10,11 @@ my @files = (
 
 # TODO: Copy to DEMOS
 # TODO: Copy to TESTS
+#
+my $tests_dir = "../TESTS";
+
+opendir my $dh, $tests_dir;
+
+say for grep {
+  ($_ !~ /\.\.?/) && (-d $tests_dir.$_)
+} readdir $dh;
