@@ -321,50 +321,50 @@ class Posit92 {
 
   #NormaliseOptions(
     bufferWidthOrOptions?: number | Posit92Options,
-    bufferHeight?: number
+    BufferHeight?: number
   ): Posit92Options {
-    let bufferWidth = this.#DefaultVGAWidth;
-    let renderer = "2d";
-    let targetFPS = 60;
-    let loadDefaultBMFont = true;
-    let enableScreenshotHotkey = true;
-    let enableSounds = true;
+    let BufferWidth = this.#DefaultVGAWidth;
+    let Renderer = "2d";
+    let TargetFPS = 60;
+    let LoadDefaultBMFont = true;
+    let EnableScreenshotHotkey = true;
+    let EnableSounds = true;
 
     if (typeof bufferWidthOrOptions == "object") {
       const options = bufferWidthOrOptions;
 
-      bufferWidth = options.BufferWidth;
-      bufferHeight = options.BufferHeight ?? this.#DefaultVGAHeight;
+      BufferWidth = options.BufferWidth ?? this.#DefaultVGAWidth;
+      BufferHeight = options.BufferHeight ?? this.#DefaultVGAHeight;
 
       if (options.Renderer != null)
-        renderer = options.Renderer;
+        Renderer = options.Renderer;
 
       if (options.TargetFPS != null) {
         this.AssertNumber(options.TargetFPS);
-        targetFPS = options.TargetFPS;
+        TargetFPS = options.TargetFPS;
       }
 
       if (options.LoadDefaultBMFont != null)
-        loadDefaultBMFont = options.LoadDefaultBMFont;
+        LoadDefaultBMFont = options.LoadDefaultBMFont;
 
       if (options.EnableScreenshotHotkey != null)
-        enableScreenshotHotkey = options.EnableScreenshotHotkey;
+        EnableScreenshotHotkey = options.EnableScreenshotHotkey;
 
       if (options.EnableSounds != null)
-        enableSounds = options.EnableSounds;
+        EnableSounds = options.EnableSounds;
     } else {
-      bufferWidth = bufferWidthOrOptions ?? this.#DefaultVGAWidth;
-      bufferHeight = bufferHeight ?? this.#DefaultVGAHeight;
+      BufferWidth = bufferWidthOrOptions ?? this.#DefaultVGAWidth;
+      BufferHeight = BufferHeight ?? this.#DefaultVGAHeight;
     }
 
     return {
-      BufferWidth: bufferWidth,
-      BufferHeight: bufferHeight,
-      Renderer: renderer,
-      TargetFPS: targetFPS,
-      LoadDefaultBMFont: loadDefaultBMFont,
-      EnableScreenshotHotkey: enableScreenshotHotkey,
-      EnableSounds: enableSounds
+      BufferWidth,
+      BufferHeight,
+      Renderer,
+      TargetFPS,
+      LoadDefaultBMFont,
+      EnableScreenshotHotkey,
+      EnableSounds
     };
   }
 
