@@ -14,6 +14,7 @@ Defaults:
 - Change all `xoffset` to 0
 - Change all `xadvance` to `width - 1`
    This field will be tweaked using a dedicated script for it: `xadvance_from_width.pl`
+- All numbers must have the same `xadvance`
 
 Global glyph spacing:
 x=1, y=0
