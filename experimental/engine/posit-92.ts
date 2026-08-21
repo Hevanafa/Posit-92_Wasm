@@ -164,11 +164,6 @@ type Posit92Options = {
    * Default: true
    */
   EnableScreenshotHotkey?: boolean;
-
-  /**
-   * Default: true
-   */
-  EnableSounds?: boolean;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -328,7 +323,6 @@ class Posit92 {
     let TargetFPS = 60;
     let LoadDefaultBMFont = true;
     let EnableScreenshotHotkey = true;
-    let EnableSounds = true;
 
     if (typeof bufferWidthOrOptions == "object") {
       const options = bufferWidthOrOptions;
@@ -349,9 +343,6 @@ class Posit92 {
 
       if (options.EnableScreenshotHotkey != null)
         EnableScreenshotHotkey = options.EnableScreenshotHotkey;
-
-      if (options.EnableSounds != null)
-        EnableSounds = options.EnableSounds;
     } else {
       BufferWidth = bufferWidthOrOptions ?? this.#DefaultVGAWidth;
       BufferHeight = BufferHeight ?? this.#DefaultVGAHeight;
@@ -363,8 +354,7 @@ class Posit92 {
       Renderer,
       TargetFPS,
       LoadDefaultBMFont,
-      EnableScreenshotHotkey,
-      EnableSounds
+      EnableScreenshotHotkey
     };
   }
 
