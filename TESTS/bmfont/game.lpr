@@ -10,8 +10,8 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
-  P92Logger, P92Conversions, P92Graphics,
+  P92Core, P92Fonts, P92WasmHost, P92AssetHandles, P92AssetRegistry,
+  P92Logger, P92Conversions, P92BMFont, P92Graphics,
   P92Keyboard, P92Mouse, P92Sounds,
   P92TexDraw, P92Timing, P92FPS, P92VGA,
   Assets;
@@ -19,6 +19,15 @@ uses
 var
   { Game state variables }
   gameTime: double;
+  font: TBMFontHandle;
+
+procedure GlyphTest;
+begin
+  PrintBMFont(font, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10, 10);
+  PrintBMFont(font, 'abcdefghijklmnopqrstuvwxyz', 10, 30);
+  PrintBMFont(font, '0123456789', 10, 50);
+  PrintBMFont(font, '!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~', 10, 70);
+end;
 
 procedure OnPreload;
 begin
@@ -26,6 +35,9 @@ begin
 
   imgSpecimenP92[0] := RequestImage('assets/images/specimen_p-92_1.png');
   imgSpecimenP92[1] := RequestImage('assets/images/specimen_p-92_2.png');
+
+  { font := RequestBMFont('assets/fonts/p92_sans_8.txt'); }
+  font := RequestBMFont('assets/fonts/p92_sans_8_bold.txt');
 end;
 
 procedure OnReady;
@@ -90,10 +102,7 @@ begin
 
   PrintDefaultCentred('Hello world!', VgaWidth div 2, 120);
 
-  PrintDefault('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10, 10);
-  PrintDefault('abcdefghijklmnopqrstuvwxyz', 10, 30);
-  PrintDefault('0123456789', 10, 50);
-  PrintDefault('!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~', 10, 70);
+  GlyphTest;
 
   DrawMouse;
   DrawFPS;
