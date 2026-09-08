@@ -11,8 +11,8 @@ This package contains 3 font faces:
 - P92 Sans 11px: regular
 - P92 Sans 8px: regular & bold
 
-![P92 Sans 11px preview](./P92_Sans_11px_preview.png)
+![P92 Sans 11px preview](./previews/P92_Sans_11px.png)
 
-![P92 Sans 8px preview](./P92_Sans_8px_preview.png)
+![P92 Sans 8px preview](./previews/P92_Sans_8px.png)
 
-![P92 Sans 8px bold preview](./P92_Sans_8px_Bold_preview.png)
+![P92 Sans 8px bold preview](./previews/P92_Sans_8px_Bold.png)
