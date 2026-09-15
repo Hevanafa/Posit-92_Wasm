@@ -13,7 +13,7 @@ procedure SprOutline(const texHandle: longint; const x, y: smallint; const colou
   colour: $AARRGGBB }
 procedure SprShadow(const texHandle: longint; const x, y: smallint; const offsetX, offsetY: smallint; const colour: longword);
 
-{ Replaces 1 colour of a texture, in-place
+{ Replaces 1 colour of a texture in place
   Colour: $AARRGGBB }
 procedure ReplaceColour(const texHandle: longint; oldColour, newColour: longword);
 
@@ -110,8 +110,8 @@ begin
 
   texture := BorrowTexturePtr(texHandle);
 
-  oldColour := ARGBtoRGBA(oldColour);
-  newColour := ARGBtoRGBA(newColour);
+  oldColour := ARGBtoABGR(oldColour);
+  newColour := ARGBtoABGR(newColour);
 
   for b:=0 to texture^.height - 1 do
     for a:=0 to texture^.width - 1 do
