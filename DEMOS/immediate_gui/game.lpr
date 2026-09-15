@@ -4,7 +4,7 @@
 
   Based on my QB64 Immediate GUI implementation
 
-  Mixins: bmfont, sound
+  Mixins: bmfont
 }
 
 library Game;
@@ -14,12 +14,11 @@ library Game;
 
 uses
   SysUtils,
-  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
-  P92BMFont, P92Conversions, P92FPS, P92Graphics,
-  P92Tex, P92TexDraw, P92TexEffects,
-  P92ImmediateGUI, P92Loading, P92Logger,
-  P92Keyboard, P92Mouse, P92WasmHeap,
-  P92Panic, P92Geometry, P92Timing, P92VGA,
+  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry, P92BMFont,
+  P92Conversions, P92FPS, P92Graphics, P92Tex, P92TexDraw,
+  P92TexEffects, P92ImmediateGUI, P92Loading, P92Logger,
+  P92Keyboard, P92Mouse, P92WasmHeap, P92Panic, P92Geometry,
+  P92Timing, P92VGA,
   Assets;
 
 var
