@@ -6,6 +6,9 @@ unit P92Core;
 
 interface
 
+const
+  Posit92Version = '0.3.1';
+
 {$ifdef P92_SDL2}
 type
   TCallback = procedure;
