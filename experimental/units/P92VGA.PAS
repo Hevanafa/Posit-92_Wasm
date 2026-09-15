@@ -207,15 +207,15 @@ begin
 
   if srcA = 0 then exit;
 
-  srcR := ABGR shr 16 and $FF;
+  srcR := ABGR and $FF;
   srcG := ABGR shr 8 and $FF;
-  srcB := ABGR and $FF;
+  srcB := ABGR shr 16 and $FF;
   
   offset := (x + y * VGAWidth) * 4;
 
   { Handle opaque pixel }
   if srcA = 255 then begin
-    UnsafePSetARGB(x, y, ABGR);
+    UnsafePSet(x, y, ABGR);
     exit
   end;
 
@@ -229,10 +229,10 @@ begin
   invAlpha := 1.0 - alpha;
 
   PLongWord(@activeSurface^[offset])^ :=
-    (round(srcR * alpha + destR * invAlpha))
-    or (round(srcG * alpha + destG * invAlpha) shl 8)
+    ((srcA + round(destA * invAlpha)) shl 24)
     or (round(srcB * alpha + destB * invAlpha) shl 16)
-    or ((srcA + round(destA * invAlpha)) shl 24)
+    or (round(srcG * alpha + destG * invAlpha) shl 8)
+    or (round(srcR * alpha + destR * invAlpha))
 end;
 
 procedure PSetBlend(const x, y: smallint; const colour: longword);
