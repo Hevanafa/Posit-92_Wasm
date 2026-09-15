@@ -23,10 +23,9 @@ procedure CircFill(const cx, cy, radius: smallint; const colour: longword);
 
 procedure Rect(x0, y0, x1, y1: smallint; const colour: longword);
 procedure RectFill(x0, y0, x1, y1: smallint; const colour: longword);
+
 procedure HLine(x0, x1, y: smallint; const colour: longword);
-{ procedure hline2(x0, x1, y: smallint; const colour: longword); }
 procedure VLine(x, y0, y1: smallint; const colour: longword);
-{ procedure vline2(x, y0, y1: smallint; const colour: longword); }
 
 procedure Line(x0, y0, x1, y1: smallint; const colour: longword);
 procedure LineThick(x0, y0, x1, y1, thickness: smallint; const colour: longword);
@@ -177,22 +176,6 @@ begin
     HLine(x0, x1, b, solid);
 end;
 
-procedure LegacyHLine(x0, x1, y: smallint; const colour: longword);
-var
-  x: smallint;
-  solid: longword;
-begin
-  if GetAlpha(colour) = 0 then exit;
-  solid := SolidColour(colour);
-
-  if x1 < x0 then begin
-    x := x0; x0 := x1; x1 := x
-  end;
-
-  for x := x0 to x1 do
-    pset(x, y, solid);
-end;
-
 procedure HLine(x0, x1, y: smallint; const colour: longword);
 var
   x: smallint;
@@ -212,27 +195,6 @@ begin
 
   for x:=x0 to x1 do
     UnsafePSetARGB(x, y, solid);
-end;
-
-procedure LegacyVLine(x, y0, y1: smallint; const colour: longword);
-var
-  temp, a: smallint;
-  solid: longword;
-begin
-  if GetAlpha(colour) = 0 then exit;
-  if (x < 0) or (x >= VGAWidth) then exit;
-  solid := SolidColour(colour);
-
-  if y0 > y1 then begin
-    temp := y0; y0 := y1; y1 := temp
-  end;
-
-  if (y0 >= VGAHeight) or (y1 < 0) then exit;
-
-  for a:=y0 to y1 do begin
-    if (a < 0) then continue;
-    pset(x, a, solid)
-  end;
 end;
 
 procedure VLine(x, y0, y1: smallint; const colour: longword);
