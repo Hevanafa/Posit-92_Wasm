@@ -51,7 +51,7 @@ function ARGBtoRGBA(const colour: longword): longword;
 function ARGBtoABGR(const colour: longword): longword;
 
 procedure UnsafePSetARGB(const x, y: smallint; const ARGB: longword);
-procedure UnsafePSet(const x, y: smallint; const RGBA: longword);
+procedure UnsafePSet(const x, y: smallint; const ABGR: longword);
 procedure PSet(const x, y: smallint; const colour: longword);
 
 procedure UnsafePSetBlend(const x, y: smallint; const colour: longword);
@@ -180,9 +180,9 @@ begin
     or ((ARGB and $FF000000))
 end;
 
-procedure UnsafePSet(const x, y: smallint; const RGBA: longword);
+procedure UnsafePSet(const x, y: smallint; const ABGR: longword);
 begin
-  PLongWord(@activeSurface^[(y * VGAWidth + x) * 4])^ := RGBA
+  PLongWord(@activeSurface^[(y * VGAWidth + x) * 4])^ := ABGR
 end;
 
 procedure PSet(const x, y: smallint; const colour: longword);
@@ -293,9 +293,8 @@ procedure Cls(const colour: longword);
 begin
   FillDWord(
     BorrowSurfacePtr^,
-    VGAWidth * VGAHeight,
-    { convert ARGB to RGBA + flip the byte order }
-    SwapEndian((colour and $FFFFFF shl 8) or (colour and $FF000000 shr 24)))
+    VgaWidth * VgaHeight,
+    ARGBtoABGR(colour))
 end;
 
 procedure ClsBlend(const colour: longword);
