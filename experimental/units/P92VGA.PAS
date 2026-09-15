@@ -59,7 +59,7 @@ procedure UnsafePSetARGB(const x, y: smallint; const ARGB: longword);
 procedure UnsafePSet(const x, y: smallint; const ABGR: longword);
 procedure PSet(const x, y: smallint; const colour: longword);
 
-procedure UnsafePSetBlend(const x, y: smallint; const colour: longword);
+procedure UnsafePSetBlend(const x, y: smallint; const ABGR: longword);
 procedure PSetBlend(const x, y: smallint; const colour: longword);
 
 function ClipX1: smallint;
@@ -195,7 +195,7 @@ begin
 end;
 
 
-procedure UnsafePSetBlend(const x, y: smallint; const colour: longword); inline;
+procedure UnsafePSetBlend(const x, y: smallint; const ABGR: longword); inline;
 var
   srcA, srcR, srcG, srcB: byte;
   destA, destR, destG, destB: byte;
@@ -203,19 +203,19 @@ var
   { inverted alpha }
   alpha, invAlpha: single;
 begin
-  srcA := colour shr 24 and $FF;
+  srcA := ABGR shr 24 and $FF;
 
   if srcA = 0 then exit;
 
-  srcR := colour shr 16 and $FF;
-  srcG := colour shr 8 and $FF;
-  srcB := colour and $FF;
+  srcR := ABGR shr 16 and $FF;
+  srcG := ABGR shr 8 and $FF;
+  srcB := ABGR and $FF;
   
   offset := (x + y * VGAWidth) * 4;
 
   { Handle opaque pixel }
   if srcA = 255 then begin
-    UnsafePSetARGB(x, y, colour);
+    UnsafePSetARGB(x, y, ABGR);
     exit
   end;
 
