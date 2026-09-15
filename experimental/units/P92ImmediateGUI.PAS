@@ -206,16 +206,16 @@ end;
 
 procedure UpdateGUILastMouseButton;
 begin
-  lastMouseButton := mouseButton
+  lastMouseButton := GetMouseButton;
 end;
 
 procedure UpdateGUIMousePoint;
 begin
-  mousePoint.x := mouseX;
-  mousePoint.y := mouseY;
+  mousePoint.x := GetMouseX;
+  mousePoint.y := GetMouseY;
 
-  mouseJustPressed := (mouseButton <> MouseButtonNone) and (lastMouseButton = MouseButtonNone);
-  mouseJustReleased := (mouseButton = MouseButtonNone) and (lastMouseButton <> MouseButtonNone)
+  mouseJustPressed := (GetMouseButton <> MouseButtonNone) and (lastMouseButton = MouseButtonNone);
+  mouseJustReleased := (GetMouseButton = MouseButtonNone) and (lastMouseButton <> MouseButtonNone)
 end;
 
 procedure ResetWidgetIndices;
@@ -500,7 +500,7 @@ begin
       activeWidget := thisWidgetID;
 
       { Calculate which item was clicked }
-      clickedIndex := (mouseY - state.y) div lineHeight;
+      clickedIndex := (GetMouseY - state.y) div lineHeight;
       if clickedIndex in [0..length(items)-1] then
         state.selectedIndex := clickedIndex;
     end;
@@ -603,7 +603,7 @@ begin
   { Value update logic }
   range := maxValue - minValue;
   if activeWidget = thisWidgetID then begin
-    pendingValue := trunc(clamp(mouseX, x, x + width) - x);
+    pendingValue := trunc(clamp(GetMouseX, x, x + width) - x);
     perc := pendingValue / width;
     state.value := round(perc * range)
   end;
@@ -657,7 +657,7 @@ begin
   { Value update logic }
   range := maxValue - minValue;
   if activeWidget = thisWidgetID then begin
-    pendingValue := trunc(clamp(mouseX, x, x + width) - x);
+    pendingValue := trunc(clamp(GetMouseX, x, x + width) - x);
     perc := pendingValue / width;
     state.value := round(perc * range)
   end;
