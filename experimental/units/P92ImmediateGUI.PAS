@@ -11,7 +11,7 @@ unit P92ImmediateGUI;
 
 interface
 
-{$ifdef P92_IMMEDIATE_GUI}
+{$ifdef P92_IMGUI}
 uses
   P92AssetHandles, P92BMFont, P92Geometry;
 
@@ -102,7 +102,7 @@ procedure ProgressBarLabelled(const x, y, width, height: smallint; const perc: d
 
 implementation
 
-{$ifdef P92_IMMEDIATE_GUI}
+{$ifdef P92_IMGUI}
 uses
   P92Fonts, P92AssetRegistry,
   P92Conversions, P92Graphics,

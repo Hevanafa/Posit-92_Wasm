@@ -87,7 +87,7 @@ uses
   P92Keyboard, P92Mouse,
   P92TexDraw, P92VGA, P92WasmHost, P92WasmMemMgr, P92InteropBuf, P92Loading
 {$endif}
-{$ifdef P92_IMMEDIATE_GUI}
+{$ifdef P92_IMGUI}
   , P92ImmediateGUI
 {$endif}
 {$ifdef P92_WEBGL}
@@ -243,7 +243,7 @@ begin
   if DebugEngineRunStates then
     writelog('ersReady');
 
-{$ifdef P92_IMMEDIATE_GUI}
+{$ifdef P92_IMGUI}
   InitImmediateGUI;
 {$endif}
 {$ifdef P92_WASM}
@@ -269,7 +269,7 @@ begin
   else if engineRunState = ersReady then begin
     UpdateDeltaTime;
     IncrementFPS;
-{$ifdef P92_IMMEDIATE_GUI}
+{$ifdef P92_IMGUI}
     ResetWidgetIndices;
 
     UpdateGUILastMouseButton;
@@ -315,7 +315,7 @@ end;
 
 procedure P92AfterDraw;
 begin
-{$ifdef P92_IMMEDIATE_GUI}
+{$ifdef P92_IMGUI}
   ResetActiveWidget;
 {$endif}
 
