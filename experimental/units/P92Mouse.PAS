@@ -31,6 +31,9 @@ function GetMouseX: smallint;
 function GetMouseY: smallint;
 function GetMouseButton: smallint;
 
+function IsLeftMousePressed: boolean;
+function IsRightMousePressed: boolean;
+
 procedure UpdateMouse;
 {$endif}
 
@@ -58,6 +61,16 @@ end;
 function GetMouseButton: smallint;
 begin
   GetMouseButton := mouseButton
+end;
+
+function IsLeftMousePressed: boolean;
+begin
+  IsLeftMousePressed := (mouseButton and MouseButtonLeft) <> 0
+end;
+
+function IsRightMousePressed: boolean;
+begin
+  IsRightMousePressed := (mouseButton and MouseButtonRight) <> 0
 end;
 
 procedure UpdateMouse;
