@@ -34,17 +34,17 @@ var
 
   sliderValue: TSliderState;
 
-procedure drawFPS;
+procedure DrawFPS;
 begin
-  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
+  PrintDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
 procedure DrawMouse;
 begin
   if HasHoveredWidget then
-    spr(imgHandCursor, GetMouseX - 5, GetMouseY - 1)
+    Spr(imgHandCursor, GetMouseX - 5, GetMouseY - 1)
   else
-    spr(imgCursor, GetMouseX, GetMouseY);
+    Spr(imgCursor, GetMouseX, GetMouseY);
 end;
 
 procedure OnPreload;
@@ -59,8 +59,8 @@ begin
   imgWinHovered := RequestImage('assets/images/btn_hovered.png');
   imgWinPressed := RequestImage('assets/images/btn_pressed.png');
 
-  blackFont := RequestBMFont('assets/fonts/p92_sans_11.txt');
-  picotronFont := RequestBMFont('assets/fonts/picotron_8px.txt');
+  fontBlack := RequestBMFont('assets/fonts/p92_sans_11.txt');
+  fontPicotron := RequestBMFont('assets/fonts/picotron_8px.txt');
 end;
 
 procedure OnReady;
@@ -72,7 +72,7 @@ begin
 
   gameTime := 0.0;
 
-  ReplaceColour(BorrowBMFontPtr(blackFont)^.texHandle, $FFFFFFFF, $FF000000);
+  ReplaceColour(BorrowBMFontPtr(fontBlack)^.texHandle, $FFFFFFFF, $FF000000);
 
   clicks := 0;
   showFPS.checked := false;
@@ -108,7 +108,7 @@ var
 begin
   Cls($FF6495ED);
 
-  GuiSetFont(blackFont);
+  GuiSetFont(fontBlack);
 
   if Button('Click me!', 180, 88, 50, 24) then
     inc(clicks);
@@ -131,7 +131,7 @@ begin
   w := GuiMeasureText(s);
   TextLabel(s, (VGAWidth - w) div 2, 120);
 
-  GuiSetFont(picotronFont);
+  GuiSetFont(fontPicotron);
   s := 'Picotron font';
   w := GuiMeasureText(s);
   TextLabel(s, (VGAWidth - w) div 2, 140);
@@ -149,7 +149,7 @@ begin
 
   DrawMouse;
 
-  if showFPS.checked then drawFPS;
+  if showFPS.checked then DrawFPS;
 end;
 
 exports
