@@ -48,6 +48,7 @@ function UnsafePGet(const x, y: smallint): longword;
 function PGet(const x, y: smallint): longword;
 
 function ARGBtoRGBA(const colour: longword): longword;
+function ARGBtoABGR(const colour: longword): longword;
 
 procedure UnsafePSetARGB(const x, y: smallint; const ARGB: longword);
 procedure UnsafePSet(const x, y: smallint; const RGBA: longword);
@@ -157,10 +158,16 @@ end;
 function ARGBtoRGBA(const colour: longword): longword; inline;
 begin
   ARGBtoRGBA := (
-       ((colour and $00FF0000) shr 16)
-    or (colour and $0000FF00)
+       ((colour and $00FFFFFF) shl 8)
+    or ((colour and $FF000000) shr 24))
+end;
+
+function ARGBtoABGR(const colour: longword): longword; inline;
+begin
+  ARGBtoABGR :=
+    (colour and $FF00FF00)
+    or ((colour and $00FF0000) shr 16)
     or ((colour and $000000FF) shl 16)
-    or (colour and $FF000000))
 end;
 
 procedure UnsafePSetARGB(const x, y: smallint; const ARGB: longword); inline;
