@@ -49,6 +49,7 @@ procedure Cls(const colour: longword);
 { colour format: $AARRGGBB }
 procedure ClsBlend(const colour: longword);
 
+{ Returns colour in ABGR }
 function UnsafePGet(const x, y: smallint): longword;
 function PGet(const x, y: smallint): longword;
 
@@ -141,12 +142,7 @@ var
   offset: longword;
 begin
   offset := (x + y * _vgaWidth) * 4;
-
-  { RGBA to ARGB }
-  UnsafePGet := activeSurface^[offset + 3] shl 24
-    or activeSurface^[offset] shl 16
-    or activeSurface^[offset + 1] shl 8
-    or activeSurface^[offset + 2]
+  UnsafePGet := PLongWord(@activeSurface^[offset])^
 end;
 
 { Gets the colour of a pixel }
@@ -157,6 +153,7 @@ begin
     exit
   end;
 
+  { TODO: Implement ABGR to ARGB }
   PGet := UnsafePGet(x, y)
 end;
 
