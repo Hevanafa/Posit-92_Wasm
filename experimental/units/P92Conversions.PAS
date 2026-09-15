@@ -13,6 +13,7 @@ unit P92Conversions;
 interface
 
 function I32Str(const value: Longint): string;
+function U32Str(const value: longword): string;
 function F32str(const value: double): string;
 function ToFixed(const value: double; const decimals: smallint): string;
 function I16HexStr(const value: word): string;
@@ -23,9 +24,14 @@ function ParseInt(const text: string): smallint;
 
 implementation
 
-function I32Str(const value: longInt): string;
+function I32Str(const value: longint): string;
 begin
   str(value, I32Str)
+end;
+
+function U32Str(const value: longword): string;
+begin
+  str(value, U32Str)
 end;
 
 function F32str(const value: double): string;
@@ -37,8 +43,6 @@ function ToFixed(const value: double; const decimals: smallint): string;
 begin
   str(value:0:decimals, ToFixed)
 end;
-
-
 
 function I16HexStr(const value: word): string;
 const
