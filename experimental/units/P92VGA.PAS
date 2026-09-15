@@ -172,12 +172,8 @@ end;
 
 procedure UnsafePSetARGB(const x, y: smallint; const ARGB: longword); inline;
 begin
-  { ARGB to RGBA }
   PLongWord(@activeSurface^[(y * VGAWidth + x) * 4])^ :=
-    ((ARGB and $00FF0000) shr 16)
-    or ((ARGB and $0000FF00))
-    or ((ARGB and $000000FF) shl 16)
-    or ((ARGB and $FF000000))
+    ARGBtoRGBA(ARGB)
 end;
 
 procedure UnsafePSet(const x, y: smallint; const ABGR: longword);
@@ -190,7 +186,7 @@ begin
   if (x > _clipX2) or (x < _clipX1) or (y > _clipY2) or (y < _clipX1) then
     exit;
 
-  UnsafePSet(x, y, ARGBtoRGBA(colour))
+  UnsafePSet(x, y, ARGBtoABGR(colour))
 end;
 
 
