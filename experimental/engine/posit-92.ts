@@ -119,8 +119,8 @@ type WasmImports = {
     JsReportFreeMem: (bytes: number) => void,
 
     // VGA
-    VgaUpload: () => void,
-    VgaPresent: () => void,
+    VGAUpload: () => void,
+    VGAPresent: () => void,
   }
 }
 
@@ -200,11 +200,11 @@ class Posit92 {
   #vgaWidth: number;
   #vgaHeight: number;
 
-  get VgaWidth(): number {
+  get VGAWidth(): number {
     return this.#vgaWidth;
   }
 
-  get VgaHeight(): number {
+  get VGAHeight(): number {
     return this.#vgaHeight;
   }
 
@@ -289,8 +289,8 @@ class Posit92 {
       JsReportFreeMem: this.#ReportFreeMem.bind(this),
 
       // VGA
-      VgaUpload: this.#VgaUpload.bind(this),
-      VgaPresent: this.#VgaPresent.bind(this),
+      VGAUpload: this.#VGAUpload.bind(this),
+      VGAPresent: this.#VGAPresent.bind(this),
     }
   };
 
@@ -1054,7 +1054,7 @@ class Posit92 {
 
   #surface: ImageData | null = null;
 
-  #VgaUpload(): void {
+  #VGAUpload(): void {
     const surfacePtr = this.#wasm.exports.GetSurfacePtr();
 
     const imageData = new Uint8ClampedArray(
@@ -1069,7 +1069,7 @@ class Posit92 {
     this.#surface = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
   }
 
-  #VgaPresent(): void {
+  #VGAPresent(): void {
     if (this.#surface != null)
       this.canvasCtx.putImageData(this.#surface, 0, 0);
   }

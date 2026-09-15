@@ -22,8 +22,8 @@ type
   TByteArray = array[0..0] of byte;
 
 {$ifdef P92_WASM}
-procedure VGAUpload; external 'env' name 'VgaUpload';
-procedure VGAPresent; external 'env' name 'VgaPresent';
+procedure VGAUpload; external 'env' name 'VGAUpload';
+procedure VGAPresent; external 'env' name 'VGAPresent';
 {$endif}
 
 {$ifdef P92_SDL2}
