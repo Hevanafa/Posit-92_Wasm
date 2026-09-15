@@ -124,7 +124,7 @@ begin
 
   sprStretch(imgDosuEXE[0], 100, 80, 24, 48);
 
-  GuiSetFont(GetDefaultFontHandle);
+  GuiSetFont(fontWhite);
   Slider(120, 40, 100, sliderValue, 0, 100);
   TextLabel('Slider value: ' + i32str(sliderValue.value), 120, 30);
 
@@ -137,7 +137,7 @@ begin
   w := GuiMeasureText(s);
   TextLabel(s, (VGAWidth - w) div 2, 140);
 
-  GuiSetFont(GetDefaultFontHandle);
+  GuiSetFont(fontWhite);
   ProgressBar(10, 80, 80, 10, 0.75);
   ProgressBarLabelled(10, 100, 80, 10, 0.75);
   Checkbox('Show FPS', 10, 60, showFPS);
