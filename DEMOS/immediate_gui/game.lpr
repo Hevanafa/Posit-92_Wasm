@@ -111,7 +111,7 @@ begin
 
   GuiSetFont(fontBlack);
 
-  if Button('Click me!', 180, 88, 50, 24) then
+  if Button('Click me!', 180, 88) then
     inc(clicks);
 
   if ImageButton(240, 88, imgWinNormal, imgWinHovered, imgWinPressed) then

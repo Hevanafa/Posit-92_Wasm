@@ -75,8 +75,8 @@ procedure ResetActiveWidget;
 
 procedure GuiSetFont(const fontHandle: TBMFontHandle);
 
-function GuiMeasureText(const text: string): word;
-function GuiMeasureTextWrapHeight(text: ShortString; const maxWidth: smallint): word;
+function GuiMeasureText(const text: string): smallint;
+function GuiMeasureTextWrapHeight(text: ShortString; const maxWidth: smallint): smallint;
 
 procedure AssertFontSet;
 
@@ -85,6 +85,7 @@ procedure TextLabel(const text: string; const x, y: smallint);
 procedure TextLabelWrap(text: ShortString; const x, y, maxWidth: smallint);
 procedure CentredLabel(const text: string; const cx, y: smallint);
 
+function Button(const caption: string; const x, y: smallint): boolean;
 function ButtonSized(const caption: string; const x, y, width, height: smallint): boolean;
 function ImageButton(const x, y: smallint; const imgNormal, imgHovered, imgPressed: longint): boolean;
 
@@ -250,13 +251,13 @@ end;
 
 { Returns the width of the text
   to measure the height, use `font.lineHeight` }
-function GuiMeasureText(const text: string): word;
+function GuiMeasureText(const text: string): smallint;
 begin
   AssertFontSet;
   GuiMeasureText := MeasureBMFont(activeFontHandle, text)
 end;
 
-function GuiMeasureTextWrapHeight(text: ShortString; const maxWidth: smallint): word;
+function GuiMeasureTextWrapHeight(text: ShortString; const maxWidth: smallint): smallint;
 var
   fontPtr: PBMFont;
   lines: array[0..9] of ShortString;
@@ -384,7 +385,25 @@ begin
 end;
 
 
+function Button(const caption: string; const x, y: smallint): boolean;
+const
+  Padding = 4;
+var
+  w: smallint;
+begin
+  AssertFontSet;
+
+  w := GuiMeasureText(caption);
+
+  Button := ButtonSized(caption,
+    x, y,
+    w + Padding * 2,
+    BorrowBMFontPtr(activeFontHandle)^.lineHeight + Padding * 2);
+end;
+
 function ButtonSized(const caption: string; const x, y, width, height: smallint): boolean;
+const
+  Padding = 4;
 var
   zone: TZone;
   thisWidgetID: smallint;
@@ -417,7 +436,7 @@ begin
 
   rectfill(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), buttonColour);
   rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), IceCreamWhite);
-  TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
+  TextLabel(caption, trunc(zone.x + Padding), trunc(zone.y + Padding));
 
   if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
