@@ -2,6 +2,11 @@
   VGA unit
   Part of Posit-92 game engine
   By Hevanafa
+
+  The default colour value to pass around is in $AARRGGBB format
+
+  Internally, the backbuffer consists of a series of this array:
+  [R, G, B, A]
 }
 
 unit P92VGA;
@@ -248,10 +253,11 @@ end;
 procedure ClsBlend(const colour: longword);
 var
   a, b: word;
+  ABGR: longword;
 begin
   for b:=0 to VGAHeight - 1 do
-  for a:=0 to VGAWidth - 1 do
-    UnsafePSetBlend(a, b, colour);
+    for a:=0 to VGAWidth - 1 do
+      UnsafePSetBlend(a, b, colour);
 end;
 
 function ClipX1: smallint;
