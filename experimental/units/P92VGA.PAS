@@ -51,6 +51,7 @@ procedure ClsBlend(const colour: longword);
 
 { Returns colour in ABGR }
 function UnsafePGet(const x, y: smallint): longword;
+{ Gets the colour of a pixel from the backbuffer }
 function PGet(const x, y: smallint): longword;
 
 function ARGBtoRGBA(const colour: longword): longword;
@@ -137,26 +138,6 @@ begin
   BorrowSurfacePtr := activeSurface
 end;
 
-function UnsafePGet(const x, y: smallint): longword; inline;
-var
-  offset: longword;
-begin
-  offset := (x + y * _vgaWidth) * 4;
-  UnsafePGet := PLongWord(@activeSurface^[offset])^
-end;
-
-{ Gets the colour of a pixel }
-function PGet(const x, y: smallint): longword;
-begin
-  if (x >= VGAWidth) or (x < 0) or (y >= VGAHeight) or (y < 0) then begin
-    PGet := 0;
-    exit
-  end;
-
-  { TODO: Implement ABGR to ARGB }
-  PGet := UnsafePGet(x, y)
-end;
-
 function ARGBtoRGBA(const colour: longword): longword; inline;
 begin
   ARGBtoRGBA := (
@@ -170,6 +151,25 @@ begin
     (colour and $FF00FF00)
     or ((colour and $00FF0000) shr 16)
     or ((colour and $000000FF) shl 16)
+end;
+
+function UnsafePGet(const x, y: smallint): longword; inline;
+var
+  offset: longword;
+begin
+  offset := (x + y * _vgaWidth) * 4;
+  UnsafePGet := PLongWord(@activeSurface^[offset])^
+end;
+
+function PGet(const x, y: smallint): longword;
+begin
+  if (x >= VGAWidth) or (x < 0) or (y >= VGAHeight) or (y < 0) then begin
+    PGet := 0;
+    exit
+  end;
+
+  { TODO: Implement ABGR to ARGB }
+  PGet := UnsafePGet(x, y)
 end;
 
 procedure UnsafePSetARGB(const x, y: smallint; const ARGB: longword); inline;
