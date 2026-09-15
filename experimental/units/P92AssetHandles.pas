@@ -1,3 +1,10 @@
+{
+  P92 asset handle unit
+  Part of Posit-92 game engine
+
+  The asset handles are automatically incremented by P92AssetRegistry
+}
+
 unit P92AssetHandles;
 
 {$Mode ObjFPC}
@@ -7,8 +14,11 @@ unit P92AssetHandles;
 interface
 
 type
+  { Starts from 1 }
   TTextureHandle = type longint;
+  { Starts from 1 }
   TBMFontHandle = type longint;
+  { Starts from 1 }
   TSoundHandle = type longint;
 
 implementation

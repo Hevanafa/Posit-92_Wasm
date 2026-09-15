@@ -145,8 +145,12 @@ begin
   mousePoint.x := 0;
   mousePoint.y := 0;
 
+  isFontSet := false;
+
   if useDefaultFont then
-    GuiSetFont(GetDefaultFontHandle);
+    GuiSetFont(GetDefaultFontHandle)
+  else
+    GuiSetFont(0);
 end;
 
 function GetMousePoint: TPoint;
@@ -234,13 +238,14 @@ end;
 
 procedure GuiSetFont(const fontHandle: TBMFontHandle);
 begin
-  isFontSet := true;
+  isFontSet := fontHandle >= 1;
   activeFontHandle := fontHandle
 end;
 
 procedure AssertFontSet;
 begin
-  if not isFontSet then panicHalt('activeFont is unset!');
+  if not isFontSet then
+    PanicHalt('Immediate GUI: activeFont is unset!');
 end;
 
 { Returns the width of the text

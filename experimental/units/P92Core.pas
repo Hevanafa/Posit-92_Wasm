@@ -244,7 +244,7 @@ begin
     writelog('ersReady');
 
 {$ifdef P92_IMGUI}
-  InitImmediateGUI;
+  InitImmediateGUI(bootConfig.LoadDefaultFont);
 {$endif}
 {$ifdef P92_WASM}
   HostCallOnReady
