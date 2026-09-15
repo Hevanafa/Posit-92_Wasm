@@ -178,7 +178,7 @@ end;
 procedure UnsafePSetARGB(const x, y: smallint; const ARGB: longword); inline;
 begin
   PLongWord(@activeSurface^[(y * VGAWidth + x) * 4])^ :=
-    ARGBtoRGBA(ARGB)
+    ARGBtoABGR(ARGB)
 end;
 
 procedure UnsafePSet(const x, y: smallint; const ABGR: longword);
