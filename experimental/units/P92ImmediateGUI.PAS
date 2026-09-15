@@ -85,7 +85,7 @@ procedure TextLabel(const text: string; const x, y: smallint);
 procedure TextLabelWrap(text: ShortString; const x, y, maxWidth: smallint);
 procedure CentredLabel(const text: string; const cx, y: smallint);
 
-function Button(const caption: string; const x, y, width, height: smallint): boolean;
+function ButtonSized(const caption: string; const x, y, width, height: smallint): boolean;
 function ImageButton(const x, y: smallint; const imgNormal, imgHovered, imgPressed: longint): boolean;
 
 procedure ListView(const items: array of string; var state: TListViewState);
@@ -384,7 +384,7 @@ begin
 end;
 
 
-function Button(const caption: string; const x, y, width, height: smallint): boolean;
+function ButtonSized(const caption: string; const x, y, width, height: smallint): boolean;
 var
   zone: TZone;
   thisWidgetID: smallint;
@@ -421,9 +421,9 @@ begin
 
   if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
-    Button := true
+    ButtonSized := true
   else
-    Button := false;
+    ButtonSized := false;
 end;
 
 function ImageButton(const x, y: smallint; const imgNormal, imgHovered, imgPressed: longint): boolean;
