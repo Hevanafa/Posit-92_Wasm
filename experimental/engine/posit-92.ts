@@ -103,9 +103,9 @@ type WasmImports = {
     FlushLog: () => void,
 
     // Mouse
-    GetMouseX: () => number,
-    GetMouseY: () => number,
-    GetMouseButton: () => number,
+    JsGetMouseX: () => number,
+    JsGetMouseY: () => number,
+    JsGetMouseButton: () => number,
 
     // Panic
     JsPanicHalt: (textPtr: number, textLen: number) => void,
@@ -273,9 +273,9 @@ class Posit92 {
       FlushLog: this.#PascalFlushLog.bind(this),
 
       // Mouse
-      GetMouseX: this.#GetMouseX.bind(this),
-      GetMouseY: this.#GetMouseY.bind(this),
-      GetMouseButton: this.#GetMouseButton.bind(this),
+      JsGetMouseX: this.#GetMouseX.bind(this),
+      JsGetMouseY: this.#GetMouseY.bind(this),
+      JsGetMouseButton: this.#GetMouseButton.bind(this),
 
       // Panic
       JsPanicHalt: this.#PanicHalt.bind(this),

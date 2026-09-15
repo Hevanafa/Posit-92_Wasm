@@ -35,15 +35,15 @@ procedure UpdateMouse;
 implementation
 
 {$ifdef P92_WASM}
-function GetMouseX: smallint; external 'env' name 'GetMouseX';
-function GetMouseY: smallint; external 'env' name 'GetMouseY';
-function GetMouseButton: smallint; external 'env' name 'GetMouseButton';
+function JsGetMouseX: smallint; external 'env' name 'JsGetMouseX';
+function JsGetMouseY: smallint; external 'env' name 'JsGetMouseY';
+function JsGetMouseButton: smallint; external 'env' name 'JsGetMouseButton';
 
 procedure UpdateMouse;
 begin
-  mouseX := GetMouseX;
-  mouseY := GetMouseY;
-  mouseButton := GetMouseButton;
+  mouseX := JsGetMouseX;
+  mouseY := JsGetMouseY;
+  mouseButton := JsGetMouseButton;
 end;
 {$endif}
 
