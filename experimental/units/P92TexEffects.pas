@@ -93,7 +93,7 @@ begin
       or (destY < clipY1) or (destY > clipY2) then continue;
 
     if alpha = 255 then
-      unsafePset(destX, destY, colour)
+      UnsafePSet(destX, destY, colour)
     else
       UnsafePSetBlend(destX, destY, colour);
   end;

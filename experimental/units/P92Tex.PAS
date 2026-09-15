@@ -53,7 +53,7 @@ function GetTextureHeight(const texHandle: TTextureHandle): smallint;
 procedure SetTextureHeight(const texHandle: TTextureHandle; const value: smallint);
 
 { Assuming the texture isn't nil & the bounds are known
-  return colour: RRGGBBAA }
+  return colour: AABBGGRR }
 function UnsafeSprPGet(const texture: PSoftwareTex; const x, y: smallint): longword;
 function UnsafeSprGetAlpha(const texture: PSoftwareTex; const x, y: smallint): byte;
 
