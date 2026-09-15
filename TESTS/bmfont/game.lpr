@@ -22,11 +22,19 @@ var
   font: TBMFontHandle;
 
 procedure GlyphTest;
+const
+  FirstLineTop = 10;
+var
+  fontPtr: PBMFont;
 begin
-  PrintBMFont(font, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10, 10);
-  PrintBMFont(font, 'abcdefghijklmnopqrstuvwxyz', 10, 30);
-  PrintBMFont(font, '0123456789', 10, 50);
-  PrintBMFont(font, '!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~', 10, 70);
+  fontPtr := BorrowBMFontPtr(font);
+
+  PrintBMFont(font, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10, FirstLineTop);
+  PrintBMFont(font, 'abcdefghijklmnopqrstuvwxyz', 10, FirstLineTop + fontPtr^.lineHeight);
+  PrintBMFont(font, '0123456789', 10, FirstLineTop + fontPtr^.lineHeight * 2);
+  PrintBMFont(font, '!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~', 10, FirstLineTop + fontPtr^.lineHeight * 3);
+
+  { PrintBMFont(font, '$32,000', 10, FirstLineTop + fontPtr^.lineHeight * 4); }
 end;
 
 procedure OnPreload;
