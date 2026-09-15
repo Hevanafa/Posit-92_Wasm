@@ -255,9 +255,11 @@ var
   a, b: word;
   ABGR: longword;
 begin
+  ABGR := ARGBtoABGR(colour);
+
   for b:=0 to VGAHeight - 1 do
     for a:=0 to VGAWidth - 1 do
-      UnsafePSetBlend(a, b, colour);
+      UnsafePSetBlend(a, b, ABGR);
 end;
 
 function ClipX1: smallint;
