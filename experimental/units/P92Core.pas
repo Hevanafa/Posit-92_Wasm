@@ -17,7 +17,7 @@ type
     height: smallint;
     sdlScale: smallint;
 
-    { Default font }
+    { Default BMFont }
     enableDefaultFont: boolean;
     defaultFontPath: string;
 
@@ -241,11 +241,17 @@ begin
   engineRunState := ersReady;
 
   if DebugEngineRunStates then
-    writelog('ersReady');
+    WriteLog('ersReady');
 
-{$ifdef P92_IMGUI}
-  InitImmediateGUI(bootConfig.LoadDefaultFont);
-{$endif}
+{$IFDEF P92_IMGUI}
+{$IFDEF P92_WASM}
+  InitImmediateGUI(GetBootOptionBoolean('LoadDefaultBMFont'));
+{$ENDIF}
+{$IFDEF P92_SDL2}
+  InitImmediateGUI(bootConfig.LoadDefaultBMFont);
+{$ENDIF}
+{$ENDIF}
+
 {$ifdef P92_WASM}
   HostCallOnReady
 {$endif}
