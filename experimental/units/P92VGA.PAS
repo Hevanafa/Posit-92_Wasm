@@ -153,6 +153,11 @@ begin
     or ((colour and $000000FF) shl 16)
 end;
 
+function ABGRtoARGB(const colour: longword): longword; inline;
+begin
+  ABGRtoARGB := ARGBtoABGR(colour)
+end;
+
 function UnsafePGet(const x, y: smallint): longword; inline;
 var
   offset: longword;
@@ -168,8 +173,7 @@ begin
     exit
   end;
 
-  { TODO: Implement ABGR to ARGB }
-  PGet := UnsafePGet(x, y)
+  PGet := ABGRtoARGB(UnsafePGet(x, y))
 end;
 
 procedure UnsafePSetARGB(const x, y: smallint; const ARGB: longword); inline;
