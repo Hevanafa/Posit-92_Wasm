@@ -234,7 +234,7 @@ procedure PSetBlend(const x, y: smallint; const colour: longword);
 begin
   if (x > _clipX2) or (x < _clipX1) or (y > _clipY2) or (y < _clipY1) then exit;
 
-  UnsafePSetBlend(x, y, colour)
+  UnsafePSetBlend(x, y, ARGBtoABGR(colour))
 end;
 
 procedure Cls(const colour: longword);
