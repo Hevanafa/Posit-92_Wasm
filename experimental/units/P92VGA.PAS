@@ -190,54 +190,6 @@ begin
 end;
 
 
-procedure LegacyUnsafePSetBlend(const x, y: smallint; const colour: longword);
-var
-  srcA, srcR, srcG, srcB: byte;
-  destA, destR, destG, destB: byte;
-  outA, outR, outG, outB: byte;
-  offset: longword;
-  { inverted alpha }
-  alpha, invAlpha: single;
-begin
-  srcA := colour shr 24 and $FF;
-
-  if srcA = 0 then exit;
-
-  srcR := colour shr 16 and $FF;
-  srcG := colour shr 8 and $FF;
-  srcB := colour and $FF;
-  
-  offset := (x + y * VGAWidth) * 4;
-
-  { Handle opaque pixel }
-  if srcA = 255 then begin
-    activeSurface^[offset] := srcR;
-    activeSurface^[offset + 1] := srcG;
-    activeSurface^[offset + 2] := srcB;
-    activeSurface^[offset + 3] := srcA;
-    exit
-  end;
-
-  destR := activeSurface^[offset];
-  destG := activeSurface^[offset + 1];
-  destB := activeSurface^[offset + 2];
-  destA := activeSurface^[offset + 3];
-  
-  { Handle alpha blending }
-  alpha := srcA / 255.0;
-  invAlpha := 1.0 - alpha;
-
-  outR := round(srcR * alpha + destR * invAlpha);
-  outG := round(srcG * alpha + destG * invAlpha);
-  outB := round(srcB * alpha + destB * invAlpha);
-  outA := srcA + round(destA * invAlpha);
-
-  activeSurface^[offset] := outR;
-  activeSurface^[offset + 1] := outG;
-  activeSurface^[offset + 2] := outB;
-  activeSurface^[offset + 3] := outA;
-end;
-
 procedure UnsafePSetBlend(const x, y: smallint; const colour: longword); inline;
 var
   srcA, srcR, srcG, srcB: byte;
