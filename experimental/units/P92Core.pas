@@ -320,8 +320,8 @@ begin
 {$endif}
 
 {$ifdef P92_WASM}
-  VgaUpload;
-  VgaPresent;
+  VGAUpload;
+  VGAPresent;
 {$endif}
 {$ifdef P92_WEBGL}
   VgaUpload;

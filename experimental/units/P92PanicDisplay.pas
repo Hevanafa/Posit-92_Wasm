@@ -31,8 +31,8 @@ begin
 
   { Scanlines }
   b:=0;
-  while b < VgaHeight do begin
-    for a:=0 to VgaWidth - 1 do
+  while b < VGAHeight do begin
+    for a:=0 to VGAWidth - 1 do
       PSet(a, b, $FF2A0000);
 
     inc(b, 3)
@@ -40,15 +40,15 @@ begin
 
   Print('Fatal Error', 8, 8);
 
-  PrintWrap(msg, 8, 24, VgaWidth - 16);
+  PrintWrap(msg, 8, 24, VGAWidth - 16);
 
-  Print('Check Console for details', 8, VgaHeight - 16);
+  Print('Check Console for details', 8, VGAHeight - 16);
 
-  VgaUpload;
+  VGAUpload;
 {$ifdef P92_WEBGL}
   WebGLPresent;
 {$else}
-  VgaPresent;
+  VGAPresent;
 {$endif}
 
   PanicHalt(msg)

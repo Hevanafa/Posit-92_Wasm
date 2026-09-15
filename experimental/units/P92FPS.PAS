@@ -54,7 +54,7 @@ end;
 
 procedure DrawFPS;
 begin
-  print('FPS: ' + i32str(GetLastFPS), VgaWidth - 100, 0);
+  print('FPS: ' + i32str(GetLastFPS), VGAWidth - 100, 0);
 
 {$ifdef debug}
   print('lastFPS: ' + i32str(lastFPS), VgaWidth - 160, 16);

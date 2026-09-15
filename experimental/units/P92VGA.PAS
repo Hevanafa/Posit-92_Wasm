@@ -22,8 +22,8 @@ type
   TByteArray = array[0..0] of byte;
 
 {$ifdef P92_WASM}
-procedure VgaUpload; external 'env' name 'VgaUpload';
-procedure VgaPresent; external 'env' name 'VgaPresent';
+procedure VGAUpload; external 'env' name 'VgaUpload';
+procedure VGAPresent; external 'env' name 'VgaPresent';
 {$endif}
 
 {$ifdef P92_SDL2}
@@ -32,8 +32,8 @@ procedure VgaUpload;
 procedure VgaPresent;
 {$endif}
 
-function VgaWidth: smallint;
-function VgaHeight: smallint;
+function VGAWidth: smallint;
+function VGAHeight: smallint;
 
 { Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
 procedure InitVideoMem(const width, height: smallint; const startAddr: PByteArray); public name 'InitVideoMem';
@@ -85,14 +85,14 @@ var
   { inclusive clipping bounds }
   _clipX1, _clipY1, _clipX2, _clipY2: smallint;
 
-function VgaWidth: smallint;
+function VGAWidth: smallint;
 begin
-  VgaWidth := _vgaWidth
+  VGAWidth := _vgaWidth
 end;
 
-function VgaHeight: smallint;
+function VGAHeight: smallint;
 begin
-  VgaHeight := _vgaHeight
+  VGAHeight := _vgaHeight
 end;
 
 {$ifdef P92_SDL2}
@@ -146,7 +146,7 @@ end;
 { Gets the colour of a pixel }
 function PGet(const x, y: smallint): longword;
 begin
-  if (x >= VgaWidth) or (x < 0) or (y >= VgaHeight) or (y < 0) then begin
+  if (x >= VGAWidth) or (x < 0) or (y >= VGAHeight) or (y < 0) then begin
     PGet := 0;
     exit
   end;
@@ -166,7 +166,7 @@ end;
 procedure UnsafePSetARGB(const x, y: smallint; const ARGB: longword); inline;
 begin
   { ARGB to RGBA }
-  PLongWord(@activeSurface^[(y * VgaWidth + x) * 4])^ :=
+  PLongWord(@activeSurface^[(y * VGAWidth + x) * 4])^ :=
     ((ARGB and $00FF0000) shr 16)
     or ((ARGB and $0000FF00))
     or ((ARGB and $000000FF) shl 16)
@@ -175,7 +175,7 @@ end;
 
 procedure UnsafePSet(const x, y: smallint; const RGBA: longword);
 begin
-  PLongWord(@activeSurface^[(y * VgaWidth + x) * 4])^ := RGBA
+  PLongWord(@activeSurface^[(y * VGAWidth + x) * 4])^ := RGBA
 end;
 
 procedure PSet(const x, y: smallint; const colour: longword);
@@ -204,7 +204,7 @@ begin
   srcG := colour shr 8 and $FF;
   srcB := colour and $FF;
   
-  offset := (x + y * VgaWidth) * 4;
+  offset := (x + y * VGAWidth) * 4;
 
   { Handle opaque pixel }
   if srcA = 255 then begin
@@ -251,7 +251,7 @@ begin
   srcG := colour shr 8 and $FF;
   srcB := colour and $FF;
   
-  offset := (x + y * VgaWidth) * 4;
+  offset := (x + y * VGAWidth) * 4;
 
   { Handle opaque pixel }
   if srcA = 255 then begin
@@ -286,7 +286,7 @@ procedure Cls(const colour: longword);
 begin
   FillDWord(
     BorrowSurfacePtr^,
-    VgaWidth * VgaHeight,
+    VGAWidth * VGAHeight,
     { convert ARGB to RGBA + flip the byte order }
     SwapEndian((colour and $FFFFFF shl 8) or (colour and $FF000000 shr 24)))
 end;
@@ -295,8 +295,8 @@ procedure ClsBlend(const colour: longword);
 var
   a, b: word;
 begin
-  for b:=0 to VgaHeight - 1 do
-  for a:=0 to VgaWidth - 1 do
+  for b:=0 to VGAHeight - 1 do
+  for a:=0 to VGAWidth - 1 do
     UnsafePSetBlend(a, b, colour);
 end;
 

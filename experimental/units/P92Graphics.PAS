@@ -220,14 +220,14 @@ var
   solid: longword;
 begin
   if GetAlpha(colour) = 0 then exit;
-  if (x < 0) or (x >= vgaWidth) then exit;
+  if (x < 0) or (x >= VGAWidth) then exit;
   solid := SolidColour(colour);
 
   if y0 > y1 then begin
     temp := y0; y0 := y1; y1 := temp
   end;
 
-  if (y0 >= vgaHeight) or (y1 < 0) then exit;
+  if (y0 >= VGAHeight) or (y1 < 0) then exit;
 
   for a:=y0 to y1 do begin
     if (a < 0) then continue;

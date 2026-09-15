@@ -129,12 +129,12 @@ begin
 
   s := 'Clicks: ' + i32str(clicks);
   w := GuiMeasureText(s);
-  TextLabel(s, (vgaWidth - w) div 2, 120);
+  TextLabel(s, (VGAWidth - w) div 2, 120);
 
   GuiSetFont(picotronFont);
   s := 'Picotron font';
   w := GuiMeasureText(s);
-  TextLabel(s, (vgaWidth - w) div 2, 140);
+  TextLabel(s, (VGAWidth - w) div 2, 140);
 
   GuiSetFont(GetDefaultFontHandle);
   ProgressBar(10, 80, 80, 10, 0.75);

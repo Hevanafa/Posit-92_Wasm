@@ -90,7 +90,7 @@ begin
   if (startX > endX) or (startY > endY) then exit;
 
   stride := texture^.width * 4;
-  destStride := VgaWidth * 4;
+  destStride := VGAWidth * 4;
 
   for py := startY to endY do begin
     rowBase := py * stride;
@@ -230,7 +230,7 @@ begin
   texWidth4 := texture^.width * 4;
 
   surface := BorrowSurfacePtr;
-  vgaWidth4 := VgaWidth * 4;
+  vgaWidth4 := VGAWidth * 4;
 
   for b := startY to endY do begin
     srcRowBase := (srcY + b) * texWidth4 + srcX * 4;

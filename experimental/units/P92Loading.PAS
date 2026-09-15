@@ -29,11 +29,11 @@ begin
   s := 'Progress: ' + I32Str(GetAssetReadyCount) + ' / ' + I32Str(GetAssetTotalCount);
   Print(s, 8, 16);
 
-  VgaUpload;
+  VGAUpload;
 {$ifdef P92_WEBGL}
   WebGLPresent;
 {$else}
-  VgaPresent;
+  VGAPresent;
 {$endif}
 end;
 
