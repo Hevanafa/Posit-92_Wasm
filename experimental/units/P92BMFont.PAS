@@ -33,8 +33,9 @@ type
     glyphs: array[TByteRange] of TBMFontGlyph;
   end;
 
-
+{ This function also clones the texture data }
 function CloneBMFont(const srcFontHandle: TBMFontHandle): TBMFontHandle;
+
 procedure FreeBMFont(const fontHandle: TBMFontHandle);
 
 procedure PrintBMFont(
@@ -129,12 +130,12 @@ begin
   bmfonts[fontHandle].status := AssetStatusEmpty;
   bmfonts[fontHandle].errorCode := 0;
 
+  FreeTexture(BorrowBMFontPtr(fontHandle)^.texHandle);
+
   fillchar(bmfonts[fontHandle].font, sizeof(TBMFont), 0);
 
   for a:=0 to high(bmfonts[fontHandle].font.glyphs) do
     fillchar(bmfonts[fontHandle].font.glyphs[a], sizeof(TBMFontGlyph), 0);
-
-  FreeTexture(BorrowBMFontPtr(fontHandle)^.texHandle)
 end;
 
 procedure PrintBMFont(
