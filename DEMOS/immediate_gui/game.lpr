@@ -59,7 +59,7 @@ begin
   imgWinHovered := RequestImage('assets/images/btn_hovered.png');
   imgWinPressed := RequestImage('assets/images/btn_pressed.png');
 
-  fontBlack := RequestBMFont('assets/fonts/p92_sans_11.txt');
+  fontWhite := RequestBMFont('assets/fonts/p92_sans_11.txt');
   fontPicotron := RequestBMFont('assets/fonts/picotron_8px.txt');
 end;
 
@@ -72,6 +72,7 @@ begin
 
   gameTime := 0.0;
 
+  fontBlack := CloneBMFont(fontWhite);
   ReplaceColour(BorrowBMFontPtr(fontBlack)^.texHandle, $FFFFFFFF, $FF000000);
 
   clicks := 0;
