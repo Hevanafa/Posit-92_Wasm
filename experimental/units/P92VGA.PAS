@@ -49,19 +49,19 @@ procedure Cls(const colour: longword);
 { colour format: $AARRGGBB }
 procedure ClsBlend(const colour: longword);
 
-{ Returns colour in ABGR }
-function UnsafePGet(const x, y: smallint): longword;
-{ Gets the colour of a pixel from the backbuffer }
-function PGet(const x, y: smallint): longword;
-
 function ARGBtoRGBA(const colour: longword): longword;
 function ARGBtoABGR(const colour: longword): longword;
 
-procedure UnsafePSetARGB(const x, y: smallint; const ARGB: longword);
+{ Returns colour in ABGR }
+function UnsafePGet(const x, y: smallint): longword;
+{ Returns colour in ABGR }
 procedure UnsafePSet(const x, y: smallint; const ABGR: longword);
-procedure PSet(const x, y: smallint; const colour: longword);
-
+{ Returns colour in ABGR }
 procedure UnsafePSetBlend(const x, y: smallint; const ABGR: longword);
+
+{ Gets the colour of a pixel from the backbuffer }
+function PGet(const x, y: smallint): longword;
+procedure PSet(const x, y: smallint; const colour: longword);
 procedure PSetBlend(const x, y: smallint; const colour: longword);
 
 function ClipX1: smallint;
@@ -174,12 +174,6 @@ begin
   end;
 
   PGet := ABGRtoARGB(UnsafePGet(x, y))
-end;
-
-procedure UnsafePSetARGB(const x, y: smallint; const ARGB: longword); inline;
-begin
-  PLongWord(@activeSurface^[(y * VGAWidth + x) * 4])^ :=
-    ARGBtoABGR(ARGB)
 end;
 
 procedure UnsafePSet(const x, y: smallint; const ABGR: longword);
