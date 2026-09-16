@@ -278,7 +278,7 @@ begin
     if alpha < 255 then continue;
 
     colour := UnsafeSprPGet(texture, sx, sy);
-    UnsafePSetARGB(dx + destX, dy + destY, colour);
+    UnsafePSet(dx + destX, dy + destY, colour);
   end;
 end;
 

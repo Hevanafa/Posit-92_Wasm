@@ -122,7 +122,7 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  sprStretch(imgDosuEXE[0], 100, 80, 24, 48);
+  SprStretch(imgDosuEXE[0], 100, 80, 24, 48);
 
   GuiSetFont(fontWhite);
   Slider(120, 40, 100, sliderValue, 0, 100);
