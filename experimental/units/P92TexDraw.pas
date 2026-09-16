@@ -332,10 +332,12 @@ var
   sx, sy: smallint;
   srcPos: longword;
   alpha: byte;
+  ABGR: longword;
 begin
   if not IsTextureSet(texHandle) then exit;
 
   texture := BorrowTexturePtr(texHandle);
+  ABGR := ARGBtoABGR(colour);
 
   for b:=0 to srcH - 1 do
   for a:=0 to srcW - 1 do begin
@@ -349,7 +351,7 @@ begin
     alpha := texture^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
-    UnsafePSetARGB(destX + a, destY + b, colour);
+    UnsafePSet(destX + a, destY + b, ABGR);
   end;
 end;
 
