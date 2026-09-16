@@ -26,7 +26,7 @@ procedure Rect(const x0, y0, x1, y1: smallint; const colour: longword);
 procedure RectFill(x0, y0, x1, y1: smallint; const colour: longword);
 
 procedure HLine(const x0, x1, y: smallint; const colour: longword);
-procedure VLine(x, y0, y1: smallint; const colour: longword);
+procedure VLine(const x, y0, y1: smallint; const colour: longword);
 
 procedure Line(x0, y0, x1, y1: smallint; const colour: longword);
 procedure LineThick(x0, y0, x1, y1, thickness: smallint; const colour: longword);
@@ -183,6 +183,7 @@ begin
 
   if startX < ClipX1 then startX := ClipX1;
   if endX > ClipX2 then endX := ClipX2;
+  if startX > endX then exit;
 
   { Render logic }
 
@@ -193,26 +194,36 @@ begin
     UnsafePSet(x, y, ABGR);
 end;
 
-procedure VLine(x, y0, y1: smallint; const colour: longword);
+procedure VLine(const x, y0, y1: smallint; const colour: longword);
 var
-  y, temp: smallint;
-  solid: longword;
+  y, startY, endY: smallint;
+  solid, ABGR: longword;
 begin
   if GetAlpha(colour) = 0 then exit;
-  if (x < clipX1) or (x > clipX2) then exit;
 
-  solid := SolidColour(colour);
+  { Handle edge cases }
+
+  if (x < ClipX1) or (x > ClipX2) then exit;
 
   if y1 < y0 then begin
-    temp := y0; y0 := y1; y1 := temp
+    startY := y1;
+    endY := y0
+  end else begin
+    startY := y0;
+    endY := y1
   end;
 
-  if y0 < clipY1 then y0 := clipY1;
-  if y1 > clipY2 then y1 := clipY2;
-  if y0 > y1 then exit;
+  if startY < clipY1 then startY := clipY1;
+  if endY > clipY2 then endY := clipY2;
+  if startY > endY then exit;
+
+  { Render logic }
+
+  solid := SolidColour(colour);
+  ABGR := ARGBtoABGR(solid);
 
   for y:=y0 to y1 do
-    UnsafePSetARGB(x, y, solid);
+    UnsafePSet(x, y, ABGR);
 end;
 
 
