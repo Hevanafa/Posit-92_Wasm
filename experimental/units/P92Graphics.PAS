@@ -178,23 +178,26 @@ end;
 
 procedure HLine(x0, x1, y: smallint; const colour: longword);
 var
-  x: smallint;
-  solid: longword;
+  x, startX, endX: smallint;
+  solid, ABGR: longword;
 begin
   if GetAlpha(colour) = 0 then exit;
-  solid := SolidColour(colour);
 
-  if (y < clipY1) or (y > clipY2) then exit;
+  { Handle edge cases }
+  if (y < ClipY1) or (y > ClipY2) then exit;
 
   if x1 < x0 then begin
     x := x0; x0 := x1; x1 := x
   end;
 
-  if x0 < clipX1 then x0 := clipX1;
-  if x1 > clipX2 then x1 := clipX2;
+  if x0 < ClipX1 then x0 := ClipX1;
+  if x1 > ClipX2 then x1 := ClipX2;
+
+  solid := SolidColour(colour);
+  ABGR := ARGBtoABGR(solid);
 
   for x:=x0 to x1 do
-    UnsafePSetARGB(x, y, solid);
+    UnsafePSet(x, y, ABGR);
 end;
 
 procedure VLine(x, y0, y1: smallint; const colour: longword);
