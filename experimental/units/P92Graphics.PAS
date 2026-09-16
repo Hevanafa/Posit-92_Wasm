@@ -22,7 +22,7 @@ function SolidColour(const colour: longword): longword;
 procedure Circ(const cx, cy, radius: smallint; const colour: longword);
 procedure CircFill(const cx, cy, radius: smallint; const colour: longword);
 
-procedure Rect(x0, y0, x1, y1: smallint; const colour: longword);
+procedure Rect(const x0, y0, x1, y1: smallint; const colour: longword);
 procedure RectFill(x0, y0, x1, y1: smallint; const colour: longword);
 
 procedure HLine(const x0, x1, y: smallint; const colour: longword);
@@ -135,28 +135,12 @@ begin
   end;
 end;
 
-procedure Rect(x0, y0, x1, y1: smallint; const colour: longword);
-var
-  a, b, temp: smallint;
-  solid: longword;
+procedure Rect(const x0, y0, x1, y1: smallint; const colour: longword);
 begin
-  if GetAlpha(colour) = 0 then exit;
-  solid := SolidColour(colour);
-
-  if x0 > x1 then begin
-    temp := x0; x0 := x1; x1 := temp
-  end;
-  if y0 > y1 then begin
-    temp := y0; y0 := y1; y1 := temp
-  end;
-  for b:=y0 to y1 do begin
-    pset(x0, b, solid);
-    pset(x1, b, solid)
-  end;
-  for a:=x0 to x1 do begin
-    pset(a, y0, solid);
-    pset(a, y1, solid)
-  end;
+  HLine(x0, x1, y0, colour);
+  HLine(x0, x1, y1, colour);
+  VLine(x0, y0, y1, colour);
+  VLine(x1, y0, y1, colour);
 end;
 
 procedure RectFill(x0, y0, x1, y1: smallint; const colour: longword);
