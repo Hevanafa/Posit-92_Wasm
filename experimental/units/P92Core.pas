@@ -7,7 +7,7 @@ unit P92Core;
 interface
 
 const
-  Posit92Version = '0.3.2_beta';
+  Posit92Version = '0.3.2';
 
 {$ifdef P92_SDL2}
 type

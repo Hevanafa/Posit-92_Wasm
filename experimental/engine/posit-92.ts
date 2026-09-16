@@ -168,7 +168,7 @@ type Posit92Options = {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Posit92 {
-  static version = "0.3.2_beta";
+  public static readonly Version = "0.3.2";
 
   readonly #DefaultVGAWidth = 320;
   readonly #DefaultVGAHeight = 200;
