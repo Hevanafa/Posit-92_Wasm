@@ -317,7 +317,7 @@ begin
     alpha := colour shr 24;
     if alpha < 255 then continue;
 
-    UnsafePSetARGB(dx + destX, dy + destY, colour)
+    UnsafePSet(dx + destX, dy + destY, colour)
   end;
 end;
 
