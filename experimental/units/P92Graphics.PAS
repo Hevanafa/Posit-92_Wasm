@@ -15,6 +15,7 @@ interface
 uses P92Geometry;
 
 function GetAlpha(const colour: longword): byte;
+
 { Raises the alpha to $FF or leaves it at $00 }
 function SolidColour(const colour: longword): longword;
 
@@ -24,7 +25,7 @@ procedure CircFill(const cx, cy, radius: smallint; const colour: longword);
 procedure Rect(x0, y0, x1, y1: smallint; const colour: longword);
 procedure RectFill(x0, y0, x1, y1: smallint; const colour: longword);
 
-procedure HLine(x0, x1, y: smallint; const colour: longword);
+procedure HLine(const x0, x1, y: smallint; const colour: longword);
 procedure VLine(x, y0, y1: smallint; const colour: longword);
 
 procedure Line(x0, y0, x1, y1: smallint; const colour: longword);
@@ -172,11 +173,12 @@ begin
   if y0 > y1 then begin
     temp := y0; y0 := y1; y1 := temp
   end;
+
   for b:=y0 to y1 do
     HLine(x0, x1, b, solid);
 end;
 
-procedure HLine(x0, x1, y: smallint; const colour: longword);
+procedure HLine(const x0, x1, y: smallint; const colour: longword);
 var
   x, startX, endX: smallint;
   solid, ABGR: longword;
@@ -184,19 +186,26 @@ begin
   if GetAlpha(colour) = 0 then exit;
 
   { Handle edge cases }
+
   if (y < ClipY1) or (y > ClipY2) then exit;
 
   if x1 < x0 then begin
-    x := x0; x0 := x1; x1 := x
+    startX := x1;
+    endX := x0
+  end else begin
+    startX := x0;
+    endX := x1
   end;
 
-  if x0 < ClipX1 then x0 := ClipX1;
-  if x1 > ClipX2 then x1 := ClipX2;
+  if startX < ClipX1 then startX := ClipX1;
+  if endX > ClipX2 then endX := ClipX2;
+
+  { Render logic }
 
   solid := SolidColour(colour);
   ABGR := ARGBtoABGR(solid);
 
-  for x:=x0 to x1 do
+  for x:=startX to endX do
     UnsafePSet(x, y, ABGR);
 end;
 
