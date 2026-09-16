@@ -398,7 +398,7 @@ begin
       or (dy > ClipY2) or (dy < ClipY1) then continue;
 
     colour := UnsafeSprPGet(texture, sx, sy);
-    UnsafePSetARGB(dx, dy, colour);
+    UnsafePSet(dx, dy, colour);
   end;
 end;
 
