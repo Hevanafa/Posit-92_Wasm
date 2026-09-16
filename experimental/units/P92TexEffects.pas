@@ -3,14 +3,14 @@ unit P92TexEffects;
 {$Mode ObjFPC}
 {$H-}  { Use ShortStrings }
 {$J-}  { Don't allow assignments to typed consts }
+{$Inline ON}
 
 interface
 
 { colour: $AARRGGBB }
 procedure SprOutline(const texHandle: longint; const x, y: smallint; const colour: longword);
 
-{ This procedure only processes solid pixels
-  colour: $AARRGGBB }
+{ colour: $AARRGGBB }
 procedure SprShadow(const texHandle: longint; const x, y: smallint; const offsetX, offsetY: smallint; const colour: longword);
 
 { Replaces 1 colour of a texture in place
