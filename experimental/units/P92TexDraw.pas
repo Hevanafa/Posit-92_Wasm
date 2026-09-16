@@ -14,6 +14,7 @@ unit P92TexDraw;
 {$B-}  { Enable boolean short-circuiting }
 {$R-}  { Turn off range checks }
 {$Q-}  { Turn off overflow checks }
+{$Inline ON}
 
 interface
 
@@ -445,7 +446,7 @@ begin
     if alpha < 255 then continue;
 
     colour := UnsafeSprPGet(texture, srcX, srcY);
-    UnsafePSetARGB(cx + dx, cy + dy, colour)
+    UnsafePSet(cx + dx, cy + dy, colour)
   end;
 end;
 
