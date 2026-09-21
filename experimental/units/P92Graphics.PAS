@@ -222,7 +222,7 @@ begin
   solid := SolidColour(colour);
   ABGR := ARGBtoABGR(solid);
 
-  for y:=y0 to y1 do
+  for y := startY to endY do
     UnsafePSet(x, y, ABGR);
 end;
 
