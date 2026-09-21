@@ -62,6 +62,9 @@ begin
   texCursor := RequestImage('assets/images/cursor.png');
   texHandCursor := RequestImage('assets/images/hand.png');
 
+  texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
+
   texWinNormal := RequestImage('assets/images/win_normal.png');
   texWinHovered := RequestImage('assets/images/win_hovered.png');
   texWinPressed := RequestImage('assets/images/win_pressed.png');
