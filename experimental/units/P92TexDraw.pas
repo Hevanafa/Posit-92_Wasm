@@ -20,6 +20,7 @@ interface
 
 procedure Spr(const texHandle: longint; const x, y: smallint);
 
+{ This procedure is destructive }
 procedure SprClear(const texHandle: longint; const colour: longword);
 
 procedure SprRegion(
@@ -146,14 +147,16 @@ procedure SprClear(const texHandle: longint; const colour: longword);
 var
   texture: PSoftwareTex;
   px, py: smallint;
+  ABGR: longword;
 begin
   if not IsTextureSet(texHandle) then exit;
 
   texture := BorrowTexturePtr(texHandle);
+  ABGR := ARGBtoABGR(colour);
 
   for py:=0 to texture^.height - 1 do
-  for px:=0 to texture^.width - 1 do
-    UnsafeSprPSet(texture, px, py, colour);
+    for px:=0 to texture^.width - 1 do
+      UnsafeSprPSet(texture, px, py, ABGR);
 end;
 
 {
