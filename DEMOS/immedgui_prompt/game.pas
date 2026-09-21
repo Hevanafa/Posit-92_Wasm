@@ -9,7 +9,7 @@ library Game;
 {$H+}{$J-}
 
 uses
-  P92Core, P92Conversions, P92FPS,
+  P92Core, P92Fonts, P92Conversions, P92FPS, P92WasmHost,
   P92Graphics, P92Geometry, P92Loading,
   P92Tex, P92TexDraw, P92TexEffects,
   P92ImmediateGUI, ImmediateGUIPromptBox,
@@ -38,87 +38,57 @@ var
   lastEsc: boolean;
 
   { Game state variables }
-  actualGameState: TGameStates;
   gameTime: double;
+
   clicks: word;
   showFPS: TCheckboxState;
 
-{ Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure loadAssets; external 'env' name 'loadAssets';
-
-procedure drawFPS;
+procedure DrawFPS;
 begin
   printDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
-procedure drawMouse;
+procedure DrawMouse;
 begin
-  if hasHoveredWidget then
-    spr(imgHandCursor, mouseX - 5, mouseY - 1)
+  if HasHoveredWidget then
+    Spr(imgHandCursor, GetMouseX - 5, GetMouseY - 1)
   else
-    spr(imgCursor, mouseX, mouseY);
+    Spr(imgCursor, GetMouseX, GetMouseY);
 end;
 
-procedure beginLoadingState;
+
+procedure OnPreload;
 begin
-  actualGameState := GameStateLoading;
-  fitCanvas;
-  loadAssets
+  { TODO: Load the assets from manifest }
 end;
 
-procedure beginPlayingState;
+procedure OnReady;
 begin
-  hideCursor;
-  fitCanvas;
+  HideCursor;
 
   { Initialise game state here }
-  actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
-  initImmediateGUI;
-  guiSetFont(defaultFont, defaultFontGlyphs);
+  InitImmediateGUI;
+  GuiSetFont(defaultFont);
   setPromptBoxAssets(imgPromptBG, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
 
-  replaceColour(blackFont.imgHandle, $FFFFFFFF, $FF000000);
+  ReplaceColour(blackFont.imgHandle, $FFFFFFFF, $FF000000);
 
   clicks := 0;
   showFPS.checked := true;
 end;
 
 
-procedure init;
+procedure Update;
 begin
-  initHeapMgr;
-  initDeltaTime;
-  initFPSCounter;
-end;
-
-procedure afterInit;
-begin
-  beginPlayingState
-end;
-
-procedure update;
-begin
-  updateDeltaTime;
-  incrementFPS;
-
-  updateGUILastMouseButton;
-  updateMouse;
-  updateGUIMousePoint;
-
-  { Your update logic here }
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
 
-    if lastEsc then begin
-      writeLog('ESC is pressed!');
-      signalDone
-    end;
+    if lastEsc then SignalDone;
   end;
 
-  gameTime := gameTime + dt;
+  gameTime := gameTime + DeltaTime;
 
   resetWidgetIndices;
   { Used by prompt box }
@@ -144,7 +114,7 @@ begin
     ShowPromptBox('Accept?', PromptTest);
 
   s := 'Clicks: ' + i32str(clicks);
-  w := measureBMFont(defaultFont, defaultFontGlyphs, s);
+  w := MeasureDefault(s);
   TextLabel(s, (vgaWidth - w) div 2, 120);
 
   case PromptBox of
@@ -156,18 +126,19 @@ begin
     else
   end;
 
-  resetActiveWidget;
-  drawMouse;
+  ResetActiveWidget;
+  DrawMouse;
 
-  if showFPS.checked then drawFPS;
+  if showFPS.checked then DrawFPS;
 
   vgaFlush
 end;
 
 exports
-  { Main game procedures }
-  beginLoadingState,
-  init, afterInit, update, draw;
+  OnPreload,
+  OnReady,
+  Update,
+  Draw;
 
 begin
 { Starting point is intentionally left empty }
