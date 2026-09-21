@@ -5,6 +5,8 @@ unit ImmediateGUIPromptBox;
 
 interface
 
+{$IFDEF P92_IMGUI}
+
 type
   TPromptResult = (PromptWait, PromptYes, PromptNo);
 
@@ -21,8 +23,11 @@ function UnderImageButton(const x, y: smallint; const imgNormal, imgHovered, img
 function PromptButton(const text: string; const x, y: smallint): boolean;
 function PromptBox: TPromptResult;
 
+{$ENDIF}
 
 implementation
+
+{$IFDEF P92_IMGUI}
 
 uses
   P92Graphics, P92Geometry,
@@ -281,6 +286,8 @@ begin
     PromptBox := PromptNo
   end;
 end;
+
+{$ENDIF}
 
 end.
 
