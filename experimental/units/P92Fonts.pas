@@ -25,7 +25,8 @@ uses P92AssetRegistry, P92BMFont, P92Core;
 {$IFDEF P92_WASM}
 const
   { DefaultBMFontPath = 'assets/fonts/nokia_cellphone_fc_8.txt'; }
-  DefaultBMFontPath = 'assets/fonts/p92_sans_11.txt';
+  { DefaultBMFontPath = 'assets/fonts/p92_sans_11.txt'; }
+  DefaultBMFontPath = 'assets/fonts/p92_sans_8_regular.txt';
 {$ENDIF}
 
 var
