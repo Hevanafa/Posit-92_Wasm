@@ -10,10 +10,10 @@ interface
 type
   TPromptResult = (PromptWait, PromptYes, PromptNo);
 
-procedure setClickConsumed(const value: boolean);
-procedure setPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
-function getPromptKey: smallint;
-function allowWidgetInteraction: boolean;
+procedure SetClickConsumed(const value: boolean);
+procedure SetPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
+function GetPromptKey: smallint;
+function AllowWidgetInteraction: boolean;
 
 procedure ShowPromptBox(const text: string; const key: smallint);
 
@@ -48,12 +48,12 @@ var
   clickConsumed: boolean;
 
 
-procedure setClickConsumed(const value: boolean);
+procedure SetClickConsumed(const value: boolean);
 begin
   clickConsumed := value
 end;
 
-procedure setPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
+procedure SetPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
 begin
   imgPromptBG := background;
   imgPromptButtonNormal := btnNormal;
@@ -61,14 +61,14 @@ begin
   imgPromptButtonPressed := btnPressed;
 end;
 
-function getPromptKey: smallint;
+function GetPromptKey: smallint;
 begin
-  getPromptKey := promptKey
+  GetPromptKey := promptKey
 end;
 
-function allowWidgetInteraction: boolean;
+function AllowWidgetInteraction: boolean;
 begin
-  allowWidgetInteraction := (not isPromptShown)
+  AllowWidgetInteraction := (not isPromptShown)
 end;
 
 
@@ -97,7 +97,7 @@ begin
   thisWidgetID := getNextWidgetID;
   incNextWidgetID;
 
-  if allowWidgetInteraction then begin
+  if AllowWidgetInteraction then begin
     if pointInZone(getMousePoint, zone) then begin
       setHotWidget(thisWidgetID);
 
@@ -149,7 +149,7 @@ begin
   thisWidgetID := getNextWidgetID;
   incNextWidgetID;
 
-  if allowWidgetInteraction then begin
+  if AllowWidgetInteraction then begin
     if pointInZone(getMousePoint, zone) then begin
       setHotWidget(thisWidgetID);
 

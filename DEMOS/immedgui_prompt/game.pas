@@ -88,7 +88,7 @@ begin
 
   InitImmediateGUI;
   GuiSetFont(GetDefaultFontHandle);
-  setPromptBoxAssets(texPromptBG, texPromptButtonNormal, texPromptButtonNormal, texPromptButtonPressed);
+  SetPromptBoxAssets(texPromptBG, texPromptButtonNormal, texPromptButtonNormal, texPromptButtonPressed);
 
   fontPtr := BorrowBMFontPtr(fontBlack);
   ReplaceColour(fontPtr^.texHandle, $FFFFFFFF, $FF000000);
@@ -110,7 +110,7 @@ begin
 
   resetWidgetIndices;
   { Used by prompt box }
-  setClickConsumed(false)
+  SetClickConsumed(false)
 end;
 
 procedure Draw;
@@ -134,7 +134,7 @@ begin
 
   case PromptBox of
     PromptYes:
-      case getPromptKey of
+      case GetPromptKey of
         PromptTest: inc(clicks, 100);
       end;
     PromptNo:;
