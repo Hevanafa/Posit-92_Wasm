@@ -14,32 +14,32 @@ unit P92TexComp;
 interface
 
 { Based on SprComp unit }
-procedure SprAlpha(const imgHandle: longint; const x, y: smallint; opacity: double);
-procedure SprBlend(const imgHandle: longint; const x, y: smallint);
+procedure SprAlpha(const texHandle: longint; const x, y: smallint; opacity: double);
+procedure SprBlend(const texHandle: longint; const x, y: smallint);
 
 
 implementation
 
 uses P92Tex, P92Maths, P92VGA;
 
-procedure SprAlpha(const imgHandle: longint; const x, y: smallint; opacity: double);
+procedure SprAlpha(const texHandle: longint; const x, y: smallint; opacity: double);
 var
-  texture: PSoftwareTex;
+  texturePtr: PSoftwareTex;
   px, py: smallint;
   colour: longword;
   alpha: byte;
 begin
-  if not IsTextureSet(imgHandle) then exit;
+  if not IsTextureSet(texHandle) then exit;
 
-  texture := GetTexturePtr(imgHandle);
+  texturePtr := BorrowTexturePtr(texHandle);
   opacity := clamp(opacity, 0.0, 1.0);
 
-  for py := 0 to texture^.height - 1 do
-  for px := 0 to texture^.width - 1 do begin
+  for py := 0 to texturePtr^.height - 1 do
+  for px := 0 to texturePtr^.width - 1 do begin
     if (x + px > clipX2) or (x + px < clipX1)
       or (y + py > clipY2) or (y + py < clipY1) then continue;
 
-    colour := unsafeSprPget(texture, px, py);
+    colour := unsafeSprPget(texturePtr, px, py);
     alpha := colour shr 24;
     if alpha = 0 then continue;
     
@@ -50,22 +50,22 @@ begin
   end;
 end;
 
-procedure SprBlend(const imgHandle: longint; const x, y: smallint);
+procedure SprBlend(const texHandle: longint; const x, y: smallint);
 var
-  texture: PSoftwareTex;
+  texturePtr: PSoftwareTex;
   px, py: smallint;
   colour: longword;
 begin
-  if not IsTextureSet(imgHandle) then exit;
+  if not IsTextureSet(texHandle) then exit;
 
-  texture := GetTexturePtr(imgHandle);
+  texturePtr := BorrowTexturePtr(texHandle);
 
-  for py := 0 to texture^.height - 1 do
-  for px := 0 to texture^.width - 1 do begin
+  for py := 0 to texturePtr^.height - 1 do
+  for px := 0 to texturePtr^.width - 1 do begin
     if (x + px > clipX2) or (x + px < clipX1)
       or (y + py > clipY2) or (y + py < clipY1) then continue;
 
-    colour := unsafeSprPget(texture, px, py);
+    colour := unsafeSprPget(texturePtr, px, py);
     psetBlend(x + px, y + py, colour)
   end;
 end;
