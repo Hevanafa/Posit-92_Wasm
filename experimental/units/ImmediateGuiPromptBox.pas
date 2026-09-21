@@ -26,8 +26,8 @@ implementation
 
 uses
   P92Graphics, P92Geometry,
-  P92ImmediateGUI,
-  P92Tex, P92TexDraw, P92VGA;
+  P92ImmediateGUI, P92AssetRegistry,
+  P92Tex, P92TexDraw, P92BMFont, P92VGA;
 
 const
   SemitransparentBlack = $80000000;
@@ -183,6 +183,7 @@ var
 
   buttonImgHandle: longword;
   texturePtr: PSoftwareTex;
+  fontPtr: PBMFont;
 
   textWidth: word;
   w, h: word;
@@ -220,11 +221,13 @@ begin
   spr(buttonImgHandle, x, y);
 
   textWidth := guiMeasureText(text);
-  w := getImageWidth(imgPromptButtonNormal);
-  h := getImageHeight(imgPromptButtonPressed);
+  w := texturePtr^.width;
+  h := texturePtr^.height;
+
+  fontPtr := BorrowBMFontPtr(GetActiveFontHandle);
 
   textX := x + (w - textWidth) div 2;
-  textY := y + (h - getActiveFont^.lineHeight) div 2;
+  textY := y + (h - fontPtr^.lineHeight) div 2;
 
   { when pressed }
   if getActiveWidget = thisWidgetID then
@@ -257,7 +260,7 @@ begin
     exit
   end;
 
-  assertImageSet('imgPromptBG', imgPromptBG);
+  AssertTextureSet('imgPromptBG', imgPromptBG);
 
   clsBlend(SemitransparentBlack);
 
