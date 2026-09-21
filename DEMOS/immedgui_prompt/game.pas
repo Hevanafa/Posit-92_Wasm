@@ -9,13 +9,12 @@ library Game;
 {$H+}{$J-}
 
 uses
-  BMFont, Conv, FPS, Fullscreen,
-  Graphics, Loading,
-  ImgRef, ImgRefFast,
-  ImmediateGUI, ImmediateGUIPromptBox,
-  Keyboard, Logger, Mouse,
-  Panic, Shapes, SprEffects, Timing,
-  WasmMemMgr, VGA,
+  P92Core, P92Conversions, P92FPS,
+  P92Graphics, P92Geometry, P92Loading,
+  P92Tex, P92TexDraw, P92TexEffects,
+  P92ImmediateGUI, ImmediateGUIPromptBox,
+  P92Keyboard, P92Logger, P92Mouse,
+  P92Panic, P92Timing, P92WasmMemMgr, P92VGA,
   Assets;
 
 type

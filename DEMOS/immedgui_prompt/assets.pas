@@ -4,16 +4,16 @@ unit Assets;
 
 interface
 
-uses BMFont;
+uses P92AssetHandles;
 
 var
   { for use in loadBMFont }
-  defaultFont: TBMFont;
+  defaultFont: TBMFontHandle;
   defaultFontGlyphs: array[32..126] of TBMFontGlyph;
-  blackFont: TBMFont;
+  blackFont: TBMFontHandle;
   blackFontGlyphs: array[32..126] of TBMFontGlyph;
 
-  picotronFont: TBMFont;
+  picotronFont: TBMFontHandle;
   picotronFontGlyphs: array[32..126] of TBMFontGlyph;
 
   imgCursor, imgHandCursor: longint;
