@@ -366,7 +366,7 @@ var
   colour: longword;
 begin
   if flip = SprFlipNone then begin
-    SprBase(texHandle, x, y);
+    Spr(texHandle, x, y);
     exit
   end;
 
