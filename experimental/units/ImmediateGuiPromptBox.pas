@@ -7,18 +7,21 @@ interface
 
 {$IFDEF P92_IMGUI}
 
+uses
+  P92AssetHandles;
+
 type
   TPromptResult = (PromptWait, PromptYes, PromptNo);
 
 procedure SetClickConsumed(const value: boolean);
-procedure SetPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
+procedure SetPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: TTextureHandle);
 function GetPromptKey: smallint;
 function AllowWidgetInteraction: boolean;
 
 procedure ShowPromptBox(const text: string; const key: smallint);
 
 function UnderButton(const caption: string; const x, y, width, height: smallint): boolean;
-function UnderImageButton(const x, y: smallint; const imgNormal, imgHovered, imgPressed: longint): boolean;
+function UnderImageButton(const x, y: smallint; const texNormal, texHovered, texPressed: TTextureHandle): boolean;
 
 function PromptButton(const text: string; const x, y: smallint): boolean;
 function PromptBox: TPromptResult;
@@ -39,7 +42,8 @@ const
 
 var
   { Prompt box assets }
-  imgPromptBG, imgPromptButtonNormal, imgPromptButtonHovered, imgPromptButtonPressed: longint;
+  texPromptBG,
+  texPromptButtonNormal, texPromptButtonHovered, texPromptButtonPressed: TTextureHandle;
 
   { Prompt box variables }
   isPromptShown: boolean;
@@ -53,12 +57,12 @@ begin
   clickConsumed := value
 end;
 
-procedure SetPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: longint);
+procedure SetPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: TTextureHandle);
 begin
-  imgPromptBG := background;
-  imgPromptButtonNormal := btnNormal;
-  imgPromptButtonHovered := btnHovered;
-  imgPromptButtonPressed := btnPressed;
+  texPromptBG := background;
+  texPromptButtonNormal := btnNormal;
+  texPromptButtonHovered := btnHovered;
+  texPromptButtonPressed := btnPressed;
 end;
 
 function GetPromptKey: smallint;
@@ -129,7 +133,10 @@ begin
     UnderButton := false;
 end;
 
-function UnderImageButton(const x, y: smallint; const imgNormal, imgHovered, imgPressed: longint): boolean;
+function UnderImageButton(
+  const x, y: smallint;
+  const texNormal, texHovered, texPressed: TTextureHandle
+): boolean;
 var
   zone: TZone;
   texturePtr: PSoftwareTex;
@@ -138,7 +145,7 @@ var
 begin
   AssertFontSet;
 
-  texturePtr := BorrowTexturePtr(imgNormal);
+  texturePtr := BorrowTexturePtr(texNormal);
 
   zone.x := x;
   zone.y := y;
@@ -159,11 +166,11 @@ begin
 
   { Render logic }
   if getActiveWidget = thisWidgetID then
-    buttonImgHandle := imgPressed
+    buttonImgHandle := texPressed
   else if getHotWidget = thisWidgetID then
-    buttonImgHandle := imgHovered
+    buttonImgHandle := texHovered
   else
-    buttonImgHandle := imgNormal;
+    buttonImgHandle := texNormal;
 
   spr(buttonImgHandle, x, y);
   { Use this in case you want your buttons have semitransparent pixels }
@@ -194,11 +201,11 @@ var
   w, h: word;
   textX, textY: smallint;
 begin
-  AssertTextureSet('imgPromptButtonNormal', imgPromptButtonNormal);
-  AssertTextureSet('imgPromptButtonHovered', imgPromptButtonHovered);
-  AssertTextureSet('imgPromptButtonPressed', imgPromptButtonPressed);
+  AssertTextureSet('imgPromptButtonNormal', texPromptButtonNormal);
+  AssertTextureSet('imgPromptButtonHovered', texPromptButtonHovered);
+  AssertTextureSet('imgPromptButtonPressed', texPromptButtonPressed);
 
-  texturePtr := BorrowTexturePtr(imgPromptButtonNormal);
+  texturePtr := BorrowTexturePtr(texPromptButtonNormal);
 
   zone.x := x;
   zone.y := y;
@@ -207,7 +214,7 @@ begin
 
   { Update logic }
   thisWidgetID := getNextWidgetID;
-  { PromptButton := ImageButton(x, y, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed); }
+  { PromptButton := ImageButton(x, y, texPromptButtonNormal, texPromptButtonNormal, texPromptButtonPressed); }
   incNextWidgetID;
 
   if pointInZone(getMousePoint, zone) then begin
@@ -217,11 +224,11 @@ begin
 
   { Render logic }
   if getActiveWidget = thisWidgetID then
-    buttonImgHandle := imgPromptButtonPressed
+    buttonImgHandle := texPromptButtonPressed
   else if getHotWidget = thisWidgetID then
-    buttonImgHandle := imgPromptButtonHovered
+    buttonImgHandle := texPromptButtonHovered
   else
-    buttonImgHandle := imgPromptButtonNormal;
+    buttonImgHandle := texPromptButtonNormal;
 
   spr(buttonImgHandle, x, y);
 
@@ -265,11 +272,11 @@ begin
     exit
   end;
 
-  AssertTextureSet('imgPromptBG', imgPromptBG);
+  AssertTextureSet('imgPromptBG', texPromptBG);
 
   clsBlend(SemitransparentBlack);
 
-  spr(imgPromptBG, left, top);
+  spr(texPromptBG, left, top);
 
   w := guiMeasureText(promptText);
   TextLabel(promptText, (vgaWidth - w) div 2, 90);
