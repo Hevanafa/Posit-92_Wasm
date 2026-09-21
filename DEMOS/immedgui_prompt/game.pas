@@ -59,7 +59,16 @@ end;
 
 procedure OnPreload;
 begin
-  { TODO: Load the assets from manifest }
+  texCursor := RequestImage('assets/images/cursor.png');
+  texHandCursor := RequestImage('assets/images/hand.png');
+
+  texWinNormal := RequestImage('assets/images/win_normal.png');
+  texWinHovered := RequestImage('assets/images/win_hovered.png');
+  texWinPressed := RequestImage('assets/images/win_pressed.png');
+
+  texPromptBG := RequestImage('assets/images/prompt_bg.png');
+  texPromptButtonNormal := RequestImage('assets/images/btn_prompt_normal.png');
+  texPromptButtonPressed := RequestImage('assets/images/btn_prompt_pressed.png');
 end;
 
 procedure OnReady;
@@ -72,7 +81,7 @@ begin
   gameTime := 0.0;
 
   InitImmediateGUI;
-  GuiSetFont(fontDefault);
+  GuiSetFont(GetDefaultFontHandle);
   setPromptBoxAssets(texPromptBG, texPromptButtonNormal, texPromptButtonNormal, texPromptButtonPressed);
 
   fontPtr := BorrowBMFontPtr(fontBlack);
