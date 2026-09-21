@@ -25,9 +25,9 @@ function PromptBox: TPromptResult;
 implementation
 
 uses
-  Graphics, Shapes,
-  ImmediateGUI,
-  ImgRef, ImgRefFast, VGA;
+  P92Graphics, P92Geometry,
+  P92ImmediateGUI,
+  P92Tex, P92TexDraw, P92VGA;
 
 const
   SemitransparentBlack = $80000000;
@@ -127,15 +127,18 @@ end;
 function UnderImageButton(const x, y: smallint; const imgNormal, imgHovered, imgPressed: longint): boolean;
 var
   zone: TZone;
+  texturePtr: PSoftwareTex;
   thisWidgetID: smallint;
   buttonImgHandle: longword;
 begin
-  assertFontSet;
+  AssertFontSet;
+
+  texturePtr := BorrowTexturePtr(imgNormal);
 
   zone.x := x;
   zone.y := y;
-  zone.width := getImageWidth(imgNormal);
-  zone.height := getImageHeight(imgNormal);
+  zone.width := texturePtr^.width;
+  zone.height := texturePtr^.height;
 
   { Update logic }
   thisWidgetID := getNextWidgetID;
@@ -177,20 +180,24 @@ function PromptButton(const text: string; const x, y: smallint): boolean;
 var
   zone: TZone;
   thisWidgetID: smallint;
+
   buttonImgHandle: longword;
+  texturePtr: PSoftwareTex;
 
   textWidth: word;
   w, h: word;
   textX, textY: smallint;
 begin
-  assertImageSet('imgPromptButtonNormal', imgPromptButtonNormal);
-  assertImageSet('imgPromptButtonHovered', imgPromptButtonHovered);
-  assertImageSet('imgPromptButtonPressed', imgPromptButtonPressed);
+  AssertTextureSet('imgPromptButtonNormal', imgPromptButtonNormal);
+  AssertTextureSet('imgPromptButtonHovered', imgPromptButtonHovered);
+  AssertTextureSet('imgPromptButtonPressed', imgPromptButtonPressed);
+
+  texturePtr := BorrowTexturePtr(imgPromptButtonNormal);
 
   zone.x := x;
   zone.y := y;
-  zone.width := getImageWidth(imgPromptButtonNormal);
-  zone.height := getImageHeight(imgPromptButtonNormal);
+  zone.width := texturePtr^.width;
+  zone.height := texturePtr^.height;
 
   { Update logic }
   thisWidgetID := getNextWidgetID;
