@@ -46,7 +46,7 @@ var
 
 procedure DrawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  spr(texCursor, GetMouseX, GetMouseY)
 end;
 
 function GetDemoModeName(const mode: integer): string;
@@ -63,12 +63,12 @@ end;
 
 procedure OnPreload;
 begin
-  imgCursor := RequestImage('assets/images/cursor.png');
+  texCursor := RequestImage('assets/images/cursor.png');
 
-  imgDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
-  imgDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
-  imgSpecimenP92[0] := RequestImage('assets/images/specimen_p-92_1.png');
-  imgSpecimenP92[1] := RequestImage('assets/images/specimen_p-92_2.png');
+  texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
+  texSpecimenP92[0] := RequestImage('assets/images/specimen_p-92_1.png');
+  texSpecimenP92[1] := RequestImage('assets/images/specimen_p-92_2.png');
 end;
 
 procedure OnReady;
@@ -153,8 +153,8 @@ var
 begin
   cls($FF6495ED);
 
-  mouseP.x := mouseX;
-  mouseP.y := mouseY;
+  mouseP.x := GetMouseX;
+  mouseP.y := GetMouseY;
 
   playerZone := entityZones[playerEntityID];
   npcZone := entityZones[i32Iif(playerEntityID = 0, 1, 0)];
@@ -204,14 +204,14 @@ begin
   { Entities }
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], trunc(entityZones[0].x), trunc(entityZones[0].y))
+    spr(texDosuEXE[1], trunc(entityZones[0].x), trunc(entityZones[0].y))
   else
-    spr(imgDosuEXE[0], trunc(entityZones[0].x), trunc(entityZones[0].y));
+    spr(texDosuEXE[0], trunc(entityZones[0].x), trunc(entityZones[0].y));
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgSpecimenP92[0], trunc(entityZones[1].x), trunc(entityZones[1].y))
+    spr(texSpecimenP92[0], trunc(entityZones[1].x), trunc(entityZones[1].y))
   else
-    spr(imgSpecimenP92[1], trunc(entityZones[1].x), trunc(entityZones[1].y));
+    spr(texSpecimenP92[1], trunc(entityZones[1].x), trunc(entityZones[1].y));
 
   { HUD stuff }
 

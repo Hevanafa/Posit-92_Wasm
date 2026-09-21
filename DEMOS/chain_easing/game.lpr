@@ -43,17 +43,17 @@ var
 
 procedure DrawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  spr(texCursor, GetMouseX, GetMouseY)
 end;
 
 procedure OnPreload;
 begin
-  imgCursor := RequestImage('assets/images/cursor.png');
+  texCursor := RequestImage('assets/images/cursor.png');
 
-  imgDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
-  imgDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
+  texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 
-  imgBlinky := RequestImage('assets/images/blinky.png');
+  texBlinky := RequestImage('assets/images/blinky.png');
 end;
 
 procedure OnReady;
@@ -152,13 +152,13 @@ var
 begin
   cls(CornflowerBlue);
 
-  if Button('Start Lerp', 50, 50, 80, 20) then
+  if Button('Start Lerp', 50, 50) then
     BeginEasingChain;
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    spr(texDosuEXE[1], 148, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    spr(texDosuEXE[0], 148, 88);
  
   if not isChainStarted then
     CentredLabel('WASD to move', vgaWidth div 2, 120)
@@ -174,16 +174,16 @@ begin
         x := lerpEaseOutSine(startX, endX, perc);
         angle := lerpEaseOutSine(startAngle, endAngle, perc);
 
-        sprRotate(imgBlinky, trunc(x) + 8, trunc(blinkyY) + 8, angle);
+        sprRotate(texBlinky, trunc(x) + 8, trunc(blinkyY) + 8, angle);
       end;
       else begin
         perc := GetEasingPerc(chainEasingTimer, getTimer);
         x := lerpEaseOutSine(startX, endX, perc);
-        spr(imgBlinky, trunc(x), trunc(blinkyY));
+        spr(texBlinky, trunc(x), trunc(blinkyY));
       end
     end;
   end else
-    spr(imgBlinky, trunc(blinkyX), trunc(blinkyY));
+    spr(texBlinky, trunc(blinkyX), trunc(blinkyY));
 
   CentredLabel('chainIdx ' + i32str(chainIdx), vgaWidth div 2, 180);
 

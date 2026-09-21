@@ -4,9 +4,11 @@ unit Assets;
 
 interface
 
+uses P92AssetHandles;
+
 var
-  imgCursor, imgBlinky: longint;
-  imgDosuEXE: array[0..1] of longint;
+  texCursor, texBlinky: TTextureHandle;
+  texDosuEXE: array[0..1] of TTextureHandle;
 
 implementation
 

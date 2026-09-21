@@ -4,11 +4,11 @@ unit Assets;
 
 interface
 
-uses P92BMFont;
+uses P92BMFont, P92AssetHandles;
 
 var
-  imgCursor: longint;
-  imgDosuEXE: array[0..1] of longint;
+  texCursor: TTextureHandle;
+  texDosuEXE: array[0..1] of TTextureHandle;
 
 
 implementation

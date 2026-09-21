@@ -31,14 +31,14 @@ var
 
 procedure DrawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  spr(texCursor, GetMouseX, GetMouseY)
 end;
 
 procedure OnPreload;
 begin
-  imgCursor := RequestImage('assets/images/cursor.png');
-  imgDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
-  imgDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
+  texCursor := RequestImage('assets/images/cursor.png');
+  texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
 procedure OnReady;
@@ -150,9 +150,9 @@ begin
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    spr(texDosuEXE[1], 148, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    spr(texDosuEXE[0], 148, 88);
 
   PrintCentred(points, 140);
   PrintCentred(formattedPoints, 150);

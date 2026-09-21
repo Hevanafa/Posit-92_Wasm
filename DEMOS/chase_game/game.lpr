@@ -57,12 +57,12 @@ var
   enemies: array[0..2] of PEnemy;
 
 
-procedure drawMouse;
+procedure DrawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  spr(texCursor, GetMouseX, GetMouseY)
 end;
 
-function getAliveEnemyCount: smallint;
+function GetAliveEnemyCount: smallint;
 var
   a: word;
 begin
@@ -73,7 +73,7 @@ begin
       inc(result);
 end;
 
-procedure spawnEnemy(const x, y: smallint);
+procedure SpawnEnemy(const x, y: smallint);
 var
   a: word;
   enemy: PEnemy;
@@ -106,10 +106,10 @@ end;
 
 procedure OnPreload;
 begin
-  imgCursor := RequestImage('assets/images/cursor.png');
+  texCursor := RequestImage('assets/images/cursor.png');
 
-  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
-  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
+  texDosuExe[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
 procedure OnReady;
@@ -152,8 +152,8 @@ begin
     if isKeyDown(SC_D) then playerBody.x := playerBody.x + velocity * DeltaTime;
   end;
 
-  if getAliveEnemyCount < 3 then
-    spawnEnemy(20 + random(vgaWidth - 40), 20 + random(vgaHeight - 40));
+  if GetAliveEnemyCount < 3 then
+    SpawnEnemy(20 + random(vgaWidth - 40), 20 + random(vgaHeight - 40));
 
   { Update enemies }
   if not isCaught and not isWin then
@@ -213,9 +213,9 @@ begin
   cls(CornflowerBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], vgaWidth - GetTextureWidth(imgDosuEXE[1]) - 10, 120)
+    spr(texDosuExe[1], vgaWidth - GetTextureWidth(texDosuExe[1]) - 10, 120)
   else
-    spr(imgDosuEXE[0], vgaWidth - GetTextureWidth(imgDosuEXE[1]) - 10, 120);
+    spr(texDosuExe[0], vgaWidth - GetTextureWidth(texDosuExe[1]) - 10, 120);
 
   if isCaught then
     s := 'You are caught!'
@@ -240,10 +240,10 @@ begin
       if (trunc(gameTime * 8) and 1) = 1 then
         drawZone(physicsBodyToZone(enemies[a]^.body), red)
     end else
-      drawZone(physicsBodyToZone(enemies[a]^.body), red);
+      DrawZone(physicsBodyToZone(enemies[a]^.body), red);
   end;
 
-  drawZone(physicsBodyToZone(playerBody), white);
+  DrawZone(physicsBodyToZone(playerBody), white);
 
   remainingTime := 60.0 - gameTime;
   if remainingTime >= 0 then
@@ -254,13 +254,15 @@ begin
   { if isCaught then
     printDefaultCentred('You are caught!', vgaWidth div 2, vgaHeight div 2 - 5); }
 
-  drawMouse;
-  drawFPS;
+  DrawMouse;
+  DrawFPS;
 end;
 
 exports
-  OnPreload, OnReady,
-  Update, Draw;
+  OnPreload,
+  OnReady,
+  Update,
+  Draw;
 
 begin
 { Starting point is intentionally left empty }
