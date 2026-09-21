@@ -51,9 +51,9 @@ end;
 procedure DrawMouse;
 begin
   if HasHoveredWidget then
-    Spr(imgHandCursor, GetMouseX - 5, GetMouseY - 1)
+    Spr(texHandCursor, GetMouseX - 5, GetMouseY - 1)
   else
-    Spr(imgCursor, GetMouseX, GetMouseY);
+    Spr(texCursor, GetMouseX, GetMouseY);
 end;
 
 
@@ -72,10 +72,10 @@ begin
   gameTime := 0.0;
 
   InitImmediateGUI;
-  GuiSetFont(defaultFont);
-  setPromptBoxAssets(imgPromptBG, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
+  GuiSetFont(fontDefault);
+  setPromptBoxAssets(texPromptBG, texPromptButtonNormal, texPromptButtonNormal, texPromptButtonPressed);
 
-  fontPtr := BorrowBMFontPtr(blackFont);
+  fontPtr := BorrowBMFontPtr(fontBlack);
   ReplaceColour(fontPtr^.texHandle, $FFFFFFFF, $FF000000);
 
   clicks := 0;
@@ -109,8 +109,8 @@ begin
     inc(clicks);
 
   if UnderImageButton(
-    (vgaWidth - GetTextureWidth(imgWinNormal)) div 2, 88,
-    imgWinNormal, imgWinHovered, imgWinPressed) then
+    (vgaWidth - GetTextureWidth(texWinNormal)) div 2, 88,
+    texWinNormal, texWinHovered, texWinPressed) then
       ShowPromptBox('Accept?', PromptTest);
 
   s := 'Clicks: ' + i32str(clicks);
