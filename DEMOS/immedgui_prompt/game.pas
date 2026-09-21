@@ -72,6 +72,9 @@ begin
   texPromptBG := RequestImage('assets/images/prompt_bg.png');
   texPromptButtonNormal := RequestImage('assets/images/btn_prompt_normal.png');
   texPromptButtonPressed := RequestImage('assets/images/btn_prompt_pressed.png');
+
+  fontBlack := RequestBMFont('assets/fonts/p92_sans_8_regular.txt');
+  fontPicotron := RequestBMFont('assets/fonts/picotron_8px.txt');
 end;
 
 procedure OnReady;
