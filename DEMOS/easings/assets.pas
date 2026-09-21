@@ -6,8 +6,8 @@ unit Assets;
 interface
 
 var
-  imgCursor: longint;
-  imgDosuEXE: array[0..1] of longint;
+  texCursor: longint;
+  texDosuEXE: array[0..1] of longint;
 
 
 implementation

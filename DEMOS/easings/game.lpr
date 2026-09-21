@@ -10,10 +10,10 @@ library Game;
 
 uses
   P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
-  P92Colour, P92FPS,
+  P92Colour, P92FPS, P92BMFont,
   P92Graphics,
   P92Tex, P92TexDraw, P92TexComp,
-  P92Keyboard, P92Mouse,
+  P92Keyboard, P92Mouse, P92Loading,
   P92Easings, P92Logger, P92Maths,
   P92Timing, P92VGA,
   Assets;
@@ -52,15 +52,15 @@ var
 
 procedure DrawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  spr(texCursor, GetMouseX, GetMouseY)
 end;
 
 procedure OnPreload;
 begin
-  imgCursor := RequestImage('assets/images/cursor.png');
+  texCursor := RequestImage('assets/images/cursor.png');
 
-  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
-  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
+  texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
 function GetDemoStateName(const state: integer): string;
@@ -82,7 +82,7 @@ begin
   GetDemoStateName := result
 end;
 
-procedure changeState(const state: integer);
+procedure ChangeState(const state: integer);
 begin
   actualDemoState := state;
 
@@ -103,7 +103,7 @@ begin
   { Initialise game state here }
   gameTime := 0.0;
 
-  changeState(DemoStateInOutQuad);
+  ChangeState(DemoStateInOutQuad);
 
   for a:=0 to high(subDemoNames) do
     subDemoNames[a] := GetDemoStateName(a + 1);
@@ -116,26 +116,28 @@ procedure ListView(
   const selectedIndex: integer);
 var
   a: word;
+  fontPtr: PBMFont;
   lineHeight: word;
   widgetWidth, widgetHeight: word;
 begin
-  lineHeight := DefaultFontPtr^.lineHeight + 2;
+  fontPtr := BorrowBMFontPtr(GetDefaultFontHandle);
+  lineHeight := fontPtr^.lineHeight + 2;
 
   widgetWidth := 100;
   widgetHeight := lineHeight * (high(items) + 1);
 
-  rectfill(x, y, x + widgetWidth, y + widgetHeight, Black);
+  RectFill(x, y, x + widgetWidth, y + widgetHeight, Black);
 
-  rectfill(
+  RectFill(
     x, y + lineHeight * selectedIndex,
     x + widgetWidth, y + lineHeight * (selectedIndex + 1), Red);
 
   for a := 0 to high(items) do
-    printDefault(
+    PrintDefault(
       items[a],
       x + 2, y + 2 + lineHeight * a);
 
-  rect(x, y, x + widgetWidth, y + widgetHeight, White);
+  Rect(x, y, x + widgetWidth, y + widgetHeight, White);
 end;
 
 
@@ -164,7 +166,7 @@ begin
       dec(actualDemoState);
       
       if actualDemoState < 1 then actualDemoState := DemoStateInOutSine;
-      changeState(actualDemoState)
+      ChangeState(actualDemoState)
     end;
   end;
 
@@ -177,7 +179,7 @@ begin
       if actualDemoState > DemoStateInOutSine then
         actualDemoState := 1;
 
-      changeState(actualDemoState)
+      ChangeState(actualDemoState)
     end;
   end;
 
@@ -217,16 +219,16 @@ begin
       x := trunc(LerpLinear(startX, endX, perc));
   end;
 
-  SprAlpha(imgDosuEXE[0], startX, 88, 0.5);
-  SprAlpha(imgDosuEXE[0], endX, 88, 0.5);
+  SprAlpha(texDosuEXE[0], startX, 88, 0.5);
+  SprAlpha(texDosuEXE[0], endX, 88, 0.5);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], x, 88)
+    Spr(texDosuEXE[1], x, 88)
   else
-    spr(imgDosuEXE[0], x, 88);
+    Spr(texDosuEXE[0], x, 88);
 
-  circfill(30, 130, 10, LerpColour(Red, Purple, perc));
-  circfill(60, 130, 10, HSVtoRGB(perc, 1.0, 0.5));
+  CircFill(30, 130, 10, LerpColour(Red, Purple, perc));
+  CircFill(60, 130, 10, HSVtoRGB(perc, 1.0, 0.5));
 
   { Begin HUD }
   ListView(10, 10, subDemoNames, actualDemoState - 1);
@@ -234,13 +236,13 @@ begin
 {
   s := 'Spacebar - Restart easing';
   w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  PrintDefault(s, (vgaWidth - w) div 2, 120);
 }
-  printDefault('Spacebar - Restart easing', 8, vgaHeight - 28);
-  printDefault('Page up / down - Choose between demos', 8, vgaHeight - 18);
+  PrintDefault('Spacebar - Restart easing', 8, vgaHeight - 28);
+  PrintDefault('Page up / down - Choose between demos', 8, vgaHeight - 18);
 
   DrawMouse;
-  drawFPS;
+  DrawFPS;
 end;
 
 exports
