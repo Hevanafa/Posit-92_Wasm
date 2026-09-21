@@ -15,10 +15,10 @@ type
 
 procedure SetClickConsumed(const value: boolean);
 procedure SetPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: TTextureHandle);
-function GetPromptKey: smallint;
+function GetPromptKey: string;
 function AllowWidgetInteraction: boolean;
 
-procedure ShowPromptBox(const text: string; const key: smallint);
+procedure ShowPromptBox(const text: string; const key: string);
 
 function UnderButton(const caption: string; const x, y, width, height: smallint): boolean;
 function UnderImageButton(const x, y: smallint; const texNormal, texHovered, texPressed: TTextureHandle): boolean;
@@ -47,7 +47,7 @@ var
 
   { Prompt box variables }
   isPromptShown: boolean;
-  promptKey: smallint;  { Use Prompts enum }
+  promptKey: string;
   promptText: string;
   clickConsumed: boolean;
 
@@ -65,7 +65,7 @@ begin
   texPromptButtonPressed := btnPressed;
 end;
 
-function GetPromptKey: smallint;
+function GetPromptKey: string;
 begin
   GetPromptKey := promptKey
 end;
@@ -77,7 +77,7 @@ end;
 
 
 { Show prompt box }
-procedure ShowPromptBox(const text: string; const key: smallint);
+procedure ShowPromptBox(const text: string; const key: string);
 begin
   isPromptShown := true;
   promptKey := key;

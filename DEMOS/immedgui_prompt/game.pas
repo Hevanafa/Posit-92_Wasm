@@ -31,8 +31,7 @@ const
   CornflowerBlue = $FF6495ED;
   SemitransparentBlack = $80000000;
 
-  { Prompts enum }
-  PromptTest = 1;
+  PromptKeyTest = 'TestPrompt';
 
 var
   lastEsc: boolean;
@@ -126,7 +125,7 @@ begin
   if UnderImageButton(
     (vgaWidth - GetTextureWidth(texWinNormal)) div 2, 88,
     texWinNormal, texWinHovered, texWinPressed) then
-      ShowPromptBox('Accept?', PromptTest);
+      ShowPromptBox('Accept?', PromptKeyTest);
 
   s := 'Clicks: ' + i32str(clicks);
   w := MeasureDefault(s);
@@ -135,7 +134,7 @@ begin
   case PromptBox of
     PromptYes:
       case GetPromptKey of
-        PromptTest: inc(clicks, 100);
+        PromptKeyTest: inc(clicks, 100);
       end;
     PromptNo:;
     else
