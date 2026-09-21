@@ -54,12 +54,11 @@ function ARGBtoABGR(const colour: longword): longword;
 
 { Returns colour in ABGR }
 function UnsafePGet(const x, y: smallint): longword;
-{ Returns colour in ABGR }
 procedure UnsafePSet(const x, y: smallint; const ABGR: longword);
-{ Returns colour in ABGR }
 procedure UnsafePSetBlend(const x, y: smallint; const ABGR: longword);
 
-{ Gets the colour of a pixel from the backbuffer }
+{ Gets the colour of a pixel from the backbuffer
+  Returns colour in ARGB }
 function PGet(const x, y: smallint): longword;
 procedure PSet(const x, y: smallint; const colour: longword);
 procedure PSetBlend(const x, y: smallint; const colour: longword);
