@@ -27,7 +27,7 @@ type
 
   PBMFont = ^TBMFont;
   TBMFont = record
-    texHandle: longint;
+    texHandle: TTextureHandle;
     lineHeight: smallint;
     spacing: array[0..1] of byte;
     glyphs: array[TByteRange] of TBMFontGlyph;

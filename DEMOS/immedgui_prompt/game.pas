@@ -9,8 +9,8 @@ library Game;
 {$H+}{$J-}
 
 uses
-  P92Core, P92Fonts, P92Conversions, P92FPS, P92WasmHost,
-  P92Graphics, P92Geometry, P92Loading,
+  P92Core, P92Fonts, P92Conversions, P92FPS, P92WasmHost, P92AssetRegistry,
+  P92Graphics, P92Geometry, P92Loading, P92BMFont,
   P92Tex, P92TexDraw, P92TexEffects,
   P92ImmediateGUI, ImmediateGUIPromptBox,
   P92Keyboard, P92Logger, P92Mouse,
@@ -63,6 +63,8 @@ begin
 end;
 
 procedure OnReady;
+var
+  fontPtr: PBMFont;
 begin
   HideCursor;
 
@@ -73,7 +75,8 @@ begin
   GuiSetFont(defaultFont);
   setPromptBoxAssets(imgPromptBG, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
 
-  ReplaceColour(blackFont.imgHandle, $FFFFFFFF, $FF000000);
+  fontPtr := BorrowBMFontPtr(blackFont);
+  ReplaceColour(fontPtr^.texHandle, $FFFFFFFF, $FF000000);
 
   clicks := 0;
   showFPS.checked := true;
@@ -95,23 +98,20 @@ begin
   setClickConsumed(false)
 end;
 
-procedure draw;
+procedure Draw;
 var
   w: integer;
   s: string;
 begin
-  if actualGameState = GameStateLoading then begin
-    renderLoadingScreen;
-    exit
-  end;
-  
-  cls(CornflowerBlue);
+  Cls(CornflowerBlue);
 
   if UnderButton('Under button', 50, 20, 30, 24) then
     inc(clicks);
 
-  if UnderImageButton((vgaWidth - getImageWidth(imgWinNormal)) div 2, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
-    ShowPromptBox('Accept?', PromptTest);
+  if UnderImageButton(
+    (vgaWidth - GetTextureWidth(imgWinNormal)) div 2, 88,
+    imgWinNormal, imgWinHovered, imgWinPressed) then
+      ShowPromptBox('Accept?', PromptTest);
 
   s := 'Clicks: ' + i32str(clicks);
   w := MeasureDefault(s);
@@ -126,12 +126,9 @@ begin
     else
   end;
 
-  ResetActiveWidget;
   DrawMouse;
 
   if showFPS.checked then DrawFPS;
-
-  vgaFlush
 end;
 
 exports
