@@ -388,23 +388,18 @@ class Posit92 {
 
   #CreateCanvas(width: number, height: number) {
     this.#canvas = document.createElement("canvas");
-    this.#canvas.id = "game"; // TODO: Use canvasID;
+    this.#canvas.id = "game";  // TODO: Use canvasID;
     this.#canvas.className = "scale-fit";
     this.#canvas.setAttribute("width", "" + width);
     this.#canvas.setAttribute("height", "" + height);
 
     document.body.prepend(this.#canvas);
 
-    // this.#vgaWidth = options.BufferWidth!;
-    // this.#vgaHeight = options.BufferHeight!;
-
     // Note: Use 2D as for now
     // if (options.Renderer == "2d")
     this.canvasCtx = this.#canvas.getContext("2d")!;
     // else if (options.Renderer == "webgl")
     //   this.glCtx = this.#canvas.getContext(options.Renderer)!;
-
-    this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
   }
 
   /**
@@ -499,6 +494,15 @@ class Posit92 {
     this.#LoadMidnightOffset();
 
     await this.#InitWebAssembly();
+
+    // this.#vgaWidth = options.BufferWidth!;
+    // this.#vgaHeight = options.BufferHeight!;
+
+    this.#vgaWidth = this.#DefaultVGAWidth;
+    this.#vgaHeight = this.#DefaultVGAHeight;
+
+    this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
+
     this.#InitWasmMemory();
     this.#wasm.exports.Init();
 
