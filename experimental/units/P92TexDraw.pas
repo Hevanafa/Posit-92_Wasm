@@ -219,7 +219,7 @@ begin
 
   for py:=0 to texture^.height - 1 do
     for px:=0 to texture^.width - 1 do
-      UnsafeSprPSet(texture, px, py, ABGR);
+      UnsafeTexPSet(texture, px, py, ABGR);
 end;
 
 {
@@ -560,7 +560,7 @@ begin
     if alpha < 255 then continue;
 
     colour := UnsafeTexPGet(srcTex, a, b);
-    UnsafeSprPSet(destTex, x + a, y + b, colour)
+    UnsafeTexPSet(destTex, x + a, y + b, colour)
   end;
 end;
 
@@ -597,7 +597,7 @@ begin
     if alpha < 255 then continue;
 
     colour := UnsafeTexPGet(srcTex, sx, sy);
-    UnsafeSprPSet(destTex, destX + px, destY + py, colour);
+    UnsafeTexPSet(destTex, destX + px, destY + py, colour);
   end;
 end;
 

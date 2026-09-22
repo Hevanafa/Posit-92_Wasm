@@ -118,7 +118,7 @@ begin
   for b:=0 to texture^.height - 1 do
     for a:=0 to texture^.width - 1 do
       if UnsafeTexPGet(texture, a, b) = oldColour then
-        UnsafeSprPSet(texture, a, b, newColour);
+        UnsafeTexPSet(texture, a, b, newColour);
 end;
 
 end.
