@@ -444,7 +444,6 @@ class Posit92 {
 
     const result = await WebAssembly.instantiate(bytes.buffer, this.#importObject);
     this.#wasm = <WebAssemblyInstance>result.instance;
-    this.#wasm.exports.Init();
   }
 
   /**
@@ -482,8 +481,11 @@ class Posit92 {
 
   async InitRuntime(): Promise<void> {
     this.#LoadMidnightOffset();
+
     await this.#InitWebAssembly();
     this.#InitWasmMemory();
+    this.#wasm.exports.Init();
+
     this.#InitKeyboard();
     this.#InitMouse();
   }
@@ -1092,7 +1094,7 @@ class Posit92 {
     // WebAssembly init & stuff
     await this.InitRuntime();
 
-    this.#wasm.exports.P92Boot();
+    // this.#wasm.exports.P92Boot();
 
     this.#HideLoadingOverlay();
     this.#AddOutOfFocusFix();
