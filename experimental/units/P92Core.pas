@@ -64,6 +64,9 @@ procedure Print(const txt: string; const x, y: smallint);
 
 procedure PrintWrap(const txt: string; x, y, wrapWidth: smallint);
 
+procedure PrintCharTint(const c: char; const x, y: smallint; const colour: longword);
+procedure PrintTint(const txt: string; const x, y: smallint; const colour: longword);
+
 {$ifdef P92_SDL2}
 function DefaultP92AppConfig: TP92AppConfig;
 procedure P92Start(const appConfig: TP92AppConfig);
@@ -405,6 +408,37 @@ begin
       left := 0;
       inc(y, BootFontGlyphHeight);
     end;
+  end;
+end;
+
+procedure PrintCharTint(const c: char; const x, y: smallint; const colour: longword);
+var
+  row, col: smallint;
+begin
+  if not (ord(c) in [1..255]) then exit;
+
+  row := ord(c) div 16;
+  col := ord(c) mod 16;
+
+  SprRegionTint(
+    BootFontHandle,
+    col * BootFontGlyphWidth,
+    row * BootFontGlyphHeight,
+    BootFontGlyphWidth,
+    BootFontGlyphHeight,
+    x, y, colour)
+end;
+
+procedure PrintTint(const txt: string; const x, y: smallint; const colour: longword);
+var
+  c: char;
+  left: smallint;
+begin
+  left := x;
+
+  for c in txt do begin
+    PrintCharTint(c, left, y, colour);
+    inc(left, BootFontGlyphWidth)
   end;
 end;
 
