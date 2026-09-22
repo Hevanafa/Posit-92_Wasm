@@ -7,22 +7,24 @@ unit P92TexEffects;
 
 interface
 
-{ colour: $AARRGGBB }
-procedure SprOutline(const texHandle: longint; const x, y: smallint; const colour: longword);
+uses P92AssetHandles;
 
 { colour: $AARRGGBB }
-procedure SprShadow(const texHandle: longint; const x, y: smallint; const offsetX, offsetY: smallint; const colour: longword);
+procedure SprOutline(const texHandle: TTextureHandle; const x, y: smallint; const colour: longword);
+
+{ colour: $AARRGGBB }
+procedure SprShadow(const texHandle: TTextureHandle; const x, y: smallint; const offsetX, offsetY: smallint; const colour: longword);
 
 { Replaces 1 colour of a texture in place
   Colour: $AARRGGBB }
-procedure ReplaceColour(const texHandle: longint; oldColour, newColour: longword);
+procedure ReplaceColour(const texHandle: TTextureHandle; oldColour, newColour: longword);
 
 
 implementation
 
 uses P92Tex, P92TexDraw, P92VGA;
 
-procedure SprOutline(const texHandle: longint; const x, y: smallint; const colour: longword);
+procedure SprOutline(const texHandle: TTextureHandle; const x, y: smallint; const colour: longword);
 var
   a, b: smallint;
   texture: PSoftwareTex;
@@ -68,7 +70,7 @@ begin
 end;
 
 
-procedure SprShadow(const texHandle: longint; const x, y: smallint; const offsetX, offsetY: smallint; const colour: longword);
+procedure SprShadow(const texHandle: TTextureHandle; const x, y: smallint; const offsetX, offsetY: smallint; const colour: longword);
 var
   a, b: smallint;
   destX, destY: smallint;
@@ -101,7 +103,7 @@ begin
   spr(texHandle, x, y)
 end;
 
-procedure ReplaceColour(const texHandle: longint; oldColour, newColour: longword);
+procedure ReplaceColour(const texHandle: TTextureHandle; oldColour, newColour: longword);
 var
   a, b: word;
   texture: PSoftwareTex;

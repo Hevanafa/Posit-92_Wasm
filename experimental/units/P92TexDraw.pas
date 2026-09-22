@@ -398,6 +398,7 @@ begin
   for sx := 0 to texture^.width - 1 do begin
     srcPos := (sx + sy * texture^.width) * 4;
     alpha := texture^.pixelData[srcPos + 3];
+
     if alpha < 255 then continue;
 
     dx := x + sx;
