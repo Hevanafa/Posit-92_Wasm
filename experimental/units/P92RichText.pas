@@ -1,4 +1,4 @@
-unit RichText;
+unit P92RichText;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
