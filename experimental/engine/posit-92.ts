@@ -686,7 +686,7 @@ class Posit92 {
     console.log("TakeScreenshot: timestampStr", timestampStr);
 
     // this.#SaveCanvasBase(timestampStr + ".png");
-    this.#SaveCanvas2x(timestampStr + ".png");
+    this.#SaveCanvas2x(timestampStr + "_2x.png");
   }
 
   /**
