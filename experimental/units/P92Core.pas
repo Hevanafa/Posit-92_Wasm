@@ -6,6 +6,8 @@ unit P92Core;
 
 interface
 
+uses P92AssetHandles;
+
 const
   Posit92Version = '0.3.2';
 
@@ -44,8 +46,8 @@ var
 function GetBootOptionBoolean(key: string): boolean;
 function JsGetBootOptionBoolean: boolean; external 'env' name 'JsGetBootOptionBoolean';
 
-function GetCgaFontHandle: longint;
-procedure SetCGAFontHandle(value: longint);
+function GetCGAFontHandle: TTextureHandle;
+procedure SetCGAFontHandle(const value: TTextureHandle);
 
 function IsEngineReady: boolean; public name 'IsEngineReady';
 procedure HostCallOnPreload; external 'env' name 'HostCallOnPreload';
@@ -59,6 +61,7 @@ procedure P92AfterDraw; public name 'P92AfterDraw';
 
 procedure PrintChar(const c: char; const x, y: smallint);
 procedure Print(const txt: string; const x, y: smallint);
+
 procedure PrintWrap(const txt: string; x, y, wrapWidth: smallint);
 
 {$ifdef P92_SDL2}
@@ -113,6 +116,9 @@ type
 const
   DebugEngineRunStates = false;
 
+  CGAGlyphWidth = 8;
+  CGAGlyphHeight = 8;
+
 var
   engineRunState: TEngineRunStates;
 
@@ -120,7 +126,7 @@ var
   enableDefaultBMFont: boolean;
 
   { Default boot font }
-  cgaFontHandle: longint;
+  BootFontHandle: TTextureHandle;
 
 
 var
@@ -130,9 +136,9 @@ var
   enableScreenshotHotkey: boolean;
   lastF2: boolean;
 
-function GetCgaFontHandle: longint;
+function GetCGAFontHandle: TTextureHandle;
 begin
-  GetCgaFontHandle := cgaFontHandle
+  GetCGAFontHandle := BootFontHandle
 end;
 
 {$ifdef P92_WASM}
@@ -143,9 +149,9 @@ begin
 end;
 {$endif}
 
-procedure SetCGAFontHandle(value: longint);
+procedure SetCGAFontHandle(const value: TTextureHandle);
 begin
-  cgaFontHandle := value
+  BootFontHandle := value
 end;
 
 function IsEngineReady: boolean;
@@ -354,7 +360,7 @@ begin
   col := ord(c) mod 16;
 
   SprRegion(
-    cgaFontHandle,
+    BootFontHandle,
     col * 8, row * 8,
     8, 8,
     x, y)
