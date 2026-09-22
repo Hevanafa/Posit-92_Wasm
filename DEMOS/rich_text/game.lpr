@@ -77,11 +77,11 @@ begin
   { Initialise game state here }
   gameTime := 0.0;
 
-  rtfSetFont(fontRegular);
+  RtfSetFont(fontRegular);
 
-  rtfSetBoldFont(fontBold);
-  rtfSetItalicFont(fontItalic);
-  rtfSetBoldItalicFont(fontBoldItalic);
+  RtfSetBoldFont(fontBold);
+  RtfSetItalicFont(fontItalic);
+  RtfSetBoldItalicFont(fontBoldItalic);
 end;
 
 

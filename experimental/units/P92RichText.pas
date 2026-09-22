@@ -8,12 +8,12 @@ interface
 uses P92AssetHandles;
 
 { Assign all 4 font styles & weights }
-procedure rtfSetFont(const font: TBMFontHandle);
+procedure RtfSetFont(const font: TBMFontHandle);
 
-procedure rtfSetRegularFont(const font: TBMFontHandle);
-procedure rtfSetBoldFont(const font: TBMFontHandle);
-procedure rtfSetItalicFont(const font: TBMFontHandle);
-procedure rtfSetBoldItalicFont(const font: TBMFontHandle);
+procedure RtfSetRegularFont(const font: TBMFontHandle);
+procedure RtfSetBoldFont(const font: TBMFontHandle);
+procedure RtfSetItalicFont(const font: TBMFontHandle);
+procedure RtfSetBoldItalicFont(const font: TBMFontHandle);
 
 procedure RichTextLabel(
   const text: string;
@@ -27,78 +27,76 @@ implementation
 uses P92Conversions, P92Logger, P92BMFont, P92Strings, P92Panic;
 
 var
-  isFontSet: boolean;
-  regularFont, boldFont, italicFont, boldItalicFont: TBMFontHandle;
+  fontRegular, fontBold, fontItalic, fontBoldItalic: TBMFontHandle;
 
-procedure rtfSetFont(const font: TBMFontHandle);
+procedure RtfSetFont(const font: TBMFontHandle);
 begin
-  isFontSet := true;
-
-  rtfSetRegularFont(font);
-  rtfSetBoldFont(font);
-  rtfSetItalicFont(font);
-  rtfSetBoldItalicFont(font);
+  RtfSetRegularFont(font);
+  RtfSetBoldFont(font);
+  RtfSetItalicFont(font);
+  RtfSetBoldItalicFont(font);
 end;
 
-procedure rtfSetRegularFont(const font: TBMFontHandle);
+procedure RtfSetRegularFont(const font: TBMFontHandle);
 begin
-  regularFont := font
+  fontRegular := font
 end;
 
-procedure rtfSetBoldFont(const font: TBMFontHandle);
+procedure RtfSetBoldFont(const font: TBMFontHandle);
 begin
-  boldFont := font
+  fontBold := font
 end;
 
-procedure rtfSetItalicFont(const font: TBMFontHandle);
+procedure RtfSetItalicFont(const font: TBMFontHandle);
 begin
-  italicFont := font
+  fontItalic := font
 end;
 
-procedure rtfSetBoldItalicFont(const font: TBMFontHandle);
+procedure RtfSetBoldItalicFont(const font: TBMFontHandle);
 begin
-  boldItalicFont := font
+  fontBoldItalic := font
 end;
 
 
-procedure rtfPrintWithFormat(
+procedure RtfPrintWithFormat(
   const text: string;
   const x, y: smallint;
   const bold, italic: boolean;
   const colour: longword;
-  var leftOffset: smallint);
+  var leftOffset: smallint
+);
 begin
   if bold and italic then begin
     PrintBMFontColour(
-      boldItalicFont,
+      fontBoldItalic,
       text,
       x + leftOffset, y, colour);
 
-    inc(leftOffset, measureBMFont(boldItalicFont, text));
+    inc(leftOffset, measureBMFont(fontBoldItalic, text));
     
   end else if bold then begin
     PrintBMFontColour(
-      boldFont,
+      fontBold,
       text,
       x + leftOffset, y, colour);
 
-    inc(leftOffset, measureBMFont(boldFont, text));
+    inc(leftOffset, measureBMFont(fontBold, text));
 
   end else if italic then begin
     printBMFontColour(
-      italicFont,
+      fontItalic,
       text,
       x + leftOffset, y, colour);
 
-    inc(leftOffset, measureBMFont(italicFont, text));
+    inc(leftOffset, measureBMFont(fontItalic, text));
 
   end else begin
     printBMFontColour(
-      regularFont,
+      fontRegular,
       text,
       x + leftOffset, y, colour);
 
-    inc(leftOffset, measureBMFont(regularFont, text));
+    inc(leftOffset, measureBMFont(fontRegular, text));
   end;
 end;
 
@@ -122,7 +120,7 @@ var
   controlSeq: string;
   skipSeq: boolean;
 begin
-  if not isFontSet then panicHalt('RichTextLabel: font is unset!');
+  if not isFontSet then PanicHalt('RichTextLabel: font is unset!');
 
   { init internal state }
   bold := false;
@@ -197,7 +195,7 @@ begin
 
       { Commit buffer }
       if length(substr) > 0 then begin
-        rtfPrintWithFormat(
+        RtfPrintWithFormat(
           substr, x, y,
           lastBold, lastItalic, lastColour,
           leftOffset);
@@ -215,16 +213,16 @@ begin
 
   { Commit leftover string buffer }
   if length(substr) > 0 then
-    rtfPrintWithFormat(
+    RtfPrintWithFormat(
       substr, x, y,
       lastBold, lastItalic, lastColour,
       leftOffset);
 end;
 
 begin
-  regularFont := 0;
-  boldFont := 0;
-  italicFont := 0;
-  boldItalicFont := 0;
+  fontRegular := 0;
+  fontBold := 0;
+  fontItalic := 0;
+  fontBoldItalic := 0;
 end.
 
