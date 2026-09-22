@@ -11,10 +11,17 @@ uses P92AssetHandles;
 const
   Posit92Version = '0.3.3';
 
-{$ifdef P92_SDL2}
 type
   TCallback = procedure;
 
+{$IFDEF P92_WASM}
+  TP92AppConfig = record
+    Width: smallint;
+    Height: smallint;
+  end;
+{$ENDIF}
+
+{$IFDEF P92_SDL2}
   TP92AppConfig = record
     { Window }
     windowTitle: string;
@@ -37,12 +44,9 @@ type
     Draw: TCallback;
     OnCleanup: TCallback;
   end;
+{$ENDIF}
 
-var
-  bootConfig: TP92AppConfig;
-{$endif}
-
-{$ifdef P92_WASM}
+{$IFDEF P92_WASM}
 function GetBootOptionBoolean(key: string): boolean;
 function JsGetBootOptionBoolean: boolean; external 'env' name 'JsGetBootOptionBoolean';
 
@@ -52,7 +56,7 @@ procedure SetBootFontHandle(const value: TTextureHandle);
 function IsEngineReady: boolean; public name 'IsEngineReady';
 procedure HostCallOnPreload; external 'env' name 'HostCallOnPreload';
 procedure HostCallOnReady; external 'env' name 'HostCallOnReady';
-{$endif}
+{$ENDIF}
 
 procedure P92Boot; public name 'P92Boot';
 procedure P92Update; public name 'P92Update';
@@ -67,10 +71,8 @@ procedure PrintWrap(const txt: string; x, y, wrapWidth: smallint);
 procedure PrintCharTint(const c: char; const x, y: smallint; const colour: longword);
 procedure PrintTint(const txt: string; const x, y: smallint; const colour: longword);
 
-{$ifdef P92_SDL2}
 function DefaultP92AppConfig: TP92AppConfig;
 procedure P92Start(const appConfig: TP92AppConfig);
-{$endif}
 
 
 implementation
@@ -122,7 +124,10 @@ const
   BootFontGlyphWidth = 8;
   BootFontGlyphHeight = 8;
 
+
 var
+  bootConfig: TP92AppConfig;
+
   engineRunState: TEngineRunStates;
 
   { assigned in P92Boot }
@@ -131,8 +136,6 @@ var
   { Default boot font }
   BootFontHandle: TTextureHandle;
 
-
-var
   { Screenshot feature }
 
   { assigned in P92Boot }
@@ -442,7 +445,29 @@ begin
   end;
 end;
 
-{$ifdef P92_SDL2}
+{$IFDEF P92_WASM}
+function DefaultP92AppConfig: TP92AppConfig;
+var
+  newConfig: TP92AppConfig;
+begin
+  newConfig := default(TP92AppConfig);
+
+  newConfig.Width := 320;
+  newConfig.Height := 200;
+
+  DefaultP92AppConfig := newConfig;
+end;
+
+procedure P92Start(const appConfig: TP92AppConfig);
+begin
+  bootConfig := appConfig;
+
+  P92Boot;
+end;
+
+{$ENDIF}
+
+{$IFDEF P92_SDL2}
 procedure P92Cleanup;
 begin
   { TODO: free both the imgCursor and the default font }
@@ -534,7 +559,8 @@ begin
   P92Cleanup;
   P92Shutdown
 end;
-{$endif}
+{$ENDIF}
+
 
 end.
 

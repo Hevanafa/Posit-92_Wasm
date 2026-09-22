@@ -63,8 +63,12 @@ begin
 end;
 
 procedure Init;
+var
+  appConfig: TP92AppConfig;
 begin
-  WriteLogI32(67);
+  appConfig := DefaultP92AppConfig;
+
+  P92Start(appConfig);
 end;
 
 exports
