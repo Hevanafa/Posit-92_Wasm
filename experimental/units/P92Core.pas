@@ -361,8 +361,10 @@ begin
 
   SprRegion(
     BootFontHandle,
-    col * 8, row * 8,
-    8, 8,
+    col * BootFontGlyphWidth,
+    row * BootFontGlyphHeight,
+    BootFontGlyphWidth,
+    BootFontGlyphHeight,
     x, y)
 end;
 
@@ -375,13 +377,14 @@ begin
 
   for c in txt do begin
     PrintChar(c, left, y);
-    inc(left, 8)
+    inc(left, BootFontGlyphWidth)
   end;
 end;
 
 procedure PrintWrap(const txt: string; x, y, wrapWidth: smallint);
 var
   c: char;
+  { relative to x }
   left: smallint;
 begin
   left := 0;
@@ -389,17 +392,18 @@ begin
   for c in txt do begin
     if c = #10 then begin
       left := 0;
-      inc(y, 8);
+      inc(y, BootFontGlyphWidth);
       continue;
     end;
+
     if c = #13 then continue;
 
     PrintChar(c, x + left, y);
-    inc(left, 8);
+    inc(left, BootFontGlyphWidth);
 
     if left >= wrapWidth then begin
       left := 0;
-      inc(y, 8);
+      inc(y, BootFontGlyphHeight);
     end;
   end;
 end;
