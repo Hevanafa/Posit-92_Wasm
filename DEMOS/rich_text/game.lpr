@@ -31,12 +31,12 @@ var
 
 procedure PrintDefault(const text: string; const x, y: integer);
 begin
-  PrintBMFont(fontDefault, text, x, y)
+  PrintBMFont(fontRegular, text, x, y)
 end;
 
 function MeasureDefault(const text: string): word;
 begin
-  MeasureDefault := measureBMFont(fontDefault, text)
+  MeasureDefault := measureBMFont(fontRegular, text)
 end;
 
 procedure PrintDefaultCentred(const text: string; const cx, y: integer);
@@ -63,6 +63,11 @@ begin
 
   texDosuExe[0] := RequestImage('assets/images/dosu_1.png');
   texDosuExe[1] := RequestImage('assets/images/dosu_2.png');
+
+  fontRegular := RequestBMFont('assets/fonts/ms_sans_serif_10px_regular.txt');
+  fontBold := RequestBMFont('assets/fonts/ms_sans_serif_10px_bold.txt');
+  fontItalic := RequestBMFont('assets/fonts/ms_sans_serif_10px_italic.txt');
+  fontBoldItalic := RequestBMFont('assets/fonts/ms_sans_serif_10px_bold_italic.txt');
 end;
 
 procedure OnReady;
@@ -72,7 +77,7 @@ begin
   { Initialise game state here }
   gameTime := 0.0;
 
-  rtfSetFont(fontDefault);
+  rtfSetFont(fontRegular);
 
   rtfSetBoldFont(fontBold);
   rtfSetItalicFont(fontItalic);
