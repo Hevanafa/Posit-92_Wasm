@@ -9,7 +9,7 @@ interface
 uses P92AssetHandles;
 
 const
-  Posit92Version = '0.3.2';
+  Posit92Version = '0.3.3';
 
 {$ifdef P92_SDL2}
 type
