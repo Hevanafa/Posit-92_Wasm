@@ -677,11 +677,12 @@ class Posit92 {
 
   #TakeScreenshot(): void {
     const now = new Date();
+    const twoDigits = (n: number) => n.toString().padStart(2, "0");
 
     const timestampStr =
-      now.toISOString().split("T")[0]
+      [now.getFullYear(), twoDigits(now.getMonth() + 1), twoDigits(now.getDate())].join("-")
       + "_"
-      + now.toISOString().split("T")[1].split(".")[0].replace(/:/g,".");
+      + [twoDigits(now.getHours()), twoDigits(now.getMinutes()), twoDigits(now.getSeconds())].join(".");
 
     console.log("TakeScreenshot: timestampStr", timestampStr);
 
