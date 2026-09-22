@@ -60,7 +60,7 @@
     </Linking>
     <Other>
       <WriteFPCLogo Value="False"/>
-      <CustomOptions Value="-dP92_WASM -dP92_ENABLE_SOUNDS"/>
+      <CustomOptions Value="-dP92_WASM"/>
       <ExecuteAfter>
         <Command Value="cmd.exe /c move /Y game_wasm game.wasm"/>
       </ExecuteAfter>
