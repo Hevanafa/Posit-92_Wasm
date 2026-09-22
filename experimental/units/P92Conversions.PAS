@@ -15,6 +15,7 @@ interface
 function I32Str(const value: Longint): string;
 function U32Str(const value: longword): string;
 function F32Str(const value: double): string;
+function NumberToStr(const value: double): string;
 
 function ToFixed(const value: double; const decimals: smallint): string;
 
@@ -40,6 +41,22 @@ end;
 function F32Str(const value: double): string;
 begin
   str(value:0:4, F32Str)
+end;
+
+function NumberToStr(const value: double): string;
+var
+  s: string;
+begin
+  if frac(value) = 0 then
+    str(trunc(value), NumberToStr)
+  else begin
+    str(value:0:15, s);
+
+    while s[length(s)] = '0' do
+      s := copy(s, 1, length(s) - 1);
+
+    NumberToStr := s
+  end;
 end;
 
 function ToFixed(const value: double; const decimals: smallint): string;
