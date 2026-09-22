@@ -649,14 +649,6 @@ class Posit92 {
   }
 
   #TakeScreenshot(): void {
-    console.log("TakeScreenshot call")
-    // console.log("canvasID", this.canvasID);
-
-    /**
-     * @type {HTMLCanvasElement}
-     */
-    // const canvas = document.getElementById(this.canvasID);
-
     const now = new Date();
 
     const timestampStr =
@@ -664,7 +656,7 @@ class Posit92 {
       + "_"
       + now.toISOString().split("T")[1].split(".")[0].replace(/:/g,".");
 
-    console.log("timestampStr", timestampStr);
+    console.log("TakeScreenshot: timestampStr", timestampStr);
 
     const anchor = document.createElement("a");
     anchor.href = this.#canvas.toDataURL();
