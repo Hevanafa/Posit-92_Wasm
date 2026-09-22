@@ -62,10 +62,18 @@ begin
   DrawFPS;
 end;
 
+procedure Init;
+begin
+  WriteLogI32(67);
+end;
+
 exports
-  OnPreload, OnReady,
-  Update, Draw;
+  Init,
+  OnPreload,
+  OnReady,
+  Update,
+  Draw;
 
 begin
-{ Starting point is intentionally left empty }
+  { Starting point is intentionally left empty }
 end.

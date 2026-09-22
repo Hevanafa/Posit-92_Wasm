@@ -22,6 +22,7 @@ type WasmExports = {
 
   // Core
   IsEngineReady: () => boolean;
+  Init: () => void;
   P92Boot: () => void;
   P92Update: () => void;
   P92Draw: () => void;
@@ -449,6 +450,7 @@ class Posit92 {
 
     const result = await WebAssembly.instantiate(bytes.buffer, this.#importObject);
     this.#wasm = <WebAssemblyInstance>result.instance;
+    this.#wasm.exports.Init();
   }
 
   /**
