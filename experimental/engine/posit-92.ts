@@ -123,6 +123,9 @@ type StringPair = [string, string];
 
 type WebAssemblyInstance = WebAssembly.Instance & { exports: WasmExports };
 
+/**
+ * @deprecated Future versions will use bootOptions in Pascal
+ */
 type Posit92Options = {
   /**
    * default: 320
@@ -368,7 +371,11 @@ class Posit92 {
     const options = this.#NormaliseOptions(vgaWidthOrOptions, bufferHeight);
     this.#bootOptions = options;
 
-    // this.#canvas = <HTMLCanvasElement>document.getElementById(canvasID);
+    this.#TargetFPS = options.TargetFPS!;
+    this.#FrameTime = 1000 / this.#TargetFPS;
+  }
+
+  #CreateCanvas() {
     this.#canvas = document.createElement("canvas");
     this.#canvas.id = canvasID;
     this.#canvas.className = "scale-fit";
@@ -384,9 +391,6 @@ class Posit92 {
       this.canvasCtx = this.#canvas.getContext(options.Renderer)!;
     else if (options.Renderer == "webgl")
       this.glCtx = this.#canvas.getContext(options.Renderer)!;
-
-    this.#TargetFPS = options.TargetFPS!;
-    this.#FrameTime = 1000 / this.#TargetFPS;
 
     this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
   }
