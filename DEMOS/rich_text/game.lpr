@@ -1,32 +1,21 @@
 library Game;
 
 {$Mode ObjFPC}
-{$J-}  { Switch off assignments to typed constants }
+{$H+}
+{$J-}
 
 uses
-  Loading, Fullscreen,
-  Conv, FPS, Logger,
-  Keyboard, Mouse,
-  ImgRef, ImgRefFast,
-  RichText, Timing, WasmHeap, WasmMemMgr,
-  VGA,
+  P92Core, P92AssetRegistry, P92WasmHost,
+  P92Conversions, P92FPS, P92Logger,
+  P92Keyboard, P92Mouse,
+  P92Tex, P92TexDraw,
+  P92RichText, P92Timing, P92VGA,
   Assets;
 
-type
-  TGameStates = (
-    GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
-  );
-
 const
-  SC_ESC = $01;
-  SC_SPACE = $39;
-  SC_ENTER = $1C;
-
   CornflowerBlue = $FF6495ED;
 
-  palette: array of longword = (
+  Palette: array of longword = (
     $FF000000,
     $FFFF5555,
     $FF55FF55,
@@ -41,11 +30,23 @@ var
   gameTime: double;
 
 
-{ Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure hideCursor; external 'env' name 'hideCursor';
-procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
-procedure loadAssets; external 'env' name 'loadAssets';
+procedure printDefault(const text: string; const x, y: integer);
+begin
+  printBMFont(defaultFont, defaultFontGlyphs, text, x, y)
+end;
+
+procedure printDefaultCentred(const text: string; const cx, y: integer);
+var
+  w: word;
+begin
+  w := measureDefault(text);
+  printDefault(text, cx - w div 2, y)
+end;
+
+function measureDefault(const text: string): word;
+begin
+  measureDefault := measureBMFont(defaultFontGlyphs, text)
+end;
 
 procedure drawFPS;
 begin
@@ -128,10 +129,10 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  RichTextLabel('\bBold text,\plain Regular text', 20, 120, palette);
-  RichTextLabel('Black text\cf1 Red text \cf0Black text', 20, 140, palette);
-  RichTextLabel('\bBold,\b0\i Italic,\i0\b\i Bold italic', 20, 150, palette);
-  RichTextLabel('\cf1Colour 1 \cf2Colour 2 \cf3 Colour 3', 20, 160, palette);
+  RichTextLabel('\bBold text,\plain Regular text', 20, 120, Palette);
+  RichTextLabel('Black text\cf1 Red text \cf0Black text', 20, 140, Palette);
+  RichTextLabel('\bBold,\b0\i Italic,\i0\b\i Bold italic', 20, 150, Palette);
+  RichTextLabel('\cf1Colour 1 \cf2Colour 2 \cf3 Colour 3', 20, 160, Palette);
 
   drawMouse;
   drawFPS;
