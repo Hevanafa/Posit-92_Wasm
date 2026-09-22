@@ -6,7 +6,7 @@ library Game;
 
 uses
   P92Core, P92AssetRegistry, P92WasmHost,
-  P92Conversions, P92FPS, P92Logger,
+  P92Conversions, P92FPS, P92Logger, P92BMFont,
   P92Keyboard, P92Mouse,
   P92Tex, P92TexDraw,
   P92RichText, P92Timing, P92VGA,
@@ -26,13 +26,12 @@ var
   lastEsc: boolean;
 
   { Init your game state here }
-  actualGameState: TGameStates;
   gameTime: double;
 
 
 procedure printDefault(const text: string; const x, y: integer);
 begin
-  printBMFont(defaultFont, defaultFontGlyphs, text, x, y)
+  PrintBMFontColour(defaultFont, text, x, y)
 end;
 
 procedure printDefaultCentred(const text: string; const cx, y: integer);
@@ -55,44 +54,28 @@ end;
 
 procedure DrawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  spr(imgCursor, GetMouseX, GetMouseY)
 end;
 
-procedure beginLoadingState;
+procedure OnPreload;
 begin
-  actualGameState := GameStateLoading;
-  fitCanvas;
-  loadAssets
+  { TODO: Load the game assets here }
 end;
 
-procedure beginPlayingState;
+procedure OnReady;
 begin
-  hideCursor;
-  fitCanvas;
+  HideCursor;
 
   { Initialise game state here }
-  actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
-  rtfSetFont(defaultFont, defaultFontGlyphs);
+  rtfSetFont(defaultFont);
 
-  rtfSetBoldFont(boldFont, boldFontGlyphs);
-  rtfSetItalicFont(italicFont, italicFontGlyphs);
-  rtfSetBoldItalicFont(boldItalicFont, boldItalicFontGlyphs);
+  rtfSetBoldFont(boldFont);
+  rtfSetItalicFont(italicFont);
+  rtfSetBoldItalicFont(boldItalicFont);
 end;
 
-
-procedure init;
-begin
-  initHeapMgr;
-  initDeltaTime;
-  initFPSCounter
-end;
-
-procedure afterInit;
-begin
-  beginPlayingState
-end;
 
 procedure Update;
 begin
