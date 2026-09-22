@@ -24,7 +24,7 @@ procedure RichTextLabel(
 
 implementation
 
-uses P92Conversions, P92Logger, P92Strings, P92Panic;
+uses P92Conversions, P92Logger, P92BMFont, P92Strings, P92Panic;
 
 var
   isFontSet: boolean;
@@ -70,35 +70,35 @@ procedure rtfPrintWithFormat(
 begin
   if bold and italic then begin
     PrintBMFontColour(
-      boldItalicFont, boldItalicFontGlyphs,
+      boldItalicFont,
       text,
       x + leftOffset, y, colour);
 
-    inc(leftOffset, measureBMFont(boldItalicFontGlyphs, text));
+    inc(leftOffset, measureBMFont(boldItalicFont, text));
     
   end else if bold then begin
-    printBMFontColour(
-      boldFont, boldFontGlyphs,
+    PrintBMFontColour(
+      boldFont,
       text,
       x + leftOffset, y, colour);
 
-    inc(leftOffset, measureBMFont(boldFontGlyphs, text));
+    inc(leftOffset, measureBMFont(boldFont, text));
 
   end else if italic then begin
     printBMFontColour(
-      italicFont, italicFontGlyphs,
+      italicFont,
       text,
       x + leftOffset, y, colour);
 
-    inc(leftOffset, measureBMFont(italicFontGlyphs, text));
+    inc(leftOffset, measureBMFont(italicFont, text));
 
   end else begin
     printBMFontColour(
-      regularFont, regularFontGlyphs,
+      regularFont,
       text,
       x + leftOffset, y, colour);
 
-    inc(leftOffset, measureBMFont(regularFontGlyphs, text));
+    inc(leftOffset, measureBMFont(regularFont, text));
   end;
 end;
 
