@@ -18,7 +18,7 @@ uses
   P92Conversions, P92FPS, P92Graphics, P92Tex, P92TexDraw,
   P92TexEffects, P92ImmediateGUI, P92Loading, P92Logger,
   P92Keyboard, P92Mouse, P92WasmHeap, P92Panic, P92Geometry,
-  P92Timing, P92VGA,
+  P92Timing, P92VGA, P92Colour,
   Assets;
 
 var
@@ -122,7 +122,9 @@ begin
   else
     spr(imgDosuEXE[0], 148, 88);
 
-  SprStretch(imgDosuEXE[0], 100, 80, 24, 48);
+  { SprStretch(imgDosuEXE[0], 100, 80, 24, 48); }
+
+  SprTint(imgDosuEXE[0], 100, 80, HSVtoRGB(frac(gameTime), 1.0, 1.0));
 
   GuiSetFont(fontWhite);
   Slider(120, 40, 100, sliderValue, 0, 100);

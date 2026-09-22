@@ -22,6 +22,8 @@ uses P92AssetHandles;
 
 procedure Spr(const texHandle: TTextureHandle; const x, y: smallint);
 
+procedure SprTint(const texHandle: TTextureHandle; const x, y: smallint; const colour: longword);
+
 { This procedure is destructive }
 procedure SprClear(const texHandle: TTextureHandle; const colour: longword);
 
@@ -149,6 +151,59 @@ begin
       colour := UnsafeSprPGet(texture, px, py);
       UnsafePSet(x + px, y + py, colour)
     end;
+end;
+
+{ Copied from Spr }
+procedure SprTint(const texHandle: TTextureHandle; const x, y: smallint; const colour: longword);
+var
+  texture: PSoftwareTex;
+  startX, endX, startY, endY: smallint;
+  rowBase, stride: longword;
+  destRowBase, destStride: longword;
+
+  px, py: smallint;
+  { offset to the pixel data }
+  offset: longword;
+  alpha: byte;
+
+  ABGR: longword;
+begin
+  if not IsTextureSet(texHandle) then exit;
+
+  texture := BorrowTexturePtr(texHandle);
+
+  { Handle clipping }
+
+  startX := trunc(max(0, ClipX1 - x));
+  endX := trunc(min(texture^.width - 1, ClipX2 - x));
+
+  startY := trunc(max(0, ClipY1 - y));
+  endY := trunc(min(texture^.height - 1, ClipY2 - y));
+
+  if (startX > endX) or (startY > endY) then exit;
+
+  { Render logic }
+
+  stride := texture^.width * 4;
+  destStride := VGAWidth * 4;
+
+  ABGR := ARGBtoABGR(colour);
+
+  for py := startY to endY do begin
+    rowBase := py * stride;
+    destRowBase := (y + py) * destStride;
+
+    for px := startX to endX do begin
+      offset := rowBase + px * 4;
+      alpha := texture^.pixelData[offset + 3];
+
+      if alpha < 255 then continue;
+
+      PLongWord(@BorrowSurfacePtr^[destRowBase + (x + px) * 4])^ :=
+        { PLongWord(@texture^.pixelData[offset])^ }
+        ABGR;
+    end;
+  end;
 end;
 
 procedure SprClear(const texHandle: TTextureHandle; const colour: longword);
