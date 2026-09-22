@@ -135,7 +135,7 @@ begin
   TextLabel(s, (VGAWidth - w) div 2, 120);
 
   GuiSetFont(fontPicotron);
-  s := 'Picotron font';
+  s := 'Picotron font ' + NumberToStr(2.50);
   w := GuiMeasureText(s);
   TextLabel(s, (VGAWidth - w) div 2, 140);
 

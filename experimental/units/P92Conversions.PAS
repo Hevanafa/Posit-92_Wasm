@@ -53,7 +53,7 @@ begin
     str(value:0:15, s);
 
     while s[length(s)] = '0' do
-      s := copy(s, 1, length(s) - 1);
+      delete(s, length(s), 1);
 
     NumberToStr := s
   end;
