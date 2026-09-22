@@ -25,6 +25,8 @@ function U8HexStr(const value: byte): string;
 function BoolStr(const value: boolean): string;
 function ParseInt(const text: string): longint;
 
+function I32CoordStr(const x, y: longint): string;
+
 
 implementation
 
@@ -102,4 +104,13 @@ begin
   end;
 end;
 
+function I32CoordStr(const x, y: longint): string;
+begin
+  I32CoordStr := '{'
+    + 'X=' + I32Str(x)
+    + ', Y=' + I32Str(y)
+    + '}'
+end;
+
 end.
+
