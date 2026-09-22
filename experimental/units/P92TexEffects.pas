@@ -37,32 +37,32 @@ begin
   for b:=0 to texture^.height - 1 do
     for a:=0 to texture^.width - 1 do begin
       { Skip this solid pixel }
-      if unsafeSprGetAlpha(texture, a, b) > 0 then continue;
+      if UnsafeTexGetAlpha(texture, a, b) > 0 then continue;
 
       { Check 4 neighbours }
-      if (b - 1 >= 0) and (unsafeSprGetAlpha(texture, a, b - 1) > 0)
-        or (b + 1 < texture^.height) and (unsafeSprGetAlpha(texture, a, b + 1) > 0)
-        or (a - 1 >= 0) and (unsafeSprGetAlpha(texture, a - 1, b) > 0)
-        or (a + 1 < texture^.width) and (unsafeSprGetAlpha(texture, a + 1, b) > 0) then
+      if (b - 1 >= 0) and (UnsafeTexGetAlpha(texture, a, b - 1) > 0)
+        or (b + 1 < texture^.height) and (UnsafeTexGetAlpha(texture, a, b + 1) > 0)
+        or (a - 1 >= 0) and (UnsafeTexGetAlpha(texture, a - 1, b) > 0)
+        or (a + 1 < texture^.width) and (UnsafeTexGetAlpha(texture, a + 1, b) > 0) then
         pset(x + a, y + b, colour);
     end;
   
   { Padding area }
   { top & bottom }
   for a:=0 to texture^.width - 1 do begin
-    if unsafeSprGetAlpha(texture, a, 0) > 0 then
+    if UnsafeTexGetAlpha(texture, a, 0) > 0 then
       pset(x + a, y - 1, colour);
 
-    if unsafeSprGetAlpha(texture, a, texture^.height - 1) > 0 then
+    if UnsafeTexGetAlpha(texture, a, texture^.height - 1) > 0 then
       pset(x + a, y + texture^.height, colour);
   end;
 
   { left & right }
   for b:=0 to texture^.height - 1 do begin
-    if unsafeSprGetAlpha(texture, 0, b) > 0 then
+    if UnsafeTexGetAlpha(texture, 0, b) > 0 then
       pset(x - 1, y + b, colour);
 
-    if unsafeSprGetAlpha(texture, texture^.width - 1, b) > 0 then
+    if UnsafeTexGetAlpha(texture, texture^.width - 1, b) > 0 then
       pset(x + texture^.width, y + b, colour);
   end;
 
@@ -86,7 +86,7 @@ begin
 
   for b:=0 to texture^.height - 1 do
   for a:=0 to texture^.width - 1 do begin
-    if unsafeSprGetAlpha(texture, a, b) < 255 then continue;
+    if UnsafeTexGetAlpha(texture, a, b) < 255 then continue;
 
     destX := x + a + offsetX;
     destY := y + b + offsetY;
