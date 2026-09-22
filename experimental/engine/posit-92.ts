@@ -1091,10 +1091,7 @@ class Posit92 {
   }
 
   async Start(): Promise<void> {
-    // WebAssembly init & stuff
     await this.InitRuntime();
-
-    // this.#wasm.exports.P92Boot();
 
     this.#HideLoadingOverlay();
     this.#AddOutOfFocusFix();
