@@ -18,44 +18,52 @@ unit P92TexDraw;
 
 interface
 
-procedure Spr(const texHandle: longint; const x, y: smallint);
+uses P92AssetHandles;
+
+procedure Spr(const texHandle: TTextureHandle; const x, y: smallint);
 
 { This procedure is destructive }
-procedure SprClear(const texHandle: longint; const colour: longword);
+procedure SprClear(const texHandle: TTextureHandle; const colour: longword);
 
 procedure SprRegion(
-  const texHandle: longint;
+  const texHandle: TTextureHandle;
   const srcX, srcY, srcW, srcH: smallint;
   const destX, destY: smallint);
 
 procedure SprStretch(
-  const texHandle: longint;
+  const texHandle: TTextureHandle;
   const destX, destY, destWidth, destHeight: smallint);
 
 procedure SprRegionStretch(
-  const texHandle: longint;
+  const texHandle: TTextureHandle;
   const srcX, srcY, srcWidth, srcHeight: smallint;
   const destX, destY, destWidth, destHeight: smallint);
 
 procedure SprRegionTint(
-  const texHandle: longint;
+  const texHandle: TTextureHandle;
   const srcX, srcY, srcW, srcH: smallint;
   const destX, destY: smallint;
   const colour: longword);
 
-procedure SprFlip(const texHandle: longint; const x, y: smallint; const flip: smallint);
+procedure SprFlip(
+  const texHandle: TTextureHandle;
+  const x, y: smallint;
+  const flip: smallint);
 
 { rotation is in radians }
-procedure SprRotate(const texHandle: longint; const cx, cy: smallint; const rotation: double);
+procedure SprRotate(
+  const texHandle: TTextureHandle;
+  const cx, cy: smallint;
+  const rotation: double);
 
-procedure SprToDest(const src, dest: longint; const x, y: smallint);
+procedure SprToDest(const src, dest: TTextureHandle; const x, y: smallint);
 
 procedure SprRegionToDest(
-  const src, dest: longint;
+  const src, dest: TTextureHandle;
   const srcX, srcY, srcW, srcH: smallint;
   const destX, destY: smallint);
 
-procedure SprFlipInPlace(const texHandle: longint; const flip: smallint);
+procedure SprFlipInPlace(const texHandle: TTextureHandle; const flip: smallint);
 
 
 implementation
@@ -66,7 +74,7 @@ uses
   P92Panic, P92VGA;
 
 
-procedure Spr(const texHandle: longint; const x, y: smallint);
+procedure Spr(const texHandle: TTextureHandle; const x, y: smallint);
 var
   texture: PSoftwareTex;
   startX, endX, startY, endY: smallint;
@@ -143,7 +151,7 @@ begin
     end;
 end;
 
-procedure SprClear(const texHandle: longint; const colour: longword);
+procedure SprClear(const texHandle: TTextureHandle; const colour: longword);
 var
   texture: PSoftwareTex;
   px, py: smallint;
@@ -165,7 +173,7 @@ end;
   Made readable rather than optimised
 }
 procedure SprRegionBase(
-  const texHandle: longint;
+  const texHandle: TTextureHandle;
   const srcX, srcY, srcW, srcH: smallint;
   const destX, destY: smallint);
 var
@@ -198,7 +206,7 @@ begin
 end;
 
 procedure SprRegion(
-  const texHandle: longint;
+  const texHandle: TTextureHandle;
   const srcX, srcY, srcW, srcH: smallint;
   const destX, destY: smallint);
 var
@@ -253,7 +261,11 @@ begin
 end;
 
 { Stretch a sprite with nearest neighbour scaling }
-procedure SprStretch(const texHandle: longint; const destX, destY, destWidth, destHeight: smallint);
+
+procedure SprStretch(
+  const texHandle: TTextureHandle;
+  const destX, destY, destWidth, destHeight: smallint
+);
 var
   sx, sy: smallint;
   dx, dy: smallint;
@@ -287,7 +299,7 @@ begin
 end;
 
 procedure SprRegionStretch(
-  const texHandle: longint;
+  const texHandle: TTextureHandle;
   const srcX, srcY, srcWidth, srcHeight: smallint;
   const destX, destY, destWidth, destHeight: smallint);
 var
@@ -325,10 +337,11 @@ begin
 end;
 
 procedure SprRegionTint(
-  const texHandle: longint;
+  const texHandle: TTextureHandle;
   const srcX, srcY, srcW, srcH: smallint;
   const destX, destY: smallint;
-  const colour: longword);
+  const colour: longword
+);
 var
   texture: PSoftwareTex;
   a, b: smallint;
@@ -359,7 +372,11 @@ begin
 end;
 
 { flip: use SprFlips enum }
-procedure SprFlip(const texHandle: longint; const x, y: smallint; const flip: smallint);
+procedure SprFlip(
+  const texHandle: TTextureHandle;
+  const x, y: smallint;
+  const flip: smallint
+);
 var
   sx, sy: smallint;
   dx, dy: smallint;
@@ -405,7 +422,11 @@ begin
   end;
 end;
 
-procedure SprRotate(const texHandle: longint; const cx, cy: smallint; const rotation: double);
+procedure SprRotate(
+  const texHandle: TTextureHandle;
+  const cx, cy: smallint;
+  const rotation: double
+);
 var
   sx, sy: double;
   dx, dy: smallint;
@@ -456,7 +477,7 @@ begin
 end;
 
 
-procedure SprToDest(const src, dest: longint; const x, y: smallint);
+procedure SprToDest(const src, dest: TTextureHandle; const x, y: smallint);
 var
   srcTex, destTex: PSoftwareTex;
   startX, endX, startY, endY: word;
@@ -487,9 +508,10 @@ begin
 end;
 
 procedure SprRegionToDest(
-  const src, dest: longint;
+  const src, dest: TTextureHandle;
   const srcX, srcY, srcW, srcH: smallint;
-  const destX, destY: smallint);
+  const destX, destY: smallint
+);
 var
   srcTex, destTex: PSoftwareTex;
   px, py: smallint;
@@ -521,7 +543,7 @@ begin
 end;
 
 { flip: Use SprFlip enum }
-procedure SprFlipInPlace(const texHandle: longint; const flip: smallint);
+procedure SprFlipInPlace(const texHandle: TTextureHandle; const flip: smallint);
 var
   texture: PSoftwareTex;
   px, py: smallint;
