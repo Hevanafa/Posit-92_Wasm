@@ -520,7 +520,8 @@ var
   alpha: byte;
   colour: longword;
 begin
-  if not IsTextureSet(src) or not IsTextureSet(dest) then exit;
+  if not IsTextureSet(src) then PanicHalt('SprRegionToDest: src handle is unset!');
+  if not IsTextureSet(dest) then PanicHalt('SprRegionToDest: dest handle is unset!');
 
   srcTex := BorrowTexturePtr(src);
   destTex := BorrowTexturePtr(dest);
