@@ -12,7 +12,7 @@ unit P92Conversions;
 
 interface
 
-function I32Str(const value: Longint): string;
+function I32Str(const value: longint): string;
 function U32Str(const value: longword): string;
 function F32Str(const value: double): string;
 function NumberToStr(const value: double): string;
@@ -23,7 +23,7 @@ function U16HexStr(const value: word): string;
 function U8HexStr(const value: byte): string;
 
 function BoolStr(const value: boolean): string;
-function ParseInt(const text: string): smallint;
+function ParseInt(const text: string): longint;
 
 
 implementation
@@ -90,9 +90,9 @@ begin
     BoolStr := 'false'
 end;
 
-function ParseInt(const text: string): smallint;
+function ParseInt(const text: string): longint;
 var
-  parseResult: smallint;
+  parseResult: longint;
 begin
   val(text, ParseInt, parseResult);
 
