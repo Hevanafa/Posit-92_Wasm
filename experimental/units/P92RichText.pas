@@ -37,6 +37,11 @@ begin
   RtfSetBoldItalicFont(font);
 end;
 
+function IsFontSet: boolean;
+begin
+  IsFontSet := (fontRegular > 0) and (fontItalic > 0) and (fontBold > 0) and (fontBoldItalic > 0)
+end;
+
 procedure RtfSetRegularFont(const font: TBMFontHandle);
 begin
   fontRegular := font
