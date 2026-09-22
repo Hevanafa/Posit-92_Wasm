@@ -170,6 +170,8 @@ begin
 {$ifdef P92_WASM}
   InitHeapMgr;
   InitInteropBuffer;
+
+  JsCreateCanvas(bootConfig.Width, bootConfig.Height);
 {$endif}
 
   engineRunState := ersBoot;

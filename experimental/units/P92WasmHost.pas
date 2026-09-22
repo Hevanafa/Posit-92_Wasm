@@ -10,6 +10,8 @@ unit P92WasmHost;
 interface
 
 {$ifdef P92_WASM}
+procedure JsCreateCanvas(width: integer; height: integer); external 'env' name 'JsCreateCanvas';
+
 { Use this to set `done` to true }
 procedure SignalDone; external 'env' name 'SignalDone';
 
