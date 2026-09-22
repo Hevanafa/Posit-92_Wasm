@@ -10,6 +10,7 @@
     "rootDir": "./",
     "sourceMap": false,
     "strict": true,
+    "strictPropertyInitialization": false,
     "skipLibCheck": true,
     "types": []
   },
