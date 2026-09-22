@@ -43,7 +43,7 @@ const
 
 
 function NewTex(const width, height: smallint): TTextureHandle;
-function CopyTex(const texHandle: TTextureHandle): TTextureHandle;
+function CloneTex(const texHandle: TTextureHandle): TTextureHandle;
 procedure FreeTex(const texHandle: TTextureHandle);
 
 function IsTexSet(const texHandle: TTextureHandle): boolean;
@@ -107,7 +107,7 @@ end;
   Makes a copy of the source texture
   Returns: a new texture handle
 }
-function CopyTex(const texHandle: TTextureHandle): TTextureHandle;
+function CloneTex(const texHandle: TTextureHandle): TTextureHandle;
 var
   newHandle: TTextureHandle;
   src, dest: PSoftwareTex;
@@ -117,7 +117,7 @@ begin
   dest := @textures[newHandle].texture;
 
   move(src^.pixelData^, dest^.pixelData^, src^.allocSize);
-  CopyTex := newHandle
+  CloneTex := newHandle
 end;
 
 procedure FreeTex(const texHandle: TTextureHandle);

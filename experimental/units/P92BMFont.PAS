@@ -118,7 +118,7 @@ begin
     PanicHaltDisplay('BMFont handles are full!');
 
   bmfonts[destFontHandle] := bmfonts[srcFontHandle];
-  bmfonts[destFontHandle].font.texHandle := CopyTex(bmfonts[srcFontHandle].font.texHandle);
+  bmfonts[destFontHandle].font.texHandle := CloneTex(bmfonts[srcFontHandle].font.texHandle);
 
   CloneBMFont := destFontHandle
 end;
