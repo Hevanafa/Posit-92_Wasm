@@ -648,6 +648,14 @@ class Posit92 {
       document.exitFullscreen();
   }
 
+
+  #SaveCanvasBase(filename: string): void {
+    const anchor = document.createElement("a");
+    anchor.href = this.#canvas.toDataURL();
+    anchor.download = filename;
+    anchor.click();
+  }
+
   #TakeScreenshot(): void {
     const now = new Date();
 
@@ -658,10 +666,12 @@ class Posit92 {
 
     console.log("TakeScreenshot: timestampStr", timestampStr);
 
-    const anchor = document.createElement("a");
-    anchor.href = this.#canvas.toDataURL();
-    anchor.download = timestampStr + ".png";
-    anchor.click();
+    this.#SaveCanvasBase(timestampStr + ".png");
+
+    // TODO:
+    // - Clone the canvas pixel data,
+    // - Scale both the width & height to 2x,
+    // - Do not apply bilinear filtering
   }
 
   /**
