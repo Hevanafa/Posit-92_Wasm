@@ -5,69 +5,59 @@ unit P92RichText;
 
 interface
 
-uses BMFont;
+uses P92AssetHandles;
 
-procedure rtfSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
-procedure rtfSetRegularFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
-procedure rtfSetBoldFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
-procedure rtfSetItalicFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
-procedure rtfSetBoldItalicFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
+{ Assign all 4 font styles & weights }
+procedure rtfSetFont(const font: TBMFontHandle);
+
+procedure rtfSetRegularFont(const font: TBMFontHandle);
+procedure rtfSetBoldFont(const font: TBMFontHandle);
+procedure rtfSetItalicFont(const font: TBMFontHandle);
+procedure rtfSetBoldItalicFont(const font: TBMFontHandle);
 
 procedure RichTextLabel(
   const text: string;
   const x, y: smallint;
-  const colourTable: array of longword);
+  const colourTable: array of longword
+);
 
 
 implementation
 
-uses Conv, Logger, UStrings, Panic;
+uses P92Conversions, P92Logger, P92Strings, P92Panic;
 
 var
   isFontSet: boolean;
-  regularFont, boldFont, italicFont, boldItalicFont: TBMFont;
-  regularFontGlyphs, boldFontGlyphs, italicFontGlyphs, boldItalicFontGlyphs: array[32..126] of TBMFontGlyph;
+  regularFont, boldFont, italicFont, boldItalicFont: TBMFontHandle;
 
-procedure rtfSetFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
+procedure rtfSetFont(const font: TBMFontHandle);
 begin
   isFontSet := true;
 
-  rtfSetRegularFont(font, glyphs);
-  rtfSetBoldFont(font, glyphs);
-  rtfSetItalicFont(font, glyphs);
-  rtfSetBoldItalicFont(font, glyphs);
+  rtfSetRegularFont(font);
+  rtfSetBoldFont(font);
+  rtfSetItalicFont(font);
+  rtfSetBoldItalicFont(font);
 end;
 
-procedure rtfSetRegularFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
-var
-  a: word;
+procedure rtfSetRegularFont(const font: TBMFontHandle);
 begin
-  regularFont := font;
-  for a := 32 to 126 do regularFontGlyphs[a] := glyphs[a - 32];
+  regularFont := font
 end;
 
-procedure rtfSetBoldFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
-var
-  a: word;
+procedure rtfSetBoldFont(const font: TBMFontHandle);
 begin
-  boldFont := font;
-  for a := 32 to 126 do boldFontGlyphs[a] := glyphs[a - 32];
+  boldFont := font
 end;
 
-procedure rtfSetItalicFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
-var
-  a: word;
+procedure rtfSetItalicFont(const font: TBMFontHandle);
 begin
-  italicFont := font;
-  for a := 32 to 126 do italicFontGlyphs[a] := glyphs[a - 32];
+  italicFont := font
 end;
 
-procedure rtfSetBoldItalicFont(const font: TBMFont; const glyphs: array of TBMFontGlyph);
-var
-  a: word;
+procedure rtfSetBoldItalicFont(const font: TBMFontHandle);
 begin
-  boldItalicFont := font;
-  for a := 32 to 126 do boldItalicFontGlyphs[a] := glyphs[a - 32];
+  boldItalicFont := font
 end;
 
 
@@ -79,7 +69,7 @@ procedure rtfPrintWithFormat(
   var leftOffset: smallint);
 begin
   if bold and italic then begin
-    printBMFontColour(
+    PrintBMFontColour(
       boldItalicFont, boldItalicFontGlyphs,
       text,
       x + leftOffset, y, colour);
@@ -231,4 +221,10 @@ begin
       leftOffset);
 end;
 
+begin
+  regularFont := 0;
+  boldFont := 0;
+  italicFont := 0;
+  boldItalicFont := 0;
 end.
+
