@@ -148,7 +148,7 @@ begin
       alpha := texture^.pixelData[offset + 3];
       if alpha < 255 then continue;
 
-      colour := UnsafeSprPGet(texture, px, py);
+      colour := UnsafeTexPGet(texture, px, py);
       UnsafePSet(x + px, y + py, colour)
     end;
 end;
@@ -255,7 +255,7 @@ begin
     alpha := texture^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
-    colour := UnsafeSprPGet(texture, sx, sy);
+    colour := UnsafeTexPGet(texture, sx, sy);
     UnsafePSet(destX + a, destY + b, colour);
   end;
 end;
@@ -348,7 +348,7 @@ begin
     alpha := texture^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
-    colour := UnsafeSprPGet(texture, sx, sy);
+    colour := UnsafeTexPGet(texture, sx, sy);
     UnsafePSet(dx + destX, dy + destY, colour);
   end;
 end;
@@ -383,7 +383,8 @@ begin
     if (sx >= texture^.width) or (sx < 0)
       or (sy >= texture^.height) or (sy < 0) then continue;
 
-    colour := UnsafeSprPGet(texture, sx, sy);
+    colour := UnsafeTexPGet(texture, sx, sy);
+
     alpha := colour shr 24;
     if alpha < 255 then continue;
 
@@ -473,7 +474,7 @@ begin
     if (dx > ClipX2) or (dx < ClipX1)
       or (dy > ClipY2) or (dy < ClipY1) then continue;
 
-    colour := UnsafeSprPGet(texture, sx, sy);
+    colour := UnsafeTexPGet(texture, sx, sy);
     UnsafePSet(dx, dy, colour);
   end;
 end;
@@ -527,7 +528,7 @@ begin
     alpha := texture^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
-    colour := UnsafeSprPGet(texture, srcX, srcY);
+    colour := UnsafeTexPGet(texture, srcX, srcY);
     UnsafePSet(cx + dx, cy + dy, colour)
   end;
 end;
@@ -558,7 +559,7 @@ begin
     alpha := srcTex^.pixelData[srcOffset + 3];
     if alpha < 255 then continue;
 
-    colour := UnsafeSprPGet(srcTex, a, b);
+    colour := UnsafeTexPGet(srcTex, a, b);
     UnsafeSprPSet(destTex, x + a, y + b, colour)
   end;
 end;
@@ -595,7 +596,7 @@ begin
     alpha := srcTex^.pixelData[srcPos + 3];
     if alpha < 255 then continue;
 
-    colour := UnsafeSprPGet(srcTex, sx, sy);
+    colour := UnsafeTexPGet(srcTex, sx, sy);
     UnsafeSprPSet(destTex, destX + px, destY + py, colour);
   end;
 end;
