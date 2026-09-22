@@ -656,6 +656,25 @@ class Posit92 {
     anchor.click();
   }
 
+  #SaveCanvas2x(filename: string): void {
+    const w = this.#vgaWidth;
+    const h = this.#vgaHeight;
+
+    const offscreen = document.createElement("canvas");
+    offscreen.width = w * 2;
+    offscreen.height = h * 2;
+
+    const offCtx = offscreen.getContext("2d")!;
+    offCtx.imageSmoothingEnabled = false;
+    offCtx.drawImage(this.#canvas, 0, 0, w * 2, h * 2);
+
+    const anchor = document.createElement("a");
+    anchor.href = offscreen.toDataURL();
+
+    anchor.download = filename;
+    anchor.click();
+  }
+
   #TakeScreenshot(): void {
     const now = new Date();
 
@@ -666,12 +685,8 @@ class Posit92 {
 
     console.log("TakeScreenshot: timestampStr", timestampStr);
 
-    this.#SaveCanvasBase(timestampStr + ".png");
-
-    // TODO:
-    // - Clone the canvas pixel data,
-    // - Scale both the width & height to 2x,
-    // - Do not apply bilinear filtering
+    // this.#SaveCanvasBase(timestampStr + ".png");
+    this.#SaveCanvas2x(timestampStr + ".png");
   }
 
   /**
