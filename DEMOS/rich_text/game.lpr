@@ -64,10 +64,10 @@ begin
   texDosuExe[0] := RequestImage('assets/images/dosu_1.png');
   texDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 
-  fontRegular := RequestBMFont('assets/fonts/ms_sans_serif_10px_regular.txt');
-  fontBold := RequestBMFont('assets/fonts/ms_sans_serif_10px_bold.txt');
-  fontItalic := RequestBMFont('assets/fonts/ms_sans_serif_10px_italic.txt');
-  fontBoldItalic := RequestBMFont('assets/fonts/ms_sans_serif_10px_bold_italic.txt');
+  fontRegular := RequestBMFont('assets/fonts/p92_sans_8_regular.txt');
+  fontBold := RequestBMFont('assets/fonts/p92_sans_8_bold.txt');
+  fontItalic := RequestBMFont('assets/fonts/p92_sans_8_regular.txt');
+  fontBoldItalic := RequestBMFont('assets/fonts/p92_sans_8_bold.txt');
 end;
 
 procedure OnReady;
