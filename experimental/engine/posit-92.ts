@@ -68,6 +68,8 @@ type WasmImports = {
   env: {
     _haltproc: (n: number) => void,
 
+    JsCreateCanvas: (width: number, height: number) => void,
+
     JsRequestImage: (texHandle: number) => Promise<void>,
     JsGetBootOptionBoolean: () => boolean;
 
@@ -243,6 +245,7 @@ class Posit92 {
       _haltproc: this.#HandleHaltProc.bind(this),
 
       // P92Core
+      JsCreateCanvas: this.#CreateCanvas.bind(this),
       JsRequestImage: this.RequestImage.bind(this),
       JsGetBootOptionBoolean: this.#GetBootOptionBoolean.bind(this),
       HostCallOnPreload: this.#OnPreload.bind(this),
@@ -375,22 +378,31 @@ class Posit92 {
     this.#FrameTime = 1000 / this.#TargetFPS;
   }
 
-  #CreateCanvas() {
+  #SetBufferWidth(value: number) {
+    this.#vgaWidth = value
+  }
+
+  #SetBufferHeight(value: number) {
+    this.#vgaHeight = value
+  }
+
+  #CreateCanvas(width: number, height: number) {
     this.#canvas = document.createElement("canvas");
-    this.#canvas.id = canvasID;
+    this.#canvas.id = "game"; // TODO: Use canvasID;
     this.#canvas.className = "scale-fit";
-    this.#canvas.setAttribute("width", "" + options.BufferWidth);
-    this.#canvas.setAttribute("height", "" + options.BufferHeight);
+    this.#canvas.setAttribute("width", "" + width);
+    this.#canvas.setAttribute("height", "" + height);
 
     document.body.prepend(this.#canvas);
 
-    this.#vgaWidth = options.BufferWidth!;
-    this.#vgaHeight = options.BufferHeight!;
+    // this.#vgaWidth = options.BufferWidth!;
+    // this.#vgaHeight = options.BufferHeight!;
 
-    if (options.Renderer == "2d")
-      this.canvasCtx = this.#canvas.getContext(options.Renderer)!;
-    else if (options.Renderer == "webgl")
-      this.glCtx = this.#canvas.getContext(options.Renderer)!;
+    // Note: Use 2D as for now
+    // if (options.Renderer == "2d")
+    this.canvasCtx = this.#canvas.getContext("2d")!;
+    // else if (options.Renderer == "webgl")
+    //   this.glCtx = this.#canvas.getContext(options.Renderer)!;
 
     this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
   }
