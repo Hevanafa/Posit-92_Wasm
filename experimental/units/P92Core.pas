@@ -46,8 +46,8 @@ var
 function GetBootOptionBoolean(key: string): boolean;
 function JsGetBootOptionBoolean: boolean; external 'env' name 'JsGetBootOptionBoolean';
 
-function GetCGAFontHandle: TTextureHandle;
-procedure SetCGAFontHandle(const value: TTextureHandle);
+function GetBootFontHandle: TTextureHandle;
+procedure SetBootFontHandle(const value: TTextureHandle);
 
 function IsEngineReady: boolean; public name 'IsEngineReady';
 procedure HostCallOnPreload; external 'env' name 'HostCallOnPreload';
@@ -116,8 +116,8 @@ type
 const
   DebugEngineRunStates = false;
 
-  CGAGlyphWidth = 8;
-  CGAGlyphHeight = 8;
+  BootFontGlyphWidth = 8;
+  BootFontGlyphHeight = 8;
 
 var
   engineRunState: TEngineRunStates;
@@ -136,9 +136,9 @@ var
   enableScreenshotHotkey: boolean;
   lastF2: boolean;
 
-function GetCGAFontHandle: TTextureHandle;
+function GetBootFontHandle: TTextureHandle;
 begin
-  GetCGAFontHandle := BootFontHandle
+  GetBootFontHandle := BootFontHandle
 end;
 
 {$ifdef P92_WASM}
@@ -149,7 +149,7 @@ begin
 end;
 {$endif}
 
-procedure SetCGAFontHandle(const value: TTextureHandle);
+procedure SetBootFontHandle(const value: TTextureHandle);
 begin
   BootFontHandle := value
 end;
@@ -207,7 +207,7 @@ begin
 { Request boot font }
 
 {$ifdef P92_WASM}
-  SetCGAFontHandle(RequestImage('assets/CGA8x8.png'));
+  SetBootFontHandle(RequestImage('assets/CGA8x8.png'));
 {$endif}
 {$ifdef P92_SDL2}
   SetCGAFontHandle(LoadImage('assets/CGA8x8.png'));
