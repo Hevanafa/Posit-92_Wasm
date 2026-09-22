@@ -59,7 +59,10 @@ end;
 
 procedure OnPreload;
 begin
-  { TODO: Load the game assets here }
+  texCursor := RequestImage('assets/images/cursor.png');
+
+  texDosuExe[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
 procedure OnReady;
