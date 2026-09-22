@@ -9,8 +9,8 @@ uses
   P92AssetHandles;
 
 var
-  imgCursor: TTextureHandle;
-  imgSpecimenP92: array[0..1] of TTextureHandle;
+  texCursor: TTextureHandle;
+  texSpecimenP92: array[0..1] of TTextureHandle;
 
 
 implementation

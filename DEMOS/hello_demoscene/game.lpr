@@ -21,15 +21,15 @@ var
 
 procedure DrawMouse;
 begin
-  Spr(imgCursor, GetMouseX, GetMouseY)
+  Spr(texCursor, GetMouseX, GetMouseY)
 end;
 
 procedure OnPreload;
 begin
-  imgCursor := RequestImage('assets/images/cursor.png');
+  texCursor := RequestImage('assets/images/cursor.png');
 
-  imgSpecimenP92[0] := RequestImage('assets/images/specimen_p-92_1.png');
-  imgSpecimenP92[1] := RequestImage('assets/images/specimen_p-92_2.png');
+  texSpecimenP92[0] := RequestImage('assets/images/specimen_p-92_1.png');
+  texSpecimenP92[1] := RequestImage('assets/images/specimen_p-92_2.png');
 end;
 
 procedure OnReady;
@@ -52,9 +52,9 @@ begin
   Cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    Spr(imgSpecimenP92[1], 148, 84)
+    Spr(texSpecimenP92[1], 148, 84)
   else
-    Spr(imgSpecimenP92[0], 148, 84);
+    Spr(texSpecimenP92[0], 148, 84);
 
   PrintDefaultCentred('Hello world!', VgaWidth div 2, 120);
 
