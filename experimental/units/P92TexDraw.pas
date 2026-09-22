@@ -88,9 +88,9 @@ var
   offset: longword;
   alpha: byte;
 begin
-  if not IsTextureSet(texHandle) then exit;
+  if not IsTexSet(texHandle) then exit;
 
-  texture := BorrowTexturePtr(texHandle);
+  texture := BorrowTexPtr(texHandle);
 
   { Handle clipping }
   startX := trunc(max(0, ClipX1 - x));
@@ -134,9 +134,9 @@ var
   alpha: byte;
   colour: longword;
 begin
-  if not IsTextureSet(texHandle) then exit;
+  if not IsTexSet(texHandle) then exit;
 
-  texture := BorrowTexturePtr(texHandle);
+  texture := BorrowTexPtr(texHandle);
 
   for py:=0 to texture^.height - 1 do
     for px:=0 to texture^.width - 1 do begin
@@ -168,9 +168,9 @@ var
 
   ABGR: longword;
 begin
-  if not IsTextureSet(texHandle) then exit;
+  if not IsTexSet(texHandle) then exit;
 
-  texture := BorrowTexturePtr(texHandle);
+  texture := BorrowTexPtr(texHandle);
 
   { Handle clipping }
 
@@ -212,9 +212,9 @@ var
   px, py: smallint;
   ABGR: longword;
 begin
-  if not IsTextureSet(texHandle) then exit;
+  if not IsTexSet(texHandle) then exit;
 
-  texture := BorrowTexturePtr(texHandle);
+  texture := BorrowTexPtr(texHandle);
   ABGR := ARGBtoABGR(colour);
 
   for py:=0 to texture^.height - 1 do
@@ -239,9 +239,9 @@ var
   alpha: byte;
   colour: longword;
 begin
-  if not IsTextureSet(texHandle) then exit;
+  if not IsTexSet(texHandle) then exit;
 
-  texture := BorrowTexturePtr(texHandle);
+  texture := BorrowTexPtr(texHandle);
 
   for b:=0 to srcH - 1 do
   for a:=0 to srcW - 1 do begin
@@ -276,7 +276,7 @@ var
   srcOffset: longword;
   alpha: byte;
 begin
-  if not IsTextureSet(texHandle) then exit;
+  if not IsTexSet(texHandle) then exit;
 
   { Handle clipping }
 
@@ -293,7 +293,7 @@ begin
 
   if (startX > endX) or (startY > endY) then exit;
 
-  texture := BorrowTexturePtr(texHandle);
+  texture := BorrowTexPtr(texHandle);
   texWidth4 := texture^.width * 4;
 
   surface := BorrowSurfacePtr;
@@ -330,8 +330,8 @@ var
   scaleX, scaleY: double;
   colour: longword;
 begin
-  if not IsTextureSet(texHandle) then exit;
-  texture := BorrowTexturePtr(texHandle);
+  if not IsTexSet(texHandle) then exit;
+  texture := BorrowTexPtr(texHandle);
 
   scaleX := texture^.width / destWidth;
   scaleY := texture^.height / destHeight;
@@ -365,8 +365,8 @@ var
   scaleX, scaleY: double;
   colour: longword;
 begin
-  if not IsTextureSet(texHandle) then exit;
-  texture := BorrowTexturePtr(texHandle);
+  if not IsTexSet(texHandle) then exit;
+  texture := BorrowTexPtr(texHandle);
 
   scaleX := srcWidth / destWidth;
   scaleY := srcHeight / destHeight;
@@ -405,9 +405,9 @@ var
   alpha: byte;
   ABGR: longword;
 begin
-  if not IsTextureSet(texHandle) then exit;
+  if not IsTexSet(texHandle) then exit;
 
-  texture := BorrowTexturePtr(texHandle);
+  texture := BorrowTexPtr(texHandle);
   ABGR := ARGBtoABGR(colour);
 
   for b:=0 to srcH - 1 do
@@ -445,9 +445,9 @@ begin
     exit
   end;
 
-  if not IsTextureSet(texHandle) then exit;
+  if not IsTexSet(texHandle) then exit;
 
-  texture := BorrowTexturePtr(texHandle);
+  texture := BorrowTexPtr(texHandle);
 
   for sy := 0 to texture^.height - 1 do
   for sx := 0 to texture^.width - 1 do begin
@@ -497,8 +497,8 @@ var
   halfW, halfH: smallint;
   maxRadius: smallint;
 begin
-  if not IsTextureSet(texHandle) then exit;
-  texture := BorrowTexturePtr(texHandle);
+  if not IsTexSet(texHandle) then exit;
+  texture := BorrowTexPtr(texHandle);
 
   { Negative for inverse transform }
   cosAngle := cos(-rotation);
@@ -542,10 +542,10 @@ var
   alpha: byte;
   colour: longword;
 begin
-  if not IsTextureSet(src) or not IsTextureSet(dest) then exit;
+  if not IsTexSet(src) or not IsTexSet(dest) then exit;
 
-  srcTex := BorrowTexturePtr(src);
-  destTex := BorrowTexturePtr(dest);
+  srcTex := BorrowTexPtr(src);
+  destTex := BorrowTexPtr(dest);
 
   startX := trunc(Max(0, -x));
   startY := trunc(Max(0, -y));
@@ -576,11 +576,11 @@ var
   alpha: byte;
   colour: longword;
 begin
-  if not IsTextureSet(src) then PanicHalt('SprRegionToDest: src handle is unset!');
-  if not IsTextureSet(dest) then PanicHalt('SprRegionToDest: dest handle is unset!');
+  if not IsTexSet(src) then PanicHalt('SprRegionToDest: src handle is unset!');
+  if not IsTexSet(dest) then PanicHalt('SprRegionToDest: dest handle is unset!');
 
-  srcTex := BorrowTexturePtr(src);
-  destTex := BorrowTexturePtr(dest);
+  srcTex := BorrowTexPtr(src);
+  destTex := BorrowTexPtr(dest);
 
   for py:=0 to srcH - 1 do
   { TODO: Hoist the Y bounds check and `sy` }
@@ -610,9 +610,9 @@ var
   pos1, pos2: longint;
 begin
   if flip = SprFlipNone then exit;
-  if not IsTextureSet(texHandle) then exit;
+  if not IsTexSet(texHandle) then exit;
 
-  texture := BorrowTexturePtr(texHandle);
+  texture := BorrowTexPtr(texHandle);
 
   { Horizontal flip }
   if (flip and SprFlipHorizontal) <> 0 then begin

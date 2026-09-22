@@ -29,9 +29,9 @@ var
   a, b: smallint;
   texture: PSoftwareTex;
 begin
-  if not IsTextureSet(texHandle) then exit;
+  if not IsTexSet(texHandle) then exit;
 
-  texture := BorrowTexturePtr(texHandle);
+  texture := BorrowTexPtr(texHandle);
 
   { Within sprite bounds }
   for b:=0 to texture^.height - 1 do
@@ -77,9 +77,9 @@ var
   texture: PSoftwareTex;
   alpha: byte;
 begin
-  if not IsTextureSet(texHandle) then exit;
+  if not IsTexSet(texHandle) then exit;
 
-  texture := BorrowTexturePtr(texHandle);
+  texture := BorrowTexPtr(texHandle);
 
   alpha := colour shr 24 and $FF;
   if alpha = 0 then exit;
@@ -108,9 +108,9 @@ var
   a, b: word;
   texture: PSoftwareTex;
 begin
-  if not IsTextureSet(texHandle) then exit;
+  if not IsTexSet(texHandle) then exit;
 
-  texture := BorrowTexturePtr(texHandle);
+  texture := BorrowTexPtr(texHandle);
 
   oldColour := ARGBtoABGR(oldColour);
   newColour := ARGBtoABGR(newColour);

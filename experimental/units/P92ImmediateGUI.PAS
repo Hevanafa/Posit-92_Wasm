@@ -455,8 +455,8 @@ begin
 
   zone.x := x;
   zone.y := y;
-  zone.width := GetTextureWidth(imgNormal);
-  zone.height := GetTextureHeight(imgNormal);
+  zone.width := GetTexWidth(imgNormal);
+  zone.height := GetTexHeight(imgNormal);
 
   { Update logic }
   thisWidgetID := nextWidgetID;

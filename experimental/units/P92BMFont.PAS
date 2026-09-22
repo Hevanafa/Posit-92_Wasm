@@ -118,7 +118,7 @@ begin
     PanicHaltDisplay('BMFont handles are full!');
 
   bmfonts[destFontHandle] := bmfonts[srcFontHandle];
-  bmfonts[destFontHandle].font.texHandle := CopyTexture(bmfonts[srcFontHandle].font.texHandle);
+  bmfonts[destFontHandle].font.texHandle := CopyTex(bmfonts[srcFontHandle].font.texHandle);
 
   CloneBMFont := destFontHandle
 end;
@@ -130,7 +130,7 @@ begin
   bmfonts[fontHandle].status := AssetStatusEmpty;
   bmfonts[fontHandle].errorCode := 0;
 
-  FreeTexture(BorrowBMFontPtr(fontHandle)^.texHandle);
+  FreeTex(BorrowBMFontPtr(fontHandle)^.texHandle);
 
   fillchar(bmfonts[fontHandle].font, sizeof(TBMFont), 0);
 
@@ -261,7 +261,7 @@ begin
   PrintBMFontCharToDest := 0;
   fontPtr := BorrowBMFontPtr(fontHandle);
 
-  if not IsTextureSet(destHandle) then exit;
+  if not IsTexSet(destHandle) then exit;
 
   charcode := ord(ch);
 
