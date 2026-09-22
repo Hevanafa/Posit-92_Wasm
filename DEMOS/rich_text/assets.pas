@@ -8,11 +8,11 @@ uses P92BMFont, P92AssetHandles;
 
 var
   { for use in loadBMFont }
-  defaultFont: TBMFont;
-  boldFont, italicFont, boldItalicFont: TBMFont;
+  fontDefault: TBMFontHandle;
+  fontBold, fontItalic, fontBoldItalic: TBMFontHandle;
 
-  imgCursor: TTextureHandle;
-  imgDosuExe: array[0..1] of TTextureHandle;
+  texCursor: TTextureHandle;
+  texDosuExe: array[0..1] of TTextureHandle;
 
 
 implementation

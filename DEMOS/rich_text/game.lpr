@@ -29,32 +29,32 @@ var
   gameTime: double;
 
 
-procedure printDefault(const text: string; const x, y: integer);
+procedure PrintDefault(const text: string; const x, y: integer);
 begin
-  PrintBMFontColour(defaultFont, text, x, y)
+  PrintBMFont(fontDefault, text, x, y)
 end;
 
-procedure printDefaultCentred(const text: string; const cx, y: integer);
+function MeasureDefault(const text: string): word;
+begin
+  MeasureDefault := measureBMFont(fontDefault, text)
+end;
+
+procedure PrintDefaultCentred(const text: string; const cx, y: integer);
 var
   w: word;
 begin
-  w := measureDefault(text);
-  printDefault(text, cx - w div 2, y)
-end;
-
-function measureDefault(const text: string): word;
-begin
-  measureDefault := measureBMFont(defaultFontGlyphs, text)
+  w := MeasureDefault(text);
+  PrintDefault(text, cx - w div 2, y)
 end;
 
 procedure DrawFPS;
 begin
-  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
+  PrintDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
 procedure DrawMouse;
 begin
-  spr(imgCursor, GetMouseX, GetMouseY)
+  spr(texCursor, GetMouseX, GetMouseY)
 end;
 
 procedure OnPreload;
@@ -69,11 +69,11 @@ begin
   { Initialise game state here }
   gameTime := 0.0;
 
-  rtfSetFont(defaultFont);
+  rtfSetFont(fontDefault);
 
-  rtfSetBoldFont(boldFont);
-  rtfSetItalicFont(italicFont);
-  rtfSetBoldItalicFont(boldItalicFont);
+  rtfSetBoldFont(fontBold);
+  rtfSetItalicFont(fontItalic);
+  rtfSetBoldItalicFont(fontBoldItalic);
 end;
 
 
@@ -91,17 +91,12 @@ end;
 
 procedure Draw;
 begin
-  if actualGameState = GameStateLoading then begin
-    renderLoadingScreen;
-    exit
-  end;
-
   cls(CornflowerBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    spr(texDosuExe[1], 148, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    spr(texDosuExe[0], 148, 88);
 
   RichTextLabel('\bBold text,\plain Regular text', 20, 120, Palette);
   RichTextLabel('Black text\cf1 Red text \cf0Black text', 20, 140, Palette);
