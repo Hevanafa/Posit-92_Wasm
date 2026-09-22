@@ -1,4 +1,4 @@
-unit Gamepad;
+unit P92Gamepad;
 
 interface
 
