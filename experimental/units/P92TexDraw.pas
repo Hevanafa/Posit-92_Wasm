@@ -45,7 +45,7 @@ procedure SprRegionTint(
   const destX, destY: smallint;
   const colour: longword);
 
-procedure SprFlip(
+procedure SprFlipped(
   const texHandle: TTextureHandle;
   const x, y: smallint;
   const flip: smallint);
@@ -372,7 +372,7 @@ begin
 end;
 
 { flip: use SprFlips enum }
-procedure SprFlip(
+procedure SprFlipped(
   const texHandle: TTextureHandle;
   const x, y: smallint;
   const flip: smallint
@@ -527,6 +527,7 @@ begin
   destTex := BorrowTexturePtr(dest);
 
   for py:=0 to srcH - 1 do
+  { TODO: Hoist the Y bounds check and `sy` }
   for px:=0 to srcW - 1 do begin
     if (destX + px >= destTex^.width) or (destX + px < 0)
       or (destY + py >= destTex^.height) or (destY + py < 0) then continue;
@@ -543,7 +544,7 @@ begin
   end;
 end;
 
-{ flip: Use SprFlip enum }
+{ flip: Use SprFlipped enum }
 procedure SprFlipInPlace(const texHandle: TTextureHandle; const flip: smallint);
 var
   texture: PSoftwareTex;
