@@ -16,7 +16,7 @@ const
   IntroSlides = 2;
 
 var
-  imgPosit92Logo, imgFPCLogo, imgWasmLogo: longint;
+  texPosit92Logo, texFPCLogo, texWasmLogo: longint;
 
 procedure RenderIntro(const introSlide: smallint);
 procedure UnloadIntro;
@@ -33,15 +33,15 @@ begin
 
   case introSlide of
     1: begin
-      Spr(imgPosit92Logo, 144, 84);
+      Spr(texPosit92Logo, 144, 84);
       PrintDefaultCentred('Made with Posit-92', vgaWidth div 2, 126)
     end;
 
     2: begin
       PrintDefaultCentred('Made with', vgaWidth div 2, 44);
 
-      Spr(imgFPCLogo, 75, 67);
-      Spr(imgWasmLogo, 180, 67);
+      Spr(texFPCLogo, 75, 67);
+      Spr(texWasmLogo, 180, 67);
 
       PrintDefaultCentred('Free Pascal', 108, 144);
       PrintDefaultCentred('Compiler', 108, 154);
@@ -55,9 +55,9 @@ end;
 
 procedure UnloadIntro;
 begin
-  FreeTexture(imgPosit92Logo);
-  FreeTexture(imgFPCLogo);
-  FreeTexture(imgWasmLogo);
+  FreeTex(texPosit92Logo);
+  FreeTex(texFPCLogo);
+  FreeTex(texWasmLogo);
 end;
 
 end.

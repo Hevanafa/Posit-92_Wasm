@@ -43,19 +43,19 @@ var
 
 procedure DrawMouse;
 begin
-  Spr(imgCursor, mouseX, mouseY)
+  Spr(texCursor, GetMouseX, GetMouseY)
 end;
 
 procedure OnPreload;
 begin
-  imgCursor := RequestImage('assets/images/cursor.png');
+  texCursor := RequestImage('assets/images/cursor.png');
 
-  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
-  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
+  texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 
-  imgPosit92Logo := RequestImage('assets/images/posit-92_32px.png');
-  imgFPCLogo := RequestImage('assets/images/fpc_logo.png');
-  imgWasmLogo := RequestImage('assets/images/wasm_logo.png');
+  texPosit92Logo := RequestImage('assets/images/posit-92_32px.png');
+  texFPCLogo := RequestImage('assets/images/fpc_logo.png');
+  texWasmLogo := RequestImage('assets/images/wasm_logo.png');
 end;
 
 procedure BeginIntroState;
@@ -151,9 +151,9 @@ begin
   Cls(CornflowerBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    Spr(imgDosuEXE[1], 148, 88)
+    Spr(texDosuEXE[1], 148, 88)
   else
-    Spr(imgDosuEXE[0], 148, 88);
+    Spr(texDosuEXE[0], 148, 88);
 
   PrintDefaultCentred('Hello world!', vgaWidth div 2, 120);
 

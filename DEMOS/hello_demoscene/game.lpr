@@ -11,8 +11,7 @@ library Game;
 
 uses
   P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
-  P92Logger,
-  P92Keyboard, P92Mouse,
+  P92Logger, P92Keyboard, P92Mouse,
   P92TexDraw, P92Timing, P92FPS, P92VGA,
   Assets;
 
@@ -22,7 +21,7 @@ var
 
 procedure DrawMouse;
 begin
-  Spr(imgCursor, mouseX, mouseY)
+  Spr(imgCursor, GetMouseX, GetMouseY)
 end;
 
 procedure OnPreload;
