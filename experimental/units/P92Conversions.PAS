@@ -14,10 +14,13 @@ interface
 
 function I32Str(const value: Longint): string;
 function U32Str(const value: longword): string;
-function F32str(const value: double): string;
+function F32Str(const value: double): string;
+
 function ToFixed(const value: double; const decimals: smallint): string;
-function I16HexStr(const value: word): string;
-function I8HexStr(const value: byte): string;
+
+function U16HexStr(const value: word): string;
+function U8HexStr(const value: byte): string;
+
 function BoolStr(const value: boolean): string;
 function ParseInt(const text: string): smallint;
 
@@ -34,9 +37,9 @@ begin
   str(value, U32Str)
 end;
 
-function F32str(const value: double): string;
+function F32Str(const value: double): string;
 begin
-  str(value:0:4, F32str)
+  str(value:0:4, F32Str)
 end;
 
 function ToFixed(const value: double; const decimals: smallint): string;
@@ -44,22 +47,22 @@ begin
   str(value:0:decimals, ToFixed)
 end;
 
-function I16HexStr(const value: word): string;
+function U16HexStr(const value: word): string;
 const
   digits: array[0..15] of char = '0123456789ABCDEF';
 var
   a: byte;
 begin
-  I16HexStr := '';
+  U16HexStr := '';
   for a := 3 downto 0 do
-    I16HexStr := I16HexStr + digits[(value shr (a * 4)) and $F];
+    U16HexStr := U16HexStr + digits[(value shr (a * 4)) and $F];
 end;
 
-function I8HexStr(const value: byte): string;
+function U8HexStr(const value: byte): string;
 const
   digits: array[0..15] of char = '0123456789ABCDEF';
 begin
-  I8HexStr := digits[(value shr 4) and $F] + digits[value and $F];
+  U8HexStr := digits[(value shr 4) and $F] + digits[value and $F];
 end;
 
 function BoolStr(const value: boolean): string;
