@@ -48,12 +48,12 @@ begin
   measureDefault := measureBMFont(defaultFontGlyphs, text)
 end;
 
-procedure drawFPS;
+procedure DrawFPS;
 begin
   printDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
-procedure drawMouse;
+procedure DrawMouse;
 begin
   spr(imgCursor, mouseX, mouseY)
 end;
@@ -94,28 +94,19 @@ begin
   beginPlayingState
 end;
 
-procedure update;
+procedure Update;
 begin
-  updateDeltaTime;
-  incrementFPS;
+  if lastEsc <> IsKeyDown(SC_ESCAPE) then begin
+    lastEsc := IsKeyDown(SC_ESCAPE);
 
-  { Handle inputs }
-  updateMouse;
-
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
-
-    if lastEsc then begin
-      writeLog('ESC is pressed!');
-      signalDone
-    end;
+    if lastEsc then SignalDone;
   end;
 
   { Handle game state updates }
-  gameTime := gameTime + dt
+  gameTime := gameTime + DeltaTime;
 end;
 
-procedure draw;
+procedure Draw;
 begin
   if actualGameState = GameStateLoading then begin
     renderLoadingScreen;
@@ -134,15 +125,15 @@ begin
   RichTextLabel('\bBold,\b0\i Italic,\i0\b\i Bold italic', 20, 150, Palette);
   RichTextLabel('\cf1Colour 1 \cf2Colour 2 \cf3 Colour 3', 20, 160, Palette);
 
-  drawMouse;
-  drawFPS;
-
-  vgaFlush
+  DrawMouse;
+  DrawFPS;
 end;
 
 exports
-  beginLoadingState,
-  init, afterInit, update, draw;
+  OnPreload,
+  OnReady,
+  Update,
+  Draw;
 
 begin
 { Starting point is intentionally left empty }
