@@ -16,16 +16,16 @@ const
   White = $FFFFFFFF;
   Red = $FFFF5555;
 
-  { DemoStates enum }
-  DemoStateFullSprite = 0;
-  DemoStateRegion = 1;
-  DemoStateBlend = 2;
-  DemoStateScaling = 3;
-  DemoStateRegionScaling = 4;
-  DemoStateFlip = 5;
-  DemoStateRotation = 6;
-  DemoStateLast = 6;
-  { DemoStateCount = 7; }
+type
+  TDemoState = (
+    DemoStateFullSprite,
+    DemoStateRegion,
+    DemoStateBlend,
+    DemoStateScaling,
+    DemoStateRegionScaling,
+    DemoStateFlip,
+    DemoStateRotation
+  );
 
 var
   lastEsc: boolean;
@@ -40,9 +40,9 @@ var
   dosuZone: TZone;
   demoListStartX, demoListEndX: double;
   demoListLerpTimer: TEasingTimer;
-  demoListItems: array[0..DemoStateLast] of string;
+  demoListItems: array[low(TDemoState)..high(TDemoState)] of string;
   demoListState: TListViewState;
-  lastDemoIndex: integer;
+  lastDemoIndex: TDemoState;
 
   selectedFrame: integer;
   { Use SprFlips enum }
