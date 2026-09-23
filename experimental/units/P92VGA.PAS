@@ -165,11 +165,11 @@ begin
 end;
 
 function UnsafePGet(const x, y: smallint): longword; inline;
-var
-  offset: longword;
 begin
-  offset := (x + y * _vgaWidth) * 4;
-  UnsafePGet := PLongWord(@activeSurface^[offset])^
+  UnsafePGet := PLongWord(
+    @activeSurface^[
+      longword(x + y * _vgaWidth) * 4
+    ])^
 end;
 
 function PGet(const x, y: smallint): longword;
