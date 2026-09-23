@@ -12,6 +12,7 @@ interface
 {$ifdef P92_WASM}
 procedure JsInitWasmMemory(requiredSize: longword); external 'env' name 'JsInitWasmMemory';
 procedure JsCreateCanvas(width: integer; height: integer); external 'env' name 'JsCreateCanvas';
+procedure JsInitCanvasCtx; external 'env' name 'JsInitCanvasCtx';
 
 { Use this to set `done` to true }
 procedure SignalDone; external 'env' name 'SignalDone';

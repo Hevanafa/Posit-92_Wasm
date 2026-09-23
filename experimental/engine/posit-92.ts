@@ -70,6 +70,7 @@ type WasmImports = {
 
     JsInitWasmMemory: (requiredSize: number) => void,
     JsCreateCanvas: (width: number, height: number) => void,
+    JsInitCanvasCtx: () => void,
 
     JsRequestImage: (texHandle: number) => Promise<void>,
     JsGetBootOptionBoolean: () => boolean;
@@ -176,9 +177,6 @@ class Posit92 {
 
   readonly #wasmSource = "game.wasm";
 
-  /**
-   * assigned in the constructor
-   */
   #TargetFPS = 60;
   #FrameTime: number;
 
@@ -224,6 +222,8 @@ class Posit92 {
       // P92Core
       JsInitWasmMemory: this.#InitWasmMemory.bind(this),
       JsCreateCanvas: this.#CreateCanvas.bind(this),
+      JsInitCanvasCtx: this.#InitCanvasCtx.bind(this),
+
       JsRequestImage: this.RequestImage.bind(this),
       JsGetBootOptionBoolean: this.#GetBootOptionBoolean.bind(this),
       HostCallOnPreload: this.#OnPreload.bind(this),
@@ -364,7 +364,7 @@ class Posit92 {
     this.#bufferHeight = value
   }
 
-  #CreateCanvas(width: number, height: number) {
+  #CreateCanvas(width: number, height: number): void {
     const canvasID = this.ReadInteropBuffer();
 
     this.#canvas = document.createElement("canvas");
@@ -375,14 +375,19 @@ class Posit92 {
 
     document.body.prepend(this.#canvas);
 
-    // Note: Use 2D as for now
-    // if (options.Renderer == "2d")
-    this.canvasCtx = this.#canvas.getContext("2d")!;
-    // else if (options.Renderer == "webgl")
-    //   this.glCtx = this.#canvas.getContext(options.Renderer)!;
-
     this.#bufferWidth = width;
     this.#bufferHeight = height
+  }
+
+  #InitCanvasCtx(): void {
+    const renderer = this.ReadInteropBuffer();
+    
+    if (renderer == "2d")
+      this.canvasCtx = this.#canvas.getContext("2d")!;
+    else if (renderer == "webgl")
+      this.glCtx = this.#canvas.getContext(renderer)!;
+    else
+      throw new Error("Unknown renderer: " + renderer);
   }
 
   /**

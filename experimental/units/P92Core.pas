@@ -19,15 +19,17 @@ type
     { default: "game" }
     CanvasID: string;
 
+    { Default: "2d"
+      Possible options: "2d" | "webgl" | "experimental-webgl" }
+    Renderer: string;
+
     { default: 320 }
     Width: smallint;
 
     { default: 200 }
     Height: smallint;
 
-    { default: "2d" }
-    Renderer: string;
-
+    { default: 60 }
     TargetFPS: smallint;
 
     LoadDefaultBMFont: boolean;
@@ -209,6 +211,9 @@ begin
 
   WriteInteropString(bootConfig.CanvasID);
   JsCreateCanvas(bootConfig.Width, bootConfig.Height);
+
+  WriteInteropString(bootConfig.Renderer);
+  JsInitCanvasCtx;
 {$ENDIF}
 end;
 
