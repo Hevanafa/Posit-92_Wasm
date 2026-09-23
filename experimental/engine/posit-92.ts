@@ -64,6 +64,11 @@ type WasmExports = {
   DrawOnce: () => void;
 };
 
+/**
+ * `HostCall` prefix means it's an engine-specific event
+ * 
+ * `Js` prefix means it's a synchronous task and is executed immediately by the main thread
+ */
 type WasmImports = {
   env: {
     _haltproc: (n: number) => void,
@@ -128,7 +133,7 @@ type StringPair = [string, string];
 type WebAssemblyInstance = WebAssembly.Instance & { exports: WasmExports };
 
 /**
- * @deprecated Future versions will use bootOptions in Pascal
+ * @deprecated Future versions will use bootConfig in Pascal
  */
 type Posit92Options = {
   /**
