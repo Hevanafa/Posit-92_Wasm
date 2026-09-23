@@ -16,8 +16,24 @@ type
 
 {$IFDEF P92_WASM}
   TP92AppConfig = record
+    { default: "game" }
+    CanvasName: string;
+
+    { default: 320 }
     Width: smallint;
+
+    { default: 200 }
     Height: smallint;
+
+    { default: "2d" }
+    Renderer: string;
+
+    TargetFPS: smallint;
+
+    LoadDefaultBMFont: boolean;
+    DefaultBMFontPath: string;
+
+    EnableScreenshotHotkey: boolean;
   end;
 {$ENDIF}
 
