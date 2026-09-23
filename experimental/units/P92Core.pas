@@ -183,10 +183,10 @@ begin
   JsInitWasmMemory(WasmMemorySize);
 
   videoMemStart := pointer(StackSize);
+  InitVideoMem(bootConfig.Width, bootConfig.Height, pointer(videoMemStart));
+
   heapRegionStart := pointer(StackSize + GetVideoMemSize);
   heapSize := WasmMemorySize - PoolSize - SizeUInt(heapRegionStart);
-
-  InitVideoMem(bootConfig.Width, bootConfig.Height, pointer(videoMemStart));
   InitHeapRegion(heapRegionStart, heapSize);
 
   InitHeapMgr;
