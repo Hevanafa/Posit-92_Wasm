@@ -32,13 +32,7 @@ end;
 
 procedure LoadDefaultBMFont;
 begin
-{$ifdef P92_WASM}
   defaultFontHandle := RequestBMFont(GetBootConfig.DefaultBMFontPath)
-{$endif}
-
-{$ifdef P92_SDL2}
-  defaultFontHandle := LoadBMFont(bootConfig.defaultFontPath)
-{$endif}
 end;
 
 procedure PrintDefault(const text: string; const x, y: integer);

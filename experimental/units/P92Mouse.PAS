@@ -20,13 +20,6 @@ const
   MouseButtonRight = 2;
   MouseButtonBoth = 3;
 
-{$ifdef P92_WASM}
-{ Hide system cursor }
-procedure HideCursor; external 'env' name 'HideCursor';
-
-{ Show system cursor }
-procedure ShowCursor; external 'env' name 'ShowCursor';
-
 function GetMouseX: smallint;
 function GetMouseY: smallint;
 function GetMouseButton: smallint;
@@ -34,19 +27,27 @@ function GetMouseButton: smallint;
 function IsLeftMousePressed: boolean;
 function IsRightMousePressed: boolean;
 
+{$IFDEF P92_WASM}
+{ Hide system cursor }
+procedure HideCursor; external 'env' name 'HideCursor';
+
+{ Show system cursor }
+procedure ShowCursor; external 'env' name 'ShowCursor';
+
 procedure UpdateMouse;
-{$endif}
+{$ENDIF}
+
+{$IFDEF P92_SDL2}
+procedure SetMouseX(const value: smallint);
+procedure SetMouseY(const value: smallint);
+procedure SetMouseButton(const value: smallint);
+{$ENDIF}
 
 
 implementation
 
 var
   mouseX, mouseY, mouseButton: smallint;
-
-{$ifdef P92_WASM}
-function JsGetMouseX: smallint; external 'env' name 'JsGetMouseX';
-function JsGetMouseY: smallint; external 'env' name 'JsGetMouseY';
-function JsGetMouseButton: smallint; external 'env' name 'JsGetMouseButton';
 
 function GetMouseX: smallint;
 begin
@@ -73,12 +74,35 @@ begin
   IsRightMousePressed := (mouseButton and MouseButtonRight) <> 0
 end;
 
+{$IFDEF P92_WASM}
+function JsGetMouseX: smallint; external 'env' name 'JsGetMouseX';
+function JsGetMouseY: smallint; external 'env' name 'JsGetMouseY';
+function JsGetMouseButton: smallint; external 'env' name 'JsGetMouseButton';
+
 procedure UpdateMouse;
 begin
   mouseX := JsGetMouseX;
   mouseY := JsGetMouseY;
   mouseButton := JsGetMouseButton;
 end;
-{$endif}
+{$ENDIF}
+
+
+{$IFDEF P92_SDL2}
+procedure SetMouseX(const value: smallint);
+begin
+  mouseX := value
+end;
+
+procedure SetMouseY(const value:smallint);
+begin
+  mouseY := value
+end;
+
+procedure SetMouseButton(const value:smallint);
+begin
+  mouseButton := value
+end;
+{$ENDIF}
 
 end.

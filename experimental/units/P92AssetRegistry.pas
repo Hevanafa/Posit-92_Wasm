@@ -10,7 +10,9 @@ interface
 uses P92AssetHandles, P92BMFont, P92Tex;
 {$endif}
 {$ifdef P92_SDL2}
-uses SDL2_Mixer, P92CoreSDL2, P92BMFont, P92Tex;
+uses
+  SDL2_Mixer,
+  P92CoreSDL2, P92AssetHandles, P92BMFont, P92Tex;
 {$endif}
 
 type
@@ -108,10 +110,10 @@ procedure PascalSoundFailed(sndHandle: longint; errorCode: smallint); public nam
 {$endif}
 
 {$ifdef P92_SDL2}
-function LoadImage(const filename: string): TTextureHandle;
-function LoadBMFont(const filename: string): TBMFontHandle;
-function HwLoadImage(const filename: string): longint;
-function LoadSound(const filename: string): TSoundHandle;
+function RequestImage(const filename: string): TTextureHandle;
+function RequestBMFont(const filename: string): TBMFontHandle;
+function HwRequestImage(const filename: string): longint;
+function RequestSound(const filename: string): TSoundHandle;
 {$endif}
 
 
@@ -122,7 +124,10 @@ uses
   P92Conversions, P92Logger, P92Panic, P92Strings, P92InteropBuf;
 {$endif}
 {$ifdef P92_SDL2}
-uses SysUtils, SDL2, SDL2_Image, P92TexRef;
+uses
+  SysUtils,
+  SDL2, SDL2_Image,
+  P92TexRef, P92Conversions, P92Logger, P92Strings, P92Panic;
 {$endif}
 
 {$ifdef P92_WASM}
@@ -349,7 +354,7 @@ end;
 {$endif}
 
 {$ifdef P92_SDL2}
-function LoadImage(const filename: string): TTextureHandle;
+function RequestImage(const filename: string): TTextureHandle;
 var
   strBuffer: array[0..255] of char;
   surface: PSDL_Surface;
@@ -357,14 +362,12 @@ var
   texture: PSoftwareTex;
   src, dest: PByte;
 begin
-  { writeLog('loadImage ' + filename); }
-
   strpcopy(strBuffer, filename);
   surface := IMG_Load(strBuffer);
 
   if surface = nil then begin
-    writeLog('loadImage: Failed to load ' + filename);
-    loadImage := -1;
+    writeLog('RequestImage: Failed to load ' + filename);
+    RequestImage := -1;
     exit
   end;
 
@@ -372,23 +375,23 @@ begin
     WriteWarn('loadImage: Warning: ' + filename + ' is not 32 BPP!');
     writeLog('loadImage: Convert it to 32 BPP then reload');
     SDL_FreeSurface(surface);
-    loadImage := -1;
+    RequestImage := -1;
     exit
   end;
 
-  texHandle := NewTexture(surface^.w, surface^.h);
-  texture := BorrowTexturePtr(texHandle);
+  texHandle := NewTex(surface^.w, surface^.h);
+  texture := BorrowTexPtr(texHandle);
 
   src := PByte(surface^.pixels);
   dest := texture^.pixelData;
   move(src^, dest^, surface^.w * surface^.h * 4);
 
   SDL_FreeSurface(surface);
-  loadImage := texHandle
+  RequestImage := texHandle
 end;
 
-{ 32 to 126: 0 to 94 }
-function LoadBMFont(const filename: string): TBMFontHandle;
+
+function RequestBMFont(const filename: string): TBMFontHandle;
 var
   fontHandle: TBMFontHandle;
   font: PBMFont;
@@ -408,7 +411,7 @@ begin
   bmfonts[fontHandle].status := AssetStatusLoading;
   bmfonts[fontHandle].errorCode := 0;
 
-  LoadBMFont := fontHandle;
+  RequestBMFont := fontHandle;
   font := BorrowBMFontPtr(fontHandle);
 
   assign(f, filename);
@@ -424,11 +427,11 @@ begin
   while not eof(f) do begin
     readln(f, txtLine);
 
-    if startsWith(txtLine, 'info') then begin
-      split(txtLine, ' ', pairs);
+    if StartsWith(txtLine, 'info') then begin
+      Split(txtLine, ' ', pairs);
 
       for a:=0 to high(pairs) do begin
-        split(pairs[a], '=', pair);
+        Split(pairs[a], '=', pair);
         k := pair[0]; v := pair[1];
 
         { writeln('info ', k); }
@@ -511,10 +514,10 @@ begin
   bmfonts[fontHandle].status := AssetStatusReady;
   bmfonts[fontHandle].errorCode := 0;
 
-  font^.texHandle := LoadImage(textureFilename)
+  font^.texHandle := RequestImage(textureFilename)
 end;
 
-function HwLoadImage(const filename: string): longint;
+function HwRequestImage(const filename: string): longint;
 var
   surface: PSDL_Surface;
   tex: PSDL_Texture;
@@ -534,13 +537,13 @@ begin
   SDL_FreeSurface(surface);
 
   SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
-  hwLoadImage := HwRegisterTexRef(tex, surface^.w, surface^.h);
+  HwRequestImage := HwRegisterTexRef(tex, surface^.w, surface^.h);
 
-  { writelog(format('hwLoadImage %d: %s', [hwLoadImage, filename])) }
+  { writelog(format('hwLoadImage %d: %s', [HwRequestImage, filename])) }
 end;
 
 
-function LoadSound(const filename: string): TSoundHandle;
+function RequestSound(const filename: string): TSoundHandle;
 var
   sndHandle: TSoundHandle;
   strBuffer: array[0..255] of char;
@@ -557,7 +560,7 @@ begin
   { Assuming that SDL2 mixer is always initialised }
   { if not soundsInitialised then exit; }
 
-  LoadSound := sndHandle;
+  RequestSound := sndHandle;
 
   fillchar(strBuffer, length(strBuffer), #0);
   strpcopy(strBuffer, filename);

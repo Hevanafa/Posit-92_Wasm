@@ -20,6 +20,8 @@ type
   TBMFontHandle = type longint;
   { Starts from 1 }
   TSoundHandle = type longint;
+  { Starts from 1 }
+  THWTextureHandle = type longint;
 
 implementation
 

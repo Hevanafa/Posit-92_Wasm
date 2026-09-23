@@ -8,13 +8,13 @@ interface
 
 uses P92AssetHandles;
 
+{$IFDEF P92_WASM}
 const
   Posit92Version = '0.3.4';
 
 type
   TCallback = procedure;
 
-{$IFDEF P92_WASM}
   TP92AppConfig = record
     { default: "game" }
     CanvasID: string;
@@ -41,22 +41,33 @@ type
 {$ENDIF}
 
 {$IFDEF P92_SDL2}
-  TP92AppConfig = record
-    { Window }
-    windowTitle: string;
-    width: smallint;
-    height: smallint;
-    sdlScale: smallint;
+const
+  Posit92Version = '0.3';
 
-    { Default BMFont }
-    enableDefaultFont: boolean;
-    defaultFontPath: string;
+type
+  TCallback = procedure;
+
+  TP92AppConfig = record
+    { SDL2 }
+
+    WindowTitle: string;
+    SDLScale: smallint;
 
     { Features }
-    fps: smallint;
-    enableScreenshotHotkey: boolean;
+
+    BufferWidth: smallint;
+    BufferHeight: smallint;
+
+    LoadDefaultBMFont: boolean;
+    DefaultBMFontPath: string;
+
+    TargetFPS: smallint;
+    EnableScreenshotHotkey: boolean;
+
+    LoadDefaultCursor: boolean;
 
     { Callbacks }
+
     OnPreload: TCallback;
     OnReady: TCallback;
     Update: TCallback;
@@ -66,8 +77,6 @@ type
 {$ENDIF}
 
 {$IFDEF P92_WASM}
-function GetBootConfig: TP92AppConfig;
-
 function GetBootFontHandle: TTextureHandle;
 procedure SetBootFontHandle(const value: TTextureHandle);
 
@@ -75,6 +84,8 @@ function IsEngineReady: boolean; public name 'IsEngineReady';
 procedure HostCallOnPreload; external 'env' name 'HostCallOnPreload';
 procedure HostCallOnReady; external 'env' name 'HostCallOnReady';
 {$ENDIF}
+
+function GetBootConfig: TP92AppConfig;
 
 procedure P92Boot; public name 'P92Boot';
 procedure P92Update; public name 'P92Update';
@@ -213,16 +224,15 @@ begin
 
 {$ifdef P92_SDL2}
   InitVideoMem(
-    bootConfig.width, bootConfig.height,
-    getmem(bootConfig.width * bootConfig.height * 4));
+    GetMem(GetBootConfig.BufferWidth * GetBootConfig.BufferHeight * 4),
+    bootConfig.BufferWidth, bootConfig.BufferHeight);
 
-  TargetFPS := bootConfig.fps;
+  TargetFPS := bootConfig.TargetFPS;
   FrameTime := 1000 div TargetFPS;
 {$endif}
 
   InitDeltaTime;
   InitFPSCounter;
-
   InitAssetRegistry;
 
 {$ifdef P92_ENABLE_SOUNDS}
@@ -237,14 +247,8 @@ begin
   InitLogger;
 {$endif}
 
-{ Request boot font }
-
-{$ifdef P92_WASM}
+  { Request boot font }
   SetBootFontHandle(RequestImage('assets/CGA8x8.png'));
-{$endif}
-{$ifdef P92_SDL2}
-  SetCGAFontHandle(LoadImage('assets/CGA8x8.png'));
-{$endif}
 end;
 
 procedure InitPreloadState;
@@ -259,17 +263,19 @@ begin
     writelog('ersPreload');
 
 {$ifdef P92_SDL2}
-  { imgCursor := LoadImage('assets\images\cursor.png'); }
-  hwCursor := HwLoadImage('assets\images\cursor.png');
-  LoadDefaultFont;
+  if bootConfig.LoadDefaultCursor then
+    { imgCursor := LoadImage('assets\images\cursor.png'); }
+    hwCursor := HwRequestImage('assets\images\cursor.png')
+  else
+    hwCursor := 0;
 {$endif}
 
-{$ifdef P92_WASM}
   if bootConfig.LoadDefaultBMFont then
-    LoadDefaultBMFont
-  else
-    writelog('InitPreloadState: Skipped loading the default BMFont');
+    LoadDefaultBMFont;
+  { else
+    WriteLog('InitPreloadState: Skipped loading the default BMFont'); }
 
+{$ifdef P92_WASM}
   HostCallOnPreload
 {$endif}
 end;
@@ -347,7 +353,7 @@ end;
 procedure DrawMouse;
 begin
   { spr(imgCursor, mouseX, mouseY) }
-  HwSpr(hwCursor, mouseX, mouseY)
+  HwSpr(hwCursor, GetMouseX, GetMouseY)
 end;
 {$endif}
 
@@ -511,7 +517,7 @@ begin
   { FreeTexture(imgCursor);
   FreeTexture(defaultFont.imgHandle); }
 
-  freemem(getSurfacePtr);
+  freemem(BorrowSurfacePtr);
 end;
 
 procedure P92Shutdown;
@@ -528,16 +534,19 @@ begin
   newConfig := default(TP92AppConfig);
 
   with newConfig do begin
-    windowTitle := 'Posit-92 + SDL2 on Windows';
-    width := 320;
-    height := 200;
-    sdlScale := 2;
+    WindowTitle := 'Posit-92 + SDL2 on Windows';
+    SDLScale := 2;
 
-    enableDefaultFont := true;
-    defaultFontPath := 'assets/fonts/nokia_cellphone_fc_8.txt';
+    BufferWidth := 320;
+    BufferHeight := 200;
 
-    fps := 60;
-    enableScreenshotHotkey := true;
+    LoadDefaultBMFont := true;
+    DefaultBMFontPath := 'assets\fonts\p92_sans_8_regular.txt';
+
+    TargetFPS := 60;
+    EnableScreenshotHotkey := true;
+
+    LoadDefaultCursor := true;
   end;
 
   DefaultP92AppConfig := newConfig
@@ -546,8 +555,6 @@ end;
 procedure P92Start(const appConfig: TP92AppConfig);
 begin
   bootConfig := appConfig;
-  enableDefaultBMFont := appConfig.enableDefaultFont;
-  enableScreenshotHotkey := appConfig.enableScreenshotHotkey;
 
   if not assigned(appConfig.Update) then
     PanicHalt('Update callback is required');

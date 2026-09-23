@@ -18,7 +18,7 @@ interface
 procedure JsPanicHalt(const textPtr: PChar; const textLen: word); external 'env' name 'JsPanicHalt';
 {$endif}
 
-procedure PanicHalt(const msg: ShortString);
+procedure PanicHalt(const msg: string);
 
 
 implementation
@@ -36,7 +36,7 @@ end;
 {$ifdef P92_SDL2}
 uses P92Logger, Windows;
 
-procedure PanicHalt(const msg: AnsiString);
+procedure PanicHalt(const msg: string);
 var
   s: string;
 begin

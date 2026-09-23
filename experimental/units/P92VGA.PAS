@@ -117,7 +117,7 @@ begin
   SDL_RenderClear(renderer); }
 
   SDL_SetTextureBlendMode(vgaTexture, SDL_BLENDMODE_BLEND);
-  SDL_UpdateTexture(vgaTexture, nil, getSurfacePtr, vgaWidth * 4); { pitch = width * 4 bytes }
+  SDL_UpdateTexture(vgaTexture, nil, BorrowSurfacePtr, vgaWidth * 4); { pitch = width * 4 bytes }
   SDL_RenderCopy(renderer, vgaTexture, nil, nil)
 end;
 

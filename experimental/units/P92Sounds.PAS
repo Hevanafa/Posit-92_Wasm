@@ -124,17 +124,17 @@ begin
 {$endif}
 {$ifdef P92_SDL2}
   soundsInitialised := false;
-  writeLog('initSounds begin');
+  writeLog('InitSounds begin');
 
   if Mix_OpenAudio(MIX_DEFAULT_FREQUENCY,
     MIX_DEFAULT_FORMAT,
     MIX_DEFAULT_CHANNELS, 2048) < 0 then
   begin
-    writeLog('initSounds: Couldn''t initialise SDL_Mixer!');
+    writeLog('InitSounds: Couldn''t initialise SDL_Mixer!');
     exit
   end;
 
-  writeLog('initSounds end');
+  writeLog('InitSounds end');
   soundsInitialised := true
 {$endif}
 end;
@@ -186,11 +186,13 @@ begin
 
   sounds[sndHandle].volume := Clamp(volume, 0.0, 1.0);
 
+{$IFDEF P92_WASM}
   if sndHandle = currentMusicHandle then
     JsSetMusicVolume(sounds[sndHandle].volume);
+{$ENDIF}
 end;
 
-{$ifdef P92_WASM}
+{$IFDEF P92_WASM}
 { Music playback }
 function IsMusicLoaded: boolean;
 begin
