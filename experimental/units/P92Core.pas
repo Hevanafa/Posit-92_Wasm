@@ -289,7 +289,7 @@ begin
 
 {$IFDEF P92_IMGUI}
 {$IFDEF P92_WASM}
-  InitImmediateGUI(GetBootOptionBoolean('LoadDefaultBMFont'));
+  InitImmediateGUI(bootConfig.LoadDefaultBMFont);
 {$ENDIF}
 {$IFDEF P92_SDL2}
   InitImmediateGUI(bootConfig.LoadDefaultBMFont);
