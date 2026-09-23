@@ -133,47 +133,6 @@ type StringPair = [string, string];
 
 type WebAssemblyInstance = WebAssembly.Instance & { exports: WasmExports };
 
-/**
- * @deprecated Future versions will use bootConfig in Pascal
- */
-type Posit92Options = {
-  /**
-   * default: 320
-   */
-  BufferWidth?: number;
-
-  /**
-   * default: 200
-   */
-  BufferHeight?: number;
-
-  /**
-   * default: "2d"
-   */
-  Renderer: "2d" | "webgl" | "experimental-webgl" | string;
-
-  /**
-   * Default: 60
-   *
-   * 0 matches the screen's refresh rate
-   */
-  TargetFPS?: number;
-
-  /**
-   * Loads the default BMFont. Available in p92-bmfont.mixin.ts
-   *
-   * Default: true
-   */
-  LoadDefaultBMFont?: boolean;
-
-  /**
-   * Enables the F2 key for screenshot
-   *
-   * Default: true
-   */
-  EnableScreenshotHotkey?: boolean;
-};
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Posit92 {
   public static readonly Version = "0.3.3";
@@ -298,53 +257,7 @@ class Posit92 {
   #SignalDone(): void {
     this.Cleanup();
     this.#done = true;
-  }
-
-  #NormaliseOptions(
-    bufferWidthOrOptions?: number | Posit92Options,
-    BufferHeight?: number
-  ): Posit92Options {
-    let BufferWidth = this.#DefaultVGAWidth;
-    let Renderer = "2d";
-    let TargetFPS = 60;
-    let LoadDefaultBMFont = true;
-    let EnableScreenshotHotkey = true;
-
-    if (typeof bufferWidthOrOptions == "object") {
-      const options = bufferWidthOrOptions;
-
-      BufferWidth = options.BufferWidth ?? this.#DefaultVGAWidth;
-      BufferHeight = options.BufferHeight ?? this.#DefaultVGAHeight;
-
-      if (options.Renderer != null)
-        Renderer = options.Renderer;
-
-      if (options.TargetFPS != null) {
-        this.AssertNumber(options.TargetFPS);
-        TargetFPS = options.TargetFPS;
-      }
-
-      if (options.LoadDefaultBMFont != null)
-        LoadDefaultBMFont = options.LoadDefaultBMFont;
-
-      if (options.EnableScreenshotHotkey != null)
-        EnableScreenshotHotkey = options.EnableScreenshotHotkey;
-    } else {
-      BufferWidth = bufferWidthOrOptions ?? this.#DefaultVGAWidth;
-      BufferHeight = BufferHeight ?? this.#DefaultVGAHeight;
-    }
-
-    return {
-      BufferWidth,
-      BufferHeight,
-      Renderer,
-      TargetFPS,
-      LoadDefaultBMFont,
-      EnableScreenshotHotkey
-    };
-  }
-
-  #bootOptions: Posit92Options;
+  }  
 
   constructor(canvasID: string);
   constructor(canvasID: string, bufferWidth: number, bufferHeight: number);
@@ -352,12 +265,6 @@ class Posit92 {
 
   constructor(canvasID: string, vgaWidthOrOptions?: number | Posit92Options, bufferHeight?: number) {
     this.AssertString(canvasID);
-
-    // if (document.getElementById(canvasID) == null)
-    //   throw new Error(`Couldn't find canvasID \"${ canvasID }\"`);
-
-    const options = this.#NormaliseOptions(vgaWidthOrOptions, bufferHeight);
-    this.#bootOptions = options;
   }
 
   #SetBufferWidth(value: number) {
@@ -370,6 +277,9 @@ class Posit92 {
 
   #CreateCanvas(width: number, height: number): void {
     const canvasID = this.ReadInteropBuffer();
+
+    if (document.getElementById(canvasID) == null)
+      throw new Error("Couldn't find canvasID " + canvasID);
 
     this.#canvas = document.createElement("canvas");
     this.#canvas.id = canvasID;
