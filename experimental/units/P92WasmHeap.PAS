@@ -124,7 +124,7 @@ var
 
 { Slab allocation }
 
-procedure InitPool(const poolSize: longword);
+procedure InitPoolAlloc;
 var
   b: smallint; { bucket index }
   rollingPtr: PByte;
@@ -136,7 +136,7 @@ begin
   rollingPtr := bucketAllocStart;
 
   for b:=0 to BucketCount-1 do begin
-    regionSize := (poolSize * BucketWeights[b]) div TotalWeights;
+    regionSize := (PoolSize * BucketWeights[b]) div TotalWeights;
     regionStart := rollingPtr;
     slotCount := regionSize div BucketSizes[b];
 
@@ -522,7 +522,7 @@ procedure InitHeapRegion(const startAddr, smallHeapSize, largeHeapSize: longword
 begin
   bucketAllocStart := PByte(startAddr);
   bucketAllocEnd := PByte(startAddr + smallHeapSize);
-  InitPool(smallHeapSize);
+  InitPoolAlloc;
 
   InitLargeHeap(startAddr + smallHeapSize, largeHeapSize)
 end;
