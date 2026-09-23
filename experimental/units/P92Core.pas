@@ -146,19 +146,12 @@ const
 
 var
   bootConfig: TP92AppConfig;
-
   engineRunState: TEngineRunStates;
-
-  { assigned in P92Boot }
-  enableDefaultBMFont: boolean;
 
   { Default boot font }
   BootFontHandle: TTextureHandle;
 
-  { Screenshot feature }
-
-  { assigned in P92Boot }
-  enableScreenshotHotkey: boolean;
+  { Used by screenshot }
   lastF2: boolean;
 
 
@@ -256,13 +249,6 @@ begin
   InitLogger;
 {$endif}
 
-{$ifdef P92_WASM}
-  { Read boot options }
-
-  enableDefaultBMFont := GetBootOptionBoolean('LoadDefaultBMFont');
-  enableScreenshotHotkey := GetBootOptionBoolean('EnableScreenshotHotkey');
-{$endif}
-
 { Request boot font }
 
 {$ifdef P92_WASM}
@@ -291,7 +277,7 @@ begin
 {$endif}
 
 {$ifdef P92_WASM}
-  if enableDefaultBMFont then
+  if bootConfig.LoadDefaultBMFont then
     LoadDefaultBMFont
   else
     writelog('InitPreloadState: Skipped loading the default BMFont');
@@ -353,7 +339,7 @@ begin
     UpdateMouse;
 {$endif}
 
-    if enableScreenshotHotkey then begin
+    if bootConfig.enableScreenshotHotkey then begin
       if lastF2 <> isKeyDown(SC_F2) then begin
         lastF2 := isKeyDown(SC_F2);
 
