@@ -67,9 +67,6 @@ type
 {$IFDEF P92_WASM}
 function GetBootConfig: TP92AppConfig;
 
-function GetBootOptionBoolean(key: string): boolean;
-function JsGetBootOptionBoolean: boolean; external 'env' name 'JsGetBootOptionBoolean';
-
 function GetBootFontHandle: TTextureHandle;
 procedure SetBootFontHandle(const value: TTextureHandle);
 
@@ -164,14 +161,6 @@ function GetBootFontHandle: TTextureHandle;
 begin
   GetBootFontHandle := BootFontHandle
 end;
-
-{$ifdef P92_WASM}
-function GetBootOptionBoolean(key: string): boolean;
-begin
-  WriteInteropString(key);
-  GetBootOptionBoolean := JsGetBootOptionBoolean
-end;
-{$endif}
 
 procedure SetBootFontHandle(const value: TTextureHandle);
 begin
