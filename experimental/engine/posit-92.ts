@@ -259,12 +259,7 @@ class Posit92 {
     this.#done = true;
   }  
 
-  constructor(canvasID: string);
-  constructor(canvasID: string, bufferWidth: number, bufferHeight: number);
-  constructor(canvasID: string, options: Posit92Options);
-
-  constructor(canvasID: string, vgaWidthOrOptions?: number | Posit92Options, bufferHeight?: number) {
-    this.AssertString(canvasID);
+  constructor() {
   }
 
   #SetBufferWidth(value: number) {
