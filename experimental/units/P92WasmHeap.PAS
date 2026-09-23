@@ -24,7 +24,7 @@ unit P92WasmHeap;
 interface
 
 const
-  WasmMemorySize = 2 * 1048576;  { 2 MB }
+  WasmMemorySize = 4 * 1048576;  { 4 MB }
   StackSize = 512 * 1024;
   PoolSize = 512 * 1024;
 
