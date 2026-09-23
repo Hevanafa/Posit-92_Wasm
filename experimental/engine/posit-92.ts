@@ -136,9 +136,6 @@ type WebAssemblyInstance = WebAssembly.Instance & { exports: WasmExports };
 class Posit92 {
   public static readonly Version = "0.3.3";
 
-  readonly #DefaultVGAWidth = 320;
-  readonly #DefaultVGAHeight = 200;
-
   readonly #wasmSource = "game.wasm";
 
   #TargetFPS: number;
