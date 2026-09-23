@@ -59,8 +59,8 @@ begin
   imgWinHovered := RequestImage('assets/images/btn_hovered.png');
   imgWinPressed := RequestImage('assets/images/btn_pressed.png');
 
-  fontWhite := RequestBMFont('assets/fonts/p92_sans_8_regular.txt');
-  fontPicotron := RequestBMFont('assets/fonts/picotron_8px.txt');
+  fontRegular := RequestBMFont('assets/fonts/p92_sans_8_regular.txt');
+  fontBold := RequestBMFont('assets/fonts/p92_sans_8_bold.txt');
 end;
 
 procedure OnReady;
@@ -72,7 +72,7 @@ begin
 
   gameTime := 0.0;
 
-  fontBlack := CloneBMFont(fontWhite);
+  fontBlack := CloneBMFont(fontRegular);
   ReplaceColour(BorrowBMFontPtr(fontBlack)^.texHandle, $FFFFFFFF, $FF000000);
 
   clicks := 0;
@@ -126,7 +126,7 @@ begin
 
   SprTint(imgDosuEXE[0], 100, 80, HSVtoRGB(frac(gameTime), 1.0, 1.0));
 
-  GuiSetFont(fontWhite);
+  GuiSetFont(fontRegular);
   Slider(120, 40, 100, sliderValue, 0, 100);
   TextLabel('Slider value: ' + i32str(sliderValue.value), 120, 30);
 
@@ -134,12 +134,12 @@ begin
   w := GuiMeasureText(s);
   TextLabel(s, (VGAWidth - w) div 2, 120);
 
-  GuiSetFont(fontPicotron);
-  s := 'Picotron font ' + NumberToStr(2.50);
+  GuiSetFont(fontBold);
+  s := 'Bold font';
   w := GuiMeasureText(s);
   TextLabel(s, (VGAWidth - w) div 2, 140);
 
-  GuiSetFont(fontWhite);
+  GuiSetFont(fontRegular);
   ProgressBar(10, 80, 80, 10, 0.75);
   ProgressBarLabelled(10, 100, 80, 10, 0.75);
   Checkbox('Show FPS', 10, 60, showFPS);
