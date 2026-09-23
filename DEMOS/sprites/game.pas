@@ -4,42 +4,14 @@ library Game;
 {$H+}{$J-}
 
 uses
-  Conv, FPS, Fullscreen,
-  ImmediateGUI,
-  ImgRef, ImgRefFast, ImgRefComp,
-  Keyboard, Mouse,
-  Lerp, Loading, Logger, Panic,
-  PostProc, Shapes, Timing, WasmMemMgr,
-  VGA,
+  P92Core, P92Conversions, P92FPS, P92WasmHost,
+  P92ImmediateGUI, P92Geometry,
+  P92Tex, P92TexDraw, P92TexComp,
+  P92Keyboard, P92Mouse,
+  P92Logger, P92PostProc, P92Timing, P92VGA,
   Assets;
 
-type
-  TGameStates = (
-    GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
-  );
-
 const
-  SC_ESC = $01;
-  SC_SPACE = $39;
-
-  { For movement }
-  SC_W = $11;
-  SC_A = $1E;
-  SC_S = $1F;
-  SC_D = $20;
-
-  { For scaling }
-  SC_UP = $48;
-  SC_LEFT = $4B;
-  SC_RIGHT = $4D;
-  SC_DOWN = $50;
-
-  SC_TAB = $0F;
-  SC_PAGEUP = $49;
-  SC_PAGEDOWN = $51;
-
   Black = $FF000000;
   White = $FFFFFFFF;
   Red = $FFFF5555;
