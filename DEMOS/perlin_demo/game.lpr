@@ -51,7 +51,7 @@ var
 
 procedure DrawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
+  spr(imgCursor, GetMouseX, GetMouseY)
 end;
 
 procedure OnPreload;
@@ -83,8 +83,8 @@ begin
   InitPerlin(gamePerlin, trunc(getTimer));
 
   { Only used in the static 2D demo }
-  noiseCache := NewTexture(vgaWidth div 2, vgaHeight div 2);
-  imgNoiseCache := BorrowTexturePtr(noiseCache);
+  noiseCache := NewTex(vgaWidth div 2, vgaHeight div 2);
+  imgNoiseCache := BorrowTexPtr(noiseCache);
 
   for b:=0 to vgaHeight div 2 - 1 do
   for a:=0 to vgaWidth div 2 - 1 do begin
@@ -92,7 +92,7 @@ begin
 
     grey := round(noiseValue * 255);
 
-    unsafeSprPset(imgNoiseCache,
+    UnsafeTexPSet(imgNoiseCache,
       a, b,
       $FF000000
       or (grey shl 16)
@@ -100,7 +100,7 @@ begin
       or grey);
   end;
 
-  imgSmallNoise := NewTexture(vgaWidth div 4, vgaHeight div 4);
+  imgSmallNoise := NewTex(vgaWidth div 4, vgaHeight div 4);
 end;
 
 function DemoButton(
@@ -192,7 +192,7 @@ begin
 
   if actualDemoState = DemoStateDynamic2D then begin
     sprClear(imgSmallNoise, $00000000);
-    texture := BorrowTexturePtr(imgSmallNoise);
+    texture := BorrowTexPtr(imgSmallNoise);
 
     offsetX := getTimer * 2.0;
     offsetY := getTimer * 1.5;
@@ -206,7 +206,7 @@ begin
         (b + offsetY) * 0.05);
 
       grey := round(noiseValue * 255);
-      unsafeSprPset(texture, a, b, $FF000000 or (grey shl 16) or (grey shl 8) or grey)
+      UnsafeTexPSet(texture, a, b, $FF000000 or (grey shl 16) or (grey shl 8) or grey)
     end;
 
     sprStretch(imgSmallNoise, 0, 0, vgaWidth, vgaHeight);
@@ -246,13 +246,13 @@ begin
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(
       imgDosuEXE[1],
-      (vgaWidth - GetTextureWidth(imgDosuEXE[1])) div 2,
-      (vgaHeight - GetTextureHeight(imgDosuEXE[0])) div 2)
+      (vgaWidth - GetTexWidth(imgDosuEXE[1])) div 2,
+      (vgaHeight - GetTexHeight(imgDosuEXE[0])) div 2)
   else
     spr(
       imgDosuEXE[0],
-      (vgaWidth - GetTextureWidth(imgDosuEXE[0])) div 2,
-      (vgaHeight - GetTextureHeight(imgDosuEXE[0])) div 2);
+      (vgaWidth - GetTexWidth(imgDosuEXE[0])) div 2,
+      (vgaHeight - GetTexHeight(imgDosuEXE[0])) div 2);
 
   s := 'Perlin noise in Posit-92!';
   w := measureDefault(s);
@@ -262,9 +262,24 @@ begin
   DrawFPS
 end;
 
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  appConfig.Width := 240;
+  appConfig.Height := 160;
+
+  P92Start(appConfig);
+end;
+
 exports
-  OnPreload, OnReady,
-  Update, Draw;
+  Init,
+  OnPreload,
+  OnReady,
+  Update,
+  Draw;
 
 begin
 { Starting point is intentionally left empty }

@@ -371,6 +371,8 @@ class Posit92 {
    * @param requiredSize in bytes
    */
   #InitWasmMemory(requiredSize: number): void {
+    // console.log("InitWasmMemory: Attempting to grow up to", requiredSize);
+
     // Wasm memory is in 64KB pages
     const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
     const requiredPages = Math.ceil(requiredSize / 65536);
