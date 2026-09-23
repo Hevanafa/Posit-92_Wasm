@@ -259,7 +259,7 @@ begin
   if lastShowDemoList <> showDemoList then begin
     lastShowDemoList := showDemoList;
 
-    perc := getLerpPerc(demoListLerpTimer, getTimer);
+    perc := GetEasingPerc(demoListLerpTimer, getTimer);
     x := lerpEaseOutQuad(demoListStartX, demoListEndX, perc);
     
     if lastShowDemoList then begin
@@ -270,7 +270,7 @@ begin
       demoListEndX := -120;
     end;
 
-    initLerp(demoListLerpTimer, getTimer, 0.4);
+    InitEasing(demoListLerpTimer, getTimer, 0.4);
   end;
 
   if lastDemoIndex <> demoListState.selectedIndex then begin
@@ -291,10 +291,10 @@ begin
   { writeLogF32(gameTime * 4); }
 
   { if showDemoList then drawDemoList; }
-  if isLerpComplete(demoListLerpTimer, getTimer) then
+  if IsEasingComplete(demoListLerpTimer, getTimer) then
     x := demoListEndX
   else begin
-    perc := getLerpPerc(demoListLerpTimer, getTimer);
+    perc := GetEasingPerc(demoListLerpTimer, getTimer);
     x := lerpEaseOutQuad(demoListStartX, demoListEndX, perc);
   end;
   
@@ -343,7 +343,7 @@ begin
     end;
 
     DemoStateFlip: begin
-      sprFlip(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteFlip);
+      SprFlipped(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteFlip);
       PrintCentred('WASD - Move', 120);
       PrintCentred('Arrow keys - Flip', 130);
     end;
