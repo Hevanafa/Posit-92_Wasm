@@ -5,9 +5,9 @@ library Game;
 
 uses
   P92Core, P92Conversions, P92FPS, P92WasmHost,
-  P92ImmediateGUI, P92Geometry,
+  P92ImmediateGUI, P92Geometry, P92Fonts,
   P92Tex, P92TexDraw, P92TexComp,
-  P92Keyboard, P92Mouse,
+  P92Keyboard, P92Mouse, P92Easings,
   P92Logger, P92PostProc, P92Timing, P92VGA,
   Assets;
 
@@ -34,14 +34,12 @@ var
   lastTab, lastPageUp, lastPageDown: boolean;
 
   { Init your game state here }
-  actualGameState: TGameStates;
-  { actualDemoState: integer; }
   gameTime: double;
   showDemoList, lastShowDemoList: boolean;
 
   dosuZone: TZone;
   demoListStartX, demoListEndX: double;
-  demoListLerpTimer: TLerpTimer;
+  demoListLerpTimer: TEasingTimer;
   demoListItems: array[0..DemoStateLast] of string;
   demoListState: TListViewState;
   lastDemoIndex: integer;
@@ -51,26 +49,20 @@ var
   spriteFlip: integer;
   spriteRotation: double;
 
-{ Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure hideCursor; external 'env' name 'hideCursor';
-procedure hideLoadingOverlay; external 'env' name 'hideLoadingOverlay';
-procedure loadAssets; external 'env' name 'loadAssets';
-
-procedure drawFPS;
+procedure DrawFPS;
 begin
-  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
+  PrintDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
-procedure drawMouse;
+procedure DrawMouse;
 begin
   if getHotWidget > -1 then
-    spr(imgHandCursor, mouseX - 5, mouseY - 1)
+    spr(imgHandCursor, GetMouseX - 5, GetMouseY - 1)
   else
-    spr(imgCursor, mouseX, mouseY);
+    spr(imgCursor, GetMouseX, GetMouseY);
 end;
 
-function getDemoStateName(const state: integer): string;
+function GetDemoStateName(const state: integer): string;
 begin
   case state of
     DemoStateFullSprite:
@@ -93,7 +85,7 @@ begin
 end;
 
 { demoState: use DemoStates }
-procedure initDemoState(const which: integer);
+procedure InitDemoState(const which: integer);
 begin
   { resetHeldKeys; }
   { actualDemoState := which; }
@@ -102,10 +94,10 @@ begin
 
   if (which = DemoStateBlend)
     or (which = DemoStateFlip) then begin
-    dosuZone.x := (vgaWidth - getImageWidth(imgSlimeGirl)) / 2;
-    dosuZone.y := (vgaHeight - getImageHeight(imgSlimeGirl)) / 2;
-    dosuZone.width := getImageWidth(imgSlimeGirl);
-    dosuZone.height := getImageHeight(imgSlimeGirl);
+    dosuZone.x := (vgaWidth - GetTexWidth(imgSlimeGirl)) / 2;
+    dosuZone.y := (vgaHeight - GetTexHeight(imgSlimeGirl)) / 2;
+    dosuZone.width := GetTexWidth(imgSlimeGirl);
+    dosuZone.height := GetTexHeight(imgSlimeGirl);
 
   end else if which = DemoStateRotation then begin
     dosuZone.x := vgaWidth / 2;
@@ -124,36 +116,23 @@ begin
 end;
 
 
-procedure beginLoadingState;
-begin
-  actualGameState := GameStateLoading;
-  fitCanvas;
-  loadAssets
-end;
-
-procedure beginPlayingState;
+procedure OnReady;
 var
   a: word;
 begin
-  hideCursor;
-  fitCanvas;
+  HideCursor;
 
   { Initialise game state here }
-  actualGameState := GameStatePlaying;
-  initImmediateGUI;
-
-  guiSetFont(defaultFont, defaultFontGlyphs);
-
   showDemoList := true;
 
   for a:=0 to DemoStateLast do
-    demoListItems[a] := getDemoStateName(a);
+    demoListItems[a] := GetDemoStateName(a);
 
   demoListState.x := 10;
   demoListState.y := 10;
   demoListState.selectedIndex := 0;
 
-  initDemoState(demoListState.selectedIndex);
+  InitDemoState(demoListState.selectedIndex);
 end;
 
 procedure resetHeldKeys;
@@ -172,19 +151,7 @@ begin
 end;
 
 
-procedure init;
-begin
-  initHeapMgr;
-  initDeltaTime;
-  initFPSCounter;
-end;
-
-procedure afterInit;
-begin
-  beginPlayingState
-end;
-
-procedure printCentred(const text: string; const y: integer);
+procedure PrintCentred(const text: string; const y: integer);
 var
   w: word;
 begin
@@ -193,25 +160,14 @@ begin
 end;
 
 
-procedure update;
+procedure Update;
 var
   perc, x: double;
 begin
-  updateDeltaTime;
-  incrementFPS;
+  if lastEsc <> IsKeyDown(SC_ESCAPE) then begin
+    lastEsc := IsKeyDown(SC_ESCAPE);
 
-  updateGUILastMouseButton;
-  updateMouse;
-  updateGUIMousePoint;
-
-  { Your update logic here }
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
-
-    if lastEsc then begin
-      writeLog('ESC is pressed!');
-      signalDone
-    end;
+    if lastEsc then SignalDone;
   end;
 
   if lastSpacebar <> isKeyDown(SC_SPACE) then begin
@@ -238,7 +194,7 @@ begin
       if demoListState.selectedIndex < 0 then
         demoListState.selectedIndex := DemoStateLast;
 
-      { initDemoState(demoListState.selectedIndex) }
+      { InitDemoState(demoListState.selectedIndex) }
     end;
   end;
 
@@ -251,7 +207,7 @@ begin
       if demoListState.selectedIndex > DemoStateLast then
         demoListState.selectedIndex := 0;
 
-      { initDemoState(demoListState.selectedIndex) }
+      { InitDemoState(demoListState.selectedIndex) }
     end;
   end;
 
@@ -319,24 +275,17 @@ begin
 
   if lastDemoIndex <> demoListState.selectedIndex then begin
     lastDemoIndex := demoListState.selectedIndex;
-    initDemoState(demoListState.selectedIndex)
+    InitDemoState(demoListState.selectedIndex)
   end;
 
-  gameTime := gameTime + dt;
-
-  resetWidgetIndices
+  gameTime := gameTime + DeltaTime;
 end;
 
 
-procedure draw;
+procedure Draw;
 var
   perc, x: double;
 begin
-  if actualGameState = GameStateLoading then begin
-    renderLoadingScreen;
-    exit
-  end;
-
   cls($FF6495ED);
 
   { writeLogF32(gameTime * 4); }
@@ -356,7 +305,7 @@ begin
   case demoListState.selectedIndex of
     DemoStateFullSprite: begin
       spr(imgDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
-      printCentred('WASD - Move', 120);
+      PrintCentred('WASD - Move', 120);
     end;
 
     DemoStateRegion: begin
@@ -364,13 +313,13 @@ begin
         25 * selectedFrame, 0, 25, 25,
         trunc(dosuZone.x), trunc(dosuZone.y));
 
-      printCentred('WASD - Move', 120);
-      printCentred('Spacebar - Change frame', 130);
+      PrintCentred('WASD - Move', 120);
+      PrintCentred('Spacebar - Change frame', 130);
     end;
 
     DemoStateBlend: begin
       sprBlend(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y));
-      printCentred('WASD - Move', 120);
+      PrintCentred('WASD - Move', 120);
     end;
 
     DemoStateScaling: begin
@@ -380,8 +329,8 @@ begin
         else
           sprStretch(imgDosuEXE[0], trunc(x), trunc(y), trunc(width), trunc(height));
 
-      printCentred('WASD - Move', 120);
-      printCentred('Arrow keys - Resize', 130);
+      PrintCentred('WASD - Move', 120);
+      PrintCentred('Arrow keys - Resize', 130);
     end;
 
     DemoStateRegionScaling: begin
@@ -389,20 +338,20 @@ begin
         25 * selectedFrame, 0, 25, 25,
         trunc(dosuZone.x), trunc(dosuZone.y), trunc(dosuZone.width), trunc(dosuZone.height));
 
-      printCentred('WASD - Move', 120);
-      printCentred('Arrow keys - Resize', 130);
+      PrintCentred('WASD - Move', 120);
+      PrintCentred('Arrow keys - Resize', 130);
     end;
 
     DemoStateFlip: begin
       sprFlip(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteFlip);
-      printCentred('WASD - Move', 120);
-      printCentred('Arrow keys - Flip', 130);
+      PrintCentred('WASD - Move', 120);
+      PrintCentred('Arrow keys - Flip', 130);
     end;
 
     DemoStateRotation: begin
       sprRotate(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteRotation);
-      printCentred('WASD - Move', 120);
-      printCentred('Left / right - Rotate', 130);
+      PrintCentred('WASD - Move', 120);
+      PrintCentred('Left / right - Rotate', 130);
     end
 
     else begin
@@ -411,7 +360,7 @@ begin
       else
         spr(imgDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
 
-      printCentred('(Not implemented)', 130);
+      PrintCentred('(Not implemented)', 130);
     end
   end;
 
@@ -423,19 +372,25 @@ begin
 
   resetActiveWidget;
 
-  drawMouse;
-  drawFPS;
+  DrawMouse;
+  DrawFPS;
+end;
 
-  vgaFlush
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  P92Start(appConfig);
 end;
 
 exports
-  { Main game procedures }
-  beginLoadingState,
-  init,
-  afterInit,
-  update,
-  draw;
+  Init,
+  OnPreload,
+  OnReady,
+  Update,
+  Draw;
 
 begin
 { Starting point is intentionally left empty }
