@@ -501,12 +501,16 @@ begin
   newConfig.Width := 320;
   newConfig.Height := 200;
 
+  newConfig.Renderer:= '2d';
+  newConfig.TargetFPS := 60;
+
   newConfig.LoadDefaultBMFont := true;
 
   { DefaultBMFontPath = 'assets/fonts/nokia_cellphone_fc_8.txt'; }
   { DefaultBMFontPath = 'assets/fonts/p92_sans_11.txt'; }
   newConfig.DefaultBMFontPath := 'assets/fonts/p92_sans_8_regular.txt';
 
+  newConfig.EnableScreenshotHotkey := true;
 
   DefaultP92AppConfig := newConfig;
 end;
@@ -514,8 +518,7 @@ end;
 procedure P92Start(const appConfig: TP92AppConfig);
 begin
   bootConfig := appConfig;
-
-  P92Boot;
+  P92Boot
 end;
 {$ENDIF}
 
