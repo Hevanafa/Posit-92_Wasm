@@ -79,7 +79,6 @@ type WasmImports = {
     JsSetTargetFPS: (fps: number) => void,
 
     JsRequestImage: (texHandle: number) => Promise<void>,
-    JsGetBootOptionBoolean: () => boolean;
 
     // WasmHost
     SignalDone: () => void,
@@ -191,7 +190,6 @@ class Posit92 {
       JsSetTargetFPS: this.#SetTargetFPS.bind(this),
 
       JsRequestImage: this.RequestImage.bind(this),
-      JsGetBootOptionBoolean: this.#GetBootOptionBoolean.bind(this),
       HostCallOnPreload: this.#OnPreload.bind(this),
       HostCallOnReady: this.#OnReady.bind(this),
 
@@ -411,21 +409,6 @@ class Posit92 {
     this.#ShowCursor();
   }
 
-
-  #GetBootOptionBoolean(): boolean {
-    const queryKey = this.ReadInteropBuffer();
-    const options = <any>this.#bootOptions;
-
-    for (const k in options)
-      if (k.toLowerCase() == queryKey.toLowerCase()) {
-        if (typeof options[k] == "boolean")
-          return options[k];
-        else
-          throw new Error("bootOptions[" + queryKey + "] is not a valid boolean: " + options[queryKey]);
-      }
-
-    throw new Error("Unknown boot option key: " + queryKey);
-  }
 
   /**
    * Called from the Pascal side
