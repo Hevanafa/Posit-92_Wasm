@@ -171,7 +171,7 @@ var
   heapRegionStart,
   heapSize: longint;
 begin
-  JsInitWasmMemory(2048576);
+  JsInitWasmMemory(WasmMemorySize);
 
   videoMemStart := StackSize;
   heapRegionStart := StackSize + GetVideoMemSize;

@@ -176,33 +176,14 @@ class Posit92 {
 
   readonly #wasmSource = "game.wasm";
 
-  // Engine configs
-
-  // readonly #wasmMemSize = 2 * 1048576;
-  // readonly #stackSize = 320 * 1024;
-
-  /**
-   * assigned in the constructor
-   */
-  // #videoMemSize = 0;
-  // readonly #poolSize = 512 * 1024;
-
   /**
    * assigned in the constructor
    */
   #TargetFPS = 60;
   #FrameTime: number;
 
-  #vgaWidth: number;
-  #vgaHeight: number;
-
-  // get VGAWidth(): number {
-  //   return this.#vgaWidth;
-  // }
-
-  // get VGAHeight(): number {
-  //   return this.#vgaHeight;
-  // }
+  #bufferWidth: number;
+  #bufferHeight: number;
 
   #canvas: HTMLCanvasElement;
 
@@ -376,11 +357,11 @@ class Posit92 {
   }
 
   #SetBufferWidth(value: number) {
-    this.#vgaWidth = value
+    this.#bufferWidth = value
   }
 
   #SetBufferHeight(value: number) {
-    this.#vgaHeight = value
+    this.#bufferHeight = value
   }
 
   #CreateCanvas(width: number, height: number) {
@@ -398,8 +379,8 @@ class Posit92 {
     // else if (options.Renderer == "webgl")
     //   this.glCtx = this.#canvas.getContext(options.Renderer)!;
 
-    this.#vgaWidth = width;
-    this.#vgaHeight = height
+    this.#bufferWidth = width;
+    this.#bufferHeight = height
   }
 
   /**
@@ -477,34 +458,18 @@ class Posit92 {
    * @param requiredSize in bytes
    */
   #InitWasmMemory(requiredSize: number): void {
-    // console.log("Default mem size", this.#wasm.exports.memory.buffer.byteLength);
-
-    // const videoMemStart = this.#stackSize;
-    // const heapRegionStart = this.#stackSize + this.#videoMemSize;
-    // const heapSize = this.#wasmMemSize - this.#poolSize - heapRegionStart;
-
     // Wasm memory is in 64KB pages
     const pages = this.#wasm.exports.memory.buffer.byteLength / 65536;
     const requiredPages = Math.ceil(requiredSize / 65536);
 
     if (pages < requiredPages)
       this.#wasm.exports.memory.grow(requiredPages - pages);
-
-    // this.#wasm.exports.InitVideoMem(this.#vgaWidth, this.#vgaHeight, videoMemStart);
-    // this.#wasm.exports.InitHeapRegion(heapRegionStart, this.#poolSize, heapSize);
   }
 
   async InitRuntime(): Promise<void> {
     this.#LoadMidnightOffset();
 
     await this.#InitWebAssembly();
-
-    // this.#vgaWidth = this.#DefaultVGAWidth;
-    // this.#vgaHeight = this.#DefaultVGAHeight;
-
-    // this.#videoMemSize = this.#vgaWidth * this.#vgaHeight * 4;
-
-    // this.#InitWasmMemory();
     this.#wasm.exports.Init();
 
     this.#InitKeyboard();
@@ -614,7 +579,7 @@ class Posit92 {
   }
 
   #FitCanvas(): void {
-    const aspectRatio = this.#vgaWidth / this.#vgaHeight;
+    const aspectRatio = this.#bufferWidth / this.#bufferHeight;
 
     const [windowWidth, windowHeight] = [window.innerWidth, window.innerHeight];
     const windowRatio = windowWidth / windowHeight;
@@ -676,8 +641,8 @@ class Posit92 {
   }
 
   #SaveCanvas2x(filename: string): void {
-    const w = this.#vgaWidth;
-    const h = this.#vgaHeight;
+    const w = this.#bufferWidth;
+    const h = this.#bufferHeight;
 
     const offscreen = document.createElement("canvas");
     offscreen.width = w * 2;
@@ -1097,13 +1062,13 @@ class Posit92 {
     const imageData = new Uint8ClampedArray(
       this.#wasm.exports.memory.buffer,
       surfacePtr,
-      this.#vgaWidth * this.#vgaHeight * 4
+      this.#bufferWidth * this.#bufferHeight * 4
     );
 
     if (this.#surface != null)
       this.#surface = null;
 
-    this.#surface = new ImageData(imageData, this.#vgaWidth, this.#vgaHeight);
+    this.#surface = new ImageData(imageData, this.#bufferWidth, this.#bufferHeight);
   }
 
   #VGAPresent(): void {
