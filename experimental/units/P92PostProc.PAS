@@ -2,12 +2,15 @@
   Software Post-processing unit
   Part of Posit-92 game engine
   By Hevanafa
+
+  Note: Some colour operations here still use ARGB instead of ABGR
 }
 
 unit P92PostProc;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
+{$Inline ON}
 
 interface
 
@@ -57,23 +60,23 @@ var
   grey: byte;
   colour: longword;
 begin
-  if not IsTextureSet(texHandle) then exit;
+  if not IsTexSet(texHandle) then exit;
 
-  texture := BorrowTexturePtr(texHandle);
+  texture := BorrowTexPtr(texHandle);
 
   for py:=0 to texture^.height - 1 do
-  for px:=0 to texture^.width - 1 do begin
-    colour := unsafeSprPget(texture, px, py);
+    for px:=0 to texture^.width - 1 do begin
+      colour := UnsafeTexPGet(texture, px, py);
 
-    a := colour shr 24 and $FF;
-    r := colour shr 16 and $FF;
-    g := colour shr 8 and $FF;
-    b := colour and $FF;
+      a := colour shr 24 and $FF;
+      r := colour shr 16 and $FF;
+      g := colour shr 8 and $FF;
+      b := colour and $FF;
 
-    grey := trunc(r * 0.299 + g * 0.587 + b * 0.114);
-    colour := ((a shl 8 or grey) shl 8 or grey) shl 8 or grey;
-    unsafeSprPset(texture, px, py, colour)
-  end;
+      grey := trunc(r * 0.299 + g * 0.587 + b * 0.114);
+      colour := ((a shl 8 or grey) shl 8 or grey) shl 8 or grey;
+      UnsafeTexPSet(texture, px, py, colour)
+    end;
 end;
 
 
@@ -174,8 +177,8 @@ begin
   if radius <= 0 then exit;
 
   if texBlurPtr = nil then begin
-    texBlur := NewTexture(vgaWidth, vgaHeight);
-    texBlurPtr := BorrowTexturePtr(texBlur);
+    texBlur := NewTex(vgaWidth, vgaHeight);
+    texBlurPtr := BorrowTexPtr(texBlur);
   end;
 
   { Process from VGA (alpha channel is ignored) }
@@ -191,7 +194,7 @@ begin
           if (a + c < 0) or (a + c >= vgaWidth)
             or (b + d < 0) or (b + d >= vgaHeight) then continue;
 
-          colour := unsafePget(a + c, b + d);
+          colour := ARGBtoABGR(UnsafePGet(a + c, b + d));
 
           inc(red, colour shr 16 and $FF);
           inc(green, colour shr 8 and $FF);
@@ -207,7 +210,7 @@ begin
 
       { Output to texBlur }
       colour := ($FF shl 24) or (red shl 16) or (green shl 8) or blue;
-      unsafeSprPset(texBlurPtr, a, b, colour)
+      UnsafeTexPSet(texBlurPtr, a, b, ARGBtoABGR(colour))
     end;
 
   spr(texBlur, 0, 0)
@@ -223,8 +226,8 @@ var
   colour: longword;
 begin
   if texChromabePtr = nil then begin
-    texChromabe := NewTexture(vgaWidth, vgaHeight);
-    texChromabePtr := BorrowTexturePtr(texChromabe);
+    texChromabe := NewTex(vgaWidth, vgaHeight);
+    texChromabePtr := BorrowTexPtr(texChromabe);
   end;
 
   for py:=0 to vgaHeight - 1 do
@@ -248,7 +251,7 @@ begin
       a := greenPixel shr 24 and $FF;  { Use green's alpha }
 
       colour := (a shl 24) or (r shl 16) or (g shl 8) or b;
-      unsafeSprPset(texChromabePtr, px, py, colour)
+      UnsafeTexPSet(texChromabePtr, px, py, colour)
     end;
 
   spr(texChromabe, 0, 0)
@@ -283,8 +286,8 @@ var
   colour: longword;
 begin
   if texVignettePtr = nil then begin
-    texVignette := NewTexture(vgaWidth, vgaHeight);
-    texVignettePtr := BorrowTexturePtr(texVignette);
+    texVignette := NewTex(vgaWidth, vgaHeight);
+    texVignettePtr := BorrowTexPtr(texVignette);
   end;
 
   if strength < 0.05 then exit;
@@ -368,7 +371,7 @@ begin
 
     { Render to buffer }
     colour := (a shl 24) or (r shl 16) or (g shl 8) or b;
-    unsafeSprPset(texVignettePtr, px, py, colour)
+    UnsafeTexPSet(texVignettePtr, px, py, colour)
   end;
 
   spr(texVignette, 0, 0)
@@ -394,8 +397,8 @@ begin
   if radius <= 0 then exit;
 
   if texPhosphorPtr = nil then begin
-    texPhosphor := NewTexture(vgaWidth, vgaHeight);
-    texPhosphorPtr := BorrowTexturePtr(texPhosphor);
+    texPhosphor := NewTex(vgaWidth, vgaHeight);
+    texPhosphorPtr := BorrowTexPtr(texPhosphor);
   end;
 
   { Process from VGA (alpha channel is ignored) }
@@ -427,7 +430,7 @@ begin
 
       { Output to texBlur }
       colour := ($FF shl 24) or (red shl 16) or (green shl 8) or blue;
-      unsafeSprPset(texPhosphorPtr, a, b, colour)
+      UnsafeTexPSet(texPhosphorPtr, a, b, colour)
     end;
 
   { spr(texPhosphor, 0, 0) }
@@ -442,7 +445,7 @@ begin
       origB := origColour and $FF;
 
       { Get blurred pixel }
-      blurColour := unsafeSprPget(texPhosphorPtr, a, b);
+      blurColour := UnsafeTexPGet(texPhosphorPtr, a, b);
       blurR := blurColour shr 16 and $FF;
       blurG := blurColour shr 8 and $FF;
       blurB := blurColour and $FF;
