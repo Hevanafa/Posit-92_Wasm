@@ -4,7 +4,7 @@ library Game;
 {$H+}{$J-}
 
 uses
-  P92Core, P92Conversions, P92FPS, P92WasmHost, P92WasmHeap,
+  P92Core, P92Conversions, P92FPS, P92AssetRegistry, P92WasmHost, P92WasmHeap,
   P92ImmediateGUI, P92Geometry, P92Fonts,
   P92Tex, P92TexDraw, P92TexComp,
   P92Keyboard, P92Mouse, P92Easings,
@@ -56,10 +56,10 @@ end;
 
 procedure DrawMouse;
 begin
-  if getHotWidget > -1 then
-    spr(texHandCursor, GetMouseX - 5, GetMouseY - 1)
+  if HasHoveredWidget then
+    Spr(texHandCursor, GetMouseX - 5, GetMouseY - 1)
   else
-    spr(texCursor, GetMouseX, GetMouseY);
+    Spr(texCursor, GetMouseX, GetMouseY);
 end;
 
 function GetDemoStateName(const state: integer): string;
@@ -118,7 +118,13 @@ end;
 
 procedure OnPreload;
 begin
+  texCursor := RequestImage('assets/images/cursor.png');
+  texHandCursor := RequestImage('assets/images/hand.png');
+  texSlimeGirl := RequestImage('assets/images/piyo_0426_slime_girl.png');
+  texBlueEnemy := RequestImage('assets/images/blue_enemy.png');
 
+  texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
 procedure OnReady;
