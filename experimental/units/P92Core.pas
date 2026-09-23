@@ -164,13 +164,13 @@ begin
   IsEngineReady := engineRunState = ersReady
 end;
 
-procedure P92Boot;
+procedure InitWasmRuntime;
+{$IFDEF P92_WASM}
 var
   videoMemStart,
   heapRegionStart,
   heapSize: longint;
 begin
-{$ifdef P92_WASM}
   JsInitWasmMemory(2048576);
 
   videoMemStart := StackSize;
@@ -184,6 +184,13 @@ begin
   InitInteropBuffer;
 
   JsCreateCanvas(bootConfig.Width, bootConfig.Height);
+{$ENDIF}
+end;
+
+procedure P92Boot;
+begin
+{$ifdef P92_WASM}
+  InitWasmRuntime;
 {$endif}
 
   engineRunState := ersBoot;
