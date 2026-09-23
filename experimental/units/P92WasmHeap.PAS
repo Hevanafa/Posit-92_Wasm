@@ -23,6 +23,11 @@ unit P92WasmHeap;
 
 interface
 
+const
+  WasmMemSize = 2 * 1048576;
+  StackSize = 320 * 1024;
+  PoolSize = 512 * 1024;
+
 procedure InitHeapRegion(const startAddr, smallHeapSize, largeHeapSize: longword); public name 'InitHeapRegion';
 
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
