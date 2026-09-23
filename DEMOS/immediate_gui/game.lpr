@@ -42,22 +42,22 @@ end;
 procedure DrawMouse;
 begin
   if HasHoveredWidget then
-    Spr(imgHandCursor, GetMouseX - 5, GetMouseY - 1)
+    Spr(texHandCursor, GetMouseX - 5, GetMouseY - 1)
   else
-    Spr(imgCursor, GetMouseX, GetMouseY);
+    Spr(texCursor, GetMouseX, GetMouseY);
 end;
 
 procedure OnPreload;
 begin
-  imgCursor := RequestImage('assets/images/cursor.png');
-  imgHandCursor := RequestImage('assets/images/hand.png');
+  texCursor := RequestImage('assets/images/cursor.png');
+  texHandCursor := RequestImage('assets/images/hand.png');
 
-  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
-  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
+  texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 
-  imgWinNormal := RequestImage('assets/images/btn_normal.png');
-  imgWinHovered := RequestImage('assets/images/btn_hovered.png');
-  imgWinPressed := RequestImage('assets/images/btn_pressed.png');
+  texWinNormal := RequestImage('assets/images/btn_normal.png');
+  texWinHovered := RequestImage('assets/images/btn_hovered.png');
+  texWinPressed := RequestImage('assets/images/btn_pressed.png');
 
   fontRegular := RequestBMFont('assets/fonts/p92_sans_8_regular.txt');
   fontBold := RequestBMFont('assets/fonts/p92_sans_8_bold.txt');
@@ -114,17 +114,17 @@ begin
   if Button('Click me!', 180, 88) then
     inc(clicks);
 
-  if ImageButton(240, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
+  if ImageButton(240, 88, texWinNormal, texWinHovered, texWinPressed) then
     inc(clicks);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    spr(texDosuEXE[1], 148, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    spr(texDosuEXE[0], 148, 88);
 
-  { SprStretch(imgDosuEXE[0], 100, 80, 24, 48); }
+  { SprStretch(texDosuEXE[0], 100, 80, 24, 48); }
 
-  SprTint(imgDosuEXE[0], 100, 80, HSVtoRGB(frac(gameTime), 1.0, 1.0));
+  SprTint(texDosuEXE[0], 100, 80, HSVtoRGB(frac(gameTime), 1.0, 1.0));
 
   GuiSetFont(fontRegular);
   Slider(120, 40, 100, sliderValue, 0, 100);

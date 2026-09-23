@@ -10,9 +10,9 @@ uses
 var
   fontRegular, fontBlack, fontBold: TBMFontHandle;
 
-  imgCursor, imgHandCursor: TTextureHandle;
-  imgDosuEXE: array[0..1] of TTextureHandle;
-  imgWinNormal, imgWinHovered, imgWinPressed: TTextureHandle;
+  texCursor, texHandCursor: TTextureHandle;
+  texDosuEXE: array[0..1] of TTextureHandle;
+  texWinNormal, texWinHovered, texWinPressed: TTextureHandle;
 
 
 implementation
