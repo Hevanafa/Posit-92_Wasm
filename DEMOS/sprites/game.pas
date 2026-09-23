@@ -291,6 +291,7 @@ begin
   { writeLogF32(gameTime * 4); }
 
   { if showDemoList then drawDemoList; }
+
   if IsEasingComplete(demoListLerpTimer, getTimer) then
     x := demoListEndX
   else begin
@@ -304,12 +305,12 @@ begin
 
   case demoListState.selectedIndex of
     DemoStateFullSprite: begin
-      spr(imgDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
+      Spr(imgDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
       PrintCentred('WASD - Move', 120);
     end;
 
     DemoStateRegion: begin
-      sprRegion(imgBlueEnemy,
+      SprRegion(imgBlueEnemy,
         25 * selectedFrame, 0, 25, 25,
         trunc(dosuZone.x), trunc(dosuZone.y));
 
@@ -318,16 +319,16 @@ begin
     end;
 
     DemoStateBlend: begin
-      sprBlend(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y));
+      SprBlend(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y));
       PrintCentred('WASD - Move', 120);
     end;
 
     DemoStateScaling: begin
       with dosuZone do
         if (trunc(gameTime * 4) and 1) > 0 then
-          sprStretch(imgDosuEXE[1], trunc(x), trunc(y), trunc(width), trunc(height))
+          SprStretch(imgDosuEXE[1], trunc(x), trunc(y), trunc(width), trunc(height))
         else
-          sprStretch(imgDosuEXE[0], trunc(x), trunc(y), trunc(width), trunc(height));
+          SprStretch(imgDosuEXE[0], trunc(x), trunc(y), trunc(width), trunc(height));
 
       PrintCentred('WASD - Move', 120);
       PrintCentred('Arrow keys - Resize', 130);
@@ -349,28 +350,26 @@ begin
     end;
 
     DemoStateRotation: begin
-      sprRotate(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteRotation);
+      SprRotate(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteRotation);
       PrintCentred('WASD - Move', 120);
       PrintCentred('Left / right - Rotate', 130);
     end
 
     else begin
       if (trunc(gameTime * 4) and 1) > 0 then
-        spr(imgDosuEXE[1], trunc(dosuZone.x), trunc(dosuZone.y))
+        Spr(imgDosuEXE[1], trunc(dosuZone.x), trunc(dosuZone.y))
       else
-        spr(imgDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
+        Spr(imgDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
 
       PrintCentred('(Not implemented)', 130);
     end
   end;
 
   if showDemoList then begin
-    printDefault('TAB - Hide the list of demos', 8, vgaHeight - 28);
-    printDefault('Page up / down - Choose between demos', 8, vgaHeight - 18);
+    PrintDefault('TAB - Hide the list of demos', 8, vgaHeight - 28);
+    PrintDefault('Page up / down - Choose between demos', 8, vgaHeight - 18);
   end else
-    printDefault('TAB - Show the list of demos', 8, vgaHeight - 18);
-
-  resetActiveWidget;
+    PrintDefault('TAB - Show the list of demos', 8, vgaHeight - 18);
 
   DrawMouse;
   DrawFPS;
