@@ -173,8 +173,8 @@ begin
   IsEngineReady := engineRunState = ersReady
 end;
 
-procedure InitWasmRuntime;
 {$IFDEF P92_WASM}
+procedure InitWasmRuntime;
 var
   videoMemStart,
   heapRegionStart,
@@ -199,8 +199,8 @@ begin
   JsInitCanvasCtx;
 
   JsSetTargetFPS(bootConfig.TargetFPS);
-{$ENDIF}
 end;
+{$ENDIF}
 
 procedure P92Boot;
 begin
