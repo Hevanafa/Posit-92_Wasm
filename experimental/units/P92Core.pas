@@ -9,7 +9,7 @@ interface
 uses P92AssetHandles;
 
 const
-  Posit92Version = '0.3.3';
+  Posit92Version = '0.3.4';
 
 type
   TCallback = procedure;
