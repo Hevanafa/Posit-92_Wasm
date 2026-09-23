@@ -24,10 +24,10 @@ type
     Renderer: string;
 
     { default: 320 }
-    Width: smallint;
+    BufferWidth: smallint;
 
     { default: 200 }
-    Height: smallint;
+    BufferHeight: smallint;
 
     { default: 60
       0 makes it the same refresh rate as the monitor }
@@ -181,7 +181,7 @@ var
 begin
   JsInitWasmMemory(WasmMemorySize);
 
-  InitVideoMem(Pointer(StackSize), bootConfig.Width, bootConfig.Height);
+  InitVideoMem(Pointer(StackSize), bootConfig.BufferWidth, bootConfig.BufferHeight);
 
   heapRegionStart := pointer(StackSize + GetVideoMemSize);
   heapSize := WasmMemorySize - PoolSize - SizeUInt(heapRegionStart);
@@ -191,7 +191,7 @@ begin
   InitInteropBuffer;
 
   WriteInteropString(bootConfig.CanvasID);
-  JsCreateCanvas(bootConfig.Width, bootConfig.Height);
+  JsCreateCanvas(bootConfig.BufferWidth, bootConfig.BufferHeight);
 
   WriteInteropString(bootConfig.Renderer);
   JsInitCanvasCtx;
@@ -480,8 +480,8 @@ begin
   newConfig := default(TP92AppConfig);
 
   newConfig.CanvasID := 'game';
-  newConfig.Width := 320;
-  newConfig.Height := 200;
+  newConfig.BufferWidth := 320;
+  newConfig.BufferHeight := 200;
 
   newConfig.Renderer:= '2d';
   newConfig.TargetFPS := 60;

@@ -268,8 +268,8 @@ var
 begin
   appConfig := DefaultP92AppConfig;
 
-  appConfig.Width := 240;
-  appConfig.Height := 160;
+  appConfig.BufferWidth := 240;
+  appConfig.BufferHeight := 160;
 
   P92Start(appConfig);
 end;
