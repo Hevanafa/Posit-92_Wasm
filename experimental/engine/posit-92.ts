@@ -76,6 +76,7 @@ type WasmImports = {
     JsInitWasmMemory: (requiredSize: number) => void,
     JsCreateCanvas: (width: number, height: number) => void,
     JsInitCanvasCtx: () => void,
+    JsSetTargetFPS: (fps: number) => void,
 
     JsRequestImage: (texHandle: number) => Promise<void>,
     JsGetBootOptionBoolean: () => boolean;
@@ -182,7 +183,7 @@ class Posit92 {
 
   readonly #wasmSource = "game.wasm";
 
-  #TargetFPS = 60;
+  #TargetFPS: number;
   #FrameTime: number;
 
   #bufferWidth: number;
@@ -228,6 +229,7 @@ class Posit92 {
       JsInitWasmMemory: this.#InitWasmMemory.bind(this),
       JsCreateCanvas: this.#CreateCanvas.bind(this),
       JsInitCanvasCtx: this.#InitCanvasCtx.bind(this),
+      JsSetTargetFPS: this.#SetTargetFPS.bind(this),
 
       JsRequestImage: this.RequestImage.bind(this),
       JsGetBootOptionBoolean: this.#GetBootOptionBoolean.bind(this),
@@ -356,9 +358,6 @@ class Posit92 {
 
     const options = this.#NormaliseOptions(vgaWidthOrOptions, bufferHeight);
     this.#bootOptions = options;
-
-    this.#TargetFPS = options.TargetFPS!;
-    this.#FrameTime = 1000 / this.#TargetFPS;
   }
 
   #SetBufferWidth(value: number) {
@@ -393,6 +392,11 @@ class Posit92 {
       this.glCtx = this.#canvas.getContext(renderer)!;
     else
       throw new Error("Unknown renderer: " + renderer);
+  }
+
+  #SetTargetFPS(fps: number): void {
+    this.#TargetFPS = fps;
+    this.#FrameTime = 1000 / this.#TargetFPS;
   }
 
   /**

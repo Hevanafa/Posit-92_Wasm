@@ -13,6 +13,7 @@ interface
 procedure JsInitWasmMemory(requiredSize: longword); external 'env' name 'JsInitWasmMemory';
 procedure JsCreateCanvas(width: integer; height: integer); external 'env' name 'JsCreateCanvas';
 procedure JsInitCanvasCtx; external 'env' name 'JsInitCanvasCtx';
+procedure JsSetTargetFPS(fps: smallint); external 'env' name 'JsSetTargetFPS';
 
 { Use this to set `done` to true }
 procedure SignalDone; external 'env' name 'SignalDone';

@@ -214,6 +214,8 @@ begin
 
   WriteInteropString(bootConfig.Renderer);
   JsInitCanvasCtx;
+
+  JsSetTargetFPS(bootConfig.TargetFPS);
 {$ENDIF}
 end;
 
