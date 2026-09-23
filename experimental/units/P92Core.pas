@@ -177,17 +177,17 @@ end;
 procedure InitWasmRuntime;
 var
   videoMemStart,
-  heapRegionStart,
-  heapSize: longint;
+  heapRegionStart: pointer;
+  heapSize: SizeUInt;
 begin
   JsInitWasmMemory(WasmMemorySize);
 
-  videoMemStart := StackSize;
-  heapRegionStart := StackSize + GetVideoMemSize;
-  heapSize := WasmMemorySize - PoolSize - heapRegionStart;
+  videoMemStart := pointer(StackSize);
+  heapRegionStart := pointer(StackSize + GetVideoMemSize);
+  heapSize := WasmMemorySize - PoolSize - SizeUInt(heapRegionStart);
 
   InitVideoMem(bootConfig.Width, bootConfig.Height, pointer(videoMemStart));
-  InitHeapRegion(heapRegionStart, PoolSize, heapSize);
+  InitHeapRegion(heapRegionStart, heapSize);
 
   InitHeapMgr;
   InitInteropBuffer;

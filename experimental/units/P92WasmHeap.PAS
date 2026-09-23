@@ -28,7 +28,7 @@ const
   StackSize = 512 * 1024;
   PoolSize = 512 * 1024;
 
-procedure InitHeapRegion(const startAddr, smallHeapSize, largeHeapSize: longword);
+procedure InitHeapRegion(const startAddr: pointer; const largeHeapSize: SizeUInt);
 
 { Accessible externally, in use by RequestImage }
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
@@ -119,7 +119,7 @@ var
 
 
 var
-  heapStart, heapEnd: pbyte;
+  heapStart, heapEnd: PByte;
   freeListHead: PBlockHeader;
 
 { Slab allocation }
@@ -256,7 +256,7 @@ begin
   IsValidBlock := (pbyte(header) >= heapStart) and (pbyte(header) < heapEnd)
 end;
 
-procedure InitLargeHeap(const baseAddr, size: longword);
+procedure InitLargeHeap(const baseAddr: pointer; const size: SizeUInt);
 var
   firstBlock: PBlockHeader;
   payloadSize: longword;
@@ -518,13 +518,13 @@ begin
   WasmMemSize := LargeMemSize(ptr)
 end;
 
-procedure InitHeapRegion(const startAddr, smallHeapSize, largeHeapSize: longword);
+procedure InitHeapRegion(const startAddr: pointer; const largeHeapSize: SizeUInt);
 begin
   bucketAllocStart := PByte(startAddr);
-  bucketAllocEnd := PByte(startAddr + smallHeapSize);
+  bucketAllocEnd := PByte(startAddr + PoolSize);
   InitPoolAlloc;
 
-  InitLargeHeap(startAddr + smallHeapSize, largeHeapSize)
+  InitLargeHeap(pointer(startAddr + PoolSize), largeHeapSize)
 end;
 
 
