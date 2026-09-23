@@ -40,8 +40,10 @@ procedure VgaPresent;
 function VGAWidth: smallint;
 function VGAHeight: smallint;
 
-{ Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
+{ This is called by InitWasmMemory (JS side)
+  Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
 procedure InitVideoMem(const width, height: smallint; const startAddr: PByteArray); public name 'InitVideoMem';
+
 function BorrowSurfacePtr: PByteArray; public name 'GetSurfacePtr';
 
 { colour format: $AARRGGBB like in QB64 PE }
@@ -121,7 +123,6 @@ end;
 
 procedure InitVideoMem(const width, height: smallint; const startAddr: PByteArray);
 begin
-  { WriteLog('Attempting to call initVideoMem'); }
   _vgaWidth := width;
   _vgaHeight := height;
   bufferSize := _vgaWidth * _vgaHeight * 4;

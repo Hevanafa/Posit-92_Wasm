@@ -10,6 +10,7 @@ unit P92WasmHost;
 interface
 
 {$ifdef P92_WASM}
+procedure JsInitWasmMemory(requiredSize: longword); external 'env' name 'JsInitWasmMemory';
 procedure JsCreateCanvas(width: integer; height: integer); external 'env' name 'JsCreateCanvas';
 
 { Use this to set `done` to true }

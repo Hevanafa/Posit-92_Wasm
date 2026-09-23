@@ -88,7 +88,7 @@ uses
   P92Panic, P92VGA
 {$endif}
 {$ifdef P92_WASM}
-  P92Fonts, P92AssetRegistry,
+  P92Fonts, P92AssetRegistry, P92WasmHeap,
   P92Conversions,
   P92FPS, P92Logger,
 {$ifdef P92_ENABLE_SOUNDS}
@@ -168,6 +168,8 @@ end;
 procedure P92Boot;
 begin
 {$ifdef P92_WASM}
+  JsInitWasmMemory(2048576);
+
   InitHeapMgr;
   InitInteropBuffer;
 
