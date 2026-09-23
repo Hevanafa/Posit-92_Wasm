@@ -39,6 +39,7 @@ procedure VgaPresent;
 
 function VGAWidth: smallint;
 function VGAHeight: smallint;
+function GetVideoMemSize: longint;
 
 { This is called by InitWasmMemory (JS side)
   Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
@@ -102,6 +103,11 @@ end;
 function VGAHeight: smallint;
 begin
   VGAHeight := _vgaHeight
+end;
+
+function GetVideoMemSize: longint;
+begin
+  GetVideoMemSize := bufferSize
 end;
 
 {$ifdef P92_SDL2}

@@ -88,8 +88,7 @@ uses
   P92Panic, P92VGA
 {$endif}
 {$ifdef P92_WASM}
-  P92Fonts, P92AssetRegistry, P92WasmHeap,
-  P92Conversions,
+  P92Fonts, P92AssetRegistry, P92WasmHeap, P92Conversions,
   P92FPS, P92Logger,
 {$ifdef P92_ENABLE_SOUNDS}
   P92Sounds,
@@ -166,9 +165,20 @@ begin
 end;
 
 procedure P92Boot;
+var
+  videoMemStart,
+  heapRegionStart,
+  heapSize: longint;
 begin
 {$ifdef P92_WASM}
   JsInitWasmMemory(2048576);
+
+  videoMemStart := StackSize;
+  heapRegionStart := StackSize + GetVideoMemSize;
+  heapSize := WasmMemorySize - PoolSize - heapRegionStart;
+
+  InitVideoMem(bootConfig.Width, bootConfig.Height, pointer(videoMemStart));
+  InitHeapRegion(heapRegionStart, PoolSize, heapSize);
 
   InitHeapMgr;
   InitInteropBuffer;
