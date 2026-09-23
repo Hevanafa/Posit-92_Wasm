@@ -63,6 +63,8 @@ type
 {$ENDIF}
 
 {$IFDEF P92_WASM}
+function GetBootConfig: TP92AppConfig;
+
 function GetBootOptionBoolean(key: string): boolean;
 function JsGetBootOptionBoolean: boolean; external 'env' name 'JsGetBootOptionBoolean';
 
@@ -156,6 +158,12 @@ var
   { assigned in P92Boot }
   enableScreenshotHotkey: boolean;
   lastF2: boolean;
+
+
+function GetBootConfig: TP92AppConfig;
+begin
+  GetBootConfig := bootConfig
+end;
 
 function GetBootFontHandle: TTextureHandle;
 begin

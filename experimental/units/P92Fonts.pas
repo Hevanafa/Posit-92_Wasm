@@ -33,7 +33,7 @@ end;
 procedure LoadDefaultBMFont;
 begin
 {$ifdef P92_WASM}
-  defaultFontHandle := RequestBMFont(DefaultBMFontPath)
+  defaultFontHandle := RequestBMFont(GetBootConfig.DefaultBMFontPath)
 {$endif}
 
 {$ifdef P92_SDL2}
