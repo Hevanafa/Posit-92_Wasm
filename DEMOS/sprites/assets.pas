@@ -8,11 +8,13 @@ interface
 uses P92AssetHandles;
 
 var
-  imgCursor, imgHandCursor: longint;
-  imgDosuEXE: array[0..1] of longint;
-  imgSlimeGirl: longint;
+  texCursor, texHandCursor: TTextureHandle;
+  texDosuEXE: array[0..1] of TTextureHandle;
+
+  texSlimeGirl: TTextureHandle;
+
   { https://kenney.nl/assets/desert-shooter-pack }
-  imgBlueEnemy: longint;
+  texBlueEnemy: longint;
 
 implementation
 

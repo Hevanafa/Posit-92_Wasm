@@ -57,9 +57,9 @@ end;
 procedure DrawMouse;
 begin
   if getHotWidget > -1 then
-    spr(imgHandCursor, GetMouseX - 5, GetMouseY - 1)
+    spr(texHandCursor, GetMouseX - 5, GetMouseY - 1)
   else
-    spr(imgCursor, GetMouseX, GetMouseY);
+    spr(texCursor, GetMouseX, GetMouseY);
 end;
 
 function GetDemoStateName(const state: integer): string;
@@ -94,10 +94,10 @@ begin
 
   if (which = DemoStateBlend)
     or (which = DemoStateFlip) then begin
-    dosuZone.x := (vgaWidth - GetTexWidth(imgSlimeGirl)) / 2;
-    dosuZone.y := (vgaHeight - GetTexHeight(imgSlimeGirl)) / 2;
-    dosuZone.width := GetTexWidth(imgSlimeGirl);
-    dosuZone.height := GetTexHeight(imgSlimeGirl);
+    dosuZone.x := (vgaWidth - GetTexWidth(texSlimeGirl)) / 2;
+    dosuZone.y := (vgaHeight - GetTexHeight(texSlimeGirl)) / 2;
+    dosuZone.width := GetTexWidth(texSlimeGirl);
+    dosuZone.height := GetTexHeight(texSlimeGirl);
 
   end else if which = DemoStateRotation then begin
     dosuZone.x := vgaWidth / 2;
@@ -115,6 +115,11 @@ begin
   spriteRotation := 0.0;
 end;
 
+
+procedure OnPreload;
+begin
+
+end;
 
 procedure OnReady;
 var
@@ -305,12 +310,12 @@ begin
 
   case demoListState.selectedIndex of
     DemoStateFullSprite: begin
-      Spr(imgDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
+      Spr(texDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
       PrintCentred('WASD - Move', 120);
     end;
 
     DemoStateRegion: begin
-      SprRegion(imgBlueEnemy,
+      SprRegion(texBlueEnemy,
         25 * selectedFrame, 0, 25, 25,
         trunc(dosuZone.x), trunc(dosuZone.y));
 
@@ -319,23 +324,23 @@ begin
     end;
 
     DemoStateBlend: begin
-      SprBlend(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y));
+      SprBlend(texSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y));
       PrintCentred('WASD - Move', 120);
     end;
 
     DemoStateScaling: begin
       with dosuZone do
         if (trunc(gameTime * 4) and 1) > 0 then
-          SprStretch(imgDosuEXE[1], trunc(x), trunc(y), trunc(width), trunc(height))
+          SprStretch(texDosuEXE[1], trunc(x), trunc(y), trunc(width), trunc(height))
         else
-          SprStretch(imgDosuEXE[0], trunc(x), trunc(y), trunc(width), trunc(height));
+          SprStretch(texDosuEXE[0], trunc(x), trunc(y), trunc(width), trunc(height));
 
       PrintCentred('WASD - Move', 120);
       PrintCentred('Arrow keys - Resize', 130);
     end;
 
     DemoStateRegionScaling: begin
-      sprRegionStretch(imgBlueEnemy,
+      sprRegionStretch(texBlueEnemy,
         25 * selectedFrame, 0, 25, 25,
         trunc(dosuZone.x), trunc(dosuZone.y), trunc(dosuZone.width), trunc(dosuZone.height));
 
@@ -344,22 +349,22 @@ begin
     end;
 
     DemoStateFlip: begin
-      SprFlipped(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteFlip);
+      SprFlipped(texSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteFlip);
       PrintCentred('WASD - Move', 120);
       PrintCentred('Arrow keys - Flip', 130);
     end;
 
     DemoStateRotation: begin
-      SprRotate(imgSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteRotation);
+      SprRotate(texSlimeGirl, trunc(dosuZone.x), trunc(dosuZone.y), spriteRotation);
       PrintCentred('WASD - Move', 120);
       PrintCentred('Left / right - Rotate', 130);
     end
 
     else begin
       if (trunc(gameTime * 4) and 1) > 0 then
-        Spr(imgDosuEXE[1], trunc(dosuZone.x), trunc(dosuZone.y))
+        Spr(texDosuEXE[1], trunc(dosuZone.x), trunc(dosuZone.y))
       else
-        Spr(imgDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
+        Spr(texDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
 
       PrintCentred('(Not implemented)', 130);
     end
