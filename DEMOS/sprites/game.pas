@@ -40,7 +40,7 @@ var
   dosuZone: TZone;
   demoListStartX, demoListEndX: double;
   demoListLerpTimer: TEasingTimer;
-  demoListItems: array[low(TDemoState)..high(TDemoState)] of string;
+  demoListItems: array[0..ord(high(TDemoState))] of string;
   demoListState: TListViewState;
   lastDemoIndex: TDemoState;
 
@@ -62,7 +62,7 @@ begin
     Spr(texCursor, GetMouseX, GetMouseY);
 end;
 
-function GetDemoStateName(const state: integer): string;
+function GetDemoStateName(const state: TDemoState): string;
 begin
   case state of
     DemoStateFullSprite:
@@ -80,16 +80,12 @@ begin
     DemoStateRotation:
       result := 'Sprite rotation';
     else
-      result := 'Unknown DemoState: ' + i32str(state);
+      result := 'Unknown DemoState: ' + i32str(ord(state));
   end;
 end;
 
-{ demoState: use DemoStates }
-procedure InitDemoState(const which: integer);
+procedure InitDemoState(const which: TDemoState);
 begin
-  { resetHeldKeys; }
-  { actualDemoState := which; }
-
   gameTime := 0.0;
 
   if (which = DemoStateBlend)
@@ -136,14 +132,14 @@ begin
   { Initialise game state here }
   showDemoList := true;
 
-  for a:=0 to DemoStateLast do
-    demoListItems[a] := GetDemoStateName(a);
+  for a:=0 to ord(high(TDemoState)) do
+    demoListItems[a] := GetDemoStateName(TDemoState(a));
 
   demoListState.x := 10;
   demoListState.y := 10;
-  demoListState.selectedIndex := 0;
+  demoListState.selectedIndex := ord(low(TDemoState));
 
-  InitDemoState(demoListState.selectedIndex);
+  InitDemoState(low(TDemoState));
 end;
 
 procedure resetHeldKeys;
@@ -203,9 +199,7 @@ begin
       dec(demoListState.selectedIndex);
       
       if demoListState.selectedIndex < 0 then
-        demoListState.selectedIndex := DemoStateLast;
-
-      { InitDemoState(demoListState.selectedIndex) }
+        demoListState.selectedIndex := ord(high(TDemoState));
     end;
   end;
 
@@ -215,12 +209,11 @@ begin
     if lastPageDown then begin
       inc(demoListState.selectedIndex);
 
-      if demoListState.selectedIndex > DemoStateLast then
+      if demoListState.selectedIndex > ord(high(TDemoState)) then
         demoListState.selectedIndex := 0;
-
-      { InitDemoState(demoListState.selectedIndex) }
     end;
   end;
+
 
   if isKeyDown(SC_W) then dosuZone.y := dosuZone.y - 1;
   if isKeyDown(SC_S) then dosuZone.y := dosuZone.y + 1;
@@ -228,7 +221,8 @@ begin
   if isKeyDown(SC_A) then dosuZone.x := dosuZone.x - 1;
   if isKeyDown(SC_D) then dosuZone.x := dosuZone.x + 1;
 
-  if (demoListState.selectedIndex = DemoStateScaling) or (demoListState.selectedIndex = DemoStateRegionScaling) then begin
+  if (demoListState.selectedIndex = ord(DemoStateScaling))
+    or (demoListState.selectedIndex = ord(DemoStateRegionScaling)) then begin
     if isKeyDown(SC_UP) and (dosuZone.height > 1.0) then dosuZone.height := dosuZone.height - 1;
     if isKeyDown(SC_DOWN) then dosuZone.height := dosuZone.height + 1;
 
@@ -236,7 +230,7 @@ begin
     if isKeyDown(SC_LEFT) and (dosuZone.width > 1.0) then dosuZone.width := dosuZone.width - 1;
   end;
 
-  if demoListState.selectedIndex = DemoStateFlip then begin
+  if demoListState.selectedIndex = ord(DemoStateFlip) then begin
     if lastUp <> isKeyDown(SC_UP) then begin
       lastUp := isKeyDown(SC_UP);
 
@@ -260,7 +254,7 @@ begin
     end;
   end;
 
-  if demoListState.selectedIndex = DemoStateRotation then begin
+  if demoListState.selectedIndex = ord(DemoStateRotation) then begin
     if isKeyDown(SC_LEFT) then
       spriteRotation := spriteRotation - pi / 30.0;
     if isKeyDown(SC_RIGHT) then
@@ -284,9 +278,9 @@ begin
     InitEasing(demoListLerpTimer, getTimer, 0.4);
   end;
 
-  if lastDemoIndex <> demoListState.selectedIndex then begin
-    lastDemoIndex := demoListState.selectedIndex;
-    InitDemoState(demoListState.selectedIndex)
+  if lastDemoIndex <> TDemoState(demoListState.selectedIndex) then begin
+    lastDemoIndex := TDemoState(demoListState.selectedIndex);
+    InitDemoState(lastDemoIndex)
   end;
 
   gameTime := gameTime + DeltaTime;
@@ -314,15 +308,17 @@ begin
   demoListState.x := trunc(x);
   ListView(demoListItems, demoListState);
 
-  case demoListState.selectedIndex of
+  case TDemoState(demoListState.selectedIndex) of
     DemoStateFullSprite: begin
       Spr(texDosuEXE[0], trunc(dosuZone.x), trunc(dosuZone.y));
       PrintCentred('WASD - Move', 120);
     end;
 
     DemoStateRegion: begin
-      SprRegion(texBlueEnemy,
-        25 * selectedFrame, 0, 25, 25,
+      SprRegion(
+        texBlueEnemy,
+        25 * selectedFrame, 0,
+        25, 24,
         trunc(dosuZone.x), trunc(dosuZone.y));
 
       PrintCentred('WASD - Move', 120);
