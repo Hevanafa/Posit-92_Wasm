@@ -489,8 +489,16 @@ var
 begin
   newConfig := default(TP92AppConfig);
 
+  newConfig.CanvasName := 'game';
   newConfig.Width := 320;
   newConfig.Height := 200;
+
+  newConfig.LoadDefaultBMFont := true;
+
+  { DefaultBMFontPath = 'assets/fonts/nokia_cellphone_fc_8.txt'; }
+  { DefaultBMFontPath = 'assets/fonts/p92_sans_11.txt'; }
+  newConfig.DefaultBMFontPath := 'assets/fonts/p92_sans_8_regular.txt';
+
 
   DefaultP92AppConfig := newConfig;
 end;
@@ -501,7 +509,6 @@ begin
 
   P92Boot;
 end;
-
 {$ENDIF}
 
 {$IFDEF P92_SDL2}
