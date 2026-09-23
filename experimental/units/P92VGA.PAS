@@ -43,7 +43,7 @@ function GetVideoMemSize: longint;
 
 { This is called by InitWasmMemory (JS side)
   Ref: https://www.freepascal.org/docs-html/ref/refse22.html }
-procedure InitVideoMem(const width, height: smallint; const startAddr: PByteArray); public name 'InitVideoMem';
+procedure InitVideoMem(const startAddr: PByteArray; const width, height: smallint); public name 'InitVideoMem';
 
 function BorrowSurfacePtr: PByteArray; public name 'GetSurfacePtr';
 
@@ -127,7 +127,7 @@ begin
 end;
 {$endif}
 
-procedure InitVideoMem(const width, height: smallint; const startAddr: PByteArray);
+procedure InitVideoMem(const startAddr: PByteArray; const width, height: smallint);
 begin
   _vgaWidth := width;
   _vgaHeight := height;

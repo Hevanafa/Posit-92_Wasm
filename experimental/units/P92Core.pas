@@ -176,14 +176,12 @@ end;
 {$IFDEF P92_WASM}
 procedure InitWasmRuntime;
 var
-  videoMemStart,
   heapRegionStart: pointer;
   heapSize: SizeUInt;
 begin
   JsInitWasmMemory(WasmMemorySize);
 
-  videoMemStart := pointer(StackSize);
-  InitVideoMem(bootConfig.Width, bootConfig.Height, pointer(videoMemStart));
+  InitVideoMem(Pointer(StackSize), bootConfig.Width, bootConfig.Height);
 
   heapRegionStart := pointer(StackSize + GetVideoMemSize);
   heapSize := WasmMemorySize - PoolSize - SizeUInt(heapRegionStart);
