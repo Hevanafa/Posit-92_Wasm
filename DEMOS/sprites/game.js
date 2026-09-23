@@ -1,6 +1,6 @@
 "use strict";
 
-class Game extends Posit92 {
+class Game extends BMFontMixin(Posit92) {
   AssetManifest = {
     images: {
       cursor: "assets/images/cursor.png",
