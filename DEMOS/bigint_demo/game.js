@@ -5,7 +5,7 @@ class Game extends BigIntMixin(BMFontMixin(Posit92)) {
 }
 
 async function Main() {
-  const game = new Game("game");
+  const game = new Game();
   await game.Start();
 }
 
