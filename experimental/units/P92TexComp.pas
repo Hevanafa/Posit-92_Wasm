@@ -10,6 +10,7 @@ unit P92TexComp;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
+{$Inline ON}
 
 interface
 
@@ -47,7 +48,7 @@ begin
       alpha := trunc(alpha * opacity);
       colour := (colour and $FFFFFF) or (alpha shl 24);
 
-      unsafePsetBlend(x + px, y + py, colour)
+      UnsafePSetBlend(x + px, y + py, colour)
     end;
 end;
 
@@ -67,7 +68,7 @@ begin
         or (y + py > clipY2) or (y + py < clipY1) then continue;
 
       colour := UnsafeTexPGet(texturePtr, px, py);
-      psetBlend(x + px, y + py, colour)
+      UnsafePSetBlend(x + px, y + py, colour)
     end;
 end;
 
