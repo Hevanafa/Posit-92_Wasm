@@ -196,7 +196,7 @@ begin
 end;
 
 
-procedure UnsafePSetBlend(const x, y: smallint; const ABGR: longword); inline;
+procedure UnsafePSetBlend(const x, y: smallint; const ABGR: longword);
 var
   srcA, srcR, srcG, srcB: byte;
   destA, destR, destG, destB: byte;
