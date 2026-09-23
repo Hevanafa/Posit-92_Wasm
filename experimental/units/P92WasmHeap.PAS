@@ -5,11 +5,11 @@
 }
 
 {
-  Memory layout (2MB default)
-  0x000000..0x02FFFF	Pascal stack	(192KB)
-  0x030000..0x06E7FF	Video memory	(320x200x4, depending on vgaWidth and vgaHeight)
-  0x06E800..0x0EE7FF	Slab tier region	(512KB, two-tier tier 1)
-  0x0EE800..0x200000	Reserved region	(at least 0x100000 bytes, two-tier tier 2)
+  Memory layout (4 MB default)
+  - Pascal stack	(512KB)
+  - Video memory	(320x200x4 bytes, depending on bufferWidth and bufferHeight)
+  - Bucket pool region	(512KB, two-tier tier 1)
+  - Two-directional linked list region	(two-tier tier 2)
 }
 
 unit P92WasmHeap;
