@@ -271,9 +271,6 @@ class Posit92 {
   #CreateCanvas(width: number, height: number): void {
     const canvasID = this.ReadInteropBuffer();
 
-    if (document.getElementById(canvasID) == null)
-      throw new Error("Couldn't find canvasID " + canvasID);
-
     this.#canvas = document.createElement("canvas");
     this.#canvas.id = canvasID;
     this.#canvas.className = "scale-fit";
