@@ -24,22 +24,24 @@ unit P92WasmHeap;
 interface
 
 const
-  WasmMemorySize = 2 * 1048576;
+  WasmMemorySize = 2 * 1048576;  { 2 MB }
   StackSize = 512 * 1024;
   PoolSize = 512 * 1024;
 
-procedure InitHeapRegion(const startAddr, smallHeapSize, largeHeapSize: longword); public name 'InitHeapRegion';
+procedure InitHeapRegion(const startAddr, smallHeapSize, largeHeapSize: longword);
 
+{ Accessible externally, in use by RequestImage }
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
-procedure WasmFreeMem(const ptr: pointer); public name 'WasmFreeMem';
+procedure WasmFreeMem(const ptr: pointer);
 function WasmReAllocMem(const ptr: pointer; const newBytes: longword): pointer;
-function WasmAllocMem(const bytes: longword): pointer; public name 'WasmAllocMem';
+function WasmAllocMem(const bytes: longword): pointer;
 function WasmMemSize(const ptr: pointer): PtrUInt;
 
 procedure JsReportGetMem(bytes: longint); external 'env' name 'JsReportGetMem';
 procedure JsReportFreeMem(bytes: longint); external 'env' name 'JsReportFreeMem';
 
 { Debug functions }
+
 function GetBucketAllocStart: longword;
 function GetBucketAllocEnd: longword;
 
