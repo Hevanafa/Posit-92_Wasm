@@ -30,9 +30,9 @@ var
   colour: longword;
   alpha: byte;
 begin
-  if not IsTextureSet(texHandle) then exit;
+  if not IsTexSet(texHandle) then exit;
 
-  texturePtr := BorrowTexturePtr(texHandle);
+  texturePtr := BorrowTexPtr(texHandle);
   opacity := clamp(opacity, 0.0, 1.0);
 
   for py := 0 to texturePtr^.height - 1 do
@@ -40,7 +40,7 @@ begin
       if (x + px > clipX2) or (x + px < clipX1)
         or (y + py > clipY2) or (y + py < clipY1) then continue;
 
-      colour := unsafeSprPget(texturePtr, px, py);
+      colour := UnsafeTexPGet(texturePtr, px, py);
       alpha := colour shr 24;
       if alpha = 0 then continue;
 
@@ -57,16 +57,16 @@ var
   px, py: smallint;
   colour: longword;
 begin
-  if not IsTextureSet(texHandle) then exit;
+  if not IsTexSet(texHandle) then exit;
 
-  texturePtr := BorrowTexturePtr(texHandle);
+  texturePtr := BorrowTexPtr(texHandle);
 
   for py := 0 to texturePtr^.height - 1 do
     for px := 0 to texturePtr^.width - 1 do begin
       if (x + px > clipX2) or (x + px < clipX1)
         or (y + py > clipY2) or (y + py < clipY1) then continue;
 
-      colour := unsafeSprPget(texturePtr, px, py);
+      colour := UnsafeTexPGet(texturePtr, px, py);
       psetBlend(x + px, y + py, colour)
     end;
 end;
