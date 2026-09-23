@@ -17,7 +17,7 @@ type
 {$IFDEF P92_WASM}
   TP92AppConfig = record
     { default: "game" }
-    CanvasName: string;
+    CanvasID: string;
 
     { default: 320 }
     Width: smallint;
@@ -207,6 +207,7 @@ begin
   InitHeapMgr;
   InitInteropBuffer;
 
+  WriteInteropString(bootConfig.CanvasID);
   JsCreateCanvas(bootConfig.Width, bootConfig.Height);
 {$ENDIF}
 end;
@@ -497,7 +498,7 @@ var
 begin
   newConfig := default(TP92AppConfig);
 
-  newConfig.CanvasName := 'game';
+  newConfig.CanvasID := 'game';
   newConfig.Width := 320;
   newConfig.Height := 200;
 

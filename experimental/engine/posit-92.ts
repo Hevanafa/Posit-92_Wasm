@@ -365,8 +365,10 @@ class Posit92 {
   }
 
   #CreateCanvas(width: number, height: number) {
+    const canvasID = this.ReadInteropBuffer();
+
     this.#canvas = document.createElement("canvas");
-    this.#canvas.id = "game";  // TODO: Use canvasID;
+    this.#canvas.id = canvasID;
     this.#canvas.className = "scale-fit";
     this.#canvas.setAttribute("width", "" + width);
     this.#canvas.setAttribute("height", "" + height);
