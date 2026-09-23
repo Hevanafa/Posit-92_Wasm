@@ -59,7 +59,7 @@ begin
   imgWinHovered := RequestImage('assets/images/btn_hovered.png');
   imgWinPressed := RequestImage('assets/images/btn_pressed.png');
 
-  fontWhite := RequestBMFont('assets/fonts/p92_sans_11.txt');
+  fontWhite := RequestBMFont('assets/fonts/p92_sans_8_regular.txt');
   fontPicotron := RequestBMFont('assets/fonts/picotron_8px.txt');
 end;
 
@@ -155,9 +155,21 @@ begin
   if showFPS.checked then DrawFPS;
 end;
 
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  P92Start(appConfig);
+end;
+
 exports
-  OnPreload, OnReady,
-  Update, Draw;
+  Init,
+  OnPreload,
+  OnReady,
+  Update,
+  Draw;
 
 begin
 { Starting point is intentionally left empty }
