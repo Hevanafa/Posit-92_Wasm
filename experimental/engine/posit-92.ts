@@ -1049,7 +1049,7 @@ class Posit92 {
       return;
     }
 
-    if (this.#bootOptions.TargetFPS == 0) {
+    if (this.#TargetFPS == 0) {
       this.#PerformLoop();
       requestAnimationFrame(this.#Loop);
 

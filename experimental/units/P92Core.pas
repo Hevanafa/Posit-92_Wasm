@@ -29,7 +29,8 @@ type
     { default: 200 }
     Height: smallint;
 
-    { default: 60 }
+    { default: 60
+      0 makes it the same refresh rate as the monitor }
     TargetFPS: smallint;
 
     LoadDefaultBMFont: boolean;
