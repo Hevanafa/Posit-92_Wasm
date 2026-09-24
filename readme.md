@@ -97,6 +97,6 @@ I made a dedicated server script that can be used specifically with Bun
 
 ## Credits
 
-Default font: [Nokia Cellphone FC](https://www.dafont.com/nokia-cellphone.font)
+Default font: [P92 Sans](https://github.com/Hevanafa/P92_Sans_font)
 
 BMFont format: [AngelCode BMFont](https://www.angelcode.com/products/bmfont/)
