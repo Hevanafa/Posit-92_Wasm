@@ -34,6 +34,13 @@ Then, use `http-server` to spin up a localhost server on port 8008:
 npx http-server -p 8008
 ```
 
+Update 24-09-2026:
+
+I added 2 documents in `docs` to guide you from setting up the project structure up to making a proper game release:
+
+- [manual_boilerplate.md](./docs/manual_boilerplate.md)
+- [manual_release.md](./docs/manual_release.md)
+
 ### Preparing the JS runtime scripts
 
 Use `tsc` to transpile both the engine & mixin files, simply by using:
