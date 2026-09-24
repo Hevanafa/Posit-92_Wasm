@@ -4,6 +4,8 @@ This document is more of a guideline on how to get started with the statically l
 
 ## Preparation
 
+### First pass
+
 - Create a new folder for your project
   - For example: `Posit-92_hello_world`
 - Enter `experimental` then run `tsc` once
@@ -13,12 +15,22 @@ This document is more of a guideline on how to get started with the statically l
   - `experimental\engine\posit-92.js` - this is the engine's main glue code
   - `experimental\mixins\` then pick your mixin files, typically `p92-bmfont.mixin.js` and `p92-sound.mixin.js`
 
+### Second pass
+
+- Copy `experimental\units` to your project root, then rename it as `engine`
+- Create a new folder named `units` at your project root
+  - This is where your custom units will live
+- Open `game.lpi` with Lazarus
+- Edit the unit paths in **Project menu > Project options**, then scroll down to **Compiler Options**
+- Click **Paths**
+- Then, change **Other unit files (-Fu)** to `engine;units`
+- Press OK
+- After that, save your project options from the Project menu, then click **Save Project**
+
 ## Building
 
 - Open `game.lpi` with Lazarus
-- Build the `game.wasm`
-
-Double check your compiler settings in **Tools menu > Options**
+- Double check your compiler settings in **Tools menu > Options**
 
 The compiler executable and FPC source directory must match the target `wasm32-embedded`
 
@@ -37,3 +49,5 @@ E:\fpc-wasm\fpcsrc
 ```
 
 As far as I know, there's no build & run option by default, since the project type is a `library` anyway
+
+- Compile `game.wasm` or if you use Lazarus: `Ctrl+F9`
