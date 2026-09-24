@@ -1,10 +1,10 @@
 {
-  Immediate GUI unit
+  Immediate Mode GUI unit
   Part of Posit-92 game engine
   By Hevanafa
 }
 
-unit P92ImmediateGUI;
+unit P92IMGUI;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
@@ -23,6 +23,7 @@ type
   TSliderState = record
     value: smallint;
   end;
+
   TSliderDragState = (
     SliderIdle,
     SliderHover,
