@@ -5,9 +5,10 @@ unit Assets;
 
 interface
 
+uses P92AssetHandles;
+
 var
-  texCursor: longint;
-  texDosuEXE: array[0..1] of longint;
+  texDosuEXE: array[0..1] of TTextureHandle;
 
 
 implementation

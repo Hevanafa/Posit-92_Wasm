@@ -50,15 +50,8 @@ var
   startX, endX: integer;
   xEasingTimer: TEasingTimer;
 
-procedure DrawMouse;
-begin
-  spr(texCursor, GetMouseX, GetMouseY)
-end;
-
 procedure OnPreload;
 begin
-  texCursor := RequestImage('assets/images/cursor.png');
-
   texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
   texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 end;
@@ -97,8 +90,7 @@ procedure OnReady;
 var
   a: word;
 begin
-  hideCursor;
-  fitCanvas;
+  HideCursor;
 
   { Initialise game state here }
   gameTime := 0.0;
@@ -241,12 +233,20 @@ begin
   PrintDefault('Spacebar - Restart easing', 8, vgaHeight - 28);
   PrintDefault('Page up / down - Choose between demos', 8, vgaHeight - 18);
 
-  DrawMouse;
   DrawFPS;
 end;
 
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  P92Start(appConfig);
+end;
+
 exports
-  OnPreload, OnReady, Update, Draw;
+  Init, OnPreload, OnReady, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
