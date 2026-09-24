@@ -19,29 +19,12 @@ If you want to use **VSCode** instead of Lazarus, install the **[OmniPascal](htt
 
 ## Getting Started
 
-1. Open VSCode terminal `Ctrl + ~`
-2. `cd boilerplate`
-3. Run `perl .\setup.pl`
-4. Run `perl .\make.pl`
-
-   This will make sure that all the units can be compiled & run
-
-When all the steps above is done, you can copy all the files of the `boilerplate` folder to your new project, except for `setup.pl`
-
-Then, use `http-server` to spin up a localhost server on port 8008:
-
-```powershell
-npx http-server -p 8008
-```
-
-Update 24-09-2026:
-
 I added 2 documents in `docs` to guide you from setting up the project structure up to making a proper game release:
 
 - [manual_boilerplate.md](./docs/manual_boilerplate.md)
 - [manual_release.md](./docs/manual_release.md)
 
-### Preparing the JS runtime scripts
+### Preparing the JS glue code
 
 Use `tsc` to transpile both the engine & mixin files, simply by using:
 
@@ -50,7 +33,7 @@ cd experimental
 tsc
 ```
 
-it will read `tsconfig.json` automatically and start transpiling the listed TypeScript files to JS
+It will read `tsconfig.json` automatically and start transpiling the listed TypeScript files to JS
 
 The command requires at least TypeScript version 4.6 (along with the latest LTS version of Node.js), which can be installed by either one of these:
 
