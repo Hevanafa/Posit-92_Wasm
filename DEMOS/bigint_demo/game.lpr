@@ -29,14 +29,8 @@ var
   formattedPoints: string;
   scientificPoints: string;
 
-procedure DrawMouse;
-begin
-  spr(texCursor, GetMouseX, GetMouseY)
-end;
-
 procedure OnPreload;
 begin
-  texCursor := RequestImage('assets/images/cursor.png');
   texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
   texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 end;
@@ -160,7 +154,6 @@ begin
 
   PrintCentred('Left - Decrease | Right - Increase', 180);
 
-  DrawMouse;
   DrawFPS;
 end;
 

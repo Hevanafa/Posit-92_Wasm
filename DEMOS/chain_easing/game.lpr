@@ -41,15 +41,8 @@ var
   blinkyX, blinkyY: double;
 
 
-procedure DrawMouse;
-begin
-  spr(texCursor, GetMouseX, GetMouseY)
-end;
-
 procedure OnPreload;
 begin
-  texCursor := RequestImage('assets/images/cursor.png');
-
   texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
   texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 
@@ -58,14 +51,15 @@ end;
 
 procedure OnReady;
 begin
-  gameTime := 0.0;
+  HideCursor;
 
-  InitImmediateGUI(true);
+  gameTime := 0.0;
 
   blinkyX := 160;
   blinkyY := 144;
 
-  ReplaceColour(BorrowBMFontPtr(GetDefaultFontHandle)^.texHandle, $FFFFFFFF, $FF000000)
+  ReplaceColour(
+    BorrowBMFontPtr(GetDefaultFontHandle)^.texHandle, $FFFFFFFF, $FF000000)
 end;
 
 procedure BeginEasingChain;
@@ -187,15 +181,24 @@ begin
 
   CentredLabel('chainIdx ' + i32str(chainIdx), vgaWidth div 2, 180);
 
-  resetActiveWidget;
-
-  DrawMouse;
   DrawFPS;
 end;
 
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  P92Start(appConfig);
+end;
+
 exports
-  OnPreload, OnReady,
-  Update, Draw;
+  Init,
+  OnPreload,
+  OnReady,
+  Update,
+  Draw;
 
 begin
 { Starting point is intentionally left empty }
