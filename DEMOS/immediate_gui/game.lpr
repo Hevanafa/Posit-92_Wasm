@@ -16,10 +16,17 @@ uses
   SysUtils,
   P92Core, P92Fonts, P92WasmHost, P92AssetRegistry, P92BMFont,
   P92Conversions, P92FPS, P92Graphics, P92Tex, P92TexDraw,
-  P92TexEffects, P92IMGUI, P92Loading, P92Logger,
+  P92TexEffects, P92Loading, P92Logger,
   P92Keyboard, P92Mouse, P92WasmHeap, P92Panic, P92Geometry,
   P92Timing, P92VGA, P92Colour,
+  P92IMGUI, P92IMGUIPromptBox,
   Assets;
+
+const
+  CornflowerBlue = $FF6495ED;
+  SemitransparentBlack = $80000000;
+
+  PromptKeyTest = 'TestPrompt';
 
 var
   lastEsc: boolean;
@@ -59,6 +66,10 @@ begin
   texWinHovered := RequestImage('assets/images/btn_hovered.png');
   texWinPressed := RequestImage('assets/images/btn_pressed.png');
 
+  texPromptBG := RequestImage('assets/images/prompt_bg.png');
+  texPromptButtonNormal := RequestImage('assets/images/btn_prompt_normal.png');
+  texPromptButtonPressed := RequestImage('assets/images/btn_prompt_pressed.png');
+
   fontRegular := RequestBMFont('assets/fonts/p92_sans_8_regular.txt');
   fontBold := RequestBMFont('assets/fonts/p92_sans_8_bold.txt');
 end;
@@ -74,6 +85,8 @@ begin
 
   fontBlack := CloneBMFont(fontRegular);
   ReplaceColour(BorrowBMFontPtr(fontBlack)^.texHandle, $FFFFFFFF, $FF000000);
+
+  SetPromptBoxAssets(texPromptBG, texPromptButtonNormal, texPromptButtonNormal, texPromptButtonPressed);
 
   clicks := 0;
   showFPS.checked := false;
@@ -98,6 +111,9 @@ begin
       signalDone
     end;
   end;
+
+  { Used by prompt box }
+  SetClickConsumed(false);
 
   gameTime := gameTime + DeltaTime
 end;
@@ -129,6 +145,27 @@ begin
   GuiSetFont(fontRegular);
   Slider(120, 40, 100, sliderValue, 0, 100);
   TextLabel('Slider value: ' + i32str(sliderValue.value), 120, 30);
+
+  { Migrated from the prompt box demo }
+
+  if UnderButton('Under button', 280, 20, 30, 24) then
+    inc(clicks);
+
+  if UnderImageButton(
+    (vgaWidth - GetTexWidth(texWinNormal)) div 2, 88,
+    texWinNormal, texWinHovered, texWinPressed) then
+      ShowPromptBox('Accept?', PromptKeyTest);
+
+  case PromptBox of
+    PromptResultYes:
+      case GetPromptKey of
+        PromptKeyTest: inc(clicks, 100);
+      end;
+    PromptResultNo:;
+    else
+  end;
+
+  { HUD }
 
   s := 'Clicks: ' + i32str(clicks);
   w := GuiMeasureText(s);

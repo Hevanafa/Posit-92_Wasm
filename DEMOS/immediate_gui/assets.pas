@@ -13,6 +13,7 @@ var
   texCursor, texHandCursor: TTextureHandle;
   texDosuEXE: array[0..1] of TTextureHandle;
   texWinNormal, texWinHovered, texWinPressed: TTextureHandle;
+  texPromptBG, texPromptButtonNormal, texPromptButtonPressed: TTextureHandle;
 
 
 implementation
