@@ -514,6 +514,8 @@ begin
   { DefaultBMFontPath = 'assets/fonts/p92_sans_11.txt'; }
   newConfig.DefaultBMFontPath := 'assets/fonts/p92_sans_8_regular.txt';
 
+  newConfig.LoadDefaultCursor := true;
+
   newConfig.EnableScreenshotHotkey := true;
 
   DefaultP92AppConfig := newConfig;
