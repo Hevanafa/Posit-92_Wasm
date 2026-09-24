@@ -4,11 +4,9 @@ library Game;
 {$H+}{$J-}
 
 uses
-  P92Conversions, P92WasmHost, P92AssetRegistry,
-  P92Loading,
+  P92Core, P92Conversions, P92WasmHost, P92AssetRegistry,
   P92Keyboard, P92Mouse,
-  P92Tex, P92TexDraw,
-  P92Graphics, P92Timing, P92Geometry, P92VGA,
+  P92Tex, P92TexDraw, P92Graphics, P92Timing, P92Geometry, P92VGA,
   Assets;
 
 var
@@ -18,15 +16,9 @@ var
   gameTime: double;
   testPoints: array [0..3] of TPoint;
 
-procedure DrawMouse;
-begin
-  spr(imgCursor, mouseX, mouseY)
-end;
-
 procedure OnReady;
 begin
-  hideCursor;
-  fitCanvas;
+  HideCursor;
 
   { Initialise game state here }
   gameTime := 0.0;
@@ -73,9 +65,9 @@ begin
 
   {
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    spr(texDosuEXE[1], 148, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    spr(texDosuEXE[0], 148, 88);
   }
 
   Circ(50, 50, 10, $80FF5555);
@@ -97,12 +89,19 @@ begin
   Pie(160, 100, 50, pi / 4, 3 * pi / 4, $FF55FF55);
 
   LineThick(50, 50, 200, 150, 15, $FFFF5555);
+end;
 
-  DrawMouse;
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  P92Start(appConfig);
 end;
 
 exports
-  OnReady, Update, Draw;
+  Init, OnReady, Update, Draw;
 
 begin
 { Starting point is intentionally left empty }
