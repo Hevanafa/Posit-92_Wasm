@@ -1,8 +1,8 @@
 # Manual release checklist
 
-## Source project structure
+This document describes how to manually get a Posit-92 WASM game working as a proper release
 
-(TBA)
+This document is intended as a guideline rather than a rigid set of rules that you must follow
 
 ## Packaging
 
