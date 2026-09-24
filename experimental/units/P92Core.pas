@@ -266,7 +266,7 @@ begin
   engineRunState := ersPreload;
 
   if DebugEngineRunStates then
-    writelog('ersPreload');
+    WriteLog('ersPreload');
 
 {$ifdef P92_SDL2}
   if bootConfig.LoadDefaultCursor then
@@ -358,13 +358,16 @@ begin
 {$endif}
 end;
 
-{$ifdef P92_SDL2}
 procedure DrawMouse;
 begin
-  { spr(imgCursor, mouseX, mouseY) }
+{$IFDEF P92_WASM}
+  Spr(texCursor, GetMouseX, GetMouseY)
+{$ENDIF}
+
+{$IFDEF P92_SDL2}
   HwSpr(hwCursor, GetMouseX, GetMouseY)
+{$ENDIF}
 end;
-{$endif}
 
 procedure P92Draw;
 begin
@@ -383,13 +386,17 @@ begin
 {$endif}
 
 {$ifdef P92_WASM}
+  DrawMouse;
   VGAUpload;
   VGAPresent;
 {$endif}
+
 {$ifdef P92_WEBGL}
+  DrawMouse;
   VgaUpload;
   WebGLPresent;
 {$endif}
+
 {$ifdef P92_SDL2}
   VgaUpload;
   { Begin hardware layer }
