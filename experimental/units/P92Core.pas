@@ -36,6 +36,8 @@ type
     LoadDefaultBMFont: boolean;
     DefaultBMFontPath: string;
 
+    LoadDefaultCursor: boolean;
+
     EnableScreenshotHotkey: boolean;
   end;
 {$ENDIF}
@@ -134,6 +136,11 @@ uses
 {$endif}
   ;
 
+{$IFDEF P92_WASM}
+var
+  texCursor: TTextureHandle;
+{$ENDIF}
+
 {$ifdef P92_SDL2}
 var
   hwCursor: longint;
@@ -147,6 +154,7 @@ type
   );
 
 const
+  DefaultCursorPath = 'assets/images/cursor.png';
   DebugEngineRunStates = false;
 
   BootFontGlyphWidth = 8;
@@ -267,6 +275,9 @@ begin
   else
     hwCursor := 0;
 {$endif}
+
+  if bootConfig.LoadDefaultCursor then
+    texCursor := RequestImage(DefaultCursorPath);
 
   if bootConfig.LoadDefaultBMFont then
     LoadDefaultBMFont;
