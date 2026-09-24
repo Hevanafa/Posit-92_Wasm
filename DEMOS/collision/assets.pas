@@ -7,7 +7,6 @@ interface
 uses P92AssetHandles;
 
 var
-  texCursor: TTextureHandle;
   texDosuEXE: array[0..1] of TTextureHandle;
   texSpecimenP92: array[0..1] of TTextureHandle;
 

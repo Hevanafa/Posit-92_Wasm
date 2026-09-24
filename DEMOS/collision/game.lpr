@@ -11,7 +11,7 @@ library Game;
 
 uses
   P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
-  P92Conversions, P92Graphics, P92IIF,
+  P92Conversions, P92Graphics, P92Iif,
   P92Keyboard, P92Mouse,
   P92Tex, P92TexDraw, P92Geometry,
   P92Timing, P92VGA,
@@ -44,11 +44,6 @@ var
   playerCircleZone, npcCircleZone: TCircle;
 
 
-procedure DrawMouse;
-begin
-  spr(texCursor, GetMouseX, GetMouseY)
-end;
-
 function GetDemoModeName(const mode: integer): string;
 begin
   case mode of
@@ -63,8 +58,6 @@ end;
 
 procedure OnPreload;
 begin
-  texCursor := RequestImage('assets/images/cursor.png');
-
   texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
   texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
   texSpecimenP92[0] := RequestImage('assets/images/specimen_p-92_1.png');
@@ -73,7 +66,7 @@ end;
 
 procedure OnReady;
 begin
-  hideCursor;
+  HideCursor;
 
   { Initialise game state here }
   gameTime := 0.0;
@@ -215,23 +208,33 @@ begin
 
   { HUD stuff }
 
-  printDefault('Mode: ' + GetDemoModeName(actualDemoMode), 10, 10);
+  PrintDefault('Mode: ' + GetDemoModeName(actualDemoMode), 10, 10);
 
-  printDefault('WASD - Move', 8, 160);
-  printDefault('TAB - Switch entity', 8, 170);
-  printDefault('1, 2, 3 - Change mode', 8, 180);
+  PrintDefault('WASD - Move', 8, 160);
+  PrintDefault('TAB - Switch entity', 8, 170);
+  PrintDefault('1, 2, 3 - Change mode', 8, 180);
 
-  printDefault('Hover over an active entity', 128, 160);
-  printDefault('to turn the zone yellow', 128, 170);
+  PrintDefault('Hover over an active entity', 128, 160);
+  PrintDefault('to turn the zone yellow', 128, 170);
+end;
 
-  DrawMouse
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  P92Start(appConfig);
 end;
 
 exports
-  OnPreload, OnReady,
-  Update, Draw;
+  Init,
+  OnPreload,
+  OnReady,
+  Update,
+  Draw;
 
 begin
-{ Starting point is intentionally left empty }
+  { Starting point is intentionally left empty }
 end.
 
