@@ -1,12 +1,13 @@
 # Manual release checklist
 
-## Project Structure
+## Source project structure
 
 (TBA)
 
 ## Packaging
 
 - Make a folder named `dist`
+  - or clean it first
 - Build the WASM binary (`Ctrl+F9` in Lazarus)
   - Enable `{$DEFINE Release}` if applicable
 - Copy these to `dist`:
@@ -20,6 +21,9 @@
     - posit-92.css
   - Mixin files: `.mixin.js`
 
-**Test `dist`**
+### Test `dist`
 
-(TBA)
+- Start a PowerShell window in `dist`
+- Run `npx http-server -c-1 .`
+  - or any HTTP serve that you prefer
+- Open the localhost URL in the browser
