@@ -9,7 +9,6 @@ uses
   P92AssetHandles;
 
 var
-  texCursor: TTextureHandle;
   texSpecimenP92: array[0..1] of TTextureHandle;
 
 

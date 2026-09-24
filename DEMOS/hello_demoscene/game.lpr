@@ -19,15 +19,8 @@ var
   { Game state variables }
   gameTime: double;
 
-procedure DrawMouse;
-begin
-  Spr(texCursor, GetMouseX, GetMouseY)
-end;
-
 procedure OnPreload;
 begin
-  texCursor := RequestImage('assets/images/cursor.png');
-
   texSpecimenP92[0] := RequestImage('assets/images/specimen_p-92_1.png');
   texSpecimenP92[1] := RequestImage('assets/images/specimen_p-92_2.png');
 end;
@@ -58,7 +51,6 @@ begin
 
   PrintDefaultCentred('Hello world!', VgaWidth div 2, 120);
 
-  DrawMouse;
   DrawFPS;
 end;
 

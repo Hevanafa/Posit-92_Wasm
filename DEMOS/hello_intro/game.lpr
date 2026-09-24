@@ -10,6 +10,8 @@ library Game;
 {$H+}  { Use AnsiStrings }
 {$J-}  { Switch off assignments to typed constants }
 
+{Define DebugIntroState}
+
 uses
   P92Core, P92Fonts, P92AssetRegistry,
   P92Logger, P92WasmHost, P92Loading,
@@ -41,15 +43,8 @@ var
   gameTime: double;
 
 
-procedure DrawMouse;
-begin
-  Spr(texCursor, GetMouseX, GetMouseY)
-end;
-
 procedure OnPreload;
 begin
-  texCursor := RequestImage('assets/images/cursor.png');
-
   texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
   texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 
@@ -60,8 +55,9 @@ end;
 
 procedure BeginIntroState;
 begin
-  actualGameState := GameStateIntro;
   FitCanvas;
+
+  actualGameState := GameStateIntro;
 
   introSlide := 1;
   introSlideEndTick := getTimer + 2.0;
@@ -69,7 +65,6 @@ end;
 
 procedure BeginPlayingState;
 begin
-  HideCursor;
   FitCanvas;
 
   { Initialise game state here }
@@ -84,6 +79,8 @@ end;
 
 procedure OnReady;
 begin
+  HideCursor;
+
   BeginIntroState
 end;
 
@@ -141,9 +138,10 @@ begin
   if actualGameState = GameStateIntro then begin
     RenderIntro(introSlide);
 
-    { Debug intro state }
+{$IFDEF DebugIntroState}
     PrintDefault('(Intro slide ' + i32str(introSlide) + ')', 30, 30);
     PrintDefault('Slide end tick: ' + f32str(introSlideEndTick), 30, 40);
+{$ENDIF}
 
     exit
   end;
@@ -157,7 +155,6 @@ begin
 
   PrintDefaultCentred('Hello world!', vgaWidth div 2, 120);
 
-  DrawMouse;
   DrawFPS;
 end;
 
