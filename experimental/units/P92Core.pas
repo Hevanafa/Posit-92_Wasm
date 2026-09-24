@@ -133,7 +133,7 @@ uses
   P92TexDraw, P92VGA, P92WasmHost, P92WasmMemMgr, P92InteropBuf, P92Loading
 {$endif}
 {$ifdef P92_IMGUI}
-  , P92ImmediateGUI
+  , P92IMGUI
 {$endif}
 {$ifdef P92_WEBGL}
   , P92WebGL

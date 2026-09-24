@@ -9,17 +9,14 @@
 library Game;
 
 {$Mode ObjFPC}
-{$J-}  { Switch off assignments to typed constants }
+{$H+}{$J-}
 
 uses
-  P92Core, P92WasmHost, P92AssetRegistry,
-  P92FPS,
-  P92Fonts, P92BMFont,
+  P92Core, P92WasmHost, P92AssetRegistry, P92FPS, P92Fonts, P92BMFont,
   P92Keyboard, P92Mouse,
   P92Graphics, P92Geometry, P92Tex, P92TexDraw, P92TexEffects,
-  P92ImmediateGUI,
-  P92Timing, P92VGA,
-  P92Perlin, Assets;
+  P92IMGUI, P92Timing, P92VGA, P92Perlin,
+  Assets;
 
 type
   TDemoStates = (

@@ -5,7 +5,7 @@ library Game;
 
 uses
   P92Core, P92Conversions, P92FPS, P92AssetRegistry, P92WasmHost, P92WasmHeap,
-  P92ImmediateGUI, P92Geometry, P92Fonts,
+  P92IMGUI, P92Geometry, P92Fonts,
   P92Tex, P92TexDraw, P92TexComp,
   P92Keyboard, P92Mouse, P92Easings,
   P92Logger, P92PostProc, P92Timing, P92VGA,

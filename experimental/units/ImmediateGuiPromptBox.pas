@@ -38,7 +38,7 @@ implementation
 
 uses
   P92Graphics, P92Geometry,
-  P92ImmediateGUI, P92AssetRegistry,
+  P92IMGUI, P92AssetRegistry,
   P92Tex, P92TexDraw, P92BMFont, P92VGA;
 
 const
