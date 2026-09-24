@@ -10,6 +10,6 @@ class Game extends BMFontMixin(Posit92) {
  * Entry point
  */
 async function Main() {
-  const game = new Game("game", { defaultFont: false });
+  const game = new Game();
   await game.Start();
 }

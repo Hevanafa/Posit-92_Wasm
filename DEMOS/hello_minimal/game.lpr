@@ -1,8 +1,7 @@
 library Game;
 
 {$Mode ObjFPC}
-{$H+}
-{$J-}  { Switch off assignments to typed constants }
+{$H+}{$J-}
 
 uses
   P92Core, P92AssetRegistry, P92Logger, P92VGA;
@@ -20,11 +19,25 @@ end;
 procedure Draw;
 begin
   Cls($FF101010);
+
+  Print('Hello from hello_minimal!', 8, 8);
+end;
+
+procedure Init;
+var
+  config: TP92AppConfig;
+begin
+  config := DefaultP92AppConfig;
+
+  config.LoadDefaultBMFont := false;
+  config.LoadDefaultCursor := false;
+
+  P92Start(config);
 end;
 
 exports
-  OnReady, Update, Draw;
+  Init, OnReady, Update, Draw;
 
 begin
-{ Starting point is intentionally left empty }
+  { Starting point is intentionally left empty }
 end.
