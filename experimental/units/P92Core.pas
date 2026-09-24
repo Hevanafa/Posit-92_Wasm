@@ -193,10 +193,7 @@ begin
   JsInitWasmMemory(WasmMemorySize);
 
   InitVideoMem(Pointer(StackSize), bootConfig.BufferWidth, bootConfig.BufferHeight);
-
-  heapRegionStart := pointer(StackSize + GetVideoMemSize);
-  heapSize := WasmMemorySize - PoolSize - SizeUInt(heapRegionStart);
-  InitHeapRegion(heapRegionStart, heapSize);
+  InitHeapRegion(heapRegionStart);
 
   InitHeapMgr;
   InitInteropBuffer;

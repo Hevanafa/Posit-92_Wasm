@@ -28,7 +28,7 @@ const
   StackSize = 320 * 1024;
   PoolSize = 512 * 1024;
 
-procedure InitHeapRegion(const startAddr: pointer; const largeHeapSize: SizeUInt);
+procedure InitHeapRegion(const startAddr: pointer);
 
 { Accessible externally, in use by RequestImage }
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
@@ -114,7 +114,11 @@ const
   TotalWeights = 100;
 
 var
-  bucketAllocStart, bucketAllocEnd: PByte;
+  { Inclusive: first byte of the pool }
+  bucketAllocStart,
+  { Exclusive }
+  bucketAllocEnd: PByte;
+
   buckets: array[0..BucketCount-1] of TBucket;
 
 
@@ -518,11 +522,17 @@ begin
   WasmMemSize := LargeMemSize(ptr)
 end;
 
-procedure InitHeapRegion(const startAddr: pointer; const largeHeapSize: SizeUInt);
+procedure InitHeapRegion(const startAddr: pointer);
 begin
   bucketAllocStart := PByte(startAddr);
   bucketAllocEnd := PByte(startAddr + PoolSize);
+
   InitPoolAlloc;
+
+  {
+  heapRegionStart := pointer(StackSize + GetVideoMemSize);
+  heapSize := WasmMemorySize - PoolSize - SizeUInt(heapRegionStart);
+  }
 
   InitLargeHeap(pointer(startAddr + PoolSize), largeHeapSize)
 end;
