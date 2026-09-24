@@ -523,17 +523,15 @@ begin
 end;
 
 procedure InitHeapRegion(const startAddr: pointer);
+var
+  largeHeapSize: SizeUInt;
 begin
   bucketAllocStart := PByte(startAddr);
   bucketAllocEnd := PByte(startAddr + PoolSize);
 
   InitPoolAlloc;
 
-  {
-  heapRegionStart := pointer(StackSize + GetVideoMemSize);
-  heapSize := WasmMemorySize - PoolSize - SizeUInt(heapRegionStart);
-  }
-
+  largeHeapSize := WasmMemorySize - (longword(startAddr) + PoolSize);
   InitLargeHeap(pointer(startAddr + PoolSize), largeHeapSize)
 end;
 

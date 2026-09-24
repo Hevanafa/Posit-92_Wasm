@@ -188,11 +188,12 @@ end;
 procedure InitWasmRuntime;
 var
   heapRegionStart: pointer;
-  heapSize: SizeUInt;
 begin
   JsInitWasmMemory(WasmMemorySize);
 
   InitVideoMem(Pointer(StackSize), bootConfig.BufferWidth, bootConfig.BufferHeight);
+
+  heapRegionStart := pointer(StackSize + GetVideoMemSize);
   InitHeapRegion(heapRegionStart);
 
   InitHeapMgr;
