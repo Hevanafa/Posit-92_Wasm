@@ -33,11 +33,15 @@ type
       0 makes it the same refresh rate as the monitor }
     TargetFPS: smallint;
 
+    { default: true }
     LoadDefaultBMFont: boolean;
+    { overridable, used together with `LoadDefaultBMFont` }
     DefaultBMFontPath: string;
 
+    { default: true }
     LoadDefaultCursor: boolean;
 
+    { default: true }
     EnableScreenshotHotkey: boolean;
   end;
 {$ENDIF}
