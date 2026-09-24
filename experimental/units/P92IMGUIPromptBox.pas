@@ -1,4 +1,10 @@
-unit ImmediateGUIPromptBox;
+{
+  Prompt Box widget for the Immediate Mode GUI unit
+  Part of Posit-92 game engine
+  By Hevanafa
+}
+
+unit P92IMGUIPromptBox;
 
 {$Mode ObjFPC}
 {$H+}{$J-}
