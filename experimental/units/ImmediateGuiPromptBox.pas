@@ -11,7 +11,11 @@ uses
   P92AssetHandles;
 
 type
-  TPromptResult = (PromptWait, PromptYes, PromptNo);
+  TPromptResult = (
+    PromptResultWait,
+    PromptResultYes,
+    PromptResultNo
+  );
 
 procedure SetClickConsumed(const value: boolean);
 procedure SetPromptBoxAssets(const background, btnNormal, btnHovered, btnPressed: TTextureHandle);
@@ -145,7 +149,7 @@ var
 begin
   AssertFontSet;
 
-  texturePtr := BorrowTexturePtr(texNormal);
+  texturePtr := BorrowTexPtr(texNormal);
 
   zone.x := x;
   zone.y := y;
@@ -201,11 +205,11 @@ var
   w, h: word;
   textX, textY: smallint;
 begin
-  AssertTextureSet('imgPromptButtonNormal', texPromptButtonNormal);
-  AssertTextureSet('imgPromptButtonHovered', texPromptButtonHovered);
-  AssertTextureSet('imgPromptButtonPressed', texPromptButtonPressed);
+  AssertTexSet('imgPromptButtonNormal', texPromptButtonNormal);
+  AssertTexSet('imgPromptButtonHovered', texPromptButtonHovered);
+  AssertTexSet('imgPromptButtonPressed', texPromptButtonPressed);
 
-  texturePtr := BorrowTexturePtr(texPromptButtonNormal);
+  texturePtr := BorrowTexPtr(texPromptButtonNormal);
 
   zone.x := x;
   zone.y := y;
@@ -268,11 +272,11 @@ var
   w: word;
 begin
   if not isPromptShown then begin
-    PromptBox := PromptNo;
+    PromptBox := PromptResultNo;
     exit
   end;
 
-  AssertTextureSet('imgPromptBG', texPromptBG);
+  AssertTexSet('imgPromptBG', texPromptBG);
 
   clsBlend(SemitransparentBlack);
 
@@ -281,16 +285,16 @@ begin
   w := guiMeasureText(promptText);
   TextLabel(promptText, (vgaWidth - w) div 2, 90);
 
-  PromptBox := PromptWait;
+  PromptBox := PromptResultWait;
 
   if PromptButton('Yes', 160 - 40, 110) then begin
     isPromptShown := false;
-    PromptBox := PromptYes
+    PromptBox := PromptResultYes
   end;
 
   if PromptButton('No', 160 + 10, 110) then begin
     isPromptShown := false;
-    PromptBox := PromptNo
+    PromptBox := PromptResultNo
   end;
 end;
 

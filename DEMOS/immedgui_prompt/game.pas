@@ -13,8 +13,8 @@ uses
   P92Graphics, P92Geometry, P92Loading, P92BMFont,
   P92Tex, P92TexDraw, P92TexEffects,
   P92ImmediateGUI, ImmediateGUIPromptBox,
-  P92Keyboard, P92Logger, P92Mouse,
-  P92Panic, P92Timing, P92WasmMemMgr, P92VGA,
+  P92Keyboard, P92Mouse,
+  P92Panic, P92Timing, P92VGA,
   Assets;
 
 type
@@ -44,7 +44,7 @@ var
 
 procedure DrawFPS;
 begin
-  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
+  printDefault('FPS:' + I32Str(getLastFPS), 240, 0);
 end;
 
 procedure DrawMouse;
@@ -123,7 +123,7 @@ begin
     inc(clicks);
 
   if UnderImageButton(
-    (vgaWidth - GetTextureWidth(texWinNormal)) div 2, 88,
+    (vgaWidth - GetTexWidth(texWinNormal)) div 2, 88,
     texWinNormal, texWinHovered, texWinPressed) then
       ShowPromptBox('Accept?', PromptKeyTest);
 
@@ -132,11 +132,11 @@ begin
   TextLabel(s, (vgaWidth - w) div 2, 120);
 
   case PromptBox of
-    PromptYes:
+    PromptResultYes:
       case GetPromptKey of
         PromptKeyTest: inc(clicks, 100);
       end;
-    PromptNo:;
+    PromptResultNo:;
     else
   end;
 
@@ -145,7 +145,17 @@ begin
   if showFPS.checked then DrawFPS;
 end;
 
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  P92Start(appConfig);
+end;
+
 exports
+  Init,
   OnPreload,
   OnReady,
   Update,
