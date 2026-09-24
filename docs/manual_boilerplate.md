@@ -51,3 +51,15 @@ E:\fpc-wasm\fpcsrc
 As far as I know, there's no build & run option by default, since the project type is a `library` anyway
 
 - Compile `game.wasm` or if you use Lazarus: `Ctrl+F9`
+
+## Running
+
+You can use this command:
+
+```
+npx http-server -c-1 .
+```
+
+or if you use Bun, you can use the provided `server.ts` in the `scripts` folder
+
+or just use your own HTTP serve, as long as `index.html` is accessible because it is the engine's entry point
