@@ -162,7 +162,7 @@ var
   zone: TZone;
   texturePtr: PSoftwareTex;
   thisWidgetID: smallint;
-  buttonImgHandle: longword;
+  texHandle: TTextureHandle;
 begin
   GUIAssertFontSet;
 
@@ -174,30 +174,32 @@ begin
   zone.height := texturePtr^.height;
 
   { Update logic }
-  thisWidgetID := getNextWidgetID;
-  incNextWidgetID;
+
+  thisWidgetID := AcquireNextWidgetID;
 
   if AllowWidgetInteraction then begin
-    if pointInZone(getMousePoint, zone) then begin
-      setHotWidget(thisWidgetID);
+    if PointInZone(GetMousePoint, zone) then begin
+      SetHotWidget(thisWidgetID);
 
-      if getMouseJustPressed then setActiveWidget(thisWidgetID);
+      if GetMouseJustPressed then SetActiveWidget(thisWidgetID);
     end;
   end;
 
   { Render logic }
-  if getActiveWidget = thisWidgetID then
-    buttonImgHandle := texPressed
-  else if getHotWidget = thisWidgetID then
-    buttonImgHandle := texHovered
+
+  if GetActiveWidget = thisWidgetID then
+    texHandle := texPressed
+  else if GetHotWidget = thisWidgetID then
+    texHandle := texHovered
   else
-    buttonImgHandle := texNormal;
+    texHandle := texNormal;
 
-  spr(buttonImgHandle, x, y);
+  Spr(texHandle, x, y);
+
   { Use this in case you want your buttons have semitransparent pixels }
-  { sprBlend(buttonImgHandle, x, y); }
+  { SprBlend(texHandle, x, y); }
 
-  if getMouseJustReleased and (getHotWidget = thisWidgetID) and (getActiveWidget = thisWidgetID) then
+  if GetMouseJustReleased and (GetHotWidget = thisWidgetID) and (GetActiveWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
 
     if not clickConsumed then begin
