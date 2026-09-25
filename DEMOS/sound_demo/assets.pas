@@ -7,7 +7,7 @@ interface
 uses P92AssetHandles;
 
 var
-  imgDosuExe: array[0..1] of TTextureHandle;
+  texDosuExe: array[0..1] of TTextureHandle;
 
   sfxBwonk,
   sfxBite,

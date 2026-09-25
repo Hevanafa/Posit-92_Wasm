@@ -4,16 +4,18 @@ unit Assets;
 
 interface
 
+uses P92AssetHandles;
+
 var
-  imgCursor: longint;
-  imgDosuEXE: array[0..1] of longint;
+  texCursor: TTextureHandle;
+  texDosuEXE: array[0..1] of TTextureHandle;
 
-  imgPlay: longint;
-  imgStop: longint;
-  imgPause: longint;
-  imgVolumeOn, imgVolumeOff: longint;
+  texPlay,
+  texStop,
+  texPause,
+  texVolumeOn, texVolumeOff: TTextureHandle;
 
-  bgmClassic: longint;
+  bgmClassic: TSoundHandle;
 
 
 implementation

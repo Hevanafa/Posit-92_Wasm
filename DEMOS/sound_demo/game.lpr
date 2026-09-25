@@ -31,8 +31,8 @@ end;
 
 procedure OnPreload;
 begin
-  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
-  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
+  texDosuExe[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 
   sfxBwonk := RequestSound('assets/sfx/bwonk.ogg');
   sfxBite := RequestSound('assets/sfx/bite.ogg');
@@ -107,9 +107,9 @@ begin
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    spr(texDosuExe[1], 148, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    spr(texDosuExe[0], 148, 88);
 
   s := '1, 2, 3, 4, 5 - Play sound';
   w := MeasureDefault(s);

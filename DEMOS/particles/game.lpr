@@ -41,10 +41,10 @@ end;
 
 procedure OnPreload;
 begin
-  imgParticle := RequestImage('assets/images/particle.png');
+  texParticle := RequestImage('assets/images/particle.png');
 
-  imgDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
-  imgDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
+  texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
 procedure OnReady;
@@ -64,11 +64,11 @@ begin
   palette[3] := $FFFFFF55;
   palette[4] := $FFFF55FF;
 
-  imgParticles[0] := imgParticle;
+  texParticles[0] := texParticle;
 
   for a:=1 to high(palette) do begin
-    imgParticles[a] := CloneTex(imgParticle);
-    ReplaceColour(imgParticles[a], palette[0], palette[a])
+    texParticles[a] := CloneTex(texParticle);
+    ReplaceColour(texParticles[a], palette[0], palette[a])
   end;
 end;
 
@@ -102,7 +102,7 @@ begin
     vy := -random(100);
   end;
 
-  particles[idx].imgHandle := imgParticles[random(high(imgParticles) + 1)];
+  particles[idx].imgHandle := texParticles[random(high(texParticles) + 1)];
 end;
 
 
@@ -150,9 +150,9 @@ begin
   cls(DarkBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    Spr(imgDosuEXE[1], 148, 88)
+    Spr(texDosuEXE[1], 148, 88)
   else
-    Spr(imgDosuEXE[0], 148, 88);
+    Spr(texDosuEXE[0], 148, 88);
 
   for a:=0 to high(particles) do begin
     if not particles[a].active then continue;

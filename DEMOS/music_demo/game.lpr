@@ -35,16 +35,16 @@ var
 
 procedure OnPreload;
 begin
-  imgCursor := RequestImage('assets/images/cursor.png');
-  imgDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
-  imgDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
+  texCursor := RequestImage('assets/images/cursor.png');
+  texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 
-  imgPlay := RequestImage('assets/images/play.png');
-  imgStop := RequestImage('assets/images/stop.png');
-  imgPause := RequestImage('assets/images/pause.png');
+  texPlay := RequestImage('assets/images/play.png');
+  texStop := RequestImage('assets/images/stop.png');
+  texPause := RequestImage('assets/images/pause.png');
 
-  imgVolumeOn := RequestImage('assets/images/volume_on.png');
-  imgVolumeOff := RequestImage('assets/images/volume_off.png');
+  texVolumeOn := RequestImage('assets/images/volume_on.png');
+  texVolumeOff := RequestImage('assets/images/volume_off.png');
 
   bgmClassic := RequestSound('assets/bgm/Georges Bizet - Les Toreadors from Carmen Suite No. 1.ogg');
 end;
@@ -111,9 +111,9 @@ begin
   Cls(CornflowerBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    Spr(imgDosuEXE[1], 148, 48)
+    Spr(texDosuEXE[1], 148, 48)
   else
-    Spr(imgDosuEXE[0], 148, 48);
+    Spr(texDosuEXE[0], 148, 48);
 
   Checkbox('Repeat', 40, 125, repeatState);
 
@@ -145,22 +145,22 @@ begin
 
   { Play / pause button }
   if isPlaying then begin
-    if ImageButton(129, 116, imgPause, imgPause, imgPause) then
+    if ImageButton(129, 116, texPause, texPause, texPause) then
       PauseMusic;
   end else
-    if ImageButton(129, 116, imgPlay, imgPlay, imgPlay) then
+    if ImageButton(129, 116, texPlay, texPlay, texPlay) then
       PlayMusic(BgmClassic);
 
   { Stop button }
-  if ImageButton(161, 116, imgStop, imgStop, imgStop) then
+  if ImageButton(161, 116, texStop, texStop, texStop) then
     StopMusic;
 
   { Volume control }
 
   if isMuted or (volumeState.value = 0) then
-    spr(imgVolumeOff, 202, 123)
+    spr(texVolumeOff, 202, 123)
   else
-    spr(imgVolumeOn, 202, 123);
+    spr(texVolumeOn, 202, 123);
 
   Slider(217, 125, 64, volumeState, 0, 100);
 end;
