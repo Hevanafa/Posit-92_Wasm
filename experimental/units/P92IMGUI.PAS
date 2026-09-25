@@ -594,6 +594,7 @@ begin
   zone.height := fontPtr^.lineHeight;
 
   { Update logic }
+
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
@@ -604,14 +605,17 @@ begin
   end;
 
   { Render logic }
+
   if state then
     RectFill(
-      trunc(zone.x), trunc(zone.y),
-      trunc(zone.x + Width - 1), trunc(zone.y + Height - 1), AccentDark)
+      x, y,
+      x + Width - 1, y + Height - 1,
+      AccentDark)
   else
     RectFill(
-      trunc(zone.x), trunc(zone.y),
-      trunc(zone.x + Width - 1), trunc(zone.y + Height - 1), AccentPale);
+      x, y,
+      x + Width - 1, y + Height - 1,
+      AccentPale);
 
   if activeWidget = thisWidgetID then
     { on held down }
@@ -623,10 +627,10 @@ begin
     checkboxColour := AccentDark;
 
   Rect(
-    trunc(zone.x), trunc(zone.y),
-    trunc(zone.x + Width - 1), trunc(zone.y + Width - 1), checkboxColour);
+    x, y,
+    x + Width - 1, y + Width - 1, checkboxColour);
 
-  TextLabel(caption, trunc(zone.x + Width + Spacing), trunc(zone.y));
+  TextLabel(caption, x + Width + Spacing, y);
 
   if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then begin
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
