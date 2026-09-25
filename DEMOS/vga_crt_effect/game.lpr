@@ -4,7 +4,7 @@ library Game;
 {$H+}{$J-}
 
 uses
-  P92Core, P92Colour, P92Conversions, P92Maths,
+  P92Core, P92Colour, P92Conversions, P92AssetRegistry,
   P92Keyboard, P92Mouse, P92Tex, P92TexDraw,
   P92PostProc, P92Timing, P92VGA, P92WasmHost,
   Assets;
@@ -23,7 +23,9 @@ var
 
 procedure OnPreload;
 begin
-  { TODO: Load the assets }
+  texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
+  texPipBoy := RequestImage('assets/images/pip-boy_100px.png');
 end;
 
 procedure OnReady;
