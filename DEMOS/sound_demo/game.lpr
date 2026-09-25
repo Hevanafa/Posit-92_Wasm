@@ -29,14 +29,8 @@ begin
   PrintDefault('FPS:' + I32Str(getLastFPS), 240, 0);
 end;
 
-procedure DrawMouse;
-begin
-  Spr(imgCursor, mouseX, mouseY)
-end;
-
 procedure OnPreload;
 begin
-  imgCursor := RequestImage('assets/images/cursor.png');
   imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
   imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 
@@ -125,16 +119,26 @@ begin
   w := MeasureDefault(s);
   PrintDefault(s, (vgaWidth - w) div 2, 130);
 
-  DrawMouse;
   DrawFPS;
 end;
 
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  P92Start(appConfig);
+end;
+
 exports
-  { Main game procedures }
-  OnPreload, OnReady,
-  Update, Draw;
+  Init,
+  OnPreload,
+  OnReady,
+  Update,
+  Draw;
 
 begin
-{ Starting point is intentionally left empty }
+  { Starting point is intentionally left empty }
 end.
 
