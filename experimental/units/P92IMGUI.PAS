@@ -87,7 +87,11 @@ procedure CentredLabel(const text: string; const cx, y: smallint);
 
 function Button(const caption: string; const x, y: smallint): boolean;
 function ButtonSized(const caption: string; const x, y, width, height: smallint): boolean;
-function ImageButton(const x, y: smallint; const imgNormal, imgHovered, imgPressed: longint): boolean;
+
+function ImageButton(
+  const x, y: smallint;
+  const texNormal, texHovered, texPressed: TTextureHandle
+): boolean;
 
 procedure ListView(const items: array of string; var state: TListViewState);
 
@@ -433,18 +437,21 @@ begin
     ButtonSized := false;
 end;
 
-function ImageButton(const x, y: smallint; const imgNormal, imgHovered, imgPressed: longint): boolean;
+function ImageButton(
+  const x, y: smallint;
+  const texNormal, texHovered, texPressed: TTextureHandle
+): boolean;
 var
   zone: TZone;
   thisWidgetID: smallint;
-  buttonImgHandle: longword;
+  texHandle: longword;
 begin
   GUIAssertFontSet;
 
   zone.x := x;
   zone.y := y;
-  zone.width := GetTexWidth(imgNormal);
-  zone.height := GetTexHeight(imgNormal);
+  zone.width := GetTexWidth(texNormal);
+  zone.height := GetTexHeight(texNormal);
 
   { Update logic }
   thisWidgetID := nextWidgetID;
@@ -458,15 +465,15 @@ begin
 
   { Render logic }
   if activeWidget = thisWidgetID then
-    buttonImgHandle := imgPressed
+    texHandle := texPressed
   else if hotWidget = thisWidgetID then
-    buttonImgHandle := imgHovered
+    texHandle := texHovered
   else 
-    buttonImgHandle := imgNormal;
+    texHandle := texNormal;
 
-  spr(buttonImgHandle, x, y);
+  spr(texHandle, x, y);
   { Use this in case you want your buttons have semitransparent pixels }
-  { sprBlend(buttonImgHandle, x, y); }
+  { sprBlend(texHandle, x, y); }
 
   if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
