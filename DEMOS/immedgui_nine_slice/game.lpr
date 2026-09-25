@@ -128,7 +128,13 @@ begin
   texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
   texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 
-  { TODO: Migrate the asset loaders }
+  texWinNormal := RequestImage('assets/images/btn_normal.png');
+  texWinHovered := RequestImage('assets/images/btn_hovered.png');
+  texWinPressed := RequestImage('assets/images/btn_pressed.png');
+
+  tex9SliceNormal := RequestImage('assets/images/9slice_normal.png');
+  tex9SliceHovered := RequestImage('assets/images/9slice_hovered.png');
+  tex9SlicePressed := RequestImage('assets/images/9slice_pressed.png');
 end;
 
 procedure OnReady;
