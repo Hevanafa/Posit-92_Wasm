@@ -4,7 +4,7 @@ library Game;
 {$H+}{$J-}
 
 uses
-  P92Core, P92Fonts, P92Conversions, P92WasmHost, P92FPS,
+  P92Core, P92Fonts, P92Conversions, P92WasmHost, P92FPS, P92AssetRegistry,
   P92Tex, P92TexDraw, P92Keyboard, P92Mouse, P92Timing, P92VGA,
   Assets;
 
@@ -17,13 +17,14 @@ var
 
 procedure OnPreload;
 begin
-
+  texSpecimenP92[0] := RequestImage('assets/images/specimen_p-92_1.png');
+  texSpecimenP92[1] := RequestImage('assets/images/specimen_p-92_2.png');
 end;
 
 procedure OnReady;
 begin
   { Initialise game state here }
-  hideCursor;
+  HideCursor;
 end;
 
 procedure Update;
@@ -45,13 +46,22 @@ begin
   cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(texDosuEXE[1], 148, 88)
+    spr(texSpecimenP92[1], 148, 88)
   else
-    spr(texDosuEXE[0], 148, 88);
+    spr(texSpecimenP92[0], 148, 88);
 
   s := 'Hello world!';
   w := measureDefault(s);
   PrintDefault(s, (vgaWidth - w) div 2, 120);
+end;
+
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  P92Start(appConfig);
 end;
 
 exports
