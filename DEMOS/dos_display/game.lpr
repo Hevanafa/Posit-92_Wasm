@@ -303,8 +303,8 @@ begin
     heapSize := WasmMemorySize - longword(BorrowHeapRegionStart);
 
     PrintLn('Total heap: ' + i32str(heapSize div 1024) + 'KB');
-    PrintLn('Used: ?');
-    PrintLn('Available: ?');
+    { PrintLn('Used: ?');
+    PrintLn('Available: ?'); }
 
     PrintLn('');
     PrintLn('Small allocation pool');
