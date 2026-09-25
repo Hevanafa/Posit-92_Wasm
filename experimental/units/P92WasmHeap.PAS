@@ -116,6 +116,10 @@ const
   TotalWeights = 100;
 
 var
+  { Bucket allocator }
+
+  heapRegionStart: pointer;
+
   { Inclusive: first byte of the pool }
   bucketAllocStart,
   { Exclusive }
@@ -123,8 +127,8 @@ var
 
   buckets: array[0..BucketCount-1] of TBucket;
 
+  { General heap }
 
-var
   heapStart, heapEnd: PByte;
   freeListHead: PBlockHeader;
 
@@ -420,7 +424,7 @@ end;
 
 function GetHeapRegionStart: longword;
 begin
-  GetHeapRegionStart := longword(bucketAllocStart)
+  GetHeapRegionStart := longword(heapRegionStart)
 end;
 
 function WasmGetMem(const bytes: longword): pointer;
@@ -533,6 +537,8 @@ procedure InitHeapRegion(const startAddr: pointer);
 var
   largeHeapSize: SizeUInt;
 begin
+  heapRegionStart := startAddr;
+
   bucketAllocStart := PByte(startAddr);
   bucketAllocEnd := PByte(startAddr + PoolSize);
 
