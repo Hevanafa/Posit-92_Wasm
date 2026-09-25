@@ -490,7 +490,6 @@ var
 begin
   GUIAssertFontSet;
 
-  { if (items = nil) or (items.count = 0) then exit; }
   if length(items) = 0 then exit;
 
   fontPtr := BorrowBMFontPtr(activeFontHandle);
@@ -505,6 +504,7 @@ begin
   zone.height := widgetHeight;
 
   { Update logic }
+
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
@@ -521,19 +521,23 @@ begin
     end;
   end;
 
-  { Update Render logic }
-  rectfill(state.x, state.y, state.x + widgetWidth, state.y + widgetHeight, Black);
+  { Render logic }
 
-  rectfill(
+  RectFill(
+    state.x, state.y,
+    state.x + widgetWidth, state.y + widgetHeight,
+    AccentDark);
+
+  RectFill(
     state.x, state.y + lineHeight * state.selectedIndex,
-    state.x + widgetWidth, state.y + lineHeight * (state.selectedIndex + 1), Red);
+    state.x + widgetWidth, state.y + lineHeight * (state.selectedIndex + 1), AccentNormal);
 
   for a:=0 to length(items)-1 do
     TextLabel(
       items[a],
       state.x + 2, state.y + 2 + lineHeight * a);
 
-  rect(state.x, state.y, state.x + widgetWidth, state.y + widgetHeight, White);
+  rect(state.x, state.y, state.x + widgetWidth, state.y + widgetHeight, AccentPale);
 end;
 
 procedure Checkbox(const caption: string; const x, y: smallint; var state: boolean);
