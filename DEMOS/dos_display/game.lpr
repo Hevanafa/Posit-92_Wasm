@@ -294,7 +294,7 @@ begin
     PrintLn('  TIME  Display current time');
     PrintLn('  HELP  Show this help');
     PrintLn('  MEM  Show memory status');
-    PrintLn('  FREE  Show free memory in bytes');
+    { PrintLn('  FREE  Show free memory in bytes'); }
     PrintLn('  DIR  Show a list of files & dirs');
     PrintLn('  SNOW  Toggle snow background');
     PrintLn('  JINGLE  Play Jingle Bells')
