@@ -34,6 +34,9 @@ function UnderButtonSized(const caption: string; const x, y, width, height: smal
 function UnderImageButton(const x, y: smallint; const texNormal, texHovered, texPressed: TTextureHandle): boolean;
 
 function PromptButton(const text: string; const x, y: smallint): boolean;
+
+{ Prompt box render logic
+  The values are assigned by ShowPromptBox }
 function PromptBox: TPromptResult;
 
 {$ENDIF}
@@ -215,8 +218,7 @@ function PromptButton(const text: string; const x, y: smallint): boolean;
 var
   zone: TZone;
   thisWidgetID: smallint;
-
-  buttonImgHandle: longword;
+  texHandle: TTextureHandle;
   texturePtr: PSoftwareTex;
   fontPtr: PBMFont;
 
@@ -224,9 +226,9 @@ var
   w, h: word;
   textX, textY: smallint;
 begin
-  AssertTexSet('imgPromptButtonNormal', texPromptButtonNormal);
-  AssertTexSet('imgPromptButtonHovered', texPromptButtonHovered);
-  AssertTexSet('imgPromptButtonPressed', texPromptButtonPressed);
+  AssertTexSet('texPromptButtonNormal', texPromptButtonNormal);
+  AssertTexSet('texPromptButtonHovered', texPromptButtonHovered);
+  AssertTexSet('texPromptButtonPressed', texPromptButtonPressed);
 
   texturePtr := BorrowTexPtr(texPromptButtonNormal);
 
@@ -247,13 +249,13 @@ begin
 
   { Render logic }
   if getActiveWidget = thisWidgetID then
-    buttonImgHandle := texPromptButtonPressed
+    texHandle := texPromptButtonPressed
   else if getHotWidget = thisWidgetID then
-    buttonImgHandle := texPromptButtonHovered
+    texHandle := texPromptButtonHovered
   else
-    buttonImgHandle := texPromptButtonNormal;
+    texHandle := texPromptButtonNormal;
 
-  spr(buttonImgHandle, x, y);
+  spr(texHandle, x, y);
 
   textWidth := GUIMeasureText(text);
   w := texturePtr^.width;
@@ -282,7 +284,6 @@ begin
 end;
 
 
-{ Prompt box render logic }
 function PromptBox: TPromptResult;
 const
   top = 60;
@@ -295,7 +296,7 @@ begin
     exit
   end;
 
-  AssertTexSet('imgPromptBG', texPromptBG);
+  AssertTexSet('texPromptBG', texPromptBG);
 
   clsBlend(SemitransparentBlack);
 
