@@ -57,6 +57,8 @@ procedure SetActiveWidget(const widgetID: smallint);
 function GetNextWidgetID: smallint;
 procedure IncNextWidgetID;
 
+function AcquireNextWidgetID: smallint;
+
 { Can be used with DrawMouse }
 function HasHoveredWidget: boolean;
 
@@ -200,6 +202,12 @@ end;
 
 procedure IncNextWidgetID;
 begin
+  inc(nextWidgetID)
+end;
+
+function AcquireNextWidgetID: smallint;
+begin
+  AcquireNextWidgetID := nextWidgetID;
   inc(nextWidgetID)
 end;
 

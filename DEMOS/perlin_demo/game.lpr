@@ -109,32 +109,33 @@ begin
   zone.height := height;
 
   { Update logic }
-  thisWidgetID := getNextWidgetID;
-  incNextWidgetID;
 
-  if pointInZone(getMousePoint, zone) then begin
-    setHotWidget(thisWidgetID);
+  thisWidgetID := AcquireNextWidgetID;
 
-    if getMouseJustPressed then setActiveWidget(thisWidgetID);
+  if PointInZone(GetMousePoint, zone) then begin
+    SetHotWidget(thisWidgetID);
+
+    if GetMouseJustPressed then SetActiveWidget(thisWidgetID);
   end;
 
   { Render logic }
-  if getActiveWidget = thisWidgetID then
+
+  if GetActiveWidget = thisWidgetID then
     buttonColour := pressedColour
-  else if getHotWidget = thisWidgetID then
+  else if GetHotWidget = thisWidgetID then
     buttonColour := hoveredColour
   else 
     buttonColour := colour;
 
-  rectfill(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), buttonColour);
-  rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), white);
+  RectFill(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), buttonColour);
+  Rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), white);
 
-  if (getActiveWidget <> thisWidgetID) and (getHotWidget <> thisWidgetID) then
+  if (GetActiveWidget <> thisWidgetID) and (GetHotWidget <> thisWidgetID) then
     PrintBMFont(fontBlack, caption, trunc(zone.x + 4), trunc(zone.y + 4))
   else
     TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
 
-  if getMouseJustReleased and (getHotWidget = thisWidgetID) and (getActiveWidget = thisWidgetID) then
+  if GetMouseJustReleased and (GetHotWidget = thisWidgetID) and (GetActiveWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
     DemoButton := true
   else
