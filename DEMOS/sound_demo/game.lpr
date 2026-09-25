@@ -24,11 +24,6 @@ var
   { Game state variables }
   gameTime: double;
 
-procedure DrawFPS;
-begin
-  PrintDefault('FPS:' + I32Str(getLastFPS), 240, 0);
-end;
-
 procedure OnPreload;
 begin
   texDosuExe[0] := RequestImage('assets/images/dosu_1.png');
@@ -118,8 +113,6 @@ begin
   s := 'Spacebar - Play a random sound';
   w := MeasureDefault(s);
   PrintDefault(s, (vgaWidth - w) div 2, 130);
-
-  DrawFPS;
 end;
 
 procedure Init;

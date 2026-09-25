@@ -50,8 +50,6 @@ begin
     Spr(texSpecimenP92[0], 148, 84);
 
   PrintDefaultCentred('Hello world!', VgaWidth div 2, 120);
-
-  DrawFPS;
 end;
 
 procedure Init;

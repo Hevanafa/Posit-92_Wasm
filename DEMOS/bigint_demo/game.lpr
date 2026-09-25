@@ -10,11 +10,8 @@ library Game;
 
 uses
   P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
-  P92InteropBuf, P92Logger,
-  P92Conversions, P92FPS,
-  P92TexDraw,
-  P92Keyboard, P92Mouse,
-  P92Timing, P92VGA,
+  P92InteropBuf, P92Logger, P92Conversions, P92FPS,
+  P92TexDraw, P92Keyboard, P92Mouse, P92Timing, P92VGA,
   P92BigInt,
   Assets;
 
@@ -153,8 +150,6 @@ begin
   PrintCentred(scientificPoints, 160);
 
   PrintCentred('Left - Decrease | Right - Increase', 180);
-
-  DrawFPS;
 end;
 
 procedure Init;

@@ -33,12 +33,6 @@ var
   palette: array[0..4] of longword;
 
 
-procedure DrawFPS;
-begin
-  PrintDefault('FPS:' + i32str(getLastFPS), 240, 0);
-end;
-
-
 procedure OnPreload;
 begin
   texParticle := RequestImage('assets/images/particle.png');
@@ -166,8 +160,6 @@ begin
   s := 'Click to spawn particles';
   w := measureDefault(s);
   PrintDefault(s, (vgaWidth - w) div 2, 120);
-
-  DrawFPS;
 end;
 
 procedure Init;

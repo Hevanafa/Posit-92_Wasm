@@ -222,18 +222,12 @@ begin
   CircFill(30, 130, 10, LerpColour(Red, Purple, perc));
   CircFill(60, 130, 10, HSVtoRGB(perc, 1.0, 0.5));
 
-  { Begin HUD }
+  { HUD }
+
   ListView(10, 10, subDemoNames, actualDemoState - 1);
 
-{
-  s := 'Spacebar - Restart easing';
-  w := measureDefault(s);
-  PrintDefault(s, (vgaWidth - w) div 2, 120);
-}
   PrintDefault('Spacebar - Restart easing', 8, vgaHeight - 28);
   PrintDefault('Page up / down - Choose between demos', 8, vgaHeight - 18);
-
-  DrawFPS;
 end;
 
 procedure Init;

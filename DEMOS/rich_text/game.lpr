@@ -47,11 +47,6 @@ begin
   PrintDefault(text, cx - w div 2, y)
 end;
 
-procedure DrawFPS;
-begin
-  PrintDefault('FPS:' + i32str(getLastFPS), 240, 0);
-end;
-
 procedure OnPreload;
 begin
   texCursor := RequestImage('assets/images/cursor.png');
@@ -105,8 +100,6 @@ begin
   RichTextLabel('Black text\cf1 Red text \cf0Black text', 20, 140, Palette);
   RichTextLabel('\bBold,\b0\i Italic,\i0\b\i Bold italic', 20, 150, Palette);
   RichTextLabel('\cf1Colour 1 \cf2Colour 2 \cf3 Colour 3', 20, 160, Palette);
-
-  DrawFPS;
 end;
 
 procedure Init;

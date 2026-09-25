@@ -94,8 +94,6 @@ begin
     colour := HSVtoRGB(hue, 1.0, 1.0);
     inc(left, PrintCharColour(c, left, 128, colour));
   end;
-
-  DrawFPS;
 end;
 
 procedure Init;

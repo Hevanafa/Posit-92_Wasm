@@ -257,9 +257,7 @@ begin
 
   s := 'Perlin noise in Posit-92!';
   w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 100);
-
-  DrawFPS
+  PrintDefault(s, (vgaWidth - w) div 2, 100);
 end;
 
 procedure Init;

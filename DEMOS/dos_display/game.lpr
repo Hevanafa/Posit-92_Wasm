@@ -422,14 +422,6 @@ begin
 end;
 
 
-procedure DrawFPS;
-begin
-  BlitText(
-    'FPS:' + i32str(getLastFPS),
-    240, 0,
-    palette[$0E], transparent);
-end;
-
 procedure SpawnSnowflake;
 var
   a: word;
@@ -603,8 +595,6 @@ begin
       LightGrey);
 
   { BlitText('> ' + currentInput, 30, 30); }
-
-  DrawFPS;
 end;
 
 procedure Init;

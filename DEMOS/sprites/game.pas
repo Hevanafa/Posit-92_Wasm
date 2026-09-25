@@ -49,10 +49,6 @@ var
   spriteFlip: integer;
   spriteRotation: double;
 
-procedure DrawFPS;
-begin
-  PrintDefault('FPS:' + i32str(getLastFPS), 240, 0);
-end;
 
 procedure DrawMouse;
 begin
@@ -379,7 +375,6 @@ begin
     PrintDefault('TAB - Show the list of demos', 8, vgaHeight - 18);
 
   DrawMouse;
-  DrawFPS;
 end;
 
 procedure Init;
@@ -387,6 +382,8 @@ var
   appConfig: TP92AppConfig;
 begin
   appConfig := DefaultP92AppConfig;
+
+  appConfig.LoadDefaultCursor := false;
 
   P92Start(appConfig);
 end;

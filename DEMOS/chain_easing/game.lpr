@@ -180,8 +180,6 @@ begin
     spr(texBlinky, trunc(blinkyX), trunc(blinkyY));
 
   CentredLabel('chainIdx ' + i32str(chainIdx), vgaWidth div 2, 180);
-
-  DrawFPS;
 end;
 
 procedure Init;

@@ -154,8 +154,6 @@ begin
     Spr(texDosuEXE[0], 148, 88);
 
   PrintDefaultCentred('Hello world!', vgaWidth div 2, 120);
-
-  DrawFPS;
 end;
 
 procedure Init;

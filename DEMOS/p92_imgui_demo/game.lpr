@@ -44,11 +44,6 @@ var
 
   sliderValue: smallint;
 
-procedure DrawFPS;
-begin
-  PrintDefault('FPS:' + i32str(getLastFPS), 240, 0);
-end;
-
 procedure DrawMouse;
 begin
   if HasHoveredWidget then

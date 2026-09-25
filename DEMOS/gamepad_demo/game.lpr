@@ -14,7 +14,7 @@ uses
 
 const
   CornflowerBlue = $FF6495ED;
-  LightGrey = $FFAAAAAA;
+  Grey = $FF555555;
   White = $FFFFFFFF;
   Green = $FF55FF55;
 
@@ -24,11 +24,6 @@ var
   { Init your game state here }
   gameTime: double;
 
-
-procedure DrawFPS;
-begin
-  PrintDefault('FPS:' + i32str(getLastFPS), 240, 0);
-end;
 
 procedure OnPreload;
 begin
@@ -44,7 +39,7 @@ begin
   gameTime := 0.0;
 
   fontGrey := CloneBMFont(GetDefaultFontHandle);
-  ReplaceColour(BorrowBMFontPtr(fontGrey)^.texHandle, white, lightgrey)
+  ReplaceColour(BorrowBMFontPtr(fontGrey)^.texHandle, white, Grey)
 end;
 
 procedure StateLabel(const text: string; const x, y: integer; const enabled: boolean);
@@ -146,8 +141,6 @@ begin
     printDefault('RX: ' + f32str(rightX), 220, 150);
     printDefault('RY: ' + f32str(rightY), 220, 160);
   end;
-
-  DrawFPS;
 end;
 
 procedure Init;
