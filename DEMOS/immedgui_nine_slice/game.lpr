@@ -11,10 +11,9 @@ library Game;
 {$Mode ObjFPC}
 
 uses
-  BMFont, Conv, FPS, Graphics,
-  ImgRef, ImgRefFast, ImmedGui, Keyboard, Logger,
-  Mouse, Panic, Shapes,
-  Timing, WasmMemMgr, VGA,
+  P92Core, P92BMFont, P92Fonts, P92Conversions, P92FPS, P92Graphics,
+  P92WasmHost, P92Tex, P92TexDraw, P92Keyboard, P92Mouse,
+  P92Geometry, P92Timing, P92VGA, P92IMGUI, P92IMGUIPromptBox,
   Assets;
 
 type
@@ -42,20 +41,17 @@ var
   clicks: word;
   showFPS: TCheckboxState;
 
-{ Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-
-procedure drawFPS;
+procedure DrawFPS;
 begin
   printDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
-procedure drawMouse;
+procedure DrawMouse;
 begin
   if hasHoveredWidget then
-    spr(imgHandCursor, mouseX - 5, mouseY - 1)
+    spr(imgHandCursor, GetMouseX - 5, GetMouseY - 1)
   else
-    spr(imgCursor, mouseX, mouseY);
+    spr(imgCursor, GetMouseX, GetMouseY);
 end;
 
 procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
@@ -125,21 +121,11 @@ begin
 end;
 
 
-procedure init;
-begin
-  initMemMgr;
-  initBuffer;
-  initDeltaTime;
-  initFPSCounter;
-end;
-
-procedure afterInit;
+procedure OnReady;
 begin
   { Initialise game state here }
   hideCursor;
 
-  initImmediateGUI;
-  guiSetFont(defaultFont, defaultFontGlyphs);
   setPromptBoxAssets(imgPromptBG, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
 
   replaceColours(blackFont.imgHandle, $FFFFFFFF, $FF000000);
@@ -150,31 +136,18 @@ begin
   { panicDisplay('This is a drill!'); }
 end;
 
-procedure update;
+procedure Update;
 begin
-  updateDeltaTime;
-  incrementFPS;
-
-  updateGUILastMouseButton;
-  updateMouse;
-  updateGUIMousePoint;
-
-  { Your update logic here }
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
 
-    if lastEsc then begin
-      writeLog('ESC is pressed!');
-      signalDone
-    end;
+    if lastEsc then SignalDone;
   end;
 
-  gameTime := gameTime + dt;
-
-  resetWidgetIndices
+  gameTime := gameTime + DeltaTime;
 end;
 
-procedure draw;
+procedure Draw;
 var
   w: integer;
   s: string;
@@ -196,25 +169,20 @@ begin
   );
 
   s := 'Clicks: ' + i32str(clicks);
-  w := measureBMFont(defaultFontGlyphs, s);
+  w := MeasureBMFont(defaultFontGlyphs, s);
   TextLabel(s, (vgaWidth - w) div 2, 120);
 
-  resetActiveWidget;
-  drawMouse;
-
-  if showFPS.checked then drawFPS;
-
-  vgaFlush
+  if showFPS.checked then DrawFPS;
 end;
 
 exports
-  { Main game procedures }
-  init,
-  afterInit,
-  update,
-  draw;
+  Init,
+  OnPreload,
+  OnReady,
+  Update,
+  Draw;
 
 begin
-{ Starting point is intentionally left empty }
+  { Starting point is intentionally left empty }
 end.
 

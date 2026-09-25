@@ -1,167 +1,22 @@
 unit Assets;
 
-{$Mode TP}
+{$Mode ObjFPC}
 
 interface
 
-uses BMFont;
+uses P92AssetHandles;
 
 var
-  { for use in loadBMFont }
-  defaultFont: TBMFont;
-  defaultFontGlyphs: array[32..126] of TBMFontGlyph;
-  blackFont: TBMFont;
-  blackFontGlyphs: array[32..126] of TBMFontGlyph;
+  blackFont,
+  picotronFont: TBMFontHandle;
 
-  picotronFont: TBMFont;
-  picotronFontGlyphs: array[32..126] of TBMFontGlyph;
-
-  imgCursor, imgHandCursor: longint;
-  imgDosuEXE: array[0..1] of longint;
-  imgWinNormal, imgWinHovered, imgWinPressed: longint;
-  imgPromptBG, imgPromptButtonNormal, imgPromptButtonPressed: longint;
-  img9SliceNormal, img9SliceHovered, img9SlicePressed: longint;
-
-{ BMFont boilerplate }
-function defaultFontPtr: PBMFont; public name 'defaultFontPtr';
-function defaultFontGlyphsPtr: PBMFontGlyph; public name 'defaultFontGlyphsPtr';
-function blackFontPtr: PBMFont; public name 'blackFontPtr';
-function blackFontGlyphsPtr: PBMFontGlyph; public name 'blackFontGlyphsPtr';
-
-function picotronFontPtr: PBMFont; public name 'picotronFontPtr';
-function picotronFontGlyphsPtr: PBMFontGlyph; public name 'picotronFontGlyphsPtr';
-
-procedure printDefault(const text: string; const x, y: integer);
-function measureDefault(const text: string): word;
-
-{ Asset boilerplate }
-procedure setImgCursor(const imgHandle: longint); public name 'setImgCursor';
-procedure setImgHandCursor(const imgHandle: longint); public name 'setImgHandCursor';
-procedure setImgDosuEXE(const imgHandle: longint; const idx: integer); public name 'setImgDosuEXE';
-
-procedure setImgWinNormal(const imgHandle: longint); public name 'setImgWinNormal';
-procedure setImgWinHovered(const imgHandle: longint); public name 'setImgWinHovered';
-procedure setImgWinPressed(const imgHandle: longint); public name 'setImgWinPressed';
-
-procedure setImgPromptBG(const imgHandle: longint); public name 'setImgPromptBG';
-procedure setImgPromptNormal(const imgHandle: longint); public name 'setImgPromptNormal';
-procedure setImgPromptPressed(const imgHandle: longint); public name 'setImgPromptPressed';
-
-procedure setImg9SliceNormal(const imgHandle: longint); public name 'setImg9SliceNormal';
-procedure setImg9SliceHovered(const imgHandle: longint); public name 'setImg9SliceHovered';
-procedure setImg9SlicePressed(const imgHandle: longint); public name 'setImg9SlicePressed';
+  imgCursor, imgHandCursor: TTextureHandle;
+  imgDosuEXE: array[0..1] of TTextureHandle;
+  imgWinNormal, imgWinHovered, imgWinPressed: TTextureHandle;
+  imgPromptBG, imgPromptButtonNormal, imgPromptButtonPressed: TTextureHandle;
+  img9SliceNormal, img9SliceHovered, img9SlicePressed: TTextureHandle;
 
 
 implementation
-
-uses Conv;
-
-{ Begin BMFont boilerplate}
-
-function defaultFontPtr: PBMFont;
-begin
-  defaultFontPtr := @defaultFont
-end;
-
-function defaultFontGlyphsPtr: PBMFontGlyph;
-begin
-  defaultFontGlyphsPtr := @defaultFontGlyphs
-end;
-
-function blackFontPtr: PBMFont;
-begin
-  blackFontPtr := @blackFont
-end;
-
-function blackFontGlyphsPtr: PBMFontGlyph;
-begin
-  blackFontGlyphsPtr := @blackFontGlyphs
-end;
-
-function picotronFontPtr: PBMFont;
-begin
-  picotronFontPtr := @picotronFont
-end;
-
-function picotronFontGlyphsPtr: PBMFontGlyph;
-begin
-  picotronFontGlyphsPtr := @picotronFontGlyphs
-end;
-
-
-
-procedure printDefault(const text: string; const x, y: integer);
-begin
-  printBMFont(defaultFont, defaultFontGlyphs, text, x, y)
-end;
-
-function measureDefault(const text: string): word;
-begin
-  measureDefault := measureBMFont(defaultFontGlyphs, text)
-end;
-
-
-{ Begin asset boilerplate }
-
-procedure setImgCursor(const imgHandle: longint);
-begin
-  imgCursor := imgHandle
-end;
-
-procedure setImgHandCursor(const imgHandle: longint);
-begin
-  imgHandCursor := imgHandle
-end;
-
-procedure setImgDosuEXE(const imgHandle: longint; const idx: integer);
-begin
-  imgDosuEXE[idx] := imgHandle
-end;
-
-procedure setImgWinNormal(const imgHandle: longint);
-begin
-  imgWinNormal := imgHandle
-end;
-
-procedure setImgWinHovered(const imgHandle: longint);
-begin
-  imgWinHovered := imgHandle
-end;
-
-procedure setImgWinPressed(const imgHandle: longint);
-begin
-  imgWinPressed := imgHandle
-end;
-
-procedure setImgPromptBG(const imgHandle: longint);
-begin
-  imgPromptBG := imgHandle
-end;
-
-procedure setImgPromptNormal(const imgHandle: longint);
-begin
-  imgPromptButtonNormal := imgHandle
-end;
-
-procedure setImgPromptPressed(const imgHandle: longint);
-begin
-  imgPromptButtonPressed := imgHandle
-end;
-
-procedure setImg9SliceNormal(const imgHandle: longint);
-begin
-  img9SliceNormal := imgHandle
-end;
-
-procedure setImg9SliceHovered(const imgHandle: longint);
-begin
-  img9SliceHovered := imgHandle
-end;
-
-procedure setImg9SlicePressed(const imgHandle: longint);
-begin
-  img9SlicePressed := imgHandle
-end;
-
 
 end.
