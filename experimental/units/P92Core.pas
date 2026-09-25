@@ -109,6 +109,8 @@ procedure PrintTint(const txt: string; const x, y: smallint; const colour: longw
 function DefaultP92AppConfig: TP92AppConfig;
 procedure P92Start(const appConfig: TP92AppConfig);
 
+procedure DrawFPS;
+
 
 implementation
 
@@ -174,6 +176,8 @@ var
 
   { Used by screenshot }
   lastF2: boolean;
+
+  fpsTop, fpsRight: smallint;
 
 
 function GetBootConfig: TP92AppConfig;
@@ -242,7 +246,11 @@ begin
 {$endif}
 
   InitDeltaTime;
+
   InitFPSCounter;
+  fpsTop := 0;
+  fpsRight := VGAWidth * 3 div 4;
+
   InitAssetRegistry;
 
 {$ifdef P92_ENABLE_SOUNDS}
@@ -494,6 +502,17 @@ begin
     PrintCharTint(c, left, y, colour);
     inc(left, BootFontGlyphWidth)
   end;
+end;
+
+procedure DrawFPS;
+begin
+  Print('FPS: ' + I32Str(GetLastFPS), fpsRight, fpsTop);
+
+{$ifdef DEBUG_FPS}
+  print('lastFPS: ' + i32str(lastFPS), VgaWidth - 160, 16);
+  print('actualFPS: ' + i32str(actualFPS), VgaWidth - 160, 24);
+  print('lastFPSTime: ' + f32str(lastFPSTime), VgaWidth - 160, 32);
+{$endif}
 end;
 
 {$IFDEF P92_WASM}

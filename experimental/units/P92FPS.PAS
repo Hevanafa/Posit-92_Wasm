@@ -19,7 +19,6 @@ procedure InitFPSCounter;
 procedure IncrementFPS;
 
 function GetLastFPS: smallint;
-procedure DrawFPS;
 
 implementation
 
@@ -50,17 +49,6 @@ end;
 function GetLastFPS: smallint;
 begin
   GetLastFPS := lastFPS
-end;
-
-procedure DrawFPS;
-begin
-  print('FPS: ' + i32str(GetLastFPS), VGAWidth - 100, 0);
-
-{$ifdef debug}
-  print('lastFPS: ' + i32str(lastFPS), VgaWidth - 160, 16);
-  print('actualFPS: ' + i32str(actualFPS), VgaWidth - 160, 24);
-  print('lastFPSTime: ' + f32str(lastFPSTime), VgaWidth - 160, 32);
-{$endif}
 end;
 
 end.
