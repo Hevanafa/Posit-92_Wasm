@@ -1,10 +1,7 @@
 { 
-  Wasm Heap - Part of Posit-92 game engine
-  Hevanafa
-  Low-level memory allocator
-}
+  Low-level memory allocator unit
+  Part of Posit-92 game engine
 
-{
   Memory layout (2 MB default)
   - Pascal stack	(320KB)
   - Video memory	(320x200x4 bytes, depending on bufferWidth and bufferHeight)
