@@ -16,10 +16,6 @@ uses
   P92AssetHandles, P92BMFont, P92Geometry;
 
 type
-  TCheckboxState = record
-    checked: boolean;
-  end;
-
   TSliderState = record
     value: smallint;
   end;
@@ -95,7 +91,7 @@ function ImageButton(
 
 procedure ListView(const items: array of string; var state: TListViewState);
 
-procedure Checkbox(const caption: string; const x, y: smallint; var state: TCheckboxState);
+procedure Checkbox(const caption: string; const x, y: smallint; var state: boolean);
 
 procedure Slider(const x, y, width: smallint; var state: TSliderState; const minValue, maxValue: smallint);
 function SliderDrag(const x, y, width: smallint; var state: TSliderState; const minValue, maxValue: smallint): TSliderDragState;
@@ -540,7 +536,7 @@ begin
   rect(state.x, state.y, state.x + widgetWidth, state.y + widgetHeight, White);
 end;
 
-procedure Checkbox(const caption: string; const x, y: smallint; var state: TCheckboxState);
+procedure Checkbox(const caption: string; const x, y: smallint; var state: boolean);
 var
   fontPtr: PBMFont;
   zone: TZone;
@@ -570,10 +566,10 @@ begin
   end;
 
   { Render logic }
-  if state.checked then
-    rectfill(trunc(zone.x), trunc(zone.y), trunc(zone.x + 5), trunc(zone.y + 5), Black)
+  if state then
+    RectFill(trunc(zone.x), trunc(zone.y), trunc(zone.x + 5), trunc(zone.y + 5), Black)
   else
-    rectfill(trunc(zone.x), trunc(zone.y), trunc(zone.x + 5), trunc(zone.y + 5), White);
+    RectFill(trunc(zone.x), trunc(zone.y), trunc(zone.x + 5), trunc(zone.y + 5), White);
 
   if activeWidget = thisWidgetID then
     { on held down }
@@ -589,7 +585,7 @@ begin
 
   if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then begin
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
-    state.checked := not state.checked;
+    state := not state;
   end;
 end;
 

@@ -36,7 +36,7 @@ var
   { Init your game state here }
   gameTime: double;
   clicks: word;
-  showFPS: TCheckboxState;
+  showFPS: boolean;
 
   listItems: array of string;
   listState: TListViewState;
@@ -95,7 +95,7 @@ begin
   SetPromptBoxAssets(texPromptBG, texPromptButtonNormal, texPromptButtonNormal, texPromptButtonPressed);
 
   clicks := 0;
-  showFPS.checked := false;
+  showFPS := false;
 
   fontBlack := CloneBMFont(GetDefaultFontHandle);
 
@@ -220,7 +220,7 @@ begin
 
   DrawMouse;
 
-  if showFPS.checked then DrawFPS;
+  if showFPS then DrawFPS;
 end;
 
 procedure Init;
