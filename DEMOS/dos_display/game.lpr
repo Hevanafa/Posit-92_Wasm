@@ -12,14 +12,9 @@ library Game;
 {$H+}{$J-}
 
 uses
-  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
-  P92Conversions, P92FPS,
-  P92Graphics,
-  P92Logger, P92InteropBuf,
-  P92Keyboard, P92Mouse,
-  P92Tex, P92TexDraw,
-  P92Strings, P92Sounds, P92Timing,
-  P92Version, P92WasmMemMgr, P92WasmHeap,
+  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry, P92Conversions, P92FPS,
+  P92Graphics, P92Logger, P92InteropBuf, P92Keyboard, P92Mouse,
+  P92Tex, P92TexDraw, P92Strings, P92Sounds, P92Timing, P92WasmMemMgr, P92WasmHeap,
   VGA, Assets;
 
 const
@@ -124,9 +119,7 @@ begin
   row := charcode div 16;
   col := charcode mod 16;
 
-  { Inlined sprRegion
-    sprRegion(imgCGAFont, col * 8, row * 8, 8, 8, x, y); }
-  texture := GetTexturePtr(imgCGAFont);
+  texture := BorrowTexPtr(imgCGAFont);
 
   for b:=0 to 7 do
   for a:=0 to 7 do begin
@@ -160,9 +153,7 @@ begin
   row := charcode div 16;
   col := charcode mod 16;
 
-  { Inlined sprRegion
-    sprRegion(imgCGAFont, col * 8, row * 8, 8, 8, x, y); }
-  texture := GetTexturePtr(imgCGAFont);
+  texture := BorrowTexPtr(imgCGAFont);
 
   for b:=0 to 7 do
   for a:=0 to 7 do begin
@@ -185,7 +176,7 @@ var
   a: word;
   left: integer;
 begin
-  if not IsTextureSet(imgCGAFont) then begin
+  if not IsTexSet(imgCGAFont) then begin
     writeLog('blitText: image is unset');
     exit
   end;
@@ -428,11 +419,6 @@ begin
     palette[$0E], transparent);
 end;
 
-procedure DrawMouse;
-begin
-  spr(imgCursor, mouseX, mouseY)
-end;
-
 procedure SpawnSnowflake;
 var
   a: word;
@@ -469,10 +455,10 @@ begin
 
   texture := GetTexturePtr(imgCGAFont);
 
-  for b:=0 to GetTextureHeight(imgCGAFont) - 1 do
-  for a:=0 to GetTextureWidth(imgCGAFont) - 1 do
-    if unsafeSprGetAlpha(texture, a, b) = 255 then
-      unsafeSprPset(texture, a, b, LightGrey);
+  for b:=0 to GetTexHeight(imgCGAFont) - 1 do
+    for a:=0 to GetTexWidth(imgCGAFont) - 1 do
+      if UnsafeTexGetAlpha(texture, a, b) = 255 then
+        UnsafeTexPSet(texture, a, b, LightGrey);
 end;
 
 
@@ -608,17 +594,17 @@ begin
 
   { BlitText('> ' + currentInput, 30, 30); }
 
-  DrawMouse;
   DrawFPS;
 end;
 
-{ Requires at least 1 exported member }
 exports
   InitDefaultFont,
-  OnPreload, OnReady,
-  Update, Draw;
+  OnPreload,
+  OnReady,
+  Update,
+  Draw;
 
 begin
-{ Starting point is intentionally left empty }
+  { Starting point is intentionally left empty }
 end.
 
