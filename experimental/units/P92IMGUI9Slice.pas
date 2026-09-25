@@ -46,7 +46,7 @@ begin
     x + margins.left, y + margins.top, destCentreW, destCentreH);
 
   { Top side }
-  sprRegionStretch(
+  SprRegionStretch(
     texHandle,
     margins.left, 0, srcCentreW, margins.top,
     x + margins.left, y, destCentreW, margins.top);
@@ -66,23 +66,33 @@ begin
     margins.bottom);
 
   { Left side }
-  sprRegionStretch(
+  SprRegionStretch(
     texHandle,
 
     0, margins.top, margins.left, srcCentreH,
     x, y + margins.top, margins.left, destCentreH);
 
   { Right side }
-  sprRegionStretch(
+  SprRegionStretch(
     texHandle,
     GetTexWidth(texHandle) - margins.right, margins.top, margins.right, srcCentreH,
     x + width - margins.right, y + margins.top, margins.right, destCentreH);
 
   { Corners }
-  sprRegion(texHandle, 0, 0, margins.left, margins.top, x, y);
-  sprRegion(texHandle, GetTexWidth(texHandle) - margins.right, 0, margins.right, margins.top, x + width - margins.right, y);
-  sprRegion(texHandle, 0, GetTexHeight(texHandle) - margins.bottom, margins.left, margins.bottom, x, y + height - margins.bottom);
-  sprRegion(texHandle, GetTexWidth(texHandle) - margins.right, GetTexHeight(texHandle) - margins.bottom, margins.right, margins.bottom, x + width - margins.right, y + height - margins.bottom);
+  SprRegion(texHandle, 0, 0, margins.left, margins.top, x, y);
+  SprRegion(texHandle, GetTexWidth(texHandle) - margins.right, 0, margins.right, margins.top, x + width - margins.right, y);
+  SprRegion(texHandle, 0, GetTexHeight(texHandle) - margins.bottom, margins.left, margins.bottom, x, y + height - margins.bottom);
+  SprRegion(texHandle, GetTexWidth(texHandle) - margins.right, GetTexHeight(texHandle) - margins.bottom, margins.right, margins.bottom, x + width - margins.right, y + height - margins.bottom);
+end;
+
+function ButtonNineSlice(
+  const caption: string;
+  const x, y: smallint;
+  const margins: TNineSliceMargins;
+  const texNormal, texHovered, texPressed: TTextureHandle
+): boolean;
+begin
+  { TODO: Implement this }
 end;
 
 end.
