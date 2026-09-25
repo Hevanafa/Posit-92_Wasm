@@ -238,24 +238,25 @@ begin
   zone.height := texturePtr^.height;
 
   { Update logic }
-  thisWidgetID := getNextWidgetID;
-  { PromptButton := ImageButton(x, y, texPromptButtonNormal, texPromptButtonNormal, texPromptButtonPressed); }
-  incNextWidgetID;
 
-  if pointInZone(getMousePoint, zone) then begin
-    setHotWidget(thisWidgetID);
-    if getMouseJustPressed then setActiveWidget(thisWidgetID);
+  thisWidgetID := AcquireNextWidgetID;
+
+  if PointInZone(GetMousePoint, zone) then begin
+    SetHotWidget(thisWidgetID);
+
+    if GetMouseJustPressed then SetActiveWidget(thisWidgetID);
   end;
 
   { Render logic }
-  if getActiveWidget = thisWidgetID then
+
+  if GetActiveWidget = thisWidgetID then
     texHandle := texPromptButtonPressed
-  else if getHotWidget = thisWidgetID then
+  else if GetHotWidget = thisWidgetID then
     texHandle := texPromptButtonHovered
   else
     texHandle := texPromptButtonNormal;
 
-  spr(texHandle, x, y);
+  Spr(texHandle, x, y);
 
   textWidth := GUIMeasureText(text);
   w := texturePtr^.width;
@@ -267,12 +268,12 @@ begin
   textY := y + (h - fontPtr^.lineHeight) div 2;
 
   { when pressed }
-  if getActiveWidget = thisWidgetID then
+  if GetActiveWidget = thisWidgetID then
     inc(textY);
 
   TextLabel(text, textX, textY);
 
-  if getMouseJustReleased and (getHotWidget = thisWidgetID) and (getActiveWidget = thisWidgetID) then begin
+  if GetMouseJustReleased and (GetHotWidget = thisWidgetID) and (GetActiveWidget = thisWidgetID) then begin
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
     if not clickConsumed then begin
       PromptButton := true;
