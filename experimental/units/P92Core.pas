@@ -43,6 +43,9 @@ type
 
     { default: true }
     EnableScreenshotHotkey: boolean;
+
+    { default: false }
+    EnableDrawFPS: boolean;
   end;
 {$ENDIF}
 
@@ -399,20 +402,26 @@ begin
 
 {$IFDEF P92_WEBGL}
   DrawMouse;
-  DrawFPS;
+
+  if bootConfig.EnableDrawFPS then
+    DrawFPS;
 
   VGAUpload;
   WebGLPresent;
 {$ELSE}
   DrawMouse;
-  DrawFPS;
+
+  if bootConfig.EnableDrawFPS then
+    DrawFPS;
 
   VGAUpload;
   VGAPresent;
 {$ENDIF}
 
 {$ifdef P92_SDL2}
-  DrawFPS;
+  if bootConfig.EnableDrawFPS then
+    DrawFPS;
+
   VgaUpload;
 
   { Begin hardware layer }
@@ -539,14 +548,11 @@ begin
   newConfig.TargetFPS := 60;
 
   newConfig.LoadDefaultBMFont := true;
-
-  { DefaultBMFontPath = 'assets/fonts/nokia_cellphone_fc_8.txt'; }
-  { DefaultBMFontPath = 'assets/fonts/p92_sans_11.txt'; }
   newConfig.DefaultBMFontPath := 'assets/fonts/p92_sans_8_regular.txt';
 
   newConfig.LoadDefaultCursor := true;
-
   newConfig.EnableScreenshotHotkey := true;
+  newConfig.EnableDrawFPS := false;
 
   DefaultP92AppConfig := newConfig;
 end;
