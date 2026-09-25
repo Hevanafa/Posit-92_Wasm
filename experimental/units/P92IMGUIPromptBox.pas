@@ -30,7 +30,7 @@ function AllowWidgetInteraction: boolean;
 
 procedure ShowPromptBox(const text: string; const key: string);
 
-function UnderButton(const caption: string; const x, y, width, height: smallint): boolean;
+function UnderButtonSized(const caption: string; const x, y, width, height: smallint): boolean;
 function UnderImageButton(const x, y: smallint; const texNormal, texHovered, texPressed: TTextureHandle): boolean;
 
 function PromptButton(const text: string; const x, y: smallint): boolean;
@@ -94,7 +94,7 @@ begin
   promptText := text;
 end;
 
-function UnderButton(const caption: string; const x, y, width, height: smallint): boolean;
+function UnderButtonSized(const caption: string; const x, y, width, height: smallint): boolean;
 var
   zone: TZone;
   thisWidgetID: smallint;
@@ -135,12 +135,12 @@ begin
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
 
     if not clickConsumed then begin
-      UnderButton := true;
+      UnderButtonSized := true;
       clickConsumed := true
     end else
-      UnderButton := false;
+      UnderButtonSized := false;
   end else
-    UnderButton := false;
+    UnderButtonSized := false;
 end;
 
 function UnderImageButton(
