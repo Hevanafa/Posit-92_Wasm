@@ -120,6 +120,14 @@ end;
 
 procedure OnPreload;
 begin
+  texCursor := RequestImage('assets/images/cursor.png');
+  texHandCursor := RequestImage('assets/images/hand.png');
+
+  fontBold := RequestBMFont('assets/fonts/p92_sans_8_bold.txt');
+
+  texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
+
   { TODO: Migrate the asset loaders }
 end;
 
@@ -128,6 +136,8 @@ begin
   HideCursor;
 
   SetPromptBoxAssets(texPromptBG, texPromptButtonNormal, texPromptButtonNormal, texPromptButtonPressed);
+
+  fontBlack := CloneBMFont(GetDefaultFontHandle);
 
   ReplaceColour(
     BorrowBMFontPtr(fontBlack)^.texHandle,

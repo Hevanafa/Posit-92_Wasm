@@ -8,7 +8,7 @@ uses P92AssetHandles;
 
 var
   fontBlack,
-  fontPicotron: TBMFontHandle;
+  fontBold: TBMFontHandle;
 
   texCursor, texHandCursor: TTextureHandle;
   texDosuEXE: array[0..1] of TTextureHandle;
