@@ -223,7 +223,7 @@ begin
     GL_TEXTURE_2D, 0, GL_RGBA,
     320, 200, 0,
     GL_RGBA, GL_UNSIGNED_BYTE,
-    getSurfacePtr);
+    BorrowSurfacePtr);
 
   GLDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
 end;

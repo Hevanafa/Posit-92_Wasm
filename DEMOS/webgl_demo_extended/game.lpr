@@ -6,7 +6,7 @@
 library Game;
 
 {$Mode ObjFPC}
-{$H-}
+{$H+}{$J-}
 
 uses
   P92Core, P92Fonts, P92AssetRegistry,
@@ -23,13 +23,10 @@ var
   gameTime: double;
   drawOnce: boolean;
 
-procedure DrawMouse;
-begin
-  spr(imgCursor, mouseX, mouseY)
-end;
 
-procedure OnPreload begin
-  imgCursor := RequestImage('assets/images/cursor.png') 
+procedure OnPreload;
+begin
+  imgCursor := RequestImage('assets/images/cursor.png');
   imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
   imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 end;
@@ -100,14 +97,25 @@ begin
   s := 'Hello from Posit-92 + WebAssembly + WebGL!';
   w := MeasureDefault(s);
   PrintDefault(s, (vgaWidth - w) div 2, 120);
-
-  DrawMouse;
 end;
 
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  appConfig.Renderer := 'webgl';
+
+  P92Start(appConfig);
+end;
 
 exports
-  OnPreload, OnReady,
-  Update, Draw;
+  Init,
+  OnPreload,
+  OnReady,
+  Update,
+  Draw;
 
 begin
 { Starting point is intentionally left empty }
