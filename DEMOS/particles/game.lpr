@@ -1,26 +1,15 @@
 library Game;
 
 {$Mode ObjFPC}
-{$J-}
+{$H+}{$J-}
 
 uses
-  BMFont, Conv, FPS, Fullscreen,
-  Loading, Keyboard, Logger, Mouse,
-  ImgRef, ImgRefFast, Panic, Shapes,
-  SprEffects, Timing, WasmHeap, WasmMemMgr, VGA,
+  P92Core, P92Fonts, P92Conversions, P92FPS, P92WasmHost,
+  P92Keyboard, P92Mouse, P92Logger, P92Geometry,
+  P92Tex, P92TexDraw, P92Timing, P92VGA,
   Assets;
 
-type
-  TGameStates = (
-    GameStateIntro = 1,
-    GameStateLoading = 2,
-    GameStatePlaying = 3
-  );
-
 const
-  SC_ESC = $01;
-  SC_SPACE = $39;
-
   Gravity = 100;  { pixels per second squared }
 
   CornflowerBlue = $FF6495ED;
@@ -38,38 +27,27 @@ var
   lastMouseLeft: boolean;
 
   { Game state variables }
-  actualGameState: TGameStates;
   gameTime: double;
+
   particles: array[0..99] of TParticle;
   palette: array[0..4] of longword;
 
-{ Use this to set `done` to true }
-procedure signalDone; external 'env' name 'signalDone';
-procedure loadAssets; external 'env' name 'loadAssets';
 
-procedure drawFPS;
+procedure DrawFPS;
 begin
   printDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
 procedure drawMouse;
 begin
-  spr(imgCursor, mouseX, mouseY)
-end;
-
-procedure beginLoadingState;
-begin
-  actualGameState := GameStateLoading;
-  fitCanvas;
-  loadAssets
+  Spr(imgCursor, GetMouseX, GetMouseY)
 end;
 
 procedure beginPlayingState;
 var
   a: word;
 begin
-  hideCursor;
-  fitCanvas;
+  { HideCursor; }
 
   { Initialise game state here }
   actualGameState := GameStatePlaying;
@@ -95,7 +73,7 @@ begin
   EnumHasFlag := 0 <> (value and flag)
 end;
 
-procedure spawnParticle(const cx, cy: integer);
+procedure SpawnParticle(const cx, cy: integer);
 var
   a, idx: integer;
 begin
@@ -124,19 +102,7 @@ begin
 end;
 
 
-procedure init;
-begin
-  initHeapMgr;
-  initDeltaTime;
-  initFPSCounter;
-end;
-
-procedure afterInit;
-begin
-  beginPlayingState
-end;
-
-procedure update;
+procedure Update;
 var
   a: integer;
 begin
@@ -145,12 +111,12 @@ begin
 
   updateMouse;
 
-  { Your update logic here }
+  { Your Update logic here }
   if lastEsc <> isKeyDown(SC_ESC) then begin
     lastEsc := isKeyDown(SC_ESC);
 
     if lastEsc then begin
-      writeLog('ESC is pressed!');
+
       signalDone
     end;
   end;
@@ -160,7 +126,7 @@ begin
 
     if lastMouseLeft then
       for a:=1 to 10 do
-        spawnParticle(mouseX, mouseY);
+        SpawnParticle(mouseX, mouseY);
   end;
 
   gameTime := gameTime + dt;
@@ -180,7 +146,7 @@ begin
   end;
 end;
 
-procedure draw;
+procedure Draw;
 var
   a: integer;
   w: integer;
@@ -211,16 +177,15 @@ begin
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 120);
 
-  drawMouse;
-  drawFPS;
-
-  vgaFlush
+  DrawFPS;
 end;
 
 exports
-  { Main game procedures }
-  beginLoadingState,
-  init, afterInit, update, draw;
+  Init,
+  OnPreload,
+  OnReady,
+  Update,
+  Draw;
 
 begin
 { Starting point is intentionally left empty }
