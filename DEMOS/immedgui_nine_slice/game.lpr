@@ -49,9 +49,9 @@ end;
 procedure DrawMouse;
 begin
   if hasHoveredWidget then
-    spr(imgHandCursor, GetMouseX - 5, GetMouseY - 1)
+    spr(texHandCursor, GetMouseX - 5, GetMouseY - 1)
   else
-    spr(imgCursor, GetMouseX, GetMouseY);
+    spr(texCursor, GetMouseX, GetMouseY);
 end;
 
 
@@ -124,12 +124,11 @@ end;
 
 procedure OnReady;
 begin
-  { Initialise game state here }
-  hideCursor;
+  HideCursor;
 
-  SetPromptBoxAssets(imgPromptBG, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
+  SetPromptBoxAssets(texPromptBG, texPromptButtonNormal, texPromptButtonNormal, texPromptButtonPressed);
 
-  ReplaceColour(blackFont.imgHandle, $FFFFFFFF, $FF000000);
+  ReplaceColour(fontBlack.imgHandle, $FFFFFFFF, $FF000000);
 
   clicks := 0;
   showFPS.checked := true;
@@ -156,16 +155,16 @@ begin
   cls(CornflowerBlue);
 
 {
-  if ImageButton((vgaWidth - getImageWidth(imgWinNormal)) div 2, 88, imgWinNormal, imgWinHovered, imgWinPressed) then
+  if ImageButton((vgaWidth - getImageWidth(texWinNormal)) div 2, 88, texWinNormal, texWinHovered, texWinPressed) then
     ShowPromptBox('Accept?', PromptTest);
 }
 
-  spr(img9SliceNormal, 30, 30);
-  spr(img9SliceHovered, 60, 30);
-  spr(img9SlicePressed, 90, 30);
+  spr(tex9SliceNormal, 30, 30);
+  spr(tex9SliceHovered, 60, 30);
+  spr(tex9SlicePressed, 90, 30);
 
   SprNineSlice(
-    img9SliceNormal,
+    tex9SliceNormal,
     100, 100, 60, 30, demoMargins
   );
 

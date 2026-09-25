@@ -7,14 +7,14 @@ interface
 uses P92AssetHandles;
 
 var
-  blackFont,
-  picotronFont: TBMFontHandle;
+  fontBlack,
+  fontPicotron: TBMFontHandle;
 
-  imgCursor, imgHandCursor: TTextureHandle;
-  imgDosuEXE: array[0..1] of TTextureHandle;
-  imgWinNormal, imgWinHovered, imgWinPressed: TTextureHandle;
-  imgPromptBG, imgPromptButtonNormal, imgPromptButtonPressed: TTextureHandle;
-  img9SliceNormal, img9SliceHovered, img9SlicePressed: TTextureHandle;
+  texCursor, texHandCursor: TTextureHandle;
+  texDosuEXE: array[0..1] of TTextureHandle;
+  texWinNormal, texWinHovered, texWinPressed: TTextureHandle;
+  texPromptBG, texPromptButtonNormal, texPromptButtonPressed: TTextureHandle;
+  tex9SliceNormal, tex9SliceHovered, tex9SlicePressed: TTextureHandle;
 
 
 implementation
