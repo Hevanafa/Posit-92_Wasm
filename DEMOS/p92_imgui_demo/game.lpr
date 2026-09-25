@@ -161,7 +161,7 @@ begin
 
   { Migrated from the prompt box demo }
 
-  if UnderButtonSized('Under button', 280, 20, 30, 24) then
+  if UnderButton('Under button', 280, 20) then
     inc(clicks);
 
   if UnderImageButton(

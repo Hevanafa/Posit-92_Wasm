@@ -30,6 +30,7 @@ function AllowWidgetInteraction: boolean;
 
 procedure ShowPromptBox(const text: string; const key: string);
 
+function UnderButton(const caption: string; const x, y: smallint): boolean;
 function UnderButtonSized(const caption: string; const x, y, width, height: smallint): boolean;
 function UnderImageButton(const x, y: smallint; const texNormal, texHovered, texPressed: TTextureHandle): boolean;
 
@@ -89,12 +90,22 @@ begin
 end;
 
 
-{ Show prompt box }
 procedure ShowPromptBox(const text: string; const key: string);
 begin
   isPromptShown := true;
   promptKey := key;
   promptText := text;
+end;
+
+function UnderButton(const caption: string; const x, y: smallint): boolean;
+const
+  Padding = 4;
+var
+  width, height: smallint;
+begin
+  width := GUIMeasureText(caption) + (Padding shl 1);
+  height := BorrowBMFontPtr(GetGUIActiveFontHandle)^.lineHeight + (Padding shl 1);
+  UnderButton := UnderButtonSized(caption, x, y, width, height);
 end;
 
 function UnderButtonSized(const caption: string; const x, y, width, height: smallint): boolean;
