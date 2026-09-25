@@ -5,11 +5,11 @@
 }
 
 {
-  Memory layout (4 MB default)
-  - Pascal stack	(512KB)
+  Memory layout (2 MB default)
+  - Pascal stack	(320KB)
   - Video memory	(320x200x4 bytes, depending on bufferWidth and bufferHeight)
-  - Bucket pool region	(512KB, two-tier tier 1)
-  - Two-directional linked list region	(two-tier tier 2)
+  - Bucket pool region	(128KB, two-tier tier 1)
+  - Free list / two-directional linked list region	(two-tier tier 2)
 }
 
 unit P92WasmHeap;
@@ -24,7 +24,7 @@ unit P92WasmHeap;
 interface
 
 const
-  WasmMemorySize = 4 * 1048576;  { 4 MB }
+  WasmMemorySize = 2 * 1048576;  { 2 MB }
   StackSize = 320 * 1024;
   PoolSize = 128 * 1024;
 
