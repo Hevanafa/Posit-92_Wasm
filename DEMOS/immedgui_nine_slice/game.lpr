@@ -12,8 +12,8 @@ library Game;
 
 uses
   P92Core, P92BMFont, P92Fonts, P92Conversions, P92FPS, P92Graphics,
-  P92WasmHost, P92Tex, P92TexDraw, P92Keyboard, P92Mouse,
-  P92Geometry, P92Timing, P92VGA, P92IMGUI, P92IMGUIPromptBox,
+  P92WasmHost, P92Tex, P92TexDraw, P92TexEffects, P92Keyboard, P92Mouse, P92AssetHandles,
+  P92Geometry, P92Timing, P92VGA, P92IMGUI, P92IMGUIPromptBox, P92Panic,
   Assets;
 
 type
@@ -54,81 +54,82 @@ begin
     spr(imgCursor, GetMouseX, GetMouseY);
 end;
 
-procedure replaceColours(const imgHandle: longint; const oldColour, newColour: longword);
-var
-  a, b: word;
-  image: PImageRef;
-begin
-  if not isImageSet(imgHandle) then begin
-    writeLog('replaceColours: Unset imgHandle: ' + i32str(imgHandle));
-    exit
-  end;
 
-  image := getImagePtr(imgHandle);
-
-  for b:=0 to image^.height - 1 do
-  for a:=0 to image^.width - 1 do
-    if unsafeSprPget(image, a, b) = oldColour then
-      unsafeSprPset(image, a, b, newColour);
-end;
-
-procedure sprNineSlice(
-  const imgHandle: longint;
+procedure SprNineSlice(
+  const texHandle: TTextureHandle;
   const x, y, width, height: integer;
   const margins: TNineSliceMargins);
 var
   srcCentreW, srcCentreH: integer;
   destCentreW, destCentreH: integer;
 begin
-  if not isImageSet(imgHandle) then
-    panicHalt('sprNineSlice: imgHandle is ' + i32str(imgHandle) + '!');
+  if not IsTexSet(texHandle) then
+    panicHalt('sprNineSlice: imgHandle is ' + i32str(texHandle) + '!');
 
-  srcCentreW := getImageWidth(imgHandle) - margins.left - margins.right;
-  srcCentreH := getImageHeight(imgHandle) - margins.top - margins.bottom;
+  srcCentreW := GetTexWidth(texHandle) - margins.left - margins.right;
+  srcCentreH := GetTexHeight(texHandle) - margins.top - margins.bottom;
   destCentreW := width - margins.left - margins.right;
   destCentreH := height - margins.top - margins.bottom;
 
   { Middle fill }
-  sprRegionStretch(imgHandle,
+  sprRegionStretch(texHandle,
     margins.left, margins.top, srcCentreW, srcCentreH,
     x + margins.left, y + margins.top, destCentreW, destCentreH);
   
   { Top side }
-  sprRegionStretch(imgHandle,
+  sprRegionStretch(
+    texHandle,
     margins.left, 0, srcCentreW, margins.top,
     x + margins.left, y, destCentreW, margins.top);
   
   { Bottom side }
-  sprRegionStretch(imgHandle,
-    margins.left, getImageHeight(imgHandle) - margins.bottom, srcCentreW, margins.bottom,
-    x + margins.left, y + height - margins.bottom, destCentreW, margins.bottom);
+  SprRegionStretch(
+    texHandle,
+
+    margins.left,
+    GetTexHeight(texHandle) - margins.bottom,
+    srcCentreW,
+    margins.bottom,
+
+    x + margins.left,
+    y + height - margins.bottom,
+    destCentreW,
+    margins.bottom);
 
   { Left side }
-  sprRegionStretch(imgHandle,
+  sprRegionStretch(
+    texHandle,
+
     0, margins.top, margins.left, srcCentreH,
     x, y + margins.top, margins.left, destCentreH);
 
   { Right side }
-  sprRegionStretch(imgHandle,
-    getImageWidth(imgHandle) - margins.right, margins.top, margins.right, srcCentreH,
+  sprRegionStretch(
+    texHandle,
+    GetTexWidth(texHandle) - margins.right, margins.top, margins.right, srcCentreH,
     x + width - margins.right, y + margins.top, margins.right, destCentreH);
 
   { Corners }
-  sprRegion(imgHandle, 0, 0, margins.left, margins.top, x, y);
-  sprRegion(imgHandle, getImageWidth(imgHandle) - margins.right, 0, margins.right, margins.top, x + width - margins.right, y);
-  sprRegion(imgHandle, 0, getImageHeight(imgHandle) - margins.bottom, margins.left, margins.bottom, x, y + height - margins.bottom);
-  sprRegion(imgHandle, getImageWidth(imgHandle) - margins.right, getImageHeight(imgHandle) - margins.bottom, margins.right, margins.bottom, x + width - margins.right, y + height - margins.bottom);
+  sprRegion(texHandle, 0, 0, margins.left, margins.top, x, y);
+  sprRegion(texHandle, GetTexWidth(texHandle) - margins.right, 0, margins.right, margins.top, x + width - margins.right, y);
+  sprRegion(texHandle, 0, GetTexHeight(texHandle) - margins.bottom, margins.left, margins.bottom, x, y + height - margins.bottom);
+  sprRegion(texHandle, GetTexWidth(texHandle) - margins.right, GetTexHeight(texHandle) - margins.bottom, margins.right, margins.bottom, x + width - margins.right, y + height - margins.bottom);
 end;
 
+
+procedure OnPreload;
+begin
+  { TODO: Migrate the asset loaders }
+end;
 
 procedure OnReady;
 begin
   { Initialise game state here }
   hideCursor;
 
-  setPromptBoxAssets(imgPromptBG, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
+  SetPromptBoxAssets(imgPromptBG, imgPromptButtonNormal, imgPromptButtonNormal, imgPromptButtonPressed);
 
-  replaceColours(blackFont.imgHandle, $FFFFFFFF, $FF000000);
+  ReplaceColour(blackFont.imgHandle, $FFFFFFFF, $FF000000);
 
   clicks := 0;
   showFPS.checked := true;
@@ -163,7 +164,7 @@ begin
   spr(img9SliceHovered, 60, 30);
   spr(img9SlicePressed, 90, 30);
 
-  sprNineSlice(
+  SprNineSlice(
     img9SliceNormal,
     100, 100, 60, 30, demoMargins
   );
@@ -174,6 +175,16 @@ begin
 
   if showFPS.checked then DrawFPS;
 end;
+
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  P92Start(appConfig);
+end;
+
 
 exports
   Init,
