@@ -36,6 +36,9 @@ const
   IceCreamRed = $FFEB6B6F;
   IceCreamMaroon = $FF7C3F58;
 
+  AccentBright = $FF8CDE92;
+  AccentDark = $FF04601C;
+
 procedure InitImmediateGUI(useDefaultFont: boolean = true);
 
 function GetMouseJustPressed: boolean;
