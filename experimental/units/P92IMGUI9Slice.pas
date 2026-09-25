@@ -94,6 +94,8 @@ function ButtonNineSlice(
 var
   zone: TZone;
   w: smallint;
+  thisWidgetID: smallint;
+  texHandle: TTextureHandle;
 begin
   GUIAssertFontSet;
 
@@ -103,32 +105,31 @@ begin
   zone.height := BorrowBMFontPtr(GetGUIActiveFontHandle)^.lineHeight + margins.top + margins.bottom;
 
   { Update logic }
-  thisWidgetID := nextWidgetID;
-  inc(nextWidgetID);
+  thisWidgetID := GetNextWidgetID;
+  IncNextWidgetID;
 
-  if pointInZone(mousePoint, zone) then begin
-    hotWidget := thisWidgetID;
+  if pointInZone(GetMousePoint, zone) then begin
+    SetHotWidget(thisWidgetID);
 
-    if mouseJustPressed then activeWidget := thisWidgetID;
+    if GetMouseJustPressed then SetActiveWidget(thisWidgetID);
   end;
 
   { Render logic }
-  if activeWidget = thisWidgetID then
-    buttonImgHandle := imgPressed
-  else if hotWidget = thisWidgetID then
-    buttonImgHandle := imgHovered
+  if GetActiveWidget = thisWidgetID then
+    texHandle := texPressed
+  else if GetHotWidget = thisWidgetID then
+    texHandle := texHovered
   else
-    buttonImgHandle := imgNormal;
+    texHandle := texNormal;
 
-  spr(buttonImgHandle, x, y);
-  { Use this in case you want your buttons have semitransparent pixels }
-  { sprBlend(buttonImgHandle, x, y); }
+  { TODO: Replace this with 9 slice }
+  spr(texHandle, x, y);
 
-  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
+  if GetMouseJustReleased and (GetHotWidget = thisWidgetID) and (GetActiveWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
-    ImageButton := true
+    ButtonNineSlice := true
   else
-    ImageButton := false;
+    ButtonNineSlice := false;
 end;
 
 end.
