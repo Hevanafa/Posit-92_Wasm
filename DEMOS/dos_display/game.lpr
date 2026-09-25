@@ -483,7 +483,6 @@ end;
 procedure OnReady;
 var
   a: word;
-  { heapSize, freeHeapSize: longword; }
 begin
   { hideCursor; }
 
@@ -502,8 +501,8 @@ begin
   { Welcome message }
   ClrScr;
   PrintLn('');
-  PrintLn('Posit-92 Wasm ' + Posit92Version);
-  PrintLn('(C) 2025 Hevanafa');
+  PrintLn('Posit-92 (WASM) v' + Posit92Version);
+  PrintLn('(C) 2025-26 Hevanafa');
 
   { heapSize := GetHeapEnd - GetHeapStart;
   freeHeapSize := GetFreeHeapSize; }
