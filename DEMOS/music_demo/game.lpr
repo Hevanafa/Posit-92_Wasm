@@ -9,13 +9,9 @@ library Game;
 {$J-}
 
 uses
-  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
-  P92Conversions, P92Loading, P92Logger,
-  P92Keyboard, P92Mouse,
-  P92ImmediateGUI,
-  P92Tex, P92TexDraw,
-  P92Sounds, P92Strings,
-  P92Timing, P92VGA,
+  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry, P92Conversions, P92Loading,
+  P92Logger, P92Keyboard, P92Mouse,
+  P92IMGUI, P92Tex, P92TexDraw, P92Sounds, P92Strings, P92Timing, P92VGA,
   Assets;
 
 const
@@ -36,10 +32,6 @@ var
   volumeState: TSliderState;
   lastVolume: integer;
 
-procedure DrawMouse;
-begin
-  spr(imgCursor, mouseX, mouseY)
-end;
 
 procedure OnPreload;
 begin
@@ -171,15 +163,25 @@ begin
     spr(imgVolumeOn, 202, 123);
 
   Slider(217, 125, 64, volumeState, 0, 100);
+end;
 
-  DrawMouse;
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  P92Start(appConfig);
 end;
 
 exports
-  OnPreload, OnReady,
-  Update, Draw;
+  Init,
+  OnPreload,
+  OnReady,
+  Update,
+  Draw;
 
 begin
-{ Starting point is intentionally left empty }
+  { Starting point is intentionally left empty }
 end.
 
