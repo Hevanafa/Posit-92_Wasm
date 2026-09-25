@@ -58,7 +58,7 @@ const
 var
   a, b: smallint;
 
-  imgNoiseCache: PSoftwareTex;
+  texNoiseCache: PSoftwareTex;
   noiseValue: double;
   grey: byte;
 begin
@@ -75,7 +75,7 @@ begin
 
   { Only used in the static 2D demo }
   noiseCache := NewTex(vgaWidth div 2, vgaHeight div 2);
-  imgNoiseCache := BorrowTexPtr(noiseCache);
+  texNoiseCache := BorrowTexPtr(noiseCache);
 
   for b:=0 to vgaHeight div 2 - 1 do
   for a:=0 to vgaWidth div 2 - 1 do begin
@@ -83,7 +83,7 @@ begin
 
     grey := round(noiseValue * 255);
 
-    UnsafeTexPSet(imgNoiseCache,
+    UnsafeTexPSet(texNoiseCache,
       a, b,
       $FF000000
       or (grey shl 16)
@@ -96,8 +96,10 @@ end;
 
 function DemoButton(
   const caption: string;
-  const x, y, width, height: integer;
+  const x, y, width, height: smallint;
   const colour, hoveredColour, pressedColour: longword): boolean;
+const
+  Padding = 4;
 var
   zone: TZone;
   thisWidgetID: integer;
@@ -127,13 +129,20 @@ begin
   else 
     buttonColour := colour;
 
-  RectFill(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), buttonColour);
-  Rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), white);
+  RectFill(
+    x, y,
+    x + width - 1, y + height - 1,
+    buttonColour);
+
+  Rect(
+    x, y,
+    x + width - 1, y + height - 1,
+    white);
 
   if (GetActiveWidget <> thisWidgetID) and (GetHotWidget <> thisWidgetID) then
-    PrintBMFont(fontBlack, caption, trunc(zone.x + 4), trunc(zone.y + 4))
+    PrintBMFont(fontBlack, caption, x + Padding, y + Padding)
   else
-    TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
+    TextLabel(caption, x + Padding, y + Padding);
 
   if GetMouseJustReleased and (GetHotWidget = thisWidgetID) and (GetActiveWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
