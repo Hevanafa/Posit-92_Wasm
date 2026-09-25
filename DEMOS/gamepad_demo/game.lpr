@@ -32,7 +32,8 @@ end;
 
 procedure OnPreload;
 begin
-  { TODO: List the assets to load }
+  texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
 procedure BeginPlayingState;
@@ -81,9 +82,9 @@ begin
   cls(CornflowerBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    spr(texDosuEXE[1], 148, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    spr(texDosuEXE[0], 148, 88);
 
   if not GamepadConnected then begin
     s := 'Plug in a controller';

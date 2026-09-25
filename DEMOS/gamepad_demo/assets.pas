@@ -9,8 +9,7 @@ uses P92AssetHandles;
 var
   fontGrey: TBMFontHandle;
 
-  imgCursor: TTextureHandle;
-  imgDosuEXE: array[0..1] of TTextureHandle;
+  texDosuEXE: array[0..1] of TTextureHandle;
 
 
 implementation
