@@ -300,23 +300,24 @@ begin
     PrintLn('  JINGLE  Play Jingle Bells')
 
   end else if prog = 'MEM' then begin
-    heapSize := WasmMemorySize - GetHeapRegionStart;
-    { freeHeapSize := GetFreeHeapSize; }
+    heapSize := WasmMemorySize - longword(GetHeapRegionStart);
 
     PrintLn('Total heap: ' + i32str(heapSize div 1024) + 'KB');
     PrintLn('Used: ?');
     PrintLn('Available: ?');
 
+    PrintLn('');
     PrintLn('Small allocation pool');
+
+    { Must match with PoolSizeClassMax }
+    PrintLn('  Block limit: 256 B');
+    PrintLn('  Pool size: ' + I32Str(PoolSize div 1024) + ' KB');
+
+    PrintLn('');
     PrintLn('General heap');
+    PrintLn('  Heap size: ' + I32Str(GetHeapEnd - GetHeapStart));
 
-    {
-    PrintLn('Used: ' + i32str(heapSize - freeHeapSize) + ' bytes');
-    PrintLn('Free: ' + i32str(freeHeapSize) + ' bytes');
-    PrintLn('Heap usage: ' + toFixed((heapSize - freeHeapSize) / heapSize * 100.0, 0) + '%');
-    }
-
-  end else if prog = 'FREE' then begin
+  { end else if prog = 'FREE' then begin }
     { PrintLn(i32str(GetFreeHeapSize) + ' bytes free') }
 
   end else if prog = 'DIR' then begin
