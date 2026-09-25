@@ -46,7 +46,6 @@ const
 
 procedure InitImmediateGUI(useDefaultFont: boolean = true);
 
-function GetMousePoint: TPoint;
 function GetMouseJustPressed: boolean;
 function GetMouseJustReleased: boolean;
 
@@ -59,14 +58,14 @@ procedure SetActiveWidget(const widgetID: smallint);
 function GetNextWidgetID: smallint;
 procedure IncNextWidgetID;
 
-{ Can be used with drawMouse }
+{ Can be used with DrawMouse }
 function HasHoveredWidget: boolean;
 
-{ Required: Called before updateMouse }
+{ Required: Called before UpdateMouse }
 procedure UpdateGUILastMouseButton;
 
-{ Required: Called after updateMouse }
-procedure UpdateGUIMousePoint;
+{ Required: Called after UpdateMouse }
+procedure UpdateGUIMouseState;
 
 { Required: Called at the end of update routine }
 procedure ResetWidgetIndices;
@@ -215,11 +214,8 @@ begin
   lastMouseButton := GetMouseButton;
 end;
 
-procedure UpdateGUIMousePoint;
+procedure UpdateGUIMouseState;
 begin
-  mousePoint.x := GetMouseX;
-  mousePoint.y := GetMouseY;
-
   mouseJustPressed := (GetMouseButton <> MouseButtonNone) and (lastMouseButton = MouseButtonNone);
   mouseJustReleased := (GetMouseButton = MouseButtonNone) and (lastMouseButton <> MouseButtonNone)
 end;

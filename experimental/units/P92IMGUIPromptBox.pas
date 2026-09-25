@@ -43,7 +43,7 @@ implementation
 {$IFDEF P92_IMGUI}
 
 uses
-  P92Graphics, P92Geometry,
+  P92Graphics, P92Geometry, P92Mouse,
   P92IMGUI, P92AssetRegistry,
   P92Tex, P92TexDraw, P92BMFont, P92VGA;
 
@@ -112,7 +112,7 @@ begin
   incNextWidgetID;
 
   if AllowWidgetInteraction then begin
-    if pointInZone(getMousePoint, zone) then begin
+    if pointInZone(GetMousePoint, zone) then begin
       setHotWidget(thisWidgetID);
 
       if getMouseJustPressed then setActiveWidget(thisWidgetID);

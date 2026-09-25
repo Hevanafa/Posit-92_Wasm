@@ -341,7 +341,7 @@ begin
 
     UpdateGUILastMouseButton;
     UpdateMouse;
-    UpdateGUIMousePoint;
+    UpdateGUIMouseState;
 {$else}
     UpdateMouse;
 {$endif}

@@ -28,7 +28,7 @@ function ButtonNineSlice(
 
 implementation
 
-uses P92Panic, P92Tex, P92TexDraw, P92IMGUI, P92Geometry, P92AssetRegistry;
+uses P92Panic, P92Tex, P92TexDraw, P92IMGUI, P92Geometry, P92AssetRegistry, P92Mouse;
 
 procedure SprNineSlice(
   const texHandle: TTextureHandle;
@@ -116,7 +116,7 @@ begin
   thisWidgetID := GetNextWidgetID;
   IncNextWidgetID;
 
-  if pointInZone(GetMousePoint, zone) then begin
+  if PointInZone(GetMousePoint, zone) then begin
     SetHotWidget(thisWidgetID);
 
     if GetMouseJustPressed then SetActiveWidget(thisWidgetID);

@@ -14,6 +14,9 @@ unit P92Mouse;
 
 interface
 
+uses
+  P92Geometry;
+
 const
   MouseButtonNone = 0;
   MouseButtonLeft = 1;
@@ -23,6 +26,8 @@ const
 function GetMouseX: smallint;
 function GetMouseY: smallint;
 function GetMouseButton: smallint;
+
+function GetMousePoint: TPoint;
 
 function IsLeftMousePressed: boolean;
 function IsRightMousePressed: boolean;
@@ -48,6 +53,7 @@ implementation
 
 var
   mouseX, mouseY, mouseButton: smallint;
+  mousePoint: TPoint;
 
 function GetMouseX: smallint;
 begin
@@ -62,6 +68,11 @@ end;
 function GetMouseButton: smallint;
 begin
   GetMouseButton := mouseButton
+end;
+
+function GetMousePoint: TPoint;
+begin
+  GetMousePoint := mousePoint
 end;
 
 function IsLeftMousePressed: boolean;
@@ -84,6 +95,9 @@ begin
   mouseX := JsGetMouseX;
   mouseY := JsGetMouseY;
   mouseButton := JsGetMouseButton;
+
+  mousePoint.x := mouseX;
+  mousePoint.y := mouseY;
 end;
 {$ENDIF}
 
@@ -91,15 +105,17 @@ end;
 {$IFDEF P92_SDL2}
 procedure SetMouseX(const value: smallint);
 begin
-  mouseX := value
+  mouseX := value;
+  mousePoint.x := value;
 end;
 
-procedure SetMouseY(const value:smallint);
+procedure SetMouseY(const value: smallint);
 begin
-  mouseY := value
+  mouseY := value;
+  mousePoint.y := value;
 end;
 
-procedure SetMouseButton(const value:smallint);
+procedure SetMouseButton(const value: smallint);
 begin
   mouseButton := value
 end;
