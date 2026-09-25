@@ -731,14 +731,14 @@ var
 begin
   w := trunc(clamp(perc, 0.0, 1.0) * width);
 
-  RectFill(x, y, x + width, y + height, black);
-  RectFill(x, y, trunc(x + w), y + height, AccentNormal);
-  Rect(x, y, x + width, y + height, white);
+  RectFill(x, y, x + width - 1, y + height - 1, AccentDark);
+  RectFill(x, y, trunc(x + w) - 1, y + height - 1, AccentNormal);
+  Rect(x, y, x + width - 1, y + height - 1, AccentPale);
 end;
 
 procedure ProgressBarLabelled(const x, y, width, height: smallint; const perc: double);
 const
-  MarginTop = 2;
+  MarginTop = 1;
 var
   percStr: string;
   w: word;
