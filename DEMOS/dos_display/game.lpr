@@ -300,7 +300,7 @@ begin
     PrintLn('  JINGLE  Play Jingle Bells')
 
   end else if prog = 'MEM' then begin
-    heapSize := WasmMemorySize - longword(GetHeapRegionStart);
+    heapSize := WasmMemorySize - longword(BorrowHeapRegionStart);
 
     PrintLn('Total heap: ' + i32str(heapSize div 1024) + 'KB');
     PrintLn('Used: ?');

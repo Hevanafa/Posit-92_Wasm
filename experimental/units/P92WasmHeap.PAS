@@ -27,7 +27,7 @@ const
 
 procedure InitHeapRegion(const startAddr: pointer);
 
-function GetHeapRegionStart: pointer;
+function BorrowHeapRegionStart: pointer;
 
 { Accessible externally, in use by RequestImage }
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
@@ -39,10 +39,8 @@ function WasmMemSize(const ptr: pointer): PtrUInt;
 procedure JsReportGetMem(bytes: longint); external 'env' name 'JsReportGetMem';
 procedure JsReportFreeMem(bytes: longint); external 'env' name 'JsReportFreeMem';
 
-{ Debug functions }
-
-function GetBucketAllocStart: longword;
-function GetBucketAllocEnd: longword;
+function BorrowBucketAllocRegionStart: pointer;
+function BorrowBucketAllocRegionEnd: pointer;
 
 function BorrowFreeListRegionStart: pointer;
 function BorrowFreeListRegionEnd: pointer;
@@ -422,21 +420,10 @@ end;
 
 { Begin generic allocator functions }
 
-function GetHeapRegionStart: pointer;
+function BorrowHeapRegionStart: pointer;
 begin
-  GetHeapRegionStart := heapRegionStart
+  BorrowHeapRegionStart := heapRegionStart
 end;
-
-function BorrowFreeListRegionStart: pointer;
-begin
-  BorrowFreeListRegionStart := freeListStart
-end;
-
-function BorrowFreeListRegionEnd: pointer;
-begin
-  BorrowFreeListRegionEnd := freeListEnd
-end;
-
 
 
 function WasmGetMem(const bytes: longword): pointer;
@@ -561,14 +548,25 @@ begin
 end;
 
 
-function GetBucketAllocStart: longword;
+function BorrowBucketAllocRegionStart: pointer;
 begin
-  GetBucketAllocStart := longword(bucketAllocStart)
+  BorrowBucketAllocRegionStart := bucketAllocStart
 end;
 
-function GetBucketAllocEnd: longword;
+function BorrowBucketAllocRegionEnd: pointer;
 begin
-  GetBucketAllocEnd := longword(bucketAllocEnd)
+  BorrowBucketAllocRegionEnd := bucketAllocEnd
+end;
+
+
+function BorrowFreeListRegionStart: pointer;
+begin
+  BorrowFreeListRegionStart := freeListStart
+end;
+
+function BorrowFreeListRegionEnd: pointer;
+begin
+  BorrowFreeListRegionEnd := freeListEnd
 end;
 
 end.
