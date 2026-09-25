@@ -19,12 +19,14 @@ uses
   P92TexEffects, P92Loading, P92Logger,
   P92Keyboard, P92Mouse, P92WasmHeap, P92Panic, P92Geometry,
   P92Timing, P92VGA, P92Colour,
-  P92IMGUI, P92IMGUIPromptBox,
+  P92IMGUI, P92IMGUIPromptBox, P92IMGUI9Slice,
   Assets;
 
 const
   CornflowerBlue = $FF6495ED;
   SemitransparentBlack = $80000000;
+
+  demoMargins: TNineSliceMargins = (top: 8; right: 8; bottom: 8; left: 8);
 
   PromptKeyTest = 'TestPrompt';
 
@@ -70,6 +72,10 @@ begin
   texPromptButtonNormal := RequestImage('assets/images/btn_prompt_normal.png');
   texPromptButtonPressed := RequestImage('assets/images/btn_prompt_pressed.png');
 
+  tex9SliceNormal := RequestImage('assets/images/9slice_normal.png');
+  tex9SliceHovered := RequestImage('assets/images/9slice_hovered.png');
+  tex9SlicePressed := RequestImage('assets/images/9slice_pressed.png');
+
   fontRegular := RequestBMFont('assets/fonts/p92_sans_8_regular.txt');
   fontBold := RequestBMFont('assets/fonts/p92_sans_8_bold.txt');
 end;
@@ -90,6 +96,12 @@ begin
 
   clicks := 0;
   showFPS.checked := false;
+
+  fontBlack := CloneBMFont(GetDefaultFontHandle);
+
+  ReplaceColour(
+    BorrowBMFontPtr(fontBlack)^.texHandle,
+    $FFFFFFFF, $FF000000);
 
   SetLength(listItems, 3);
   for a:=0 to High(listItems) do
@@ -164,6 +176,22 @@ begin
     PromptResultNo:;
     else
   end;
+
+  { SprNineSlice(
+    tex9SliceNormal,
+    100, 100, 60, 30, demoMargins); }
+
+  GUISetFont(fontBlack);
+
+  s := 'Clicks: ' + i32str(clicks);
+
+  if ButtonNineSlice(
+      s,
+      100, 100, demoMargins,
+      tex9SliceNormal, tex9SliceHovered, tex9SlicePressed) then
+    inc(clicks);
+
+  GUISetFont(GetDefaultFontHandle);
 
   { HUD }
 
