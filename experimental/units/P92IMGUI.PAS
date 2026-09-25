@@ -411,14 +411,14 @@ begin
 
   { Render logic }
   if activeWidget = thisWidgetID then
-    buttonColour := IceCreamRed
+    buttonColour := AccentDark
   else if hotWidget = thisWidgetID then
-    buttonColour := IceCreamOrange
+    buttonColour := AccentBright
   else 
-    buttonColour := IceCreamWhite;
+    buttonColour := AccentLight;
 
-  rectfill(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), buttonColour);
-  rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), IceCreamWhite);
+  RectFill(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), buttonColour);
+  Rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), AccentDark);
   TextLabel(caption, trunc(zone.x + Padding), trunc(zone.y + Padding));
 
   if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
@@ -576,12 +576,12 @@ begin
 
   if activeWidget = thisWidgetID then
     { on held down }
-    checkboxColour := IceCreamRed
+    checkboxColour := AccentDark
   else if hotWidget = thisWidgetID then
     { on hover }
-    checkboxColour := IceCreamOrange
+    checkboxColour := AccentBright
   else
-    checkboxColour := Black;
+    checkboxColour := AccentDark;
 
   Rect(
     trunc(zone.x), trunc(zone.y),
@@ -640,12 +640,12 @@ begin
 
   if activeWidget = thisWidgetID then
     { dragging }
-    colour := IceCreamRed
+    colour := AccentDark
   else if hotWidget = thisWidgetID then
     { hovering }
-    colour := IceCreamOrange
+    colour := AccentBright
   else
-    colour := Black;
+    colour := AccentDark;
 
   rect(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), colour)
 end;
@@ -694,12 +694,12 @@ begin
 
   if activeWidget = thisWidgetID then
     { dragging }
-    colour := IceCreamRed
+    colour := AccentDark
   else if hotWidget = thisWidgetID then
     { hovering }
-    colour := IceCreamOrange
+    colour := AccentBright
   else
-    colour := Black;
+    colour := AccentDark;
 
   rect(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), colour);
 
@@ -727,7 +727,7 @@ end;
 
 procedure ProgressBarLabelled(const x, y, width, height: smallint; const perc: double);
 const
-  MarginTop = 4;
+  MarginTop = 2;
 var
   percStr: string;
   w: word;
@@ -742,7 +742,7 @@ begin
   TextLabel(
     percStr,
     x + (width - w) div 2,
-    y + MarginTop;
+    y + MarginTop)
 end;
 {$endif}
 

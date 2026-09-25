@@ -121,14 +121,14 @@ begin
 
   { Render logic }
   if getActiveWidget = thisWidgetID then
-    buttonColour := IceCreamRed
+    buttonColour := AccentDark
   else if getHotWidget = thisWidgetID then
-    buttonColour := IceCreamOrange
+    buttonColour := AccentLight
   else
-    buttonColour := IceCreamWhite;
+    buttonColour := AccentBright;
 
   rectfill(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), buttonColour);
-  rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), IceCreamWhite);
+  rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), AccentDark);
   TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
 
   if getMouseJustReleased and (getHotWidget = thisWidgetID) and (getActiveWidget = thisWidgetID) then begin
