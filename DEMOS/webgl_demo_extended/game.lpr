@@ -21,14 +21,13 @@ var
 
   { Init your game state here }
   gameTime: double;
-  drawOnce: boolean;
+  { drawOnce: boolean; }
 
 
 procedure OnPreload;
 begin
-  imgCursor := RequestImage('assets/images/cursor.png');
-  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
-  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
+  texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
 procedure OnReady;
@@ -36,7 +35,7 @@ begin
   { Initialise game state here }
   HideCursor;
 
-  drawOnce := false;
+  { drawOnce := false; }
   gameTime := 0.0;
 end;
 
@@ -90,9 +89,9 @@ begin
   Cls($FF6495ED);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    Spr(imgDosuEXE[1], 148, 88)
+    Spr(texDosuEXE[1], 148, 88)
   else
-    Spr(imgDosuEXE[0], 148, 88);
+    Spr(texDosuEXE[0], 148, 88);
 
   s := 'Hello from Posit-92 + WebAssembly + WebGL!';
   w := MeasureDefault(s);

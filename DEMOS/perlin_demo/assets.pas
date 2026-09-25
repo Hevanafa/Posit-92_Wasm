@@ -8,9 +8,8 @@ uses
   P92AssetHandles;
 
 var
-  imgCursor: TTextureHandle;
-  imgDosuExe: array[0..1] of TTextureHandle;
-  blackFont: TBMFontHandle;
+  texDosuExe: array[0..1] of TTextureHandle;
+  fontBlack: TBMFontHandle;
 
 
 implementation

@@ -4,11 +4,12 @@ unit Assets;
 
 interface
 
-var
-  imgCursor: longint;
-  imgCGAFont: longint;
+uses P92AssetHandles;
 
-  bgmJingle: longint;
+var
+  texCGAFont: TTextureHandle;
+
+  bgmJingle: TSoundHandle;
 
 
 implementation

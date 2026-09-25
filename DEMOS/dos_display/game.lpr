@@ -120,7 +120,7 @@ begin
   row := charcode div 16;
   col := charcode mod 16;
 
-  texture := BorrowTexPtr(imgCGAFont);
+  texture := BorrowTexPtr(texCGAFont);
 
   for b:=0 to 7 do
   for a:=0 to 7 do begin
@@ -154,7 +154,7 @@ begin
   row := charcode div 16;
   col := charcode mod 16;
 
-  texture := BorrowTexPtr(imgCGAFont);
+  texture := BorrowTexPtr(texCGAFont);
 
   for b:=0 to 7 do
   for a:=0 to 7 do begin
@@ -177,7 +177,7 @@ var
   a: word;
   left: integer;
 begin
-  if not IsTexSet(imgCGAFont) then begin
+  if not IsTexSet(texCGAFont) then begin
     writeLog('blitText: image is unset');
     exit
   end;
@@ -459,15 +459,15 @@ var
   a, b: word;
   texture: PSoftwareTex;
 begin
-  if not IsTexSet(imgCGAFont) then begin
+  if not IsTexSet(texCGAFont) then begin
     writeLog('InitDefaultFont: texture is unset');
     exit
   end;
 
-  texture := BorrowTexPtr(imgCGAFont);
+  texture := BorrowTexPtr(texCGAFont);
 
-  for b:=0 to GetTexHeight(imgCGAFont) - 1 do
-    for a:=0 to GetTexWidth(imgCGAFont) - 1 do
+  for b:=0 to GetTexHeight(texCGAFont) - 1 do
+    for a:=0 to GetTexWidth(texCGAFont) - 1 do
       if UnsafeTexGetAlpha(texture, a, b) = 255 then
         UnsafeTexPSet(texture, a, b, LightGrey);
 end;
@@ -475,8 +475,7 @@ end;
 
 procedure OnPreload;
 begin
-  imgCGAFont := RequestImage('assets/images/CGA8x8.png');
-  imgCursor := RequestImage('assets/images/cursor.png');
+  texCGAFont := RequestImage('assets/images/CGA8x8.png');
 
   bgmJingle := RequestSound('assets/ogg/Jingle Bells (Chiptune Version) - Chiptune Arcade.ogg');
 end;

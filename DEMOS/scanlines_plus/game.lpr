@@ -23,10 +23,8 @@ var
 
 procedure OnPreload;
 begin
-  imgCursor := RequestImage('assets/images/cursor.png');
-
-  imgSpecimenP92[0] := RequestImage('assets/images/specimen_p-92_1.png');
-  imgSpecimenP92[1] := RequestImage('assets/images/specimen_p-92_2.png');
+  texSpecimenP92[0] := RequestImage('assets/images/specimen_p-92_1.png');
+  texSpecimenP92[1] := RequestImage('assets/images/specimen_p-92_2.png');
 end;
 
 procedure OnReady;
@@ -70,13 +68,13 @@ begin
   x := 160;
   y := 100;
 
-  w := trunc(GetTexWidth(imgSpecimenP92[1]) * scale);
-  h := trunc(GetTexHeight(imgSpecimenP92[1]) * scale);
+  w := trunc(GetTexWidth(texSpecimenP92[1]) * scale);
+  h := trunc(GetTexHeight(texSpecimenP92[1]) * scale);
 
   frameIdx := U16Iif((trunc(gameTime * 4) and 1) > 0, 1, 0);
 
   SprStretch(
-    imgSpecimenP92[frameIdx],
+    texSpecimenP92[frameIdx],
     x - w div 2, y - h div 2,
     w, h);
 

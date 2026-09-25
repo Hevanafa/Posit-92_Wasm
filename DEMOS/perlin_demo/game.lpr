@@ -46,16 +46,10 @@ var
   noiseCache, imgSmallNoise: longint;  { image handle }
 
 
-procedure DrawMouse;
-begin
-  spr(imgCursor, GetMouseX, GetMouseY)
-end;
-
 procedure OnPreload;
 begin
-  imgCursor := RequestImage('assets/images/cursor.png');
-  imgDosuExe[0] := RequestImage('assets/images/dosu_1.png');
-  imgDosuExe[1] := RequestImage('assets/images/dosu_2.png');
+  texDosuExe[0] := RequestImage('assets/images/dosu_1.png');
+  texDosuExe[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
 procedure OnReady;
@@ -70,8 +64,8 @@ var
 begin
   hideCursor;
 
-  blackFont := CloneBMFont(GetDefaultFontHandle);
-  replaceColour(BorrowBMFontPtr(blackFont)^.texHandle, white, black);
+  fontBlack := CloneBMFont(GetDefaultFontHandle);
+  replaceColour(BorrowBMFontPtr(fontBlack)^.texHandle, white, black);
 
   { Initialise game state here }
   gameTime := 0.0;
@@ -136,7 +130,7 @@ begin
   rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), white);
 
   if (getActiveWidget <> thisWidgetID) and (getHotWidget <> thisWidgetID) then
-    PrintBMFont(blackFont, caption, trunc(zone.x + 4), trunc(zone.y + 4))
+    PrintBMFont(fontBlack, caption, trunc(zone.x + 4), trunc(zone.y + 4))
   else
     TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
 
@@ -242,20 +236,19 @@ begin
 
   if (trunc(gameTime * 4) and 1) > 0 then
     spr(
-      imgDosuEXE[1],
-      (vgaWidth - GetTexWidth(imgDosuEXE[1])) div 2,
-      (vgaHeight - GetTexHeight(imgDosuEXE[0])) div 2)
+      texDosuExe[1],
+      (vgaWidth - GetTexWidth(texDosuExe[1])) div 2,
+      (vgaHeight - GetTexHeight(texDosuExe[0])) div 2)
   else
     spr(
-      imgDosuEXE[0],
-      (vgaWidth - GetTexWidth(imgDosuEXE[0])) div 2,
-      (vgaHeight - GetTexHeight(imgDosuEXE[0])) div 2);
+      texDosuExe[0],
+      (vgaWidth - GetTexWidth(texDosuExe[0])) div 2,
+      (vgaHeight - GetTexHeight(texDosuExe[0])) div 2);
 
   s := 'Perlin noise in Posit-92!';
   w := measureDefault(s);
   printDefault(s, (vgaWidth - w) div 2, 100);
 
-  DrawMouse;
   DrawFPS
 end;
 
