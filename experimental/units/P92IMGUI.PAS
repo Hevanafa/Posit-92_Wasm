@@ -88,7 +88,12 @@ procedure ListView(const items: array of string; var state: TListViewState);
 
 procedure Checkbox(const caption: string; const x, y: smallint; var state: boolean);
 
-procedure Slider(const x, y, width: smallint; var state: smallint; const minValue, maxValue: smallint);
+procedure Slider(
+  const x, y, width: smallint;
+  var state: smallint;
+  const minValue, maxValue: smallint
+);
+
 function SliderDrag(const x, y, width: smallint; var state: smallint; const minValue, maxValue: smallint): TSliderDragState;
 
 procedure ProgressBar(const x, y, width, height: smallint; const perc: double);
@@ -596,7 +601,13 @@ begin
 end;
 
 
-procedure Slider(const x, y, width: smallint; var state: smallint; const minValue, maxValue: smallint);
+procedure Slider(
+  const x, y, width: smallint;
+  var state: smallint;
+  const minValue, maxValue: smallint
+);
+const
+  Height = 7;
 var
   zone: TZone;
   thisWidgetID: smallint;
@@ -610,7 +621,7 @@ begin
   zone.x := x;
   zone.y := y;
   zone.width := width;
-  zone.height := 5;
+  zone.height := Height;
 
   { Update logic }
   thisWidgetID := nextWidgetID;
@@ -631,12 +642,12 @@ begin
   end;
 
   { Render logic }
-  line(x, y + 2, x + width, y + 2, Black);
+  Line(x, y + 3, x + width, y + 3, Black);
 
   perc := (state - minValue) / range;
   thumbX := round(x + perc * width);
 
-  rectfill(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), White);
+  rectfill(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 6), White);
 
   if activeWidget = thisWidgetID then
     { dragging }
@@ -647,7 +658,7 @@ begin
   else
     colour := AccentDark;
 
-  rect(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), colour)
+  rect(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 6), colour)
 end;
 
 function SliderDrag(const x, y, width: smallint; var state: smallint; const minValue, maxValue: smallint): TSliderDragState;
