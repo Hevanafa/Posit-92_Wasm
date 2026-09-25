@@ -79,7 +79,7 @@ procedure GuiSetFont(const fontHandle: TBMFontHandle);
 function GuiMeasureText(const text: string): smallint;
 function GuiMeasureTextWrapHeight(text: ShortString; const maxWidth: smallint): smallint;
 
-procedure AssertFontSet;
+procedure GuiAssertFontSet;
 
 { Widgets }
 procedure TextLabel(const text: string; const x, y: smallint);
@@ -244,7 +244,7 @@ begin
   activeFontHandle := fontHandle
 end;
 
-procedure AssertFontSet;
+procedure GuiAssertFontSet;
 begin
   if not isFontSet then
     PanicHalt('Immediate GUI: activeFont is unset!');
@@ -254,7 +254,7 @@ end;
   to measure the height, use `font.lineHeight` }
 function GuiMeasureText(const text: string): smallint;
 begin
-  AssertFontSet;
+  GuiAssertFontSet;
   GuiMeasureText := MeasureBMFont(activeFontHandle, text)
 end;
 
@@ -270,7 +270,7 @@ var
   spaceWidth: word;
   wordWidth, runWidth: word;
 begin
-  AssertFontSet;
+  GuiAssertFontSet;
 
   if maxWidth <= 0 then begin
     GuiMeasureTextWrapHeight := 0;
@@ -317,7 +317,7 @@ end;
 
 procedure TextLabel(const text: string; const x, y: smallint);
 begin
-  AssertFontSet;
+  GuiAssertFontSet;
   printBMFont(activeFontHandle, text, x, y)
 end;
 
@@ -334,7 +334,7 @@ var
   wordWidth, runWidth: word;
   left, top: word;
 begin
-  AssertFontSet;
+  GuiAssertFontSet;
 
   if maxWidth <= 0 then exit;
 
@@ -392,7 +392,7 @@ const
 var
   w: smallint;
 begin
-  AssertFontSet;
+  GuiAssertFontSet;
 
   w := GuiMeasureText(caption);
 
@@ -410,7 +410,7 @@ var
   thisWidgetID: smallint;
   buttonColour: longword;
 begin
-  AssertFontSet;
+  GuiAssertFontSet;
 
   zone.x := x;
   zone.y := y;
@@ -452,7 +452,7 @@ var
   thisWidgetID: smallint;
   buttonImgHandle: longword;
 begin
-  AssertFontSet;
+  GuiAssertFontSet;
 
   zone.x := x;
   zone.y := y;
@@ -498,7 +498,7 @@ var
   zone: TZone;
   clickedIndex: smallint;
 begin
-  AssertFontSet;
+  GuiAssertFontSet;
 
   { if (items = nil) or (items.count = 0) then exit; }
   if length(items) = 0 then exit;
@@ -554,7 +554,7 @@ var
   thisWidgetID: smallint;
   checkboxColour: longword;
 begin
-  AssertFontSet;
+  GuiAssertFontSet;
 
   fontPtr := BorrowBMFontPtr(activeFontHandle);
 
@@ -733,7 +733,7 @@ var
   percStr: string;
   w: word;
 begin
-  AssertFontSet;
+  GuiAssertFontSet;
 
   ProgressBar(x, y, width, height, perc);
   

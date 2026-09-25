@@ -21,7 +21,7 @@ procedure SprNineSlice(
 
 implementation
 
-uses P92Panic, P92Tex, P92TexDraw;
+uses P92Panic, P92Tex, P92TexDraw, P92IMGUI;
 
 procedure SprNineSlice(
   const texHandle: TTextureHandle;
@@ -92,7 +92,7 @@ function ButtonNineSlice(
   const texNormal, texHovered, texPressed: TTextureHandle
 ): boolean;
 begin
-  { TODO: Implement this }
+  GuiAssertFontSet;
 end;
 
 end.

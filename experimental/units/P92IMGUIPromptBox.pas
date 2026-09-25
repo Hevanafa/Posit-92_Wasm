@@ -100,7 +100,7 @@ var
   thisWidgetID: smallint;
   buttonColour: longword;
 begin
-  assertFontSet;
+  GuiAssertFontSet;
 
   zone.x := x;
   zone.y := y;
@@ -153,7 +153,7 @@ var
   thisWidgetID: smallint;
   buttonImgHandle: longword;
 begin
-  AssertFontSet;
+  GuiAssertFontSet;
 
   texturePtr := BorrowTexPtr(texNormal);
 
