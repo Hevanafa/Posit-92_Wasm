@@ -16,10 +16,6 @@ uses
   P92AssetHandles, P92BMFont, P92Geometry;
 
 type
-  TSliderState = record
-    value: smallint;
-  end;
-
   TSliderDragState = (
     SliderIdle,
     SliderHover,
@@ -93,8 +89,8 @@ procedure ListView(const items: array of string; var state: TListViewState);
 
 procedure Checkbox(const caption: string; const x, y: smallint; var state: boolean);
 
-procedure Slider(const x, y, width: smallint; var state: TSliderState; const minValue, maxValue: smallint);
-function SliderDrag(const x, y, width: smallint; var state: TSliderState; const minValue, maxValue: smallint): TSliderDragState;
+procedure Slider(const x, y, width: smallint; var state: smallint; const minValue, maxValue: smallint);
+function SliderDrag(const x, y, width: smallint; var state: smallint; const minValue, maxValue: smallint): TSliderDragState;
 
 procedure ProgressBar(const x, y, width, height: smallint; const perc: double);
 procedure ProgressBarLabelled(const x, y, width, height: smallint; const perc: double);
@@ -590,7 +586,7 @@ begin
 end;
 
 
-procedure Slider(const x, y, width: smallint; var state: TSliderState; const minValue, maxValue: smallint);
+procedure Slider(const x, y, width: smallint; var state: smallint; const minValue, maxValue: smallint);
 var
   zone: TZone;
   thisWidgetID: smallint;
@@ -621,13 +617,13 @@ begin
   if activeWidget = thisWidgetID then begin
     pendingValue := trunc(clamp(GetMouseX, x, x + width) - x);
     perc := pendingValue / width;
-    state.value := round(perc * range)
+    state := round(perc * range)
   end;
 
   { Render logic }
   line(x, y + 2, x + width, y + 2, Black);
 
-  perc := (state.value - minValue) / range;
+  perc := (state - minValue) / range;
   thumbX := round(x + perc * width);
 
   rectfill(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), White);
@@ -644,7 +640,7 @@ begin
   rect(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), colour)
 end;
 
-function SliderDrag(const x, y, width: smallint; var state: TSliderState; const minValue, maxValue: smallint): TSliderDragState;
+function SliderDrag(const x, y, width: smallint; var state: smallint; const minValue, maxValue: smallint): TSliderDragState;
 var
   zone: TZone;
   thisWidgetID: smallint;
@@ -675,13 +671,13 @@ begin
   if activeWidget = thisWidgetID then begin
     pendingValue := trunc(clamp(GetMouseX, x, x + width) - x);
     perc := pendingValue / width;
-    state.value := round(perc * range)
+    state := round(perc * range)
   end;
 
   { Render logic }
   line(x, y + 2, x + width, y + 2, Black);
 
-  perc := (state.value - minValue) / range;
+  perc := (state - minValue) / range;
   thumbX := round(x + perc * width);
 
   rectfill(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), White);

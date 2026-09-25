@@ -41,7 +41,7 @@ var
   listItems: array of string;
   listState: TListViewState;
 
-  sliderValue: TSliderState;
+  sliderValue: smallint;
 
 procedure DrawFPS;
 begin
@@ -156,7 +156,7 @@ begin
 
   GuiSetFont(fontRegular);
   Slider(120, 40, 100, sliderValue, 0, 100);
-  TextLabel('Slider value: ' + i32str(sliderValue.value), 120, 30);
+  TextLabel('Slider value: ' + i32str(sliderValue), 120, 30);
 
   { Migrated from the prompt box demo }
 
