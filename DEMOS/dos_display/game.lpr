@@ -315,7 +315,7 @@ begin
 
     PrintLn('');
     PrintLn('General heap');
-    PrintLn('  Heap size: ' + I32Str(GetHeapEnd - GetHeapStart));
+    PrintLn('  Heap size: ' + I32Str(BorrowFreeListRegionEnd - BorrowFreeListRegionStart));
 
   { end else if prog = 'FREE' then begin }
     { PrintLn(i32str(GetFreeHeapSize) + ' bytes free') }
@@ -505,7 +505,7 @@ begin
   PrintLn('Posit-92 (WASM) v' + Posit92Version);
   PrintLn('(C) 2025-26 Hevanafa');
 
-  { heapSize := GetHeapEnd - GetHeapStart;
+  { heapSize := BorrowFreeListRegionEnd - BorrowFreeListRegionStart;
   freeHeapSize := GetFreeHeapSize; }
   { PrintLn(i32str(heapSize div 1024) + 'KB OK  ' + i32str(freeHeapSize) + ' BYTES FREE'); }
   PrintLn(i32str(WasmMemorySize div 1024) + 'KB OK');

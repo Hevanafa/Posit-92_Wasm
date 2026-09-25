@@ -28,8 +28,6 @@ const
 procedure InitHeapRegion(const startAddr: pointer);
 
 function GetHeapRegionStart: pointer;
-function GetHeapStart: pointer;
-function GetHeapEnd: pointer;
 
 { Accessible externally, in use by RequestImage }
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
@@ -45,6 +43,9 @@ procedure JsReportFreeMem(bytes: longint); external 'env' name 'JsReportFreeMem'
 
 function GetBucketAllocStart: longword;
 function GetBucketAllocEnd: longword;
+
+function BorrowFreeListRegionStart: pointer;
+function BorrowFreeListRegionEnd: pointer;
 
 
 implementation
@@ -126,9 +127,9 @@ var
 
   buckets: array[0..BucketCount-1] of TBucket;
 
-  { General heap }
+  { Free list allocator }
 
-  heapStart, heapEnd: PByte;
+  freeListStart, freeListEnd: PByte;
   freeListHead: PBlockHeader;
 
 { Slab allocation }
@@ -262,7 +263,7 @@ end;
 
 function IsValidBlock(header: PBlockHeader): boolean;
 begin
-  IsValidBlock := (pbyte(header) >= heapStart) and (pbyte(header) < heapEnd)
+  IsValidBlock := (pbyte(header) >= freeListStart) and (pbyte(header) < freeListEnd)
 end;
 
 procedure InitLargeHeap(const baseAddr: pointer; const size: SizeUInt);
@@ -270,11 +271,11 @@ var
   firstBlock: PBlockHeader;
   payloadSize: longword;
 begin
-  heapStart := pbyte(baseAddr);
-  heapEnd := pbyte(baseAddr + size);
+  freeListStart := pbyte(baseAddr);
+  freeListEnd := pbyte(baseAddr + size);
 
   { Make the entire region a free block }
-  firstBlock := PBlockHeader(heapStart);
+  firstBlock := PBlockHeader(freeListStart);
   payloadSize := size - sizeof(TBlockHeader) - sizeof(TBlockFooter);
 
   SetBlockState(firstBlock, payloadSize, true);
@@ -426,14 +427,14 @@ begin
   GetHeapRegionStart := heapRegionStart
 end;
 
-function GetHeapStart: pointer;
+function BorrowFreeListRegionStart: pointer;
 begin
-  GetHeapStart := heapStart
+  BorrowFreeListRegionStart := freeListStart
 end;
 
-function GetHeapEnd: pointer;
+function BorrowFreeListRegionEnd: pointer;
 begin
-  GetHeapEnd := heapEnd
+  BorrowFreeListRegionEnd := freeListEnd
 end;
 
 
