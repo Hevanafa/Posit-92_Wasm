@@ -117,12 +117,17 @@ begin
     tex9SliceNormal,
     100, 100, 60, 30, demoMargins); }
 
+  GUISetFont(fontBlack);
+
   s := 'Clicks: ' + i32str(clicks);
 
-  ButtonNineSlice(
-    s,
-    100, 100, demoMargins,
-    tex9SliceNormal, tex9SliceHovered, tex9SlicePressed);
+  if ButtonNineSlice(
+      s,
+      100, 100, demoMargins,
+      tex9SliceNormal, tex9SliceHovered, tex9SlicePressed) then
+    inc(clicks);
+
+  GUISetFont(GetDefaultFontHandle);
 
   { w := MeasureBMFont(GetDefaultFontHandle, s);
   TextLabel(s, (vgaWidth - w) div 2, 120); }
