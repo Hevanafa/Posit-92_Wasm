@@ -29,12 +29,7 @@ type
   end;
 
 const
-  { Immediate GUI default theme
-    https://lospec.com/palette-list/ice-cream-gb }
-  IceCreamWhite = $FFFFF6D3;
-  IceCreamOrange = $FFF9A875;
-  IceCreamRed = $FFEB6B6F;
-  IceCreamMaroon = $FF7C3F58;
+  { Accent colours based on Specimen P-92 }
 
   AccentBright = $FF8CDE92;
   AccentDark = $FF04601C;
