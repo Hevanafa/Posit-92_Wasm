@@ -18,6 +18,13 @@ procedure SprNineSlice(
   const margins: TNineSliceMargins
 );
 
+function ButtonNineSlice(
+  const caption: string;
+  const x, y: smallint;
+  const margins: TNineSliceMargins;
+  const texNormal, texHovered, texPressed: TTextureHandle
+): boolean;
+
 
 implementation
 
@@ -85,6 +92,7 @@ begin
   SprRegion(texHandle, GetTexWidth(texHandle) - margins.right, GetTexHeight(texHandle) - margins.bottom, margins.right, margins.bottom, x + width - margins.right, y + height - margins.bottom);
 end;
 
+
 function ButtonNineSlice(
   const caption: string;
   const x, y: smallint;
@@ -122,8 +130,10 @@ begin
   else
     texHandle := texNormal;
 
-  { TODO: Replace this with 9 slice }
-  spr(texHandle, x, y);
+  { Spr(texHandle, x, y); }
+  SprNineSlice(texHandle, x, y, trunc(zone.width), trunc(zone.height), margins);
+
+  TextLabel(caption, x + margins.left, y + margins.top);
 
   if GetMouseJustReleased and (GetHotWidget = thisWidgetID) and (GetActiveWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }

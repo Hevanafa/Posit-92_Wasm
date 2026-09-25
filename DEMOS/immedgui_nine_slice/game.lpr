@@ -113,14 +113,19 @@ begin
   Spr(tex9SliceHovered, 60, 30);
   Spr(tex9SlicePressed, 90, 30);
 
-  SprNineSlice(
+  { SprNineSlice(
     tex9SliceNormal,
-    100, 100, 60, 30, demoMargins
-  );
+    100, 100, 60, 30, demoMargins); }
 
   s := 'Clicks: ' + i32str(clicks);
-  w := MeasureBMFont(GetDefaultFontHandle, s);
-  TextLabel(s, (vgaWidth - w) div 2, 120);
+
+  ButtonNineSlice(
+    s,
+    100, 100, demoMargins,
+    tex9SliceNormal, tex9SliceHovered, tex9SlicePressed);
+
+  { w := MeasureBMFont(GetDefaultFontHandle, s);
+  TextLabel(s, (vgaWidth - w) div 2, 120); }
 
   if showFPS.checked then DrawFPS;
 end;
