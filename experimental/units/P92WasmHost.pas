@@ -9,11 +9,14 @@ unit P92WasmHost;
 
 interface
 
-{$ifdef P92_WASM}
+{$IFDEF P92_WASM}
 procedure JsInitWasmMemory(requiredSize: longword); external 'env' name 'JsInitWasmMemory';
+procedure JsSetTitle; external 'env' name 'JsSetTitle';
 procedure JsCreateCanvas(width: integer; height: integer); external 'env' name 'JsCreateCanvas';
 procedure JsInitCanvasCtx; external 'env' name 'JsInitCanvasCtx';
 procedure JsSetTargetFPS(fps: smallint); external 'env' name 'JsSetTargetFPS';
+
+procedure SetWindowTitle(const newTitle: string);
 
 { Use this to set `done` to true }
 procedure SignalDone; external 'env' name 'SignalDone';
@@ -28,9 +31,22 @@ function GetFullscreenState: boolean; external 'env' name 'GetFullscreenState';
 procedure EndFullscreen; external 'env' name 'EndFullscreen';
 
 procedure JsTakeScreenshot; external 'env' name 'JsTakeScreenshot';
-{$endif}
+{$ENDIF}
+
 
 implementation
+
+{$IFDEF P92_WASM}
+
+uses P92InteropBuf;
+
+procedure SetWindowTitle(const newTitle: string);
+begin
+  WriteInteropString(newTitle);
+  JsSetTitle
+end;
+
+{$ENDIF}
 
 end.
 

@@ -29,6 +29,8 @@ procedure OnReady;
 begin
   HideCursor;
 
+  SetWindowTitle('Test new title!');
+
   { Initialise game state here }
   gameTime := 0.0
 end;
