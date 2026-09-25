@@ -95,6 +95,8 @@ begin
 end;
 
 function UnderButtonSized(const caption: string; const x, y, width, height: smallint): boolean;
+const
+  Padding = 4;
 var
   zone: TZone;
   thisWidgetID: smallint;
@@ -108,18 +110,19 @@ begin
   zone.height := height;
 
   { Update logic }
-  thisWidgetID := getNextWidgetID;
-  incNextWidgetID;
+
+  thisWidgetID := AcquireNextWidgetID;
 
   if AllowWidgetInteraction then begin
-    if pointInZone(GetMousePoint, zone) then begin
-      setHotWidget(thisWidgetID);
+    if PointInZone(GetMousePoint, zone) then begin
+      SetHotWidget(thisWidgetID);
 
-      if getMouseJustPressed then setActiveWidget(thisWidgetID);
+      if GetMouseJustPressed then SetActiveWidget(thisWidgetID);
     end;
   end;
 
   { Render logic }
+
   if getActiveWidget = thisWidgetID then
     buttonColour := AccentDark
   else if getHotWidget = thisWidgetID then
@@ -127,9 +130,17 @@ begin
   else
     buttonColour := AccentNormal;
 
-  rectfill(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), buttonColour);
-  rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), AccentDark);
-  TextLabel(caption, trunc(zone.x + 4), trunc(zone.y + 4));
+  RectFill(
+    x, y,
+    x + width, y + height,
+    buttonColour);
+
+  Rect(
+    x, y,
+    x + width, y + height,
+    AccentDark);
+
+  TextLabel(caption, x + Padding, y + Padding);
 
   if getMouseJustReleased and (getHotWidget = thisWidgetID) and (getActiveWidget = thisWidgetID) then begin
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
