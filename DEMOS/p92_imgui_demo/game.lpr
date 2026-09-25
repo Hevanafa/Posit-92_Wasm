@@ -215,6 +215,9 @@ begin
   { TextLabelWrap('This is a very long supercalifragilisticexpialidocious third line!', 10, 160, 100); }
   TextLabelWrap('1st line'#13#10'2nd line'#10'3rd longer line', 10, 160, 100);
 
+  TextLabel('Hot widget: ' + i32str(GetHotWidget), 10, 10);
+  TextLabel('Active widget: ' + i32str(GetActiveWidget), 10, 20);
+
   DrawMouse;
 
   if showFPS.checked then DrawFPS;
