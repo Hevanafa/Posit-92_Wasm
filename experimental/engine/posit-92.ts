@@ -74,6 +74,7 @@ type WasmImports = {
     _haltproc: (n: number) => void,
 
     JsInitWasmMemory: (requiredSize: number) => void,
+    JsSetTitle: () => void,
     JsCreateCanvas: (width: number, height: number) => void,
     JsInitCanvasCtx: () => void,
     JsSetTargetFPS: (fps: number) => void,
@@ -182,6 +183,7 @@ class Posit92 {
 
       // P92Core
       JsInitWasmMemory: this.#InitWasmMemory.bind(this),
+      JsSetTitle: this.#SetTitle.bind(this),
       JsCreateCanvas: this.#CreateCanvas.bind(this),
       JsInitCanvasCtx: this.#InitCanvasCtx.bind(this),
       JsSetTargetFPS: this.#SetTargetFPS.bind(this),
@@ -263,6 +265,11 @@ class Posit92 {
 
   #SetBufferHeight(value: number) {
     this.#bufferHeight = value
+  }
+
+  #SetTitle() {
+    const newTitle = this.ReadInteropBuffer();
+    document.title = newTitle
   }
 
   #CreateCanvas(width: number, height: number): void {
