@@ -512,7 +512,10 @@ end;
 
 procedure DrawFPS;
 begin
-  Print('FPS: ' + I32Str(GetLastFPS), fpsRight, fpsTop);
+  if bootConfig.LoadDefaultBMFont then
+    PrintDefault('FPS: ' + I32Str(GetLastFPS), fpsRight, fpsTop)
+  else
+    Print('FPS: ' + I32Str(GetLastFPS), fpsRight, fpsTop);
 
 {$ifdef DEBUG_FPS}
   print('lastFPS: ' + i32str(lastFPS), VgaWidth - 160, 16);
