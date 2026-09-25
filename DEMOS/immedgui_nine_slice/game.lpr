@@ -12,6 +12,7 @@ library Game;
 
 uses
   P92Core, P92BMFont, P92Fonts, P92Conversions, P92FPS, P92Graphics,
+  P92AssetRegistry,
   P92WasmHost, P92Tex, P92TexDraw, P92TexEffects, P92Keyboard, P92Mouse, P92AssetHandles,
   P92Geometry, P92Timing, P92VGA, P92IMGUI, P92IMGUIPromptBox, P92Panic,
   Assets;
@@ -128,7 +129,9 @@ begin
 
   SetPromptBoxAssets(texPromptBG, texPromptButtonNormal, texPromptButtonNormal, texPromptButtonPressed);
 
-  ReplaceColour(fontBlack.imgHandle, $FFFFFFFF, $FF000000);
+  ReplaceColour(
+    BorrowBMFontPtr(fontBlack)^.texHandle,
+    $FFFFFFFF, $FF000000);
 
   clicks := 0;
   showFPS.checked := true;
@@ -169,7 +172,7 @@ begin
   );
 
   s := 'Clicks: ' + i32str(clicks);
-  w := MeasureBMFont(defaultFontGlyphs, s);
+  w := MeasureBMFont(GetDefaultFontHandle, s);
   TextLabel(s, (vgaWidth - w) div 2, 120);
 
   if showFPS.checked then DrawFPS;
