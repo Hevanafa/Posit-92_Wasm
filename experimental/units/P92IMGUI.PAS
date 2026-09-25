@@ -120,7 +120,6 @@ const
 var
   { Immediate GUI }
   { Additional mouse variables }
-  mousePoint: TPoint;
   lastMouseButton: smallint;
   mouseJustPressed, mouseJustReleased: boolean;
 
@@ -143,20 +142,12 @@ begin
   nextWidgetID := 0;
   lastActiveWidget := -1;
 
-  mousePoint.x := 0;
-  mousePoint.y := 0;
-
   isFontSet := false;
 
   if useDefaultFont then
     GUISetFont(GetDefaultFontHandle)
   else
     GUISetFont(0);
-end;
-
-function GetMousePoint: TPoint;
-begin
-  GetMousePoint := mousePoint
 end;
 
 function GetMouseJustPressed: boolean;
@@ -417,7 +408,7 @@ begin
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
-  if pointInZone(mousePoint, zone) then begin
+  if PointInZone(GetMousePoint, zone) then begin
     hotWidget := thisWidgetID;
 
     if mouseJustPressed then activeWidget := thisWidgetID;
@@ -459,7 +450,7 @@ begin
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
-  if pointInZone(mousePoint, zone) then begin
+  if PointInZone(GetMousePoint, zone) then begin
     hotWidget := thisWidgetID;
 
     if mouseJustPressed then activeWidget := thisWidgetID;
@@ -514,7 +505,7 @@ begin
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
-  if pointInZone(mousePoint, zone) then begin
+  if PointInZone(GetMousePoint, zone) then begin
     hotWidget := thisWidgetID;
 
     if mouseJustPressed then begin
@@ -565,7 +556,7 @@ begin
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
-  if pointInZone(mousePoint, zone) then begin
+  if PointInZone(GetMousePoint, zone) then begin
     hotWidget := thisWidgetID;
 
     if mouseJustPressed then activeWidget := thisWidgetID;
@@ -604,7 +595,8 @@ var
   pendingValue, thumbX: smallint;
   colour: longword;
 begin
-  if minValue >= maxValue then panicHalt('Slider: minValue has to be less than maxValue!');
+  if minValue >= maxValue then
+    PanicHalt('Slider: minValue has to be less than maxValue!');
 
   zone.x := x;
   zone.y := y;
@@ -615,7 +607,7 @@ begin
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
-  if pointInZone(mousePoint, zone) then begin
+  if PointInZone(GetMousePoint, zone) then begin
     hotWidget := thisWidgetID;
 
     if mouseJustPressed then activeWidget := thisWidgetID;
@@ -668,7 +660,7 @@ begin
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
-  if pointInZone(mousePoint, zone) then begin
+  if pointInZone(GetMousePoint, zone) then begin
     hotWidget := thisWidgetID;
 
     if mouseJustPressed then
