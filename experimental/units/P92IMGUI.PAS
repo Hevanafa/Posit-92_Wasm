@@ -533,19 +533,23 @@ begin
 
   RectFill(
     state.x, state.y,
-    state.x + widgetWidth, state.y + widgetHeight,
+    state.x + widgetWidth - 1, state.y + widgetHeight - 1,
     AccentDark);
 
   RectFill(
     state.x, state.y + lineHeight * state.selectedIndex,
-    state.x + widgetWidth, state.y + lineHeight * (state.selectedIndex + 1), AccentNormal);
+    state.x + widgetWidth - 1, state.y + lineHeight * (state.selectedIndex + 1) - 1,
+    AccentNormal);
 
   for a:=0 to length(items)-1 do
     TextLabel(
       items[a],
       state.x + 2, state.y + 2 + lineHeight * a);
 
-  rect(state.x, state.y, state.x + widgetWidth, state.y + widgetHeight, AccentPale);
+  Rect(
+    state.x, state.y,
+    state.x + widgetWidth - 1, state.y + widgetHeight - 1,
+    AccentPale);
 end;
 
 procedure Checkbox(const caption: string; const x, y: smallint; var state: boolean);
