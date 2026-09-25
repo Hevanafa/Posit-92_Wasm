@@ -15,7 +15,8 @@ uses
   P92Core, P92Fonts, P92WasmHost, P92AssetRegistry, P92Conversions, P92FPS,
   P92Graphics, P92Logger, P92InteropBuf, P92Keyboard, P92Mouse,
   P92Tex, P92TexDraw, P92Strings, P92Sounds, P92Timing, P92WasmMemMgr, P92WasmHeap,
-  VGA, Assets;
+  P92VGA,
+  Assets;
 
 const
   BufferWidth = 40;
@@ -97,7 +98,7 @@ begin
   MakeColour := (bg shl 4) or fg
 end;
 
-procedure Cls;
+procedure ClrScr;
 begin
   fillchar(charBuffer, CharBufferSize, 0);
   cursorLeft := 0;
@@ -273,7 +274,8 @@ begin
   Split(cmd, ' ', words);
   prog := words[0];
   
-  if prog = 'CLS' then Cls
+  if prog = 'CLS' then
+    ClrScr
   else if prog = 'DATE' then begin
     PrintLn(QueryDate)
 
@@ -355,7 +357,7 @@ var
   scancode: byte;
 begin
   for scancode:=0 to 255 do
-    if isKeyDown(scancode) and not (scancode in lastKeyStates) then
+    if IsKeyDown(scancode) and not (scancode in lastKeyStates) then
       { handleKeyPress(scancode); }
       case scancode of
         SC_A: AppendCurrentInput('A');
@@ -457,7 +459,7 @@ var
   texture: PSoftwareTex;
 begin
   if not IsTexSet(imgCGAFont) then begin
-    writeLog('initDefaultFont: image is unset');
+    writeLog('InitDefaultFont: texture is unset');
     exit
   end;
 
@@ -483,7 +485,7 @@ var
   a: word;
   { heapSize, freeHeapSize: longword; }
 begin
-  hideCursor;
+  { hideCursor; }
 
   InitDefaultFont;
 
@@ -498,7 +500,7 @@ begin
   currentColour := MakeColour(7, 0);
 
   { Welcome message }
-  Cls;
+  ClrScr;
   PrintLn('');
   PrintLn('Posit-92 Wasm ' + Posit92Version);
   PrintLn('(C) 2025 Hevanafa');
@@ -519,7 +521,7 @@ var
   a: word;
   drift: double;
 begin
-  CheckKeys;
+  { CheckKeys; }
 
   if renderSnow then begin
     for a:=0 to high(snowflakes) do begin
@@ -555,7 +557,7 @@ var
   grey: byte;
   timeOffset: double;
 begin
-  vgaCls(black);
+  Cls(black);
 
   if renderSnow then begin
     { Render snowflakes }
@@ -606,7 +608,21 @@ begin
   DrawFPS;
 end;
 
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  appConfig.LoadDefaultBMFont := false;
+  appConfig.LoadDefaultCursor := false;
+
+  P92Start(appConfig);
+end;
+
+
 exports
+  Init,
   InitDefaultFont,
   OnPreload,
   OnReady,
