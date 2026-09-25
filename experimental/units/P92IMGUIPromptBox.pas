@@ -123,9 +123,9 @@ begin
   if getActiveWidget = thisWidgetID then
     buttonColour := AccentDark
   else if getHotWidget = thisWidgetID then
-    buttonColour := AccentLight
+    buttonColour := AccentPale
   else
-    buttonColour := AccentBright;
+    buttonColour := AccentNormal;
 
   rectfill(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), buttonColour);
   rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), AccentDark);

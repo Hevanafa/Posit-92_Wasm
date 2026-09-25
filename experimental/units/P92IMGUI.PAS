@@ -31,9 +31,9 @@ type
 const
   { Accent colours based on Specimen P-92 }
 
-  AccentBright = $FF8CDE92;
+  AccentNormal = $FF8CDE92;
   AccentDark = $FF04601C;
-  AccentLight = $FFDEF6B8;
+  AccentPale = $FFDEF6B8;
 
 procedure InitImmediateGUI(useDefaultFont: boolean = true);
 
@@ -413,9 +413,9 @@ begin
   if activeWidget = thisWidgetID then
     buttonColour := AccentDark
   else if hotWidget = thisWidgetID then
-    buttonColour := AccentBright
+    buttonColour := AccentPale
   else 
-    buttonColour := AccentLight;
+    buttonColour := AccentNormal;
 
   RectFill(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), buttonColour);
   Rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), AccentDark);
@@ -579,7 +579,7 @@ begin
     checkboxColour := AccentDark
   else if hotWidget = thisWidgetID then
     { on hover }
-    checkboxColour := AccentBright
+    checkboxColour := AccentNormal
   else
     checkboxColour := AccentDark;
 
@@ -643,7 +643,7 @@ begin
     colour := AccentDark
   else if hotWidget = thisWidgetID then
     { hovering }
-    colour := AccentBright
+    colour := AccentNormal
   else
     colour := AccentDark;
 
@@ -697,7 +697,7 @@ begin
     colour := AccentDark
   else if hotWidget = thisWidgetID then
     { hovering }
-    colour := AccentBright
+    colour := AccentNormal
   else
     colour := AccentDark;
 
@@ -721,7 +721,7 @@ begin
   w := trunc(clamp(perc, 0.0, 1.0) * width);
 
   RectFill(x, y, x + width, y + height, black);
-  RectFill(x, y, trunc(x + w), y + height, AccentBright);
+  RectFill(x, y, trunc(x + w), y + height, AccentNormal);
   Rect(x, y, x + width, y + height, white);
 end;
 
