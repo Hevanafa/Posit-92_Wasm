@@ -533,10 +533,14 @@ begin
 end;
 
 procedure Checkbox(const caption: string; const x, y: smallint; var state: boolean);
+const
+  Width = 7;
+  Height = 7;
+  Spacing = 2;
 var
   fontPtr: PBMFont;
   zone: TZone;
-  w: smallint;
+  textWidth: smallint;
   thisWidgetID: smallint;
   checkboxColour: longword;
 begin
@@ -547,8 +551,8 @@ begin
   zone.x := x;
   zone.y := y;
 
-  w := GUIMeasureText(caption);
-  zone.width := w + 6;
+  textWidth := GUIMeasureText(caption);
+  zone.width := Width + Spacing + textWidth;
   zone.height := fontPtr^.lineHeight;
 
   { Update logic }
@@ -563,9 +567,13 @@ begin
 
   { Render logic }
   if state then
-    RectFill(trunc(zone.x), trunc(zone.y), trunc(zone.x + 5), trunc(zone.y + 5), Black)
+    RectFill(
+      trunc(zone.x), trunc(zone.y),
+      trunc(zone.x + Width - 1), trunc(zone.y + Height - 1), Black)
   else
-    RectFill(trunc(zone.x), trunc(zone.y), trunc(zone.x + 5), trunc(zone.y + 5), White);
+    RectFill(
+      trunc(zone.x), trunc(zone.y),
+      trunc(zone.x + Width - 1), trunc(zone.y + Height - 1), White);
 
   if activeWidget = thisWidgetID then
     { on held down }
@@ -576,8 +584,11 @@ begin
   else
     checkboxColour := Black;
 
-  rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + 5), trunc(zone.y + 5), checkboxColour);
-  TextLabel(caption, trunc(zone.x + 7), trunc(zone.y));
+  Rect(
+    trunc(zone.x), trunc(zone.y),
+    trunc(zone.x + Width - 1), trunc(zone.y + Width - 1), checkboxColour);
+
+  TextLabel(caption, trunc(zone.x + Width + Spacing), trunc(zone.y));
 
   if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then begin
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
