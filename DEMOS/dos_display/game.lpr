@@ -298,16 +298,24 @@ begin
     PrintLn('  JINGLE  Play Jingle Bells')
 
   end else if prog = 'MEM' then begin
-    heapSize := GetHeapEnd - GetHeapStart;
-    freeHeapSize := GetFreeHeapSize;
+    heapSize := WasmMemorySize - GetHeapRegionStart;
+    { freeHeapSize := GetFreeHeapSize; }
 
     PrintLn('Total heap: ' + i32str(heapSize div 1024) + 'KB');
+    PrintLn('Used: ?');
+    PrintLn('Available: ?');
+
+    PrintLn('Small allocation pool');
+    PrintLn('General heap');
+
+    {
     PrintLn('Used: ' + i32str(heapSize - freeHeapSize) + ' bytes');
     PrintLn('Free: ' + i32str(freeHeapSize) + ' bytes');
     PrintLn('Heap usage: ' + toFixed((heapSize - freeHeapSize) / heapSize * 100.0, 0) + '%');
+    }
 
   end else if prog = 'FREE' then begin
-    PrintLn(i32str(GetFreeHeapSize) + ' bytes free')
+    { PrintLn(i32str(GetFreeHeapSize) + ' bytes free') }
 
   end else if prog = 'DIR' then begin
     PrintLn('Volume in drive C is POSIT92');
@@ -448,12 +456,12 @@ var
   a, b: word;
   texture: PSoftwareTex;
 begin
-  if not IsTextureSet(imgCGAFont) then begin
+  if not IsTexSet(imgCGAFont) then begin
     writeLog('initDefaultFont: image is unset');
     exit
   end;
 
-  texture := GetTexturePtr(imgCGAFont);
+  texture := BorrowTexPtr(imgCGAFont);
 
   for b:=0 to GetTexHeight(imgCGAFont) - 1 do
     for a:=0 to GetTexWidth(imgCGAFont) - 1 do
@@ -473,7 +481,7 @@ end;
 procedure OnReady;
 var
   a: word;
-  heapSize, freeHeapSize: longword;
+  { heapSize, freeHeapSize: longword; }
 begin
   hideCursor;
 
@@ -492,12 +500,13 @@ begin
   { Welcome message }
   Cls;
   PrintLn('');
-  PrintLn('Posit-92 Wasm ' + Posit92_Version);
+  PrintLn('Posit-92 Wasm ' + Posit92Version);
   PrintLn('(C) 2025 Hevanafa');
 
-  heapSize := GetHeapEnd - GetHeapStart;
-  freeHeapSize := GetFreeHeapSize;
-  PrintLn(i32str(heapSize div 1024) + 'KB OK  ' + i32str(freeHeapSize) + ' BYTES FREE');
+  { heapSize := GetHeapEnd - GetHeapStart;
+  freeHeapSize := GetFreeHeapSize; }
+  { PrintLn(i32str(heapSize div 1024) + 'KB OK  ' + i32str(freeHeapSize) + ' BYTES FREE'); }
+  PrintLn(i32str(WasmMemorySize div 1024) + 'KB OK');
 
   PrintLn('');
   PrintLn('Type HELP for available commands');

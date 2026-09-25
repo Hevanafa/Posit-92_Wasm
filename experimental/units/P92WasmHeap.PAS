@@ -30,6 +30,8 @@ const
 
 procedure InitHeapRegion(const startAddr: pointer);
 
+function GetHeapRegionStart: longword;
+
 { Accessible externally, in use by RequestImage }
 function WasmGetMem(const bytes: longword): pointer; public name 'WasmGetMem';
 procedure WasmFreeMem(const ptr: pointer);
@@ -415,6 +417,11 @@ begin
 end;
 
 { Begin generic allocator functions }
+
+function GetHeapRegionStart: longword;
+begin
+  GetHeapRegionStart := longword(bucketAllocStart)
+end;
 
 function WasmGetMem(const bytes: longword): pointer;
 begin
