@@ -4,10 +4,10 @@ library Game;
 {$J-}  { Switch off assignments to typed constants }
 
 uses
-  P92Core, P92Fonts, P92WasmHost,
+  P92Core, P92Fonts, P92WasmHost, P92AssetRegistry,
   P92BMFont, P92Graphics, P92Loading,
   P92Conversions, P92FPS, P92Logger,
-  P92Keyboard, P92Mouse, Gamepad,
+  P92Keyboard, P92Mouse, P92Gamepad,
   P92Tex, P92TexDraw, P92TexEffects,
   P92Timing, P92VGA,
   Assets;
@@ -27,12 +27,7 @@ var
 
 procedure DrawFPS;
 begin
-  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
-end;
-
-procedure DrawMouse;
-begin
-  spr(imgCursor, mouseX, mouseY)
+  PrintDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
 procedure OnPreload;
@@ -43,14 +38,12 @@ end;
 procedure BeginPlayingState;
 begin
   HideCursor;
-  FitCanvas;
 
   { Initialise game state here }
   gameTime := 0.0;
 
-  greyFont := DefaultFontPtr^;
-  greyFont.texHandle := CopyTexture(DefaultFontPtr^.texHandle);
-  replaceColour(greyFont.texHandle, white, lightgrey)
+  fontGrey := CloneBMFont(GetDefaultFontHandle);
+  ReplaceColour(BorrowBMFontPtr(fontGrey)^.texHandle, white, lightgrey)
 end;
 
 procedure StateLabel(const text: string; const x, y: integer; const enabled: boolean);
@@ -58,7 +51,7 @@ begin
   if enabled then
     PrintDefault(text, x, y)
   else
-    PrintBMFont(greyFont, DefaultFontGlyphsPtr^, text, x, y);
+    PrintBMFont(fontGrey, text, x, y);
 end;
 
 
@@ -69,19 +62,10 @@ end;
 
 procedure Update;
 begin
-  UpdateDeltaTime;
-  IncrementFPS;
-
-  { Handle inputs }
-  UpdateMouse;
-
   if lastEsc <> isKeyDown(SC_ESCAPE) then begin
     lastEsc := isKeyDown(SC_ESCAPE);
 
-    if lastEsc then begin
-      writeLog('ESC is pressed!');
-      signalDone
-    end;
+    if lastEsc then SignalDone;
   end;
 
   { Handle game state updates }
@@ -162,15 +146,26 @@ begin
     printDefault('RY: ' + f32str(rightY), 220, 160);
   end;
 
-  DrawMouse;
   DrawFPS;
 end;
 
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  P92Start(appConfig);
+end;
+
 exports
-  OnPreload, OnReady,
-  Update, Draw;
+  Init,
+  OnPreload,
+  OnReady,
+  Update,
+  Draw;
 
 begin
-{ Starting point is intentionally left empty }
+  { Starting point is intentionally left empty }
 end.
 
