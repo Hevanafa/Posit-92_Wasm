@@ -1,7 +1,15 @@
 {
   Immediate Mode GUI unit
   Part of Posit-92 game engine
-  By Hevanafa
+
+  Convention:
+  - `x` and `y` are the origin
+  - `width` and `height` are the size
+  - Render logic must use `width - 1` adjustment, and `height - 1` if applicable
+  - As for the hit test, prefer using `PointInZone`
+
+  So, the range is like this:
+  x is 0% (origin) and width is 100%
 }
 
 unit P92IMGUI;
