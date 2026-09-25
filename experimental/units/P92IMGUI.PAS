@@ -744,12 +744,11 @@ begin
   end;
 
   { Render logic }
-  line(x, y + 2, x + width, y + 2, Black);
+
+  Line(x, y + 2, x + width - 1, y + 2, Black);
 
   perc := (state - minValue) / range;
   thumbX := round(x + perc * width);
-
-  rectfill(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), White);
 
   if activeWidget = thisWidgetID then
     { dragging }
@@ -760,7 +759,13 @@ begin
   else
     colour := AccentDark;
 
-  rect(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 4), colour);
+  RectFill(
+    thumbX - 2, y,
+    thumbX + 2, y + 4, White);
+
+  Rect(
+    thumbX - 2, y,
+    thumbX + 2, y + 4, colour);
 
   if activeWidget = thisWidgetID then
     SliderDrag := SliderDragging
