@@ -9,12 +9,12 @@ uses P92AssetHandles;
 
 type
   TNineSliceMargins = record
-    top, right, bottom, left: integer
+    top, right, bottom, left: smallint
   end;
 
 procedure SprNineSlice(
   const texHandle: TTextureHandle;
-  const x, y, width, height: integer;
+  const x, y, width, height: smallint;
   const margins: TNineSliceMargins
 );
 
@@ -32,12 +32,12 @@ uses P92Panic, P92Tex, P92TexDraw, P92IMGUI, P92Geometry, P92AssetRegistry, P92M
 
 procedure SprNineSlice(
   const texHandle: TTextureHandle;
-  const x, y, width, height: integer;
+  const x, y, width, height: smallint;
   const margins: TNineSliceMargins
 );
 var
-  srcCentreW, srcCentreH: integer;
-  destCentreW, destCentreH: integer;
+  srcCentreW, srcCentreH: smallint;
+  destCentreW, destCentreH: smallint;
 begin
   if not IsTexSet(texHandle) then
     PanicHalt('SprNineSlice: texHandle is unset ' + '!');
@@ -48,7 +48,8 @@ begin
   destCentreH := height - margins.top - margins.bottom;
 
   { Middle fill }
-  SprRegionStretch(texHandle,
+  SprRegionStretch(
+    texHandle,
     margins.left, margins.top, srcCentreW, srcCentreH,
     x + margins.left, y + margins.top, destCentreW, destCentreH);
 
@@ -75,7 +76,6 @@ begin
   { Left side }
   SprRegionStretch(
     texHandle,
-
     0, margins.top, margins.left, srcCentreH,
     x, y + margins.top, margins.left, destCentreH);
 
@@ -101,18 +101,22 @@ function ButtonNineSlice(
 ): boolean;
 var
   zone: TZone;
-  w: smallint;
+  width, height: smallint;
   thisWidgetID: smallint;
   texHandle: TTextureHandle;
 begin
   GUIAssertFontSet;
 
+  width := GUIMeasureText(caption) + margins.left + margins.right;
+  height := BorrowBMFontPtr(GetGUIActiveFontHandle)^.lineHeight + margins.top + margins.bottom;
+
   zone.x := x;
   zone.y := y;
-  zone.width := GUIMeasureText(caption) + margins.left + margins.right;
-  zone.height := BorrowBMFontPtr(GetGUIActiveFontHandle)^.lineHeight + margins.top + margins.bottom;
+  zone.width := width;
+  zone.height := height;
 
   { Update logic }
+
   thisWidgetID := GetNextWidgetID;
   IncNextWidgetID;
 
@@ -123,6 +127,7 @@ begin
   end;
 
   { Render logic }
+
   if GetActiveWidget = thisWidgetID then
     texHandle := texPressed
   else if GetHotWidget = thisWidgetID then
@@ -130,8 +135,9 @@ begin
   else
     texHandle := texNormal;
 
-  { Spr(texHandle, x, y); }
-  SprNineSlice(texHandle, x, y, trunc(zone.width), trunc(zone.height), margins);
+  SprNineSlice(
+    texHandle,
+    x, y, width, height, margins);
 
   TextLabel(caption, x + margins.left, y + margins.top);
 
