@@ -573,11 +573,11 @@ begin
   if state then
     RectFill(
       trunc(zone.x), trunc(zone.y),
-      trunc(zone.x + Width - 1), trunc(zone.y + Height - 1), Black)
+      trunc(zone.x + Width - 1), trunc(zone.y + Height - 1), AccentDark)
   else
     RectFill(
       trunc(zone.x), trunc(zone.y),
-      trunc(zone.x + Width - 1), trunc(zone.y + Height - 1), White);
+      trunc(zone.x + Width - 1), trunc(zone.y + Height - 1), AccentPale);
 
   if activeWidget = thisWidgetID then
     { on held down }
