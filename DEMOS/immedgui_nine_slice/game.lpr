@@ -12,20 +12,13 @@ library Game;
 
 uses
   P92Core, P92BMFont, P92Fonts, P92Conversions, P92FPS, P92Graphics,
-  P92AssetRegistry,
-  P92WasmHost, P92Tex, P92TexDraw, P92TexEffects, P92Keyboard, P92Mouse, P92AssetHandles,
-  P92Geometry, P92Timing, P92VGA, P92IMGUI, P92IMGUIPromptBox, P92Panic,
+  P92AssetRegistry, P92WasmHost, P92Tex, P92TexDraw, P92TexEffects,
+  P92Keyboard, P92Mouse, P92AssetHandles, P92Geometry, P92Timing,
+  P92VGA, P92Panic,
+  P92IMGUI, P92IMGUIPromptBox, P92IMGUI9Slice,
   Assets;
 
-type
-  TNineSliceMargins = record
-    top, right, bottom, left: integer
-  end;
-
 const
-  SC_ESC = $01;
-  SC_SPACE = $39;
-
   CornflowerBlue = $FF6495ED;
   SemitransparentBlack = $80000000;
 
@@ -50,71 +43,9 @@ end;
 procedure DrawMouse;
 begin
   if hasHoveredWidget then
-    spr(texHandCursor, GetMouseX - 5, GetMouseY - 1)
+    Spr(texHandCursor, GetMouseX - 5, GetMouseY - 1)
   else
-    spr(texCursor, GetMouseX, GetMouseY);
-end;
-
-
-procedure SprNineSlice(
-  const texHandle: TTextureHandle;
-  const x, y, width, height: integer;
-  const margins: TNineSliceMargins);
-var
-  srcCentreW, srcCentreH: integer;
-  destCentreW, destCentreH: integer;
-begin
-  if not IsTexSet(texHandle) then
-    panicHalt('sprNineSlice: imgHandle is ' + i32str(texHandle) + '!');
-
-  srcCentreW := GetTexWidth(texHandle) - margins.left - margins.right;
-  srcCentreH := GetTexHeight(texHandle) - margins.top - margins.bottom;
-  destCentreW := width - margins.left - margins.right;
-  destCentreH := height - margins.top - margins.bottom;
-
-  { Middle fill }
-  sprRegionStretch(texHandle,
-    margins.left, margins.top, srcCentreW, srcCentreH,
-    x + margins.left, y + margins.top, destCentreW, destCentreH);
-  
-  { Top side }
-  sprRegionStretch(
-    texHandle,
-    margins.left, 0, srcCentreW, margins.top,
-    x + margins.left, y, destCentreW, margins.top);
-  
-  { Bottom side }
-  SprRegionStretch(
-    texHandle,
-
-    margins.left,
-    GetTexHeight(texHandle) - margins.bottom,
-    srcCentreW,
-    margins.bottom,
-
-    x + margins.left,
-    y + height - margins.bottom,
-    destCentreW,
-    margins.bottom);
-
-  { Left side }
-  sprRegionStretch(
-    texHandle,
-
-    0, margins.top, margins.left, srcCentreH,
-    x, y + margins.top, margins.left, destCentreH);
-
-  { Right side }
-  sprRegionStretch(
-    texHandle,
-    GetTexWidth(texHandle) - margins.right, margins.top, margins.right, srcCentreH,
-    x + width - margins.right, y + margins.top, margins.right, destCentreH);
-
-  { Corners }
-  sprRegion(texHandle, 0, 0, margins.left, margins.top, x, y);
-  sprRegion(texHandle, GetTexWidth(texHandle) - margins.right, 0, margins.right, margins.top, x + width - margins.right, y);
-  sprRegion(texHandle, 0, GetTexHeight(texHandle) - margins.bottom, margins.left, margins.bottom, x, y + height - margins.bottom);
-  sprRegion(texHandle, GetTexWidth(texHandle) - margins.right, GetTexHeight(texHandle) - margins.bottom, margins.right, margins.bottom, x + width - margins.right, y + height - margins.bottom);
+    Spr(texCursor, GetMouseX, GetMouseY);
 end;
 
 
@@ -157,8 +88,8 @@ end;
 
 procedure Update;
 begin
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
+  if lastEsc <> isKeyDown(SC_ESCAPE) then begin
+    lastEsc := isKeyDown(SC_ESCAPE);
 
     if lastEsc then SignalDone;
   end;
@@ -178,9 +109,9 @@ begin
     ShowPromptBox('Accept?', PromptTest);
 }
 
-  spr(tex9SliceNormal, 30, 30);
-  spr(tex9SliceHovered, 60, 30);
-  spr(tex9SlicePressed, 90, 30);
+  Spr(tex9SliceNormal, 30, 30);
+  Spr(tex9SliceHovered, 60, 30);
+  Spr(tex9SlicePressed, 90, 30);
 
   SprNineSlice(
     tex9SliceNormal,
