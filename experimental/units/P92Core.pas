@@ -230,7 +230,7 @@ begin
   engineRunState := ersBoot;
 
   if DebugEngineRunStates then
-    writelog('ersBoot');
+    WriteLog('ersBoot');
 
 {$ifdef P92_SDL2}
   InitVideoMem(
@@ -389,17 +389,15 @@ begin
   ResetActiveWidget;
 {$endif}
 
-{$ifdef P92_WASM}
+{$IFDEF P92_WEBGL}
+  DrawMouse;
+  VGAUpload;
+  WebGLPresent;
+{$ELSE}
   DrawMouse;
   VGAUpload;
   VGAPresent;
-{$endif}
-
-{$ifdef P92_WEBGL}
-  DrawMouse;
-  VgaUpload;
-  WebGLPresent;
-{$endif}
+{$ENDIF}
 
 {$ifdef P92_SDL2}
   VgaUpload;
