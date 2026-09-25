@@ -4,9 +4,9 @@ library Game;
 {$H+}{$J-}
 
 uses
-  P92Core, P92Fonts, P92Conversions, P92FPS, P92WasmHost,
+  P92Core, P92Fonts, P92Conversions, P92FPS, P92WasmHost, P92AssetRegistry,
   P92Keyboard, P92Mouse, P92Logger, P92Geometry,
-  P92Tex, P92TexDraw, P92Timing, P92VGA,
+  P92Tex, P92TexDraw, P92TexEffects, P92Timing, P92VGA,
   Assets;
 
 const
@@ -35,22 +35,25 @@ var
 
 procedure DrawFPS;
 begin
-  printDefault('FPS:' + i32str(getLastFPS), 240, 0);
+  PrintDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
-procedure drawMouse;
+
+procedure OnPreload;
 begin
-  Spr(imgCursor, GetMouseX, GetMouseY)
+  imgParticle := RequestImage('assets/images/particle.png');
+
+  imgDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
+  imgDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
 end;
 
-procedure beginPlayingState;
+procedure OnReady;
 var
   a: word;
 begin
-  { HideCursor; }
+  HideCursor;
 
   { Initialise game state here }
-  actualGameState := GameStatePlaying;
   gameTime := 0.0;
 
   { Default: cyan }
@@ -62,9 +65,10 @@ begin
   palette[4] := $FFFF55FF;
 
   imgParticles[0] := imgParticle;
+
   for a:=1 to high(palette) do begin
-    imgParticles[a] := copyImage(imgParticle);
-    replaceColour(imgParticles[a], palette[0], palette[a])
+    imgParticles[a] := CloneTex(imgParticle);
+    ReplaceColour(imgParticles[a], palette[0], palette[a])
   end;
 end;
 
@@ -106,44 +110,35 @@ procedure Update;
 var
   a: integer;
 begin
-  updateDeltaTime;
-  incrementFPS;
+  if lastEsc <> isKeyDown(SC_ESCAPE) then begin
+    lastEsc := isKeyDown(SC_ESCAPE);
 
-  updateMouse;
-
-  { Your Update logic here }
-  if lastEsc <> isKeyDown(SC_ESC) then begin
-    lastEsc := isKeyDown(SC_ESC);
-
-    if lastEsc then begin
-
-      signalDone
-    end;
+    if lastEsc then signalDone
   end;
 
-  if lastMouseLeft <> EnumHasFlag(mouseButton, MouseButtonLeft) then begin
-    lastMouseLeft := EnumHasFlag(mouseButton, MouseButtonLeft);
+  if lastMouseLeft <> IsLeftMousePressed then begin
+    lastMouseLeft := IsLeftMousePressed;
 
     if lastMouseLeft then
       for a:=1 to 10 do
-        SpawnParticle(mouseX, mouseY);
+        SpawnParticle(GetMouseX, GetMouseY);
   end;
-
-  gameTime := gameTime + dt;
 
   for a:=0 to high(particles) do begin
     if not particles[a].active then continue;
 
     { Velocity first, then position }
-    particles[a].body.vy := particles[a].body.vy + Gravity * dt;
+    particles[a].body.vy := particles[a].body.vy + Gravity * DeltaTime;
 
-    particles[a].body.x := particles[a].body.x + particles[a].body.vx * dt;
-    particles[a].body.y := particles[a].body.y + particles[a].body.vy * dt;
+    particles[a].body.x := particles[a].body.x + particles[a].body.vx * DeltaTime;
+    particles[a].body.y := particles[a].body.y + particles[a].body.vy * DeltaTime;
 
     if (particles[a].body.x < -10) or (particles[a].body.x > vgaWidth)
       or (particles[a].body.y > vgaHeight) then
       particles[a].active := false;
   end;
+
+  gameTime := gameTime + DeltaTime
 end;
 
 procedure Draw;
@@ -152,22 +147,17 @@ var
   w: integer;
   s: string;
 begin
-  if actualGameState = GameStateLoading then begin
-    renderLoadingScreen;
-    exit
-  end;
-
   cls(DarkBlue);
 
   if (trunc(gameTime * 4) and 1) > 0 then
-    spr(imgDosuEXE[1], 148, 88)
+    Spr(imgDosuEXE[1], 148, 88)
   else
-    spr(imgDosuEXE[0], 148, 88);
+    Spr(imgDosuEXE[0], 148, 88);
 
   for a:=0 to high(particles) do begin
     if not particles[a].active then continue;
 
-    spr(
+    Spr(
       particles[a].imgHandle,
       trunc(particles[a].body.x),
       trunc(particles[a].body.y))
@@ -175,9 +165,18 @@ begin
 
   s := 'Click to spawn particles';
   w := measureDefault(s);
-  printDefault(s, (vgaWidth - w) div 2, 120);
+  PrintDefault(s, (vgaWidth - w) div 2, 120);
 
   DrawFPS;
+end;
+
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  P92Start(appConfig);
 end;
 
 exports
@@ -188,6 +187,6 @@ exports
   Draw;
 
 begin
-{ Starting point is intentionally left empty }
+  { Starting point is intentionally left empty }
 end.
 
