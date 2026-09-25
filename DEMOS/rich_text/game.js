@@ -4,7 +4,7 @@ class Game extends BMFontMixin(Posit92) {
 }
 
 async function Main() {
-  const game = new Game("game", { LoadDefaultBMFont: false });
+  const game = new Game();
   await game.Start();
 }
 

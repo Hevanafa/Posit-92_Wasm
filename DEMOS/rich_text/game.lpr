@@ -52,11 +52,6 @@ begin
   PrintDefault('FPS:' + i32str(getLastFPS), 240, 0);
 end;
 
-procedure DrawMouse;
-begin
-  spr(texCursor, GetMouseX, GetMouseY)
-end;
-
 procedure OnPreload;
 begin
   texCursor := RequestImage('assets/images/cursor.png');
@@ -111,11 +106,20 @@ begin
   RichTextLabel('\bBold,\b0\i Italic,\i0\b\i Bold italic', 20, 150, Palette);
   RichTextLabel('\cf1Colour 1 \cf2Colour 2 \cf3 Colour 3', 20, 160, Palette);
 
-  DrawMouse;
   DrawFPS;
 end;
 
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  P92Start(appConfig);
+end;
+
 exports
+  Init,
   OnPreload,
   OnReady,
   Update,
