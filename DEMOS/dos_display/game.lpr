@@ -413,8 +413,8 @@ begin
         end
       end;
 
-  for scancode:=0 to 255 do
-    if isKeyDown(scancode) then
+  for scancode := 0 to 255 do
+    if IsKeyDown(scancode) then
       lastKeyStates := lastKeyStates + [scancode]
     else
       lastKeyStates := lastKeyStates - [scancode];
@@ -521,7 +521,7 @@ var
   a: word;
   drift: double;
 begin
-  { CheckKeys; }
+  CheckKeys;
 
   if renderSnow then begin
     for a:=0 to high(snowflakes) do begin
