@@ -421,6 +421,7 @@ begin
   zone.height := height;
 
   { Update logic }
+
   thisWidgetID := nextWidgetID;
   inc(nextWidgetID);
 
@@ -431,6 +432,7 @@ begin
   end;
 
   { Render logic }
+
   if activeWidget = thisWidgetID then
     buttonColour := AccentDark
   else if hotWidget = thisWidgetID then
@@ -438,9 +440,17 @@ begin
   else 
     buttonColour := AccentNormal;
 
-  RectFill(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), buttonColour);
-  Rect(trunc(zone.x), trunc(zone.y), trunc(zone.x + zone.width), trunc(zone.y + zone.height), AccentDark);
-  TextLabel(caption, trunc(zone.x + Padding), trunc(zone.y + Padding));
+  RectFill(
+    x, y,
+    x + width - 1, y + height - 1,
+    buttonColour);
+
+  Rect(
+    x, y,
+    x + width - 1, y + height - 1,
+    AccentDark);
+
+  TextLabel(caption, x + Padding, y + Padding);
 
   if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
     { activeWidget = -1 }  { Index reset is handled at the end of draw }
