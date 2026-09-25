@@ -112,6 +112,7 @@ procedure PrintTint(const txt: string; const x, y: smallint; const colour: longw
 function DefaultP92AppConfig: TP92AppConfig;
 procedure P92Start(const appConfig: TP92AppConfig);
 
+procedure DrawMouse;
 procedure DrawFPS;
 
 

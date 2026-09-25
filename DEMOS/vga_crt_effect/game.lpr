@@ -21,6 +21,11 @@ var
   gameTime: double;
 
 
+procedure OnPreload;
+begin
+  { TODO: Load the assets }
+end;
+
 procedure OnReady;
 begin
   HideCursor;
@@ -53,21 +58,30 @@ begin
   { cls(DarkGreen); }
 
   spr(texPipBoy,
-    (vgaWidth - getImageWidth(texPipBoy)) div 2,
-    (vgaHeight - getImageHeight(texPipBoy)) div 2);
+    (vgaWidth - GetTexWidth(texPipBoy)) div 2,
+    (vgaHeight - GetTexHeight(texPipBoy)) div 2);
 
   DrawFPS;
-  drawMouse;
+  DrawMouse;
 
   { Apply post-processing chain }
-  applyFullPhosphor(1);
-  applyFullChromabe;
-  applyFullSubtleScanlines;
+  ApplyFullPhosphor(1);
+  ApplyFullChromabe;
+  ApplyFullSubtleScanlines;
 
   strength := 0.4 * brightness;
-  applyFullVignette(FalloffTypeEaseOutQuad, strength);
+  ApplyFullVignette(FalloffTypeEaseOutQuad, strength);
 
   VGAPresent
+end;
+
+procedure Init;
+var
+  appConfig: TP92AppConfig;
+begin
+  appConfig := DefaultP92AppConfig;
+
+  P92Start(appConfig);
 end;
 
 exports
