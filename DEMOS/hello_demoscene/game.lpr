@@ -11,27 +11,25 @@ library Game;
 
 uses
   P92Core, P92WasmHost, P92Fonts, P92AssetRegistry,
-  P92Logger, P92Keyboard, P92Mouse,
-  P92TexDraw, P92Timing, P92FPS, P92VGA,
+  P92Keyboard, P92Mouse, P92TexDraw, P92Timing, P92VGA,
   Assets;
 
 var
   { Game state variables }
   gameTime: double;
 
+{ Load game assets here }
 procedure OnPreload;
 begin
   texSpecimenP92[0] := RequestImage('assets/images/specimen_p-92_1.png');
   texSpecimenP92[1] := RequestImage('assets/images/specimen_p-92_2.png');
 end;
 
+{ Initialise game state here }
 procedure OnReady;
 begin
   HideCursor;
 
-  SetWindowTitle('Test new title!');
-
-  { Initialise game state here }
   gameTime := 0.0
 end;
 
