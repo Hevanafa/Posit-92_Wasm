@@ -33,6 +33,7 @@ const
 
   AccentBright = $FF8CDE92;
   AccentDark = $FF04601C;
+  AccentLight = $FFDEF6B8;
 
 procedure InitImmediateGUI(useDefaultFont: boolean = true);
 
@@ -719,12 +720,14 @@ var
 begin
   w := trunc(clamp(perc, 0.0, 1.0) * width);
 
-  rectfill(x, y, x + width, y + height, black);
-  rectfill(x, y, trunc(x + w), y + height, red);
-  rect(x, y, x + width, y + height, white);
+  RectFill(x, y, x + width, y + height, black);
+  RectFill(x, y, trunc(x + w), y + height, AccentBright);
+  Rect(x, y, x + width, y + height, white);
 end;
 
 procedure ProgressBarLabelled(const x, y, width, height: smallint; const perc: double);
+const
+  MarginTop = 4;
 var
   percStr: string;
   w: word;
@@ -734,12 +737,12 @@ begin
   ProgressBar(x, y, width, height, perc);
   
   percStr := i32str(round(perc * 100)) + '%';
-  w := measureBMFont(activeFontHandle, percStr);
+  w := GUIMeasureText(percStr);
 
   TextLabel(
     percStr,
     x + (width - w) div 2,
-    y + (height - BorrowBMFontPtr(activeFontHandle)^.lineHeight) div 2);
+    y + MarginTop;
 end;
 {$endif}
 
