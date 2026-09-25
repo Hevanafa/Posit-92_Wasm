@@ -20,9 +20,14 @@ var
   { Init your game state here }
   gameTime: double;
 
+procedure DrawMouse;
+begin
+  Spr(texCursor, GetMouseX, GetMouseY)
+end;
 
 procedure OnPreload;
 begin
+  texCursor := RequestImage('assets/images/cursor.png');
   texDosuEXE[0] := RequestImage('assets/images/dosu_1.png');
   texDosuEXE[1] := RequestImage('assets/images/dosu_2.png');
   texPipBoy := RequestImage('assets/images/pip-boy_100px.png');
@@ -82,6 +87,9 @@ var
   appConfig: TP92AppConfig;
 begin
   appConfig := DefaultP92AppConfig;
+
+  appConfig.LoadDefaultBMFont := false;
+  appConfig.LoadDefaultCursor := false;
 
   P92Start(appConfig);
 end;
