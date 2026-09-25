@@ -399,16 +399,22 @@ begin
 
 {$IFDEF P92_WEBGL}
   DrawMouse;
+  DrawFPS;
+
   VGAUpload;
   WebGLPresent;
 {$ELSE}
   DrawMouse;
+  DrawFPS;
+
   VGAUpload;
   VGAPresent;
 {$ENDIF}
 
 {$ifdef P92_SDL2}
+  DrawFPS;
   VgaUpload;
+
   { Begin hardware layer }
   DrawMouse;
   VgaPresent
