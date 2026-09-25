@@ -1,15 +1,6 @@
 "use strict";
 
-class Game extends Posit92 {
-  /**
-   * KeyboardEvent.code to DOS scancode
-   */
-  ScancodeMap = {
-    "Escape": 0x01,
-    "Space": 0x39
-    // Add more scancodes as necessary
-  };
-
+class Game extends SoundMixin(BMFontMixin(Posit92)) {
   async loadAssets() {
     let handle = 0;
 
@@ -30,43 +21,13 @@ class Game extends Posit92 {
   }
 }
 
-const TargetFPS = 60;
-const FrameTime = 1000 / TargetFPS;
-/**
- * in milliseconds
- */
-let lastFrameTime = 0.0;
-
-var done = false;
-
-async function main() {
-  const game = new Game("game");
-  await game.init();
-  game.afterInit();
-
-  function loop(currentTime) {
-    if (done) {
-      game.cleanup();
-      return;
-    }
-
-    const elapsed = currentTime - lastFrameTime;
-
-    if (elapsed >= FrameTime) {
-      lastFrameTime = currentTime - (elapsed % FrameTime);  // Carry over extra time
-      game.update();
-      game.draw();
-    }
-
-    requestAnimationFrame(loop)
-  }
-
-  requestAnimationFrame(loop)
+async function Main() {
+  const game = new Game();
+  game.Start();
 }
 
-function play() {
+function Play() {
   const overlay = document.getElementById("play-overlay");
-  overlay.parentNode.removeChild(overlay)
-
-  main()
+  overlay.parentNode.removeChild(overlay);
+  Main()
 }
