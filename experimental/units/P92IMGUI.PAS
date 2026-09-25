@@ -626,13 +626,9 @@ var
   perc, range: double;
   pendingValue, thumbX: smallint;
   colour: longword;
-  trackStart, trackEnd: smallint;
 begin
   if minValue >= maxValue then
     PanicHalt('Slider: minValue has to be less than maxValue!');
-
-  trackStart := x;
-  trackEnd := x + width;
 
   zone.x := x;
   zone.y := y;
@@ -654,7 +650,7 @@ begin
 
   if activeWidget = thisWidgetID then begin
     pendingValue := trunc(
-      clamp(GetMouseX, trackStart, trackEnd) - trackStart);
+      clamp(GetMouseX, x, x + width) - x);
     perc := pendingValue / width;
     state := round(perc * range)
   end;
@@ -664,7 +660,9 @@ begin
   perc := (state - minValue) / range;
   thumbX := round(x + perc * width);
 
-  Line(x, y + 3, x + width, y + 3, AccentDark);
+  Line(
+    x, y + 3,
+    x + width - 1, y + 3, AccentDark);
 
   RectFill(
     trunc(thumbX - 2), y,
@@ -755,9 +753,20 @@ var
 begin
   w := trunc(clamp(perc, 0.0, 1.0) * width);
 
-  RectFill(x, y, x + width - 1, y + height - 1, AccentDark);
-  RectFill(x, y, trunc(x + w) - 1, y + height - 1, AccentNormal);
-  Rect(x, y, x + width - 1, y + height - 1, AccentPale);
+  RectFill(
+    x, y,
+    x + width - 1, y + height - 1,
+    AccentDark);
+
+  RectFill(
+    x, y,
+    trunc(x + w) - 1, y + height - 1,
+    AccentNormal);
+
+  Rect(
+    x, y,
+    x + width - 1, y + height - 1,
+    AccentPale);
 end;
 
 procedure ProgressBarLabelled(const x, y, width, height: smallint; const perc: double);
