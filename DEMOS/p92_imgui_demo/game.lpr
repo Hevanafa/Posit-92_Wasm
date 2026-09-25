@@ -13,7 +13,8 @@ library Game;
 {$H+}{$J-}
 
 uses
-  SysUtils,
+  { SysUtils, }  { it's possible to use format() but I would rather not }
+
   P92Core, P92Fonts, P92WasmHost, P92AssetRegistry, P92BMFont,
   P92Conversions, P92FPS, P92Graphics, P92Tex, P92TexDraw,
   P92TexEffects, P92Loading, P92Logger,
@@ -105,7 +106,7 @@ begin
 
   SetLength(listItems, 3);
   for a:=0 to High(listItems) do
-    listItems[a] := format('ListItem %d', [a + 1]);
+    listItems[a] := 'ListItem ' + i32str(a + 1);
 
   listState.x := 10;
   listState.y := 10;
