@@ -50,7 +50,7 @@ function GetMousePoint: TPoint;
 function GetMouseJustPressed: boolean;
 function GetMouseJustReleased: boolean;
 
-function GetActiveFontHandle: TBMFontHandle;
+function GetGUIActiveFontHandle: TBMFontHandle;
 
 function GetHotWidget: smallint;
 procedure SetHotWidget(const widgetID: smallint);
@@ -74,12 +74,12 @@ procedure ResetWidgetIndices;
 { Required: Must be placed at the end of the draw routine }
 procedure ResetActiveWidget;
 
-procedure GuiSetFont(const fontHandle: TBMFontHandle);
+procedure GUISetFont(const fontHandle: TBMFontHandle);
 
-function GuiMeasureText(const text: string): smallint;
+function GUIMeasureText(const text: string): smallint;
 function GuiMeasureTextWrapHeight(text: ShortString; const maxWidth: smallint): smallint;
 
-procedure GuiAssertFontSet;
+procedure GUIAssertFontSet;
 
 { Widgets }
 procedure TextLabel(const text: string; const x, y: smallint);
@@ -150,9 +150,9 @@ begin
   isFontSet := false;
 
   if useDefaultFont then
-    GuiSetFont(GetDefaultFontHandle)
+    GUISetFont(GetDefaultFontHandle)
   else
-    GuiSetFont(0);
+    GUISetFont(0);
 end;
 
 function GetMousePoint: TPoint;
@@ -170,9 +170,9 @@ begin
   GetMouseJustReleased := mouseJustReleased
 end;
 
-function GetActiveFontHandle: TBMFontHandle;
+function GetGUIActiveFontHandle: TBMFontHandle;
 begin
-  GetActiveFontHandle := activeFontHandle
+  GetGUIActiveFontHandle := activeFontHandle
 end;
 
 function GetHotWidget: smallint;
@@ -238,13 +238,13 @@ begin
   if mouseJustReleased and (activeWidget >= 0) then activeWidget := -1;
 end;
 
-procedure GuiSetFont(const fontHandle: TBMFontHandle);
+procedure GUISetFont(const fontHandle: TBMFontHandle);
 begin
   isFontSet := fontHandle >= 1;
   activeFontHandle := fontHandle
 end;
 
-procedure GuiAssertFontSet;
+procedure GUIAssertFontSet;
 begin
   if not isFontSet then
     PanicHalt('Immediate GUI: activeFont is unset!');
@@ -252,10 +252,10 @@ end;
 
 { Returns the width of the text
   to measure the height, use `font.lineHeight` }
-function GuiMeasureText(const text: string): smallint;
+function GUIMeasureText(const text: string): smallint;
 begin
-  GuiAssertFontSet;
-  GuiMeasureText := MeasureBMFont(activeFontHandle, text)
+  GUIAssertFontSet;
+  GUIMeasureText := MeasureBMFont(activeFontHandle, text)
 end;
 
 function GuiMeasureTextWrapHeight(text: ShortString; const maxWidth: smallint): smallint;
@@ -270,7 +270,7 @@ var
   spaceWidth: word;
   wordWidth, runWidth: word;
 begin
-  GuiAssertFontSet;
+  GUIAssertFontSet;
 
   if maxWidth <= 0 then begin
     GuiMeasureTextWrapHeight := 0;
@@ -290,11 +290,11 @@ begin
     run := '';
     runWidth := 0;
 
-    spaceWidth := GuiMeasureText(' ');
+    spaceWidth := GUIMeasureText(' ');
     wordCount := split(lines[row], ' ', words);
 
     for a:=0 to wordCount - 1 do begin
-      wordWidth := GuiMeasureText(words[a]);
+      wordWidth := GUIMeasureText(words[a]);
 
       if runWidth + wordWidth <= maxWidth then begin
         run := run + words[a] + ' ';
@@ -317,7 +317,7 @@ end;
 
 procedure TextLabel(const text: string; const x, y: smallint);
 begin
-  GuiAssertFontSet;
+  GUIAssertFontSet;
   printBMFont(activeFontHandle, text, x, y)
 end;
 
@@ -334,7 +334,7 @@ var
   wordWidth, runWidth: word;
   left, top: word;
 begin
-  GuiAssertFontSet;
+  GUIAssertFontSet;
 
   if maxWidth <= 0 then exit;
 
@@ -351,11 +351,11 @@ begin
     runWidth := 0;
     left := x;
 
-    spaceWidth := GuiMeasureText(' ');
+    spaceWidth := GUIMeasureText(' ');
     wordCount := split(lines[row], ' ', words);
 
     for a:=0 to wordCount - 1 do begin
-      wordWidth := GuiMeasureText(words[a]);
+      wordWidth := GUIMeasureText(words[a]);
 
       if runWidth + wordWidth <= maxWidth then begin
         run := run + words[a] + ' ';
@@ -381,7 +381,7 @@ procedure CentredLabel(const text: string; const cx, y: smallint);
 var
   w: word;
 begin
-  w := GuiMeasureText(text);
+  w := GUIMeasureText(text);
   TextLabel(text, cx - w div 2, y)
 end;
 
@@ -392,9 +392,9 @@ const
 var
   w: smallint;
 begin
-  GuiAssertFontSet;
+  GUIAssertFontSet;
 
-  w := GuiMeasureText(caption);
+  w := GUIMeasureText(caption);
 
   Button := ButtonSized(caption,
     x, y,
@@ -410,7 +410,7 @@ var
   thisWidgetID: smallint;
   buttonColour: longword;
 begin
-  GuiAssertFontSet;
+  GUIAssertFontSet;
 
   zone.x := x;
   zone.y := y;
@@ -452,7 +452,7 @@ var
   thisWidgetID: smallint;
   buttonImgHandle: longword;
 begin
-  GuiAssertFontSet;
+  GUIAssertFontSet;
 
   zone.x := x;
   zone.y := y;
@@ -498,7 +498,7 @@ var
   zone: TZone;
   clickedIndex: smallint;
 begin
-  GuiAssertFontSet;
+  GUIAssertFontSet;
 
   { if (items = nil) or (items.count = 0) then exit; }
   if length(items) = 0 then exit;
@@ -554,14 +554,14 @@ var
   thisWidgetID: smallint;
   checkboxColour: longword;
 begin
-  GuiAssertFontSet;
+  GUIAssertFontSet;
 
   fontPtr := BorrowBMFontPtr(activeFontHandle);
 
   zone.x := x;
   zone.y := y;
 
-  w := GuiMeasureText(caption);
+  w := GUIMeasureText(caption);
   zone.width := w + 6;
   zone.height := fontPtr^.lineHeight;
 
@@ -733,7 +733,7 @@ var
   percStr: string;
   w: word;
 begin
-  GuiAssertFontSet;
+  GUIAssertFontSet;
 
   ProgressBar(x, y, width, height, perc);
   

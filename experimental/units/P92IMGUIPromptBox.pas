@@ -100,7 +100,7 @@ var
   thisWidgetID: smallint;
   buttonColour: longword;
 begin
-  GuiAssertFontSet;
+  GUIAssertFontSet;
 
   zone.x := x;
   zone.y := y;
@@ -153,7 +153,7 @@ var
   thisWidgetID: smallint;
   buttonImgHandle: longword;
 begin
-  GuiAssertFontSet;
+  GUIAssertFontSet;
 
   texturePtr := BorrowTexPtr(texNormal);
 
@@ -242,11 +242,11 @@ begin
 
   spr(buttonImgHandle, x, y);
 
-  textWidth := guiMeasureText(text);
+  textWidth := GUIMeasureText(text);
   w := texturePtr^.width;
   h := texturePtr^.height;
 
-  fontPtr := BorrowBMFontPtr(GetActiveFontHandle);
+  fontPtr := BorrowBMFontPtr(GetGUIActiveFontHandle);
 
   textX := x + (w - textWidth) div 2;
   textY := y + (h - fontPtr^.lineHeight) div 2;
@@ -288,7 +288,7 @@ begin
 
   spr(texPromptBG, left, top);
 
-  w := guiMeasureText(promptText);
+  w := GUIMeasureText(promptText);
   TextLabel(promptText, (vgaWidth - w) div 2, 90);
 
   PromptBox := PromptResultWait;
