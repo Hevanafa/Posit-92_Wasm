@@ -618,9 +618,13 @@ var
   perc, range: double;
   pendingValue, thumbX: smallint;
   colour: longword;
+  trackStart, trackEnd: smallint;
 begin
   if minValue >= maxValue then
     PanicHalt('Slider: minValue has to be less than maxValue!');
+
+  trackStart := x;
+  trackEnd := x + width;
 
   zone.x := x;
   zone.y := y;
@@ -639,19 +643,24 @@ begin
 
   { Value update logic }
   range := maxValue - minValue;
+
   if activeWidget = thisWidgetID then begin
-    pendingValue := trunc(clamp(GetMouseX, x, x + width) - x);
+    pendingValue := trunc(
+      clamp(GetMouseX, trackStart, trackEnd) - trackStart);
     perc := pendingValue / width;
     state := round(perc * range)
   end;
 
   { Render logic }
-  Line(x, y + 3, x + width, y + 3, Black);
 
   perc := (state - minValue) / range;
   thumbX := round(x + perc * width);
 
-  rectfill(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 6), White);
+  Line(x, y + 3, x + width, y + 3, AccentDark);
+
+  RectFill(
+    trunc(thumbX - 2), y,
+    trunc(thumbX + 2), y + Height - 1, AccentPale);
 
   if activeWidget = thisWidgetID then
     { dragging }
@@ -662,7 +671,9 @@ begin
   else
     colour := AccentDark;
 
-  rect(trunc(thumbX - 2), trunc(zone.y), trunc(thumbX + 2), trunc(zone.y + 6), colour)
+  Rect(
+    trunc(thumbX - 2), y,
+    trunc(thumbX + 2), y + Height - 1, colour)
 end;
 
 function SliderDrag(const x, y, width: smallint; var state: smallint; const minValue, maxValue: smallint): TSliderDragState;
@@ -673,7 +684,8 @@ var
   pendingValue, thumbX: smallint;
   colour: longword;
 begin
-  if minValue >= maxValue then panicHalt('Slider: minValue has to be less than maxValue!');
+  if minValue >= maxValue then
+    PanicHalt('Slider: minValue has to be less than maxValue!');
 
   zone.x := x;
   zone.y := y;
