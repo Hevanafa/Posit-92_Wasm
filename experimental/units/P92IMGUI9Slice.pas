@@ -21,7 +21,7 @@ procedure SprNineSlice(
 
 implementation
 
-uses P92Panic, P92Tex, P92TexDraw, P92IMGUI;
+uses P92Panic, P92Tex, P92TexDraw, P92IMGUI, P92Geometry, P92AssetRegistry;
 
 procedure SprNineSlice(
   const texHandle: TTextureHandle;
@@ -91,8 +91,44 @@ function ButtonNineSlice(
   const margins: TNineSliceMargins;
   const texNormal, texHovered, texPressed: TTextureHandle
 ): boolean;
+var
+  zone: TZone;
+  w: smallint;
 begin
-  GuiAssertFontSet;
+  GUIAssertFontSet;
+
+  zone.x := x;
+  zone.y := y;
+  zone.width := GUIMeasureText(caption) + margins.left + margins.right;
+  zone.height := BorrowBMFontPtr(GetGUIActiveFontHandle)^.lineHeight + margins.top + margins.bottom;
+
+  { Update logic }
+  thisWidgetID := nextWidgetID;
+  inc(nextWidgetID);
+
+  if pointInZone(mousePoint, zone) then begin
+    hotWidget := thisWidgetID;
+
+    if mouseJustPressed then activeWidget := thisWidgetID;
+  end;
+
+  { Render logic }
+  if activeWidget = thisWidgetID then
+    buttonImgHandle := imgPressed
+  else if hotWidget = thisWidgetID then
+    buttonImgHandle := imgHovered
+  else
+    buttonImgHandle := imgNormal;
+
+  spr(buttonImgHandle, x, y);
+  { Use this in case you want your buttons have semitransparent pixels }
+  { sprBlend(buttonImgHandle, x, y); }
+
+  if mouseJustReleased and (hotWidget = thisWidgetID) and (activeWidget = thisWidgetID) then
+    { activeWidget = -1 }  { Index reset is handled at the end of draw }
+    ImageButton := true
+  else
+    ImageButton := false;
 end;
 
 end.
